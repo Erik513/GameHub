@@ -550,3 +550,17 @@ h1 {
   justify-self: start;
   margin-top: 0;
 }
+
+.taboo-round {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.taboo-round [role="timer"] {
+  font-size: var(--text-xl);
+  font-variant-numeric: tabular-nums;
+}
+
+.taboo-round .taboo-setup__actions > .button {
+  min-height: 44px;
+}

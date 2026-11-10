@@ -321,7 +321,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Zielbegriff, drei verbotene Wörter, Team, Zeit, Punktestand sowie drei Kartenaktionen anzeigen.
 - **Akzeptanzkriterien:** 60 Sekunden sind Standard. Ablauf beendet die Runde genau einmal. Bedienelemente sind auf kleinen Displays nutzbar.
 - **Tests:** Fake-Timer, Aktionen, Ablauf und Accessibility.
-- **Status:** planned
+- **Status:** done
 
 #### PH-05-03 – Rundenende
 

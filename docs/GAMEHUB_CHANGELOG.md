@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-05-02 – Laufende Runde und Timer
+
+- Tabu-Runde mit Countdown, Team, Punkten, Begriff und drei verbotenen Wörtern ergänzt.
+- Kartenaktionen werten die aktuelle Karte. Beim Zeitablauf endet die Runde automatisch.
+- Kleinen deutschen und englischen Beispielsatz für die laufende Runde ergänzt.
+- 99 Tests bestanden. Neue Browserprüfung auf Desktop und Mobil erfolgreich.
+
 ### PH-05-01 – Tabu-Spielkonfiguration
 
 - Formular für Teams, Rundenzahl, Rundendauer, Kartensprache, Kategorien und Schwierigkeit ergänzt.

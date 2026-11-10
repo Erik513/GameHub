@@ -1,4 +1,18 @@
 export const common = {
+  tabooRound: {
+    title: "Laufende Runde",
+    team: "Team: {{team}}",
+    score: "Punkte: {{score}}",
+    seconds: "Noch {{seconds}} Sekunden",
+    correct: "Richtig",
+    skipped: "Überspringen",
+    forbiddenWord: "Verbotenes Wort",
+    ended: "Runde beendet",
+    empty: "Keine passenden Karten",
+    emptyHint: "Ändere die Kartenfilter und bereite die Partie erneut vor.",
+    start: "Runde starten",
+    demo: "Diese Runde verwendet einen kleinen Beispielsatz.",
+  },
   tabooSetup: {
     teams: "Teams",
     team: "Team {{number}}",

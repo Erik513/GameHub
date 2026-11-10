@@ -192,8 +192,8 @@
   "project": {
     "id": "gamehub",
     "name": "GameHub",
-    "stage": "taboo_round_ui_planned",
-    "updatedAt": "2026-11-10T23:30:26+01:00",
+    "stage": "taboo_round_summary_planned",
+    "updatedAt": "2026-11-10T23:35:55+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -202,9 +202,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 26,
+      "completedTasks": 27,
       "totalTasks": 46,
-      "percent": 56.52
+      "percent": 58.7
     }
   },
   "environment": {
@@ -234,17 +234,17 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:30:26+01:00",
+      "lastRunAt": "2026-11-10T23:35:55+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:30:26+01:00",
+      "lastRunAt": "2026-11-10T23:35:55+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:30:26+01:00",
+      "lastRunAt": "2026-11-10T23:35:55+01:00",
       "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich."
     },
     "githubActions": {
@@ -254,7 +254,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:24:10+01:00",
+      "lastRunAt": "2026-11-10T23:35:55+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -264,15 +264,15 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:30:26+01:00",
+      "lastRunAt": "2026-11-10T23:35:55+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:30:26+01:00",
-      "passed": 98,
+      "lastRunAt": "2026-11-10T23:35:55+01:00",
+      "passed": 99,
       "failed": 0,
-      "details": "98 Tests bestanden. Die Tabu-Spielkonfiguration wurde in Deutsch und Englisch geprüft."
+      "details": "99 Tests bestanden. Die Rundenansicht wurde mit simulierter Zeit und allen drei Kartenaktionen geprüft."
     },
     "integrationTests": {
       "status": "not_configured",
@@ -300,11 +300,11 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:30:26+01:00",
-      "overallLines": 97.84,
-      "overallBranches": 94.59,
-      "overallFunctions": 98.86,
-      "overallStatements": 97.69,
+      "lastRunAt": "2026-11-10T23:35:55+01:00",
+      "overallLines": 97.47,
+      "overallBranches": 91.6,
+      "overallFunctions": 99,
+      "overallStatements": 96.82,
       "criticalGameLogicLines": 100,
       "businessLines": 100,
       "dataInfrastructureLines": 100,
@@ -493,7 +493,7 @@
         {
           "id": "PH-05-02",
           "title": "Laufende Runde und Timer",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-05-03",
@@ -622,6 +622,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-10",
+      "summary": "PH-05-02 abgeschlossen: laufende Tabu-Runde mit Countdown, Kartenaktionen und einem zweisprachigen Beispielsatz."
+    },
     {
       "date": "2026-11-10",
       "summary": "PH-05-01 abgeschlossen: zweisprachige Tabu-Spielkonfiguration mit lokalisierter Validierung und Vorbereitung der Partie ergänzt."
@@ -783,9 +787,9 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-05-02",
-      "reason": "Laufende Tabu-Runde mit Timer und Kartenaktionen umsetzen.",
-      "prerequisite": "Die Spielkonfiguration aus PH-05-01 ist abgeschlossen."
+      "id": "PH-05-03",
+      "reason": "Rundenende mit Ergebnis und Übergang zur nächsten Runde umsetzen.",
+      "prerequisite": "Die laufende Runde aus PH-05-02 ist umgesetzt."
     }
   ]
 };
