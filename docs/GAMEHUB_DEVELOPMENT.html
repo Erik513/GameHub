@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>GameHub Entwicklungs-Dashboard</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #090b16;
+        --surface: rgba(22, 25, 47, 0.84);
+        --surface-strong: #1c203b;
+        --line: rgba(255, 255, 255, 0.09);
+        --text: #f4f5ff;
+        --muted: #a9aecb;
+        --primary: #8b7cff;
+        --secondary: #28d7c0;
+        --warning: #ffbd5c;
+        --danger: #ff7185;
+        --done: #55dc9a;
+        --radius: 20px;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 8% 8%, rgba(139, 124, 255, 0.24), transparent 30rem),
+          radial-gradient(circle at 94% 18%, rgba(40, 215, 192, 0.15), transparent 28rem),
+          var(--bg);
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        content: "";
+        opacity: 0.18;
+        background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: linear-gradient(to bottom, black, transparent 75%);
+      }
+
+      .shell { width: min(1180px, calc(100% - 28px)); margin: 0 auto; padding: 32px 0 56px; }
+      header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+      .eyebrow { margin: 0 0 10px; color: var(--secondary); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; }
+      h1 { margin: 0; font-size: clamp(2rem, 7vw, 4.6rem); line-height: 0.95; letter-spacing: -0.055em; }
+      .subtitle { max-width: 680px; margin: 16px 0 0; color: var(--muted); font-size: 1rem; line-height: 1.6; }
+      .live { display: flex; align-items: center; gap: 8px; flex: none; margin-top: 8px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(9, 11, 22, 0.6); font-size: 0.83rem; }
+      .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--secondary); box-shadow: 0 0 0 5px rgba(40, 215, 192, 0.11); }
+
+      .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+      .card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18); backdrop-filter: blur(18px); }
+      .hero { grid-column: span 8; padding: clamp(22px, 4vw, 36px); }
+      .summary { grid-column: span 4; padding: 24px; }
+      .full { grid-column: 1 / -1; padding: 24px; }
+      .half { grid-column: span 6; padding: 24px; }
+      .label { color: var(--muted); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .progress-number { margin: 10px 0 18px; font-size: clamp(3rem, 8vw, 6.7rem); font-weight: 800; line-height: 0.9; letter-spacing: -0.07em; }
+      .progress-number span { color: var(--muted); font-size: 0.34em; letter-spacing: -0.02em; }
+      .progress-track { height: 12px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, 0.07); }
+      .progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 450ms ease; }
+      .progress-note { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; color: var(--muted); font-size: 0.88rem; }
+      .metric-list { display: grid; gap: 12px; margin-top: 18px; }
+      .metric { display: flex; justify-content: space-between; gap: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+      .metric:last-child { padding-bottom: 0; border: 0; }
+      .metric strong { text-align: right; }
+      h2 { margin: 0 0 18px; font-size: 1.15rem; letter-spacing: -0.02em; }
+      h3 { margin: 0; font-size: 0.98rem; }
+
+      .phase-list { display: grid; gap: 12px; }
+      details { border: 1px solid var(--line); border-radius: 15px; background: rgba(9, 11, 22, 0.38); }
+      summary { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 16px; cursor: pointer; list-style: none; }
+      summary::-webkit-details-marker { display: none; }
+      .phase-id { color: var(--secondary); font: 700 0.78rem ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .phase-meta { color: var(--muted); font-size: 0.8rem; }
+      .tasks { display: grid; gap: 1px; margin: 0; padding: 0 16px 16px; list-style: none; }
+      .task { display: grid; grid-template-columns: minmax(88px, auto) 1fr auto; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); }
+      .task-id { color: var(--muted); font: 0.76rem ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .task-title { min-width: 0; }
+      .badge { display: inline-flex; align-items: center; padding: 5px 9px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; }
+      .badge.done { color: var(--done); background: rgba(85, 220, 154, 0.11); }
+      .badge.planned { color: var(--muted); background: rgba(169, 174, 203, 0.1); }
+      .badge.in_progress { color: var(--warning); background: rgba(255, 189, 92, 0.11); }
+      .badge.blocked { color: var(--danger); background: rgba(255, 113, 133, 0.11); }
+      .status-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .status-item { min-height: 96px; padding: 15px; border: 1px solid var(--line); border-radius: 14px; background: rgba(9, 11, 22, 0.38); }
+      .status-item strong { display: block; margin-top: 8px; font-size: 0.95rem; overflow-wrap: anywhere; }
+      .status-item small { color: var(--muted); }
+      .list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+      .list li { padding: 13px 15px; border-left: 3px solid var(--primary); border-radius: 0 12px 12px 0; color: var(--muted); background: rgba(9, 11, 22, 0.35); line-height: 1.45; }
+      .list strong { color: var(--text); }
+      .issues li { border-color: var(--warning); }
+      .empty { color: var(--muted); }
+      .error { display: none; margin-bottom: 16px; padding: 14px 16px; border: 1px solid rgba(255, 113, 133, 0.35); border-radius: 14px; color: #ffdce1; background: rgba(255, 113, 133, 0.1); }
+      .error.visible { display: block; }
+      footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 18px; color: var(--muted); font-size: 0.8rem; }
+
+      @media (max-width: 820px) {
+        header { display: block; }
+        .live { width: fit-content; margin-top: 20px; }
+        .hero, .summary, .half { grid-column: 1 / -1; }
+      }
+
+      @media (max-width: 540px) {
+        .shell { width: min(100% - 18px, 1180px); padding-top: 22px; }
+        .card, .hero, .summary, .full, .half { padding: 18px; border-radius: 16px; }
+        .status-grid { grid-template-columns: 1fr; }
+        summary { grid-template-columns: 1fr auto; }
+        .phase-id { grid-column: 1 / -1; }
+        .task { grid-template-columns: 1fr auto; }
+        .task-id { grid-column: 1 / -1; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <div>
+          <p class="eyebrow">Produktentwicklung</p>
+          <h1>GameHub</h1>
+          <p class="subtitle">Live-Überblick über Aufgaben, Qualität, Änderungen und die nächsten freigegebenen Schritte.</p>
+        </div>
+        <div class="live"><span class="live-dot" aria-hidden="true"></span><span>Aktualisierung alle 20 Sekunden</span></div>
+      </header>
+
+      <div id="error" class="error" role="alert"></div>
+
+      <section class="grid" aria-label="Projektübersicht">
+        <article class="card hero">
+          <div class="label">Gesamtfortschritt</div>
+          <div id="progress-number" class="progress-number">—<span>%</span></div>
+          <div class="progress-track" role="progressbar" aria-label="Gesamtfortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <div class="progress-note"><span id="progress-tasks">Status wird geladen</span><span id="stage">—</span></div>
+        </article>
+
+        <article class="card summary">
+          <h2>Projektstatus</h2>
+          <div class="metric-list">
+            <div class="metric"><span>Phasen</span><strong id="phase-count">—</strong></div>
+            <div class="metric"><span>Aktive Aufgaben</span><strong id="active-count">—</strong></div>
+            <div class="metric"><span>Blockiert</span><strong id="blocked-count">—</strong></div>
+            <div class="metric"><span>Stand</span><strong id="refresh-time">—</strong></div>
+            <div class="metric"><span>Datenstand</span><strong id="updated-at">—</strong></div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <h2>Entwicklungsphasen und Aufgaben</h2>
+          <div id="phases" class="phase-list"><p class="empty">Status wird geladen …</p></div>
+        </article>
+
+        <article class="card half">
+          <h2>Build, Tests und Coverage</h2>
+          <div id="quality" class="status-grid"></div>
+        </article>
+
+        <article class="card half">
+          <h2>Aktuelle Probleme</h2>
+          <ul id="issues" class="list issues"></ul>
+        </article>
+
+        <article class="card half">
+          <h2>Letzte Änderungen</h2>
+          <ul id="changes" class="list"></ul>
+        </article>
+
+        <article class="card half">
+          <h2>Nächste empfohlene Schritte</h2>
+          <ul id="next-tasks" class="list"></ul>
+        </article>
+      </section>
+
+      <footer>
+        <span>Quelle: GAMEHUB_STATUS.json</span>
+        <span id="last-refresh">Noch nicht geladen</span>
+      </footer>
+    </main>
+
+    <script>
+      const STATUS_URL = "./GAMEHUB_STATUS.json";
+      const EMBEDDED_STATUS =
+      {
+        "schemaVersion": 1,
+        "project": {
+          "id": "gamehub",
+          "name": "GameHub",
+          "stage": "foundation_in_progress",
+          "updatedAt": "2026-11-10T16:15:32+01:00",
+          "statusValues": ["planned", "in_progress", "blocked", "done"],
+          "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
+          "progress": {
+            "completedTasks": 12,
+            "totalTasks": 46,
+            "percent": 26.09
+          }
+        },
+        "environment": {
+          "checkedAt": "2026-11-09T19:23:00+01:00",
+          "operatingShell": "PowerShell 7.6.9",
+          "node": { "available": true, "version": "24.22.1" },
+          "npm": { "available": false, "version": null },
+          "pnpm": { "available": true, "version": "11.25.0" },
+          "git": { "available": true, "version": "2.55.0.windows.3" },
+          "repositoryInitialized": true,
+          "repositoryPath": "C:\\Users\\Kosta\\source\\repos\\GameHub",
+          "defaultBranch": "main"
+        },
+        "quality": {
+          "typecheck": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "TypeScript 6.0.3 strict project references passed after GameHub rename." },
+          "lint": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "ESLint passed with zero warnings after GameHub rename." },
+          "format": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Prettier check passed for source, scripts, workflows and project configuration." },
+          "githubActions": { "status": "configured_pending_remote", "lastRunAt": null, "details": "Workflow syntax and every referenced command passed locally; first GitHub-hosted run requires a connected remote repository." },
+          "architectureCheck": { "status": "passed", "lastRunAt": "2026-11-09T19:53:45+01:00", "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten." },
+          "devServerSmoke": { "status": "passed", "lastRunAt": "2026-11-09T19:55:43+01:00", "details": "Vite dev server returned HTTP 200 and the GameHub entry document." },
+          "build": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Vite 8.3.6 GameHub production build completed successfully." },
+          "unitTests": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "passed": 3, "failed": 0, "details": "GameHub business contract test and two Testing Library component tests passed in jsdom." },
+          "integrationTests": { "status": "not_configured", "lastRunAt": null, "passed": 0, "failed": 0 },
+          "e2eTests": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "passed": 2, "failed": 0, "details": "GameHub Playwright smoke test passed in desktop-chromium and mobile-chromium profiles using installed Chrome." },
+          "renameValidation": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Package, source, tests, documentation, dashboard, repository path and build use GameHub." },
+          "documentationChecks": { "status": "passed", "lastRunAt": "2026-11-09T19:35:00+01:00", "passed": 5, "failed": 0 },
+          "coverage": {
+            "status": "passed",
+            "lastRunAt": "2026-11-10T16:15:32+01:00",
+            "overallLines": 100,
+            "overallBranches": 100,
+            "overallFunctions": 100,
+            "overallStatements": 100,
+            "criticalGameLogicLines": null,
+            "businessLines": null,
+            "dataInfrastructureLines": null,
+            "uiLines": 100,
+            "branches": {
+              "criticalGameLogic": null,
+              "business": null,
+              "dataInfrastructure": null,
+              "ui": 100
+            },
+            "details": "No executable game, data or infrastructure files exist yet; their configured thresholds activate when matching files are added."
+          }
+        },
+        "phases": [
+          {
+            "id": "PH-00",
+            "name": "Projektvorbereitung",
+            "status": "done",
+            "tasks": [
+              { "id": "PH-00-01", "title": "Umgebung prüfen", "status": "done" },
+              { "id": "PH-00-02", "title": "Dokumentationsstruktur anlegen", "status": "done" },
+              { "id": "PH-00-03", "title": "Projektplan erstellen", "status": "done" },
+              { "id": "PH-00-04", "title": "Statusverwaltung erstellen", "status": "done" },
+              { "id": "PH-00-05", "title": "Entwicklungs-Dashboard erstellen", "status": "done" },
+              { "id": "PH-00-06", "title": "Arbeitsregeln und Entscheidungen dokumentieren", "status": "done" },
+              { "id": "PH-00-07", "title": "Dokumente auf Konsistenz prüfen", "status": "done" }
+            ]
+          },
+          {
+            "id": "PH-01",
+            "name": "Projektfundament, Entwicklungswerkzeuge und Testinfrastruktur",
+            "status": "in_progress",
+            "tasks": [
+              { "id": "PH-01-01", "title": "Vite-Grundprojekt und Schichtenstruktur", "status": "done" },
+              { "id": "PH-01-02", "title": "Linting und Formatierung", "status": "done" },
+              { "id": "PH-01-03", "title": "Vitest und Testing Library", "status": "done" },
+              { "id": "PH-01-04", "title": "Coverage und Bereichsgrenzen", "status": "done" },
+              { "id": "PH-01-05", "title": "Playwright-Grundkonfiguration", "status": "done" },
+              { "id": "PH-01-06", "title": "GitHub-Actions-Qualitätsworkflow", "status": "blocked" }
+            ]
+          },
+          {
+            "id": "PH-02",
+            "name": "Internationalisierung Deutsch/Englisch",
+            "status": "planned",
+            "tasks": [
+              { "id": "PH-02-01", "title": "i18n-Grundkonfiguration", "status": "planned" },
+              { "id": "PH-02-02", "title": "Erkennung, Auswahl und Persistenz der UI-Sprache", "status": "planned" },
+              { "id": "PH-02-03", "title": "Unabhängige Kartensprache", "status": "planned" },
+              { "id": "PH-02-04", "title": "Übersetzungsparität prüfen", "status": "planned" }
+            ]
+          },
+          {
+            "id": "PH-03",
+            "name": "Gemeinsame App-Oberfläche und Designsystem",
+            "status": "planned",
+            "tasks": [
+              { "id": "PH-03-01", "title": "Design-Tokens und Basiskomponenten", "status": "planned" },
+              { "id": "PH-03-02", "title": "App-Shell und Navigation", "status": "planned" },
+              { "id": "PH-03-03", "title": "Einstellungen und Statusmeldungen", "status": "planned" }
+            ]
+          },
+          {
+            "id": "PH-04",
+            "name": "Tabu-Kernlogik",
+            "status": "planned",
+            "tasks": [
+              { "id": "PH-04-01", "title": "Tabu-Domänenmodell und Validierung", "status": "planned" },
+              { "id": "PH-04-02", "title": "Zustandsmaschine und Übergänge", "status": "planned" },
+              { "id": "PH-04-03", "title": "Kartenaktionen und Punkte", "status": "planned" },
+              { "id": "PH-04-04", "title": "Rundenfolge und Siegerermittlung", "status": "planned" },
+              { "id": "PH-04-05", "title": "Kartenfilter und Deckbildung", "status": "planned" }
+            ]
+          },
+          {
+            "id": "PH-05",
+            "name": "Tabu-Benutzeroberfläche",
+            "status": "planned",
+            "tasks": [
+              { "id": "PH-05-01", "title": "Spielkonfiguration", "status": "planned" },
+              { "id": "PH-05-02", "title": "Laufende Runde und Timer", "status": "planned" },
+              { "id": "PH-05-03", "title": "Rundenende", "status": "planned" },
+              { "id": "PH-05-04", "title": "Spielende und Neustart", "status": "planned" }
+            ]
+          },
+          {
+            "id": "PH-06",
+            "name": "Speicherung, Kartensätze und Offlinebetrieb",
+            "status": "planned",
+            "tasks": [
+              { "id": "PH-06-01", "title": "IndexedDB-Schema und Repository-Adapter", "status": "planned" },
+              { "id": "PH-06-02", "title": "Lokale deutsche und englische Kartensätze", "status": "planned" },
+              { "id": "PH-06-03", "title": "Import und Aktualisierung lokaler Karten", "status": "planned" },
+              { "id": "PH-06-04", "title": "Manifest und Service Worker", "status": "planned" }
+            ]
+          },
+          {
+            "id": "PH-07",
+            "name": "KI-Kartengenerierung",
+            "status": "planned",
+            "tasks": [
+              { "id": "PH-07-01", "title": "Generierungsport und neutrales Datenmodell", "status": "planned" },
+              { "id": "PH-07-02", "title": "Validierungs-, Normalisierungs- und Duplikatpipeline", "status": "planned" },
+              { "id": "PH-07-03", "title": "Lokaler Generatoradapter", "status": "planned" },
+              { "id": "PH-07-04", "title": "Ollama-Adapter", "status": "planned" },
+              { "id": "PH-07-05", "title": "Generierungsoberfläche und lokale Speicherung", "status": "planned" }
+            ]
+          },
+          {
+            "id": "PH-08",
+            "name": "Veröffentlichung, E2E-Tests und Qualitätssicherung",
+            "status": "planned",
+            "tasks": [
+              { "id": "PH-08-01", "title": "Kritische E2E-Spielabläufe", "status": "planned" },
+              { "id": "PH-08-02", "title": "Offline- und PWA-E2E", "status": "planned" },
+              { "id": "PH-08-03", "title": "GitHub-Pages-Build und Deployment", "status": "planned" },
+              { "id": "PH-08-04", "title": "Qualitäts- und Barrierefreiheitsabnahme", "status": "planned" }
+            ]
+          },
+          {
+            "id": "PH-09",
+            "name": "Spätere Erweiterungen: Multiplayer und weitere Spiele",
+            "status": "planned",
+            "tasks": [
+              { "id": "PH-09-01", "title": "Multiplayer-Discovery und ADR", "status": "planned" },
+              { "id": "PH-09-02", "title": "Gemeinsamer Spielmodulvertrag", "status": "planned" },
+              { "id": "PH-09-03", "title": "Scharade", "status": "planned" },
+              { "id": "PH-09-04", "title": "Wer bin ich und Quiz", "status": "planned" }
+            ]
+          }
+        ],
+        "recentChanges": [
+          { "date": "2026-11-10", "summary": "Projekt vollständig von PartyHub in GameHub umbenannt und Produktumfang für Party-, Quiz-, Karten- und weitere Gesellschaftsspiele geöffnet." },
+          { "date": "2026-11-09", "summary": "GitHub-Actions-Qualitätsworkflow erstellt und lokal vollständig geprüft; erster gehosteter Lauf wartet auf GitHub-Remote." },
+          { "date": "2026-11-09", "summary": "PH-01-05 abgeschlossen: Playwright mit Desktop-/Mobilprofilen, lokalem Webserver und Screenshot-/Video-/Trace-Artefakten eingerichtet." },
+          { "date": "2026-11-09", "summary": "PH-01-04 abgeschlossen: V8-Coverage, Text/JSON/HTML/LCOV-Berichte und bereichsspezifische Line-/Branch-Grenzen eingerichtet." },
+          { "date": "2026-11-09", "summary": "Dashboard speichert Scrollposition und geöffnete beziehungsweise geschlossene Phasen dauerhaft in localStorage und stellt sie beim erneuten Öffnen wieder her." },
+          { "date": "2026-11-09", "summary": "PH-01-03 abgeschlossen: Vitest, jsdom, Testing Library, DOM-Setup sowie Business- und Komponenten-Beispieltests eingerichtet." },
+          { "date": "2026-11-09", "summary": "Dashboard trennt aktuelle 20-Sekunden-Prüfzeit als Stand vom tatsächlichen Datenstand." },
+          { "date": "2026-11-09", "summary": "PH-01-02 abgeschlossen: ESLint mit TypeScript-/React-Regeln, Prettier, Skripte und positive sowie negative Prüfungen eingerichtet." },
+          { "date": "2026-11-09", "summary": "Projekt nach C:\\Users\\Kosta\\source\\repos\\GameHub verschoben und Git-Repository mit Hauptbranch main initialisiert." },
+          { "date": "2026-11-09", "summary": "PH-01-01 abgeschlossen: React-TypeScript-Vite-Grundprojekt, strikte TypeScript-Konfiguration, Schichtenstruktur, Architekturprüfung und neutraler Startbildschirm erstellt." },
+          { "date": "2026-11-09", "summary": "PH-01-01 gestartet, pnpm 11.25.0 als Paketmanager erkannt und Vite-Grundstruktur angelegt." },
+          { "date": "2026-11-09", "summary": "Dashboard aktualisiert sich im file://-Modus alle 20 Sekunden per Reload und erhält den UI-Zustand über Session Storage." },
+          { "date": "2026-11-09", "summary": "Dashboard-Aktualisierung bewahrt Scrollposition, aufgeklappte Phasen und Tastaturfokus; unveränderte Daten lösen keinen Neuaufbau aus." },
+          { "date": "2026-11-09", "summary": "Dashboard zeigt beim direkten Öffnen per file:// einen eingebetteten Statusstand statt eines leeren Fehlerzustands." },
+          { "date": "2026-11-09", "summary": "Projektvorbereitung, Plan, Status, Dashboard, Arbeitsregeln und Architekturentscheidungen erstellt." },
+          { "date": "2026-11-09", "summary": "Umgebung geprüft und fehlendes npm sowie fehlendes Git-Repository dokumentiert." }
+        ],
+        "issues": [
+          {
+            "id": "ISSUE-001",
+            "severity": "blocking_next_task",
+            "status": "resolved",
+            "summary": "npm ist im aktuellen PATH nicht verfügbar.",
+            "impact": "Mit pnpm 11.25.0 steht ein kompatibler Paketmanager zur Verfügung."
+          },
+          {
+            "id": "ISSUE-002",
+            "severity": "info",
+            "status": "resolved",
+            "summary": "Der Workspace ist noch kein Git-Repository.",
+            "impact": "Lokales Git-Repository ist initialisiert. Eine Remote-Verknüpfung wird in der Veröffentlichungsphase ergänzt."
+          },
+          {
+            "id": "ISSUE-003",
+            "severity": "warning",
+            "status": "open",
+            "summary": "Auf Laufwerk C sind nur etwa 0,43 GB frei.",
+            "impact": "Die Installation des gebündelten Playwright-Chromium-Browsers scheiterte an ENOSPC. E2E-Tests verwenden erfolgreich das lokal installierte Chrome."
+          },
+          {
+            "id": "ISSUE-004",
+            "severity": "blocking_current_task",
+            "status": "open",
+            "summary": "Für GameHub ist kein GitHub-Remote konfiguriert und die GitHub-CLI ist nicht installiert.",
+            "impact": "Der erste echte GitHub-Actions-Lauf für PH-01-06 kann noch nicht ausgeführt werden."
+          }
+        ],
+        "nextRecommendedTasks": [
+          {
+            "id": "PH-01-06",
+            "reason": "GitHub-Remote verbinden, initialen Stand pushen und den ersten gehosteten Qualitätsworkflow erfolgreich ausführen.",
+            "prerequisite": "GitHub-Repository-URL und Freigabe für Commit und Push."
+          }
+        ]
+      };
+      const REFRESH_INTERVAL_MS = 20_000;
+      const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
+      const UI_STATE_KEY = `gamehub-dashboard-ui:${location.pathname}`;
+      let renderedDataFingerprint = null;
+      let storedUiState = readStoredUiState();
+      let persistUiStateTimer = null;
+
+      const escapeHtml = (value) => String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+      const flattenTasks = (data) => data.phases.flatMap((phase) => phase.tasks);
+
+      function readStoredUiState() {
+        try {
+          const value = localStorage.getItem(UI_STATE_KEY);
+          return value ? JSON.parse(value) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function persistUiState() {
+        const state = captureUiState();
+        try {
+          localStorage.setItem(UI_STATE_KEY, JSON.stringify({
+            scrollX: state.scrollX,
+            scrollY: state.scrollY,
+            openPhaseIds: state.openPhaseIds === null ? null : [...state.openPhaseIds],
+            focusedKey: state.focusedKey
+          }));
+        } catch {
+          // Der Status bleibt auch ohne verfügbaren Session-Speicher nutzbar.
+        }
+      }
+
+      function scheduleUiStatePersistence() {
+        window.clearTimeout(persistUiStateTimer);
+        persistUiStateTimer = window.setTimeout(persistUiState, 100);
+      }
+
+      function calculateProgress(tasks) {
+        const completed = tasks.filter((task) => task.status === "done").length;
+        return { completed, total: tasks.length, percent: tasks.length ? (completed / tasks.length) * 100 : 0 };
+      }
+
+      function formatDate(value) {
+        if (!value) return "Noch nie";
+        return new Intl.DateTimeFormat("de-DE", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+      }
+
+      function markRefreshTime() {
+        const now = new Date();
+        document.querySelector("#refresh-time").textContent = formatDate(now);
+        document.querySelector("#last-refresh").textContent = `Zuletzt geprüft: ${new Intl.DateTimeFormat("de-DE", { timeStyle: "medium" }).format(now)}`;
+      }
+
+      function captureUiState() {
+        const phaseControls = [...document.querySelectorAll("#phases details[data-phase-id]")];
+        const focusedKey = document.activeElement?.dataset?.uiKey ?? null;
+        const restoredPhaseIds = storedUiState?.openPhaseIds;
+        return {
+          scrollX: phaseControls.length ? window.scrollX : (storedUiState?.scrollX ?? window.scrollX),
+          scrollY: phaseControls.length ? window.scrollY : (storedUiState?.scrollY ?? window.scrollY),
+          openPhaseIds: phaseControls.length
+            ? new Set(phaseControls.filter((control) => control.open).map((control) => control.dataset.phaseId))
+            : (Array.isArray(restoredPhaseIds) ? new Set(restoredPhaseIds) : null),
+          focusedKey: focusedKey ?? storedUiState?.focusedKey ?? null
+        };
+      }
+
+      function restoreUiState(state) {
+        window.requestAnimationFrame(() => {
+          if (state.focusedKey) {
+            const focusedElement = [...document.querySelectorAll("[data-ui-key]")]
+              .find((element) => element.dataset.uiKey === state.focusedKey);
+            focusedElement?.focus({ preventScroll: true });
+          }
+          window.scrollTo(state.scrollX, state.scrollY);
+          storedUiState = null;
+        });
+      }
+
+      function renderPhases(phases, openPhaseIds) {
+        document.querySelector("#phases").innerHTML = phases.map((phase, index) => {
+          const done = phase.tasks.filter((task) => task.status === "done").length;
+          const isOpen = openPhaseIds === null ? index === 0 : openPhaseIds.has(phase.id);
+          const tasks = phase.tasks.map((task) => `
+            <li class="task">
+              <span class="task-id">${escapeHtml(task.id)}</span>
+              <span class="task-title">${escapeHtml(task.title)}</span>
+              <span class="badge ${escapeHtml(task.status)}">${escapeHtml(labels[task.status] ?? task.status)}</span>
+            </li>`).join("");
+          return `
+            <details data-phase-id="${escapeHtml(phase.id)}" ${isOpen ? "open" : ""}>
+              <summary data-ui-key="phase-${escapeHtml(phase.id)}">
+                <span class="phase-id">${escapeHtml(phase.id)}</span>
+                <h3>${escapeHtml(phase.name)}</h3>
+                <span class="phase-meta">${done} / ${phase.tasks.length}</span>
+              </summary>
+              <ul class="tasks">${tasks}</ul>
+            </details>`;
+        }).join("");
+      }
+
+      function qualityCard(label, status, detail = "") {
+        return `<div class="status-item"><small>${escapeHtml(label)}</small><strong>${escapeHtml(status)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</div>`;
+      }
+
+      function renderQuality(quality) {
+        const coverage = quality.coverage;
+        const coverageText = coverage.status === "not_configured" ? "Noch nicht konfiguriert" : `${coverage.overallLines ?? "—"} % Lines / ${coverage.overallBranches ?? "—"} % Branches`;
+        document.querySelector("#quality").innerHTML = [
+          qualityCard("Typecheck", quality.typecheck?.status ?? "not_configured", quality.typecheck?.details ?? "Noch nicht ausgeführt"),
+          qualityCard("Architekturgrenzen", quality.architectureCheck?.status ?? "not_configured", quality.architectureCheck?.details ?? "Noch nicht ausgeführt"),
+          qualityCard("Lint", quality.lint?.status ?? "not_configured", quality.lint?.details ?? "Noch nicht ausgeführt"),
+          qualityCard("Formatierung", quality.format?.status ?? "not_configured", quality.format?.details ?? "Noch nicht ausgeführt"),
+          qualityCard("GitHub Actions", quality.githubActions?.status ?? "not_configured", quality.githubActions?.details ?? "Noch nicht eingerichtet"),
+          qualityCard("Umbenennung", quality.renameValidation?.status ?? "not_configured", quality.renameValidation?.details ?? "Noch nicht geprüft"),
+          qualityCard("Entwicklungsserver", quality.devServerSmoke?.status ?? "not_configured", quality.devServerSmoke?.details ?? "Noch nicht ausgeführt"),
+          qualityCard("Build", quality.build.status, quality.build.details),
+          qualityCard("Unit-Tests", quality.unitTests.status, `${quality.unitTests.passed} bestanden / ${quality.unitTests.failed} fehlgeschlagen`),
+          qualityCard("Integrationstests", quality.integrationTests.status, `${quality.integrationTests.passed} bestanden / ${quality.integrationTests.failed} fehlgeschlagen`),
+          qualityCard("E2E-Tests", quality.e2eTests.status, `${quality.e2eTests.passed} bestanden / ${quality.e2eTests.failed} fehlgeschlagen`),
+          qualityCard("Dokumentationsprüfungen", quality.documentationChecks.status, `${quality.documentationChecks.passed} bestanden / ${quality.documentationChecks.failed} fehlgeschlagen`),
+          qualityCard("Coverage", coverageText, coverage.details ?? "Line- und Branch-Coverage")
+        ].join("");
+      }
+
+      function renderList(selector, items, template, emptyText) {
+        document.querySelector(selector).innerHTML = items.length ? items.map(template).join("") : `<li class="empty">${escapeHtml(emptyText)}</li>`;
+      }
+
+      function render(data) {
+        const dataFingerprint = JSON.stringify(data);
+        if (dataFingerprint === renderedDataFingerprint) {
+          markRefreshTime();
+          return;
+        }
+
+        const uiState = captureUiState();
+        const tasks = flattenTasks(data);
+        const progress = calculateProgress(tasks);
+        const rounded = Math.round(progress.percent * 100) / 100;
+
+        document.querySelector("#progress-number").innerHTML = `${rounded.toLocaleString("de-DE", { maximumFractionDigits: 2 })}<span>%</span>`;
+        document.querySelector("#progress-fill").style.width = `${progress.percent}%`;
+        const progressbar = document.querySelector("[role='progressbar']");
+        progressbar.setAttribute("aria-valuenow", rounded);
+        document.querySelector("#progress-tasks").textContent = `${progress.completed} von ${progress.total} Aufgaben erledigt`;
+        document.querySelector("#stage").textContent = data.project.stage.replaceAll("_", " ");
+        document.querySelector("#phase-count").textContent = data.phases.length;
+        document.querySelector("#active-count").textContent = tasks.filter((task) => task.status === "in_progress").length;
+        document.querySelector("#blocked-count").textContent = tasks.filter((task) => task.status === "blocked").length;
+        document.querySelector("#updated-at").textContent = formatDate(data.project.updatedAt);
+
+        renderPhases(data.phases, uiState.openPhaseIds);
+        renderQuality(data.quality);
+        renderList("#issues", data.issues.filter((issue) => issue.status === "open"), (issue) => `<li><strong>${escapeHtml(issue.id)}</strong><br>${escapeHtml(issue.summary)}<br><small>${escapeHtml(issue.impact)}</small></li>`, "Keine offenen Probleme");
+        renderList("#changes", data.recentChanges, (change) => `<li><strong>${escapeHtml(change.date)}</strong><br>${escapeHtml(change.summary)}</li>`, "Keine Änderungen dokumentiert");
+        renderList("#next-tasks", data.nextRecommendedTasks, (task) => `<li><strong>${escapeHtml(task.id)}</strong><br>${escapeHtml(task.reason)}<br><small>${escapeHtml(task.prerequisite)}</small></li>`, "Keine Aufgabe empfohlen");
+        markRefreshTime();
+        renderedDataFingerprint = dataFingerprint;
+        restoreUiState(uiState);
+      }
+
+      async function refresh() {
+        const error = document.querySelector("#error");
+        try {
+          const response = await fetch(`${STATUS_URL}?t=${Date.now()}`, { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          render(data);
+          error.classList.remove("visible");
+          error.textContent = "";
+        } catch (reason) {
+          render(EMBEDDED_STATUS);
+          if (location.protocol === "file:") {
+            error.textContent = "";
+            error.classList.remove("visible");
+          } else {
+            error.textContent = `Aktueller Status konnte nicht geladen werden. Der eingebettete Statusstand wird angezeigt. Technisches Detail: ${reason.message}`;
+            error.classList.add("visible");
+          }
+        }
+      }
+
+      refresh();
+      document.querySelector("#phases").addEventListener("toggle", scheduleUiStatePersistence, true);
+      window.addEventListener("scroll", scheduleUiStatePersistence, { passive: true });
+      window.addEventListener("pagehide", persistUiState);
+      if (location.protocol === "file:") {
+        window.setInterval(() => {
+          persistUiState();
+          location.reload();
+        }, REFRESH_INTERVAL_MS);
+      } else {
+        window.setInterval(refresh, REFRESH_INTERVAL_MS);
+      }
+    </script>
+  </body>
+</html>

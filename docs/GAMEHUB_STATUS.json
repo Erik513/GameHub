@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "id": "gamehub",
+    "name": "GameHub",
+    "stage": "foundation_in_progress",
+    "updatedAt": "2026-11-10T16:15:32+01:00",
+    "statusValues": ["planned", "in_progress", "blocked", "done"],
+    "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
+    "progress": {
+      "completedTasks": 12,
+      "totalTasks": 46,
+      "percent": 26.09
+    }
+  },
+  "environment": {
+    "checkedAt": "2026-11-09T19:23:00+01:00",
+    "operatingShell": "PowerShell 7.6.9",
+    "node": { "available": true, "version": "24.22.1" },
+    "npm": { "available": false, "version": null },
+    "pnpm": { "available": true, "version": "11.25.0" },
+    "git": { "available": true, "version": "2.55.0.windows.3" },
+    "repositoryInitialized": true,
+    "repositoryPath": "C:\\Users\\Kosta\\source\\repos\\GameHub",
+    "defaultBranch": "main"
+  },
+  "quality": {
+    "typecheck": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "TypeScript 6.0.3 strict project references passed after GameHub rename." },
+    "lint": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "ESLint passed with zero warnings after GameHub rename." },
+    "format": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Prettier check passed for source, scripts, workflows and project configuration." },
+    "githubActions": { "status": "configured_pending_remote", "lastRunAt": null, "details": "Workflow syntax and every referenced command passed locally; first GitHub-hosted run requires a connected remote repository." },
+    "architectureCheck": { "status": "passed", "lastRunAt": "2026-11-09T19:53:45+01:00", "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten." },
+    "devServerSmoke": { "status": "passed", "lastRunAt": "2026-11-09T19:55:43+01:00", "details": "Vite dev server returned HTTP 200 and the GameHub entry document." },
+    "build": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Vite 8.3.6 GameHub production build completed successfully." },
+    "unitTests": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "passed": 3, "failed": 0, "details": "GameHub business contract test and two Testing Library component tests passed in jsdom." },
+    "integrationTests": { "status": "not_configured", "lastRunAt": null, "passed": 0, "failed": 0 },
+    "e2eTests": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "passed": 2, "failed": 0, "details": "GameHub Playwright smoke test passed in desktop-chromium and mobile-chromium profiles using installed Chrome." },
+    "renameValidation": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Package, source, tests, documentation, dashboard, repository path and build use GameHub." },
+    "documentationChecks": { "status": "passed", "lastRunAt": "2026-11-09T19:35:00+01:00", "passed": 5, "failed": 0 },
+    "coverage": {
+      "status": "passed",
+      "lastRunAt": "2026-11-10T16:15:32+01:00",
+      "overallLines": 100,
+      "overallBranches": 100,
+      "overallFunctions": 100,
+      "overallStatements": 100,
+      "criticalGameLogicLines": null,
+      "businessLines": null,
+      "dataInfrastructureLines": null,
+      "uiLines": 100,
+      "branches": {
+        "criticalGameLogic": null,
+        "business": null,
+        "dataInfrastructure": null,
+        "ui": 100
+      },
+      "details": "No executable game, data or infrastructure files exist yet; their configured thresholds activate when matching files are added."
+    }
+  },
+  "phases": [
+    {
+      "id": "PH-00",
+      "name": "Projektvorbereitung",
+      "status": "done",
+      "tasks": [
+        { "id": "PH-00-01", "title": "Umgebung prüfen", "status": "done" },
+        { "id": "PH-00-02", "title": "Dokumentationsstruktur anlegen", "status": "done" },
+        { "id": "PH-00-03", "title": "Projektplan erstellen", "status": "done" },
+        { "id": "PH-00-04", "title": "Statusverwaltung erstellen", "status": "done" },
+        { "id": "PH-00-05", "title": "Entwicklungs-Dashboard erstellen", "status": "done" },
+        { "id": "PH-00-06", "title": "Arbeitsregeln und Entscheidungen dokumentieren", "status": "done" },
+        { "id": "PH-00-07", "title": "Dokumente auf Konsistenz prüfen", "status": "done" }
+      ]
+    },
+    {
+      "id": "PH-01",
+      "name": "Projektfundament, Entwicklungswerkzeuge und Testinfrastruktur",
+      "status": "in_progress",
+      "tasks": [
+        { "id": "PH-01-01", "title": "Vite-Grundprojekt und Schichtenstruktur", "status": "done" },
+        { "id": "PH-01-02", "title": "Linting und Formatierung", "status": "done" },
+        { "id": "PH-01-03", "title": "Vitest und Testing Library", "status": "done" },
+        { "id": "PH-01-04", "title": "Coverage und Bereichsgrenzen", "status": "done" },
+        { "id": "PH-01-05", "title": "Playwright-Grundkonfiguration", "status": "done" },
+        { "id": "PH-01-06", "title": "GitHub-Actions-Qualitätsworkflow", "status": "blocked" }
+      ]
+    },
+    {
+      "id": "PH-02",
+      "name": "Internationalisierung Deutsch/Englisch",
+      "status": "planned",
+      "tasks": [
+        { "id": "PH-02-01", "title": "i18n-Grundkonfiguration", "status": "planned" },
+        { "id": "PH-02-02", "title": "Erkennung, Auswahl und Persistenz der UI-Sprache", "status": "planned" },
+        { "id": "PH-02-03", "title": "Unabhängige Kartensprache", "status": "planned" },
+        { "id": "PH-02-04", "title": "Übersetzungsparität prüfen", "status": "planned" }
+      ]
+    },
+    {
+      "id": "PH-03",
+      "name": "Gemeinsame App-Oberfläche und Designsystem",
+      "status": "planned",
+      "tasks": [
+        { "id": "PH-03-01", "title": "Design-Tokens und Basiskomponenten", "status": "planned" },
+        { "id": "PH-03-02", "title": "App-Shell und Navigation", "status": "planned" },
+        { "id": "PH-03-03", "title": "Einstellungen und Statusmeldungen", "status": "planned" }
+      ]
+    },
+    {
+      "id": "PH-04",
+      "name": "Tabu-Kernlogik",
+      "status": "planned",
+      "tasks": [
+        { "id": "PH-04-01", "title": "Tabu-Domänenmodell und Validierung", "status": "planned" },
+        { "id": "PH-04-02", "title": "Zustandsmaschine und Übergänge", "status": "planned" },
+        { "id": "PH-04-03", "title": "Kartenaktionen und Punkte", "status": "planned" },
+        { "id": "PH-04-04", "title": "Rundenfolge und Siegerermittlung", "status": "planned" },
+        { "id": "PH-04-05", "title": "Kartenfilter und Deckbildung", "status": "planned" }
+      ]
+    },
+    {
+      "id": "PH-05",
+      "name": "Tabu-Benutzeroberfläche",
+      "status": "planned",
+      "tasks": [
+        { "id": "PH-05-01", "title": "Spielkonfiguration", "status": "planned" },
+        { "id": "PH-05-02", "title": "Laufende Runde und Timer", "status": "planned" },
+        { "id": "PH-05-03", "title": "Rundenende", "status": "planned" },
+        { "id": "PH-05-04", "title": "Spielende und Neustart", "status": "planned" }
+      ]
+    },
+    {
+      "id": "PH-06",
+      "name": "Speicherung, Kartensätze und Offlinebetrieb",
+      "status": "planned",
+      "tasks": [
+        { "id": "PH-06-01", "title": "IndexedDB-Schema und Repository-Adapter", "status": "planned" },
+        { "id": "PH-06-02", "title": "Lokale deutsche und englische Kartensätze", "status": "planned" },
+        { "id": "PH-06-03", "title": "Import und Aktualisierung lokaler Karten", "status": "planned" },
+        { "id": "PH-06-04", "title": "Manifest und Service Worker", "status": "planned" }
+      ]
+    },
+    {
+      "id": "PH-07",
+      "name": "KI-Kartengenerierung",
+      "status": "planned",
+      "tasks": [
+        { "id": "PH-07-01", "title": "Generierungsport und neutrales Datenmodell", "status": "planned" },
+        { "id": "PH-07-02", "title": "Validierungs-, Normalisierungs- und Duplikatpipeline", "status": "planned" },
+        { "id": "PH-07-03", "title": "Lokaler Generatoradapter", "status": "planned" },
+        { "id": "PH-07-04", "title": "Ollama-Adapter", "status": "planned" },
+        { "id": "PH-07-05", "title": "Generierungsoberfläche und lokale Speicherung", "status": "planned" }
+      ]
+    },
+    {
+      "id": "PH-08",
+      "name": "Veröffentlichung, E2E-Tests und Qualitätssicherung",
+      "status": "planned",
+      "tasks": [
+        { "id": "PH-08-01", "title": "Kritische E2E-Spielabläufe", "status": "planned" },
+        { "id": "PH-08-02", "title": "Offline- und PWA-E2E", "status": "planned" },
+        { "id": "PH-08-03", "title": "GitHub-Pages-Build und Deployment", "status": "planned" },
+        { "id": "PH-08-04", "title": "Qualitäts- und Barrierefreiheitsabnahme", "status": "planned" }
+      ]
+    },
+    {
+      "id": "PH-09",
+      "name": "Spätere Erweiterungen: Multiplayer und weitere Spiele",
+      "status": "planned",
+      "tasks": [
+        { "id": "PH-09-01", "title": "Multiplayer-Discovery und ADR", "status": "planned" },
+        { "id": "PH-09-02", "title": "Gemeinsamer Spielmodulvertrag", "status": "planned" },
+        { "id": "PH-09-03", "title": "Scharade", "status": "planned" },
+        { "id": "PH-09-04", "title": "Wer bin ich und Quiz", "status": "planned" }
+      ]
+    }
+  ],
+  "recentChanges": [
+    { "date": "2026-11-10", "summary": "Projekt vollständig von PartyHub in GameHub umbenannt und Produktumfang für Party-, Quiz-, Karten- und weitere Gesellschaftsspiele geöffnet." },
+    { "date": "2026-11-09", "summary": "GitHub-Actions-Qualitätsworkflow erstellt und lokal vollständig geprüft; erster gehosteter Lauf wartet auf GitHub-Remote." },
+    { "date": "2026-11-09", "summary": "PH-01-05 abgeschlossen: Playwright mit Desktop-/Mobilprofilen, lokalem Webserver und Screenshot-/Video-/Trace-Artefakten eingerichtet." },
+    { "date": "2026-11-09", "summary": "PH-01-04 abgeschlossen: V8-Coverage, Text/JSON/HTML/LCOV-Berichte und bereichsspezifische Line-/Branch-Grenzen eingerichtet." },
+    { "date": "2026-11-09", "summary": "Dashboard speichert Scrollposition und geöffnete beziehungsweise geschlossene Phasen dauerhaft in localStorage und stellt sie beim erneuten Öffnen wieder her." },
+    { "date": "2026-11-09", "summary": "PH-01-03 abgeschlossen: Vitest, jsdom, Testing Library, DOM-Setup sowie Business- und Komponenten-Beispieltests eingerichtet." },
+    { "date": "2026-11-09", "summary": "Dashboard trennt aktuelle 20-Sekunden-Prüfzeit als Stand vom tatsächlichen Datenstand." },
+    { "date": "2026-11-09", "summary": "PH-01-02 abgeschlossen: ESLint mit TypeScript-/React-Regeln, Prettier, Skripte und positive sowie negative Prüfungen eingerichtet." },
+    { "date": "2026-11-09", "summary": "Projekt nach C:\\Users\\Kosta\\source\\repos\\GameHub verschoben und Git-Repository mit Hauptbranch main initialisiert." },
+    { "date": "2026-11-09", "summary": "PH-01-01 abgeschlossen: React-TypeScript-Vite-Grundprojekt, strikte TypeScript-Konfiguration, Schichtenstruktur, Architekturprüfung und neutraler Startbildschirm erstellt." },
+    { "date": "2026-11-09", "summary": "PH-01-01 gestartet, pnpm 11.25.0 als Paketmanager erkannt und Vite-Grundstruktur angelegt." },
+    { "date": "2026-11-09", "summary": "Dashboard aktualisiert sich im file://-Modus alle 20 Sekunden per Reload und erhält den UI-Zustand über Session Storage." },
+    { "date": "2026-11-09", "summary": "Dashboard-Aktualisierung bewahrt Scrollposition, aufgeklappte Phasen und Tastaturfokus; unveränderte Daten lösen keinen Neuaufbau aus." },
+    { "date": "2026-11-09", "summary": "Dashboard zeigt beim direkten Öffnen per file:// einen eingebetteten Statusstand statt eines leeren Fehlerzustands." },
+    { "date": "2026-11-09", "summary": "Projektvorbereitung, Plan, Status, Dashboard, Arbeitsregeln und Architekturentscheidungen erstellt." },
+    { "date": "2026-11-09", "summary": "Umgebung geprüft und fehlendes npm sowie fehlendes Git-Repository dokumentiert." }
+  ],
+  "issues": [
+    {
+      "id": "ISSUE-001",
+      "severity": "blocking_next_task",
+      "status": "resolved",
+      "summary": "npm ist im aktuellen PATH nicht verfügbar.",
+      "impact": "Mit pnpm 11.25.0 steht ein kompatibler Paketmanager zur Verfügung."
+    },
+    {
+      "id": "ISSUE-002",
+      "severity": "info",
+      "status": "resolved",
+      "summary": "Der Workspace ist noch kein Git-Repository.",
+      "impact": "Lokales Git-Repository ist initialisiert. Eine Remote-Verknüpfung wird in der Veröffentlichungsphase ergänzt."
+    },
+    {
+      "id": "ISSUE-003",
+      "severity": "warning",
+      "status": "open",
+      "summary": "Auf Laufwerk C sind nur etwa 0,43 GB frei.",
+      "impact": "Die Installation des gebündelten Playwright-Chromium-Browsers scheiterte an ENOSPC. E2E-Tests verwenden erfolgreich das lokal installierte Chrome."
+    },
+    {
+      "id": "ISSUE-004",
+      "severity": "blocking_current_task",
+      "status": "open",
+      "summary": "Für GameHub ist kein GitHub-Remote konfiguriert und die GitHub-CLI ist nicht installiert.",
+      "impact": "Der erste echte GitHub-Actions-Lauf für PH-01-06 kann noch nicht ausgeführt werden."
+    }
+  ],
+  "nextRecommendedTasks": [
+    {
+      "id": "PH-01-06",
+      "reason": "GitHub-Remote verbinden, initialen Stand pushen und den ersten gehosteten Qualitätsworkflow erfolgreich ausführen.",
+      "prerequisite": "GitHub-Repository-URL und Freigabe für Commit und Push."
+    }
+  ]
+}
