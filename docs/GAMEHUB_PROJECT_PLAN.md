@@ -279,7 +279,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Zustände `setup`, `roundRunning`, `roundEnded`, `gameEnded` und zulässige Ereignisse implementieren.
 - **Akzeptanzkriterien:** Nur gültige Übergänge sind möglich. Aktives Team, Runde und Karte bleiben konsistent.
 - **Tests:** Übergangsmatrix, ungültige Ereignisse und vollständige Mehrteam-Partie.
-- **Status:** planned
+- **Status:** done
 
 #### PH-04-03 – Kartenaktionen und Punkte
 

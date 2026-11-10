@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-04-02 – Zustandsmaschine und Übergänge
+
+- Tabu-Zustandsmaschine für Vorbereitung, laufende Runde, Rundenende und Spielende ergänzt.
+- Ungültige Übergänge, Karten in der falschen Sprache und verspätete Rundenende-Ereignisse werden abgewiesen.
+- Vollständige Partie mit drei Teams und zwei Runden geprüft; insgesamt 86 Tests bestanden.
+
 ### PH-04-01 – Tabu-Domänenmodell und Validierung
 
 - Unabhängige fachliche Typen für Teams, Kategorien, Schwierigkeit, Karten und Spielkonfiguration ergänzt.
