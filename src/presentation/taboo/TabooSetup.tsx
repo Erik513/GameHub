@@ -29,8 +29,21 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
     startingScore: number;
   }>();
   const [deckEmpty, setDeckEmpty] = useState(false);
+  const [formVersion, setFormVersion] = useState(0);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
+  const finished = round?.state.status === "gameEnded" ? round.state : undefined;
   const nextTurn = ended ? getNextTabooTurn(ended) : null;
+
+  function restart(keepConfiguration: boolean) {
+    setRound(undefined);
+    setDeckEmpty(false);
+    setIssues([]);
+    if (!keepConfiguration) {
+      setSession(undefined);
+      setTeamCount(2);
+      setFormVersion((version) => version + 1);
+    }
+  }
 
   const dispatch = useCallback((event: TabooEvent) => {
     setRound((current) => {
@@ -108,6 +121,32 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
 
   return (
     <div className="taboo-setup">
+      {finished && (
+        <section className="taboo-round" aria-label={t("tabooResult.title")}>
+          <StatusMessage title={t("tabooResult.title")} tone="success">
+            {t(finished.winnerIds.length === 1 ? "tabooResult.winner" : "tabooResult.tie", {
+              teams: finished.configuration.teams
+                .filter((team) => finished.winnerIds.includes(team.id))
+                .map((team) => team.name)
+                .join(", "),
+            })}
+          </StatusMessage>
+          <h2>{t("tabooRound.standings")}</h2>
+          <ul>
+            {finished.configuration.teams.map((team, index) => (
+              <li key={team.id}>
+                {t("tabooRound.teamTotal", { team: team.name, score: finished.scores[index] ?? 0 })}
+              </li>
+            ))}
+          </ul>
+          <div className="taboo-setup__actions">
+            <Button onClick={() => restart(true)}>{t("tabooResult.sameSetup")}</Button>
+            <Button variant="secondary" onClick={() => restart(false)}>
+              {t("tabooResult.newSetup")}
+            </Button>
+          </div>
+        </section>
+      )}
       {round?.state.status === "roundRunning" && (
         <TabooRound deadline={round.deadline} dispatch={dispatch} state={round.state} />
       )}
@@ -145,16 +184,26 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
               </Button>
             </>
           ) : (
-            <p>{t("tabooRound.allRoundsPlayed")}</p>
+            <>
+              <p>{t("tabooRound.allRoundsPlayed")}</p>
+              <Button onClick={() => dispatch({ type: "finishGame" })}>
+                {t("tabooResult.show")}
+              </Button>
+            </>
           )}
           {deckEmpty && (
-            <StatusMessage title={t("tabooRound.empty")} tone="error">
-              {t("tabooRound.exhausted")}
-            </StatusMessage>
+            <>
+              <StatusMessage title={t("tabooRound.empty")} tone="error">
+                {t("tabooRound.exhausted")}
+              </StatusMessage>
+              <Button variant="secondary" onClick={() => restart(false)}>
+                {t("tabooResult.newSetup")}
+              </Button>
+            </>
           )}
         </section>
       )}
-      <div hidden={Boolean(round)}>
+      <div hidden={Boolean(round)} key={formVersion}>
         {deckEmpty && (
           <StatusMessage title={t("tabooRound.empty")} tone="error">
             {t("tabooRound.emptyHint")}

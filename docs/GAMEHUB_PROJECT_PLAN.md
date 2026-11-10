@@ -337,7 +337,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Endstand, Einzel-/Gleichstandsieger, Neustart mit gleicher oder neuer Konfiguration.
 - **Akzeptanzkriterien:** Sieger sind korrekt lokalisiert. Neustart übernimmt nur ausdrücklich vorgesehene Einstellungen und setzt Partie-Daten zurück.
 - **Tests:** Sieg, Gleichstand und beide Neustartwege.
-- **Status:** planned
+- **Status:** done
 
 ### Phase 6: Speicherung, Kartensätze und Offlinebetrieb
 

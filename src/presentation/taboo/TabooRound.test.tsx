@@ -4,6 +4,62 @@ import { expect, it, vi } from "vitest";
 import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
 
+it.each([
+  { correct: true, result: "Winner: Owls" },
+  { correct: false, result: "Shared win: Owls, Foxes" },
+])("shows $result and resets the game on restart", async ({ correct, result }) => {
+  const i18n = await createGameHubI18n("en");
+  vi.useFakeTimers();
+  try {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup cardLanguage="en" />
+      </I18nextProvider>,
+    );
+    fireEvent.change(screen.getByRole("textbox", { name: "Team 1" }), {
+      target: { value: "Owls" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Team 2" }), {
+      target: { value: "Foxes" },
+    });
+    fireEvent.change(screen.getByRole("spinbutton", { name: "Rounds per team" }), {
+      target: { value: "1" },
+    });
+    fireEvent.change(screen.getByRole("spinbutton", { name: "Round duration (seconds)" }), {
+      target: { value: "1" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Prepare game" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    if (correct) fireEvent.click(screen.getByRole("button", { name: "Correct" }));
+    void act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    void act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Show final results" }));
+    expect(screen.getByRole("status")).toHaveTextContent(result);
+    expect(screen.getByText(correct ? "Owls: 1" : "Owls: 0")).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: correct ? "Play again with the same setup" : "Set up a new game",
+      }),
+    );
+    if (correct) {
+      fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+      expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Score: 0");
+      expect(screen.getByRole("timer")).toHaveTextContent("1 seconds left");
+    } else {
+      expect(screen.getByRole("textbox", { name: "Team 1" })).toHaveValue("");
+      expect(screen.getByRole("spinbutton", { name: "Rounds per team" })).toHaveValue(3);
+      expect(screen.queryByRole("button", { name: "Start round" })).not.toBeInTheDocument();
+    }
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
 it("plays cards without resetting the countdown and ends the round on time", async () => {
   const i18n = await createGameHubI18n("en");
   vi.useFakeTimers();

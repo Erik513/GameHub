@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-05-04 – Spielende und Neustart
+
+- Endstand und Sieger nach der letzten Runde angezeigt, einschließlich gemeinsamer Sieger bei Gleichstand.
+- Neue Partie mit gleicher oder neuer Konfiguration ermöglicht. Punkte und gespielte Karten werden zurückgesetzt.
+- 101 Tests bestanden, darunter Einzelsieg, Gleichstand und beide Neustartwege.
+
 ### PH-05-03 – Rundenende
 
 - Rundenpunkte, Gesamtpunktestand aller Teams und nächstes Team angezeigt.

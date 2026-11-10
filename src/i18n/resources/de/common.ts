@@ -1,4 +1,12 @@
 export const common = {
+  tabooResult: {
+    title: "Spiel beendet",
+    winner: "Gewonnen hat {{teams}}.",
+    tie: "Gemeinsam gewonnen haben {{teams}}.",
+    sameSetup: "Mit gleicher Konfiguration neu spielen",
+    newSetup: "Neue Partie konfigurieren",
+    show: "Endergebnis anzeigen",
+  },
   tabooRound: {
     earned: "Rundenpunkte: {{score}}",
     standings: "Gesamtpunktestand",
