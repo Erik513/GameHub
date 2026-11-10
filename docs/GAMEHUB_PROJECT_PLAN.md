@@ -271,7 +271,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Typen/Entitäten für Team, Karte, Kategorie, Schwierigkeit und Spielkonfiguration sowie Validatoren.
 - **Akzeptanzkriterien:** Mindestens zwei Teams, positive Dauer/Runden und exakt drei unterschiedliche verbotene Wörter werden erzwungen.
 - **Tests:** Grenzwerte, ungültige Eingaben, Normalisierung und sprachbezogene Kartenfälle.
-- **Status:** planned
+- **Status:** done
 
 #### PH-04-02 – Zustandsmaschine und Übergänge
 

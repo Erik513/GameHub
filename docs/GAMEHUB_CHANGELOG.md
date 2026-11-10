@@ -4,6 +4,20 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-04-01 – Tabu-Domänenmodell und Validierung
+
+- Unabhängige fachliche Typen für Teams, Kategorien, Schwierigkeit, Karten und Spielkonfiguration ergänzt.
+- Mindestens zwei eindeutig benannte Teams, positive ganzzahlige Rundendauer und Rundenzahl sowie deutsche oder englische Sprachmetadaten geprüft.
+- Exakt drei unterschiedliche, nichtleere verbotene Wörter erzwungen; der gesuchte Begriff darf nicht darunter sein.
+- Unicode und Leerzeichen normalisiert; strukturierte Fehlercodes für spätere lokalisierte Anzeigen bereitgestellt.
+- 83 Tests bestanden, davon 26 neue Domänenfälle; neue Spiellogik mit 100 % Zeilen- und Verzweigungsabdeckung.
+
+### PH-03-03 – Einstellungen und Statusmeldungen
+
+- Lokalisierten Einstellungsdialog für getrennte Oberflächen- und Kartensprachen ergänzt.
+- Zugängliche Lade-, Fehler-, Erfolgs- und Leerzustände erstellt.
+- 57 Tests und zehn Desktop-/Mobil-Browserprüfungen erfolgreich ausgeführt.
+
 ### PH-03-02 – App-Shell, Spielkatalog und Navigation
 
 - Responsive App-Shell mit GameHub-Marke, Hauptnavigation und dauerhaft erreichbaren Spracheinstellungen erstellt.
