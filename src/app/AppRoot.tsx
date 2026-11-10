@@ -5,8 +5,10 @@ import type { TabooCardRepository } from "../business/games/taboo/cardRepository
 import { gameHubI18n, type SupportedLanguage } from "../i18n";
 import type { LanguagePreferenceStore } from "../i18n/languagePreference";
 import { App } from "../presentation/App";
+import type { TabooGenerators } from "../presentation/taboo/TabooGeneration";
 
 interface AppRootProps {
+  tabooGenerators?: TabooGenerators | undefined;
   tabooRepository?: TabooCardRepository | undefined;
   tabooCards?: readonly TabooCard[];
   cardLanguagePreferenceStore?: LanguagePreferenceStore;
@@ -15,6 +17,7 @@ interface AppRootProps {
 }
 
 export function AppRoot({
+  tabooGenerators,
   tabooRepository,
   tabooCards = [],
   cardLanguagePreferenceStore,
@@ -31,6 +34,7 @@ export function AppRoot({
   return (
     <I18nextProvider i18n={gameHubI18n}>
       <App
+        tabooGenerators={tabooGenerators}
         tabooRepository={tabooRepository}
         tabooCards={tabooCards}
         cardLanguage={cardLanguage}

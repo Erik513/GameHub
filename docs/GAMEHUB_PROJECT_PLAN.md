@@ -415,7 +415,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Providerwahl, Parameter, Vorschau, Validierungsfehler, Auswahl und Speicherung.
 - **Akzeptanzkriterien:** Speicherung erfolgt erst nach Bestätigung. UI ist deutsch/englisch und ohne Provider verständlich deaktiviert.
 - **Tests:** Komponenten- und Integrationsabläufe in beiden Sprachen.
-- **Status:** planned
+- **Status:** done
 
 ### Phase 8: Veröffentlichung, E2E-Tests und Qualitätssicherung
 

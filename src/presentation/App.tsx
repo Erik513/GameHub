@@ -6,6 +6,7 @@ import { AppShell } from "./AppShell";
 import { GamePreviewPage } from "./GamePreviewPage";
 import { GameSelectionPage } from "./GameSelectionPage";
 import { TabooLibrary } from "./taboo/TabooLibrary";
+import type { TabooGenerators } from "./taboo/TabooGeneration";
 import type { TabooCardRepository } from "../business/games/taboo/cardRepository";
 import type { TabooCard } from "../business/games/taboo/model";
 
@@ -16,15 +17,22 @@ const gameScreens: Partial<
       language: SupportedLanguage,
       cards: readonly TabooCard[],
       repository?: TabooCardRepository,
+      generators?: TabooGenerators,
     ) => React.ReactNode
   >
 > = {
-  taboo: (language, cards, repository) => (
-    <TabooLibrary cardLanguage={language} cards={cards} repository={repository} />
+  taboo: (language, cards, repository, generators) => (
+    <TabooLibrary
+      cardLanguage={language}
+      cards={cards}
+      repository={repository}
+      generators={generators}
+    />
   ),
 };
 
 interface AppProps {
+  tabooGenerators?: TabooGenerators | undefined;
   tabooRepository?: TabooCardRepository | undefined;
   tabooCards?: readonly TabooCard[];
   cardLanguage: SupportedLanguage;
@@ -38,6 +46,7 @@ export function App({
   onLanguageChange,
   tabooCards = [],
   tabooRepository,
+  tabooGenerators,
 }: AppProps) {
   const [currentRoute, setCurrentRoute] = useState(() => parseHashRoute(window.location.hash));
   const selectedGame = findGameByRoute(currentRoute);
@@ -71,7 +80,12 @@ export function App({
     >
       {selectedGame && selectedGame.availability !== "planned" ? (
         <GamePreviewPage game={selectedGame} onBack={() => navigate(homeRoute)}>
-          {gameScreens[selectedGame.translationKey]?.(cardLanguage, tabooCards, tabooRepository)}
+          {gameScreens[selectedGame.translationKey]?.(
+            cardLanguage,
+            tabooCards,
+            tabooRepository,
+            tabooGenerators,
+          )}
         </GamePreviewPage>
       ) : (
         <GameSelectionPage games={gameCatalog} onSelect={handleGameSelection} />

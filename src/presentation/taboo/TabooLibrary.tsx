@@ -10,8 +10,10 @@ import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { TabooSetup } from "./TabooSetup";
+import { TabooGeneration, type TabooGenerators } from "./TabooGeneration";
 
 interface TabooLibraryProps {
+  generators?: TabooGenerators | undefined;
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
   repository: TabooCardRepository | undefined;
@@ -19,7 +21,7 @@ interface TabooLibraryProps {
 
 type Feedback = { type: "invalid" | "storage" } | { type: "imported"; count: number };
 
-export function TabooLibrary({ cardLanguage, cards, repository }: TabooLibraryProps) {
+export function TabooLibrary({ cardLanguage, cards, repository, generators }: TabooLibraryProps) {
   const { t } = useTranslation();
   const [ownCards, setOwnCards] = useState<readonly TabooCard[]>();
   const [feedback, setFeedback] = useState<Feedback>();
@@ -113,6 +115,15 @@ export function TabooLibrary({ cardLanguage, cards, repository }: TabooLibraryPr
             </StatusMessage>
           )}
         </details>
+      )}
+      {repository && (
+        <TabooGeneration
+          cardLanguage={cardLanguage}
+          standardCards={cards}
+          repository={repository}
+          generators={generators}
+          onSaved={(additions) => setOwnCards((current) => [...(current ?? []), ...additions])}
+        />
       )}
       <TabooSetup cardLanguage={cardLanguage} cards={[...(ownCards ?? []), ...cards]} />
     </>

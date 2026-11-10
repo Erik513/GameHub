@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-07-05 – Tabu-Kartenvorschläge und lokale Speicherung
+
+- Lokalen Kartenvorrat und optionales Ollama-Modell in der Tabu-Ansicht auswählbar gemacht.
+- Gültige Vorschläge und Ablehnungsgründe angezeigt. Nur ausgewählte und bestätigte Karten werden gespeichert.
+- 147 automatisierte Tests und 14 Browserprüfungen bestanden. Lokale Vorschläge sind offline nutzbar.
+
 ### PH-07-04 – Optionaler Ollama-Adapter
 
 - Lokale Ollama-API mit strukturierten JSON-Antworten an den Generierungsvertrag angebunden.

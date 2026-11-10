@@ -3,6 +3,9 @@ import { createRoot } from "react-dom/client";
 import { AppRoot } from "./app/AppRoot";
 import { IndexedDbTabooCardRepository } from "./data/indexedDbTabooCardRepository";
 import { tabooStandardCards } from "./data/tabooStandardCards";
+import { tabooLocalCandidates } from "./data/tabooLocalCandidates";
+import { createLocalTabooCardGenerator } from "./infrastructure/localTabooCardGenerator";
+import { createOllamaTabooCardGenerator } from "./infrastructure/ollamaTabooCardGenerator";
 import { gameHubI18n } from "./i18n";
 import { parseSupportedLanguage, resolveInitialLanguage } from "./i18n/languagePreference";
 import {
@@ -36,6 +39,10 @@ if (import.meta.env.PROD && "serviceWorker" in navigator) {
 createRoot(rootElement).render(
   <StrictMode>
     <AppRoot
+      tabooGenerators={{
+        local: createLocalTabooCardGenerator(tabooLocalCandidates),
+        ollama: (model) => createOllamaTabooCardGenerator({ model }),
+      }}
       tabooRepository={new IndexedDbTabooCardRepository()}
       tabooCards={tabooStandardCards}
       cardLanguagePreferenceStore={cardLanguagePreferenceStore}
