@@ -1,5 +1,11 @@
 export const common = {
   tabooRound: {
+    earned: "Rundenpunkte: {{score}}",
+    standings: "Gesamtpunktestand",
+    teamTotal: "{{team}}: {{score}}",
+    nextTeam: "Nächstes Team: {{team}}",
+    allRoundsPlayed: "Alle vorgesehenen Runden sind gespielt.",
+    exhausted: "Der Beispielsatz enthält keine ungespielten Karten für eine weitere Runde.",
     title: "Laufende Runde",
     team: "Team: {{team}}",
     score: "Punkte: {{score}}",

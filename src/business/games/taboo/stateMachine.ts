@@ -102,10 +102,8 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
   if (state.status !== "setup" && state.status !== "roundEnded") return state;
   let turn: Turn = { round: 1, teamIndex: 0 };
   if (state.status === "roundEnded") {
-    const nextTeam = state.turn.teamIndex + 1;
-    const lastTeam = nextTeam === configuration.teams.length;
-    const complete = lastTeam && state.turn.round === configuration.roundsPerTeam;
-    if (complete) {
+    const nextTurn = getNextTabooTurn(state);
+    if (!nextTurn) {
       if (event.type !== "finishGame") return state;
       const highestScore = scores.reduce((highest, score) => Math.max(highest, score), 0);
       const winnerIds = configuration.teams
@@ -113,9 +111,7 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
         .map((team) => team.id);
       return { ...state, status: "gameEnded", winnerIds };
     }
-    turn = lastTeam
-      ? { round: state.turn.round + 1, teamIndex: 0 }
-      : { round: state.turn.round, teamIndex: nextTeam };
+    turn = nextTurn;
   }
 
   if (event.type !== "startRound") return state;
@@ -143,4 +139,14 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     scores,
     resolvedCardIds,
   };
+}
+
+export function getNextTabooTurn(
+  state: Extract<TabooState, { status: "roundEnded" }>,
+): Turn | null {
+  const { configuration, turn } = state;
+  const nextTeam = turn.teamIndex + 1;
+  if (nextTeam < configuration.teams.length) return { round: turn.round, teamIndex: nextTeam };
+  if (turn.round >= configuration.roundsPerTeam) return null;
+  return { round: turn.round + 1, teamIndex: 0 };
 }

@@ -43,7 +43,22 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     void act(() => {
       vi.advanceTimersByTime(1000);
     });
-    expect(screen.getByRole("status")).toHaveTextContent("Score: 1");
+    expect(screen.getByRole("status")).toHaveTextContent("Round points: 1");
+    expect(screen.getByText("Owls: 1")).toBeVisible();
+    expect(screen.getByText("Foxes: 0")).toBeVisible();
+    expect(screen.getByText("Next team: Foxes")).toBeVisible();
+    expect(screen.queryByRole("timer")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    const nextRound = screen.getByRole("region", { name: "Active round" });
+    expect(nextRound).toHaveTextContent("Team: Foxes");
+    expect(within(nextRound).getByRole("timer")).toHaveTextContent("60 seconds left");
+    expect(within(nextRound).getByRole("heading").textContent).not.toBe(firstTerm);
+    void act(() => {
+      vi.advanceTimersByTime(60000);
+    });
+    expect(screen.getByRole("status")).toHaveTextContent("Round points: 0");
+    expect(screen.getByText("Owls: 1")).toBeVisible();
+    expect(screen.getByText("Next team: Owls")).toBeVisible();
   } finally {
     vi.useRealTimers();
   }

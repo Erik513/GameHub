@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-05-03 – Rundenende
+
+- Rundenpunkte, Gesamtpunktestand aller Teams und nächstes Team angezeigt.
+- Nächste Runde startet per Klick mit neuem Countdown und ungespielten Karten. Ein erschöpfter Beispielsatz wird gemeldet.
+- 99 Tests bestanden, darunter Runden mit und ohne Punkte sowie der Teamwechsel.
+
 ### PH-05-02 – Laufende Runde und Timer
 
 - Tabu-Runde mit Countdown, Team, Punkten, Begriff und drei verbotenen Wörtern ergänzt.

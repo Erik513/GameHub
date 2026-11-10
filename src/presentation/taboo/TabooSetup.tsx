@@ -4,6 +4,7 @@ import { buildDeck, type DeckCriteria } from "../../business/games/taboo/deck";
 import type { ValidationIssue } from "../../business/games/taboo/model";
 import {
   createTabooGame,
+  getNextTabooTurn,
   transitionTaboo,
   type TabooEvent,
   type TabooState,
@@ -22,8 +23,14 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
   const [teamCount, setTeamCount] = useState(2);
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
   const [session, setSession] = useState<{ state: SetupState; filters: DeckCriteria }>();
-  const [round, setRound] = useState<{ state: TabooState; deadline: number }>();
+  const [round, setRound] = useState<{
+    state: TabooState;
+    deadline: number;
+    startingScore: number;
+  }>();
   const [deckEmpty, setDeckEmpty] = useState(false);
+  const ended = round?.state.status === "roundEnded" ? round.state : undefined;
+  const nextTurn = ended ? getNextTabooTurn(ended) : null;
 
   const dispatch = useCallback((event: TabooEvent) => {
     setRound((current) => {
@@ -35,15 +42,23 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
 
   function startRound() {
     if (!session) return;
-    const [card, ...remainingCards] = buildDeck(tabooDemoCards, session.filters, Math.random).cards;
+    const current = round?.state ?? session.state;
+    const [card, ...remainingCards] = buildDeck(
+      tabooDemoCards,
+      { ...session.filters, excludedCardIds: current.resolvedCardIds },
+      Math.random,
+    ).cards;
     if (!card) {
       setDeckEmpty(true);
       return;
     }
-    const state = transitionTaboo(session.state, { type: "startRound", card, remainingCards });
+    const state = transitionTaboo(current, { type: "startRound", card, remainingCards });
+    if (state.status !== "roundRunning" || state === current) return;
+    setDeckEmpty(false);
     setRound({
       state,
       deadline: Date.now() + state.configuration.roundDurationSeconds * 1000,
+      startingScore: state.scores[state.turn.teamIndex] ?? 0,
     });
   }
 
@@ -96,10 +111,48 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
       {round?.state.status === "roundRunning" && (
         <TabooRound deadline={round.deadline} dispatch={dispatch} state={round.state} />
       )}
-      {round?.state.status === "roundEnded" && (
-        <StatusMessage title={t("tabooRound.ended")}>
-          {t("tabooRound.score", { score: round.state.scores[round.state.turn.teamIndex] ?? 0 })}
-        </StatusMessage>
+      {ended && round && (
+        <section className="taboo-round" aria-label={t("tabooRound.ended")}>
+          <StatusMessage title={t("tabooRound.ended")}>
+            <p>
+              {t("tabooRound.team", {
+                team: ended.configuration.teams[ended.turn.teamIndex]?.name ?? "",
+              })}
+            </p>
+            <p>
+              {t("tabooRound.earned", {
+                score: (ended.scores[ended.turn.teamIndex] ?? 0) - round.startingScore,
+              })}
+            </p>
+          </StatusMessage>
+          <h2>{t("tabooRound.standings")}</h2>
+          <ul>
+            {ended.configuration.teams.map((team, index) => (
+              <li key={team.id}>
+                {t("tabooRound.teamTotal", { team: team.name, score: ended.scores[index] ?? 0 })}
+              </li>
+            ))}
+          </ul>
+          {nextTurn ? (
+            <>
+              <p>
+                {t("tabooRound.nextTeam", {
+                  team: ended.configuration.teams[nextTurn.teamIndex]?.name ?? "",
+                })}
+              </p>
+              <Button onClick={startRound} disabled={deckEmpty}>
+                {t("tabooRound.start")}
+              </Button>
+            </>
+          ) : (
+            <p>{t("tabooRound.allRoundsPlayed")}</p>
+          )}
+          {deckEmpty && (
+            <StatusMessage title={t("tabooRound.empty")} tone="error">
+              {t("tabooRound.exhausted")}
+            </StatusMessage>
+          )}
+        </section>
       )}
       <div hidden={Boolean(round)}>
         {deckEmpty && (

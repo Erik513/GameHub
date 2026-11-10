@@ -1,5 +1,11 @@
 export const common = {
   tabooRound: {
+    earned: "Round points: {{score}}",
+    standings: "Total scores",
+    teamTotal: "{{team}}: {{score}}",
+    nextTeam: "Next team: {{team}}",
+    allRoundsPlayed: "All scheduled rounds have been played.",
+    exhausted: "The sample deck has no unused cards for another round.",
     title: "Active round",
     team: "Team: {{team}}",
     score: "Score: {{score}}",

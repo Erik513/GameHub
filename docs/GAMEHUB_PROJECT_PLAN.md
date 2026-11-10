@@ -329,7 +329,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Rundenzusammenfassung, Punktestand und nächstes Team anzeigen.
 - **Akzeptanzkriterien:** Angezeigte Werte entsprechen Business-Zustand. Start der nächsten Runde erfolgt nur durch Nutzeraktion.
 - **Tests:** Mehrere Ergebnisvarianten und Teamwechsel.
-- **Status:** planned
+- **Status:** done
 
 #### PH-05-04 – Spielende und Neustart
 
