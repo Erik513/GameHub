@@ -407,7 +407,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** HTTP-Adapter, Zeitüberschreitung, Abbruch, Antwortmapping und verständliche Verfügbarkeitsfehler.
 - **Akzeptanzkriterien:** App bleibt ohne Ollama vollständig nutzbar. Keine Providerdetails gelangen in Business. Fehler blockieren bestehende Karten nicht.
 - **Tests:** Gemockte Antworten, Timeout, Abbruch, fehlerhaftes JSON und Validierungspipeline.
-- **Status:** planned
+- **Status:** done
 
 #### PH-07-05 – Generierungsoberfläche und lokale Speicherung
 

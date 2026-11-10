@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-07-04 – Optionaler Ollama-Adapter
+
+- Lokale Ollama-API mit strukturierten JSON-Antworten an den Generierungsvertrag angebunden.
+- Fehlerhafte Antworten, fehlende Verbindung, Zeitüberschreitung und Abbruch behandelt.
+- 145 Tests bestanden. Der Adapter wurde mit simulierten HTTP-Antworten geprüft.
+
 ### PH-07-03 – Lokaler Anbieter für Tabu-Karten
 
 - Separaten Vorrat mit 18 deutschen und 18 englischen Kartenkandidaten ergänzt.
