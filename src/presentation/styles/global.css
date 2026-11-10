@@ -1,6 +1,7 @@
 @import "./tokens.css";
 
 :root {
+  color-scheme: dark;
   color: var(--color-ink);
   background: var(--color-canvas);
   font-family: var(--font-sans);
@@ -230,7 +231,7 @@ h1 {
   display: grid;
   place-items: center;
   padding: var(--space-4);
-  background: rgb(30 32 37 / 58%);
+  background: rgb(0 0 0 / 72%);
 }
 
 .dialog {

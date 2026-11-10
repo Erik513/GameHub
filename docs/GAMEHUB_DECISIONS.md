@@ -110,6 +110,6 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 
 - **Status:** accepted
 - **Datum:** 2026-11-10
-- **Entscheidung:** GameHub verwendet eine moderne, redaktionell klare Designsprache mit warmem Off-White, dunkler Tinte, Kobaltblau und sparsamem Korallakzent. Gemeinsame Tokens steuern Farben, Typografie, Abstände, Radien und Fokuszustände. Verläufe, großflächige Glaseffekte und rein dekorative Oberflächen werden vermieden.
+- **Entscheidung:** GameHub verwendet Dark Mode als primäre Designsprache mit tiefem Anthrazit, warmem hellem Text, gedämpftem Kobaltblau und sparsamem Korallakzent. Gemeinsame Tokens steuern Farben, Typografie, Abstände, Radien und Fokuszustände. Verläufe, großflächige Glaseffekte und rein dekorative Oberflächen werden vermieden.
 - **Begründung:** Die Oberfläche soll zeitgemäß und spielerisch wirken, ohne wie ein austauschbares automatisch erzeugtes Landingpage-Design auszusehen.
 - **Konsequenzen:** Neue gemeinsame Komponenten verwenden die zentralen Tokens. Einzelne Spiele dürfen eigene Akzente ergänzen, müssen aber Lesbarkeit, Fokusdarstellung und gemeinsame Grundkomponenten bewahren.

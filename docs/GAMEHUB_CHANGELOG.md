@@ -6,13 +6,14 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ### PH-03-01 – Design-Tokens und Basiskomponenten
 
-- Zurückhaltende GameHub-Designrichtung mit warmem Off-White, dunkler Tinte, Kobaltblau und gezieltem Korallakzent umgesetzt.
+- Zurückhaltende GameHub-Designrichtung mit primärem Dark Mode, tiefem Anthrazit, warmem hellem Text, Kobaltblau und gezieltem Korallakzent umgesetzt.
 - Zentrale Tokens für Farben, Typografie, Abstände, Radien, Schatten, Kontrollgrößen und Inhaltsbreiten angelegt.
 - Wiederverwendbare Komponenten für Buttons, Eingabefelder, Karten und Dialoge erstellt.
 - Tastaturfokus, deaktivierte Zustände, Fehlerbeschreibungen, Dialogfokus und Escape-Schließen zugänglich umgesetzt.
 - Startansicht ohne Verläufe und Glaseffekte auf das neue Designsystem umgestellt.
 - Desktopansicht und 320-Pixel-Mobilansicht im Browser geprüft; kein horizontales Scrollen festgestellt.
 - 43 Tests erfolgreich; Basiskomponenten erreichen 100 % Zeilen- und 96,29 % Verzweigungsabdeckung.
+- Primäre Farb-Tokens nach Nutzerpräferenz vollständig auf Dark Mode umgestellt; Formensprache, Kontraste und Komponentenstruktur beibehalten.
 
 
 ### PH-02-04 – Übersetzungsparität prüfen
