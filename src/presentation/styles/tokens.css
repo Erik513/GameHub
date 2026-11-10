@@ -1,0 +1,36 @@
+:root {
+  --color-canvas: #f3f0e8;
+  --color-surface: #fffdf8;
+  --color-surface-muted: #e9e5dc;
+  --color-ink: #1e2025;
+  --color-ink-muted: #62646b;
+  --color-line: #d4d0c7;
+  --color-accent: #3157d5;
+  --color-accent-hover: #2447bd;
+  --color-accent-contrast: #ffffff;
+  --color-play: #ef674d;
+  --color-danger: #b42318;
+  --color-focus: #3157d5;
+  --font-sans: "Aptos", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(2.75rem, 10vw, 5.5rem);
+  --weight-medium: 600;
+  --weight-bold: 750;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --shadow-card: 0 1rem 2.5rem rgb(30 32 37 / 9%);
+  --control-height: 2.75rem;
+  --content-width: 68rem;
+}

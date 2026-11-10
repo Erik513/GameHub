@@ -245,7 +245,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Farben, Typografie, Abstände, Fokuszustände, Buttons, Eingaben, Karten und Dialoggrundlage.
 - **Akzeptanzkriterien:** Komponenten skalieren von 320 Pixel bis Desktop, unterstützen Tastaturbedienung und ausreichende Kontraste.
 - **Tests:** Komponentenverhalten, Fokus, deaktivierte Zustände und visuelle Smoke-Tests.
-- **Status:** planned
+- **Status:** done
 
 #### PH-03-02 – App-Shell, Spielkatalog und Navigation
 

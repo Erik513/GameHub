@@ -105,3 +105,11 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Entscheidung:** GameHub startet immer mit einer Spielauswahl. Ein zentraler Spielkatalog registriert jedes Spiel über einen minimalen, genreunabhängigen Vertrag für Kennung, Übersetzungsschlüssel, Route und Verfügbarkeitsstatus. App-Shell, Startseite und Navigation beziehen Spiele ausschließlich aus diesem Katalog und enthalten keine fest eingebauten Verweise auf einzelne Spiele.
 - **Begründung:** Weitere Spiele wie Karten-, Quiz- oder Brettspielvarianten sollen ohne Umbau der gemeinsamen Oberfläche ergänzt werden können. Die Erweiterbarkeit muss deshalb vor der ersten Tabu-Oberfläche feststehen.
 - **Konsequenzen:** `PH-03-02` führt Spielauswahl, Katalog und Minimalvertrag ein. Jedes Spiel kapselt seine Business-Logik und UI. `PH-09-02` überprüft und erweitert den Vertrag später nur bei nachgewiesenem Bedarf.
+
+## ADR-014: Zurückhaltende eigenständige Designsprache
+
+- **Status:** accepted
+- **Datum:** 2026-11-10
+- **Entscheidung:** GameHub verwendet eine moderne, redaktionell klare Designsprache mit warmem Off-White, dunkler Tinte, Kobaltblau und sparsamem Korallakzent. Gemeinsame Tokens steuern Farben, Typografie, Abstände, Radien und Fokuszustände. Verläufe, großflächige Glaseffekte und rein dekorative Oberflächen werden vermieden.
+- **Begründung:** Die Oberfläche soll zeitgemäß und spielerisch wirken, ohne wie ein austauschbares automatisch erzeugtes Landingpage-Design auszusehen.
+- **Konsequenzen:** Neue gemeinsame Komponenten verwenden die zentralen Tokens. Einzelne Spiele dürfen eigene Akzente ergänzen, müssen aber Lesbarkeit, Fokusdarstellung und gemeinsame Grundkomponenten bewahren.

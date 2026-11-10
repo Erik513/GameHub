@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
+import { Card } from "./components";
 
 const layerKeys = ["presentation", "business", "data", "infrastructure"] as const;
 
@@ -20,7 +21,7 @@ export function App({ cardLanguage, onCardLanguageChange, onLanguageChange }: Ap
 
   return (
     <main className="app-shell">
-      <section className="foundation-card" aria-labelledby="gamehub-title">
+      <Card className="foundation-card" aria-labelledby="gamehub-title">
         <div className="language-controls">
           <label className="language-control">
             <span>{t("language.uiLabel")}</span>
@@ -55,7 +56,7 @@ export function App({ cardLanguage, onCardLanguageChange, onLanguageChange }: Ap
             <li key={layerKey}>{t(`architecture.layers.${layerKey}`)}</li>
           ))}
         </ul>
-      </section>
+      </Card>
     </main>
   );
 }
