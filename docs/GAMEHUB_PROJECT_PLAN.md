@@ -365,7 +365,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Versioniertes Austauschformat, Validierung, Duplikatbehandlung und Updates mitgelieferter App-Daten.
 - **Akzeptanzkriterien:** Wiederholter Import erzeugt keine Duplikate. Updates mitgelieferter Karten erhalten eigene Inhalte.
 - **Tests:** Erstimport, Wiederholung, Export mit Rückimport und Update mit vorhandenen eigenen Karten.
-- **Status:** planned
+- **Status:** done
 
 #### PH-06-04 – Manifest und Service Worker
 

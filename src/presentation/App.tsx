@@ -5,19 +5,27 @@ import type { SupportedLanguage } from "../i18n";
 import { AppShell } from "./AppShell";
 import { GamePreviewPage } from "./GamePreviewPage";
 import { GameSelectionPage } from "./GameSelectionPage";
-import { TabooSetup } from "./taboo/TabooSetup";
+import { TabooLibrary } from "./taboo/TabooLibrary";
+import type { TabooCardRepository } from "../business/games/taboo/cardRepository";
 import type { TabooCard } from "../business/games/taboo/model";
 
 const gameScreens: Partial<
   Record<
     GameModuleDescriptor["translationKey"],
-    (language: SupportedLanguage, cards: readonly TabooCard[]) => React.ReactNode
+    (
+      language: SupportedLanguage,
+      cards: readonly TabooCard[],
+      repository?: TabooCardRepository,
+    ) => React.ReactNode
   >
 > = {
-  taboo: (language, cards) => <TabooSetup cardLanguage={language} cards={cards} />,
+  taboo: (language, cards, repository) => (
+    <TabooLibrary cardLanguage={language} cards={cards} repository={repository} />
+  ),
 };
 
 interface AppProps {
+  tabooRepository?: TabooCardRepository | undefined;
   tabooCards?: readonly TabooCard[];
   cardLanguage: SupportedLanguage;
   onCardLanguageChange: (language: SupportedLanguage) => void;
@@ -29,6 +37,7 @@ export function App({
   onCardLanguageChange,
   onLanguageChange,
   tabooCards = [],
+  tabooRepository,
 }: AppProps) {
   const [currentRoute, setCurrentRoute] = useState(() => parseHashRoute(window.location.hash));
   const selectedGame = findGameByRoute(currentRoute);
@@ -62,7 +71,7 @@ export function App({
     >
       {selectedGame && selectedGame.availability !== "planned" ? (
         <GamePreviewPage game={selectedGame} onBack={() => navigate(homeRoute)}>
-          {gameScreens[selectedGame.translationKey]?.(cardLanguage, tabooCards)}
+          {gameScreens[selectedGame.translationKey]?.(cardLanguage, tabooCards, tabooRepository)}
         </GamePreviewPage>
       ) : (
         <GameSelectionPage games={gameCatalog} onSelect={handleGameSelection} />

@@ -2,6 +2,14 @@
 
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
+## 2026-11-11
+
+### PH-06-03 – Eigene Tabu-Karten importieren und sichern
+
+- Versioniertes JSON-Format und Prüfung der Karten vor dem Import ergänzt.
+- Doppelte IDs und Begriffe in derselben Sprache werden übersprungen. Eigene Karten bleiben bei Änderungen der Standardsätze erhalten.
+- Import und Export in der Tabu-Ansicht ergänzt. 126 Tests bestanden.
+
 ## 2026-11-10
 
 ### PH-06-02 – Deutsche und englische Tabu-Standardkarten

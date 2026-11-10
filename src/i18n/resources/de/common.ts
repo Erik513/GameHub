@@ -1,4 +1,13 @@
 export const common = {
+  tabooLibrary: {
+    title: "Eigene Tabu-Karten",
+    hint: "Importiere eine GameHub-JSON-Datei oder sichere deine eigenen Karten.",
+    import: "Karten importieren",
+    export: "Eigene Karten exportieren",
+    imported: "Importierte Karten: {{count}}. Vorhandene Karten wurden beibehalten.",
+    invalid: "Die Datei enthält keinen gültigen GameHub-Tabu-Kartensatz.",
+    storage: "Auf die lokalen Karten konnte nicht zugegriffen werden.",
+  },
   tabooResult: {
     title: "Spiel beendet",
     winner: "Gewonnen hat {{teams}}.",

@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { AppRoot } from "./app/AppRoot";
+import { IndexedDbTabooCardRepository } from "./data/indexedDbTabooCardRepository";
 import { tabooStandardCards } from "./data/tabooStandardCards";
 import { gameHubI18n } from "./i18n";
 import { parseSupportedLanguage, resolveInitialLanguage } from "./i18n/languagePreference";
@@ -28,6 +29,7 @@ await gameHubI18n.changeLanguage(initialLanguage);
 createRoot(rootElement).render(
   <StrictMode>
     <AppRoot
+      tabooRepository={new IndexedDbTabooCardRepository()}
       tabooCards={tabooStandardCards}
       cardLanguagePreferenceStore={cardLanguagePreferenceStore}
       initialCardLanguage={initialCardLanguage}

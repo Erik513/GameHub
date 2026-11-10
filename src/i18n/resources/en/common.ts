@@ -1,4 +1,13 @@
 export const common = {
+  tabooLibrary: {
+    title: "Custom Taboo cards",
+    hint: "Import a GameHub JSON file or save a backup of your own cards.",
+    import: "Import cards",
+    export: "Export own cards",
+    imported: "Imported cards: {{count}}. Existing cards were kept.",
+    invalid: "This file is not a valid GameHub Taboo card file.",
+    storage: "Local cards could not be accessed.",
+  },
   tabooResult: {
     title: "Game over",
     winner: "Winner: {{teams}}",
