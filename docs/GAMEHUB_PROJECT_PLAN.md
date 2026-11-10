@@ -23,7 +23,15 @@ GameHub wird eine kostenlose, international ausgerichtete, mobile-first Spiele-P
 - Automatisierte Paritätsprüfung der Übersetzungsschlüssel.
 - Erweiterbare Ressourcenstruktur für weitere Sprachen.
 
-### 2.3 Tabu
+### 2.3 Spielauswahl und Erweiterbarkeit
+
+- Die Anwendung startet immer mit einer Spielauswahl und öffnet kein Spiel automatisch.
+- Ein zentraler Spielkatalog ist die einzige Quelle für verfügbare und geplante Spiele.
+- Jedes Spiel liefert genreunabhängige Metadaten, eine Route und einen Verfügbarkeitsstatus über einen gemeinsamen Minimalvertrag.
+- Gemeinsame Navigation und Startseite enthalten keine fest eingebauten Abhängigkeiten zu einzelnen Spielen.
+- Spiellogik und Spieloberfläche bleiben je Spiel in getrennten Modulen gekapselt.
+
+### 2.4 Tabu
 
 - Mindestens zwei Teams.
 - Standarddauer einer Runde 60 Sekunden, konfigurierbar.
@@ -35,7 +43,7 @@ GameHub wird eine kostenlose, international ausgerichtete, mobile-first Spiele-P
 - Nach der letzten Runde gewinnt die höchste Punktzahl. Gleichstand wird als gemeinsamer Sieg abgebildet.
 - Eine explizite Zustandsmaschine kontrolliert Setup, laufende Runde, Rundenende und Spielende.
 
-### 2.4 Kartengenerierung
+### 2.5 Kartengenerierung
 
 - Ein providerunabhängiger Business-Port definiert Generierungsanfragen und Ergebnisse.
 - Lokale Kartensätze sind immer verfügbar.
@@ -47,14 +55,14 @@ GameHub wird eine kostenlose, international ausgerichtete, mobile-first Spiele-P
 
 ```text
 src/
-├── presentation/       React, Seiten, Komponenten, Hooks, Designsystem
+├── presentation/       React, Seiten, Komponenten, Hooks, Designsystem und spielbezogene UI
 ├── business/           Entitäten, Regeln, Zustandsmaschinen, Use Cases, Ports
 │   ├── shared/
 │   └── games/taboo/
 ├── data/               Repository-Implementierungen, Mapping, Migrationen
 ├── infrastructure/     IndexedDB-Zugang, PWA, Provider-Adapter, Browser-Dienste
 ├── i18n/               Konfiguration und Sprachressourcen
-└── app/                Composition Root, Routing und App-Start
+└── app/                Composition Root, Routing, App-Start und zentraler Spielkatalog
 ```
 
 Presentation darf Business verwenden. Data und Infrastructure implementieren von Business definierte Ports. Die Verdrahtung konkreter Implementierungen findet ausschließlich im Composition Root statt. Business importiert keine React-, IndexedDB-, Browser- oder Provider-Bibliotheken.
@@ -239,12 +247,12 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Tests:** Komponentenverhalten, Fokus, deaktivierte Zustände und visuelle Smoke-Tests.
 - **Status:** planned
 
-#### PH-03-02 – App-Shell und Navigation
+#### PH-03-02 – App-Shell, Spielkatalog und Navigation
 
-- **Ziel:** Gemeinsamen Rahmen für Spiele und Einstellungen bereitstellen.
-- **Umfang:** Header, Hauptnavigation, Startseite, Spielauswahl und responsive Layoutstruktur.
-- **Akzeptanzkriterien:** Navigation funktioniert per Tastatur und Touch. Unfertige Spiele sind verständlich gekennzeichnet.
-- **Tests:** Routing-/Navigationsintegration in Deutsch und Englisch.
+- **Ziel:** Gemeinsamen, von einzelnen Spielen unabhängigen Rahmen für Spielauswahl und Einstellungen bereitstellen.
+- **Umfang:** Header, Hauptnavigation, responsive Startseite mit verpflichtender Spielauswahl, zentraler Spielkatalog und minimaler Spielmodulvertrag für Kennung, Übersetzungsschlüssel, Route und Verfügbarkeitsstatus.
+- **Akzeptanzkriterien:** App-Start zeigt immer die Spielauswahl. Spiele werden ausschließlich über den Katalog eingebunden. Navigation funktioniert per Tastatur und Touch. Unfertige Spiele sind verständlich gekennzeichnet. Shell und Navigation importieren keine Tabu-spezifische Spiellogik.
+- **Tests:** Katalog-Vertrag sowie Routing-, Auswahl- und Navigationsintegration in Deutsch und Englisch.
 - **Status:** planned
 
 #### PH-03-03 – Einstellungen und Statusmeldungen
@@ -451,11 +459,11 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Tests:** Review der Ereignismodelle und Prototyp nur nach gesonderter Beauftragung.
 - **Status:** planned
 
-#### PH-09-02 – Gemeinsamer Spielmodulvertrag
+#### PH-09-02 – Spielmodulvertrag überprüfen und erweitern
 
-- **Ziel:** Weitere Spiele konsistent integrieren.
-- **Umfang:** Erfahrungen aus Tabu in minimalen Vertrag für Metadaten, Start, Persistenz und Navigation überführen.
-- **Akzeptanzkriterien:** Vertrag deckt Tabu ab, ohne Tabu-spezifische Begriffe zu exportieren, und ist durch einen Test-Dummy belegbar.
+- **Ziel:** Den frühen Spielmodulvertrag anhand weiterer Spielanforderungen kontrolliert weiterentwickeln.
+- **Umfang:** Erfahrungen aus Tabu und den Spezifikationen weiterer Spiele auswerten und den bestehenden Vertrag nur bei nachgewiesenem Bedarf um Start- oder Persistenzschnittstellen ergänzen.
+- **Akzeptanzkriterien:** Der erweiterte Vertrag bleibt genreunabhängig, rückwärtskompatibel und ist durch Tabu sowie ein zweites Testmodul belegt.
 - **Tests:** Contract-Tests und Architekturprüfung.
 - **Status:** planned
 

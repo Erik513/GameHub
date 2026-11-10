@@ -97,3 +97,11 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Entscheidung:** Das Projekt heißt GameHub. Der langfristige Produktumfang umfasst Partyspiele, Quiz-, Karten- und weitere Gesellschaftsspiele.
 - **Begründung:** Der frühere Name PartyHub beschränkte die Wahrnehmung auf Partyspiele und passte nicht zu geplanten Karten- oder Brettspielvarianten.
 - **Konsequenzen:** Gemeinsame Infrastruktur und Spielmodulverträge bleiben genreunabhängig. Tabu bleibt das erste Spiel, begrenzt aber weder Navigation noch Datenmodell oder spätere Erweiterungen.
+
+## ADR-013: Spielauswahl als Einstieg und früher Modulvertrag
+
+- **Status:** accepted
+- **Datum:** 2026-11-10
+- **Entscheidung:** GameHub startet immer mit einer Spielauswahl. Ein zentraler Spielkatalog registriert jedes Spiel über einen minimalen, genreunabhängigen Vertrag für Kennung, Übersetzungsschlüssel, Route und Verfügbarkeitsstatus. App-Shell, Startseite und Navigation beziehen Spiele ausschließlich aus diesem Katalog und enthalten keine fest eingebauten Verweise auf einzelne Spiele.
+- **Begründung:** Weitere Spiele wie Karten-, Quiz- oder Brettspielvarianten sollen ohne Umbau der gemeinsamen Oberfläche ergänzt werden können. Die Erweiterbarkeit muss deshalb vor der ersten Tabu-Oberfläche feststehen.
+- **Konsequenzen:** `PH-03-02` führt Spielauswahl, Katalog und Minimalvertrag ein. Jedes Spiel kapselt seine Business-Logik und UI. `PH-09-02` überprüft und erweitert den Vertrag später nur bei nachgewiesenem Bedarf.

@@ -4,6 +4,14 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### Erweiterbare Spielauswahl verbindlich geplant
+
+- App-Start mit verpflichtender Spielauswahl als dauerhafte Produktanforderung festgelegt.
+- Zentralen, genreunabhängigen Spielkatalog als einzige Quelle für verfügbare und geplante Spiele beschlossen.
+- Minimalen Spielmodulvertrag für Kennung, Übersetzungsschlüssel, Route und Verfügbarkeitsstatus nach `PH-03-02` vorgezogen.
+- `PH-09-02` auf eine spätere, bedarfsgesteuerte Überprüfung und Erweiterung des frühen Vertrags ausgerichtet.
+- ADR-013 und verbindliche Arbeitsregeln ergänzt, damit Shell und Navigation keine einzelnen Spiele fest einbauen.
+
 ### PH-02-01 – i18n-Grundkonfiguration
 
 - `i18next` und `react-i18next` als Laufzeitabhängigkeiten eingerichtet.

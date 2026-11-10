@@ -1,6 +1,6 @@
 # GameHub
 
-GameHub ist eine geplante kostenlose, international ausgerichtete, mobile-first Spielesammlung. Die Progressive Web App soll Partyspiele, Quiz-, Karten- und weitere Gesellschaftsspiele auf Smartphones, Tablets und PCs bündeln, offline spielbar sein und über GitHub Pages veröffentlicht werden können.
+GameHub ist eine geplante kostenlose, international ausgerichtete, mobile-first Spielesammlung. Die Progressive Web App soll Partyspiele, Quiz-, Karten- und weitere Gesellschaftsspiele auf Smartphones, Tablets und PCs bündeln, offline spielbar sein und über GitHub Pages veröffentlicht werden können. Der Einstieg erfolgt immer über eine Spielauswahl; neue Spiele werden als eigenständige Module in einem zentralen Spielkatalog registriert.
 
 Das React-TypeScript-Vite-Grundprojekt und die vereinbarte Schichtenstruktur sind eingerichtet. Spiellogik, Persistenz und externe Kartengeneratoren sind noch nicht implementiert.
 
