@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-06-01 – Lokaler Kartenspeicher
+
+- Versionierten IndexedDB-Speicher mit eigener Tabu-Schnittstelle für benutzerdefinierte Karten ergänzt.
+- Fünf Integrationstests prüfen Schema, erneutes Öffnen, Eingabevalidierung und Rücknahme fehlerhafter Schreibvorgänge.
+- Speicherumfang und späteren Tabu-Feinschliff zur Korrektur versehentlicher Wertungen im Projektplan festgehalten.
+
 ### PH-05-04 – Spielende und Neustart
 
 - Endstand und Sieger nach der letzten Runde angezeigt, einschließlich gemeinsamer Sieger bei Gleichstand.

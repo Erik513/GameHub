@@ -52,6 +52,8 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 
 ## ADR-007: Offline-first PWA
 
+**Abgrenzung für Tabu:** Mitgelieferte Kartensätze werden als App-Daten verteilt und offline zwischengespeichert. IndexedDB enthält dauerhaft nutzbare eigene Karten in einem Tabu-spezifischen Speicherbereich. Globale Spracheinstellungen behalten ihren vorhandenen lokalen Speicher. Laufende Partien werden vorerst nicht dauerhaft gespeichert. Neue Spiele können eigene Speicherbereiche und Datenmodelle ergänzen.
+
 - **Status:** accepted
 - **Datum:** 2026-11-09
 - **Entscheidung:** Die App wird als installierbare PWA ausgeliefert. App-Shell und lokale Kartensätze werden durch einen Service Worker verfügbar gemacht.

@@ -341,28 +341,30 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 
 ### Phase 6: Speicherung, Kartensätze und Offlinebetrieb
 
+Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Spracheinstellungen verbleiben im vorhandenen lokalen Einstellungsspeicher. Eigene, importierte oder generierte Karten werden pro Spiel gespeichert. Mitgelieferte Karten bleiben versionierte App-Daten und stehen über den Offline-Cache bereit. Lokale Wiederherstellung und Online-Wiedereinstieg sind spätere, getrennte Erweiterungen.
+
 #### PH-06-01 – IndexedDB-Schema und Repository-Adapter
 
-- **Ziel:** Einstellungen und Karten robust lokal speichern.
+- **Ziel:** Dauerhaft nutzbare eigene Karten robust lokal speichern.
 - **Umfang:** Versioniertes Schema, Adapter für Business-Ports, Transaktions- und Fehlerbehandlung.
 - **Akzeptanzkriterien:** Lesen/Schreiben funktioniert nach Reload. Partielle Fehler hinterlassen konsistenten Zustand.
-- **Tests:** Integrationsfälle mit Test-IndexedDB, Transaktionsfehler und Migration.
-- **Status:** planned
+- **Tests:** Integrationsfälle mit Test-IndexedDB, Transaktionsfehler und erstmaliges Schema-Upgrade.
+- **Status:** done
 
 #### PH-06-02 – Lokale deutsche und englische Kartensätze
 
 - **Ziel:** Offline spielbare Grundausstattung liefern.
 - **Umfang:** Kuratierte Kartendateien mit Sprache, Kategorie, Schwierigkeit, Ziel und exakt drei verbotenen Wörtern.
-- **Akzeptanzkriterien:** Beide Sprachen besitzen ausreichende Karten für Standardpartien. Alle Dateien bestehen Schema- und Duplikatprüfung.
+- **Akzeptanzkriterien:** Beide Sprachen besitzen ausreichende Karten für Standardpartien. Enge Filter werden vor Spielbeginn auf Kartenmangel geprüft. Alle Dateien bestehen Schema- und Duplikatprüfung.
 - **Tests:** Datensatzvalidierung, Eindeutigkeit und Mindestmengen.
 - **Status:** planned
 
 #### PH-06-03 – Import und Aktualisierung lokaler Karten
 
-- **Ziel:** Mitgelieferte Sätze idempotent in lokale Speicherung übernehmen.
-- **Umfang:** Versionierung, Seed-Prozess und Update ohne Verlust nutzergenerierter Karten.
-- **Akzeptanzkriterien:** Wiederholter Start erzeugt keine Duplikate. Neue Seed-Versionen ergänzen oder migrieren kontrolliert.
-- **Tests:** Erstimport, Wiederholung, Upgrade und bestehende Nutzerdaten.
+- **Ziel:** Eigene Kartensätze importieren und für Sicherung und Rückimport exportieren.
+- **Umfang:** Versioniertes Austauschformat, Validierung, Duplikatbehandlung und Updates mitgelieferter App-Daten.
+- **Akzeptanzkriterien:** Wiederholter Import erzeugt keine Duplikate. Updates mitgelieferter Karten erhalten eigene Inhalte.
+- **Tests:** Erstimport, Wiederholung, Export mit Rückimport und Update mit vorhandenen eigenen Karten.
 - **Status:** planned
 
 #### PH-06-04 – Manifest und Service Worker
@@ -442,6 +444,8 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Status:** planned
 
 #### PH-08-04 – Qualitäts- und Barrierefreiheitsabnahme
+
+Tabu-Feinschliff: Eine versehentlich falsche Wertung soll sich während der Runde rückgängig machen lassen. Die Rundenzusammenfassung soll eine Korrektur vor dem Start der nächsten Runde erlauben. Die Änderung betrifft ausschließlich die laufende Partie.
 
 - **Ziel:** Release-Kriterien vollständig prüfen.
 - **Umfang:** Coverage, Lint, Typen, Tests, Browserprofile, Tastatur, Kontraste, lokalisierte Inhalte und dokumentierte Restrisiken.
