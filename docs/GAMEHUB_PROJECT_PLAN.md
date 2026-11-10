@@ -287,7 +287,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Fachliche Ereignisse, Kartenvorschub und Punktberechnung.
 - **Akzeptanzkriterien:** Nur richtig erhöht genau um eins. Andere Aktionen ergeben null und jede Karte wird höchstens einmal gewertet.
 - **Tests:** Alle Aktionen, Wiederholungsversuche und Kartenende.
-- **Status:** planned
+- **Status:** done
 
 #### PH-04-04 – Rundenfolge und Siegerermittlung
 

@@ -3,8 +3,8 @@
   "project": {
     "id": "gamehub",
     "name": "GameHub",
-    "stage": "taboo_card_actions_planned",
-    "updatedAt": "2026-11-10T23:17:16+01:00",
+    "stage": "taboo_winners_planned",
+    "updatedAt": "2026-11-10T23:20:11+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 22,
+      "completedTasks": 23,
       "totalTasks": 46,
-      "percent": 47.83
+      "percent": 50
     }
   },
   "environment": {
@@ -45,12 +45,12 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:17:16+01:00",
+      "lastRunAt": "2026-11-10T23:20:11+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:17:16+01:00",
+      "lastRunAt": "2026-11-10T23:20:11+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
@@ -65,7 +65,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:17:16+01:00",
+      "lastRunAt": "2026-11-10T23:20:11+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -75,15 +75,15 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:17:16+01:00",
+      "lastRunAt": "2026-11-10T23:20:11+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:17:16+01:00",
-      "passed": 86,
+      "lastRunAt": "2026-11-10T23:20:11+01:00",
+      "passed": 87,
       "failed": 0,
-      "details": "86 Tests bestanden, darunter die Übergangsprüfung und eine vollständige Partie mit drei Teams."
+      "details": "87 Tests bestanden. Kartenaktionen, Wiederholungsversuche und Kartenende sind abgedeckt."
     },
     "integrationTests": {
       "status": "not_configured",
@@ -111,23 +111,23 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:17:16+01:00",
-      "overallLines": 98.48,
-      "overallBranches": 96.79,
-      "overallFunctions": 98.43,
-      "overallStatements": 98.61,
+      "lastRunAt": "2026-11-10T23:20:11+01:00",
+      "overallLines": 98.59,
+      "overallBranches": 96.57,
+      "overallFunctions": 98.48,
+      "overallStatements": 98.27,
       "criticalGameLogicLines": 100,
       "businessLines": 100,
       "dataInfrastructureLines": 100,
       "uiLines": 100,
       "i18nLines": 96.42,
       "branches": {
-        "criticalGameLogic": 100,
+        "criticalGameLogic": 98.86,
         "business": null,
         "dataInfrastructure": null,
         "ui": 100
       },
-      "details": "Tabu-Domänenlogik erreicht 100 % Zeilen- und Verzweigungsabdeckung. Alle Bereichsgrenzen werden eingehalten."
+      "details": "Tabu-Spiellogik erreicht 100 % Zeilen- und 98,86 % Verzweigungsabdeckung. Alle Bereichsgrenzen werden eingehalten."
     }
   },
   "phases": [
@@ -277,7 +277,7 @@
         {
           "id": "PH-04-03",
           "title": "Kartenaktionen und Punkte",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-04-04",
@@ -435,6 +435,10 @@
   "recentChanges": [
     {
       "date": "2026-11-10",
+      "summary": "PH-04-03 abgeschlossen: Kartenaktionen, Teampunkte, Kartenvorschub und automatisches Rundenende bei Kartenmangel ergänzt."
+    },
+    {
+      "date": "2026-11-10",
       "summary": "PH-04-02 abgeschlossen: deterministische Tabu-Zustandsmaschine mit gültigen Rundenübergängen und Schutz vor verspäteten Rundenende-Ereignissen."
     },
     {
@@ -578,9 +582,9 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-04-03",
-      "reason": "Kartenaktionen, Kartenvorschub und Punkte ergänzen.",
-      "prerequisite": "Die Zustandsmaschine aus PH-04-02 ist abgeschlossen."
+      "id": "PH-04-04",
+      "reason": "Rundenfolge absichern und Sieger einschließlich Gleichständen ermitteln.",
+      "prerequisite": "Kartenaktionen und Punkte aus PH-04-03 sind abgeschlossen."
     }
   ]
 }

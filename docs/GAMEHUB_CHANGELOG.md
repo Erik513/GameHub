@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-04-03 – Kartenaktionen und Punkte
+
+- Richtige Antworten zählen einen Punkt. Überspringen und verbotene Wörter zählen null Punkte.
+- Jede gewertete Karte wird für die restliche Partie gesperrt. Nach der letzten Karte endet die Runde.
+- 87 Tests bestanden, darunter alle Kartenaktionen und Wiederholungsversuche.
+
 ### PH-04-02 – Zustandsmaschine und Übergänge
 
 - Tabu-Zustandsmaschine für Vorbereitung, laufende Runde, Rundenende und Spielende ergänzt.

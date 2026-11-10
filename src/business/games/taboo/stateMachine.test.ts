@@ -30,6 +30,42 @@ function setup() {
 }
 
 describe("Taboo state machine", () => {
+  it("scores only correct answers, advances cards and ends the round when exhausted", () => {
+    const turn = { round: 1, teamIndex: 0 };
+    const second = { ...card, id: "two" };
+    const third = { ...card, id: "three" };
+    const initial = setup();
+    expect(transitionTaboo(initial, { ...start, remainingCards: [card] })).toBe(initial);
+    const running = transitionTaboo(initial, { ...start, remainingCards: [second, third] });
+    const correct = { type: "resolveCard", turn, cardId: card.id, outcome: "correct" } as const;
+    expect(transitionTaboo(initial, correct)).toBe(initial);
+    expect(transitionTaboo(running, { ...correct, turn: { ...turn, round: 2 } })).toBe(running);
+    expect(transitionTaboo(running, { ...correct, turn: { ...turn, teamIndex: 1 } })).toBe(running);
+    const afterCorrect = transitionTaboo(running, correct);
+    expect(afterCorrect).toMatchObject({ card: second, scores: [1, 0, 0] });
+    expect(transitionTaboo(afterCorrect, correct)).toBe(afterCorrect);
+    const afterSkip = transitionTaboo(afterCorrect, {
+      ...correct,
+      cardId: second.id,
+      outcome: "skipped",
+    });
+    expect(afterSkip).toMatchObject({ card: third, scores: [1, 0, 0] });
+    const ended = transitionTaboo(afterSkip, {
+      ...correct,
+      cardId: third.id,
+      outcome: "forbiddenWord",
+    });
+    expect(ended).toMatchObject({ status: "roundEnded", scores: [1, 0, 0] });
+    expect(ended).not.toHaveProperty("card");
+    expect(transitionTaboo(ended, start)).toBe(ended);
+    const next = transitionTaboo(ended, { ...start, card: { ...card, id: "four" } });
+    expect(next).toMatchObject({
+      status: "roundRunning",
+      scores: [1, 0, 0],
+      turn: { teamIndex: 1 },
+    });
+  });
+
   it("rejects an invalid setup", () => {
     expect(createTabooGame({ ...configuration, teams: [] })).toMatchObject({ valid: false });
   });
