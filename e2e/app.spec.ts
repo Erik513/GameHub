@@ -14,11 +14,13 @@ test("renders the GameHub game selection", async ({ page }) => {
 test("persists the selected UI language", async ({ page }) => {
   await page.goto("/");
 
+  await page.getByRole("button", { name: "Settings" }).click();
   await page.getByRole("combobox", { name: "Interface language" }).selectOption("de");
   await expect(page.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
 
   await page.reload();
 
+  await page.getByRole("button", { name: "Einstellungen" }).click();
   await expect(page.getByRole("combobox", { name: "Oberflächensprache" })).toHaveValue("de");
   await expect(page.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
 });
@@ -38,6 +40,7 @@ test("navigates between the game library and preview", async ({ page }) => {
 test("persists UI and card languages independently", async ({ page }) => {
   await page.goto("/");
 
+  await page.getByRole("button", { name: "Settings" }).click();
   await page.getByRole("combobox", { name: "Card language" }).selectOption("de");
   await page.getByRole("combobox", { name: "Interface language" }).selectOption("de");
   await page.getByRole("combobox", { name: "Oberflächensprache" }).selectOption("en");
@@ -47,6 +50,16 @@ test("persists UI and card languages independently", async ({ page }) => {
 
   await page.reload();
 
+  await page.getByRole("button", { name: "Settings" }).click();
   await expect(page.getByRole("combobox", { name: "Interface language" })).toHaveValue("en");
   await expect(page.getByRole("combobox", { name: "Card language" })).toHaveValue("de");
+});
+
+test("opens and closes the settings dialog", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Settings" }).click();
+  await expect(page.getByRole("dialog", { name: "Settings" })).toBeVisible();
+  await page.getByRole("button", { name: "Close" }).click();
+  await expect(page.getByRole("dialog")).not.toBeVisible();
 });

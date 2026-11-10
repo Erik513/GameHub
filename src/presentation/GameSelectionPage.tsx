@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { GameModuleDescriptor } from "../app/gameCatalog";
-import { Button, Card } from "./components";
+import { Button, Card, EmptyState } from "./components";
 
 interface GameSelectionPageProps {
   games: readonly GameModuleDescriptor[];
@@ -17,6 +17,12 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
         <h1 id="game-library-title">{t("gameSelection.title")}</h1>
         <p>{t("gameSelection.intro")}</p>
       </div>
+      {games.length === 0 ? (
+        <EmptyState
+          description={t("feedback.emptyGames.description")}
+          title={t("feedback.emptyGames.title")}
+        />
+      ) : null}
       <ul className="game-grid" aria-label={t("gameSelection.title")}>
         {games.map((game, index) => {
           const isPlanned = game.availability === "planned";

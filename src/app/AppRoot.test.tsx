@@ -26,6 +26,7 @@ describe("AppRoot", () => {
 
     render(<AppRoot languagePreferenceStore={languagePreferenceStore} />);
 
+    await user.click(screen.getByRole("button", { name: "Settings" }));
     await user.selectOptions(screen.getByRole("combobox", { name: "Interface language" }), "de");
 
     expect(writeLanguage).toHaveBeenCalledWith("de");
@@ -46,6 +47,7 @@ describe("AppRoot", () => {
       />,
     );
 
+    await user.click(screen.getByRole("button", { name: "Settings" }));
     await user.selectOptions(screen.getByRole("combobox", { name: "Card language" }), "en");
 
     expect(writeCardLanguage).toHaveBeenCalledWith("en");

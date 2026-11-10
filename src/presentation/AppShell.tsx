@@ -1,6 +1,8 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
+import { Button } from "./components";
+import { SettingsDialog } from "./SettingsDialog";
 
 interface AppShellProps {
   cardLanguage: SupportedLanguage;
@@ -17,13 +19,8 @@ export function AppShell({
   onCardLanguageChange,
   onLanguageChange,
 }: AppShellProps) {
-  const { t, i18n } = useTranslation();
-  const selectedLanguage: SupportedLanguage = i18n.resolvedLanguage === "de" ? "de" : "en";
-
-  async function handleLanguageChange(language: SupportedLanguage) {
-    await i18n.changeLanguage(language);
-    onLanguageChange(language);
-  }
+  const { t } = useTranslation();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <div className="app-shell">
@@ -41,34 +38,22 @@ export function AppShell({
             {t("navigation.home")}
           </a>
         </nav>
-        <div className="language-controls">
-          <label className="language-control">
-            <span>{t("language.uiLabel")}</span>
-            <select
-              value={selectedLanguage}
-              onChange={(event) =>
-                void handleLanguageChange(event.currentTarget.value as SupportedLanguage)
-              }
-            >
-              <option value="de">{t("language.options.de")}</option>
-              <option value="en">{t("language.options.en")}</option>
-            </select>
-          </label>
-          <label className="language-control">
-            <span>{t("language.cardLabel")}</span>
-            <select
-              value={cardLanguage}
-              onChange={(event) =>
-                onCardLanguageChange(event.currentTarget.value as SupportedLanguage)
-              }
-            >
-              <option value="de">{t("language.options.de")}</option>
-              <option value="en">{t("language.options.en")}</option>
-            </select>
-          </label>
-        </div>
+        <Button
+          className="settings-button"
+          variant="secondary"
+          onClick={() => setSettingsOpen(true)}
+        >
+          {t("settings.open")}
+        </Button>
       </header>
       <main className="main-content">{children}</main>
+      <SettingsDialog
+        cardLanguage={cardLanguage}
+        onCardLanguageChange={onCardLanguageChange}
+        onClose={() => setSettingsOpen(false)}
+        onLanguageChange={onLanguageChange}
+        open={settingsOpen}
+      />
     </div>
   );
 }

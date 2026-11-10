@@ -25,6 +25,26 @@ export const common = {
     home: "Games",
     ariaLabel: "Main navigation",
   },
+  settings: {
+    open: "Settings",
+    title: "Settings",
+    description: "Choose the interface and card languages independently.",
+    close: "Close",
+  },
+  feedback: {
+    emptyGames: {
+      title: "No games available",
+      description: "New games will appear here as soon as they are registered.",
+    },
+    examples: {
+      loadingTitle: "Loading",
+      loadingDescription: "GameHub is preparing the content.",
+      errorTitle: "Something went wrong",
+      errorDescription: "Your settings are unchanged. Please try again.",
+      successTitle: "Saved",
+      successDescription: "Your changes are available now.",
+    },
+  },
   gameSelection: {
     eyebrow: "Game library",
     title: "Choose a game",

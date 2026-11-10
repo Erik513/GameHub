@@ -261,7 +261,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Einstellungsseite, Sprachfelder, Fehlermeldungen, Lade- und Leerzustände.
 - **Akzeptanzkriterien:** Beschriftungen sind lokalisiert und zugänglich. Fehler werden ohne Datenverlust angezeigt.
 - **Tests:** Komponenten- und Accessibility-Tests in beiden Sprachen.
-- **Status:** planned
+- **Status:** done
 
 ### Phase 4: Tabu-Kernlogik
 

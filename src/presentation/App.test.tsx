@@ -88,6 +88,7 @@ describe("App", () => {
       </I18nextProvider>,
     );
 
+    await user.click(screen.getByRole("button", { name: "Settings" }));
     await user.selectOptions(screen.getByRole("combobox", { name: "Interface language" }), "de");
 
     expect(await screen.findByRole("combobox", { name: "Oberflächensprache" })).toHaveValue("de");
@@ -106,9 +107,33 @@ describe("App", () => {
       </I18nextProvider>,
     );
 
+    await user.click(screen.getByRole("button", { name: "Settings" }));
     await user.selectOptions(screen.getByRole("combobox", { name: "Card language" }), "en");
 
     expect(screen.getByRole("combobox", { name: "Interface language" })).toHaveValue("en");
     expect(onCardLanguageChange).toHaveBeenCalledWith("en");
+  });
+
+  it.each([
+    ["en", "Settings", "Settings", "Choose the interface and card languages independently."],
+    [
+      "de",
+      "Einstellungen",
+      "Einstellungen",
+      "Wähle Oberflächen- und Kartensprache unabhängig voneinander.",
+    ],
+  ] as const)("opens localized settings in %s", async (language, openLabel, title, description) => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n(language);
+
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App cardLanguage={language} onCardLanguageChange={vi.fn()} />
+      </I18nextProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: openLabel }));
+
+    expect(screen.getByRole("dialog", { name: title })).toHaveAccessibleDescription(description);
   });
 });

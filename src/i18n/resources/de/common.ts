@@ -25,6 +25,26 @@ export const common = {
     home: "Spiele",
     ariaLabel: "Hauptnavigation",
   },
+  settings: {
+    open: "Einstellungen",
+    title: "Einstellungen",
+    description: "Wähle Oberflächen- und Kartensprache unabhängig voneinander.",
+    close: "Schließen",
+  },
+  feedback: {
+    emptyGames: {
+      title: "Keine Spiele verfügbar",
+      description: "Neue Spiele erscheinen hier, sobald sie registriert sind.",
+    },
+    examples: {
+      loadingTitle: "Wird geladen",
+      loadingDescription: "GameHub bereitet die Inhalte vor.",
+      errorTitle: "Etwas ist schiefgelaufen",
+      errorDescription: "Deine Einstellungen bleiben unverändert. Bitte versuche es erneut.",
+      successTitle: "Gespeichert",
+      successDescription: "Deine Änderungen sind jetzt verfügbar.",
+    },
+  },
   gameSelection: {
     eyebrow: "Spielesammlung",
     title: "Wähle ein Spiel",

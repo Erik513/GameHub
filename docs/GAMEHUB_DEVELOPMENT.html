@@ -192,14 +192,14 @@
         "project": {
           "id": "gamehub",
           "name": "GameHub",
-          "stage": "settings_planned",
-          "updatedAt": "2026-11-10T22:53:04+01:00",
+          "stage": "taboo_domain_planned",
+          "updatedAt": "2026-11-10T23:05:44+01:00",
           "statusValues": ["planned", "in_progress", "blocked", "done"],
           "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
           "progress": {
-            "completedTasks": 19,
+            "completedTasks": 20,
             "totalTasks": 46,
-            "percent": 41.3
+            "percent": 43.48
           }
         },
         "environment": {
@@ -215,25 +215,25 @@
           "defaultBranch": "main"
         },
         "quality": {
-          "typecheck": { "status": "passed", "lastRunAt": "2026-11-10T22:53:04+01:00", "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen." },
-          "lint": { "status": "passed", "lastRunAt": "2026-11-10T22:53:04+01:00", "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen." },
-          "format": { "status": "passed", "lastRunAt": "2026-11-10T22:53:04+01:00", "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich." },
+          "typecheck": { "status": "passed", "lastRunAt": "2026-11-10T23:05:44+01:00", "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen." },
+          "lint": { "status": "passed", "lastRunAt": "2026-11-10T23:05:44+01:00", "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen." },
+          "format": { "status": "passed", "lastRunAt": "2026-11-10T23:05:44+01:00", "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich." },
           "githubActions": { "status": "passed", "lastRunAt": "2026-11-10T17:06:41+01:00", "details": "Der GitHub-Actions-Lauf 42851108987 auf main war erfolgreich: statische Prüfungen, Tests, Produktions-Build und Playwright-E2E wurden abgeschlossen." },
           "architectureCheck": { "status": "passed", "lastRunAt": "2026-11-09T19:53:45+01:00", "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten." },
           "devServerSmoke": { "status": "passed", "lastRunAt": "2026-11-09T19:55:43+01:00", "details": "Der Vite-Entwicklungsserver lieferte HTTP 200 und das GameHub-Einstiegsdokument." },
-          "build": { "status": "passed", "lastRunAt": "2026-11-10T22:53:04+01:00", "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen." },
-          "unitTests": { "status": "passed", "lastRunAt": "2026-11-10T22:53:04+01:00", "passed": 52, "failed": 0, "details": "52 Katalog-, Navigations-, Business-, i18n-, Infrastruktur- und Komponententests wurden erfolgreich abgeschlossen." },
+          "build": { "status": "passed", "lastRunAt": "2026-11-10T23:05:44+01:00", "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen." },
+          "unitTests": { "status": "passed", "lastRunAt": "2026-11-10T23:05:44+01:00", "passed": 57, "failed": 0, "details": "57 Katalog-, Navigations-, Business-, i18n-, Infrastruktur- und Komponententests wurden erfolgreich abgeschlossen." },
           "integrationTests": { "status": "not_configured", "lastRunAt": null, "passed": 0, "failed": 0 },
-          "e2eTests": { "status": "passed", "lastRunAt": "2026-11-10T22:53:04+01:00", "passed": 8, "failed": 0, "details": "Spielauswahl, Entwicklungsvorschau, Navigation und dauerhafte Sprachen waren mit Playwright im Desktop- und Mobilprofil erfolgreich." },
+          "e2eTests": { "status": "passed", "lastRunAt": "2026-11-10T23:05:44+01:00", "passed": 10, "failed": 0, "details": "Spielauswahl, Entwicklungsvorschau, Navigation, dauerhafte Sprachen und Einstellungsdialog waren mit Playwright im Desktop- und Mobilprofil erfolgreich." },
           "renameValidation": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Paket, Quellcode, Tests, Dokumentation, Dashboard, Repository-Pfad und Produktions-Build verwenden GameHub." },
           "documentationChecks": { "status": "passed", "lastRunAt": "2026-11-09T19:35:00+01:00", "passed": 5, "failed": 0 },
           "coverage": {
             "status": "passed",
-            "lastRunAt": "2026-11-10T22:53:04+01:00",
-            "overallLines": 98.48,
-            "overallBranches": 94.8,
-            "overallFunctions": 100,
-            "overallStatements": 98.52,
+            "lastRunAt": "2026-11-10T23:05:44+01:00",
+            "overallLines": 97.84,
+            "overallBranches": 94.25,
+            "overallFunctions": 98.07,
+            "overallStatements": 97.9,
             "criticalGameLogicLines": null,
             "businessLines": 100,
             "dataInfrastructureLines": 100,
@@ -266,7 +266,7 @@
           {
             "id": "PH-01",
             "name": "Projektfundament, Entwicklungswerkzeuge und Testinfrastruktur",
-            "status": "in_progress",
+            "status": "done",
             "tasks": [
               { "id": "PH-01-01", "title": "Vite-Grundprojekt und Schichtenstruktur", "status": "done" },
               { "id": "PH-01-02", "title": "Linting und Formatierung", "status": "done" },
@@ -279,7 +279,7 @@
           {
             "id": "PH-02",
             "name": "Internationalisierung Deutsch/Englisch",
-            "status": "planned",
+            "status": "done",
             "tasks": [
               { "id": "PH-02-01", "title": "i18n-Grundkonfiguration", "status": "done" },
               { "id": "PH-02-02", "title": "Erkennung, Auswahl und Persistenz der UI-Sprache", "status": "done" },
@@ -290,11 +290,11 @@
           {
             "id": "PH-03",
             "name": "Gemeinsame App-Oberfläche und Designsystem",
-            "status": "planned",
+            "status": "done",
             "tasks": [
               { "id": "PH-03-01", "title": "Design-Tokens und Basiskomponenten", "status": "done" },
               { "id": "PH-03-02", "title": "App-Shell, Spielkatalog und Navigation", "status": "done" },
-              { "id": "PH-03-03", "title": "Einstellungen und Statusmeldungen", "status": "planned" }
+              { "id": "PH-03-03", "title": "Einstellungen und Statusmeldungen", "status": "done" }
             ]
           },
           {
@@ -367,6 +367,7 @@
           }
         ],
         "recentChanges": [
+          { "date": "2026-11-10", "summary": "PH-03-03 abgeschlossen: lokalisierter Einstellungsdialog sowie zugängliche Lade-, Fehler-, Erfolgs- und Leerzustände mit Datenverlustschutz umgesetzt." },
           { "date": "2026-11-10", "summary": "PH-03-02 abgeschlossen: responsive App-Shell, verpflichtende Spielauswahl, zentraler Spielkatalog, Hash-Navigation und genreunabhängiger Modulvertrag umgesetzt." },
           { "date": "2026-11-10", "summary": "GameHub-Design nach Nutzerpräferenz auf einen primären, kontrastreichen Dark Mode ohne Verläufe oder Glaseffekte umgestellt." },
           { "date": "2026-11-10", "summary": "PH-03-01 abgeschlossen: eigenständiges, zurückhaltendes GameHub-Designsystem mit Tokens, responsiver Startansicht sowie zugänglichen Buttons, Eingaben, Karten und Dialogen umgesetzt." },
@@ -425,9 +426,9 @@
         ],
         "nextRecommendedTasks": [
           {
-            "id": "PH-03-03",
-            "reason": "Globale Einstellungen sowie zugängliche Lade-, Fehler-, Leer- und Statusmeldungen umsetzen.",
-            "prerequisite": "App-Shell und Navigation aus PH-03-02 sind abgeschlossen."
+            "id": "PH-04-01",
+            "reason": "Das fachliche Tabu-Domänenmodell und seine Validierungsregeln als Grundlage des ersten spielbaren Moduls umsetzen.",
+            "prerequisite": "Gemeinsame App-Oberfläche und Einstellungen aus Phase 3 sind abgeschlossen."
           }
         ]
       };
