@@ -383,7 +383,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Anfrage, Ergebnis, Fehler, Abbruch und Provider-Fähigkeiten als Business-Typen modellieren.
 - **Akzeptanzkriterien:** Business enthält keine Anbieter- oder Transporttypen. Fake-Provider lässt sich injizieren.
 - **Tests:** Contract-Tests mit Fake-Provider und Fehlerfällen.
-- **Status:** planned
+- **Status:** done
 
 #### PH-07-02 – Validierungs-, Normalisierungs- und Duplikatpipeline
 

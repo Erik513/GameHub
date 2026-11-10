@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-07-01 – Anbieterunabhängiger Vertrag für Kartengenerierung
+
+- Anfrage, Kartenkandidaten, vollständige und teilweise Ergebnisse, Fehler und Abbruch definiert.
+- Anbieter geben unterstützte Sprachen, maximale Anfragemenge und Offlinefähigkeit an.
+- 129 Tests bestanden, darunter Vertragsfälle mit Testanbieter.
+
 ### PH-06-04 – Installierbare Web-App und Offlinebetrieb
 
 - Manifest und App-Symbol für GameHub ergänzt.
