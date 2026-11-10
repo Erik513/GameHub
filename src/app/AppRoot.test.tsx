@@ -13,7 +13,7 @@ describe("AppRoot", () => {
   it("composes the GameHub presentation", () => {
     render(<AppRoot />);
 
-    expect(screen.getByRole("heading", { name: "GameHub" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Choose a game" })).toBeVisible();
   });
 
   it("persists language changes through the configured store", async () => {

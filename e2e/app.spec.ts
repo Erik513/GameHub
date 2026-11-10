@@ -1,23 +1,38 @@
 import { expect, test } from "@playwright/test";
 
-test("renders the GameHub foundation", async ({ page }) => {
+test("renders the GameHub game selection", async ({ page }) => {
   await page.goto("/");
 
   await expect(page).toHaveTitle("GameHub");
-  await expect(page.getByRole("heading", { name: "GameHub" })).toBeVisible();
-  await expect(page.getByRole("list", { name: "Architecture layers" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "GameHub" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose a game" })).toBeVisible();
+  await expect(page.getByRole("list", { name: "Choose a game" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "View progress" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Coming later" }).first()).toBeDisabled();
 });
 
 test("persists the selected UI language", async ({ page }) => {
   await page.goto("/");
 
   await page.getByRole("combobox", { name: "Interface language" }).selectOption("de");
-  await expect(page.getByRole("list", { name: "Architekturschichten" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
 
   await page.reload();
 
   await expect(page.getByRole("combobox", { name: "Oberflächensprache" })).toHaveValue("de");
-  await expect(page.getByText("Projektgrundlage")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
+});
+
+test("navigates between the game library and preview", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "View progress" }).click();
+  await expect(page).toHaveURL(/#\/games\/taboo$/);
+  await expect(page.getByRole("heading", { name: "Taboo" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Back to all games" }).click();
+  await expect(page).toHaveURL(/#\/$/);
+  await expect(page.getByRole("heading", { name: "Choose a game" })).toBeVisible();
 });
 
 test("persists UI and card languages independently", async ({ page }) => {

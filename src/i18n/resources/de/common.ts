@@ -21,4 +21,52 @@ export const common = {
       en: "Englisch",
     },
   },
+  navigation: {
+    home: "Spiele",
+    ariaLabel: "Hauptnavigation",
+  },
+  gameSelection: {
+    eyebrow: "Spielesammlung",
+    title: "Wähle ein Spiel",
+    intro:
+      "Wähle, was zu eurer Runde passt. Neue Spiele kommen in dieselbe Sammlung, sobald sie bereit sind.",
+    status: {
+      available: "Spielbereit",
+      preview: "In Entwicklung",
+      planned: "Geplant",
+    },
+    action: {
+      available: "Spielen",
+      preview: "Fortschritt ansehen",
+      planned: "Kommt später",
+    },
+  },
+  games: {
+    taboo: {
+      title: "Tabu",
+      description: "Erkläre den Begriff, ohne die verbotenen Wörter zu verwenden.",
+    },
+    cards: {
+      title: "Kartenspiel",
+      description: "Ein flexibler Platz für zukünftige Ablege- und Zuordnungsspiele.",
+    },
+    charades: {
+      title: "Scharade",
+      description: "Stelle einen Begriff dar, während dein Team gegen die Zeit spielt.",
+    },
+    quiz: {
+      title: "Quiz",
+      description: "Fragen, Teams und flexible Runden für jedes Thema.",
+    },
+    whoAmI: {
+      title: "Wer bin ich?",
+      description: "Entdecke die geheime Figur mit klugen Fragen.",
+    },
+  },
+  gamePreview: {
+    eyebrow: "Spielvorschau",
+    description:
+      "Dieses Spiel ist bereits Teil von GameHub und wird in einem späteren Entwicklungsschritt spielbar.",
+    back: "Zurück zu allen Spielen",
+  },
 } as const;

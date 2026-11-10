@@ -253,7 +253,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Header, Hauptnavigation, responsive Startseite mit verpflichtender Spielauswahl, zentraler Spielkatalog und minimaler Spielmodulvertrag für Kennung, Übersetzungsschlüssel, Route und Verfügbarkeitsstatus.
 - **Akzeptanzkriterien:** App-Start zeigt immer die Spielauswahl. Spiele werden ausschließlich über den Katalog eingebunden. Navigation funktioniert per Tastatur und Touch. Unfertige Spiele sind verständlich gekennzeichnet. Shell und Navigation importieren keine Tabu-spezifische Spiellogik.
 - **Tests:** Katalog-Vertrag sowie Routing-, Auswahl- und Navigationsintegration in Deutsch und Englisch.
-- **Status:** planned
+- **Status:** done
 
 #### PH-03-03 – Einstellungen und Statusmeldungen
 

@@ -1,8 +1,10 @@
-import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { findGameByRoute, gameCatalog, type GameModuleDescriptor } from "../app/gameCatalog";
+import { createRouteHash, homeRoute, parseHashRoute } from "../app/hashRoute";
 import type { SupportedLanguage } from "../i18n";
-import { Card } from "./components";
-
-const layerKeys = ["presentation", "business", "data", "infrastructure"] as const;
+import { AppShell } from "./AppShell";
+import { GamePreviewPage } from "./GamePreviewPage";
+import { GameSelectionPage } from "./GameSelectionPage";
 
 interface AppProps {
   cardLanguage: SupportedLanguage;
@@ -11,52 +13,41 @@ interface AppProps {
 }
 
 export function App({ cardLanguage, onCardLanguageChange, onLanguageChange }: AppProps) {
-  const { t, i18n } = useTranslation();
-  const selectedLanguage: SupportedLanguage = i18n.resolvedLanguage === "de" ? "de" : "en";
+  const [currentRoute, setCurrentRoute] = useState(() => parseHashRoute(window.location.hash));
+  const selectedGame = findGameByRoute(currentRoute);
 
-  async function handleLanguageChange(language: SupportedLanguage) {
-    await i18n.changeLanguage(language);
-    onLanguageChange?.(language);
+  useEffect(() => {
+    function handleHashChange() {
+      setCurrentRoute(parseHashRoute(window.location.hash));
+    }
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  function navigate(route: string) {
+    window.location.hash = createRouteHash(route);
+    setCurrentRoute(route);
+  }
+
+  function handleGameSelection(game: GameModuleDescriptor) {
+    if (game.availability !== "planned") {
+      navigate(game.route);
+    }
   }
 
   return (
-    <main className="app-shell">
-      <Card className="foundation-card" aria-labelledby="gamehub-title">
-        <div className="language-controls">
-          <label className="language-control">
-            <span>{t("language.uiLabel")}</span>
-            <select
-              value={selectedLanguage}
-              onChange={(event) =>
-                void handleLanguageChange(event.currentTarget.value as SupportedLanguage)
-              }
-            >
-              <option value="de">{t("language.options.de")}</option>
-              <option value="en">{t("language.options.en")}</option>
-            </select>
-          </label>
-          <label className="language-control">
-            <span>{t("language.cardLabel")}</span>
-            <select
-              value={cardLanguage}
-              onChange={(event) =>
-                onCardLanguageChange(event.currentTarget.value as SupportedLanguage)
-              }
-            >
-              <option value="de">{t("language.options.de")}</option>
-              <option value="en">{t("language.options.en")}</option>
-            </select>
-          </label>
-        </div>
-        <p className="eyebrow">{t("app.eyebrow")}</p>
-        <h1 id="gamehub-title">{t("app.title")}</h1>
-        <p className="intro">{t("app.intro")}</p>
-        <ul className="layer-list" aria-label={t("architecture.label")}>
-          {layerKeys.map((layerKey) => (
-            <li key={layerKey}>{t(`architecture.layers.${layerKey}`)}</li>
-          ))}
-        </ul>
-      </Card>
-    </main>
+    <AppShell
+      cardLanguage={cardLanguage}
+      currentRoute={selectedGame ? currentRoute : homeRoute}
+      onCardLanguageChange={onCardLanguageChange}
+      onLanguageChange={(language) => onLanguageChange?.(language)}
+    >
+      {selectedGame && selectedGame.availability !== "planned" ? (
+        <GamePreviewPage game={selectedGame} onBack={() => navigate(homeRoute)} />
+      ) : (
+        <GameSelectionPage games={gameCatalog} onSelect={handleGameSelection} />
+      )}
+    </AppShell>
   );
 }
