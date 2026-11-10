@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createGameHubI18n, type SupportedLanguage } from "../i18n";
 import { App } from "./App";
 
@@ -50,4 +51,21 @@ describe("App", () => {
       }
     },
   );
+
+  it("changes the language and reports the selection", async () => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n("en");
+    const onLanguageChange = vi.fn();
+
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App onLanguageChange={onLanguageChange} />
+      </I18nextProvider>,
+    );
+
+    await user.selectOptions(screen.getByRole("combobox", { name: "Language" }), "de");
+
+    expect(await screen.findByRole("combobox", { name: "Sprache" })).toHaveValue("de");
+    expect(onLanguageChange).toHaveBeenCalledWith("de");
+  });
 });

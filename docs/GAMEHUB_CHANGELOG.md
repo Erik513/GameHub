@@ -4,6 +4,15 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-02-02 – Erkennung, Auswahl und Persistenz der UI-Sprache
+
+- Gespeicherte UI-Sprache vor der Browsersprache priorisiert und Englisch als kontrollierten Fallback beibehalten.
+- Sprachvarianten wie `de-DE` und `en-US` auf die unterstützten Sprachen normalisiert.
+- Zugängliche Sprachwahl für Deutsch und Englisch in die Startansicht integriert.
+- Speicher-Port von einem fehlertoleranten localStorage-Adapter getrennt und im Composition Root verdrahtet.
+- Sprachwechsel dauerhaft gespeichert und beim Neuladen vor dem ersten Rendern wiederhergestellt.
+- 19 Unit-, Infrastruktur- und Komponententests sowie vier E2E-Fälle in Desktop- und Mobilprofilen erfolgreich ausgeführt.
+
 ### Erweiterbare Spielauswahl verbindlich geplant
 
 - App-Start mit verpflichtender Spielauswahl als dauerhafte Produktanforderung festgelegt.

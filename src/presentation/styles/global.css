@@ -49,6 +49,30 @@ textarea {
   box-shadow: 0 32px 90px rgb(0 0 0 / 28%);
 }
 
+.language-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 28px;
+  color: #d8daf0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.language-control select {
+  padding: 8px 34px 8px 10px;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 10px;
+  color: #f7f7ff;
+  background: #20233c;
+}
+
+.language-control select:focus-visible {
+  outline: 3px solid #43dbc4;
+  outline-offset: 3px;
+}
+
 .eyebrow {
   margin: 0 0 12px;
   color: #43dbc4;

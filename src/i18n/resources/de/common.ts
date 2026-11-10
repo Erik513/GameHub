@@ -13,4 +13,11 @@ export const common = {
       infrastructure: "Infrastruktur",
     },
   },
+  language: {
+    label: "Sprache",
+    options: {
+      de: "Deutsch",
+      en: "Englisch",
+    },
+  },
 } as const;

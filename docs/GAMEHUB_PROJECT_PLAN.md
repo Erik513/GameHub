@@ -219,7 +219,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Browsererkennung, Sprachwahlelement und Speicher-Port mit lokalem Adapter.
 - **Akzeptanzkriterien:** Erststart nutzt unterstützte Browsersprache. Auswahl überlebt Reload. Unbekannte Sprache fällt kontrolliert zurück.
 - **Tests:** Unit-, Komponenten- und Integrationsfälle für beide Sprachen.
-- **Status:** planned
+- **Status:** done
 
 #### PH-02-03 – Unabhängige Kartensprache
 
