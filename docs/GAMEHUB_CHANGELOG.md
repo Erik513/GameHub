@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-07-03 – Lokaler Anbieter für Tabu-Karten
+
+- Separaten Vorrat mit 18 deutschen und 18 englischen Kartenkandidaten ergänzt.
+- Auswahl nach Sprache, Kategorie und Schwierigkeit. Zu kleine Vorräte werden als Teilergebnis gemeldet.
+- 135 Tests bestanden. Alle lokalen Kandidaten wurden ohne Netzwerk geprüft.
+
 ### PH-07-02 – Generierte Tabu-Karten prüfen
 
 - Kartenfelder, angefragte Sprache, Kategorie, Schwierigkeit und Verbotswörter geprüft.

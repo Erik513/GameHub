@@ -399,7 +399,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Adapter auf kuratierte lokale Kandidaten und deterministische Testdaten.
 - **Akzeptanzkriterien:** Funktioniert offline und erfüllt denselben Vertrag wie spätere Provider.
 - **Tests:** Provider-Contract und Offline-Integration.
-- **Status:** planned
+- **Status:** done
 
 #### PH-07-04 – Ollama-Adapter
 
