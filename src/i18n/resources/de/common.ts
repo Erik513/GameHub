@@ -13,7 +13,7 @@ export const common = {
     teamTotal: "{{team}}: {{score}}",
     nextTeam: "Nächstes Team: {{team}}",
     allRoundsPlayed: "Alle vorgesehenen Runden sind gespielt.",
-    exhausted: "Der Beispielsatz enthält keine ungespielten Karten für eine weitere Runde.",
+    exhausted: "Der Kartensatz enthält keine ungespielten Karten für eine weitere Runde.",
     title: "Laufende Runde",
     team: "Team: {{team}}",
     score: "Punkte: {{score}}",
@@ -25,9 +25,10 @@ export const common = {
     empty: "Keine passenden Karten",
     emptyHint: "Ändere die Kartenfilter und bereite die Partie erneut vor.",
     start: "Runde starten",
-    demo: "Diese Runde verwendet einen kleinen Beispielsatz.",
   },
   tabooSetup: {
+    cardShortage:
+      "Die Auswahl enthält {{available}} Karten. Für die geplanten Teamrunden werden mindestens {{required}} benötigt.",
     teams: "Teams",
     team: "Team {{number}}",
     addTeam: "Team hinzufügen",

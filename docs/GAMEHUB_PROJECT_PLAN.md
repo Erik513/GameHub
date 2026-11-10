@@ -357,7 +357,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Kuratierte Kartendateien mit Sprache, Kategorie, Schwierigkeit, Ziel und exakt drei verbotenen Wörtern.
 - **Akzeptanzkriterien:** Beide Sprachen besitzen ausreichende Karten für Standardpartien. Enge Filter werden vor Spielbeginn auf Kartenmangel geprüft. Alle Dateien bestehen Schema- und Duplikatprüfung.
 - **Tests:** Datensatzvalidierung, Eindeutigkeit und Mindestmengen.
-- **Status:** planned
+- **Status:** done
 
 #### PH-06-03 – Import und Aktualisierung lokaler Karten
 

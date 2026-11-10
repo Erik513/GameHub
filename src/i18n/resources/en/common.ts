@@ -13,7 +13,7 @@ export const common = {
     teamTotal: "{{team}}: {{score}}",
     nextTeam: "Next team: {{team}}",
     allRoundsPlayed: "All scheduled rounds have been played.",
-    exhausted: "The sample deck has no unused cards for another round.",
+    exhausted: "The deck has no unused cards for another round.",
     title: "Active round",
     team: "Team: {{team}}",
     score: "Score: {{score}}",
@@ -25,9 +25,10 @@ export const common = {
     empty: "No matching cards",
     emptyHint: "Change the card filters and prepare the game again.",
     start: "Start round",
-    demo: "This round uses a small sample deck.",
   },
   tabooSetup: {
+    cardShortage:
+      "The filters match {{available}} cards. The scheduled turns need at least {{required}}.",
     teams: "Teams",
     team: "Team {{number}}",
     addTeam: "Add team",

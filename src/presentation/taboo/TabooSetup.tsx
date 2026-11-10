@@ -1,7 +1,7 @@
 import { useCallback, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { buildDeck, type DeckCriteria } from "../../business/games/taboo/deck";
-import type { ValidationIssue } from "../../business/games/taboo/model";
+import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
 import {
   createTabooGame,
   getNextTabooTurn,
@@ -9,7 +9,6 @@ import {
   type TabooEvent,
   type TabooState,
 } from "../../business/games/taboo/stateMachine";
-import { tabooDemoCards } from "../../data/tabooDemoCards";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { TabooRound } from "./TabooRound";
@@ -18,11 +17,18 @@ const categories = ["everyday", "nature", "culture"] as const;
 const difficulties = ["easy", "medium", "hard"] as const;
 type SetupState = Extract<ReturnType<typeof createTabooGame>, { valid: true }>["value"];
 
-export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }) {
+export function TabooSetup({
+  cardLanguage,
+  cards,
+}: {
+  cardLanguage: SupportedLanguage;
+  cards: readonly TabooCard[];
+}) {
   const { t } = useTranslation();
   const [teamCount, setTeamCount] = useState(2);
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
-  const [session, setSession] = useState<{ state: SetupState; filters: DeckCriteria }>();
+  const [session, setSession] = useState<{ state: SetupState; deck: readonly TabooCard[] }>();
+  const [shortage, setShortage] = useState<{ available: number; required: number }>();
   const [round, setRound] = useState<{
     state: TabooState;
     deadline: number;
@@ -56,11 +62,13 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
   function startRound() {
     if (!session) return;
     const current = round?.state ?? session.state;
-    const [card, ...remainingCards] = buildDeck(
-      tabooDemoCards,
-      { ...session.filters, excludedCardIds: current.resolvedCardIds },
-      Math.random,
-    ).cards;
+    const used = new Set(current.resolvedCardIds);
+    const available = session.deck.filter((card) => !used.has(card.id));
+    const { teams, roundsPerTeam } = current.configuration;
+    const completed = ended ? (ended.turn.round - 1) * teams.length + ended.turn.teamIndex + 1 : 0;
+    const turnsLeft = teams.length * roundsPerTeam - completed;
+    if (turnsLeft <= 0) return;
+    const [card, ...remainingCards] = available.slice(0, Math.floor(available.length / turnsLeft));
     if (!card) {
       setDeckEmpty(true);
       return;
@@ -78,6 +86,8 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setDeckEmpty(false);
+    setShortage(undefined);
+    setSession(undefined);
     const data = new FormData(event.currentTarget);
     const result = createTabooGame({
       teams: data.getAll("team").map((name, index) => ({
@@ -93,15 +103,20 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
       return;
     }
     setIssues([]);
-    setSession({
-      state: result.value,
-      filters: {
-        language: result.value.configuration.cardLanguage,
-        minimumCards: 1,
-        categoryIds: categories.filter((category) => data.getAll("category").includes(category)),
-        difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
-      },
-    });
+    const required =
+      result.value.configuration.teams.length * result.value.configuration.roundsPerTeam;
+    const filters: DeckCriteria = {
+      language: result.value.configuration.cardLanguage,
+      minimumCards: 1,
+      categoryIds: categories.filter((category) => data.getAll("category").includes(category)),
+      difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
+    };
+    const deck = buildDeck(cards, filters, Math.random).cards;
+    if (deck.length < required) {
+      setShortage({ available: deck.length, required });
+      return;
+    }
+    setSession({ state: result.value, deck });
   }
 
   function errorMessage(issue: ValidationIssue) {
@@ -204,6 +219,11 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
         </section>
       )}
       <div hidden={Boolean(round)} key={formVersion}>
+        {shortage && (
+          <StatusMessage title={t("tabooRound.empty")} tone="error">
+            {t("tabooSetup.cardShortage", shortage)}
+          </StatusMessage>
+        )}
         {deckEmpty && (
           <StatusMessage title={t("tabooRound.empty")} tone="error">
             {t("tabooRound.emptyHint")}
@@ -214,7 +234,6 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
             {t("tabooSetup.readyDetail", {
               teams: session.state.configuration.teams.map((team) => team.name).join(", "),
             })}
-            <p>{t("tabooRound.demo")}</p>
             <Button onClick={startRound}>{t("tabooRound.start")}</Button>
           </StatusMessage>
         )}
@@ -231,6 +250,7 @@ export function TabooSetup({ cardLanguage }: { cardLanguage: SupportedLanguage }
           noValidate
           onSubmit={submit}
           onChange={() => {
+            setShortage(undefined);
             setSession(undefined);
             setDeckEmpty(false);
           }}

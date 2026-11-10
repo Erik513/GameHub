@@ -3,6 +3,7 @@ import { I18nextProvider } from "react-i18next";
 import { expect, it, vi } from "vitest";
 import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
+import { tabooStandardCards } from "../../data/tabooStandardCards";
 
 it.each([
   { correct: true, result: "Winner: Owls" },
@@ -13,7 +14,7 @@ it.each([
   try {
     render(
       <I18nextProvider i18n={i18n}>
-        <TabooSetup cardLanguage="en" />
+        <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
     fireEvent.change(screen.getByRole("textbox", { name: "Team 1" }), {
@@ -66,7 +67,7 @@ it("plays cards without resetting the countdown and ends the round on time", asy
   try {
     render(
       <I18nextProvider i18n={i18n}>
-        <TabooSetup cardLanguage="en" />
+        <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
     fireEvent.change(screen.getByRole("textbox", { name: "Team 1" }), {

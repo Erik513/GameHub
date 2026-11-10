@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
+import type { TabooCard } from "../business/games/taboo/model";
 import { gameHubI18n, type SupportedLanguage } from "../i18n";
 import type { LanguagePreferenceStore } from "../i18n/languagePreference";
 import { App } from "../presentation/App";
 
 interface AppRootProps {
+  tabooCards?: readonly TabooCard[];
   cardLanguagePreferenceStore?: LanguagePreferenceStore;
   initialCardLanguage?: SupportedLanguage;
   languagePreferenceStore?: LanguagePreferenceStore;
 }
 
 export function AppRoot({
+  tabooCards = [],
   cardLanguagePreferenceStore,
   initialCardLanguage = "en",
   languagePreferenceStore,
@@ -25,6 +28,7 @@ export function AppRoot({
   return (
     <I18nextProvider i18n={gameHubI18n}>
       <App
+        tabooCards={tabooCards}
         cardLanguage={cardLanguage}
         onCardLanguageChange={handleCardLanguageChange}
         onLanguageChange={(language) => languagePreferenceStore?.write(language)}

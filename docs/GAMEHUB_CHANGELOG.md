@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-06-02 – Deutsche und englische Tabu-Standardkarten
+
+- Je 45 geprüfte Standardkarten in drei Kategorien und Schwierigkeitsstufen ergänzt.
+- Karten werden am Anwendungseinstieg bereitgestellt. Die Oberfläche greift über typisierte Eingabedaten darauf zu.
+- Vor Spielbeginn wird mindestens eine passende Karte je Teamrunde verlangt. Der Vorrat wird auf die verbleibenden Teamrunden aufgeteilt.
+- 109 Tests bestanden, darunter Bestandsprüfung und Datensatzvalidierung.
+
 ### PH-06-01 – Lokaler Kartenspeicher
 
 - Versionierten IndexedDB-Speicher mit eigener Tabu-Schnittstelle für benutzerdefinierte Karten ergänzt.
