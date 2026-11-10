@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-07-02 – Generierte Tabu-Karten prüfen
+
+- Kartenfelder, angefragte Sprache, Kategorie, Schwierigkeit und Verbotswörter geprüft.
+- Unicode und Leerzeichen normalisiert. Ablehnungen enthalten Kartenposition und Fehlergrund.
+- Vor dem gemeinsamen Speichern ausgewählter Karten wird der aktuelle Bestand erneut auf Duplikate geprüft. 132 Tests bestanden.
+
 ### PH-07-01 – Anbieterunabhängiger Vertrag für Kartengenerierung
 
 - Anfrage, Kartenkandidaten, vollständige und teilweise Ergebnisse, Fehler und Abbruch definiert.

@@ -3,8 +3,8 @@
   "project": {
     "id": "gamehub",
     "name": "GameHub",
-    "stage": "taboo_generation_validation_planned",
-    "updatedAt": "2026-11-11T00:08:16+01:00",
+    "stage": "taboo_local_generator_planned",
+    "updatedAt": "2026-11-11T00:10:26+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 34,
+      "completedTasks": 35,
       "totalTasks": 46,
-      "percent": 73.91
+      "percent": 76.09
     }
   },
   "environment": {
@@ -45,12 +45,12 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:08:16+01:00",
+      "lastRunAt": "2026-11-11T00:10:26+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:08:16+01:00",
+      "lastRunAt": "2026-11-11T00:10:26+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
@@ -65,7 +65,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:08:16+01:00",
+      "lastRunAt": "2026-11-11T00:10:26+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -80,14 +80,14 @@
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:08:16+01:00",
-      "passed": 123,
+      "lastRunAt": "2026-11-11T00:10:26+01:00",
+      "passed": 126,
       "failed": 0,
-      "details": "123 Unit- und Komponententests bestanden. Der Generierungsvertrag wurde mit einem austauschbaren Testanbieter geprüft."
+      "details": "126 Unit- und Komponententests bestanden. Kartenprüfung, Normalisierung, Duplikate und Speicherfehler sind abgedeckt."
     },
     "integrationTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:08:16+01:00",
+      "lastRunAt": "2026-11-11T00:10:26+01:00",
       "passed": 6,
       "failed": 0,
       "details": "Sechs Integrationstests bestanden, darunter Dateiimport, Duplikatprüfung und Sicherung eigener Karten."
@@ -112,18 +112,18 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:08:16+01:00",
-      "overallLines": 96.58,
-      "overallBranches": 89.8,
-      "overallFunctions": 95.2,
-      "overallStatements": 95,
+      "lastRunAt": "2026-11-11T00:10:26+01:00",
+      "overallLines": 96.8,
+      "overallBranches": 90.52,
+      "overallFunctions": 95.36,
+      "overallStatements": 95.33,
       "criticalGameLogicLines": 100,
       "businessLines": 100,
       "dataInfrastructureLines": 91.94,
       "uiLines": 100,
       "i18nLines": 96.42,
       "branches": {
-        "criticalGameLogic": 99.13,
+        "criticalGameLogic": 99.41,
         "business": null,
         "dataInfrastructure": 87.5,
         "ui": 100
@@ -359,7 +359,7 @@
         {
           "id": "PH-07-02",
           "title": "Validierungs-, Normalisierungs- und Duplikatpipeline",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-07-03",
@@ -434,6 +434,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "PH-07-02 abgeschlossen: Generierte Tabu-Karten werden geprüft, normalisiert und vor atomarer Speicherung erneut auf Duplikate geprüft."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-07-01 abgeschlossen: anbieterunabhängiger Vertrag für Tabu-Kartengenerierung mit Ergebnissen, Fehlern und Abbruch."
@@ -627,9 +631,9 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-07-02",
-      "reason": "Generierte Karten validieren, normalisieren und auf Duplikate prüfen.",
-      "prerequisite": "Der anbieterunabhängige Generierungsvertrag ist definiert."
+      "id": "PH-07-03",
+      "reason": "Einen lokalen Anbieter für Kartenkandidaten ohne Internetverbindung ergänzen.",
+      "prerequisite": "Generierungsvertrag und Kartenprüfung sind fertig."
     }
   ]
 }

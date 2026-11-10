@@ -391,7 +391,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Schema, exakt drei Verbotswörter, Sprache, Normalisierung, bestehende und batchinterne Duplikate prüfen.
 - **Akzeptanzkriterien:** Ungültige Karten werden mit Gründen abgelehnt. Gültige Karten werden atomar gespeichert.
 - **Tests:** Grenzfälle, Unicode, Groß-/Kleinschreibung, partielle Provider-Antworten und Transaktionsfehler.
-- **Status:** planned
+- **Status:** done
 
 #### PH-07-03 – Lokaler Generatoradapter
 
