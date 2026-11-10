@@ -36,7 +36,7 @@ describe("App", () => {
 
       render(
         <I18nextProvider i18n={i18n}>
-          <App />
+          <App cardLanguage={language} onCardLanguageChange={vi.fn()} />
         </I18nextProvider>,
       );
 
@@ -59,13 +59,30 @@ describe("App", () => {
 
     render(
       <I18nextProvider i18n={i18n}>
-        <App onLanguageChange={onLanguageChange} />
+        <App cardLanguage="en" onCardLanguageChange={vi.fn()} onLanguageChange={onLanguageChange} />
       </I18nextProvider>,
     );
 
-    await user.selectOptions(screen.getByRole("combobox", { name: "Language" }), "de");
+    await user.selectOptions(screen.getByRole("combobox", { name: "Interface language" }), "de");
 
-    expect(await screen.findByRole("combobox", { name: "Sprache" })).toHaveValue("de");
+    expect(await screen.findByRole("combobox", { name: "Oberflächensprache" })).toHaveValue("de");
     expect(onLanguageChange).toHaveBeenCalledWith("de");
+  });
+
+  it("reports card language changes without changing the UI language", async () => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n("en");
+    const onCardLanguageChange = vi.fn();
+
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App cardLanguage="de" onCardLanguageChange={onCardLanguageChange} />
+      </I18nextProvider>,
+    );
+
+    await user.selectOptions(screen.getByRole("combobox", { name: "Card language" }), "en");
+
+    expect(screen.getByRole("combobox", { name: "Interface language" })).toHaveValue("en");
+    expect(onCardLanguageChange).toHaveBeenCalledWith("en");
   });
 });

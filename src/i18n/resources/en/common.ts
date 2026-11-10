@@ -14,7 +14,8 @@ export const common = {
     },
   },
   language: {
-    label: "Language",
+    uiLabel: "Interface language",
+    cardLabel: "Card language",
     options: {
       de: "German",
       en: "English",

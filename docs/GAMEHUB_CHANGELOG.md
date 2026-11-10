@@ -4,6 +4,15 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-02-03 – Unabhängige Kartensprache
+
+- Reines Business-Modell für unabhängige UI- und Kartensprache ergänzt.
+- Alle vier Kombinationen aus Deutsch und Englisch sowie unabhängige Änderungen beider Werte getestet.
+- Kartensprache als eigene, lokalisierte Auswahl in die Startansicht aufgenommen.
+- UI- und Kartensprache unter getrennten localStorage-Schlüsseln gespeichert.
+- Gespeicherte Kartensprache beim App-Start wiederhergestellt; ohne gespeicherten Wert wird einmalig die initiale UI-Sprache übernommen.
+- 29 Unit-, Infrastruktur- und Komponententests sowie sechs E2E-Fälle in Desktop- und Mobilprofilen erfolgreich ausgeführt.
+
 ### PH-02-02 – Erkennung, Auswahl und Persistenz der UI-Sprache
 
 - Gespeicherte UI-Sprache vor der Browsersprache priorisiert und Englisch als kontrollierten Fallback beibehalten.

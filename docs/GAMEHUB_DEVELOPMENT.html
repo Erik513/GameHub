@@ -193,13 +193,13 @@
           "id": "gamehub",
           "name": "GameHub",
           "stage": "internationalization_in_progress",
-          "updatedAt": "2026-11-10T17:23:47+01:00",
+          "updatedAt": "2026-11-10T17:30:17+01:00",
           "statusValues": ["planned", "in_progress", "blocked", "done"],
           "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
           "progress": {
-            "completedTasks": 15,
+            "completedTasks": 16,
             "totalTasks": 46,
-            "percent": 32.61
+            "percent": 34.78
           }
         },
         "environment": {
@@ -215,21 +215,21 @@
           "defaultBranch": "main"
         },
         "quality": {
-          "typecheck": { "status": "passed", "lastRunAt": "2026-11-10T17:23:47+01:00", "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen." },
-          "lint": { "status": "passed", "lastRunAt": "2026-11-10T17:23:47+01:00", "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen." },
-          "format": { "status": "passed", "lastRunAt": "2026-11-10T17:23:47+01:00", "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich." },
+          "typecheck": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen." },
+          "lint": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen." },
+          "format": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich." },
           "githubActions": { "status": "passed", "lastRunAt": "2026-11-10T17:06:41+01:00", "details": "Der GitHub-Actions-Lauf 42851108987 auf main war erfolgreich: statische Prüfungen, Tests, Produktions-Build und Playwright-E2E wurden abgeschlossen." },
           "architectureCheck": { "status": "passed", "lastRunAt": "2026-11-09T19:53:45+01:00", "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten." },
           "devServerSmoke": { "status": "passed", "lastRunAt": "2026-11-09T19:55:43+01:00", "details": "Der Vite-Entwicklungsserver lieferte HTTP 200 und das GameHub-Einstiegsdokument." },
-          "build": { "status": "passed", "lastRunAt": "2026-11-10T17:23:47+01:00", "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen." },
-          "unitTests": { "status": "passed", "lastRunAt": "2026-11-10T17:23:47+01:00", "passed": 19, "failed": 0, "details": "Neunzehn Business-, i18n-, Infrastruktur- und Komponententests wurden in jsdom erfolgreich abgeschlossen." },
+          "build": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen." },
+          "unitTests": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "passed": 29, "failed": 0, "details": "29 Business-, i18n-, Infrastruktur- und Komponententests wurden in jsdom erfolgreich abgeschlossen." },
           "integrationTests": { "status": "not_configured", "lastRunAt": null, "passed": 0, "failed": 0 },
-          "e2eTests": { "status": "passed", "lastRunAt": "2026-11-10T17:23:47+01:00", "passed": 4, "failed": 0, "details": "Startansicht und dauerhafte Sprachumschaltung waren mit Playwright im Desktop- und Mobilprofil erfolgreich." },
+          "e2eTests": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "passed": 6, "failed": 0, "details": "Startansicht sowie unabhängige und dauerhafte UI- und Kartensprachen waren mit Playwright im Desktop- und Mobilprofil erfolgreich." },
           "renameValidation": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Paket, Quellcode, Tests, Dokumentation, Dashboard, Repository-Pfad und Produktions-Build verwenden GameHub." },
           "documentationChecks": { "status": "passed", "lastRunAt": "2026-11-09T19:35:00+01:00", "passed": 5, "failed": 0 },
           "coverage": {
             "status": "passed",
-            "lastRunAt": "2026-11-10T17:23:47+01:00",
+            "lastRunAt": "2026-11-10T17:30:17+01:00",
             "overallLines": 100,
             "overallBranches": 100,
             "overallFunctions": 100,
@@ -282,7 +282,7 @@
             "tasks": [
               { "id": "PH-02-01", "title": "i18n-Grundkonfiguration", "status": "done" },
               { "id": "PH-02-02", "title": "Erkennung, Auswahl und Persistenz der UI-Sprache", "status": "done" },
-              { "id": "PH-02-03", "title": "Unabhängige Kartensprache", "status": "planned" },
+              { "id": "PH-02-03", "title": "Unabhängige Kartensprache", "status": "done" },
               { "id": "PH-02-04", "title": "Übersetzungsparität prüfen", "status": "planned" }
             ]
           },
@@ -366,6 +366,7 @@
           }
         ],
         "recentChanges": [
+          { "date": "2026-11-10", "summary": "PH-02-03 abgeschlossen: UI- und Kartensprache werden unabhängig modelliert, ausgewählt und unter getrennten lokalen Schlüsseln dauerhaft gespeichert." },
           { "date": "2026-11-10", "summary": "PH-02-02 abgeschlossen: gespeicherte UI-Sprache und Browsersprache werden ausgewertet; Deutsch und Englisch lassen sich umschalten und dauerhaft lokal speichern." },
           { "date": "2026-11-10", "summary": "Verbindliche Menü-zuerst-Architektur beschlossen: GameHub startet mit einer Spielauswahl und bindet Spiele über einen zentralen, genreunabhängigen Spielkatalog ein." },
           { "date": "2026-11-10", "summary": "PH-02-01 abgeschlossen: i18next und react-i18next mit deutschen und englischen Ressourcen, englischem Fallback, getypten Schlüsseln und Sprachtests eingerichtet." },
@@ -419,9 +420,9 @@
         ],
         "nextRecommendedTasks": [
           {
-            "id": "PH-02-03",
-            "reason": "UI-Sprache und Sprache der Spielkarten als unabhängige, dauerhaft gespeicherte Einstellungen modellieren.",
-            "prerequisite": "Die dauerhafte Auswahl der UI-Sprache aus PH-02-02 ist abgeschlossen."
+            "id": "PH-02-04",
+            "reason": "Identische, nichtleere Übersetzungsschlüssel für Deutsch und Englisch automatisch erzwingen.",
+            "prerequisite": "Die deutschen und englischen Ressourcen aus PH-02-01 bis PH-02-03 sind vorhanden."
           }
         ]
       };

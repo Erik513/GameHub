@@ -14,7 +14,8 @@ export const common = {
     },
   },
   language: {
-    label: "Sprache",
+    uiLabel: "Oberflächensprache",
+    cardLabel: "Kartensprache",
     options: {
       de: "Deutsch",
       en: "Englisch",

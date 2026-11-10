@@ -2,8 +2,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { AppRoot } from "./app/AppRoot";
 import { gameHubI18n } from "./i18n";
-import { resolveInitialLanguage } from "./i18n/languagePreference";
-import { createLocalStorageLanguagePreferenceStore } from "./infrastructure/localStorageLanguagePreferenceStore";
+import { parseSupportedLanguage, resolveInitialLanguage } from "./i18n/languagePreference";
+import {
+  createLocalStorageCardLanguagePreferenceStore,
+  createLocalStorageLanguagePreferenceStore,
+} from "./infrastructure/localStorageLanguagePreferenceStore";
 import "./presentation/styles/global.css";
 
 const rootElement = document.getElementById("root");
@@ -14,10 +17,19 @@ if (!rootElement) {
 
 const languagePreferenceStore = createLocalStorageLanguagePreferenceStore(window.localStorage);
 const initialLanguage = resolveInitialLanguage(languagePreferenceStore.read(), navigator.languages);
+const cardLanguagePreferenceStore = createLocalStorageCardLanguagePreferenceStore(
+  window.localStorage,
+);
+const initialCardLanguage =
+  parseSupportedLanguage(cardLanguagePreferenceStore.read()) ?? initialLanguage;
 await gameHubI18n.changeLanguage(initialLanguage);
 
 createRoot(rootElement).render(
   <StrictMode>
-    <AppRoot languagePreferenceStore={languagePreferenceStore} />
+    <AppRoot
+      cardLanguagePreferenceStore={cardLanguagePreferenceStore}
+      initialCardLanguage={initialCardLanguage}
+      languagePreferenceStore={languagePreferenceStore}
+    />
   </StrictMode>,
 );

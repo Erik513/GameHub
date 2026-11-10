@@ -1,10 +1,11 @@
 import { createInstance, type InitOptions, type i18n } from "i18next";
 import { initReactI18next } from "react-i18next";
+import type { GameHubLanguage } from "../business/settings/languageSettings";
 import { common as germanCommon } from "./resources/de/common";
 import { common as englishCommon } from "./resources/en/common";
 
 export const supportedLanguages = ["de", "en"] as const;
-export type SupportedLanguage = (typeof supportedLanguages)[number];
+export type SupportedLanguage = GameHubLanguage;
 
 export const defaultNamespace = "common" as const;
 export const fallbackLanguage: SupportedLanguage = "en";

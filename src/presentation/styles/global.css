@@ -49,12 +49,18 @@ textarea {
   box-shadow: 0 32px 90px rgb(0 0 0 / 28%);
 }
 
+.language-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px 20px;
+  margin-bottom: 28px;
+}
+
 .language-control {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 10px;
-  margin-bottom: 28px;
   color: #d8daf0;
   font-size: 0.875rem;
   font-weight: 700;

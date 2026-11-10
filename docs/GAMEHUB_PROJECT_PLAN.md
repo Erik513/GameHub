@@ -227,7 +227,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Einstellungsmodell, Auswahl und Persistenz für Kartensprache.
 - **Akzeptanzkriterien:** Änderung einer Sprache beeinflusst die andere nicht. Beide Werte überleben Reload.
 - **Tests:** Business- und UI-Tests aller Kombinationen Deutsch/Englisch.
-- **Status:** planned
+- **Status:** done
 
 #### PH-02-04 – Übersetzungsparität prüfen
 
