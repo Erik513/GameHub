@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-04-05 – Kartenfilter und Deckbildung
+
+- Karten nach Sprache, Kategorie und Schwierigkeit filtern und mit austauschbarer Zufallsquelle mischen.
+- Doppelte Kartenkennungen und bereits gespielte Karten ausschließen. Leere und zu kleine Decks gesondert melden.
+- 96 Tests bestanden. Die Tabu-Kernlogik ist abgeschlossen.
+
 ### PH-04-04 – Rundenfolge und Siegerermittlung
 
 - Spielende nach der konfigurierten Zahl von Runden pro Team geprüft.

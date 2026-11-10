@@ -3,8 +3,8 @@
   "project": {
     "id": "gamehub",
     "name": "GameHub",
-    "stage": "taboo_deck_planned",
-    "updatedAt": "2026-11-10T23:22:10+01:00",
+    "stage": "taboo_setup_planned",
+    "updatedAt": "2026-11-10T23:24:10+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 24,
+      "completedTasks": 25,
       "totalTasks": 46,
-      "percent": 52.17
+      "percent": 54.35
     }
   },
   "environment": {
@@ -45,12 +45,12 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:22:10+01:00",
+      "lastRunAt": "2026-11-10T23:24:10+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:22:10+01:00",
+      "lastRunAt": "2026-11-10T23:24:10+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
@@ -65,7 +65,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:22:10+01:00",
+      "lastRunAt": "2026-11-10T23:24:10+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -75,15 +75,15 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:22:10+01:00",
+      "lastRunAt": "2026-11-10T23:24:10+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:22:10+01:00",
-      "passed": 88,
+      "lastRunAt": "2026-11-10T23:24:10+01:00",
+      "passed": 96,
       "failed": 0,
-      "details": "88 Tests bestanden. Rundenfolge, Einzelsieg und Gleichstand sind abgedeckt."
+      "details": "96 Tests bestanden. Kartenfilter, Mischreihenfolge, Duplikate und zu kleine Decks sind abgedeckt."
     },
     "integrationTests": {
       "status": "not_configured",
@@ -111,23 +111,23 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:22:10+01:00",
-      "overallLines": 98.63,
-      "overallBranches": 96.57,
-      "overallFunctions": 98.55,
-      "overallStatements": 98.32,
+      "lastRunAt": "2026-11-10T23:24:10+01:00",
+      "overallLines": 98.75,
+      "overallBranches": 97.02,
+      "overallFunctions": 98.57,
+      "overallStatements": 98.49,
       "criticalGameLogicLines": 100,
       "businessLines": 100,
       "dataInfrastructureLines": 100,
       "uiLines": 100,
       "i18nLines": 96.42,
       "branches": {
-        "criticalGameLogic": 98.86,
+        "criticalGameLogic": 99.13,
         "business": null,
         "dataInfrastructure": null,
         "ui": 100
       },
-      "details": "Tabu-Spiellogik erreicht 100 % Zeilen- und 98,86 % Verzweigungsabdeckung. Alle Bereichsgrenzen werden eingehalten."
+      "details": "Tabu-Spiellogik erreicht 100 % Zeilen- und 99,13 % Verzweigungsabdeckung."
     }
   },
   "phases": [
@@ -262,7 +262,7 @@
     {
       "id": "PH-04",
       "name": "Tabu-Kernlogik",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         {
           "id": "PH-04-01",
@@ -287,7 +287,7 @@
         {
           "id": "PH-04-05",
           "title": "Kartenfilter und Deckbildung",
-          "status": "planned"
+          "status": "done"
         }
       ]
     },
@@ -433,6 +433,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-10",
+      "summary": "PH-04-05 abgeschlossen: Tabu-Kartenfilter und Deckbildung mit reproduzierbarer Mischreihenfolge ergänzt."
+    },
     {
       "date": "2026-11-10",
       "summary": "PH-04-04 abgeschlossen: Rundenfolge mit zwei und drei Teams geprüft und Siegerermittlung einschließlich Gleichstand ergänzt."
@@ -586,9 +590,9 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-04-05",
-      "reason": "Karten nach Spielvorgaben filtern und ein Deck bilden.",
-      "prerequisite": "Rundenfolge und Siegerermittlung aus PH-04-04 sind abgeschlossen."
+      "id": "PH-05-01",
+      "reason": "Die Spielkonfiguration für Tabu in der Oberfläche umsetzen.",
+      "prerequisite": "Die Tabu-Kernlogik aus Phase 4 ist abgeschlossen."
     }
   ]
 }

@@ -303,7 +303,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Reine Filter- und Decklogik einschließlich Verhalten bei zu kleinem Bestand.
 - **Akzeptanzkriterien:** Nur passende Karten erscheinen. Reihenfolge kann über injizierbaren Zufall deterministisch getestet werden. Leere Ergebnisse sind explizit.
 - **Tests:** Filterkombinationen, deterministisches Mischen, Duplikate und leere Decks.
-- **Status:** planned
+- **Status:** done
 
 ### Phase 5: Tabu-Benutzeroberfläche
 
