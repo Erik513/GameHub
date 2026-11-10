@@ -1,2 +1,2 @@
-// Persistenzadapter werden in Phase 6 ergänzt.
+// Persistence adapters will be added in phase 6.
 export {};

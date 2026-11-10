@@ -5,6 +5,9 @@ Diese Regeln gelten für Codex, Claude Code und andere automatisierte Entwicklun
 ## Sprache und Kommunikation
 
 - Kommuniziere mit dem Auftraggeber ausschließlich auf Deutsch.
+- Halte alle sichtbaren Inhalte in `docs/GAMEHUB_DEVELOPMENT.html` ausschließlich auf Deutsch.
+- Verfasse Quellcode, Bezeichner, Funktionsnamen und Code-Kommentare ausschließlich auf Englisch.
+- Stelle sichtbare Anwendungstexte über deutsche und englische Übersetzungsressourcen bereit.
 - Melde Fehler, fehlgeschlagene Prüfungen und Blockaden ausdrücklich.
 - Kennzeichne Annahmen und noch nicht verifizierte Aussagen.
 - Hole vor Änderungen grundlegender Architekturentscheidungen die Zustimmung des Auftraggebers ein.

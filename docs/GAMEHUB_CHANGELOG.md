@@ -4,6 +4,16 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-02-01 – i18n-Grundkonfiguration
+
+- `i18next` und `react-i18next` als Laufzeitabhängigkeiten eingerichtet.
+- Gemeinsamen Übersetzungsnamensraum mit deutschen und englischen Ressourcen angelegt.
+- Englisch als kontrollierte Fallback-Sprache und Deutsch sowie Englisch als unterstützte Sprachen definiert.
+- i18next-Typen um die GameHub-Ressourcenstruktur erweitert, sodass Übersetzungsschlüssel statisch geprüft werden.
+- Sämtliche sichtbaren Texte der Startansicht aus den React-Komponenten in Übersetzungsressourcen verschoben.
+- Initialisierung und Darstellung der Startansicht in beiden Sprachen mit sieben erfolgreichen Tests geprüft.
+- Sprachregeln für deutsches Entwicklungs-Dashboard sowie englischen Quellcode und englische Code-Kommentare verbindlich dokumentiert.
+
 ### PH-01-06 – GitHub-Actions-Qualitätsworkflow abgeschlossen
 
 - Lokales Repository mit `https://github.com/Erik513/GameHub` verbunden und vollständigen Projektstand auf `main` veröffentlicht.

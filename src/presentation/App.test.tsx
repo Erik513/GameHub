@@ -1,17 +1,53 @@
 import { render, screen, within } from "@testing-library/react";
+import { I18nextProvider } from "react-i18next";
 import { describe, expect, it } from "vitest";
+import { createGameHubI18n, type SupportedLanguage } from "../i18n";
 import { App } from "./App";
 
+const languageCases = [
+  {
+    language: "en",
+    eyebrow: "Project foundation",
+    intro: "One place for party, card, quiz, and social games.",
+    listName: "Architecture layers",
+    layers: ["Presentation", "Business", "Data", "Infrastructure"],
+  },
+  {
+    language: "de",
+    eyebrow: "Projektgrundlage",
+    intro: "Ein Ort für Party-, Karten-, Quiz- und Gesellschaftsspiele.",
+    listName: "Architekturschichten",
+    layers: ["Darstellung", "Geschäftslogik", "Daten", "Infrastruktur"],
+  },
+] satisfies readonly {
+  language: SupportedLanguage;
+  eyebrow: string;
+  intro: string;
+  listName: string;
+  layers: readonly string[];
+}[];
+
 describe("App", () => {
-  it("renders the neutral GameHub foundation screen", () => {
-    render(<App />);
+  it.each(languageCases)(
+    "renders the $language GameHub foundation screen",
+    async ({ language, eyebrow, intro, listName, layers }) => {
+      const i18n = await createGameHubI18n(language);
 
-    expect(screen.getByRole("heading", { name: "GameHub" })).toBeVisible();
+      render(
+        <I18nextProvider i18n={i18n}>
+          <App />
+        </I18nextProvider>,
+      );
 
-    const architectureLayers = within(screen.getByRole("list", { name: "Architecture layers" }));
+      expect(screen.getByText(eyebrow)).toBeVisible();
+      expect(screen.getByRole("heading", { name: "GameHub" })).toBeVisible();
+      expect(screen.getByText(intro)).toBeVisible();
 
-    for (const layer of ["Presentation", "Business", "Data", "Infrastructure"]) {
-      expect(architectureLayers.getByText(layer)).toBeVisible();
-    }
-  });
+      const architectureLayers = within(screen.getByRole("list", { name: listName }));
+
+      for (const layer of layers) {
+        expect(architectureLayers.getByText(layer)).toBeVisible();
+      }
+    },
+  );
 });

@@ -203,7 +203,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** i18next, react-i18next, Namespaces, Fallback und getypte Ressourcenkonvention einrichten.
 - **Akzeptanzkriterien:** Startansicht rendert beide Sprachen ohne fest codierte UI-Texte. Fallback ist definiert.
 - **Tests:** Initialisierung und Rendering in Deutsch und Englisch.
-- **Status:** planned
+- **Status:** done
 
 #### PH-02-02 – Erkennung, Auswahl und Persistenz der UI-Sprache
 

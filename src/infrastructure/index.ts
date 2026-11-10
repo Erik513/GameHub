@@ -1,2 +1,2 @@
-// Browser- und Dienstadapter werden in den jeweiligen Phasen ergänzt.
+// Browser and service adapters will be added in their respective phases.
 export {};
