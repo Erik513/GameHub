@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "GameHub",
+  "short_name": "GameHub",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#15172a",
+  "theme_color": "#15172a",
+  "icons": [
+    {
+      "src": "gamehub-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

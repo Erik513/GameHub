@@ -3,8 +3,8 @@
   "project": {
     "id": "gamehub",
     "name": "GameHub",
-    "stage": "offline_pwa_planned",
-    "updatedAt": "2026-11-11T00:01:31+01:00",
+    "stage": "taboo_generation_port_planned",
+    "updatedAt": "2026-11-11T00:06:22+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 32,
+      "completedTasks": 33,
       "totalTasks": 46,
-      "percent": 69.57
+      "percent": 71.74
     }
   },
   "environment": {
@@ -45,17 +45,17 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:01:31+01:00",
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:01:31+01:00",
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:01:31+01:00",
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
       "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich."
     },
     "githubActions": {
@@ -65,7 +65,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:01:31+01:00",
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -75,29 +75,29 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:01:31+01:00",
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:01:31+01:00",
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
       "passed": 120,
       "failed": 0,
       "details": "120 Unit- und Komponententests bestanden."
     },
     "integrationTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:01:31+01:00",
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
       "passed": 6,
       "failed": 0,
       "details": "Sechs Integrationstests bestanden, darunter Dateiimport, Duplikatprüfung und Sicherung eigener Karten."
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T23:05:44+01:00",
-      "passed": 10,
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
+      "passed": 14,
       "failed": 0,
-      "details": "Spielauswahl, Entwicklungsvorschau, Navigation, dauerhafte Sprachen und Einstellungsdialog waren mit Playwright im Desktop- und Mobilprofil erfolgreich."
+      "details": "14 Desktop- und Mobilprüfungen bestanden. Manifest, Symbol und Tabu-Spielstart nach Offline-Neuladen sind geprüft."
     },
     "renameValidation": {
       "status": "passed",
@@ -112,7 +112,7 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:01:31+01:00",
+      "lastRunAt": "2026-11-11T00:06:22+01:00",
       "overallLines": 96.58,
       "overallBranches": 89.8,
       "overallFunctions": 95.2,
@@ -322,7 +322,7 @@
     {
       "id": "PH-06",
       "name": "Speicherung, Kartensätze und Offlinebetrieb",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         {
           "id": "PH-06-01",
@@ -342,7 +342,7 @@
         {
           "id": "PH-06-04",
           "title": "Manifest und Service Worker",
-          "status": "planned"
+          "status": "done"
         }
       ]
     },
@@ -434,6 +434,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "PH-06-04 abgeschlossen: Web-App-Manifest, App-Symbol und versionierter Offline-Cache. Tabu startet nach dem ersten Online-Aufruf offline."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-06-03 abgeschlossen: Eigene Tabu-Karten lassen sich per JSON importieren, dauerhaft speichern und als Sicherung exportieren."
@@ -619,9 +623,9 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-06-04",
-      "reason": "GameHub installierbar machen und einen Offline-Spielstart prüfen.",
-      "prerequisite": "Standardkarten und lokale eigene Karten sind eingebunden."
+      "id": "PH-07-01",
+      "reason": "Anbieterunabhängige Schnittstelle für die Kartengenerierung definieren.",
+      "prerequisite": "Der lokale Offlinebetrieb aus Phase 6 ist geprüft."
     }
   ]
 }

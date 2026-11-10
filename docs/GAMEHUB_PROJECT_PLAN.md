@@ -373,7 +373,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Manifest, Icons, Cache-Strategien, Offline-App-Shell und Update-Fluss.
 - **Akzeptanzkriterien:** PWA-Audit erkennt Installierbarkeit. Nach einem Online-Erstaufruf startet eine lokale Partie offline.
 - **Tests:** Build-Prüfung, Manifesttest und Playwright-Offline-Szenario.
-- **Status:** planned
+- **Status:** done
 
 ### Phase 7: KI-Kartengenerierung
 

@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-06-04 – Installierbare Web-App und Offlinebetrieb
+
+- Manifest und App-Symbol für GameHub ergänzt.
+- Produktionsdateien mit einem Service Worker zwischengespeichert. Neue Versionen übernehmen nach dem Schließen der bisherigen App-Fenster.
+- 14 Browserprüfungen bestanden, einschließlich Tabu-Spielstart nach Offline-Neuladen auf Desktop und Mobil.
+
 ### PH-06-03 – Eigene Tabu-Karten importieren und sichern
 
 - Versioniertes JSON-Format und Prüfung der Karten vor dem Import ergänzt.

@@ -26,6 +26,13 @@ const initialCardLanguage =
   parseSupportedLanguage(cardLanguagePreferenceStore.read()) ?? initialLanguage;
 await gameHubI18n.changeLanguage(initialLanguage);
 
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  const workerUrl = new URL(`${import.meta.env.BASE_URL}gamehub-sw.js`, document.baseURI);
+  void navigator.serviceWorker.register(workerUrl).catch((error: unknown) => {
+    console.warn("GameHub offline support could not be enabled.", error);
+  });
+}
+
 createRoot(rootElement).render(
   <StrictMode>
     <AppRoot

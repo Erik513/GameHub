@@ -2,7 +2,7 @@
 
 GameHub ist eine geplante kostenlose, international ausgerichtete, mobile-first Spielesammlung. Die Progressive Web App soll Partyspiele, Quiz-, Karten- und weitere Gesellschaftsspiele auf Smartphones, Tablets und PCs bündeln, offline spielbar sein und über GitHub Pages veröffentlicht werden können. Der Einstieg erfolgt immer über eine Spielauswahl; neue Spiele werden als eigenständige Module in einem zentralen Spielkatalog registriert.
 
-Das React-TypeScript-Vite-Grundprojekt und die vereinbarte Schichtenstruktur sind eingerichtet. Spiellogik, Persistenz und externe Kartengeneratoren sind noch nicht implementiert.
+Tabu ist lokal spielbar. GameHub enthält deutsche und englische Standardkarten und kann eigene Tabu-Karten lokal speichern. Ein Produktionsbuild unterstützt nach dem ersten Online-Aufruf den Offlinebetrieb.
 
 ## Geplanter Technologie-Stack
 
@@ -55,6 +55,11 @@ pnpm build
 
 Der Workflow `.github/workflows/quality.yml` führt dieselben Prüfungen auf GitHub Actions aus. Der erste gehostete Lauf wurde am 10. November 2026 erfolgreich abgeschlossen.
 
-## Nächster Schritt
+## Offlinebetrieb lokal prüfen
 
-Als Nächstes folgt `PH-02-01`: die i18n-Grundkonfiguration für Deutsch und Englisch.
+```powershell
+pnpm build
+pnpm preview
+```
+
+Öffne die angezeigte Adresse einmal online. Sobald der Service Worker aktiv ist, kannst du die Seite offline neu laden und Tabu starten. Unterstützte Browser bieten die Installation über ihr Menü an. Der Entwicklungsserver registriert keinen Service Worker.
