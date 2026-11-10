@@ -3,14 +3,14 @@
   "project": {
     "id": "gamehub",
     "name": "GameHub",
-    "stage": "internationalization_in_progress",
-    "updatedAt": "2026-11-10T17:30:17+01:00",
+    "stage": "design_system_planned",
+    "updatedAt": "2026-11-10T17:43:31+01:00",
     "statusValues": ["planned", "in_progress", "blocked", "done"],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 16,
+      "completedTasks": 17,
       "totalTasks": 46,
-      "percent": 34.78
+      "percent": 36.96
     }
   },
   "environment": {
@@ -33,29 +33,30 @@
     "architectureCheck": { "status": "passed", "lastRunAt": "2026-11-09T19:53:45+01:00", "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten." },
     "devServerSmoke": { "status": "passed", "lastRunAt": "2026-11-09T19:55:43+01:00", "details": "Der Vite-Entwicklungsserver lieferte HTTP 200 und das GameHub-Einstiegsdokument." },
     "build": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen." },
-    "unitTests": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "passed": 29, "failed": 0, "details": "29 Business-, i18n-, Infrastruktur- und Komponententests wurden in jsdom erfolgreich abgeschlossen." },
+    "unitTests": { "status": "passed", "lastRunAt": "2026-11-10T17:43:31+01:00", "passed": 35, "failed": 0, "details": "35 Business-, i18n-, Infrastruktur- und Komponententests wurden in jsdom erfolgreich abgeschlossen." },
     "integrationTests": { "status": "not_configured", "lastRunAt": null, "passed": 0, "failed": 0 },
     "e2eTests": { "status": "passed", "lastRunAt": "2026-11-10T17:30:17+01:00", "passed": 6, "failed": 0, "details": "Startansicht sowie unabhängige und dauerhafte UI- und Kartensprachen waren mit Playwright im Desktop- und Mobilprofil erfolgreich." },
     "renameValidation": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Paket, Quellcode, Tests, Dokumentation, Dashboard, Repository-Pfad und Produktions-Build verwenden GameHub." },
     "documentationChecks": { "status": "passed", "lastRunAt": "2026-11-09T19:35:00+01:00", "passed": 5, "failed": 0 },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T17:30:17+01:00",
-      "overallLines": 100,
-      "overallBranches": 100,
+      "lastRunAt": "2026-11-10T17:43:31+01:00",
+      "overallLines": 97.64,
+      "overallBranches": 94.11,
       "overallFunctions": 100,
-      "overallStatements": 100,
+      "overallStatements": 97.64,
       "criticalGameLogicLines": null,
-      "businessLines": null,
-      "dataInfrastructureLines": null,
+      "businessLines": 100,
+      "dataInfrastructureLines": 100,
       "uiLines": 100,
+      "i18nLines": 96.42,
       "branches": {
         "criticalGameLogic": null,
         "business": null,
         "dataInfrastructure": null,
         "ui": 100
       },
-      "details": "Ausführbare Spiel-, Daten- und Infrastrukturdateien existieren noch nicht; ihre konfigurierten Grenzwerte werden beim Hinzufügen passender Dateien aktiv."
+      "details": "Alle Bereichsgrenzen werden eingehalten. Kritische Spiellogik existiert noch nicht; deren Grenzwert wird beim Hinzufügen passender Dateien aktiv."
     }
   },
   "phases": [
@@ -94,7 +95,7 @@
         { "id": "PH-02-01", "title": "i18n-Grundkonfiguration", "status": "done" },
         { "id": "PH-02-02", "title": "Erkennung, Auswahl und Persistenz der UI-Sprache", "status": "done" },
         { "id": "PH-02-03", "title": "Unabhängige Kartensprache", "status": "done" },
-        { "id": "PH-02-04", "title": "Übersetzungsparität prüfen", "status": "planned" }
+        { "id": "PH-02-04", "title": "Übersetzungsparität prüfen", "status": "done" }
       ]
     },
     {
@@ -177,6 +178,7 @@
     }
   ],
   "recentChanges": [
+    { "date": "2026-11-10", "summary": "PH-02-04 abgeschlossen: rekursive Paritätsprüfung erzwingt identische und nichtleere deutsche sowie englische Übersetzungsressourcen in der CI-Pipeline." },
     { "date": "2026-11-10", "summary": "PH-02-03 abgeschlossen: UI- und Kartensprache werden unabhängig modelliert, ausgewählt und unter getrennten lokalen Schlüsseln dauerhaft gespeichert." },
     { "date": "2026-11-10", "summary": "PH-02-02 abgeschlossen: gespeicherte UI-Sprache und Browsersprache werden ausgewertet; Deutsch und Englisch lassen sich umschalten und dauerhaft lokal speichern." },
     { "date": "2026-11-10", "summary": "Verbindliche Menü-zuerst-Architektur beschlossen: GameHub startet mit einer Spielauswahl und bindet Spiele über einen zentralen, genreunabhängigen Spielkatalog ein." },
@@ -231,9 +233,9 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-02-04",
-      "reason": "Identische, nichtleere Übersetzungsschlüssel für Deutsch und Englisch automatisch erzwingen.",
-      "prerequisite": "Die deutschen und englischen Ressourcen aus PH-02-01 bis PH-02-03 sind vorhanden."
+      "id": "PH-03-01",
+      "reason": "Mobile-first Design-Tokens und zugängliche Basiskomponenten für die gemeinsame GameHub-Oberfläche erstellen.",
+      "prerequisite": "Phase 2 ist mit vollständiger deutscher und englischer Internationalisierung abgeschlossen."
     }
   ]
 }

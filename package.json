@@ -14,6 +14,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
     "test:architecture": "node scripts/check-business-boundaries.mjs",
+    "check:translations": "vitest run src/i18n/translationParity.test.ts",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"e2e/**/*.{ts,tsx}\" \"scripts/**/*.mjs\" \".github/workflows/*.{yml,yaml}\" \"*.{json,js,ts,yaml}\"",

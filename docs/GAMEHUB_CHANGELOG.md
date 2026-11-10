@@ -4,6 +4,15 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-02-04 – Übersetzungsparität prüfen
+
+- Rekursive Prüfung für identische Schlüsselstrukturen in deutschen und englischen Übersetzungsressourcen ergänzt.
+- Leere, ausschließlich aus Leerzeichen bestehende und ungültige Nicht-Text-Werte werden abgewiesen.
+- Positive Prüfung der echten Ressourcen sowie negative Fälle für fehlende, zusätzliche, leere und ungültige Werte umgesetzt.
+- Eigenen Befehl `pnpm check:translations` ergänzt und als verpflichtenden Schritt in GitHub Actions aufgenommen.
+- i18n-Dateien in die Coverage-Messung und bereichsspezifische Mindestgrenze aufgenommen.
+- 35 Tests erfolgreich; Phase 2 ist damit vollständig abgeschlossen.
+
 ### PH-02-03 – Unabhängige Kartensprache
 
 - Reines Business-Modell für unabhängige UI- und Kartensprache ergänzt.

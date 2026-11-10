@@ -46,6 +46,9 @@ jobs:
       - name: Check architecture boundaries
         run: pnpm test:architecture
 
+      - name: Check translation parity
+        run: pnpm check:translations
+
       - name: Run unit tests with coverage
         run: pnpm test:coverage
 

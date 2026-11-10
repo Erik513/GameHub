@@ -235,7 +235,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Test oder Skript für identische Schlüsselstrukturen und nichtleere Werte.
 - **Akzeptanzkriterien:** Fehlender, zusätzlicher oder leerer Schlüssel lässt die Prüfung fehlschlagen.
 - **Tests:** Positive Ressourcenprüfung und negative Fixture-Fälle.
-- **Status:** planned
+- **Status:** done
 
 ### Phase 3: Gemeinsame App-Oberfläche und Designsystem
 

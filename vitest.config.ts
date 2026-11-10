@@ -12,6 +12,7 @@ export default defineConfig({
         "src/business/**/*.{ts,tsx}",
         "src/data/**/*.{ts,tsx}",
         "src/infrastructure/**/*.{ts,tsx}",
+        "src/i18n/**/*.{ts,tsx}",
         "src/presentation/**/*.{ts,tsx}",
       ],
       provider: "v8",
@@ -41,6 +42,12 @@ export default defineConfig({
           statements: 80,
         },
         "src/{presentation,app}/**/*.{ts,tsx}": {
+          branches: 75,
+          functions: 75,
+          lines: 75,
+          statements: 75,
+        },
+        "src/i18n/**/*.{ts,tsx}": {
           branches: 75,
           functions: 75,
           lines: 75,
