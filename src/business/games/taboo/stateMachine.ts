@@ -32,7 +32,8 @@ export type TabooState =
       readonly card: TabooCard;
       readonly remainingCards: readonly TabooCard[];
     })
-  | (TurnState & { readonly status: "roundEnded" | "gameEnded" });
+  | (TurnState & { readonly status: "roundEnded" })
+  | (TurnState & { readonly status: "gameEnded"; readonly winnerIds: readonly string[] });
 
 export type TabooEvent =
   | {
@@ -105,7 +106,12 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     const lastTeam = nextTeam === configuration.teams.length;
     const complete = lastTeam && state.turn.round === configuration.roundsPerTeam;
     if (complete) {
-      return event.type === "finishGame" ? { ...state, status: "gameEnded" } : state;
+      if (event.type !== "finishGame") return state;
+      const highestScore = scores.reduce((highest, score) => Math.max(highest, score), 0);
+      const winnerIds = configuration.teams
+        .filter((_, index) => scores[index] === highestScore)
+        .map((team) => team.id);
+      return { ...state, status: "gameEnded", winnerIds };
     }
     turn = lastTeam
       ? { round: state.turn.round + 1, teamIndex: 0 }

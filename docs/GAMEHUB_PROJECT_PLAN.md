@@ -295,7 +295,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Teamrotation, Rundenzählung, Endbedingung, Einzel- und Gleichstandsieger.
 - **Akzeptanzkriterien:** Jedes Team erhält die vorgesehenen Runden. Siegerliste ist deterministisch und enthält alle punktgleichen Teams.
 - **Tests:** Zwei und mehrere Teams, verschiedene Rundenzahlen, Gleichstände.
-- **Status:** planned
+- **Status:** done
 
 #### PH-04-05 – Kartenfilter und Deckbildung
 

@@ -23,13 +23,42 @@ const card: TabooCard = {
 const start = { type: "startRound", card } as const;
 const finish = { type: "finishGame" } as const;
 
-function setup() {
-  const result = createTabooGame(configuration);
+function setup(input = configuration) {
+  const result = createTabooGame(input);
   if (!result.valid) throw new Error("Invalid test setup");
   return result.value;
 }
 
 describe("Taboo state machine", () => {
+  it("awards a sole win to the second team after one round per team", () => {
+    const initial = setup({
+      ...configuration,
+      teams: configuration.teams.slice(0, 2),
+      roundsPerTeam: 1,
+    });
+    const first = transitionTaboo(initial, start);
+    const firstEnded = transitionTaboo(first, {
+      type: "endRound",
+      turn: { round: 1, teamIndex: 0 },
+    });
+    expect(transitionTaboo(firstEnded, finish)).toBe(firstEnded);
+    const nextCard = { ...card, id: "next" };
+    const second = transitionTaboo(firstEnded, { type: "startRound", card: nextCard });
+    expect(second).toMatchObject({ status: "roundRunning", turn: { round: 1, teamIndex: 1 } });
+    const secondEnded = transitionTaboo(second, {
+      type: "resolveCard",
+      turn: { round: 1, teamIndex: 1 },
+      cardId: nextCard.id,
+      outcome: "correct",
+    });
+    expect(transitionTaboo(secondEnded, start)).toBe(secondEnded);
+    expect(transitionTaboo(secondEnded, finish)).toMatchObject({
+      status: "gameEnded",
+      scores: [0, 1],
+      winnerIds: ["b"],
+    });
+  });
+
   it("scores only correct answers, advances cards and ends the round when exhausted", () => {
     const turn = { round: 1, teamIndex: 0 };
     const second = { ...card, id: "two" };
@@ -119,7 +148,12 @@ describe("Taboo state machine", () => {
       } else {
         expect(transitionTaboo(ended, start)).toBe(ended);
         state = transitionTaboo(ended, finish);
-        expect(state).toMatchObject({ status: "gameEnded", turn });
+        expect(state).toMatchObject({
+          status: "gameEnded",
+          turn,
+          scores: [0, 0, 0],
+          winnerIds: ["a", "b", "c"],
+        });
       }
     }
     for (const event of [start, finish, endFirst])

@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-04-04 – Rundenfolge und Siegerermittlung
+
+- Spielende nach der konfigurierten Zahl von Runden pro Team geprüft.
+- Alle Teams mit Höchstpunktzahl werden in der Reihenfolge der Teamliste als Sieger ausgewiesen.
+- 88 Tests bestanden, darunter Partien mit zwei und drei Teams, Einzelsieg und Gleichstand.
+
 ### PH-04-03 – Kartenaktionen und Punkte
 
 - Richtige Antworten zählen einen Punkt. Überspringen und verbotene Wörter zählen null Punkte.
