@@ -5,6 +5,13 @@ import type { SupportedLanguage } from "../i18n";
 import { AppShell } from "./AppShell";
 import { GamePreviewPage } from "./GamePreviewPage";
 import { GameSelectionPage } from "./GameSelectionPage";
+import { TabooSetup } from "./taboo/TabooSetup";
+
+const gameScreens: Partial<
+  Record<GameModuleDescriptor["translationKey"], (language: SupportedLanguage) => React.ReactNode>
+> = {
+  taboo: (language) => <TabooSetup cardLanguage={language} />,
+};
 
 interface AppProps {
   cardLanguage: SupportedLanguage;
@@ -44,7 +51,9 @@ export function App({ cardLanguage, onCardLanguageChange, onLanguageChange }: Ap
       onLanguageChange={(language) => onLanguageChange?.(language)}
     >
       {selectedGame && selectedGame.availability !== "planned" ? (
-        <GamePreviewPage game={selectedGame} onBack={() => navigate(homeRoute)} />
+        <GamePreviewPage game={selectedGame} onBack={() => navigate(homeRoute)}>
+          {gameScreens[selectedGame.translationKey]?.(cardLanguage)}
+        </GamePreviewPage>
       ) : (
         <GameSelectionPage games={gameCatalog} onSelect={handleGameSelection} />
       )}

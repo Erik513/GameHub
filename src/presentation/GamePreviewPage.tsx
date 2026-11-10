@@ -1,13 +1,15 @@
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { GameModuleDescriptor } from "../app/gameCatalog";
 import { Button, Card } from "./components";
 
 interface GamePreviewPageProps {
+  children?: ReactNode;
   game: GameModuleDescriptor;
   onBack: () => void;
 }
 
-export function GamePreviewPage({ game, onBack }: GamePreviewPageProps) {
+export function GamePreviewPage({ children, game, onBack }: GamePreviewPageProps) {
   const { t } = useTranslation();
 
   return (
@@ -17,7 +19,7 @@ export function GamePreviewPage({ game, onBack }: GamePreviewPageProps) {
         {t(`gameSelection.status.${game.availability}`)}
       </span>
       <h1>{t(`games.${game.translationKey}.title`)}</h1>
-      <p>{t("gamePreview.description")}</p>
+      {children ?? <p>{t("gamePreview.description")}</p>}
       <Button variant="secondary" onClick={onBack}>
         {t("gamePreview.back")}
       </Button>

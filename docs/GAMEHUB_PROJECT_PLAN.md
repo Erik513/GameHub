@@ -313,7 +313,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Teams, Rundenzahl, Rundendauer, Kategorien, Schwierigkeit und Kartensprache erfassen.
 - **Akzeptanzkriterien:** Mindestens zwei eindeutige Teamnamen sind erforderlich. Fehler sind lokalisiert. Gültiges Setup startet die Zustandsmaschine.
 - **Tests:** Formvalidierung und Start in Deutsch/Englisch.
-- **Status:** planned
+- **Status:** done
 
 #### PH-05-02 – Laufende Runde und Timer
 

@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-05-01 – Tabu-Spielkonfiguration
+
+- Formular für Teams, Rundenzahl, Rundendauer, Kartensprache, Kategorien und Schwierigkeit ergänzt.
+- Fehler in Deutsch und Englisch angezeigt. Gültige Angaben erzeugen den Vorbereitungszustand der Partie.
+- 98 Tests bestanden, darunter Formularvalidierung und Vorbereitung in beiden Sprachen.
+
 ### PH-04-05 – Kartenfilter und Deckbildung
 
 - Karten nach Sprache, Kategorie und Schwierigkeit filtern und mit austauschbarer Zufallsquelle mischen.
