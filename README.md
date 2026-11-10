@@ -53,8 +53,8 @@ pnpm test:e2e
 pnpm build
 ```
 
-Der Workflow `.github/workflows/quality.yml` führt dieselben Prüfungen auf GitHub Actions aus. Der erste gehostete Lauf steht noch aus, da noch kein GitHub-Remote verbunden ist.
+Der Workflow `.github/workflows/quality.yml` führt dieselben Prüfungen auf GitHub Actions aus. Der erste gehostete Lauf wurde am 10. November 2026 erfolgreich abgeschlossen.
 
 ## Nächster Schritt
 
-Zum Abschluss von `PH-01-06` muss ein GitHub-Remote verbunden und der erste gehostete Qualitätsworkflow erfolgreich ausgeführt werden.
+Als Nächstes folgt `PH-02-01`: die i18n-Grundkonfiguration für Deutsch und Englisch.

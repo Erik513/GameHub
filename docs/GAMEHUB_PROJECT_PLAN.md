@@ -193,7 +193,7 @@ Eine Aufgabe ist nur `done`, wenn ihr Umfang vollständig umgesetzt ist, alle Ak
 - **Umfang:** Workflow für Installation, Typecheck, Lint, Tests, Coverage, Build und E2E vorbereiten.
 - **Akzeptanzkriterien:** Workflow verwendet festgelegte Runtime und Dependency-Cache. Jeder Pflichtschritt blockiert bei Fehlern.
 - **Tests:** Workflow-Syntaxprüfung und erster erfolgreicher Lauf nach Repository-Verknüpfung.
-- **Status:** blocked
+- **Status:** done
 
 ### Phase 2: Internationalisierung Deutsch/Englisch
 

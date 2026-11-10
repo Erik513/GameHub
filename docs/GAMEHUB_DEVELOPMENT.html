@@ -192,14 +192,14 @@
         "project": {
           "id": "gamehub",
           "name": "GameHub",
-          "stage": "foundation_in_progress",
-          "updatedAt": "2026-11-10T16:15:32+01:00",
+          "stage": "internationalization_planned",
+          "updatedAt": "2026-11-10T17:03:57+01:00",
           "statusValues": ["planned", "in_progress", "blocked", "done"],
           "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
           "progress": {
-            "completedTasks": 12,
+            "completedTasks": 13,
             "totalTasks": 46,
-            "percent": 26.09
+            "percent": 28.26
           }
         },
         "environment": {
@@ -211,13 +211,14 @@
           "git": { "available": true, "version": "2.55.0.windows.3" },
           "repositoryInitialized": true,
           "repositoryPath": "C:\\Users\\Kosta\\source\\repos\\GameHub",
+          "remoteUrl": "https://github.com/Erik513/GameHub",
           "defaultBranch": "main"
         },
         "quality": {
           "typecheck": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "TypeScript 6.0.3 strict project references passed after GameHub rename." },
           "lint": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "ESLint passed with zero warnings after GameHub rename." },
           "format": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Prettier check passed for source, scripts, workflows and project configuration." },
-          "githubActions": { "status": "configured_pending_remote", "lastRunAt": null, "details": "Workflow syntax and every referenced command passed locally; first GitHub-hosted run requires a connected remote repository." },
+          "githubActions": { "status": "passed", "lastRunAt": "2026-11-10T17:02:51+01:00", "details": "GitHub Actions run 42850423012 passed on main: static checks, tests and build plus Playwright E2E completed successfully." },
           "architectureCheck": { "status": "passed", "lastRunAt": "2026-11-09T19:53:45+01:00", "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten." },
           "devServerSmoke": { "status": "passed", "lastRunAt": "2026-11-09T19:55:43+01:00", "details": "Vite dev server returned HTTP 200 and the GameHub entry document." },
           "build": { "status": "passed", "lastRunAt": "2026-11-10T16:15:32+01:00", "details": "Vite 8.3.6 GameHub production build completed successfully." },
@@ -271,7 +272,7 @@
               { "id": "PH-01-03", "title": "Vitest und Testing Library", "status": "done" },
               { "id": "PH-01-04", "title": "Coverage und Bereichsgrenzen", "status": "done" },
               { "id": "PH-01-05", "title": "Playwright-Grundkonfiguration", "status": "done" },
-              { "id": "PH-01-06", "title": "GitHub-Actions-Qualitätsworkflow", "status": "blocked" }
+              { "id": "PH-01-06", "title": "GitHub-Actions-Qualitätsworkflow", "status": "done" }
             ]
           },
           {
@@ -365,6 +366,7 @@
           }
         ],
         "recentChanges": [
+          { "date": "2026-11-10", "summary": "PH-01-06 abgeschlossen: GitHub-Remote verbunden, initialen Projektstand gepusht und ersten gehosteten Quality-Workflow mit beiden Jobs erfolgreich ausgeführt." },
           { "date": "2026-11-10", "summary": "Projekt vollständig von PartyHub in GameHub umbenannt und Produktumfang für Party-, Quiz-, Karten- und weitere Gesellschaftsspiele geöffnet." },
           { "date": "2026-11-09", "summary": "GitHub-Actions-Qualitätsworkflow erstellt und lokal vollständig geprüft; erster gehosteter Lauf wartet auf GitHub-Remote." },
           { "date": "2026-11-09", "summary": "PH-01-05 abgeschlossen: Playwright mit Desktop-/Mobilprofilen, lokalem Webserver und Screenshot-/Video-/Trace-Artefakten eingerichtet." },
@@ -406,17 +408,17 @@
           },
           {
             "id": "ISSUE-004",
-            "severity": "blocking_current_task",
-            "status": "open",
-            "summary": "Für GameHub ist kein GitHub-Remote konfiguriert und die GitHub-CLI ist nicht installiert.",
-            "impact": "Der erste echte GitHub-Actions-Lauf für PH-01-06 kann noch nicht ausgeführt werden."
+            "severity": "info",
+            "status": "resolved",
+            "summary": "Für GameHub war kein GitHub-Remote konfiguriert.",
+            "impact": "Remote ist verbunden und der erste GitHub-Actions-Lauf wurde erfolgreich abgeschlossen."
           }
         ],
         "nextRecommendedTasks": [
           {
-            "id": "PH-01-06",
-            "reason": "GitHub-Remote verbinden, initialen Stand pushen und den ersten gehosteten Qualitätsworkflow erfolgreich ausführen.",
-            "prerequisite": "GitHub-Repository-URL und Freigabe für Commit und Push."
+            "id": "PH-02-01",
+            "reason": "i18n-Grundkonfiguration mit Deutsch, Englisch, Namespaces, Fallback und getypten Ressourcenkonventionen einrichten.",
+            "prerequisite": "PH-01-06 ist abgeschlossen; Phase 2 kann beginnen."
           }
         ]
       };

@@ -4,6 +4,15 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-10
 
+### PH-01-06 – GitHub-Actions-Qualitätsworkflow abgeschlossen
+
+- Lokales Repository mit `https://github.com/Erik513/GameHub` verbunden und vollständigen Projektstand auf `main` veröffentlicht.
+- Vorhandenen GitHub-Initialisierungscommit ohne Überschreiben in die gemeinsame Historie aufgenommen.
+- Ersten gehosteten Workflowlauf `42850423012` erfolgreich abgeschlossen.
+- Quality-Job mit Format, Lint, Typecheck, Architekturprüfung, Coverage und Build erfolgreich ausgeführt.
+- Playwright-E2E-Job mit Desktop- und Mobilprofil erfolgreich ausgeführt.
+- `PH-01-06` abgeschlossen; Phase 1 ist damit vollständig erledigt.
+
 ### Umbenennung in GameHub
 
 - Projektordner von `PartyHub` in `GameHub` umbenannt.
