@@ -5,6 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createGameHubI18n, type SupportedLanguage } from "../i18n";
 import { tabooStandardCards } from "../data/tabooStandardCards";
 import { App } from "./App";
+import type { GameModule } from "./gameModule";
+import { createTabooModule } from "./taboo/tabooModule";
 
 const languageCases = [
   {
@@ -87,7 +89,11 @@ describe("App", () => {
     const i18n = await createGameHubI18n("en");
     render(
       <I18nextProvider i18n={i18n}>
-        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={tabooStandardCards} />
+        <App
+          cardLanguage="en"
+          onCardLanguageChange={vi.fn()}
+          modules={[createTabooModule({ cards: tabooStandardCards })]}
+        />
       </I18nextProvider>,
     );
 
@@ -128,7 +134,11 @@ describe("App", () => {
     const i18n = await createGameHubI18n("en");
     render(
       <I18nextProvider i18n={i18n}>
-        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={tabooStandardCards} />
+        <App
+          cardLanguage="en"
+          onCardLanguageChange={vi.fn()}
+          modules={[createTabooModule({ cards: tabooStandardCards })]}
+        />
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
@@ -194,7 +204,11 @@ describe("App", () => {
     const sixCards = tabooStandardCards.filter((card) => card.language === "en").slice(0, 6);
     render(
       <I18nextProvider i18n={i18n}>
-        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={sixCards} />
+        <App
+          cardLanguage="en"
+          onCardLanguageChange={vi.fn()}
+          modules={[createTabooModule({ cards: sixCards })]}
+        />
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
@@ -219,7 +233,11 @@ describe("App", () => {
     const i18n = await createGameHubI18n("en");
     render(
       <I18nextProvider i18n={i18n}>
-        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={tabooStandardCards} />
+        <App
+          cardLanguage="en"
+          onCardLanguageChange={vi.fn()}
+          modules={[createTabooModule({ cards: tabooStandardCards })]}
+        />
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
@@ -249,6 +267,40 @@ describe("App", () => {
       "listitem",
     );
     expect(results.some((row) => row.textContent.endsWith(": 0/3 cards · 5.0 s"))).toBe(true);
+  });
+
+  it("renders whatever module is registered for a game and nothing else of it", async () => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n("de");
+    const seen: string[] = [];
+    // A minimal stand-in proves that the app only needs the module contract.
+    const example: GameModule = {
+      id: "taboo",
+      Screen: ({ cardLanguage }) => {
+        seen.push(cardLanguage);
+        return <p>Beispielspiel</p>;
+      },
+    };
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App cardLanguage="en" modules={[example]} onCardLanguageChange={vi.fn()} />
+      </I18nextProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: "Fortschritt ansehen" }));
+    expect(screen.getByText("Beispielspiel")).toBeVisible();
+    expect(seen).toContain("en");
+  });
+
+  it("shows the development preview when a game has no module yet", async () => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n("en");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App cardLanguage="en" onCardLanguageChange={vi.fn()} />
+      </I18nextProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: "View progress" }));
+    expect(screen.getByText(/already part of GameHub/)).toBeVisible();
   });
 
   it("changes the language and reports the selection", async () => {

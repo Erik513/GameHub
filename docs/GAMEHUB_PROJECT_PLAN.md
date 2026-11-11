@@ -520,6 +520,13 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 
 - **Ziel:** Gemeinsame Bausteine (Spielrahmen mit Kopfzeile, angeheftete Aktionsleiste, Auswahlgruppen, Punkteliste, Zweifach-Bestätigung, Pause/Beenden über `useGameExit`) so ordnen und dokumentieren, dass neue Spiele nur noch ihre Spiellogik und ihre Inhalte liefern.
 - **Akzeptanzkriterien:** Ein Leitfaden beschreibt den Aufbau eines neuen Spiels; Architekturentscheidungen werden vorab mit dem Auftraggeber abgestimmt.
+- **Ergebnis:** Option B freigegeben und umgesetzt. Vorschlag in `docs/GAMEHUB_GAME_MODULES.md`, Leitfaden in `docs/GAMEHUB_NEW_GAME_GUIDE.md`.
+- **Status:** done
+
+#### PH-11-06 – Tabu-Zustandslogik als Hooks und CSS je Spiel
+
+- **Ziel:** Die Zustandslogik aus `TabooSetup.tsx` (Nachladen, Pause, Neustart, Stechen) als Hooks herauslösen und die Tabu-Stile in eine eigene Datei je Spiel verschieben.
+- **Akzeptanzkriterien:** Verhalten und Tests unverändert; Layout-Prüfung besteht.
 - **Status:** planned
 
 ### Phase 12 – Tabu-Erweiterungen

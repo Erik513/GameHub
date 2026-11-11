@@ -12,6 +12,7 @@ import {
   createLocalStorageCardLanguagePreferenceStore,
   createLocalStorageLanguagePreferenceStore,
 } from "./infrastructure/localStorageLanguagePreferenceStore";
+import { createTabooModule } from "./presentation/taboo/tabooModule";
 import "./presentation/styles/global.css";
 
 const rootElement = document.getElementById("root");
@@ -39,12 +40,16 @@ if (import.meta.env.PROD && "serviceWorker" in navigator) {
 createRoot(rootElement).render(
   <StrictMode>
     <AppRoot
-      tabooGenerators={{
-        local: createLocalTabooCardGenerator(tabooLocalCandidates),
-        discover: discoverOllamaTabooCardGenerator,
-      }}
-      tabooRepository={new IndexedDbTabooCardRepository()}
-      tabooCards={tabooStandardCards}
+      modules={[
+        createTabooModule({
+          cards: tabooStandardCards,
+          generators: {
+            local: createLocalTabooCardGenerator(tabooLocalCandidates),
+            discover: discoverOllamaTabooCardGenerator,
+          },
+          repository: new IndexedDbTabooCardRepository(),
+        }),
+      ]}
       cardLanguagePreferenceStore={cardLanguagePreferenceStore}
       initialCardLanguage={initialCardLanguage}
       languagePreferenceStore={languagePreferenceStore}

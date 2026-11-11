@@ -6,6 +6,7 @@ import { createGameHubI18n, type SupportedLanguage } from "../i18n";
 import { common as germanCommon } from "../i18n/resources/de/common";
 import { common as englishCommon } from "../i18n/resources/en/common";
 import { App } from "./App";
+import { createTabooModule } from "./taboo/tabooModule";
 
 type Leaf = Record<string, unknown>;
 
@@ -101,7 +102,7 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
         <App
           cardLanguage={language}
           onCardLanguageChange={vi.fn()}
-          tabooCards={tabooStandardCards}
+          modules={[createTabooModule({ cards: tabooStandardCards })]}
         />
       </I18nextProvider>,
     );

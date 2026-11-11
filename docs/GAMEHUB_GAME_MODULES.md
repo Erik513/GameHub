@@ -1,6 +1,6 @@
 # Spielbausteine und Struktur für neue Spiele (Vorschlag)
 
-**Status:** Vorschlag zu `PH-11-05`. Wartet auf die Freigabe des Auftraggebers. Es wurde nichts umgebaut.
+**Status:** Freigegeben (Option B) und umgesetzt, bis auf die in `PH-11-06` geplanten Punkte (Hooks für die Tabu-Zustandslogik, CSS je Spiel). Der Leitfaden steht in `docs/GAMEHUB_NEW_GAME_GUIDE.md`.
 
 Ziel: Ein neues Spiel soll möglichst nur seine **Regeln** (Business), seine **Inhalte** (Texte, Karten, Fragen) und seinen **spielspezifischen Ablauf** mitbringen. Kopfzeile, Navigation, Auswahlgruppen, Aktionsleiste, Zeitanzeige, Pause, Bestätigungen, Punkteliste und Layout auf dem Handy kommen aus gemeinsamen Bausteinen.
 

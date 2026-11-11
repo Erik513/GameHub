@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-11-05 – Struktur für wiederverwendbare Spielbausteine umgesetzt
+
+- Spielmodul-Vertrag (`GameModule`: Kennung und Hauptfenster): `App` und `AppRoot` kennen kein Tabu mehr und bekommen `modules`; Tabu wird in `main.tsx` über `createTabooModule` angeschlossen. Ein Beispielmodul im Test belegt den Vertrag.
+- Texte je Spiel in eigener Datei (`resources/<sprache>/taboo.ts`), eingebunden in `common.ts`.
+- Leitfaden `docs/GAMEHUB_NEW_GAME_GUIDE.md` und `ADR-017`. Offen als `PH-11-06`: Hooks für die Tabu-Zustandslogik und CSS je Spiel.
+
 ### PH-11-05 – Strukturvorschlag für wiederverwendbare Spielbausteine (in Arbeit)
 
 - Neues Dokument `docs/GAMEHUB_GAME_MODULES.md`: Ist-Zustand (815 Zeilen in `TabooSetup.tsx`, Tabu-Wissen in `App.tsx`, gemischtes CSS und gemeinsamer Namensraum für Texte), Zielbild mit `game-kit`, `business/shared` und einem Spielmodul-Vertrag, drei Optionen mit Empfehlung (moderater Umbau) und die Entscheidungen, die der Auftraggeber treffen muss.

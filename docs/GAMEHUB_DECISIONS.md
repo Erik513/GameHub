@@ -132,3 +132,11 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Begründung:** Spielfluss und Fairness am Tisch; Pause und Neustart dürfen kein Vorab-Sehen der Karten ermöglichen.
 - **Konsequenzen:** Die Regeln liegen vollständig in der Business-Schicht (Zustandsmaschine und Kartenauswahl) und sind durch Tests abgesichert. Gespeicherte oder importierte Karten mit drei verbotenen Wörtern werden nicht mehr akzeptiert.
 
+## ADR-017: Spielbausteine und Spielmodul-Vertrag
+
+- **Status:** accepted
+- **Datum:** 2026-11-11
+- **Entscheidung:** Gemeinsame Spielbausteine liegen in `src/presentation/game-kit/`, genreunabhängige Logik in `src/business/shared/`. Jedes Spiel wird über ein `GameModule` (Kennung und Hauptfenster-Komponente) angeschlossen, das zum Katalogeintrag mit derselben Kennung gehört. Die App kennt Spiele nur über diesen Vertrag, spielspezifische Dienste werden im Kompositionspunkt `main.tsx` eingebaut. Die Texte jedes Spiels liegen in einer eigenen Datei je Sprache.
+- **Begründung:** Neue Spiele und die Spielmodi aus `PH-12-07` sollen sich um Kopfzeile, Navigation, Aktionsleiste, Zeitanzeige und Handy-Layout nicht kümmern müssen. Der Auftraggeber hat Option B (moderater Umbau) freigegeben.
+- **Konsequenzen:** Erweitert ADR-013. Eine allgemeine Spiel-Engine wird bewusst nicht gebaut, bevor ein zweites Spiel sie braucht. Offen: eigene CSS-Datei je Spiel und Hooks für die Tabu-Zustandslogik (`PH-11-06`).
+
