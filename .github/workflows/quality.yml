@@ -49,6 +49,9 @@ jobs:
       - name: Check translation parity
         run: pnpm check:translations
 
+      - name: Check dashboard snapshot
+        run: pnpm docs:check
+
       - name: Run unit tests with coverage
         run: pnpm test:coverage
 
