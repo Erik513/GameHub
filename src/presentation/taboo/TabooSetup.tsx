@@ -44,6 +44,7 @@ export function TabooSetup({
   const [round, setRound] = useState<{
     state: TabooState;
     deadline: number;
+    pausedAt?: number | undefined;
   }>();
   const [deckEmpty, setDeckEmpty] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -95,15 +96,37 @@ export function TabooSetup({
     }
   }
 
+  const togglePause = useCallback(() => {
+    setRound((current) => {
+      if (current?.state.status !== "roundRunning") return current;
+      // Resuming moves the deadline by the time spent paused.
+      const { pausedAt } = current;
+      if (pausedAt === undefined) return { ...current, pausedAt: Date.now() };
+      return { state: current.state, deadline: current.deadline + (Date.now() - pausedAt) };
+    });
+  }, []);
+
+  const runningTurn = round?.state.status === "roundRunning" ? round.state.turn : undefined;
+
   // Leaving a game returns to the main window with the previous setup still filled in.
-  useGameExit(Boolean(round) || Boolean(session), () => {
-    refillController.current?.abort();
-    refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
-    setRound(undefined);
-    setSession(undefined);
-    setDeckEmpty(false);
-    setIssues([]);
-  });
+  useGameExit(
+    Boolean(round) || Boolean(session),
+    () => {
+      refillController.current?.abort();
+      refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
+      setRound(undefined);
+      setSession(undefined);
+      setDeckEmpty(false);
+      setIssues([]);
+    },
+    runningTurn && round
+      ? {
+          paused: round.pausedAt !== undefined,
+          onToggle: togglePause,
+          onStop: () => dispatch({ type: "endRound", turn: runningTurn }),
+        }
+      : undefined,
+  );
 
   const dispatch = useCallback((event: TabooEvent) => {
     setRound((current) => {
@@ -321,7 +344,13 @@ export function TabooSetup({
         </section>
       )}
       {round?.state.status === "roundRunning" && (
-        <TabooRound deadline={round.deadline} dispatch={dispatch} state={round.state} />
+        <TabooRound
+          deadline={round.deadline}
+          dispatch={dispatch}
+          onResume={togglePause}
+          paused={round.pausedAt !== undefined}
+          state={round.state}
+        />
       )}
       {overview && (
         <section className="taboo-round taboo-overview" aria-label={t("tabooRound.overview")}>

@@ -33,6 +33,8 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Einstellungsfenster kompakter; Schließen-Button als kleines X.
 - Rundenübersicht kompakter: Die Karte „Als Nächstes dran“ entfällt. Der Teamname sitzt (klein, ohne Rahmen) als Erweiterung direkt über dem Button „Runde starten“.
 - Überspringen pro Runde begrenzt: Auswahl „Nie / 1 / 2 / 3 / Unbegrenzt“ unter „Weitere Optionen“, Standard 1 (neue Konfiguration `skipsPerRound`, von der Zustandsmaschine durchgesetzt). Ist das Limit aufgebraucht, verschwindet „Überspringen“ und „Verbotenes Wort“ füllt die linke Spalte.
+- Laufende Runde ist pausier- und unterbrechbar: Statt des X stehen oben Pause/Fortsetzen (Play-Symbol) und Stopp (Quadrat, rote Zweifach-Bestätigung), das nur die laufende Runde beendet und die Rundenübersicht öffnet. Während der Pause läuft der Timer nicht weiter, die Karte ist verdeckt („Pausiert“ mit Button „Fortsetzen“) und die Wertungsbuttons sind gesperrt. Das ganze Spiel beendet nur das X in Übersicht und Ergebnis.
+- Rundenkopf als ein Block mit Team, „Runde X/Y“, Punkten und Sekunden, darunter ein Zeitbalken (wird rot in den letzten 10 Sekunden). Auf der Karte stehen die verbotenen Wörter unter der Beschriftung „Verbotene Wörter“ in rötlich umrandeten Kacheln, durch eine Trennlinie klar vom Begriff abgesetzt (Begriff oben, Wörter unten).
 - Der Überspringen-Button zeigt klein darunter den Hinweis „nur 1× pro Runde“ (bei anderen Limits „noch X von Y“).
 - Aktionsbuttons in der Runde neu angeordnet: „Richtig“ groß rechts (zwei Zeilen hoch), links oben „Verbotenes Wort“, darunter „Überspringen“.
 - Punkteübersicht ohne Hervorhebung des nächsten Teams; das Team steht über „Runde starten“.

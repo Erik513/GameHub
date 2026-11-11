@@ -54,22 +54,82 @@ export function AppShell({
         </nav>
         <div className="site-header__actions">
           {gameExit ? (
-            <ConfirmButton
-              armedLabel={t("navigation.exitGameConfirm")}
-              className="icon-button"
-              idleLabel={t("navigation.exitGame")}
-              onConfirm={() => gameExit.run()}
-            >
-              <svg aria-hidden="true" focusable="false" height="20" viewBox="0 0 24 24" width="20">
-                <path
-                  d="M5 5l14 14M19 5L5 19"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeWidth="2.5"
-                />
-              </svg>
-            </ConfirmButton>
+            <>
+              {gameExit.pause && (
+                <Button
+                  aria-label={t(gameExit.pause.paused ? "navigation.resume" : "navigation.pause")}
+                  aria-pressed={gameExit.pause.paused}
+                  className="icon-button"
+                  title={t(gameExit.pause.paused ? "navigation.resume" : "navigation.pause")}
+                  variant="secondary"
+                  onClick={gameExit.pause.toggle}
+                >
+                  {gameExit.pause.paused ? (
+                    <svg
+                      aria-hidden="true"
+                      focusable="false"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      width="20"
+                    >
+                      <path d="M7 4.5v15l12-7.5z" fill="currentColor" />
+                    </svg>
+                  ) : (
+                    <svg
+                      aria-hidden="true"
+                      focusable="false"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      width="20"
+                    >
+                      <path
+                        d="M8 5v14M16 5v14"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeWidth="3"
+                      />
+                    </svg>
+                  )}
+                </Button>
+              )}
+              <ConfirmButton
+                armedLabel={t(
+                  gameExit.pause ? "navigation.stopRoundConfirm" : "navigation.exitGameConfirm",
+                )}
+                className="icon-button"
+                idleLabel={t(gameExit.pause ? "navigation.stopRound" : "navigation.exitGame")}
+                onConfirm={() => (gameExit.pause ? gameExit.pause.stop() : gameExit.run())}
+              >
+                {gameExit.pause ? (
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    width="20"
+                  >
+                    <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />
+                  </svg>
+                ) : (
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    width="20"
+                  >
+                    <path
+                      d="M5 5l14 14M19 5L5 19"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeWidth="2.5"
+                    />
+                  </svg>
+                )}
+              </ConfirmButton>
+            </>
           ) : (
             <>
               <Button

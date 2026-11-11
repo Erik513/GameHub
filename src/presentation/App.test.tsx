@@ -123,6 +123,57 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Close game" })).toBeVisible();
   });
 
+  it("pauses and stops only the running round from the header", async () => {
+    vi.useFakeTimers();
+    const i18n = await createGameHubI18n("en");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={tabooStandardCards} />
+      </I18nextProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    // Between turns only the end-game action exists; there is nothing to pause.
+    expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+
+    expect(screen.queryByRole("button", { name: "Settings" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Close game" })).not.toBeInTheDocument();
+    const term = screen.getByRole("heading", { level: 2 }).textContent;
+    act(() => void vi.advanceTimersByTime(5000));
+    expect(screen.getByRole("timer")).toHaveTextContent("55");
+
+    fireEvent.click(screen.getByRole("button", { name: "Pause" }));
+    expect(screen.getByRole("button", { name: "Resume", pressed: true })).toBeVisible();
+    // While paused the card is hidden and no outcome can be chosen.
+    expect(screen.getByRole("heading", { name: "Paused" })).toBeVisible();
+    expect(screen.queryByText(term)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Correct" })).toBeDisabled();
+    act(() => void vi.advanceTimersByTime(30000));
+    expect(screen.getByRole("timer")).toHaveTextContent("55");
+
+    // Resuming continues with the remaining time.
+    fireEvent.click(screen.getAllByRole("button", { name: "Resume" })[0]!);
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(term);
+    act(() => void vi.advanceTimersByTime(5000));
+    expect(screen.getByRole("timer")).toHaveTextContent("50");
+
+    // Stopping ends only the round (two-step red confirmation) and shows the round overview.
+    fireEvent.click(screen.getByRole("button", { name: "Stop round" }));
+    act(() => void vi.advanceTimersByTime(600));
+    fireEvent.click(screen.getByRole("button", { name: "Tap again to stop" }));
+    expect(screen.queryByRole("timer")).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
+    expect(screen.getByText("Round 1/3")).toBeVisible();
+    expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
+
+    // Only from the overview can the whole game be ended.
+    fireEvent.click(screen.getByRole("button", { name: "End game" }));
+    act(() => void vi.advanceTimersByTime(600));
+    fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
+    expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
+  });
+
   it("changes the language and reports the selection", async () => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n("en");

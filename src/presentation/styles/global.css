@@ -723,13 +723,6 @@ h1 {
   -webkit-user-select: none;
 }
 
-.taboo-round__hud {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--space-3);
-}
-
 .taboo-round__hud p {
   margin: 0;
 }
@@ -1110,11 +1103,6 @@ h1 {
   line-height: 1.1;
 }
 
-.taboo-round__hud > div {
-  padding-left: var(--space-3);
-  border-left: 4px solid var(--color-accent);
-}
-
 .taboo-overview {
   display: flex;
   flex: 1;
@@ -1317,4 +1305,103 @@ h1 {
   font-size: var(--text-xs);
   font-weight: var(--weight-medium);
   opacity: 0.7;
+}
+
+/* Round header: one block with team, round, points and seconds, plus a time bar. */
+.taboo-round__hud {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.taboo-round__hud-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.taboo-round__bar {
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-line);
+}
+
+.taboo-round__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+  transform-origin: left;
+  transition: transform 120ms linear;
+}
+
+.taboo-round__bar[data-low="true"] span {
+  background: var(--color-danger-fill);
+}
+
+/* Forbidden words: labelled and tinted red so they stand apart from the term. */
+.taboo-round__forbidden-label {
+  margin: 0;
+  color: var(--color-danger-fill);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.taboo-round .taboo-round__card ul {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.taboo-round__card li {
+  border-color: color-mix(in srgb, var(--color-danger-fill) 55%, var(--color-line));
+  color: var(--color-ink);
+  font-weight: var(--weight-bold);
+}
+
+/* Keep the term and the forbidden words visually apart: term in the upper area, words anchored below. */
+.taboo-round .taboo-round__card {
+  justify-content: flex-start;
+  gap: var(--space-3);
+}
+
+.taboo-round .taboo-round__card h2 {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 7rem;
+}
+
+.taboo-round__forbidden-label {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-line);
+}
+
+.taboo-round__card--paused {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.taboo-round__card--paused h2 {
+  min-height: 0;
+  flex: none;
+}
+
+.taboo-round__card--paused p {
+  margin: 0;
+  color: var(--color-ink-muted);
+}
+
+.game-preview .taboo-round__card--paused .button {
+  width: 100%;
+  min-height: var(--touch-target);
+  margin-top: var(--space-3);
 }

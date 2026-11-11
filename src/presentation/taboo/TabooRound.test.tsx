@@ -149,3 +149,31 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     vi.useRealTimers();
   }
 });
+
+it("shows the remaining time as a shrinking bar", async () => {
+  const i18n = await createGameHubI18n("en");
+  vi.useFakeTimers();
+  try {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
+      </I18nextProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    const bar = () => document.querySelector<HTMLElement>(".taboo-round__bar span")!;
+    expect(bar().style.transform).toBe("scaleX(1)");
+    void act(() => {
+      vi.advanceTimersByTime(30000);
+    });
+    const scale = Number(/scaleX\(([\d.]+)\)/.exec(bar().style.transform)?.[1]);
+    expect(scale).toBeCloseTo(0.5, 1);
+    expect(document.querySelector(".taboo-round__bar")).toHaveAttribute("data-low", "false");
+    void act(() => {
+      vi.advanceTimersByTime(25000);
+    });
+    expect(document.querySelector(".taboo-round__bar")).toHaveAttribute("data-low", "true");
+  } finally {
+    vi.useRealTimers();
+  }
+});
