@@ -1,7 +1,7 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createGameHubI18n, type SupportedLanguage } from "../i18n";
 import { tabooStandardCards } from "../data/tabooStandardCards";
 import { App } from "./App";
@@ -26,6 +26,10 @@ const languageCases = [
   intro: string;
   navigation: string;
 }[];
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 beforeEach(() => {
   window.location.hash = "#/";
@@ -79,7 +83,7 @@ describe("App", () => {
   });
 
   it("offers only an end-game action during a game and returns to the game's main window", async () => {
-    const user = userEvent.setup();
+    vi.useFakeTimers({ toFake: ["Date", "setTimeout", "clearTimeout"] });
     const i18n = await createGameHubI18n("en");
     render(
       <I18nextProvider i18n={i18n}>
@@ -87,23 +91,32 @@ describe("App", () => {
       </I18nextProvider>,
     );
 
-    await user.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
     // Main window of the game: settings and the way back to the hub are available.
     expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();
     expect(screen.queryByRole("button", { name: "End game" })).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
 
     // During the game: no hub navigation, no settings.
     expect(screen.queryByRole("button", { name: "Settings" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Close game" })).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "End game" }));
-    const dialog = screen.getByRole("dialog", { name: "End the game?" });
-    await user.click(within(dialog).getByRole("button", { name: "Keep playing" }));
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    // First press arms the button, a second press within a few seconds confirms.
+    fireEvent.click(screen.getByRole("button", { name: "End game" }));
+    expect(screen.getByRole("button", { name: "Tap again to end" })).toHaveAttribute(
+      "data-armed",
+      "true",
+    );
+    // A quick double tap must not confirm by accident.
+    fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
+    expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
+    // Without a second press the button relaxes again.
+    await act(() => vi.advanceTimersByTimeAsync(3500));
+    expect(screen.getByRole("button", { name: "End game" })).toBeVisible();
     expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: "End game" }));
-    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "End game" }));
+    fireEvent.click(screen.getByRole("button", { name: "End game" }));
+    await act(() => vi.advanceTimersByTimeAsync(600));
+    fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
     expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();

@@ -4,3 +4,4 @@ export { Dialog } from "./Dialog";
 export { EmptyState } from "./EmptyState";
 export { StatusMessage } from "./StatusMessage";
 export { TextField } from "./TextField";
+export { ConfirmButton } from "./ConfirmButton";

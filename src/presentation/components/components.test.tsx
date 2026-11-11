@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button";
 import { Card } from "./Card";
+import { ConfirmButton } from "./ConfirmButton";
 import { Dialog } from "./Dialog";
 import { EmptyState } from "./EmptyState";
 import { StatusMessage } from "./StatusMessage";
@@ -155,5 +156,32 @@ describe("presentation components", () => {
 
     rerender(<EmptyState description="No games found" title="Empty" />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+});
+
+describe("ConfirmButton", () => {
+  it("arms on the first press, confirms on the second and relaxes after a timeout", async () => {
+    vi.useFakeTimers({ toFake: ["Date", "setTimeout", "clearTimeout"] });
+    try {
+      const onConfirm = vi.fn();
+      render(
+        <ConfirmButton armedLabel="Tap again" idleLabel="Delete" onConfirm={onConfirm}>
+          x
+        </ConfirmButton>,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+      expect(screen.getByRole("status")).toHaveTextContent("Tap again");
+      fireEvent.click(screen.getByRole("button", { name: "Tap again" }));
+      expect(onConfirm).not.toHaveBeenCalled();
+      await act(() => vi.advanceTimersByTimeAsync(3500));
+      expect(screen.getByRole("button", { name: "Delete" })).toBeVisible();
+      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+      await act(() => vi.advanceTimersByTimeAsync(500));
+      fireEvent.click(screen.getByRole("button", { name: "Tap again" }));
+      expect(onConfirm).toHaveBeenCalledOnce();
+      expect(screen.getByRole("button", { name: "Delete" })).toBeVisible();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

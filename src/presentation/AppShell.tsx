@@ -1,7 +1,7 @@
 import { useCallback, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
-import { Button, Dialog } from "./components";
+import { Button, ConfirmButton } from "./components";
 import { GameChromeContext, type GameExit } from "./GameChrome";
 import { SettingsDialog } from "./SettingsDialog";
 
@@ -27,11 +27,7 @@ export function AppShell({
   const { t } = useTranslation();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [gameExit, setGameExit] = useState<GameExit>();
-  const [confirmingExit, setConfirmingExit] = useState(false);
-  const registerGameExit = useCallback((exit: GameExit | undefined) => {
-    setGameExit(exit);
-    if (!exit) setConfirmingExit(false);
-  }, []);
+  const registerGameExit = useCallback((exit: GameExit | undefined) => setGameExit(exit), []);
 
   return (
     <div className="app-shell">
@@ -58,12 +54,11 @@ export function AppShell({
         </nav>
         <div className="site-header__actions">
           {gameExit ? (
-            <Button
-              aria-label={t("navigation.exitGame")}
+            <ConfirmButton
+              armedLabel={t("navigation.exitGameConfirm")}
               className="icon-button"
-              title={t("navigation.exitGame")}
-              variant="secondary"
-              onClick={() => setConfirmingExit(true)}
+              idleLabel={t("navigation.exitGame")}
+              onConfirm={() => gameExit.run()}
             >
               <svg aria-hidden="true" focusable="false" height="20" viewBox="0 0 24 24" width="20">
                 <path
@@ -74,7 +69,7 @@ export function AppShell({
                   strokeWidth="2.5"
                 />
               </svg>
-            </Button>
+            </ConfirmButton>
           ) : (
             <>
               <Button
@@ -142,28 +137,6 @@ export function AppShell({
       <GameChromeContext.Provider value={registerGameExit}>
         <main className="main-content">{children}</main>
       </GameChromeContext.Provider>
-      <Dialog
-        closeLabel={t("settings.close")}
-        description={t("navigation.exitConfirm.description")}
-        onClose={() => setConfirmingExit(false)}
-        open={confirmingExit}
-        title={t("navigation.exitConfirm.title")}
-      >
-        <div className="confirm-actions">
-          <Button
-            variant="danger"
-            onClick={() => {
-              setConfirmingExit(false);
-              gameExit?.run();
-            }}
-          >
-            {t("navigation.exitConfirm.confirm")}
-          </Button>
-          <Button variant="secondary" onClick={() => setConfirmingExit(false)}>
-            {t("navigation.exitConfirm.cancel")}
-          </Button>
-        </div>
-      </Dialog>
       <SettingsDialog
         cardLanguage={cardLanguage}
         onCardLanguageChange={onCardLanguageChange}

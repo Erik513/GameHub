@@ -96,12 +96,7 @@ export const common = {
     home: "Games",
     ariaLabel: "Main navigation",
     exitGame: "End game",
-    exitConfirm: {
-      title: "End the game?",
-      description: "The current game will be lost. You return to the main window of the game.",
-      confirm: "End game",
-      cancel: "Keep playing",
-    },
+    exitGameConfirm: "Tap again to end",
     closeGame: "Close game",
   },
   settings: {
