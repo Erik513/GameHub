@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-11T22:09:07+01:00",
+    "updatedAt": "2026-11-11T22:15:38+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 47,
+      "completedTasks": 48,
       "totalTasks": 61,
-      "percent": 77.0
+      "percent": 78.7
     }
   },
   "environment": {
@@ -50,17 +50,17 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:09:07+01:00",
+      "lastRunAt": "2026-11-11T22:15:38+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:09:07+01:00",
+      "lastRunAt": "2026-11-11T22:15:38+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:09:07+01:00",
+      "lastRunAt": "2026-11-11T22:15:38+01:00",
       "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich."
     },
     "githubActions": {
@@ -70,7 +70,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:09:07+01:00",
+      "lastRunAt": "2026-11-11T22:15:38+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -80,15 +80,15 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:09:07+01:00",
+      "lastRunAt": "2026-11-11T22:15:38+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:09:07+01:00",
-      "passed": 226,
+      "lastRunAt": "2026-11-11T22:15:38+01:00",
+      "passed": 235,
       "failed": 0,
-      "details": "226 Unit- und Komponententests bestanden, neu unter anderem Speicherfehler, Abbruch der Kartengenerierung, Doppelstart, Seiten und App-Rahmen. Lokale Ausführung mit Node 25.5."
+      "details": "235 Unit- und Komponententests bestanden, darunter Übersetzungsqualität (Platzhalter, identische Texte, ungenutzte Schlüssel) und ein Durchlauf aller zwölf Tabu-Ansichten in Deutsch und Englisch. Lokale Ausführung mit Node 25.5."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,10 +99,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:09:07+01:00",
+      "lastRunAt": "2026-11-11T22:15:38+01:00",
       "passed": 20,
       "failed": 0,
-      "details": "20 Browserprüfungen (Chrome, Desktop und Mobil) lokal bestanden, inklusive Wertungskorrektur und gemeinsamem Sieg."
+      "details": "20 Browserprüfungen (Chrome, Desktop und Mobil) lokal bestanden, inklusive Seitensprache und Beschreibung nach Sprachwechsel."
     },
     "renameValidation": {
       "status": "passed",
@@ -117,11 +117,11 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:09:07+01:00",
-      "overallLines": 99.15,
-      "overallBranches": 94.05,
-      "overallFunctions": 98.51,
-      "overallStatements": 97.67,
+      "lastRunAt": "2026-11-11T22:15:38+01:00",
+      "overallLines": 99.18,
+      "overallBranches": 93.7,
+      "overallFunctions": 98.55,
+      "overallStatements": 97.56,
       "criticalGameLogicLines": 100,
       "businessLines": 100,
       "dataInfrastructureLines": 100,
@@ -450,7 +450,7 @@
         {
           "id": "PH-11-03",
           "title": "Sprachabdeckung Deutsch/Englisch inklusive Oberfläche prüfen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-11-04",
@@ -535,6 +535,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "PH-11-03 abgeschlossen: Sprachabdeckung geprüft. Seitensprache und Beschreibung folgen jetzt der Oberflächensprache, ungenutzte Texte entfernt, veraltete Hinweistexte korrigiert und automatische Prüfungen für Platzhalter, versehentlich gleiche Texte, ungenutzte Schlüssel und fremdsprachige Texte in allen Ansichten ergänzt."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-11-02 abgeschlossen: Testabdeckung deutlich erhöht (Zeilen 99,15 %, Verzweigungen 94,05 %). Beim Prüfen fiel auf, dass der Hinweis „keine Zusatzkarten verfügbar“ nach dem Spielstart nie sichtbar war. Er erscheint jetzt in der ersten Rundenübersicht."
@@ -816,8 +820,8 @@
       "prerequisite": "Strukturvorschlag vom Auftraggeber freigeben lassen."
     },
     {
-      "id": "PH-11-03",
-      "reason": "Sprach- und Oberflächenabdeckung für Deutsch und Englisch prüfen.",
+      "id": "PH-11-04",
+      "reason": "Oberflächentests für alle Ansichten auf Handybreite ergänzen.",
       "prerequisite": "Keine."
     }
   ]

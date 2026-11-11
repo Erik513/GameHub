@@ -507,7 +507,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-11-03 – Sprachabdeckung Deutsch/Englisch inklusive Oberfläche prüfen
 
 - **Ziel:** Alle sichtbaren Texte, auch Hinweise, Fehlermeldungen und Screenreader-Namen, in beiden Sprachen prüfen; Oberflächentests für beide Sprachen.
-- **Status:** planned
+- **Ergebnis:** Automatische Prüfungen in `src/i18n/translationQuality.test.ts` und `src/presentation/languageFlows.test.tsx`. Die Seitensprache folgt der Oberflächensprache.
+- **Status:** done
 
 #### PH-11-04 – Oberflächentests ergänzen
 

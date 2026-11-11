@@ -4,6 +4,15 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-11-03 – Sprach- und Oberflächenabdeckung geprüft
+
+- Fehler behoben: Das `lang`-Attribut der Seite blieb auf Deutsch, auch bei englischer Oberfläche (falsche Aussprache bei Screenreadern). Seitensprache und Meta-Beschreibung folgen jetzt der Oberflächensprache (`useDocumentLanguage`).
+- Veraltete Hinweise korrigiert („Partie erneut vorbereiten“ existiert nicht mehr) und ungenutzte Texte (Architekturschichten, Beispielmeldungen, Team hinzufügen/entfernen, Kartenoptionen) entfernt.
+- Neue automatische Prüfungen: gleiche Platzhalter in beiden Sprachen, keine versehentlich identischen Texte (bewusste Ausnahmen sind aufgelistet), keine ungenutzten Übersetzungsschlüssel.
+- Neuer Durchlauf aller zwölf Tabu-Ansichten (Auswahl, Einstellungen, Setup, Übersicht, Runde, Pause, Auswertung, Stechen, Ergebnis) in Deutsch und Englisch: Es erscheinen keine Rohschlüssel und keine Texte der jeweils anderen Sprache.
+- Zeitformat (Dezimaltrenner) je Sprache getestet. Im E2E-Test wird Seitensprache und Beschreibung nach dem Sprachwechsel geprüft.
+- Der feste Markenname „GameHub“ in der Kopfzeile ist der einzige Text im Code außerhalb der Übersetzungsressourcen.
+
 ### PH-11-02 – Testabdeckung erhöht
 
 - Neue Tests: Fehlerfälle der lokalen Kartenspeicherung (Öffnen, Blockade, abgebrochenes Lesen, ungültige Karte), Kartengenerierung (gefundener oder lokaler Generator, Fehlschläge, Abbruch), Kartenverwaltung bei Speicherfehlern, Doppelstart und Abbruch während der Vorbereitung, Seiten und App-Rahmen, Stechen ohne Ersatzkarte, Parität der Übersetzungsressourcen.

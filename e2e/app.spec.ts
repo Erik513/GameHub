@@ -46,12 +46,18 @@ test("persists the selected UI language", async ({ page }) => {
   await page.getByRole("button", { name: "Settings" }).click();
   await page.getByRole("combobox", { name: "Interface language" }).selectOption("de");
   await expect(page.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "de");
 
   await page.reload();
 
   await page.getByRole("button", { name: "Einstellungen" }).click();
   await expect(page.getByRole("combobox", { name: "Oberflächensprache" })).toHaveValue("de");
   await expect(page.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "de");
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    "content",
+    "GameHub – Partyspiele an einem Ort",
+  );
 });
 
 test("navigates between the game library and preview", async ({ page }) => {

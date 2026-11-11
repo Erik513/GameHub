@@ -47,7 +47,7 @@ export const common = {
     overview: "Round overview",
     upNext: "Up next",
     allRoundsPlayed: "All scheduled rounds have been played.",
-    exhausted: "The deck has no unused cards for another round.",
+    exhausted: "No cards are left.",
     title: "Active round",
     score: "Score: {{score}}",
     seconds: "{{seconds}} seconds left",
@@ -64,7 +64,7 @@ export const common = {
     skipped: "Skip",
     forbiddenWord: "Forbidden word",
     empty: "No matching cards",
-    emptyHint: "Change the card filters and prepare the game again.",
+    emptyHint: "Change the card selection and start the game again.",
     start: "Start round",
   },
   tabooSetup: {
@@ -79,14 +79,11 @@ export const common = {
     moreOptions: "More options",
     preparingCards: "Preparing cards…",
     noExtraCards: "No new extra cards are available.",
-    cardOptions: "Card options",
     cardShortage:
       "The filters match {{available}} cards. The scheduled turns need at least {{required}}.",
     teams: "Teams",
     team: "Team {{number}}",
     teamNameLabel: "Name of team {{number}}",
-    addTeam: "Add team",
-    removeTeam: "Remove last team",
     rounds: "Rounds per team",
     duration: "Round duration (seconds)",
     difficulty: "Difficulty",
@@ -105,16 +102,8 @@ export const common = {
   app: {
     eyebrow: "Project foundation",
     title: "GameHub",
+    metaDescription: "GameHub – party games in one place",
     intro: "One place for party, card, quiz, and social games.",
-  },
-  architecture: {
-    label: "Architecture layers",
-    layers: {
-      presentation: "Presentation",
-      business: "Business",
-      data: "Data",
-      infrastructure: "Infrastructure",
-    },
   },
   language: {
     uiLabel: "Interface language",
@@ -143,14 +132,6 @@ export const common = {
     emptyGames: {
       title: "No games available",
       description: "New games will appear here as soon as they are registered.",
-    },
-    examples: {
-      loadingTitle: "Loading",
-      loadingDescription: "GameHub is preparing the content.",
-      errorTitle: "Something went wrong",
-      errorDescription: "Your settings are unchanged. Please try again.",
-      successTitle: "Saved",
-      successDescription: "Your changes are available now.",
     },
   },
   gameSelection: {
@@ -191,7 +172,6 @@ export const common = {
     },
   },
   gamePreview: {
-    eyebrow: "Game preview",
     description:
       "This game is already part of GameHub and will become playable in a later development step.",
   },

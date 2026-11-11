@@ -47,7 +47,7 @@ export const common = {
     overview: "Rundenübersicht",
     upNext: "Als Nächstes dran",
     allRoundsPlayed: "Alle vorgesehenen Runden sind gespielt.",
-    exhausted: "Der Kartensatz enthält keine ungespielten Karten für eine weitere Runde.",
+    exhausted: "Es sind keine Karten mehr verfügbar.",
     title: "Laufende Runde",
     score: "Punkte: {{score}}",
     seconds: "Noch {{seconds}} Sekunden",
@@ -64,7 +64,7 @@ export const common = {
     skipped: "Überspringen",
     forbiddenWord: "Verbotenes Wort",
     empty: "Keine passenden Karten",
-    emptyHint: "Ändere die Kartenfilter und bereite die Partie erneut vor.",
+    emptyHint: "Ändere die Kartenauswahl und starte die Partie erneut.",
     start: "Runde starten",
   },
   tabooSetup: {
@@ -79,14 +79,11 @@ export const common = {
     moreOptions: "Weitere Optionen",
     preparingCards: "Karten werden vorbereitet …",
     noExtraCards: "Keine neuen Zusatzkarten verfügbar.",
-    cardOptions: "Kartenoptionen",
     cardShortage:
       "Die Auswahl enthält {{available}} Karten. Für die geplanten Teamrunden werden mindestens {{required}} benötigt.",
     teams: "Teams",
     team: "Team {{number}}",
     teamNameLabel: "Name von Team {{number}}",
-    addTeam: "Team hinzufügen",
-    removeTeam: "Letztes Team entfernen",
     rounds: "Runden pro Team",
     duration: "Rundendauer (Sekunden)",
     difficulty: "Schwierigkeit",
@@ -105,16 +102,8 @@ export const common = {
   app: {
     eyebrow: "Projektgrundlage",
     title: "GameHub",
+    metaDescription: "GameHub – Partyspiele an einem Ort",
     intro: "Ein Ort für Party-, Karten-, Quiz- und Gesellschaftsspiele.",
-  },
-  architecture: {
-    label: "Architekturschichten",
-    layers: {
-      presentation: "Darstellung",
-      business: "Geschäftslogik",
-      data: "Daten",
-      infrastructure: "Infrastruktur",
-    },
   },
   language: {
     uiLabel: "Oberflächensprache",
@@ -143,14 +132,6 @@ export const common = {
     emptyGames: {
       title: "Keine Spiele verfügbar",
       description: "Neue Spiele erscheinen hier, sobald sie registriert sind.",
-    },
-    examples: {
-      loadingTitle: "Wird geladen",
-      loadingDescription: "GameHub bereitet die Inhalte vor.",
-      errorTitle: "Etwas ist schiefgelaufen",
-      errorDescription: "Deine Einstellungen bleiben unverändert. Bitte versuche es erneut.",
-      successTitle: "Gespeichert",
-      successDescription: "Deine Änderungen sind jetzt verfügbar.",
     },
   },
   gameSelection: {
@@ -192,7 +173,6 @@ export const common = {
     },
   },
   gamePreview: {
-    eyebrow: "Spielvorschau",
     description:
       "Dieses Spiel ist bereits Teil von GameHub und wird in einem späteren Entwicklungsschritt spielbar.",
   },

@@ -75,3 +75,37 @@ export function assertTranslationParity(
     throw new Error(`Translation parity check failed:\n- ${issues.sort().join("\n- ")}`);
   }
 }
+
+function placeholdersOf(text: string): string[] {
+  return [...text.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)].map((match) => match[1] ?? "").sort();
+}
+
+/** Lists keys whose interpolation placeholders differ between two languages. */
+export function findPlaceholderMismatches(
+  reference: TranslationResource,
+  candidate: TranslationResource,
+): string[] {
+  const referenceValues = collectTranslations(reference).values;
+  const candidateValues = collectTranslations(candidate).values;
+  const mismatches: string[] = [];
+  for (const [key, value] of referenceValues) {
+    const other = candidateValues.get(key);
+    if (other === undefined) continue;
+    if (placeholdersOf(value).join(",") !== placeholdersOf(other).join(",")) mismatches.push(key);
+  }
+  return mismatches.sort();
+}
+
+/** Lists keys that have the exact same text in both languages (possibly untranslated). */
+export function findIdenticalValues(
+  reference: TranslationResource,
+  candidate: TranslationResource,
+): string[] {
+  const referenceValues = collectTranslations(reference).values;
+  const candidateValues = collectTranslations(candidate).values;
+  const identical: string[] = [];
+  for (const [key, value] of referenceValues) {
+    if (candidateValues.get(key) === value) identical.push(key);
+  }
+  return identical.sort();
+}
