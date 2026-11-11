@@ -1,0 +1,83 @@
+import type { useTranslation } from "react-i18next";
+import type { ValidationIssue } from "../../business/games/taboo/model";
+import type { createTabooGame, TabooState } from "../../business/games/taboo/stateMachine";
+import type { ChoiceOption } from "../game-kit";
+import type { TiebreakRow } from "./TabooTiebreakResults";
+
+export const categories = ["everyday", "nature", "culture"] as const;
+export const difficulties = ["easy", "medium", "hard"] as const;
+export const cardSources = ["both", "local", "ai"] as const;
+export type RoundChoice = number | "unlimited";
+export const defaultRoundChoices: readonly RoundChoice[] = [3, 5, 10, "unlimited"];
+export const maxCardsPerRequest = 10;
+export const aiCardsPerTurn = 8;
+export const refillThreshold = 8;
+export type SetupState = Extract<ReturnType<typeof createTabooGame>, { valid: true }>["value"];
+export type EndedState = Extract<TabooState, { status: "roundEnded" }>;
+export type FinishedState = Extract<TabooState, { status: "gameEnded" }>;
+export type TiebreakView = Extract<TabooState, { status: "tiebreak" }>;
+
+/** What the turn overview needs: the game, its scores and the turn that is up next (if any). */
+export interface OverviewData {
+  readonly configuration: TabooState["configuration"];
+  readonly scores: readonly number[];
+  readonly turn: { readonly round: number; readonly teamIndex: number } | null;
+}
+
+export function issueMessageKey(issue: ValidationIssue) {
+  switch (issue.field) {
+    case "teams.name":
+      return issue.code === "duplicate" ? "tabooSetup.duplicateTeam" : "tabooSetup.emptyTeam";
+    case "roundDurationSeconds":
+      return "tabooSetup.invalidDuration";
+    case "roundsPerTeam":
+      return "tabooSetup.invalidRounds";
+    case "categories":
+      return "tabooSetup.selectCategory";
+    default:
+      return "tabooSetup.invalidSetup";
+  }
+}
+
+export function teamNameFrom(value: FormDataEntryValue | null) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+export function tiebreakTeamName(state: TiebreakView) {
+  const teamIndex = state.contenders[state.attempts.length];
+  return teamIndex === undefined ? "" : (state.configuration.teams[teamIndex]?.name ?? "");
+}
+
+export function tiebreakRows(state: TiebreakView): readonly TiebreakRow[] {
+  return state.contenders.map((teamIndex) => {
+    const team = state.configuration.teams[teamIndex];
+    const attempt = state.attempts.find((candidate) => candidate.teamIndex === teamIndex);
+    return {
+      id: team?.id ?? String(teamIndex),
+      name: team?.name ?? "",
+      ...(attempt ? { result: { solved: attempt.solved, timeMs: attempt.timeMs } } : {}),
+    };
+  });
+}
+
+export function roundOption(
+  value: RoundChoice,
+  t: ReturnType<typeof useTranslation>["t"],
+): ChoiceOption {
+  if (value === "unlimited") {
+    return {
+      value,
+      label: t("tabooSetup.roundOptions.unlimited"),
+      ariaLabel: t("tabooSetup.unlimited"),
+    };
+  }
+  const names: Record<number, "short" | "medium" | "long"> = {
+    3: "short",
+    5: "medium",
+    10: "long",
+  };
+  const name = names[value];
+  return name
+    ? { value: String(value), label: t(`tabooSetup.roundOptions.${name}`), hint: String(value) }
+    : { value: String(value), label: String(value) };
+}
