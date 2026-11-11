@@ -9,7 +9,7 @@ async function renderGame() {
   const i18n = await createGameHubI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
+      <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
 }
@@ -61,18 +61,21 @@ describe("Taboo tiebreak", () => {
     expect(resultRows()).toEqual(["Team 1: still to play", "Team 2: still to play"]);
     press("Start tiebreak");
 
-    // Team 1 solves three cards, one with a forbidden word (+5 s).
+    // Team 1 solves three cards; a forbidden word only costs the time for a new card.
     const attempt = screen.getByRole("region", { name: "Tiebreak attempt" });
     expect(within(attempt).getByRole("timer")).toHaveTextContent("0.0");
     expect(attempt).toHaveTextContent("Card 1/3");
     advance(4000);
+    const firstTerm = within(attempt).getByRole("heading").textContent;
     fireEvent.click(within(attempt).getByRole("button", { name: "Forbidden word" }));
-    expect(within(attempt).getByRole("timer")).toHaveTextContent("9.0");
+    expect(within(attempt).getByRole("timer")).toHaveTextContent("4.0");
+    expect(within(attempt).getByRole("heading").textContent).not.toBe(firstTerm);
+    expect(attempt).toHaveTextContent("Card 1/3");
     for (let card = 0; card < 3; card += 1) {
       advance(2000);
       fireEvent.click(within(attempt).getByRole("button", { name: "Correct" }));
     }
-    expect(resultRows()[0]).toBe("Team 1: 3/3 cards · 15.0 s");
+    expect(resultRows()[0]).toBe("Team 1: 3/3 cards · 10.0 s");
     expect(resultRows()[1]).toBe("Team 2: still to play");
 
     // Team 2 only solves one card before the 90 seconds are over.
@@ -83,7 +86,7 @@ describe("Taboo tiebreak", () => {
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
 
     expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 1");
-    expect(resultRows()).toEqual(["Team 1: 3/3 cards · 15.0 s", "Team 2: 1/3 cards · 90.0 s"]);
+    expect(resultRows()).toEqual(["Team 1: 3/3 cards · 10.0 s", "Team 2: 1/3 cards · 90.0 s"]);
     press("Play again with the same setup");
     expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
   });
@@ -102,8 +105,14 @@ describe("Taboo tiebreak", () => {
     expect(within(attempt).queryByRole("button", { name: "Skip" })).not.toBeInTheDocument();
 
     // Hints about the rules stay visible on the buttons.
-    expect(within(attempt).getByRole("button", { name: "Forbidden word" })).toHaveTextContent(
-      "+5 s",
-    );
+    const forbidden = within(attempt).getByRole("button", { name: "Forbidden word" });
+    expect(forbidden).toHaveTextContent("counts as wrong");
+    // A forbidden word brings another card of the same difficulty and can happen repeatedly.
+    const secondTerm = within(attempt).getByRole("heading").textContent;
+    fireEvent.click(forbidden);
+    expect(within(attempt).getByText("Easy")).toBeVisible();
+    expect(within(attempt).getByRole("heading").textContent).not.toBe(secondTerm);
+    fireEvent.click(within(attempt).getByRole("button", { name: "Forbidden word" }));
+    expect(within(attempt).getByText("Easy")).toBeVisible();
   });
 });

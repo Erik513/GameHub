@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { GameConfiguration, TabooCard } from "./model";
 import {
-  TIEBREAK_PENALTY_MS,
   createTabooGame,
+  getNextTabooTurn,
   transitionTaboo,
   type TabooEvent,
   type TabooState,
@@ -374,7 +374,7 @@ describe("Taboo state machine", () => {
       expect(begin([...makeCards("a", 2), { ...card, id: "" }])).toBe(tied);
       const started = begin(makeCards("a"));
       expect(started).toMatchObject({
-        active: { teamIndex: 0, index: 0, solved: 0, skipUsed: false, penaltyMs: 0 },
+        active: { teamIndex: 0, index: 0, solved: 0, skipUsed: false, wrong: 0 },
         usedCardIds: ["a0", "a1", "a2"],
       });
       // An attempt is already running.
@@ -383,27 +383,39 @@ describe("Taboo state machine", () => {
       ).toBe(started);
     });
 
-    it("counts penalties and a single skip with a replacement card", () => {
+    it("replaces a card after a forbidden word or a skip, with a single skip allowed", () => {
       const started = startedAttempt();
       const answer = (outcome: "correct" | "skipped" | "forbiddenWord", extra = {}) =>
         ({ type: "answerTiebreak", outcome, elapsedMs: 4000, ...extra }) as const;
+      const replacement = (id: string) => ({ replacement: { ...card, id } });
+      // A replacement card is needed for both outcomes and may not be a used card.
       expect(transitionTaboo(started, answer("skipped"))).toBe(started);
-      expect(
-        transitionTaboo(started, answer("skipped", { replacement: { ...card, id: "a0" } })),
-      ).toBe(started);
-      const penalised = transitionTaboo(started, answer("forbiddenWord"));
-      expect(penalised).toMatchObject({ active: { penaltyMs: TIEBREAK_PENALTY_MS, index: 0 } });
-      const skipped = transitionTaboo(
-        penalised,
-        answer("skipped", { replacement: { ...card, id: "r1" } }),
-      );
-      expect(skipped).toMatchObject({
-        active: { skipUsed: true, cards: [{ id: "r1" }, { id: "a1" }, { id: "a2" }] },
-        usedCardIds: ["a0", "a1", "a2", "r1"],
+      expect(transitionTaboo(started, answer("forbiddenWord"))).toBe(started);
+      expect(transitionTaboo(started, answer("skipped", replacement("a0")))).toBe(started);
+      expect(transitionTaboo(started, answer("forbiddenWord", replacement("a1")))).toBe(started);
+
+      // A forbidden word only counts as wrong (no penalty) and can happen any number of times.
+      const wrong = transitionTaboo(started, answer("forbiddenWord", replacement("w1")));
+      expect(wrong).toMatchObject({
+        active: {
+          wrong: 1,
+          index: 0,
+          solved: 0,
+          cards: [{ id: "w1" }, { id: "a1" }, { id: "a2" }],
+        },
+        usedCardIds: ["a0", "a1", "a2", "w1"],
       });
-      expect(
-        transitionTaboo(skipped, answer("skipped", { replacement: { ...card, id: "r2" } })),
-      ).toBe(skipped);
+      const wrongAgain = transitionTaboo(wrong, answer("forbiddenWord", replacement("w2")));
+      expect(wrongAgain).toMatchObject({ active: { wrong: 2, skipUsed: false } });
+
+      const skipped = transitionTaboo(wrongAgain, answer("skipped", replacement("r1")));
+      expect(skipped).toMatchObject({
+        active: { skipUsed: true, wrong: 2, cards: [{ id: "r1" }, { id: "a1" }, { id: "a2" }] },
+      });
+      expect(transitionTaboo(skipped, answer("skipped", replacement("r2")))).toBe(skipped);
+      expect(transitionTaboo(skipped, answer("forbiddenWord", replacement("w3")))).toMatchObject({
+        active: { wrong: 3 },
+      });
       expect(transitionTaboo(skipped, answer("correct"))).toMatchObject({
         active: { solved: 1, index: 1 },
       });
@@ -418,11 +430,12 @@ describe("Taboo state machine", () => {
         type: "answerTiebreak",
         outcome: "forbiddenWord",
         elapsedMs: 7000,
+        replacement: { ...card, id: "w1" },
       });
       state = solve(state, 10000);
       expect(state).toMatchObject({
         status: "tiebreak",
-        attempts: [{ teamIndex: 0, solved: 3, timeMs: 10000 + TIEBREAK_PENALTY_MS }],
+        attempts: [{ teamIndex: 0, solved: 3, timeMs: 10000 }],
       });
       expect(state).not.toHaveProperty("active");
       // Answers without a running attempt do nothing.
@@ -461,6 +474,50 @@ describe("Taboo state machine", () => {
       expect(transitionTaboo(first, { type: "beginTiebreakAttempt", cards: makeCards("a") })).toBe(
         first,
       );
+    });
+  });
+
+  describe("unlimited rounds", () => {
+    const unlimited = {
+      ...configuration,
+      teams: configuration.teams.slice(0, 2),
+      roundsPerTeam: "unlimited",
+    } as const;
+
+    function afterTurn(state: TabooState, id: string, teamIndex: number, round: number) {
+      const running = transitionTaboo(state, { type: "startRound", card: { ...card, id } });
+      return transitionTaboo(running, { type: "endRound", turn: { round, teamIndex } });
+    }
+
+    it("always offers another turn, but lets the group finish after a completed round", () => {
+      const first = afterTurn(setup(unlimited), "c1", 0, 1);
+      // In the middle of a round the game cannot be finished.
+      expect(transitionTaboo(first, finish)).toBe(first);
+      expect(getNextTabooTurn(first as Extract<TabooState, { status: "roundEnded" }>)).toEqual({
+        round: 1,
+        teamIndex: 1,
+      });
+      const second = afterTurn(first, "c2", 1, 1);
+      // After the last team of a round there is still a next turn, and finishing is allowed.
+      expect(getNextTabooTurn(second as Extract<TabooState, { status: "roundEnded" }>)).toEqual({
+        round: 2,
+        teamIndex: 0,
+      });
+      const third = afterTurn(second, "c3", 0, 2);
+      expect(third).toMatchObject({ status: "roundEnded", turn: { round: 2, teamIndex: 0 } });
+      expect(transitionTaboo(second, finish)).toMatchObject({ status: "gameEnded" });
+      expect(transitionTaboo(second, { ...start, card: { ...card, id: "c4" } })).toMatchObject({
+        status: "roundRunning",
+        turn: { round: 2, teamIndex: 0 },
+      });
+    });
+
+    it("validates the rounds setting", () => {
+      expect(createTabooGame(unlimited)).toMatchObject({ valid: true });
+      expect(createTabooGame({ ...unlimited, roundsPerTeam: 0 })).toMatchObject({ valid: false });
+      expect(
+        createTabooGame({ ...unlimited, roundsPerTeam: "many" as unknown as "unlimited" }),
+      ).toMatchObject({ valid: false });
     });
   });
 });

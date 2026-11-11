@@ -20,7 +20,8 @@ export interface TabooCard {
 export interface GameConfiguration {
   readonly teams: readonly Team[];
   readonly roundDurationSeconds: number;
-  readonly roundsPerTeam: number;
+  /** Rounds in which every team plays once; "unlimited" lets the group decide when to stop. */
+  readonly roundsPerTeam: number | "unlimited";
   readonly cardLanguage: GameHubLanguage;
   /** Allowed skips per turn; undefined means unlimited. */
   readonly skipsPerRound?: number;
@@ -66,10 +67,13 @@ export function validateConfiguration(
     if (new Set(teams.map((team) => identity(team[field]))).size !== teams.length)
       issues.push({ field: `teams.${field}`, code: "duplicate" });
   }
-  for (const field of ["roundDurationSeconds", "roundsPerTeam"] as const) {
-    if (!Number.isSafeInteger(input[field]) || input[field] <= 0)
-      issues.push({ field, code: "positive_integer_required" });
-  }
+  if (!Number.isSafeInteger(input.roundDurationSeconds) || input.roundDurationSeconds <= 0)
+    issues.push({ field: "roundDurationSeconds", code: "positive_integer_required" });
+  if (
+    input.roundsPerTeam !== "unlimited" &&
+    (!Number.isSafeInteger(input.roundsPerTeam) || input.roundsPerTeam <= 0)
+  )
+    issues.push({ field: "roundsPerTeam", code: "positive_integer_required" });
   if (input.cardLanguage !== "de" && input.cardLanguage !== "en")
     issues.push({ field: "cardLanguage", code: "unsupported_language" });
   if (

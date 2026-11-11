@@ -35,7 +35,6 @@ interface TurnState extends GameState {
 }
 
 export const TIEBREAK_CARD_COUNT = 3;
-export const TIEBREAK_PENALTY_MS = 5000;
 export const TIEBREAK_LIMIT_SECONDS = 90;
 export const TIEBREAK_MAX_TEAMS = 3;
 
@@ -52,7 +51,8 @@ export interface TiebreakActive {
   readonly index: number;
   readonly solved: number;
   readonly skipUsed: boolean;
-  readonly penaltyMs: number;
+  /** Cards that were replaced because a forbidden word was said; they only cost time. */
+  readonly wrong: number;
 }
 
 export type TabooState =
@@ -287,7 +287,10 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
   let turn: Turn = { round: 1, teamIndex: 0 };
   if (state.status === "roundEnded") {
     const nextTurn = getNextTabooTurn(state);
-    if (!nextTurn) {
+    const roundComplete = state.turn.teamIndex === configuration.teams.length - 1;
+    const mayFinish = !nextTurn || (configuration.roundsPerTeam === "unlimited" && roundComplete);
+    if (event.type === "finishGame" && !mayFinish) return state;
+    if (!nextTurn || (event.type === "finishGame" && mayFinish)) {
       if (event.type !== "finishGame") return state;
       const highestScore = scores.reduce((highest, score) => Math.max(highest, score), 0);
       const leaders = configuration.teams
@@ -367,7 +370,7 @@ function finishTiebreakAttempt(
     {
       teamIndex: active.teamIndex,
       solved: active.solved,
-      timeMs: Math.max(0, elapsedMs) + active.penaltyMs,
+      timeMs: Math.max(0, elapsedMs),
     },
   ];
   const base = {
@@ -432,18 +435,17 @@ function transitionTiebreak(
         ...state.resolvedCardIds,
         ...cards.map((card) => card.id).filter((id) => !state.resolvedCardIds.includes(id)),
       ],
-      active: { teamIndex, cards, index: 0, solved: 0, skipUsed: false, penaltyMs: 0 },
+      active: { teamIndex, cards, index: 0, solved: 0, skipUsed: false, wrong: 0 },
     };
   }
   if (!active) return state;
   if (event.type === "endTiebreakAttempt") {
     return finishTiebreakAttempt(state, active, event.elapsedMs);
   }
-  if (event.outcome === "forbiddenWord") {
-    return { ...state, active: { ...active, penaltyMs: active.penaltyMs + TIEBREAK_PENALTY_MS } };
-  }
-  if (event.outcome === "skipped") {
-    if (active.skipUsed || !event.replacement) return state;
+  if (event.outcome === "forbiddenWord" || event.outcome === "skipped") {
+    const skipping = event.outcome === "skipped";
+    // A skip is limited to once; a forbidden word is simply wrong and always gets a new card.
+    if ((skipping && active.skipUsed) || !event.replacement) return state;
     const replacement = validTiebreakCard(state, event.replacement, new Set(state.usedCardIds));
     if (!replacement) return state;
     return {
@@ -451,7 +453,8 @@ function transitionTiebreak(
       usedCardIds: [...state.usedCardIds, replacement.id],
       active: {
         ...active,
-        skipUsed: true,
+        skipUsed: active.skipUsed || skipping,
+        wrong: active.wrong + (skipping ? 0 : 1),
         cards: active.cards.map((card, index) => (index === active.index ? replacement : card)),
       },
     };
@@ -473,6 +476,7 @@ export function getNextTabooTurn(
   const { configuration, turn } = state;
   const nextTeam = turn.teamIndex + 1;
   if (nextTeam < configuration.teams.length) return { round: turn.round, teamIndex: nextTeam };
-  if (turn.round >= configuration.roundsPerTeam) return null;
+  if (configuration.roundsPerTeam !== "unlimited" && turn.round >= configuration.roundsPerTeam)
+    return null;
   return { round: turn.round + 1, teamIndex: 0 };
 }

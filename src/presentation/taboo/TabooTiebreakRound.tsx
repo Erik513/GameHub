@@ -4,7 +4,6 @@ import type { TabooCard } from "../../business/games/taboo/model";
 import {
   TIEBREAK_CARD_COUNT,
   TIEBREAK_LIMIT_SECONDS,
-  TIEBREAK_PENALTY_MS,
   type TabooEvent,
   type TabooOutcome,
   type TiebreakActive,
@@ -56,15 +55,14 @@ export function TabooTiebreakRound({
   }, [paused]);
 
   const elapsedMs = Math.max(0, (pausedAt ?? now) - startedAt - pausedMs);
-  const totalMs = elapsedMs + active.penaltyMs;
+  const totalMs = elapsedMs;
   const timeUp = totalMs >= limitMs;
 
   useEffect(() => {
     if (timeUp && !paused) {
-      // Penalties are added by the game logic, so only the real time is reported.
-      dispatch({ type: "endTiebreakAttempt", elapsedMs: Math.max(0, limitMs - active.penaltyMs) });
+      dispatch({ type: "endTiebreakAttempt", elapsedMs: limitMs });
     }
-  }, [active.penaltyMs, dispatch, paused, timeUp]);
+  }, [dispatch, paused, timeUp]);
 
   if (!card) return null;
 
@@ -74,7 +72,7 @@ export function TabooTiebreakRound({
       outcome,
       elapsedMs: readClock.current() - startedAt - pausedMs,
     };
-    if (outcome === "skipped") {
+    if (outcome === "skipped" || outcome === "forbiddenWord") {
       const replacement = card ? pickReplacement(card) : undefined;
       if (!replacement) return;
       dispatch({ ...event, replacement });
@@ -93,19 +91,23 @@ export function TabooTiebreakRound({
               {t("tabooTiebreak.title")}
               {" · "}
               {t("tabooTiebreak.cardOf", { current: active.index + 1, total: TIEBREAK_CARD_COUNT })}
-              {active.penaltyMs > 0 &&
-                ` · ${t("tabooTiebreak.penalty", { seconds: active.penaltyMs / 1000 })}`}
             </p>
           </div>
           <p
             role="timer"
-            data-low={totalMs >= limitMs - 10000}
+            data-low={limitMs - totalMs <= 10000}
+            data-warn={limitMs - totalMs > 10000 && limitMs - totalMs <= 20000}
             aria-label={t("tabooTiebreak.timer", { time: formatSeconds(totalMs, i18n.language) })}
           >
             {formatSeconds(totalMs, i18n.language)}
           </p>
         </div>
-        <div className="taboo-round__bar" aria-hidden="true" data-low={totalMs >= limitMs - 10000}>
+        <div
+          className="taboo-round__bar"
+          aria-hidden="true"
+          data-low={limitMs - totalMs <= 10000}
+          data-warn={limitMs - totalMs > 10000 && limitMs - totalMs <= 20000}
+        >
           <span style={{ transform: `scaleX(${Math.max(0, 1 - totalMs / limitMs)})` }} />
         </div>
       </div>
@@ -160,9 +162,7 @@ export function TabooTiebreakRound({
             >
               {t(`tabooRound.${outcome}`)}
               {outcome === "forbiddenWord" && (
-                <small aria-hidden="true">
-                  {t("tabooTiebreak.penalty", { seconds: TIEBREAK_PENALTY_MS / 1000 })}
-                </small>
+                <small aria-hidden="true">{t("tabooTiebreak.forbiddenHint")}</small>
               )}
               {outcome === "skipped" && (
                 <small aria-hidden="true">{t("tabooRound.skipOnce")}</small>

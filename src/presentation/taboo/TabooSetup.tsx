@@ -19,6 +19,7 @@ import {
 } from "../../business/games/taboo/stateMachine";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
+import { shuffle } from "../../business/games/taboo/shuffle";
 import { shuffleTeams } from "../../business/games/taboo/teamOrder";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { useGameExit } from "../GameChrome";
@@ -32,6 +33,7 @@ import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 const categories = ["everyday", "nature", "culture"] as const;
 const difficulties = ["easy", "medium", "hard"] as const;
 const cardSources = ["both", "local", "ai"] as const;
+const defaultRoundChoices: readonly (number | "unlimited")[] = [3, 5, 10, "unlimited"];
 const maxCardsPerRequest = 10;
 const aiCardsPerTurn = 8;
 const refillThreshold = 8;
@@ -42,11 +44,14 @@ export function TabooSetup({
   cards,
   children,
   generators,
+  roundChoices = defaultRoundChoices,
 }: {
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
   children?: ReactNode;
   generators?: TabooGenerators | undefined;
+  /** Selectable rounds per team; tests use short games, the app offers short/medium/long/unlimited. */
+  roundChoices?: readonly (number | "unlimited")[];
 }) {
   const { t } = useTranslation();
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
@@ -85,6 +90,13 @@ export function TabooSetup({
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
   const nextTurn = ended ? getNextTabooTurn(ended) : null;
+  // With unlimited rounds the group may stop after every completed round.
+  const canFinishEarly =
+    ended !== undefined &&
+    nextTurn !== null &&
+    ended.configuration.roundsPerTeam === "unlimited" &&
+    ended.turn.teamIndex === ended.configuration.teams.length - 1;
+
   const overview =
     ended && round
       ? { ...ended, turn: nextTurn }
@@ -254,9 +266,10 @@ export function TabooSetup({
       controller.signal,
     )
       .catch(() => [] as readonly TabooCard[])
-      .then((additions) => {
+      .then((generated) => {
         control.busy = false;
         if (controller.signal.aborted) return;
+        const additions = shuffle(generated);
         control.added.push(...additions);
         control.attempts.set(
           turnKey,
@@ -279,7 +292,7 @@ export function TabooSetup({
       current.status === "roundEnded"
         ? (current.turn.round - 1) * teams.length + current.turn.teamIndex + 1
         : 0;
-    if (teams.length * roundsPerTeam - completed <= 0) return;
+    if (roundsPerTeam !== "unlimited" && teams.length * roundsPerTeam - completed <= 0) return;
     // A turn never ends because of cards: unplayed cards come first, then earlier cards in new order.
     const used = new Set(current.resolvedCardIds);
     const [card, ...remainingCards] = [
@@ -317,7 +330,7 @@ export function TabooSetup({
             t("tabooSetup.team", { number: index + 1 }),
         })),
       ),
-      roundsPerTeam: Number(data.get("rounds")),
+      roundsPerTeam: data.get("rounds") === "unlimited" ? "unlimited" : Number(data.get("rounds")),
       roundDurationSeconds: Number(data.get("duration")),
       ...(data.get("tiebreak") === "off" ? {} : { tiebreak: true }),
       ...(data.get("skips") === "unlimited" || !data.has("skips")
@@ -337,8 +350,10 @@ export function TabooSetup({
       return;
     }
     setIssues([]);
+    const { roundsPerTeam } = result.value.configuration;
+    // With unlimited rounds one card per team is enough to start; cards are reused later.
     const required =
-      result.value.configuration.teams.length * result.value.configuration.roundsPerTeam;
+      result.value.configuration.teams.length * (roundsPerTeam === "unlimited" ? 1 : roundsPerTeam);
     const filters: DeckCriteria = {
       language: result.value.configuration.cardLanguage,
       minimumCards: 1,
@@ -514,10 +529,12 @@ export function TabooSetup({
         <section className="taboo-round taboo-overview" aria-label={t("tabooRound.overview")}>
           {overview.turn && (
             <p className="taboo-overview__round">
-              {t("tabooRound.roundOf", {
-                round: overview.turn.round,
-                total: overview.configuration.roundsPerTeam,
-              })}
+              {overview.configuration.roundsPerTeam === "unlimited"
+                ? t("tabooRound.roundOfUnlimited", { round: overview.turn.round })
+                : t("tabooRound.roundOf", {
+                    round: overview.turn.round,
+                    total: overview.configuration.roundsPerTeam,
+                  })}
             </p>
           )}
           {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
@@ -542,7 +559,14 @@ export function TabooSetup({
               </Button>
             </>
           )}
-          <div className="game-start-bar">
+          <div
+            className={canFinishEarly ? "game-start-bar game-start-bar--stack" : "game-start-bar"}
+          >
+            {canFinishEarly && (
+              <Button variant="secondary" onClick={() => dispatch({ type: "finishGame" })}>
+                {t("tabooResult.show")}
+              </Button>
+            )}
             {overview.turn ? (
               <>
                 <div className="taboo-overview__turn">
@@ -621,8 +645,8 @@ export function TabooSetup({
           <SetupChoices
             legend={t("tabooSetup.rounds")}
             name="rounds"
-            initial="3"
-            options={["1", "2", "3", "4", "5"].map((value) => ({ value, label: value }))}
+            initial={String(roundChoices.includes(3) ? 3 : roundChoices[0])}
+            options={roundChoices.map((value) => roundOption(value, t))}
           />
           <SetupChoices
             legend={t("tabooSetup.duration")}
@@ -659,6 +683,7 @@ export function TabooSetup({
               options={(["0", "1", "2", "3", "unlimited"] as const).map((value) => ({
                 value,
                 label: t(`tabooSetup.skipOptions.${value}`),
+                ...(value === "unlimited" ? { ariaLabel: t("tabooSetup.unlimited") } : {}),
               }))}
             />
             <SetupChoices
@@ -670,6 +695,7 @@ export function TabooSetup({
                 ...difficulties.map((value) => ({
                   value,
                   label: t(`tabooSetup.difficulties.${value}`),
+                  tone: value,
                 })),
               ]}
             />
@@ -717,35 +743,65 @@ function tiebreakRows(state: TiebreakView): readonly TiebreakRow[] {
   });
 }
 
-function shuffle<T>(items: readonly T[]): T[] {
-  const result = [...items];
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    const other = Math.floor(Math.random() * (index + 1));
-    [result[index], result[other]] = [result[other] as T, result[index] as T];
-  }
-  return result;
-}
-
 function teamNameFrom(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+interface SetupOption {
+  value: string;
+  label: string;
+  /** Accessible name when the visible label is only a symbol. */
+  ariaLabel?: string;
+  /** Small secondary text below the label. */
+  hint?: string;
+  tone?: "easy" | "medium" | "hard";
 }
 
 interface SetupChoicesProps {
   legend: string;
   name: string;
   initial: string;
-  options: readonly { value: string; label: string }[];
+  options: readonly SetupOption[];
 }
 
+function roundOption(
+  value: number | "unlimited",
+  t: ReturnType<typeof useTranslation>["t"],
+): SetupOption {
+  if (value === "unlimited") {
+    return {
+      value,
+      label: t("tabooSetup.roundOptions.unlimited"),
+      ariaLabel: t("tabooSetup.unlimited"),
+    };
+  }
+  const names: Record<number, "short" | "medium" | "long"> = {
+    3: "short",
+    5: "medium",
+    10: "long",
+  };
+  const name = names[value];
+  return name
+    ? { value: String(value), label: t(`tabooSetup.roundOptions.${name}`), hint: String(value) }
+    : { value: String(value), label: String(value) };
+}
+
+/** Radio group rendered as equally wide buttons. */
 function SetupChoices({ legend, name, initial, options }: SetupChoicesProps) {
   return (
     <fieldset className="taboo-choice-group">
       <legend>{legend}</legend>
-      <div className="taboo-choice-grid">
-        {options.map(({ value, label }) => (
-          <label className="taboo-choice" key={value}>
+      <div
+        className="taboo-choice-grid taboo-choice-grid--equal"
+        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+      >
+        {options.map(({ value, label, ariaLabel, hint, tone }) => (
+          <label className="taboo-choice" data-tone={tone} key={value}>
             <input type="radio" name={name} value={value} defaultChecked={value === initial} />
-            <span>{label}</span>
+            <span aria-label={ariaLabel}>
+              {label}
+              {hint && <small>{hint}</small>}
+            </span>
           </label>
         ))}
       </div>

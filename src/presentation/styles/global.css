@@ -1493,3 +1493,111 @@ h1 {
 .taboo-tiebreak-results .taboo-scoreboard__score {
   font-size: var(--text-md);
 }
+
+/* Setup choices: all buttons of a group are equally wide. */
+.taboo-choice-grid--equal {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.taboo-choice-grid--equal .taboo-choice {
+  flex: none;
+}
+
+.taboo-choice span {
+  align-content: center;
+  line-height: 1.15;
+}
+
+.taboo-choice small {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  opacity: 0.8;
+}
+
+/* Difficulty options carry their color already in the menu. */
+.taboo-choice[data-tone="easy"] span {
+  color: var(--color-success);
+}
+
+.taboo-choice[data-tone="medium"] span {
+  color: var(--color-accent);
+}
+
+.taboo-choice[data-tone="hard"] span {
+  color: var(--color-danger-fill);
+}
+
+.taboo-choice[data-tone="easy"] input:checked + span {
+  border-color: var(--color-success);
+  color: var(--color-accent-contrast);
+  background: var(--color-success);
+}
+
+.taboo-choice[data-tone="medium"] input:checked + span {
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+}
+
+.taboo-choice[data-tone="hard"] input:checked + span {
+  border-color: var(--color-danger-fill);
+  color: var(--color-accent-contrast);
+  background: var(--color-danger-fill);
+}
+
+/* Difficulty on the card: top left, a colored dot followed by the plain text. */
+.taboo-round .taboo-round__difficulty {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  border: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.taboo-round__difficulty::before {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--dot, var(--color-ink-muted));
+  content: "";
+}
+
+.taboo-round__difficulty[data-difficulty="easy"] {
+  --dot: var(--color-success);
+  color: var(--color-ink-muted);
+}
+
+.taboo-round__difficulty[data-difficulty="medium"] {
+  --dot: var(--color-accent);
+  color: var(--color-ink-muted);
+}
+
+.taboo-round__difficulty[data-difficulty="hard"] {
+  --dot: var(--color-danger-fill);
+  color: var(--color-ink-muted);
+}
+
+/* Time display changes color in the last seconds: amber first, then red. */
+.taboo-round [role="timer"][data-warn="true"] {
+  color: var(--color-warning);
+}
+
+.taboo-round [role="timer"][data-low="true"] {
+  color: var(--color-danger-fill);
+}
+
+.taboo-round__bar[data-warn="true"] span {
+  background: var(--color-warning);
+}
+
+.taboo-round__bar[data-low="true"] span {
+  background: var(--color-danger-fill);
+}

@@ -78,7 +78,9 @@ export function TabooRound({
           <div>
             <p className="taboo-round__team">{configuration.teams[teamIndex]?.name}</p>
             <p className="taboo-round__score">
-              {t("tabooRound.roundOf", { round, total: configuration.roundsPerTeam })}
+              {configuration.roundsPerTeam === "unlimited"
+                ? t("tabooRound.roundOfUnlimited", { round })
+                : t("tabooRound.roundOf", { round, total: configuration.roundsPerTeam })}
               {" · "}
               {t("tabooRound.score", { score: scores[teamIndex] ?? 0 })}
             </p>
@@ -86,12 +88,18 @@ export function TabooRound({
           <p
             role="timer"
             data-low={seconds <= 10}
+            data-warn={seconds > 10 && seconds <= 20}
             aria-label={t("tabooRound.seconds", { seconds })}
           >
             {seconds}
           </p>
         </div>
-        <div className="taboo-round__bar" aria-hidden="true" data-low={seconds <= 10}>
+        <div
+          className="taboo-round__bar"
+          aria-hidden="true"
+          data-low={seconds <= 10}
+          data-warn={seconds > 10 && seconds <= 20}
+        >
           <span style={{ transform: `scaleX(${remainingFraction})` }} />
         </div>
       </div>

@@ -190,20 +190,19 @@ describe("App", () => {
   it("tells the players when a restarted round has no new cards left", async () => {
     vi.useFakeTimers();
     const i18n = await createGameHubI18n("en");
-    const twoCards = tabooStandardCards.filter((card) => card.language === "en").slice(0, 2);
+    // Short games need six cards (two teams, three rounds); all of them are shown in one turn.
+    const sixCards = tabooStandardCards.filter((card) => card.language === "en").slice(0, 6);
     render(
       <I18nextProvider i18n={i18n}>
-        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={twoCards} />
+        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={sixCards} />
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
-    fireEvent.click(
-      screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
-    );
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
-    // Both cards were shown in this turn, so a restart cannot offer anything new.
-    fireEvent.click(screen.getByRole("button", { name: "Correct" }));
+    for (let shown = 0; shown < 5; shown += 1) {
+      fireEvent.click(screen.getByRole("button", { name: "Correct" }));
+    }
     fireEvent.click(screen.getByRole("button", { name: "Pause" }));
     fireEvent.click(screen.getByRole("button", { name: "Restart round" }));
     act(() => void vi.advanceTimersByTime(600));
@@ -224,14 +223,12 @@ describe("App", () => {
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
-    fireEvent.click(
-      screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
-    );
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
-    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
-    act(() => void vi.advanceTimersByTime(60000));
-    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
-    act(() => void vi.advanceTimersByTime(60000));
+    // Three short rounds for two teams: six turns that nobody scores in.
+    for (let turn = 0; turn < 6; turn += 1) {
+      fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+      act(() => void vi.advanceTimersByTime(60000));
+    }
     fireEvent.click(screen.getByRole("button", { name: "Show final results" }));
     fireEvent.click(screen.getByRole("button", { name: "Start tiebreak" }));
 

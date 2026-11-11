@@ -35,7 +35,12 @@ it("adds new cards to the active deck without revealing them during setup", asyn
   };
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooSetup cardLanguage="en" cards={[]} generators={{ local: generator }} />
+      <TabooSetup
+        roundChoices={[1, 3]}
+        cardLanguage="en"
+        cards={[]}
+        generators={{ local: generator }}
+      />
     </I18nextProvider>,
   );
   await user.click(
@@ -83,7 +88,12 @@ async function renderWithGenerator(cards: Parameters<typeof TabooSetup>[0]["card
   const user = userEvent.setup();
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooSetup cardLanguage="en" cards={cards} generators={{ local: generator }} />
+      <TabooSetup
+        roundChoices={[1, 3]}
+        cardLanguage="en"
+        cards={cards}
+        generators={{ local: generator }}
+      />
     </I18nextProvider>,
   );
   await user.click(
@@ -135,7 +145,12 @@ it("keeps adding generated cards to a running round in AI only mode", async () =
   };
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooSetup cardLanguage="en" cards={[]} generators={{ local: generator }} />
+      <TabooSetup
+        roundChoices={[1, 3]}
+        cardLanguage="en"
+        cards={[]}
+        generators={{ local: generator }}
+      />
     </I18nextProvider>,
   );
   await user.click(

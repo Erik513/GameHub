@@ -33,7 +33,7 @@ it.each([
   try {
     render(
       <I18nextProvider i18n={i18n}>
-        <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
     fireEvent.click(
@@ -78,7 +78,7 @@ it.each([
     } else {
       expect(
         within(screen.getByRole("group", { name: "Rounds per team" })).getByRole("radio", {
-          name: "3",
+          name: /3/,
         }),
       ).toBeChecked();
       expect(screen.queryByRole("button", { name: "Start round" })).not.toBeInTheDocument();
@@ -94,7 +94,7 @@ it("plays cards without resetting the countdown and ends the round on time", asy
   try {
     render(
       <I18nextProvider i18n={i18n}>
-        <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
@@ -164,7 +164,7 @@ it("shows the remaining time as a shrinking bar", async () => {
   try {
     render(
       <I18nextProvider i18n={i18n}>
-        <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Start" }));

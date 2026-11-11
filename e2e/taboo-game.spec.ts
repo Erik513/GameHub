@@ -49,10 +49,6 @@ for (const labels of cases) {
       await page.getByRole("dialog").getByRole("button", { name: "Schließen" }).click();
     }
     await page.getByRole("button", { name: labels.open }).click();
-    await page
-      .getByRole("group", { name: labels.rounds })
-      .getByRole("radio", { name: "1", exact: true })
-      .check();
     if (labels.language === "de") {
       // The German game ends in a tie; switch the tiebreak off to check the shared win.
       await page.getByText("Weitere Optionen", { exact: true }).click();
@@ -87,6 +83,11 @@ for (const labels of cases) {
     await expect(round.getByText("Team 2", { exact: true })).toBeVisible();
     if (labels.language === "de") await round.getByRole("button", { name: labels.correct }).click();
     await page.clock.fastForward(60_000);
+    // The short game has three rounds for two teams: play the remaining four turns without points.
+    for (let turn = 0; turn < 4; turn += 1) {
+      await page.getByRole("button", { name: labels.start, exact: true }).click();
+      await page.clock.fastForward(60_000);
+    }
     await page.getByRole("button", { name: labels.show }).click();
     await expect(page.getByText(labels.winner)).toBeVisible();
     await expect(
@@ -101,9 +102,7 @@ for (const labels of cases) {
     await expect(round).toHaveCount(0);
     await expect(page.getByRole("button", { name: labels.prepare, exact: true })).toBeVisible();
     await expect(
-      page
-        .getByRole("group", { name: labels.rounds })
-        .getByRole("radio", { name: "3", exact: true }),
+      page.getByRole("group", { name: labels.rounds }).getByRole("radio", { name: /3/ }),
     ).toBeChecked();
   });
 }

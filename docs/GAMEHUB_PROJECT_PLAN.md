@@ -521,6 +521,81 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 - **Tests:** Unit-Tests der Zustandsmaschine und Kartenauswahl, Komponenten- und E2E-Tests.
 - **Status:** done
 
+#### PH-10-03 – Feinschliff nach Rückmeldung
+
+- **Ziel:** Rückmeldungen aus dem Praxistest umsetzen.
+- **Umfang:** Rundenzahl Kurz (3), Mittel (5), Lang (10) und Unbegrenzt; gleich große Auswahlbuttons mit Unendlichsymbol; Schwierigkeit farbig im Menü und links oben auf der Karte; Zeitanzeige wechselt in den letzten Sekunden die Farbe; im Stechen zählt ein verbotenes Wort als falsch und bringt eine neue Karte gleicher Schwierigkeit; Kartenreihenfolge durchgehend zufällig.
+- **Akzeptanzkriterien:** Unbegrenzte Spiele lassen sich nach jeder vollständigen Runde beenden; alle Gruppen sind gleich breit bedienbar.
+- **Tests:** Unit-, Komponenten- und E2E-Tests.
+- **Status:** done
+
+### Phase 11 – Tabu-Qualitätsprüfung
+
+#### PH-11-01 – Spiellogik prüfen, auch Randfälle
+
+- **Ziel:** Alle Regeln der Zustandsmaschine systematisch auf Randfälle prüfen (leere oder zu kleine Kartensätze, Abbruch in Pause, unbegrenzte Runden, Stechen mit Gleichstand, Wiederverwendung von Karten).
+- **Akzeptanzkriterien:** Randfälle sind dokumentiert, getestet und bei Fehlern behoben.
+- **Status:** planned
+
+#### PH-11-02 – Testabdeckung prüfen und erhöhen
+
+- **Ziel:** Abdeckung gemäß Arbeitsregeln erreichen (kritische Logik 95 %, Business 90 %, Data/Infrastructure 80 %, UI 75 %), besonders Verzweigungen der Tabu-Oberfläche.
+- **Status:** planned
+
+#### PH-11-03 – Sprachabdeckung Deutsch/Englisch inklusive Oberfläche prüfen
+
+- **Ziel:** Alle sichtbaren Texte, auch Hinweise, Fehlermeldungen und Screenreader-Namen, in beiden Sprachen prüfen; Oberflächentests für beide Sprachen.
+- **Status:** planned
+
+#### PH-11-04 – Oberflächentests ergänzen
+
+- **Ziel:** Komponenten- und E2E-Tests für alle Ansichten (Menü, Rundenübersicht, Runde, Pause, Stechen, Ergebnis) auf Handybreite.
+- **Status:** planned
+
+#### PH-11-05 – Struktur prüfen und wiederverwendbare Spielbausteine dokumentieren
+
+- **Ziel:** Gemeinsame Bausteine (Spielrahmen mit Kopfzeile, angeheftete Aktionsleiste, Auswahlgruppen, Punkteliste, Zweifach-Bestätigung, Pause/Beenden über `useGameExit`) so ordnen und dokumentieren, dass neue Spiele nur noch ihre Spiellogik und ihre Inhalte liefern.
+- **Akzeptanzkriterien:** Ein Leitfaden beschreibt den Aufbau eines neuen Spiels; Architekturentscheidungen werden vorab mit dem Auftraggeber abgestimmt.
+- **Status:** planned
+
+### Phase 12 – Tabu-Erweiterungen
+
+#### PH-12-01 – Info-Buttons mit Erklärfenster für Einstellungen
+
+- **Ziel:** Zu jeder erklärungsbedürftigen Einstellung gibt es einen Info-Button, der ein Fenster mit der Erklärung öffnet.
+- **Status:** planned
+
+#### PH-12-02 – Spielregeln erklären
+
+- **Ziel:** Die Regeln von Tabu und der Spielvarianten sind in der App verständlich erklärt.
+- **Status:** planned
+
+#### PH-12-03 – Teamreihenfolge manuell oder zufällig festlegen
+
+- **Ziel:** Die Reihenfolge der Teams kann selbst bestimmt oder zufällig ausgelost werden.
+- **Status:** planned
+
+#### PH-12-04 – Spieler hinzufügen und auf Teams verteilen
+
+- **Ziel:** Spieler lassen sich anlegen und manuell oder zufällig auf Teams verteilen.
+- **Status:** planned
+
+#### PH-12-05 – Mehrere Karten und Kategorien hinzufügen
+
+- **Ziel:** Eigene Karten und Kategorien lassen sich in größerer Zahl anlegen.
+- **Status:** planned
+
+#### PH-12-06 – Kartenimport und -export mit einfachem Editor
+
+- **Ziel:** Karten lassen sich importieren, exportieren und in einem einfachen Editor bearbeiten.
+- **Status:** planned
+
+#### PH-12-07 – Spielmodi: Klassisch, Auf Zeit, Gegen die Zeit
+
+- **Ziel:** Neben dem klassischen Modus gibt es „Auf Zeit“ (feste Kartenzahl, das Team mit der kürzesten Zeit gewinnt) und „Gegen die Zeit“ (jedes Team hat ein Zeitkonto, das beim Raten herunterläuft und bei richtiger Antwort stoppt; es gewinnt das Team mit Restzeit).
+- **Akzeptanzkriterien:** Regeln werden vor Umsetzung mit dem Auftraggeber abgestimmt; neue Modi sind ein Teil der Business-Schicht und nutzen die gemeinsamen Oberflächenbausteine.
+- **Status:** planned
+
 ## 6. Abhängigkeiten und Reihenfolge
 
 - Phase 1 ist Voraussetzung für alle Implementierungsphasen.

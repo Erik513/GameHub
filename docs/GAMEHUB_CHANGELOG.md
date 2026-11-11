@@ -4,6 +4,16 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-10-03 – Feinschliff nach Rückmeldung
+
+- Rundenzahl pro Team: Kurz (3), Mittel (5), Lang (10) und Unbegrenzt (∞). Bei unbegrenzten Spielen lässt sich das Ergebnis nach jeder vollständig gespielten Runde anzeigen (`roundsPerTeam: "unlimited"`).
+- Auswahlgruppen im Menü haben gleich breite Buttons; „Unbegrenzt“ beim Überspringen ist ein ∞-Symbol (mit Screenreader-Namen).
+- Schwierigkeit im Menü farbig (grün, blau, rot) und auf der Karte links oben als Farbpunkt mit Klartext.
+- Zeitanzeige und Zeitbalken wechseln in den letzten 20 Sekunden auf Gelb und in den letzten 10 auf Rot, auch im Stechen.
+- Stechen: Ein verbotenes Wort gibt keine Zeitstrafe mehr, sondern zählt als falsch und bringt eine neue Karte gleicher Schwierigkeit.
+- Kartenreihenfolge: Das Mischen liegt jetzt gemeinsam in der Business-Schicht (`shuffle`); nachgeladene KI-Karten werden vor dem Einreihen gemischt.
+- Neue Aufgaben: Phasen PH-11 (Qualitätsprüfung) und PH-12 (Erweiterungen) sind im Plan erfasst.
+
 ### PH-10-01 – Mobile-first Oberfläche
 
 - Kopfzeile auf einer Zeile verdichtet, Safe-Area-Abstände und `100dvh` ergänzt, Navigation erst ab Tablet-Breite sichtbar.
