@@ -46,3 +46,9 @@ Dieses Dokument beschreibt die Regeln der Zustandsmaschine (`src/business/games/
 - Die gerade offene Karte bei Zeitablauf zählt weder richtig noch übersprungen und erscheint nicht in der Übersicht.
 - Eine Partie wird nicht gespeichert. Ein Neuladen der Seite beendet sie.
 - Die Zeitmessung nutzt die Geräteuhr; Änderungen der Systemzeit während einer Runde sind nicht abgesichert.
+
+## Beobachtungen für PH-11-05
+
+- In `TabooSetup.tsx` ist der Zustand `deckEmpty` mit Meldung praktisch nicht mehr erreichbar, weil der Kartensatz vor dem Start auf mindestens die nötige Kartenzahl geprüft wird und früher gespielte Karten wiederverwendet werden. Er kann bei der Strukturprüfung entfernt oder bewusst als Schutz behalten werden.
+- Die Datei `TabooSetup.tsx` bündelt Formular, Kartenaufbereitung, Nachladen, Rundenablauf, Pause, Neustart und Stechen. Eine Aufteilung in Hooks und Bausteine würde Tests und die Wiederverwendung für neue Spiele erleichtern.
+

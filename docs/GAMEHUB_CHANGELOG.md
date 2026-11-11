@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-11-02 – Testabdeckung erhöht
+
+- Neue Tests: Fehlerfälle der lokalen Kartenspeicherung (Öffnen, Blockade, abgebrochenes Lesen, ungültige Karte), Kartengenerierung (gefundener oder lokaler Generator, Fehlschläge, Abbruch), Kartenverwaltung bei Speicherfehlern, Doppelstart und Abbruch während der Vorbereitung, Seiten und App-Rahmen, Stechen ohne Ersatzkarte, Parität der Übersetzungsressourcen.
+- Abdeckung: Zeilen 99,15 %, Verzweigungen 94,05 %, Funktionen 98,51 %. Übrig sind vor allem defensive Rückfallwerte.
+- Fehler behoben: Der Hinweis „Keine neuen Zusatzkarten verfügbar.“ war nach dem Spielstart nie sichtbar, weil das Setup sofort ausgeblendet wird. Er steht jetzt in der ersten Rundenübersicht.
+
 ### PH-11-01 – Spiellogik und Randfälle geprüft
 
 - Neue Zufallsprüfung (`stateMachine.invariants.test.ts`): 400 simulierte Partien mit gültigen und ungültigen Ereignissen, Prüfung von Punkten, eindeutigen Karten, Zustandsübergängen, Stechen-Daten und endgültigem Spielende.

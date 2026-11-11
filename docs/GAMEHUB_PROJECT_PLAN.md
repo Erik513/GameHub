@@ -501,7 +501,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-11-02 – Testabdeckung prüfen und erhöhen
 
 - **Ziel:** Abdeckung gemäß Arbeitsregeln erreichen (kritische Logik 95 %, Business 90 %, Data/Infrastructure 80 %, UI 75 %), besonders Verzweigungen der Tabu-Oberfläche.
-- **Status:** planned
+- **Ergebnis:** Zeilenabdeckung 99,15 %, Verzweigungen 94,05 %. Alle Zielwerte sind erfüllt.
+- **Status:** done
 
 #### PH-11-03 – Sprachabdeckung Deutsch/Englisch inklusive Oberfläche prüfen
 

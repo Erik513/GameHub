@@ -64,3 +64,65 @@ it("rejects malformed cards without persisting part of the batch", async () => {
   );
   expect(await repository.list()).toEqual([]);
 });
+
+function stubFactory(trigger: (request: IDBOpenDBRequest) => void): IDBFactory {
+  const request = {} as IDBOpenDBRequest;
+  return {
+    open: () => {
+      queueMicrotask(() => trigger(request));
+      return request;
+    },
+  } as unknown as IDBFactory;
+}
+
+it("reports a failed database open", async () => {
+  const repository = new IndexedDbTabooCardRepository(
+    stubFactory((request) => {
+      Object.defineProperty(request, "error", { value: new DOMException("denied") });
+      request.onerror?.(new Event("error"));
+    }),
+  );
+  await expect(repository.list()).rejects.toMatchObject({
+    message: "Could not open GameHub storage.",
+    cause: { message: "denied" },
+  });
+});
+
+it("rejects a blocked upgrade and closes the late connection", async () => {
+  const close = vi.fn();
+  const repository = new IndexedDbTabooCardRepository(
+    stubFactory((request) => {
+      request.onblocked?.(new Event("blocked") as IDBVersionChangeEvent);
+      Object.defineProperty(request, "result", { value: { close } });
+      request.onsuccess?.(new Event("success"));
+    }),
+  );
+  await expect(repository.list()).rejects.toThrow("blocked by another connection");
+  expect(close).toHaveBeenCalledOnce();
+});
+
+it("rejects a read that is aborted and still closes the database", async () => {
+  const close = vi.fn();
+  const transaction = {
+    error: new DOMException("aborted"),
+    objectStore: () => ({ getAll: () => ({ result: [] }) }),
+  } as unknown as IDBTransaction;
+  const database = { close, transaction: () => transaction } as unknown as IDBDatabase;
+  const repository = new IndexedDbTabooCardRepository(
+    stubFactory((request) => {
+      Object.defineProperty(request, "result", { value: database });
+      request.onsuccess?.(new Event("success"));
+      queueMicrotask(() => void transaction.onabort?.(new Event("abort")));
+    }),
+  );
+  await expect(repository.list()).rejects.toMatchObject({ message: "Card read aborted." });
+  expect(close).toHaveBeenCalledOnce();
+});
+
+it("rejects an invalid card before touching the storage", async () => {
+  const repository = new IndexedDbTabooCardRepository(new IDBFactory());
+  await expect(
+    repository.addAll([{ ...card, forbiddenWords: ["only", "three", "words"] }] as never),
+  ).rejects.toThrow("Invalid custom Taboo card.");
+  expect(await repository.list()).toEqual([]);
+});

@@ -105,6 +105,7 @@ export function TabooSetup({
         : undefined;
 
   function restart(keepConfiguration: boolean) {
+    setGenerationEmpty(false);
     refillController.current?.abort();
     refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
     setRound(undefined);
@@ -537,6 +538,11 @@ export function TabooSetup({
                   })}
             </p>
           )}
+          {generationEmpty && !ended && (
+            <p className="taboo-tiebreak__rules" role="status">
+              {t("tabooSetup.noExtraCards")}
+            </p>
+          )}
           {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
           <h2>{t("tabooRound.standings")}</h2>
           <TabooScoreboard scores={overview.scores} teams={overview.configuration.teams} />
@@ -712,7 +718,6 @@ export function TabooSetup({
             </fieldset>
           </details>
         </form>
-        {generationEmpty && <p role="status">{t("tabooSetup.noExtraCards")}</p>}
         {children && <div className="taboo-tools">{children}</div>}
         <div className="game-start-bar">
           <Button form="taboo-setup-form" type="submit" variant="success" disabled={generating}>

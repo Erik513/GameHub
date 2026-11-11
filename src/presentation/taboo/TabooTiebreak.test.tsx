@@ -153,4 +153,23 @@ describe("Taboo tiebreak", () => {
     expect(attempt.querySelector("[lang='de']")).toBeNull();
     expect(within(attempt).getByRole("heading")).toBeVisible();
   });
+
+  it("keeps the card when no replacement card is left", async () => {
+    const i18n = await createGameHubI18n("en");
+    const exactlyThree = tabooStandardCards.filter((card) => card.language === "en").slice(0, 3);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={exactlyThree} />
+      </I18nextProvider>,
+    );
+    reachTiebreak();
+    press("Start tiebreak");
+    const attempt = screen.getByRole("region", { name: "Tiebreak attempt" });
+    const term = within(attempt).getByRole("heading").textContent;
+    fireEvent.click(within(attempt).getByRole("button", { name: "Skip" }));
+    fireEvent.click(within(attempt).getByRole("button", { name: "Forbidden word" }));
+    // All three cards are in use, so nothing changes and the skip stays available.
+    expect(within(attempt).getByRole("heading").textContent).toBe(term);
+    expect(within(attempt).getByRole("button", { name: "Skip" })).toBeVisible();
+  });
 });

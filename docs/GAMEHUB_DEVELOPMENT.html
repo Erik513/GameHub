@@ -193,7 +193,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-11T22:03:06+01:00",
+    "updatedAt": "2026-11-11T22:09:07+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -202,9 +202,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 46,
+      "completedTasks": 47,
       "totalTasks": 61,
-      "percent": 75.4
+      "percent": 77
     }
   },
   "environment": {
@@ -239,17 +239,17 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:03:06+01:00",
+      "lastRunAt": "2026-11-11T22:09:07+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:03:06+01:00",
+      "lastRunAt": "2026-11-11T22:09:07+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:03:06+01:00",
+      "lastRunAt": "2026-11-11T22:09:07+01:00",
       "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich."
     },
     "githubActions": {
@@ -259,7 +259,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:03:06+01:00",
+      "lastRunAt": "2026-11-11T22:09:07+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -269,15 +269,15 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T21:50:36+01:00",
+      "lastRunAt": "2026-11-11T22:09:07+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:03:06+01:00",
-      "passed": 206,
+      "lastRunAt": "2026-11-11T22:09:07+01:00",
+      "passed": 226,
       "failed": 0,
-      "details": "206 Unit- und Komponententests bestanden, darunter eine Zufallsprüfung mit 400 simulierten Partien für Invarianten der Zustandsmaschine. Lokale Ausführung mit Node 25.5."
+      "details": "226 Unit- und Komponententests bestanden, neu unter anderem Speicherfehler, Abbruch der Kartengenerierung, Doppelstart, Seiten und App-Rahmen. Lokale Ausführung mit Node 25.5."
     },
     "integrationTests": {
       "status": "passed",
@@ -288,7 +288,7 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T21:50:36+01:00",
+      "lastRunAt": "2026-11-11T22:09:07+01:00",
       "passed": 20,
       "failed": 0,
       "details": "20 Browserprüfungen (Chrome, Desktop und Mobil) lokal bestanden, inklusive Wertungskorrektur und gemeinsamem Sieg."
@@ -306,23 +306,23 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:03:06+01:00",
-      "overallLines": 97.57,
-      "overallBranches": 92.64,
-      "overallFunctions": 95.53,
-      "overallStatements": 95.61,
+      "lastRunAt": "2026-11-11T22:09:07+01:00",
+      "overallLines": 99.15,
+      "overallBranches": 94.05,
+      "overallFunctions": 98.51,
+      "overallStatements": 97.67,
       "criticalGameLogicLines": 100,
       "businessLines": 100,
-      "dataInfrastructureLines": 91.22,
-      "uiLines": 98.11,
-      "i18nLines": 96.42,
+      "dataInfrastructureLines": 100,
+      "uiLines": 100,
+      "i18nLines": 100,
       "branches": {
         "criticalGameLogic": 99.07,
         "business": 99.07,
-        "dataInfrastructure": 90,
-        "ui": 92.15
+        "dataInfrastructure": 98.43,
+        "ui": 98.03
       },
-      "details": "Spiellogik erreicht 100 % Zeilen- und 99,07 % Verzweigungsabdeckung. Die Oberfläche von Tabu wird in PH-11-02 und PH-11-04 weiter erhöht."
+      "details": "Alle Grenzwerte sind deutlich übertroffen. Spiellogik 100 % Zeilen und 99,07 % Verzweigungen, Daten 100 % Zeilen und Verzweigungen, Infrastruktur 100 % Zeilen, Oberfläche 100 % Zeilen (Tabu-Oberfläche 97,85 % Zeilen, 87,72 % Verzweigungen). Offen sind vor allem defensive Rückfallwerte."
     }
   },
   "phases": [
@@ -634,7 +634,7 @@
         {
           "id": "PH-11-02",
           "title": "Testabdeckung prüfen und erhöhen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-11-03",
@@ -724,6 +724,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "PH-11-02 abgeschlossen: Testabdeckung deutlich erhöht (Zeilen 99,15 %, Verzweigungen 94,05 %). Beim Prüfen fiel auf, dass der Hinweis „keine Zusatzkarten verfügbar“ nach dem Spielstart nie sichtbar war. Er erscheint jetzt in der ersten Rundenübersicht."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-11-01 abgeschlossen: Spiellogik und Randfälle geprüft. Eine Zufallsprüfung mit 400 Partien fand einen Fehler (ungültige Zeitwerte im Stechen), der behoben wurde. Regeln und Randfälle stehen in docs/GAMEHUB_TABOO_LOGIC.md."
@@ -1001,8 +1005,8 @@
       "prerequisite": "Strukturvorschlag vom Auftraggeber freigeben lassen."
     },
     {
-      "id": "PH-11-02",
-      "reason": "Testabdeckung der Tabu-Oberfläche erhöhen.",
+      "id": "PH-11-03",
+      "reason": "Sprach- und Oberflächenabdeckung für Deutsch und Englisch prüfen.",
       "prerequisite": "Keine."
     }
   ]

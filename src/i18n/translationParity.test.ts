@@ -44,3 +44,18 @@ describe("translation parity", () => {
     );
   });
 });
+
+describe("translation parity (reference side)", () => {
+  it("also checks the reference resource for empty and non-text values", () => {
+    expect(() =>
+      assertTranslationParity("en", { section: { title: " " } }, "de", {
+        section: { title: "Titel" },
+      }),
+    ).toThrowError('en has an empty value at "section.title"');
+    expect(() =>
+      assertTranslationParity("en", { section: { title: 7 } }, "de", {
+        section: { title: "Titel" },
+      }),
+    ).toThrowError('en has a non-text value at "section.title"');
+  });
+});

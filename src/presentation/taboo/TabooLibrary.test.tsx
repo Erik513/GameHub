@@ -69,3 +69,43 @@ it("imports once, keeps own cards after a standard deck update and exports a res
     vi.unstubAllGlobals();
   }
 });
+
+it("reports a storage error when the saved cards cannot be read or written", async () => {
+  const i18n = await createGameHubI18n("en");
+  const failing = {
+    list: vi.fn().mockRejectedValue(new Error("no storage")),
+    addAll: vi.fn().mockRejectedValue(new Error("no storage")),
+  };
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooLibrary repository={failing} cardLanguage="en" cards={[]} />
+    </I18nextProvider>,
+  );
+  fireEvent.click(screen.getByText("Custom Taboo cards", { selector: "summary" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("Local cards could not be accessed.");
+  // Importing fails the same way and the export button stays disabled without own cards.
+  upload(serializeTabooCards([card]));
+  await waitFor(() => expect(failing.list).toHaveBeenCalledTimes(2));
+  expect(await screen.findByRole("alert")).toBeVisible();
+  expect(screen.getByRole("button", { name: "Export own cards" })).toBeDisabled();
+});
+
+it("ignores an empty file selection and works without a repository", async () => {
+  const i18n = await createGameHubI18n("en");
+  const { unmount } = render(
+    <I18nextProvider i18n={i18n}>
+      <TabooLibrary repository={undefined} cardLanguage="en" cards={[]} />
+    </I18nextProvider>,
+  );
+  expect(screen.queryByText("Custom Taboo cards")).not.toBeInTheDocument();
+  unmount();
+  const repository = { list: vi.fn().mockResolvedValue([]), addAll: vi.fn() };
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooLibrary repository={repository} cardLanguage="en" cards={[]} />
+    </I18nextProvider>,
+  );
+  fireEvent.click(screen.getByText("Custom Taboo cards", { selector: "summary" }));
+  fireEvent.change(screen.getByLabelText("Import cards"), { target: { files: [] } });
+  expect(repository.addAll).not.toHaveBeenCalled();
+});
