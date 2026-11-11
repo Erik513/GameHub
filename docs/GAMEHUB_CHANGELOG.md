@@ -25,6 +25,7 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Die Teamreihenfolge wird zu Beginn jeder Partie zufällig bestimmt und bleibt bis zum Ende gleich (neu: `shuffleTeams`). In der laufenden Runde stehen Team, „Runde X/Y“ und Punkte im Kopf.
 - Punkteübersicht auch im Endergebnis, mit hervorgehobenen Gewinnerteams.
 - Alle 20 Browserprüfungen lokal bestanden (Chrome, Desktop und Mobil).
+- Orange Akzente (Markierungen, Kartenrand, verbotene Wörter, Spielkarte) durch das blaue Akzentblau ersetzt; Rot bleibt für „Verbotenes Wort“.
 - Teamnamen im Tabu-Setup frei wählbar; leere Felder fallen auf „Team N“ zurück, doppelte Namen werden abgelehnt.
 
 ### Kompakte Tabu-Oberfläche
