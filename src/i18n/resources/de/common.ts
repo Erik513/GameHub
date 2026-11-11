@@ -80,7 +80,7 @@ export const common = {
     difficulty: "Schwierigkeit",
     anyDifficulty: "Alle Stufen",
     categories: "Kategorien",
-    categoryHint: "Ohne Auswahl sind alle Kategorien dabei.",
+    selectCategory: "Wähle mindestens eine Kategorie.",
     start: "Partie vorbereiten",
     ready: "Partie vorbereitet",
     readyDetail: "Die Partie für {{teams}} ist eingerichtet.",

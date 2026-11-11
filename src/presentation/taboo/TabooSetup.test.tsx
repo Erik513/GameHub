@@ -17,11 +17,15 @@ it("blocks a six-turn setup when the chosen filters match only five cards", asyn
   await user.type(screen.getByRole("textbox", { name: "Team 1" }), "Owls");
   await user.type(screen.getByRole("textbox", { name: "Team 2" }), "Foxes");
   await user.click(screen.getByText("Card options", { exact: true }));
-  await user.click(screen.getByRole("checkbox", { name: "Nature" }));
+  await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
+  await user.click(screen.getByRole("checkbox", { name: "Culture" }));
   await user.selectOptions(screen.getByRole("combobox", { name: "Difficulty" }), "easy");
   await user.click(screen.getByRole("button", { name: "Prepare game" }));
   expect(screen.getByRole("alert")).toHaveTextContent("The filters match 5 cards");
   expect(screen.queryByRole("button", { name: "Start round" })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("checkbox", { name: "Nature" }));
+  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("Select at least one category.");
 });
 
 it.each([

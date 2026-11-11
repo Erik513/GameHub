@@ -11,10 +11,11 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
   const nature = page.getByRole("checkbox", { name: "Nature" });
   const choice = page.locator("label").filter({ has: nature });
   expect((await choice.boundingBox())?.height).toBeGreaterThanOrEqual(48);
-  await choice.getByText("Nature", { exact: true }).click();
   await expect(nature).toBeChecked();
-  await nature.press("Space");
+  await choice.getByText("Nature", { exact: true }).click();
   await expect(nature).not.toBeChecked();
+  await nature.press("Space");
+  await expect(nature).toBeChecked();
   await page.getByRole("textbox", { name: "Team 1" }).fill("Owls");
   await page.getByRole("textbox", { name: "Team 2" }).fill("Foxes");
   await page.getByRole("button", { name: "Prepare game" }).click();

@@ -102,13 +102,20 @@ export function TabooSetup({
       setIssues(result.issues);
       return;
     }
+    const selectedCategories = categories.filter((category) =>
+      data.getAll("category").includes(category),
+    );
+    if (selectedCategories.length === 0) {
+      setIssues([{ field: "categories", code: "required" }]);
+      return;
+    }
     setIssues([]);
     const required =
       result.value.configuration.teams.length * result.value.configuration.roundsPerTeam;
     const filters: DeckCriteria = {
       language: result.value.configuration.cardLanguage,
       minimumCards: 1,
-      categoryIds: categories.filter((category) => data.getAll("category").includes(category)),
+      categoryIds: selectedCategories.length === categories.length ? [] : selectedCategories,
       difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
     };
     const deck = buildDeck(cards, filters, Math.random).cards;
@@ -129,6 +136,8 @@ export function TabooSetup({
         return t("tabooSetup.invalidDuration");
       case "roundsPerTeam":
         return t("tabooSetup.invalidRounds");
+      case "categories":
+        return t("tabooSetup.selectCategory");
       default:
         return t("tabooSetup.invalidSetup");
     }
@@ -354,11 +363,10 @@ export function TabooSetup({
               </div>
               <fieldset className="taboo-categories">
                 <legend>{t("tabooSetup.categories")}</legend>
-                <p>{t("tabooSetup.categoryHint")}</p>
                 <div className="taboo-categories__choices">
                   {categories.map((category) => (
                     <label className="taboo-categories__choice" key={category}>
-                      <input type="checkbox" name="category" value={category} />
+                      <input type="checkbox" name="category" value={category} defaultChecked />
                       <span>{t(`tabooSetup.category.${category}`)}</span>
                     </label>
                   ))}
