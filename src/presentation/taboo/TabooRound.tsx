@@ -33,7 +33,7 @@ export function TabooRound({ deadline, dispatch, state }: TabooRoundProps) {
   }, [deadline, dispatch, round, teamIndex]);
 
   return (
-    <section className="taboo-round" aria-label={t("tabooRound.title")}>
+    <section className="taboo-round taboo-round--running" aria-label={t("tabooRound.title")}>
       <div className="taboo-round__hud">
         <div>
           <p className="taboo-round__team">{configuration.teams[teamIndex]?.name}</p>
@@ -41,7 +41,7 @@ export function TabooRound({ deadline, dispatch, state }: TabooRoundProps) {
             {t("tabooRound.score", { score: scores[teamIndex] ?? 0 })}
           </p>
         </div>
-        <p role="timer" aria-label={t("tabooRound.seconds", { seconds })}>
+        <p role="timer" data-low={seconds <= 10} aria-label={t("tabooRound.seconds", { seconds })}>
           {seconds}
         </p>
       </div>

@@ -189,7 +189,7 @@ export function TabooSetup({
             })}
           </StatusMessage>
           <h2>{t("tabooRound.standings")}</h2>
-          <ul>
+          <ul className="taboo-standings">
             {finished.configuration.teams.map((team, index) => (
               <li key={team.id}>
                 {t("tabooRound.teamTotal", { team: team.name, score: finished.scores[index] ?? 0 })}
@@ -222,7 +222,7 @@ export function TabooSetup({
             </p>
           </StatusMessage>
           <h2>{t("tabooRound.standings")}</h2>
-          <ul>
+          <ul className="taboo-standings">
             {ended.configuration.teams.map((team, index) => (
               <li key={team.id}>
                 {t("tabooRound.teamTotal", { team: team.name, score: ended.scores[index] ?? 0 })}

@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-11T16:34:10+01:00",
+    "updatedAt": "2026-11-11T17:50:00+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 42,
-      "totalTasks": 46,
-      "percent": 91.3
+      "completedTasks": 43,
+      "totalTasks": 47,
+      "percent": 91.5
     }
   },
   "environment": {
@@ -401,6 +401,18 @@
         {
           "id": "PH-08-04",
           "title": "Qualitäts- und Barrierefreiheitsabnahme",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "PH-10",
+      "name": "Mobile-Optimierung der Oberfläche",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "PH-10-01",
+          "title": "Mobile-first Oberfläche mit Daumenzone",
           "status": "done"
         }
       ]

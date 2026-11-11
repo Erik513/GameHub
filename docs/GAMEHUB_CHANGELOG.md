@@ -4,6 +4,14 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-10-01 – Mobile-first Oberfläche
+
+- Kopfzeile auf einer Zeile verdichtet, Safe-Area-Abstände und `100dvh` ergänzt, Navigation erst ab Tablet-Breite sichtbar.
+- Spielauswahl mit kompakten Karten; geplante Spiele treten visuell zurück.
+- Laufende Tabu-Runde: Begriff füllt die Ansicht, Aktionsbuttons liegen angeheftet in der Daumenzone, Countdown färbt sich in den letzten 10 Sekunden.
+- Einstellungen als Bottom-Sheet, Touch-Ziele mindestens 48 px, Eingabefelder gegen iOS-Zoom abgesichert, Theme-Farbe angepasst.
+- Rundenende und Ergebnis mit Standings-Karten und vollbreiten Buttons.
+
 ### Kompakte Tabu-Oberfläche
 
 - Tabu auf Desktop und Mobil in einer schmalen, zentrierten Ansicht dargestellt.
