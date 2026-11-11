@@ -16,17 +16,19 @@ it("previews local suggestions and saves only the confirmed selection", async ()
   const onSaved = vi.fn();
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooGeneration
-        cardLanguage="de"
-        standardCards={[]}
-        repository={repository}
-        onSaved={onSaved}
-        generators={{ local: createLocalTabooCardGenerator(tabooLocalCandidates, () => 0) }}
-      />
+      <form>
+        <input name="language" defaultValue="de" />
+        <input name="category" defaultValue="everyday" />
+        <TabooGeneration
+          standardCards={[]}
+          repository={repository}
+          onSaved={onSaved}
+          generators={{ local: createLocalTabooCardGenerator(tabooLocalCandidates, () => 0) }}
+        />
+      </form>
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByText("Tabu-Karten vorschlagen", { selector: "summary" }));
-  fireEvent.click(screen.getByRole("button", { name: "Karten vorschlagen" }));
+  fireEvent.click(screen.getByRole("button", { name: "Karten mit KI ergänzen" }));
   const spoon = await screen.findByRole("checkbox", { name: /Löffel/ });
   expect(spoon).toBeChecked();
   expect(repository.addAll).not.toHaveBeenCalled();
@@ -38,7 +40,7 @@ it("previews local suggestions and saves only the confirmed selection", async ()
   expect(onSaved).toHaveBeenCalledOnce();
 });
 
-it("lets the user choose Ollama and cancel an outstanding request", async () => {
+it("uses the automatically discovered generator and can cancel it", async () => {
   const i18n = await createGameHubI18n("en");
   const repository = { list: vi.fn().mockResolvedValue([]), addAll: vi.fn() };
   const generator: TabooCardGenerator = {
@@ -48,27 +50,24 @@ it("lets the user choose Ollama and cancel an outstanding request", async () => 
         cancellation?.subscribe(() => resolve({ status: "failed", code: "cancelled" }));
       }),
   };
-  const ollama = vi.fn(() => generator);
+  const discover = vi.fn().mockResolvedValue(generator);
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooGeneration
-        cardLanguage="en"
-        standardCards={[]}
-        repository={repository}
-        onSaved={vi.fn()}
-        generators={{ local: generator, ollama }}
-      />
+      <form>
+        <input name="category" defaultValue="nature" />
+        <TabooGeneration
+          standardCards={[]}
+          repository={repository}
+          onSaved={vi.fn()}
+          generators={{ local: generator, discover }}
+        />
+      </form>
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByText("Suggest Taboo cards", { selector: "summary" }));
-  fireEvent.change(screen.getByRole("combobox", { name: "Provider" }), {
-    target: { value: "ollama" },
-  });
-  fireEvent.change(screen.getByRole("textbox", { name: "Installed Ollama model" }), {
-    target: { value: "local-model" },
-  });
-  fireEvent.click(screen.getByRole("button", { name: "Suggest cards" }));
-  expect(ollama).toHaveBeenCalledWith("local-model");
+  fireEvent.click(screen.getByRole("button", { name: "Add cards with AI" }));
+  expect(discover).toHaveBeenCalledOnce();
+  await Promise.resolve();
+  await Promise.resolve();
   fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Generation was cancelled.");
   expect(repository.addAll).not.toHaveBeenCalled();

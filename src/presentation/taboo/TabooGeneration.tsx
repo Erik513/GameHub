@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type {
   TabooCardGenerator,
   TabooGenerationErrorCode,
 } from "../../business/games/taboo/cardGenerator";
 import type { TabooCardRepository } from "../../business/games/taboo/cardRepository";
-import type { Difficulty, TabooCard, ValidationIssue } from "../../business/games/taboo/model";
+import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
 import {
   reviewGeneratedCards,
   saveGeneratedCards,
@@ -14,11 +14,10 @@ import { Button, StatusMessage } from "../components";
 
 export interface TabooGenerators {
   readonly local: TabooCardGenerator;
-  readonly ollama?: (model: string) => TabooCardGenerator;
+  readonly discover?: (signal: AbortSignal) => Promise<TabooCardGenerator | undefined>;
 }
 
 interface Props {
-  cardLanguage: TabooCard["language"];
   standardCards: readonly TabooCard[];
   repository: TabooCardRepository;
   generators: TabooGenerators | undefined;
@@ -28,19 +27,10 @@ interface Props {
 type Notice =
   | { type: "error"; code: TabooGenerationErrorCode | "storage" }
   | { type: "saved"; count: number }
-  | { type: "preview" };
-const categories = ["everyday", "nature", "culture"] as const;
-const difficulties = ["easy", "medium", "hard"] as const;
+  | { type: "preview"; local: boolean };
 
-export function TabooGeneration({
-  cardLanguage,
-  standardCards,
-  repository,
-  generators,
-  onSaved,
-}: Props) {
+export function TabooGeneration({ standardCards, repository, generators, onSaved }: Props) {
   const { t } = useTranslation();
-  const [provider, setProvider] = useState("local");
   const [busy, setBusy] = useState<"generate" | "save">();
   const [review, setReview] = useState<ReturnType<typeof reviewGeneratedCards>>();
   const [selected, setSelected] = useState<readonly string[]>([]);
@@ -48,22 +38,21 @@ export function TabooGeneration({
   const active = useRef<AbortController | undefined>(undefined);
   useEffect(() => () => active.current?.abort(), []);
 
-  async function generate(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (busy || !generators) return;
-    const data = new FormData(event.currentTarget);
-    const model = data.get("model");
-    const generator =
-      provider === "ollama"
-        ? generators.ollama?.(typeof model === "string" ? model : "")
-        : generators.local;
-    if (!generator) return;
-    const request = {
-      language: data.get("language") === "de" ? ("de" as const) : ("en" as const),
-      categoryId: data.get("category") as string,
-      difficulty: data.get("difficulty") as Difficulty,
-      count: Number(data.get("count")),
-    };
+  async function generate(event: MouseEvent<HTMLButtonElement>) {
+    const form = event.currentTarget.form;
+    if (busy || !generators || !form) return;
+    const data = new FormData(form);
+    const categories = data
+      .getAll("category")
+      .filter((value): value is string => typeof value === "string");
+    if (categories.length === 0) {
+      setNotice({ type: "error", code: "unsupported_request" });
+      return;
+    }
+    const language = data.get("language") === "de" ? "de" : "en";
+    const chosenDifficulty = data.get("difficulty");
+    const difficulty =
+      chosenDifficulty === "medium" || chosenDifficulty === "hard" ? chosenDifficulty : "easy";
     const controller = new AbortController();
     active.current = controller;
     setBusy("generate");
@@ -71,40 +60,45 @@ export function TabooGeneration({
     setSelected([]);
     setNotice(undefined);
     try {
-      const result = await generator.generate(request, {
-        get aborted() {
-          return controller.signal.aborted;
-        },
-        subscribe(onAbort) {
-          controller.signal.addEventListener("abort", onAbort, { once: true });
-          return () => controller.signal.removeEventListener("abort", onAbort);
-        },
-      });
-      if (controller.signal.aborted || result.status === "failed") {
-        setNotice({
-          type: "error",
-          code: controller.signal.aborted
-            ? "cancelled"
-            : result.status === "failed"
-              ? result.code
-              : "cancelled",
-        });
-        return;
-      }
+      const discovered = await generators.discover?.(controller.signal);
+      const generator = discovered ?? generators.local;
       const saved = await repository.list();
+      const accepted: TabooCard[] = [];
+      const rejected: ReturnType<typeof reviewGeneratedCards>["rejected"][number][] = [];
+      let offset = 0;
+      for (const categoryId of categories) {
+        if (controller.signal.aborted) break;
+        const request = { language, difficulty, categoryId, count: 2 } as const;
+        const result = await generator.generate(request, {
+          get aborted() {
+            return controller.signal.aborted;
+          },
+          subscribe(onAbort) {
+            controller.signal.addEventListener("abort", onAbort, { once: true });
+            return () => controller.signal.removeEventListener("abort", onAbort);
+          },
+        });
+        if (result.status === "failed") {
+          setNotice({ type: "error", code: result.code });
+          return;
+        }
+        const preview = reviewGeneratedCards(
+          request,
+          result.candidates,
+          [...standardCards, ...saved, ...accepted],
+          () => crypto.randomUUID(),
+        );
+        accepted.push(...preview.accepted);
+        rejected.push(...preview.rejected.map((item) => ({ ...item, index: item.index + offset })));
+        offset += result.candidates.length;
+      }
       if (controller.signal.aborted) {
         setNotice({ type: "error", code: "cancelled" });
         return;
       }
-      const preview = reviewGeneratedCards(
-        request,
-        result.candidates,
-        [...standardCards, ...saved],
-        () => crypto.randomUUID(),
-      );
-      setReview(preview);
-      setSelected(preview.accepted.map((card) => card.id));
-      setNotice({ type: "preview" });
+      setReview({ accepted, rejected });
+      setSelected(accepted.map((card) => card.id));
+      setNotice({ type: "preview", local: !discovered });
     } catch {
       setNotice({ type: "error", code: controller.signal.aborted ? "cancelled" : "storage" });
     } finally {
@@ -140,72 +134,19 @@ export function TabooGeneration({
   }
 
   return (
-    <details className="taboo-setup">
-      <summary>{t("tabooGeneration.title")}</summary>
-      <form onSubmit={(event) => void generate(event)}>
-        <fieldset disabled={Boolean(busy) || !generators}>
-          <legend>{t("tabooGeneration.title")}</legend>
-          <div className="taboo-setup__fields">
-            <label className="language-control">
-              {t("tabooGeneration.provider")}
-              <select value={provider} onChange={(event) => setProvider(event.currentTarget.value)}>
-                <option value="local">{t("tabooGeneration.local")}</option>
-                {generators?.ollama && <option value="ollama">Ollama</option>}
-              </select>
-            </label>
-            {provider === "ollama" && (
-              <label className="language-control">
-                {t("tabooGeneration.model")}
-                <input className="field__input" name="model" required />
-              </label>
-            )}
-            <label className="language-control">
-              {t("language.cardLabel")}
-              <select name="language" defaultValue={cardLanguage}>
-                <option value="de">{t("language.options.de")}</option>
-                <option value="en">{t("language.options.en")}</option>
-              </select>
-            </label>
-            <label className="language-control">
-              {t("tabooGeneration.category")}
-              <select name="category">
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {t(`tabooSetup.category.${category}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="language-control">
-              {t("tabooSetup.difficulty")}
-              <select name="difficulty">
-                {difficulties.map((difficulty) => (
-                  <option key={difficulty} value={difficulty}>
-                    {t(`tabooSetup.difficulties.${difficulty}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="language-control">
-              {t("tabooGeneration.count")}
-              <input
-                className="field__input"
-                name="count"
-                type="number"
-                min="1"
-                max={generators?.local.capabilities.maxCardsPerRequest ?? 10}
-                defaultValue="2"
-                required
-              />
-            </label>
-          </div>
-          <Button type="submit">{t("tabooGeneration.generate")}</Button>
-        </fieldset>
-      </form>
+    <div className="taboo-generation">
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={Boolean(busy) || !generators}
+        onClick={(event) => void generate(event)}
+      >
+        {t("tabooGeneration.generate")}
+      </Button>
       {!generators && <p>{t("tabooGeneration.noProvider")}</p>}
       {busy === "generate" && (
         <StatusMessage title={t("tabooGeneration.working")}>
-          <Button variant="secondary" onClick={() => active.current?.abort()}>
+          <Button type="button" variant="secondary" onClick={() => active.current?.abort()}>
             {t("tabooGeneration.cancel")}
           </Button>
         </StatusMessage>
@@ -221,6 +162,9 @@ export function TabooGeneration({
       {review && (
         <fieldset disabled={Boolean(busy)}>
           <legend>{t("tabooGeneration.preview")}</legend>
+          {notice?.type === "preview" && notice.local && (
+            <p>{t("tabooGeneration.localFallback")}</p>
+          )}
           {notice?.type === "preview" && (
             <p role="status">
               {t("tabooGeneration.review", {
@@ -260,11 +204,11 @@ export function TabooGeneration({
               ))}
             </ul>
           )}
-          <Button disabled={selected.length === 0} onClick={() => void save()}>
+          <Button type="button" disabled={selected.length === 0} onClick={() => void save()}>
             {t("tabooGeneration.save")}
           </Button>
         </fieldset>
       )}
-    </details>
+    </div>
   );
 }

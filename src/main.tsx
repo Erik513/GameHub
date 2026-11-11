@@ -5,7 +5,7 @@ import { IndexedDbTabooCardRepository } from "./data/indexedDbTabooCardRepositor
 import { tabooStandardCards } from "./data/tabooStandardCards";
 import { tabooLocalCandidates } from "./data/tabooLocalCandidates";
 import { createLocalTabooCardGenerator } from "./infrastructure/localTabooCardGenerator";
-import { createOllamaTabooCardGenerator } from "./infrastructure/ollamaTabooCardGenerator";
+import { discoverOllamaTabooCardGenerator } from "./infrastructure/ollamaTabooCardGenerator";
 import { gameHubI18n } from "./i18n";
 import { parseSupportedLanguage, resolveInitialLanguage } from "./i18n/languagePreference";
 import {
@@ -41,7 +41,7 @@ createRoot(rootElement).render(
     <AppRoot
       tabooGenerators={{
         local: createLocalTabooCardGenerator(tabooLocalCandidates),
-        ollama: (model) => createOllamaTabooCardGenerator({ model }),
+        discover: discoverOllamaTabooCardGenerator,
       }}
       tabooRepository={new IndexedDbTabooCardRepository()}
       tabooCards={tabooStandardCards}

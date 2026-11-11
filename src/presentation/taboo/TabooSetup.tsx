@@ -21,10 +21,12 @@ export function TabooSetup({
   cardLanguage,
   cards,
   children,
+  generation,
 }: {
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
   children?: ReactNode;
+  generation?: ReactNode;
 }) {
   const { t } = useTranslation();
   const [teamCount, setTeamCount] = useState(2);
@@ -338,41 +340,37 @@ export function TabooSetup({
                   aria-invalid={issues.some((issue) => issue.field === "roundDurationSeconds")}
                 />
               </label>
-            </div>
-            <details className="taboo-options">
-              <summary>{t("tabooSetup.cardOptions")}</summary>
-              <div className="taboo-setup__fields">
-                <label className="language-control">
-                  {t("language.cardLabel")}
-                  <select name="language" defaultValue={cardLanguage}>
-                    <option value="de">{t("language.options.de")}</option>
-                    <option value="en">{t("language.options.en")}</option>
-                  </select>
-                </label>
-                <label className="language-control">
-                  {t("tabooSetup.difficulty")}
-                  <select name="difficulty">
-                    <option value="">{t("tabooSetup.anyDifficulty")}</option>
-                    {difficulties.map((difficulty) => (
-                      <option key={difficulty} value={difficulty}>
-                        {t(`tabooSetup.difficulties.${difficulty}`)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <fieldset className="taboo-categories">
-                <legend>{t("tabooSetup.categories")}</legend>
-                <div className="taboo-categories__choices">
-                  {categories.map((category) => (
-                    <label className="taboo-categories__choice" key={category}>
-                      <input type="checkbox" name="category" value={category} defaultChecked />
-                      <span>{t(`tabooSetup.category.${category}`)}</span>
-                    </label>
+              <label className="language-control">
+                {t("language.cardLabel")}
+                <select name="language" defaultValue={cardLanguage}>
+                  <option value="de">{t("language.options.de")}</option>
+                  <option value="en">{t("language.options.en")}</option>
+                </select>
+              </label>
+              <label className="language-control">
+                {t("tabooSetup.difficulty")}
+                <select name="difficulty">
+                  <option value="">{t("tabooSetup.anyDifficulty")}</option>
+                  {difficulties.map((difficulty) => (
+                    <option key={difficulty} value={difficulty}>
+                      {t(`tabooSetup.difficulties.${difficulty}`)}
+                    </option>
                   ))}
-                </div>
-              </fieldset>
-            </details>
+                </select>
+              </label>
+            </div>
+            <fieldset className="taboo-categories">
+              <legend>{t("tabooSetup.categories")}</legend>
+              <div className="taboo-categories__choices">
+                {categories.map((category) => (
+                  <label className="taboo-categories__choice" key={category}>
+                    <input type="checkbox" name="category" value={category} defaultChecked />
+                    <span>{t(`tabooSetup.category.${category}`)}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            {generation}
             <Button type="submit">{t("tabooSetup.start")}</Button>
           </form>
         </div>

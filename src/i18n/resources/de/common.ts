@@ -1,12 +1,13 @@
 export const common = {
   tabooGeneration: {
-    title: "Tabu-Karten vorschlagen",
+    title: "Zusätzliche Karten",
     provider: "Anbieter",
     local: "Lokaler Kartenvorrat",
     model: "Installiertes Ollama-Modell",
     category: "Kategorie",
     count: "Anzahl der Karten",
-    generate: "Karten vorschlagen",
+    generate: "Karten mit KI ergänzen",
+    localFallback: "Aus dem lokalen Kartenvorrat",
     noProvider: "Es ist kein Kartenanbieter verfügbar.",
     working: "Vorschläge werden vorbereitet",
     cancel: "Abbrechen",
@@ -20,7 +21,7 @@ export const common = {
     save: "Ausgewählte Karten speichern",
     errors: {
       cancelled: "Die Generierung wurde abgebrochen.",
-      unsupported_request: "Prüfe das Modell und die angeforderte Kartenanzahl.",
+      unsupported_request: "Wähle mindestens eine Kategorie.",
       unavailable:
         "Anbieter oder Modell ist nicht erreichbar. Prüfe den lokalen Ollama-Dienst und den Browserzugriff.",
       timeout: "Der Anbieter hat nicht rechtzeitig geantwortet.",

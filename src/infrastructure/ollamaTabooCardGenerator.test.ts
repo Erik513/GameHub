@@ -1,7 +1,10 @@
 import { expect, it, vi } from "vitest";
 import type { TabooGenerationRequest } from "../business/games/taboo/cardGenerator";
 import { reviewGeneratedCards } from "../business/games/taboo/validateGeneratedCards";
-import { createOllamaTabooCardGenerator } from "./ollamaTabooCardGenerator";
+import {
+  createOllamaTabooCardGenerator,
+  discoverOllamaTabooCardGenerator,
+} from "./ollamaTabooCardGenerator";
 
 const request: TabooGenerationRequest = {
   language: "en",
@@ -9,6 +12,43 @@ const request: TabooGenerationRequest = {
   difficulty: "easy",
   count: 2,
 };
+
+it("discovers a local text model and uses it without user configuration", async () => {
+  const fetch = vi
+    .fn<typeof globalThis.fetch>()
+    .mockResolvedValueOnce(
+      Response.json({
+        models: [
+          null,
+          {},
+          { name: " " },
+          { name: "nomic-embed-text" },
+          { name: "example:cloud" },
+          { name: "gemma4" },
+        ],
+      }),
+    )
+    .mockResolvedValueOnce(Response.json({ response: JSON.stringify({ cards: [] }) }));
+  const generator = await discoverOllamaTabooCardGenerator(new AbortController().signal, fetch);
+  expect(await generator?.generate(request)).toEqual({ status: "partial", candidates: [] });
+  expect(fetch.mock.calls[0]?.[0]).toBe("http://127.0.0.1:11434/api/tags");
+  expect(fetch.mock.calls[1]?.[1]?.body).toContain('"model":"gemma4"');
+});
+
+it("returns no model when Ollama is unavailable or offers no local text model", async () => {
+  const fetch = vi
+    .fn<typeof globalThis.fetch>()
+    .mockResolvedValueOnce(new Response("", { status: 503 }))
+    .mockResolvedValueOnce(Response.json(null))
+    .mockResolvedValueOnce(Response.json({}))
+    .mockResolvedValueOnce(Response.json({ models: [] }))
+    .mockRejectedValueOnce(new TypeError("Offline"));
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    expect(
+      await discoverOllamaTabooCardGenerator(new AbortController().signal, fetch),
+    ).toBeUndefined();
+  }
+});
 const card = {
   language: "en",
   categoryId: "nature",

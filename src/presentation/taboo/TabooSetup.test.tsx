@@ -16,7 +16,6 @@ it("blocks a six-turn setup when the chosen filters match only five cards", asyn
   );
   await user.type(screen.getByRole("textbox", { name: "Team 1" }), "Owls");
   await user.type(screen.getByRole("textbox", { name: "Team 2" }), "Foxes");
-  await user.click(screen.getByText("Card options", { exact: true }));
   await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
   await user.selectOptions(screen.getByRole("combobox", { name: "Difficulty" }), "easy");

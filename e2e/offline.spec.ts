@@ -37,11 +37,10 @@ test("is installable and starts a Taboo round after an offline reload", async ({
   await context.setOffline(true);
   await page.reload();
   await page.getByRole("button", { name: "View progress" }).click();
-  const generation = page.locator("details").filter({
-    has: page.locator("summary").filter({ hasText: /^Suggest Taboo cards$/ }),
-  });
-  await generation.locator("summary").click();
-  await generation.getByRole("button", { name: "Suggest cards" }).click();
+  const generation = page.locator(".taboo-generation");
+  await page.getByRole("checkbox", { name: "Nature" }).uncheck();
+  await page.getByRole("checkbox", { name: "Culture" }).uncheck();
+  await generation.getByRole("button", { name: "Add cards with AI" }).click();
   await expect(generation.getByRole("status")).toHaveText("Ready: 2 · Rejected: 0");
   await generation.getByRole("button", { name: "Save selected cards" }).click();
   await expect(generation.getByRole("status")).toHaveText("Saved cards: 2");

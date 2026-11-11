@@ -1,12 +1,13 @@
 export const common = {
   tabooGeneration: {
-    title: "Suggest Taboo cards",
+    title: "Additional cards",
     provider: "Provider",
     local: "Local card pool",
     model: "Installed Ollama model",
     category: "Category",
     count: "Number of cards",
-    generate: "Suggest cards",
+    generate: "Add cards with AI",
+    localFallback: "From the local card pool",
     noProvider: "No card provider is available.",
     working: "Preparing suggestions",
     cancel: "Cancel",
@@ -20,7 +21,7 @@ export const common = {
     save: "Save selected cards",
     errors: {
       cancelled: "Generation was cancelled.",
-      unsupported_request: "Check the model and requested number of cards.",
+      unsupported_request: "Select at least one category.",
       unavailable:
         "The provider or model is unavailable. Check the local Ollama service and browser access.",
       timeout: "The provider took too long to respond.",

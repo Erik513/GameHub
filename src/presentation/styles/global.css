@@ -644,25 +644,21 @@ h1 {
   min-width: 0;
 }
 
-.taboo-options,
 .taboo-tools > details {
   border-top: 1px solid var(--color-line);
   padding-block: var(--space-3);
 }
 
-.taboo-options > summary,
 .taboo-tools > details > summary {
   cursor: pointer;
   color: var(--color-ink-muted);
   font-weight: var(--weight-medium);
 }
 
-.taboo-options[open] > summary,
 .taboo-tools > details[open] > summary {
   margin-bottom: var(--space-3);
 }
 
-.taboo-options > fieldset,
 .taboo-tools {
   margin-top: var(--space-3);
 }
@@ -709,9 +705,14 @@ h1 {
 }
 
 @media (max-width: 22.5rem) {
-  .game-preview--playable .taboo-options .taboo-setup__fields {
-    grid-template-columns: minmax(0, 1fr);
+  .game-preview--playable .taboo-setup__fields > label:has(select) {
+    grid-column: 1 / -1;
   }
+}
+
+.taboo-generation {
+  display: grid;
+  gap: var(--space-2);
 }
 
 .taboo-tools input[type="file"] {
