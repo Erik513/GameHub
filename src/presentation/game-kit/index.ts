@@ -3,5 +3,6 @@ export { InfoButton, type InfoContent } from "./InfoButton";
 export { Scoreboard } from "./Scoreboard";
 export { StartBar, TurnStrip } from "./StartBar";
 export { TimerHud } from "./TimerHud";
+export { useAutoGrow } from "./useAutoGrow";
 export { useCountdown } from "./useCountdown";
 export { useStopwatch } from "./useStopwatch";

@@ -1,6 +1,8 @@
 /** All texts of the Taboo game; the shared app texts live in `common.ts`. */
 export const tabooTexts = {
   tabooLibrary: {
+    manage: "Eigene Karten verwalten",
+    back: "Zurück",
     title: "Eigene Tabu-Karten",
     hint: "Importiere eine GameHub-JSON-Datei oder sichere deine eigenen Karten.",
     import: "Karten importieren",
@@ -21,8 +23,9 @@ export const tabooTexts = {
     end: "Spielende: Wenn alle Runden gespielt sind, gewinnt das Team mit den meisten Punkten. Bei Gleichstand folgt auf Wunsch das Stechen: Jedes Team erklärt drei Begriffe auf Zeit.",
   },
   tabooPlayers: {
-    title: "Spieler und Teams (optional)",
-    hint: "Trage die Mitspieler ein, ein Name pro Zeile. Verteile sie dann zufällig oder von Hand auf die Teams. Die Verteilung dient nur als Übersicht für euch.",
+    title: "Spieler (optional)",
+    summary: "Namen eintragen und verteilen",
+    hint: "Gib die Namen aller Mitspieler ein, getrennt durch Komma oder Zeilenumbruch. Danach verteilst du sie zufällig oder von Hand auf die Teams. Die Verteilung dient nur als Übersicht für euch.",
     label: "Spielernamen",
     placeholder: "Anna, Ben, Cara",
     draw: "Zufällig auf Teams verteilen",
@@ -142,6 +145,8 @@ export const tabooTexts = {
     team: "Team {{number}}",
     teamNameLabel: "Name von Team {{number}}",
     rounds: "Runden pro Team",
+    teamsSection: "Teams und Spieler",
+    settingsSection: "Spieleinstellungen",
     teamOrder: "Teamreihenfolge",
     teamOrderOptions: { random: "Zufällig", entered: "Wie eingegeben" },
     duration: "Rundendauer (Sekunden)",

@@ -1,6 +1,8 @@
 /** All texts of the Taboo game; the shared app texts live in `common.ts`. */
 export const tabooTexts = {
   tabooLibrary: {
+    manage: "Manage own cards",
+    back: "Back",
     title: "Custom Taboo cards",
     hint: "Import a GameHub JSON file or save a backup of your own cards.",
     import: "Import cards",
@@ -20,8 +22,9 @@ export const tabooTexts = {
     end: "End of game: When all rounds are played, the team with the most points wins. If tied, the tiebreak follows if enabled: each team explains three words against the clock.",
   },
   tabooPlayers: {
-    title: "Players and teams (optional)",
-    hint: "Enter the players, one name per line. Then split them across the teams at random or by hand. The split is only an overview for you.",
+    title: "Players (optional)",
+    summary: "Enter names and split",
+    hint: "Enter the names of all players, separated by commas or line breaks. Then split them across the teams at random or by hand. The split is only an overview for you.",
     label: "Player names",
     placeholder: "Anna, Ben, Cara",
     draw: "Split randomly into teams",
@@ -141,6 +144,8 @@ export const tabooTexts = {
     team: "Team {{number}}",
     teamNameLabel: "Name of team {{number}}",
     rounds: "Rounds per team",
+    teamsSection: "Teams and players",
+    settingsSection: "Game settings",
     teamOrder: "Team order",
     teamOrderOptions: { random: "Random", entered: "As entered" },
     duration: "Round duration (seconds)",

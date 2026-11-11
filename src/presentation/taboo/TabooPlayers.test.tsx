@@ -8,7 +8,8 @@ import { TabooPlayers } from "./TabooPlayers";
 it.each([
   [
     "en",
-    "Players and teams (optional)",
+    "Players (optional)",
+    "Enter names and split",
     "Player names",
     "Split randomly into teams",
     "Team of Ben",
@@ -16,7 +17,8 @@ it.each([
   ],
   [
     "de",
-    "Spieler und Teams (optional)",
+    "Spieler (optional)",
+    "Namen eintragen und verteilen",
     "Spielernamen",
     "Zufällig auf Teams verteilen",
     "Team von Ben",
@@ -24,7 +26,7 @@ it.each([
   ],
 ] as const)(
   "splits players randomly and lets them be moved by hand in %s",
-  async (language, summary, label, draw, teamOfBen, teamsLabel) => {
+  async (language, summary, opener, label, draw, teamOfBen, teamsLabel) => {
     const random = vi.spyOn(Math, "random").mockReturnValue(0);
     const user = userEvent.setup();
     const i18n = await createGameHubI18n(language);
@@ -33,7 +35,8 @@ it.each([
         <TabooPlayers teamCount={2} />
       </I18nextProvider>,
     );
-    await user.click(screen.getByText(summary));
+    expect(screen.getByRole("heading", { name: summary })).toBeVisible();
+    await user.click(screen.getByText(opener));
     expect(screen.queryByRole("button", { name: draw })).toBeNull();
     await user.type(screen.getByLabelText(label), "Anna{enter}Ben{enter}Cara");
     await user.click(screen.getByRole("button", { name: draw }));

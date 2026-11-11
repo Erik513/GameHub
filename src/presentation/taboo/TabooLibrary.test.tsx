@@ -32,7 +32,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
     </I18nextProvider>
   );
   const { unmount } = render(view(repository, []));
-  fireEvent.click(screen.getByText("Custom Taboo cards", { selector: "summary" }));
+  fireEvent.click(screen.getByRole("button", { name: "Manage own cards" }));
   upload("invalid");
   expect(await screen.findByRole("alert")).toHaveTextContent("not a valid");
   upload(serializeTabooCards([card]));
@@ -42,7 +42,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   unmount();
   const reopened = new IndexedDbTabooCardRepository(factory);
   render(view(reopened, [{ ...card, id: "standard-sun", term: "Sun" }]));
-  fireEvent.click(screen.getByText("Custom Taboo cards", { selector: "summary" }));
+  fireEvent.click(screen.getByRole("button", { name: "Manage own cards" }));
   const exportButton = screen.getByRole("button", { name: "Export own cards" });
   await waitFor(() => expect(exportButton).toBeEnabled());
   const createUrl = vi.fn<(blob: Blob) => string>().mockReturnValue("blob:test");
@@ -81,7 +81,7 @@ it("reports a storage error when the saved cards cannot be read or written", asy
       <TabooLibrary repository={failing} cardLanguage="en" cards={[]} />
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByText("Custom Taboo cards", { selector: "summary" }));
+  fireEvent.click(screen.getByRole("button", { name: "Manage own cards" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Local cards could not be accessed.");
   // Importing fails the same way and the export button stays disabled without own cards.
   upload(serializeTabooCards([card]));
@@ -97,7 +97,7 @@ it("ignores an empty file selection and works without a repository", async () =>
       <TabooLibrary repository={undefined} cardLanguage="en" cards={[]} />
     </I18nextProvider>,
   );
-  expect(screen.queryByText("Custom Taboo cards")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Manage own cards" })).not.toBeInTheDocument();
   unmount();
   const repository = { list: vi.fn().mockResolvedValue([]), addAll: vi.fn() };
   render(
@@ -105,7 +105,26 @@ it("ignores an empty file selection and works without a repository", async () =>
       <TabooLibrary repository={repository} cardLanguage="en" cards={[]} />
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByText("Custom Taboo cards", { selector: "summary" }));
+  fireEvent.click(screen.getByRole("button", { name: "Manage own cards" }));
   fireEvent.change(screen.getByLabelText("Import cards"), { target: { files: [] } });
   expect(repository.addAll).not.toHaveBeenCalled();
+});
+
+it("shows the card tools on their own page and returns to the setup", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooLibrary
+        cardLanguage="en"
+        cards={[]}
+        repository={new IndexedDbTabooCardRepository(new IDBFactory())}
+      />
+    </I18nextProvider>,
+  );
+  expect(screen.queryByRole("heading", { name: "Custom Taboo cards" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Manage own cards" }));
+  expect(screen.getByRole("heading", { name: "Custom Taboo cards" })).toBeVisible();
+  fireEvent.click(screen.getByRole("button", { name: "Back" }));
+  expect(screen.queryByRole("heading", { name: "Custom Taboo cards" })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Manage own cards" })).toBeVisible();
 });

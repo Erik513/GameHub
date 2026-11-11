@@ -1,10 +1,11 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { parseCardEntries } from "../../business/games/taboo/cardEntry";
 import { builtInCategoryIds, customCategoryIds } from "../../business/games/taboo/categories";
 import { normalizeText, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
+import { useAutoGrow } from "../game-kit";
 import { difficulties } from "./tabooSetupModel";
 
 const newCategory = "__new__";
@@ -30,6 +31,8 @@ export function TabooCardEntry({ cardLanguage, cards, disabled, onAdd }: TabooCa
   const [feedback, setFeedback] = useState<Feedback>();
   const [choice, setChoice] = useState<string>(builtInCategoryIds[0]);
   const [name, setName] = useState("");
+  const input = useRef<HTMLTextAreaElement>(null);
+  useAutoGrow(input, text);
   const custom = customCategoryIds(cards, cardLanguage);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -118,7 +121,8 @@ export function TabooCardEntry({ cardLanguage, cards, disabled, onAdd }: TabooCa
           className="field__input taboo-card-entry__input"
           onChange={(event) => setText(event.target.value)}
           placeholder={t("tabooEntry.placeholder")}
-          rows={5}
+          ref={input}
+          rows={3}
           value={text}
         />
       </label>

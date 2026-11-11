@@ -27,6 +27,7 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
   const [ownCards, setOwnCards] = useState<readonly TabooCard[]>();
   const [feedback, setFeedback] = useState<Feedback>();
   const [busy, setBusy] = useState(false);
+  const [page, setPage] = useState<"setup" | "cards">("setup");
 
   useEffect(() => {
     if (!repository) return;
@@ -87,19 +88,30 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
     setTimeout(() => urlApi.revokeObjectURL(url), 1000);
   }
 
+  const allCards = [...(ownCards ?? []), ...cards];
+
   return (
-    <TabooSetup
-      cardLanguage={cardLanguage}
-      cards={[...(ownCards ?? []), ...cards]}
-      generators={generators}
-    >
-      {repository && (
-        <details>
-          <summary>{t("tabooLibrary.title")}</summary>
+    <>
+      {/* The setup stays mounted so a half-filled form survives a visit to the card page. */}
+      <div hidden={page === "cards"}>
+        <TabooSetup cardLanguage={cardLanguage} cards={allCards} generators={generators}>
+          {repository && (
+            <Button variant="secondary" onClick={() => setPage("cards")}>
+              {t("tabooLibrary.manage")}
+            </Button>
+          )}
+        </TabooSetup>
+      </div>
+      {repository && page === "cards" && (
+        <section aria-labelledby="taboo-cards-title" className="taboo-cards-page">
+          <Button variant="quiet" onClick={() => setPage("setup")}>
+            {t("tabooLibrary.back")}
+          </Button>
+          <h2 id="taboo-cards-title">{t("tabooLibrary.title")}</h2>
           <p>{t("tabooLibrary.hint")}</p>
           <TabooCardEntry
             cardLanguage={cardLanguage}
-            cards={[...(ownCards ?? []), ...cards]}
+            cards={allCards}
             disabled={busy}
             onAdd={saveCards}
           />
@@ -131,8 +143,8 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
                 : t(`tabooLibrary.${feedback.type}`)}
             </StatusMessage>
           )}
-        </details>
+        </section>
       )}
-    </TabooSetup>
+    </>
   );
 }
