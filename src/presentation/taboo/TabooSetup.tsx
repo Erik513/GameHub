@@ -325,7 +325,7 @@ export function TabooSetup({
               legend={t("tabooSetup.duration")}
               name="duration"
               initial="60"
-              options={["15", "30", "45", "60", "90"].map((value) => ({ value, label: value }))}
+              options={["60", "90"].map((value) => ({ value, label: value }))}
             />
             <SetupChoices
               legend={t("language.cardLabel")}

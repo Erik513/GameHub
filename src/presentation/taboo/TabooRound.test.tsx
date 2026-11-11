@@ -22,16 +22,19 @@ it.each([
         name: "1",
       }),
     );
-    fireEvent.click(screen.getByRole("radio", { name: /^15$/ }));
+    const duration = within(screen.getByRole("group", { name: "Round duration (seconds)" }));
+    expect(duration.getAllByRole("radio")).toHaveLength(2);
+    expect(duration.getByRole("radio", { name: /^60$/ })).toBeChecked();
+    fireEvent.click(duration.getByRole("radio", { name: /^90$/ }));
     fireEvent.click(screen.getByRole("button", { name: "Prepare game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     if (correct) fireEvent.click(screen.getByRole("button", { name: "Correct" }));
     void act(() => {
-      vi.advanceTimersByTime(15000);
+      vi.advanceTimersByTime(90000);
     });
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     void act(() => {
-      vi.advanceTimersByTime(15000);
+      vi.advanceTimersByTime(90000);
     });
     fireEvent.click(screen.getByRole("button", { name: "Show final results" }));
     expect(screen.getByRole("status")).toHaveTextContent(result);
@@ -44,7 +47,7 @@ it.each([
     if (correct) {
       fireEvent.click(screen.getByRole("button", { name: "Start round" }));
       expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Score: 0");
-      expect(screen.getByRole("timer")).toHaveTextContent(/^15$/);
+      expect(screen.getByRole("timer")).toHaveTextContent(/^90$/);
     } else {
       expect(
         within(screen.getByRole("group", { name: "Rounds per team" })).getByRole("radio", {
