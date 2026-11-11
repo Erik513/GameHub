@@ -13,7 +13,7 @@ export interface TabooCard {
   readonly id: string;
   readonly language: GameHubLanguage;
   readonly term: string;
-  readonly forbiddenWords: readonly [string, string, string];
+  readonly forbiddenWords: readonly [string, string, string, string];
   readonly categoryId: string;
   readonly difficulty: Difficulty;
 }
@@ -90,7 +90,7 @@ export function validateCard(
     issues.push({ field: "language", code: "unsupported_language" });
   if (!["easy", "medium", "hard"].includes(input.difficulty))
     issues.push({ field: "difficulty", code: "unsupported_difficulty" });
-  if (words.length !== 3) issues.push({ field: "forbiddenWords", code: "exactly_three" });
+  if (words.length !== 4) issues.push({ field: "forbiddenWords", code: "exactly_four" });
   if (words.some((word) => !word)) issues.push({ field: "forbiddenWords", code: "required" });
   if (new Set(words.map(identity)).size !== words.length)
     issues.push({ field: "forbiddenWords", code: "duplicate" });
@@ -105,7 +105,7 @@ export function validateCard(
           id,
           term,
           categoryId,
-          forbiddenWords: words as [string, string, string],
+          forbiddenWords: words as [string, string, string, string],
         },
       };
 }

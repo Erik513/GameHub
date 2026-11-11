@@ -9,6 +9,7 @@ interface AppShellProps {
   children: ReactNode;
   currentRoute: string;
   onCardLanguageChange: (language: SupportedLanguage) => void;
+  gameTitle?: string | undefined;
   onCloseGame?: (() => void) | undefined;
   onLanguageChange: (language: SupportedLanguage) => void;
 }
@@ -18,6 +19,7 @@ export function AppShell({
   children,
   currentRoute,
   onCardLanguageChange,
+  gameTitle,
   onCloseGame,
   onLanguageChange,
 }: AppShellProps) {
@@ -27,10 +29,17 @@ export function AppShell({
   return (
     <div className="app-shell">
       <header className="site-header">
-        <a className="brand" href="#/" aria-label="GameHub">
-          <span className="brand__mark" aria-hidden="true" />
-          <span>GameHub</span>
-        </a>
+        {gameTitle ? (
+          <p className="brand">
+            <span className="brand__mark" aria-hidden="true" />
+            <span>{gameTitle}</span>
+          </p>
+        ) : (
+          <a className="brand" href="#/" aria-label="GameHub">
+            <span className="brand__mark" aria-hidden="true" />
+            <span>GameHub</span>
+          </a>
+        )}
         <nav aria-label={t("navigation.ariaLabel")}>
           <a
             className="nav-link"

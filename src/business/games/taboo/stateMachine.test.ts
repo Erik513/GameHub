@@ -15,7 +15,7 @@ const configuration: GameConfiguration = {
 const card: TabooCard = {
   id: "one",
   term: "Moon",
-  forbiddenWords: ["night", "sky", "orbit"],
+  forbiddenWords: ["night", "sky", "orbit", "space"],
   language: "en",
   difficulty: "easy",
   categoryId: "space",
@@ -192,5 +192,21 @@ describe("Taboo state machine", () => {
     }
     for (const event of [start, finish, endFirst])
       expect(transitionTaboo(state, event)).toBe(state);
+  });
+
+  it("appends valid new cards to a running round and ignores invalid or known ones", () => {
+    const turn = { round: 1, teamIndex: 0 };
+    const running = transitionTaboo(setup(), start);
+    const fresh = { ...card, id: "two", term: "Sun" };
+    const next = transitionTaboo(running, {
+      type: "addCards",
+      turn,
+      cards: [fresh, card, { ...fresh, id: "bad", language: "de" }, { ...fresh, id: "" }],
+    });
+    expect(next.status === "roundRunning" && next.remainingCards.map((c) => c.id)).toEqual(["two"]);
+    const unchanged = { type: "addCards", turn, cards: [card] } as const;
+    expect(transitionTaboo(next, unchanged)).toBe(next);
+    expect(transitionTaboo(next, { ...unchanged, turn: { round: 2, teamIndex: 0 } })).toBe(next);
+    expect(transitionTaboo(setup(), { ...unchanged, cards: [fresh] })).toEqual(setup());
   });
 });

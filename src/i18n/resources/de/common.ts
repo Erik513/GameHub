@@ -43,7 +43,6 @@ export const common = {
     preparingCards: "Karten werden vorbereitet …",
     noExtraCards: "Keine neuen Zusatzkarten verfügbar.",
     cardOptions: "Kartenoptionen",
-    edit: "Einstellungen ändern",
     cardShortage:
       "Die Auswahl enthält {{available}} Karten. Für die geplanten Teamrunden werden mindestens {{required}} benötigt.",
     teams: "Teams",
@@ -57,9 +56,7 @@ export const common = {
     anyDifficulty: "Alle",
     categories: "Kategorien",
     selectCategory: "Wähle mindestens eine Kategorie.",
-    start: "Partie vorbereiten",
-    ready: "Partie vorbereitet",
-    readyDetail: "Die Partie für {{teams}} ist eingerichtet.",
+    start: "Starten",
     invalidSetup: "Prüfe die Spielkonfiguration",
     emptyTeam: "Gib jedem Team einen Namen.",
     duplicateTeam: "Verwende für jedes Team einen eigenen Namen.",

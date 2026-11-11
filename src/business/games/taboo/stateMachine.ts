@@ -48,6 +48,11 @@ export type TabooEvent =
       readonly cardId: string;
       readonly outcome: "correct" | "skipped" | "forbiddenWord";
     }
+  | {
+      readonly type: "addCards";
+      readonly turn: Turn;
+      readonly cards: readonly TabooCard[];
+    }
   | { readonly type: "endRound"; readonly turn: Turn }
   | { readonly type: "undoPoint"; readonly turn: Turn }
   | { readonly type: "finishGame" };
@@ -105,6 +110,34 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     return card
       ? { ...updated, status: "roundRunning", card, remainingCards }
       : { ...updated, status: "roundEnded" };
+  }
+  if (event.type === "addCards") {
+    if (
+      state.status !== "roundRunning" ||
+      event.turn.round !== state.turn.round ||
+      event.turn.teamIndex !== state.turn.teamIndex
+    )
+      return state;
+    const seen = new Set([
+      ...resolvedCardIds,
+      state.card.id,
+      ...state.remainingCards.map((c) => c.id),
+    ]);
+    const additions: TabooCard[] = [];
+    for (const input of event.cards) {
+      const result = validateCard(input);
+      if (
+        !result.valid ||
+        result.value.language !== configuration.cardLanguage ||
+        seen.has(result.value.id)
+      )
+        continue;
+      seen.add(result.value.id);
+      additions.push(result.value);
+    }
+    return additions.length === 0
+      ? state
+      : { ...state, remainingCards: [...state.remainingCards, ...additions] };
   }
   if (event.type === "endRound") {
     if (

@@ -55,7 +55,7 @@ const schema = {
           categoryId: { type: "string" },
           difficulty: { type: "string" },
           term: { type: "string" },
-          forbiddenWords: { type: "array", minItems: 3, maxItems: 3, items: { type: "string" } },
+          forbiddenWords: { type: "array", minItems: 4, maxItems: 4, items: { type: "string" } },
         },
       },
     },
@@ -105,7 +105,7 @@ export function createOllamaTabooCardGenerator({
             stream: false,
             format: schema,
             system:
-              "Create family-friendly Taboo word cards. Use the requested language, category and difficulty. Each card has exactly three distinct forbidden words, none equal to its term.",
+              "Create family-friendly Taboo word cards. Use the requested language, category and difficulty. Each card has exactly four distinct forbidden words, none equal to its term. One of the four must be a broader umbrella category word for the term, because that makes the card harder.",
             prompt: `Create ${request.count} cards for this specification: ${JSON.stringify(request)}`,
           }),
         });

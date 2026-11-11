@@ -26,8 +26,7 @@ it.each([
     expect(duration.getAllByRole("radio")).toHaveLength(2);
     expect(duration.getByRole("radio", { name: /^60$/ })).toBeChecked();
     fireEvent.click(duration.getByRole("radio", { name: /^90$/ }));
-    fireEvent.click(screen.getByRole("button", { name: "Prepare game" }));
-    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
     if (correct) fireEvent.click(screen.getByRole("button", { name: "Correct" }));
     void act(() => {
       vi.advanceTimersByTime(90000);
@@ -45,7 +44,6 @@ it.each([
       }),
     );
     if (correct) {
-      fireEvent.click(screen.getByRole("button", { name: "Start round" }));
       expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Score: 0");
       expect(screen.getByRole("timer")).toHaveTextContent(/^90$/);
     } else {
@@ -70,10 +68,9 @@ it("plays cards without resetting the countdown and ends the round on time", asy
         <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Prepare game" }));
-    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
     const round = screen.getByRole("region", { name: "Active round" });
-    expect(within(round).getAllByRole("listitem")).toHaveLength(3);
+    expect(within(round).getAllByRole("listitem")).toHaveLength(4);
     expect(within(round).getByRole("timer")).toHaveTextContent(/^60$/);
     expect(round).toHaveTextContent("Team 1");
     void act(() => {

@@ -17,18 +17,18 @@ it("blocks a six-turn setup when the chosen filters match only five cards", asyn
   await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
   await user.click(screen.getByRole("radio", { name: "Easy" }));
-  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  await user.click(screen.getByRole("button", { name: "Start" }));
   expect(screen.getByRole("alert")).toHaveTextContent("The filters match 5 cards");
   expect(screen.queryByRole("button", { name: "Start round" })).not.toBeInTheDocument();
   await user.click(screen.getByRole("checkbox", { name: "Nature" }));
-  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  await user.click(screen.getByRole("button", { name: "Start" }));
   expect(screen.getByRole("alert")).toHaveTextContent("Select at least one category.");
 });
 
 it.each([
-  ["en", "Prepare game", "Game ready"],
-  ["de", "Partie vorbereiten", "Partie vorbereitet"],
-] as const)("prepares three named teams in %s", async (language, start, ready) => {
+  ["en", "Start"],
+  ["de", "Starten"],
+] as const)("starts the first round directly in %s", async (language, start) => {
   const user = userEvent.setup();
   const i18n = await createGameHubI18n(language);
   render(
@@ -38,8 +38,8 @@ it.each([
   );
   await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
   await user.click(screen.getByRole("button", { name: start }));
-  expect(screen.getByRole("status")).toHaveTextContent(ready);
-  expect(screen.getByRole("status")).toHaveTextContent("Team 1, Team 2, Team 3");
+  expect(screen.getByRole("timer")).toBeVisible();
+  expect(screen.getByText("Team 1")).toBeVisible();
 });
 
 it("uses custom team names and falls back to defaults for blank fields", async () => {
@@ -53,8 +53,8 @@ it("uses custom team names and falls back to defaults for blank fields", async (
   await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
   await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Foxes");
   await user.type(screen.getByRole("textbox", { name: "Name of team 3" }), "  Owls ");
-  await user.click(screen.getByRole("button", { name: "Prepare game" }));
-  expect(screen.getByRole("status")).toHaveTextContent("Foxes, Team 2, Owls");
+  await user.click(screen.getByRole("button", { name: "Start" }));
+  expect(screen.getByText("Foxes")).toBeVisible();
 });
 
 it("rejects duplicate custom team names", async () => {
@@ -67,6 +67,6 @@ it("rejects duplicate custom team names", async () => {
   );
   await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Same");
   await user.type(screen.getByRole("textbox", { name: "Name of team 2" }), "Same");
-  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  await user.click(screen.getByRole("button", { name: "Start" }));
   expect(screen.getByRole("alert")).toHaveTextContent("Use a different name for each team.");
 });

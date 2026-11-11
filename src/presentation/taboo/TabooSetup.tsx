@@ -16,9 +16,10 @@ import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 
 const categories = ["everyday", "nature", "culture"] as const;
 const difficulties = ["easy", "medium", "hard"] as const;
-const cardSources = ["local", "ai", "both"] as const;
+const cardSources = ["both", "local", "ai"] as const;
 const maxCardsPerRequest = 10;
-const aiCardsPerTurn = 12;
+const aiCardsPerTurn = 8;
+const refillThreshold = 8;
 type SetupState = Extract<ReturnType<typeof createTabooGame>, { valid: true }>["value"];
 
 export function TabooSetup({
@@ -45,13 +46,28 @@ export function TabooSetup({
   const [generationEmpty, setGenerationEmpty] = useState(false);
   const activeGeneration = useRef<AbortController | undefined>(undefined);
   useEffect(() => () => activeGeneration.current?.abort(), []);
+  // AI-only games refill a running round in the background so the deck cannot run dry mid-turn.
+  const aiRefill = useRef<{ language: SupportedLanguage; categories: readonly string[] }>(
+    undefined,
+  );
+  const refillState = useRef({
+    busy: false,
+    counter: 0,
+    attempts: new Map<string, number>(),
+    added: [] as TabooCard[],
+  });
+  const refillController = useRef<AbortController | undefined>(undefined);
+  useEffect(() => () => refillController.current?.abort(), []);
   const [formVersion, setFormVersion] = useState(0);
   const [teamCount, setTeamCount] = useState(2);
+  const [refillTick, setRefillTick] = useState(0);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
   const nextTurn = ended ? getNextTabooTurn(ended) : null;
 
   function restart(keepConfiguration: boolean) {
+    refillController.current?.abort();
+    refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
     setRound(undefined);
     setDeckEmpty(false);
     setIssues([]);
@@ -59,6 +75,11 @@ export function TabooSetup({
       setSession(undefined);
       setFormVersion((version) => version + 1);
       setTeamCount(2);
+    } else if (session) {
+      // Same setup: replay with the same cards in a fresh order.
+      const fresh = { state: session.state, deck: shuffle(session.deck) };
+      setSession(fresh);
+      startRound(fresh, fresh.state);
     }
   }
 
@@ -70,13 +91,59 @@ export function TabooSetup({
     });
   }, []);
 
-  function startRound() {
-    if (!session) return;
-    const current = round?.state ?? session.state;
+  const runningRound = round?.state.status === "roundRunning" ? round.state : undefined;
+  useEffect(() => {
+    const plan = aiRefill.current;
+    const control = refillState.current;
+    if (!generators || !plan || !runningRound || control.busy) return;
+    if (runningRound.remainingCards.length > refillThreshold) return;
+    const { turn } = runningRound;
+    const turnKey = `${turn.round}:${turn.teamIndex}`;
+    if ((control.attempts.get(turnKey) ?? 0) >= plan.categories.length) return;
+    const index = control.counter++;
+    const request = {
+      language: plan.language,
+      categoryId: plan.categories[index % plan.categories.length] ?? "everyday",
+      difficulty: difficulties[index % difficulties.length] ?? "easy",
+      count: maxCardsPerRequest,
+    };
+    const controller = new AbortController();
+    refillController.current = controller;
+    control.busy = true;
+    void generateHiddenCards(
+      generators,
+      [request],
+      [...cards, ...(session?.deck ?? []), ...control.added],
+      controller.signal,
+    )
+      .catch(() => [] as readonly TabooCard[])
+      .then((additions) => {
+        control.busy = false;
+        if (controller.signal.aborted) return;
+        control.added.push(...additions);
+        control.attempts.set(
+          turnKey,
+          additions.length > 0 ? 0 : (control.attempts.get(turnKey) ?? 0) + 1,
+        );
+        // Re-render so the effect can request further batches if the deck is still short.
+        dispatch({ type: "addCards", turn, cards: additions });
+        setRefillTick((tick) => tick + 1);
+      });
+  }, [cards, dispatch, generators, refillTick, runningRound, session]);
+
+  function startRound(
+    active: { state: SetupState; deck: readonly TabooCard[] } | undefined = session,
+    base: TabooState | undefined = round?.state,
+  ) {
+    if (!active) return;
+    const current = base ?? active.state;
     const used = new Set(current.resolvedCardIds);
-    const available = session.deck.filter((card) => !used.has(card.id));
+    const available = active.deck.filter((card) => !used.has(card.id));
     const { teams, roundsPerTeam } = current.configuration;
-    const completed = ended ? (ended.turn.round - 1) * teams.length + ended.turn.teamIndex + 1 : 0;
+    const completed =
+      current.status === "roundEnded"
+        ? (current.turn.round - 1) * teams.length + current.turn.teamIndex + 1
+        : 0;
     const turnsLeft = teams.length * roundsPerTeam - completed;
     if (turnsLeft <= 0) return;
     const [card, ...remainingCards] = available.slice(0, Math.floor(available.length / turnsLeft));
@@ -133,6 +200,11 @@ export function TabooSetup({
       difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
     };
     const cardSource = generators ? data.get("cardSource") : "local";
+    aiRefill.current =
+      cardSource === "ai"
+        ? { language: filters.language, categories: selectedCategories }
+        : undefined;
+    refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
     let additions: readonly TabooCard[] = [];
     if (generators && (cardSource === "ai" || cardSource === "both")) {
       const controller = new AbortController();
@@ -170,7 +242,9 @@ export function TabooSetup({
       setShortage({ available: deck.length, required });
       return;
     }
-    setSession({ state: result.value, deck });
+    const active = { state: result.value, deck };
+    setSession(active);
+    startRound(active, active.state);
   }
 
   function errorMessage(issue: ValidationIssue) {
@@ -259,7 +333,7 @@ export function TabooSetup({
                   team: ended.configuration.teams[nextTurn.teamIndex]?.name ?? "",
                 })}
               </p>
-              <Button variant="success" onClick={startRound} disabled={deckEmpty}>
+              <Button variant="success" onClick={() => startRound()} disabled={deckEmpty}>
                 {t("tabooRound.start")}
               </Button>
             </>
@@ -283,7 +357,7 @@ export function TabooSetup({
           )}
         </section>
       )}
-      <div hidden={Boolean(round)} key={formVersion}>
+      <div className="taboo-setup__screen" hidden={Boolean(round)} key={formVersion}>
         {shortage && (
           <StatusMessage title={t("tabooRound.empty")} tone="error">
             {t("tabooSetup.cardShortage", shortage)}
@@ -292,19 +366,6 @@ export function TabooSetup({
         {deckEmpty && (
           <StatusMessage title={t("tabooRound.empty")} tone="error">
             {t("tabooRound.emptyHint")}
-          </StatusMessage>
-        )}
-        {session && (
-          <StatusMessage title={t("tabooSetup.ready")} tone="success">
-            {t("tabooSetup.readyDetail", {
-              teams: session.state.configuration.teams.map((team) => team.name).join(", "),
-            })}
-            <Button variant="success" onClick={startRound}>
-              {t("tabooRound.start")}
-            </Button>
-            <Button variant="quiet" onClick={() => setSession(undefined)}>
-              {t("tabooSetup.edit")}
-            </Button>
           </StatusMessage>
         )}
         {issues.length > 0 && (
@@ -316,98 +377,108 @@ export function TabooSetup({
             </ul>
           </StatusMessage>
         )}
-        <div hidden={Boolean(session)}>
-          <form
-            noValidate
-            onSubmit={(event) => void submit(event)}
-            onChange={(event) => {
-              if (event.target instanceof HTMLInputElement && event.target.name === "teamCount") {
-                setTeamCount(Number(event.target.value));
-              }
-              activeGeneration.current?.abort();
-              setShortage(undefined);
-              setSession(undefined);
-              setDeckEmpty(false);
-            }}
-          >
+        <form
+          id="taboo-setup-form"
+          noValidate
+          onSubmit={(event) => void submit(event)}
+          onChange={(event) => {
+            if (event.target instanceof HTMLInputElement && event.target.name === "teamCount") {
+              setTeamCount(Number(event.target.value));
+            }
+            activeGeneration.current?.abort();
+            setShortage(undefined);
+            setSession(undefined);
+            setDeckEmpty(false);
+          }}
+        >
+          <SetupChoices
+            legend={t("tabooSetup.teams")}
+            name="teamCount"
+            initial="2"
+            options={["2", "3", "4", "5", "6"].map((value) => ({ value, label: value }))}
+          />
+          <div className="taboo-team-names">
+            {Array.from({ length: teamCount }, (_, index) => (
+              <input
+                aria-label={t("tabooSetup.teamNameLabel", { number: index + 1 })}
+                autoComplete="off"
+                className="field__input"
+                key={index}
+                maxLength={24}
+                name={`teamName${index + 1}`}
+                placeholder={t("tabooSetup.team", { number: index + 1 })}
+              />
+            ))}
+          </div>
+          <SetupChoices
+            legend={t("tabooSetup.rounds")}
+            name="rounds"
+            initial="3"
+            options={["1", "2", "3", "4", "5"].map((value) => ({ value, label: value }))}
+          />
+          <SetupChoices
+            legend={t("tabooSetup.duration")}
+            name="duration"
+            initial="60"
+            options={["60", "90"].map((value) => ({ value, label: value }))}
+          />
+          {generators && (
             <SetupChoices
-              legend={t("tabooSetup.teams")}
-              name="teamCount"
-              initial="2"
-              options={["2", "3", "4", "5", "6"].map((value) => ({ value, label: value }))}
+              legend={t("tabooSetup.cardSource")}
+              name="cardSource"
+              initial="both"
+              options={cardSources.map((value) => ({
+                value,
+                label: t(`tabooSetup.cardSources.${value}`),
+              }))}
             />
-            <div className="taboo-team-names">
-              {Array.from({ length: teamCount }, (_, index) => (
-                <input
-                  aria-label={t("tabooSetup.teamNameLabel", { number: index + 1 })}
-                  autoComplete="off"
-                  className="field__input"
-                  key={index}
-                  maxLength={24}
-                  name={`teamName${index + 1}`}
-                  placeholder={t("tabooSetup.team", { number: index + 1 })}
-                />
-              ))}
-            </div>
+          )}
+          <details className="taboo-more">
+            <summary>{t("tabooSetup.moreOptions")}</summary>
             <SetupChoices
-              legend={t("tabooSetup.rounds")}
-              name="rounds"
-              initial="3"
-              options={["1", "2", "3", "4", "5"].map((value) => ({ value, label: value }))}
-            />
-            <SetupChoices
-              legend={t("tabooSetup.duration")}
-              name="duration"
-              initial="60"
-              options={["60", "90"].map((value) => ({ value, label: value }))}
-            />
-            {generators && (
-              <SetupChoices
-                legend={t("tabooSetup.cardSource")}
-                name="cardSource"
-                initial="local"
-                options={cardSources.map((value) => ({
+              legend={t("tabooSetup.difficulty")}
+              name="difficulty"
+              initial=""
+              options={[
+                { value: "", label: t("tabooSetup.anyDifficulty") },
+                ...difficulties.map((value) => ({
                   value,
-                  label: t(`tabooSetup.cardSources.${value}`),
-                }))}
-              />
-            )}
-            <details className="taboo-more">
-              <summary>{t("tabooSetup.moreOptions")}</summary>
-              <SetupChoices
-                legend={t("tabooSetup.difficulty")}
-                name="difficulty"
-                initial=""
-                options={[
-                  { value: "", label: t("tabooSetup.anyDifficulty") },
-                  ...difficulties.map((value) => ({
-                    value,
-                    label: t(`tabooSetup.difficulties.${value}`),
-                  })),
-                ]}
-              />
-              <fieldset className="taboo-choice-group">
-                <legend>{t("tabooSetup.categories")}</legend>
-                <div className="taboo-choice-grid taboo-choice-grid--categories">
-                  {categories.map((category) => (
-                    <label className="taboo-choice" key={category}>
-                      <input type="checkbox" name="category" value={category} defaultChecked />
-                      <span>{t(`tabooSetup.category.${category}`)}</span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </details>
-            <Button type="submit" variant="success" disabled={generating}>
-              {t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
-            </Button>
-          </form>
-        </div>
+                  label: t(`tabooSetup.difficulties.${value}`),
+                })),
+              ]}
+            />
+            <fieldset className="taboo-choice-group">
+              <legend>{t("tabooSetup.categories")}</legend>
+              <div className="taboo-choice-grid taboo-choice-grid--categories">
+                {categories.map((category) => (
+                  <label className="taboo-choice" key={category}>
+                    <input type="checkbox" name="category" value={category} defaultChecked />
+                    <span>{t(`tabooSetup.category.${category}`)}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          </details>
+        </form>
         {generationEmpty && <p role="status">{t("tabooSetup.noExtraCards")}</p>}
         {children && <div className="taboo-tools">{children}</div>}
+        <div className="game-start-bar">
+          <Button form="taboo-setup-form" type="submit" variant="success" disabled={generating}>
+            {t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
+          </Button>
+        </div>
       </div>
     </div>
   );
+}
+
+function shuffle<T>(items: readonly T[]): T[] {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const other = Math.floor(Math.random() * (index + 1));
+    [result[index], result[other]] = [result[other] as T, result[index] as T];
+  }
+  return result;
 }
 
 function teamNameFrom(value: FormDataEntryValue | null) {

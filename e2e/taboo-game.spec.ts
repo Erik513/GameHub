@@ -5,7 +5,7 @@ const cases = [
     language: "en",
     open: "View progress",
     rounds: "Rounds per team",
-    prepare: "Prepare game",
+    prepare: "Start",
     start: "Start round",
     active: "Active round",
     correct: "Correct",
@@ -21,7 +21,7 @@ const cases = [
     language: "de",
     open: "Fortschritt ansehen",
     rounds: "Runden pro Team",
-    prepare: "Partie vorbereiten",
+    prepare: "Starten",
     start: "Runde starten",
     active: "Laufende Runde",
     correct: "Richtig",
@@ -50,7 +50,6 @@ for (const labels of cases) {
       .getByRole("radio", { name: "1", exact: true })
       .check();
     await page.getByRole("button", { name: labels.prepare }).click();
-    await page.getByRole("button", { name: labels.start }).click();
     const round = page.getByRole("region", { name: labels.active });
     await round.getByRole("button", { name: labels.correct }).click();
     if (labels.language === "en") {
@@ -85,7 +84,6 @@ for (const labels of cases) {
       page.getByText(`Team 2: ${labels.language === "de" ? 1 : 0}`, { exact: true }),
     ).toBeVisible();
     await page.getByRole("button", { name: labels.restart }).click();
-    await page.getByRole("button", { name: labels.start }).click();
     await expect(round.getByText(labels.score)).toBeVisible();
     await page.reload();
     await expect(round).toHaveCount(0);

@@ -12,7 +12,7 @@ const card: TabooCard = {
   id: "own-moon",
   language: "en",
   term: "Moon",
-  forbiddenWords: ["night", "sky", "orbit"],
+  forbiddenWords: ["night", "sky", "orbit", "space"],
   categoryId: "nature",
   difficulty: "easy",
 };

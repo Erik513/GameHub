@@ -43,7 +43,6 @@ export const common = {
     preparingCards: "Preparing cards…",
     noExtraCards: "No new extra cards are available.",
     cardOptions: "Card options",
-    edit: "Edit setup",
     cardShortage:
       "The filters match {{available}} cards. The scheduled turns need at least {{required}}.",
     teams: "Teams",
@@ -57,9 +56,7 @@ export const common = {
     anyDifficulty: "All",
     categories: "Categories",
     selectCategory: "Select at least one category.",
-    start: "Prepare game",
-    ready: "Game ready",
-    readyDetail: "The setup is ready for {{teams}}.",
+    start: "Start",
     invalidSetup: "Check the game setup",
     emptyTeam: "Enter a name for each team.",
     duplicateTeam: "Use a different name for each team.",

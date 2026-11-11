@@ -38,10 +38,9 @@ test("is installable and starts a Taboo round after an offline reload", async ({
   await page.reload();
   await page.getByRole("button", { name: "View progress" }).click();
   await page.getByRole("radio", { name: "Both" }).check();
-  await page.getByRole("button", { name: "Prepare game" }).click();
+  await page.getByRole("button", { name: "Start" }).click();
   await expect(page.getByText("No new extra cards are available.")).toHaveCount(0);
-  await page.getByRole("button", { name: "Start round" }).click();
   await expect(
     page.getByRole("region", { name: "Active round" }).getByRole("listitem"),
-  ).toHaveCount(3);
+  ).toHaveCount(4);
 });

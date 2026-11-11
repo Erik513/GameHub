@@ -21,7 +21,7 @@ const card: TabooCard = {
   id: "one",
   language: "de",
   term: "Bär",
-  forbiddenWords: ["Wald", "Tier", "Honig"],
+  forbiddenWords: ["Wald", "Tier", "Honig", "Bau"],
   categoryId: "nature",
   difficulty: "easy",
 };
@@ -74,20 +74,21 @@ describe("Taboo domain validation", () => {
       ...card,
       language,
       term: " Ba\u0308r ",
-      forbiddenWords: [" Wald ", "Tier", "Honig"],
+      forbiddenWords: [" Wald ", "Tier", "Honig", "Bau"],
     });
     expect(result.valid).toBe(true);
     if (result.valid) expect(result.value).toEqual({ ...card, language });
-    expect(card.forbiddenWords).toEqual(["Wald", "Tier", "Honig"]);
+    expect(card.forbiddenWords).toEqual(["Wald", "Tier", "Honig", "Bau"]);
   });
   it.for([
     [],
     ["a", "b"],
-    ["a", "b", "c", "d"],
-    ["a", " ", "c"],
-    ["Wald", " WALD ", "Tier"],
+    ["a", "b", "c"],
+    ["a", "b", "c", "d", "e"],
+    ["a", " ", "c", "d"],
+    ["Wald", " WALD ", "Tier", "Honig"],
     ["Bär", "Ba\u0308r", "Tier"],
-    [" BÄR ", "Wald", "Tier"],
+    [" BÄR ", "Wald", "Tier", "Honig"],
   ])("rejects invalid forbidden words %j", (forbiddenWords) => {
     expect(validateCard({ ...card, forbiddenWords }).valid).toBe(false);
   });

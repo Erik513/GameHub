@@ -15,12 +15,11 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
   await expect(nature).not.toBeChecked();
   await nature.press("Space");
   await expect(nature).toBeChecked();
-  await page.getByRole("button", { name: "Prepare game" }).click();
-  await page.getByRole("button", { name: "Start round" }).click();
+  await page.getByRole("button", { name: "Start" }).click();
   const round = page.getByRole("region", { name: "Active round" });
   await expect(round.getByRole("timer")).toHaveText(/^\d+$/);
   await expect(page.getByText("Custom Taboo cards", { exact: true })).toBeHidden();
-  await expect(round.getByRole("listitem")).toHaveCount(3);
+  await expect(round.getByRole("listitem")).toHaveCount(4);
   await round.getByRole("button", { name: "Correct" }).click();
   await expect(round.getByText("Score: 1")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(

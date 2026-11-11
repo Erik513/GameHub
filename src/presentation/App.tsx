@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { findGameByRoute, gameCatalog, type GameModuleDescriptor } from "../app/gameCatalog";
 import { createRouteHash, homeRoute, parseHashRoute } from "../app/hashRoute";
 import type { SupportedLanguage } from "../i18n";
@@ -48,6 +49,7 @@ export function App({
   tabooRepository,
   tabooGenerators,
 }: AppProps) {
+  const { t } = useTranslation();
   const [currentRoute, setCurrentRoute] = useState(() => parseHashRoute(window.location.hash));
   const selectedGame = findGameByRoute(currentRoute);
 
@@ -76,6 +78,11 @@ export function App({
       cardLanguage={cardLanguage}
       currentRoute={selectedGame ? currentRoute : homeRoute}
       onCardLanguageChange={onCardLanguageChange}
+      gameTitle={
+        selectedGame && selectedGame.availability !== "planned"
+          ? t(`games.${selectedGame.translationKey}.title`)
+          : undefined
+      }
       onCloseGame={
         selectedGame && selectedGame.availability !== "planned"
           ? () => navigate(homeRoute)

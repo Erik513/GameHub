@@ -15,9 +15,9 @@ const moon: TabooCard = {
   categoryId: "nature",
   difficulty: "easy",
   term: "Mond",
-  forbiddenWords: ["Nacht", "Himmel", "Umlaufbahn"],
+  forbiddenWords: ["Nacht", "Himmel", "Umlaufbahn", "Weltall"],
 };
-const bear = { ...moon, term: "  Ba\u0308r ", forbiddenWords: [" Wald ", "Tier", "Honig"] };
+const bear = { ...moon, term: "  Ba\u0308r ", forbiddenWords: [" Wald ", "Tier", "Honig", "Bau"] };
 
 it("accepts normalized cards from a partial response and reports duplicates by index", () => {
   let id = 0;
@@ -25,7 +25,7 @@ it("accepts normalized cards from a partial response and reports duplicates by i
     String(++id),
   );
   expect(result.accepted).toEqual([
-    { ...moon, id: "2", term: "Bär", forbiddenWords: ["Wald", "Tier", "Honig"] },
+    { ...moon, id: "2", term: "Bär", forbiddenWords: ["Wald", "Tier", "Honig", "Bau"] },
   ]);
   expect(result.rejected).toEqual(
     [0, 2].map((index) => ({
@@ -45,7 +45,7 @@ it("reports malformed cards, wrong metadata, and invalid forbidden words", () =>
       { ...moon, forbiddenWords: "Nacht" },
       { ...moon, forbiddenWords: [false] },
       { ...moon, forbiddenWords: ["Nacht"] },
-      { ...moon, forbiddenWords: ["Nacht", "NACHT", "Himmel"] },
+      { ...moon, forbiddenWords: ["Nacht", "NACHT", "Himmel", "Mond"] },
       { ...moon, language: "en", categoryId: 2, difficulty: "hard" },
       { ...moon, categoryId: "culture" },
     ],

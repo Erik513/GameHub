@@ -54,7 +54,7 @@ const card = {
   categoryId: "nature",
   difficulty: "easy",
   term: "Otter",
-  forbiddenWords: ["river", "fur", "swim"],
+  forbiddenWords: ["river", "fur", "swim", "animal"],
 };
 
 it("uses loopback structured output and passes malformed candidates to validation", async () => {

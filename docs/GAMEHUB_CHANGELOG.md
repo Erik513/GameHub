@@ -15,8 +15,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Kartenquelle wählbar: nur lokal, nur KI oder beides kombiniert. Schwierigkeit und Kategorien liegen unter „Weitere Optionen“.
 - Start-, Richtig- und Weiter-Aktionen grün, „Verbotenes Wort“ rot.
 - „Zurück zu allen Spielen“ durch ein Haus-Symbol („Spiel schließen“) ganz rechts in der Kopfzeile ersetzt.
-- Einstellungen als Zahnrad-Symbol dargestellt.
-- „Nur KI“ erzeugt pro Runde rund 12 Karten statt einer Karte pro Runde; bei „Alle“ wechselt die Schwierigkeit zwischen den Anfragen.
+- Einstellungen als Zahnrad-Symbol dargestellt. In der Kopfzeile steht im Spiel der Spieltitel statt „GameHub“; „GameHub“ erscheint nur im Hauptmenü.
+- „Nur KI“ erzeugt vorab rund 8 Karten pro Runde und lädt während der Runde automatisch Karten nach (neues Ereignis `addCards` in der Zustandsmaschine), sobald weniger als 9 Karten übrig sind. Bei „Alle“ wechselt die Schwierigkeit zwischen den Anfragen.
+- Spielkopf größer; gemeinsamer Aufbau für Spiele: Titel und Aktionen oben, Einstellungen in der Mitte, „Starten“ immer ganz unten.
+- Schritt „Partie vorbereiten“ entfällt: „Starten“ bereitet die Partie vor und beginnt sofort die erste Runde. „Gleiche Einstellungen“ startet direkt neu mit gemischten Karten.
+- Kartenquelle: „Beides“ steht links und ist Standard.
+- Tabu-Karten haben jetzt immer vier verbotene Wörter (Modell, Standardkarten, lokale Kandidaten, KI-Vorgabe mit Oberbegriff). Die Runde zeigt sie in einem 2×2-Raster. Gespeicherte oder importierte Karten mit drei Wörtern werden nicht mehr akzeptiert.
 - Teamnamen im Tabu-Setup frei wählbar; leere Felder fallen auf „Team N“ zurück, doppelte Namen werden abgelehnt.
 
 ### Kompakte Tabu-Oberfläche

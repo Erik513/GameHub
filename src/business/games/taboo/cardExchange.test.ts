@@ -6,7 +6,7 @@ const card: TabooCard = {
   id: "moon",
   term: "Moon",
   language: "en",
-  forbiddenWords: ["sky", "night", "orbit"],
+  forbiddenWords: ["sky", "night", "orbit", "space"],
   categoryId: "nature",
   difficulty: "easy",
 };
