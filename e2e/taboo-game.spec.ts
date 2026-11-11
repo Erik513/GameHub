@@ -11,7 +11,7 @@ const cases = [
     correct: "Correct",
     skip: "Skip",
     forbidden: "Forbidden word",
-    next: "Next team: Team 2",
+    next: "Team 2",
     show: "Show final results",
     winner: "Winner: Team 1",
     restart: "Play again with the same setup",
@@ -27,7 +27,7 @@ const cases = [
     correct: "Richtig",
     skip: "Überspringen",
     forbidden: "Verbotenes Wort",
-    next: "Nächstes Team: Team 2",
+    next: "Team 2",
     show: "Endergebnis anzeigen",
     winner: "Gemeinsam gewonnen haben Team 1, Team 2.",
     restart: "Mit gleicher Konfiguration neu spielen",
@@ -38,6 +38,10 @@ const cases = [
 for (const labels of cases) {
   test(`completes a Taboo game and restarts in ${labels.language}`, async ({ page }) => {
     await page.clock.install();
+    // Keep the shuffled team order stable: Team 1 plays first.
+    await page.addInitScript(() => {
+      Math.random = () => 0.99;
+    });
     await page.goto("/");
     if (labels.language === "de") {
       await page.getByRole("button", { name: "Settings" }).click();
@@ -49,7 +53,8 @@ for (const labels of cases) {
       .getByRole("group", { name: labels.rounds })
       .getByRole("radio", { name: "1", exact: true })
       .check();
-    await page.getByRole("button", { name: labels.prepare }).click();
+    await page.getByRole("button", { name: labels.prepare, exact: true }).click();
+    await page.getByRole("button", { name: labels.start, exact: true }).click();
     const round = page.getByRole("region", { name: labels.active });
     await round.getByRole("button", { name: labels.correct }).click();
     if (labels.language === "en") {
@@ -71,23 +76,26 @@ for (const labels of cases) {
       await page.keyboard.press("Enter");
       await expect(page.getByText("Round points: 1")).toBeVisible();
     }
-    await expect(page.getByText(labels.next)).toBeVisible();
-    await expect(page.getByText("Team 1: 1", { exact: true })).toBeVisible();
+    await expect(page.locator(".taboo-overview__turn")).toContainText(labels.next);
+    await expect(page.getByRole("listitem").filter({ hasText: /^Team 1: 1$/ })).toBeVisible();
     await expect(round).toHaveCount(0);
-    await page.getByRole("button", { name: labels.start }).click();
+    await page.getByRole("button", { name: labels.start, exact: true }).click();
     await expect(round.getByText("Team 2", { exact: true })).toBeVisible();
     if (labels.language === "de") await round.getByRole("button", { name: labels.correct }).click();
     await page.clock.fastForward(60_000);
     await page.getByRole("button", { name: labels.show }).click();
     await expect(page.getByText(labels.winner)).toBeVisible();
     await expect(
-      page.getByText(`Team 2: ${labels.language === "de" ? 1 : 0}`, { exact: true }),
+      page.getByRole("listitem").filter({
+        hasText: new RegExp(`^Team 2: ${labels.language === "de" ? 1 : 0}$`),
+      }),
     ).toBeVisible();
     await page.getByRole("button", { name: labels.restart }).click();
+    await page.getByRole("button", { name: labels.start, exact: true }).click();
     await expect(round.getByText(labels.score)).toBeVisible();
     await page.reload();
     await expect(round).toHaveCount(0);
-    await expect(page.getByRole("button", { name: labels.prepare })).toBeVisible();
+    await expect(page.getByRole("button", { name: labels.prepare, exact: true })).toBeVisible();
     await expect(
       page
         .getByRole("group", { name: labels.rounds })

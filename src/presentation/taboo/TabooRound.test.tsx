@@ -1,9 +1,28 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
-import { expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
+
+beforeEach(() => {
+  // Always pick the last slot so the shuffled team order stays Team 1, Team 2, ...
+  vi.spyOn(Math, "random").mockReturnValue(0.99);
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
+function standingsRow(index: number) {
+  return within(screen.getByRole("list", { name: "Total scores" })).getAllByRole("listitem")[
+    index
+  ]!;
+}
+
+function upNext() {
+  return document.querySelector(".taboo-overview__turn strong")!;
+}
 
 it.each([
   { correct: true, result: "Winner: Team 1" },
@@ -27,6 +46,7 @@ it.each([
     expect(duration.getByRole("radio", { name: /^60$/ })).toBeChecked();
     fireEvent.click(duration.getByRole("radio", { name: /^90$/ }));
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     if (correct) fireEvent.click(screen.getByRole("button", { name: "Correct" }));
     void act(() => {
       vi.advanceTimersByTime(90000);
@@ -37,13 +57,14 @@ it.each([
     });
     fireEvent.click(screen.getByRole("button", { name: "Show final results" }));
     expect(screen.getByRole("status")).toHaveTextContent(result);
-    expect(screen.getByText(correct ? "Team 1: 1" : "Team 1: 0")).toBeVisible();
+    expect(standingsRow(0)).toHaveTextContent(correct ? "Team 1: 1" : "Team 1: 0");
     fireEvent.click(
       screen.getByRole("button", {
         name: correct ? "Play again with the same setup" : "Set up a new game",
       }),
     );
     if (correct) {
+      fireEvent.click(screen.getByRole("button", { name: "Start round" }));
       expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Score: 0");
       expect(screen.getByRole("timer")).toHaveTextContent(/^90$/);
     } else {
@@ -69,6 +90,7 @@ it("plays cards without resetting the countdown and ends the round on time", asy
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const round = screen.getByRole("region", { name: "Active round" });
     expect(within(round).getAllByRole("listitem")).toHaveLength(4);
     expect(within(round).getByRole("timer")).toHaveTextContent(/^60$/);
@@ -92,9 +114,10 @@ it("plays cards without resetting the countdown and ends the round on time", asy
       vi.advanceTimersByTime(1000);
     });
     expect(screen.getByRole("status")).toHaveTextContent("Round points: 1");
-    expect(screen.getByText("Team 1: 1")).toBeVisible();
-    expect(screen.getByText("Team 2: 0")).toBeVisible();
-    expect(screen.getByText("Next team: Team 2")).toBeVisible();
+    expect(standingsRow(0)).toHaveTextContent("Team 1: 1");
+    expect(standingsRow(1)).toHaveTextContent("Team 2: 0");
+    expect(upNext()).toHaveTextContent("Team 2");
+    expect(screen.getByText("Round 1/3")).toBeVisible();
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const nextRound = screen.getByRole("region", { name: "Active round" });
@@ -105,8 +128,9 @@ it("plays cards without resetting the countdown and ends the round on time", asy
       vi.advanceTimersByTime(60000);
     });
     expect(screen.getByRole("status")).toHaveTextContent("Round points: 0");
-    expect(screen.getByText("Team 1: 1")).toBeVisible();
-    expect(screen.getByText("Next team: Team 1")).toBeVisible();
+    expect(standingsRow(0)).toHaveTextContent("Team 1: 1");
+    expect(upNext()).toHaveTextContent("Team 1");
+    expect(screen.getByText("Round 2/3")).toBeVisible();
   } finally {
     vi.useRealTimers();
   }

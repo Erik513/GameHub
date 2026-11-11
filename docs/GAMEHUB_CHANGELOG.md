@@ -21,6 +21,10 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Schritt „Partie vorbereiten“ entfällt: „Starten“ bereitet die Partie vor und beginnt sofort die erste Runde. „Gleiche Einstellungen“ startet direkt neu mit gemischten Karten.
 - Kartenquelle: „Beides“ steht links und ist Standard.
 - Tabu-Karten haben jetzt immer vier verbotene Wörter (Modell, Standardkarten, lokale Kandidaten, KI-Vorgabe mit Oberbegriff). Die Runde zeigt sie in einem 2×2-Raster. Gespeicherte oder importierte Karten mit drei Wörtern werden nicht mehr akzeptiert.
+- „Starten“ öffnet jetzt eine Rundenübersicht statt sofort die Runde zu starten: „Runde X/Y“, das Team, das als Nächstes dran ist, und eine Punkteübersicht aller Teams (meiste Punkte oben). „Runde starten“ liegt unten. Dieselbe Übersicht erscheint nach jeder Runde.
+- Die Teamreihenfolge wird zu Beginn jeder Partie zufällig bestimmt und bleibt bis zum Ende gleich (neu: `shuffleTeams`). In der laufenden Runde stehen Team, „Runde X/Y“ und Punkte im Kopf.
+- Punkteübersicht auch im Endergebnis, mit hervorgehobenen Gewinnerteams.
+- Alle 20 Browserprüfungen lokal bestanden (Chrome, Desktop und Mobil).
 - Teamnamen im Tabu-Setup frei wählbar; leere Felder fallen auf „Team N“ zurück, doppelte Namen werden abgelehnt.
 
 ### Kompakte Tabu-Oberfläche

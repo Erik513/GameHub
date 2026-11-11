@@ -827,22 +827,6 @@ h1 {
   min-height: var(--control-height);
 }
 
-.taboo-standings {
-  display: grid;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.taboo-standings li {
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  font-weight: var(--weight-bold);
-}
-
 .taboo-round h2 {
   margin: 0;
   font-size: var(--text-lg);
@@ -1096,4 +1080,109 @@ h1 {
   border-radius: var(--radius-md);
   background: var(--color-surface);
   font-size: var(--text-md);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.taboo-round .taboo-round__team {
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+.taboo-round__hud > div {
+  padding-left: var(--space-3);
+  border-left: 4px solid var(--color-play);
+}
+
+.taboo-overview {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.taboo-overview__round {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.taboo-overview__turn {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-5) var(--space-4);
+  border: 1px solid var(--color-accent);
+  border-left-width: 6px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.taboo-overview__turn span {
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.taboo-overview__turn strong {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 2.75rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.taboo-scoreboard {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rank;
+}
+
+.taboo-scoreboard li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  counter-increment: rank;
+  font-weight: var(--weight-bold);
+}
+
+.taboo-scoreboard li::before {
+  min-width: 1.5ch;
+  color: var(--color-ink-muted);
+  content: counter(rank);
+}
+
+.taboo-scoreboard li[aria-current="true"] {
+  border-color: var(--color-accent);
+}
+
+.taboo-scoreboard li[data-winner] {
+  border-color: var(--color-success);
+}
+
+.taboo-scoreboard__name {
+  overflow-wrap: anywhere;
+}
+
+.taboo-scoreboard__score {
+  font-size: var(--text-lg);
+  font-variant-numeric: tabular-nums;
 }

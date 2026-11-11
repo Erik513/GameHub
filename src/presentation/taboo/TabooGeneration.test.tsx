@@ -45,6 +45,7 @@ it("adds new cards to the active deck without revealing them during setup", asyn
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
   await user.click(screen.getByRole("radio", { name: "Both" }));
   await user.click(screen.getByRole("button", { name: "Start" }));
+  await user.click(await screen.findByRole("button", { name: "Start round" }));
   expect(generate.mock.calls[0]?.[0]).toEqual({
     language: "en",
     categoryId: "nature",
@@ -97,6 +98,7 @@ it("does not call the generator when only local cards are selected", async () =>
   const { generate, user } = await renderWithGenerator(tabooStandardCards);
   await user.click(screen.getByRole("radio", { name: "Local only" }));
   await user.click(screen.getByRole("button", { name: "Start" }));
+  await user.click(await screen.findByRole("button", { name: "Start round" }));
   expect(generate).not.toHaveBeenCalled();
   expect(await screen.findByRole("region", { name: "Active round" })).toBeVisible();
 });
@@ -105,6 +107,7 @@ it("builds the deck from generated cards only when AI only is selected", async (
   const { generate, user } = await renderWithGenerator(tabooStandardCards);
   await user.click(screen.getByRole("radio", { name: "AI only" }));
   await user.click(screen.getByRole("button", { name: "Start" }));
+  await user.click(await screen.findByRole("button", { name: "Start round" }));
   expect(generate).toHaveBeenCalled();
   expect(await screen.findByRole("heading", { name: /Otter|Orca/ })).toBeVisible();
 });
@@ -140,6 +143,7 @@ it("keeps adding generated cards to a running round in AI only mode", async () =
   );
   await user.click(screen.getByRole("radio", { name: "AI only" }));
   await user.click(screen.getByRole("button", { name: "Start" }));
+  await user.click(await screen.findByRole("button", { name: "Start round" }));
   // Three categories are pre-generated; the running round then requests one more batch.
   await vi.waitFor(() => expect(generate.mock.calls.length).toBeGreaterThanOrEqual(4));
   expect(generate.mock.calls.at(-1)?.[0].count).toBe(10);

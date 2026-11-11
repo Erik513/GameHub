@@ -43,6 +43,8 @@ export function TabooRound({ deadline, dispatch, state }: TabooRoundProps) {
         <div>
           <p className="taboo-round__team">{configuration.teams[teamIndex]?.name}</p>
           <p className="taboo-round__score">
+            {t("tabooRound.roundOf", { round, total: configuration.roundsPerTeam })}
+            {" · "}
             {t("tabooRound.score", { score: scores[teamIndex] ?? 0 })}
           </p>
         </div>

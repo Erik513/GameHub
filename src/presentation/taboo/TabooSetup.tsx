@@ -11,7 +11,9 @@ import {
 } from "../../business/games/taboo/stateMachine";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
+import { shuffleTeams } from "../../business/games/taboo/teamOrder";
 import { TabooRound } from "./TabooRound";
+import { TabooScoreboard } from "./TabooScoreboard";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 
 const categories = ["everyday", "nature", "culture"] as const;
@@ -64,6 +66,12 @@ export function TabooSetup({
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
   const nextTurn = ended ? getNextTabooTurn(ended) : null;
+  const overview =
+    ended && round
+      ? { ...ended, turn: nextTurn }
+      : session && !round
+        ? { ...session.state, turn: { round: 1, teamIndex: 0 } }
+        : undefined;
 
   function restart(keepConfiguration: boolean) {
     refillController.current?.abort();
@@ -77,9 +85,11 @@ export function TabooSetup({
       setTeamCount(2);
     } else if (session) {
       // Same setup: replay with the same cards in a fresh order.
-      const fresh = { state: session.state, deck: shuffle(session.deck) };
-      setSession(fresh);
-      startRound(fresh, fresh.state);
+      const reordered = createTabooGame({
+        ...session.state.configuration,
+        teams: shuffleTeams(session.state.configuration.teams),
+      });
+      if (reordered.valid) setSession({ state: reordered.value, deck: shuffle(session.deck) });
     }
   }
 
@@ -169,12 +179,14 @@ export function TabooSetup({
     setSession(undefined);
     const data = new FormData(event.currentTarget);
     const result = createTabooGame({
-      teams: Array.from({ length: Number(data.get("teamCount")) }, (_, index) => ({
-        id: String(index + 1),
-        name:
-          teamNameFrom(data.get(`teamName${index + 1}`)) ||
-          t("tabooSetup.team", { number: index + 1 }),
-      })),
+      teams: shuffleTeams(
+        Array.from({ length: Number(data.get("teamCount")) }, (_, index) => ({
+          id: String(index + 1),
+          name:
+            teamNameFrom(data.get(`teamName${index + 1}`)) ||
+            t("tabooSetup.team", { number: index + 1 }),
+        })),
+      ),
       roundsPerTeam: Number(data.get("rounds")),
       roundDurationSeconds: Number(data.get("duration")),
       cardLanguage,
@@ -244,7 +256,6 @@ export function TabooSetup({
     }
     const active = { state: result.value, deck };
     setSession(active);
-    startRound(active, active.state);
   }
 
   function errorMessage(issue: ValidationIssue) {
@@ -277,13 +288,11 @@ export function TabooSetup({
             })}
           </StatusMessage>
           <h2>{t("tabooRound.standings")}</h2>
-          <ul className="taboo-standings">
-            {finished.configuration.teams.map((team, index) => (
-              <li key={team.id}>
-                {t("tabooRound.teamTotal", { team: team.name, score: finished.scores[index] ?? 0 })}
-              </li>
-            ))}
-          </ul>
+          <TabooScoreboard
+            scores={finished.scores}
+            teams={finished.configuration.teams}
+            winnerIds={finished.winnerIds}
+          />
           <div className="taboo-setup__actions">
             <Button variant="success" onClick={() => restart(true)}>
               {t("tabooResult.sameSetup")}
@@ -297,54 +306,49 @@ export function TabooSetup({
       {round?.state.status === "roundRunning" && (
         <TabooRound deadline={round.deadline} dispatch={dispatch} state={round.state} />
       )}
-      {ended && round && (
-        <section className="taboo-round" aria-label={t("tabooRound.ended")}>
-          <StatusMessage title={t("tabooRound.ended")}>
-            <p>
-              {t("tabooRound.team", {
-                team: ended.configuration.teams[ended.turn.teamIndex]?.name ?? "",
+      {overview && (
+        <section className="taboo-round taboo-overview" aria-label={t("tabooRound.overview")}>
+          {overview.turn && (
+            <p className="taboo-overview__round">
+              {t("tabooRound.roundOf", {
+                round: overview.turn.round,
+                total: overview.configuration.roundsPerTeam,
               })}
             </p>
-            <p>
-              {t("tabooRound.earned", {
-                score: ended.roundPoints,
-              })}
-            </p>
-          </StatusMessage>
-          <h2>{t("tabooRound.standings")}</h2>
-          <ul className="taboo-standings">
-            {ended.configuration.teams.map((team, index) => (
-              <li key={team.id}>
-                {t("tabooRound.teamTotal", { team: team.name, score: ended.scores[index] ?? 0 })}
-              </li>
-            ))}
-          </ul>
-          <Button
-            variant="secondary"
-            disabled={ended.roundPoints === 0}
-            onClick={() => dispatch({ type: "undoPoint", turn: ended.turn })}
-          >
-            {t("tabooRound.undoPoint")}
-          </Button>
-          {nextTurn ? (
-            <>
+          )}
+          {ended && (
+            <StatusMessage title={t("tabooRound.ended")}>
               <p>
-                {t("tabooRound.nextTeam", {
-                  team: ended.configuration.teams[nextTurn.teamIndex]?.name ?? "",
+                {t("tabooRound.team", {
+                  team: ended.configuration.teams[ended.turn.teamIndex]?.name ?? "",
                 })}
               </p>
-              <Button variant="success" onClick={() => startRound()} disabled={deckEmpty}>
-                {t("tabooRound.start")}
+              <p>{t("tabooRound.earned", { score: ended.roundPoints })}</p>
+              <Button
+                variant="quiet"
+                disabled={ended.roundPoints === 0}
+                onClick={() => dispatch({ type: "undoPoint", turn: ended.turn })}
+              >
+                {t("tabooRound.undoPoint")}
               </Button>
-            </>
-          ) : (
-            <>
-              <p>{t("tabooRound.allRoundsPlayed")}</p>
-              <Button onClick={() => dispatch({ type: "finishGame" })}>
-                {t("tabooResult.show")}
-              </Button>
-            </>
+            </StatusMessage>
           )}
+          {overview.turn ? (
+            <div className="taboo-overview__turn">
+              <span>{t("tabooRound.upNext")}</span>
+              <strong>{overview.configuration.teams[overview.turn.teamIndex]?.name}</strong>
+            </div>
+          ) : (
+            <p>{t("tabooRound.allRoundsPlayed")}</p>
+          )}
+          <h2>{t("tabooRound.standings")}</h2>
+          <TabooScoreboard
+            activeTeamId={
+              overview.turn ? overview.configuration.teams[overview.turn.teamIndex]?.id : undefined
+            }
+            scores={overview.scores}
+            teams={overview.configuration.teams}
+          />
           {deckEmpty && (
             <>
               <StatusMessage title={t("tabooRound.empty")} tone="error">
@@ -355,9 +359,24 @@ export function TabooSetup({
               </Button>
             </>
           )}
+          <div className="game-start-bar">
+            {overview.turn ? (
+              <Button variant="success" onClick={() => startRound()} disabled={deckEmpty}>
+                {t("tabooRound.start")}
+              </Button>
+            ) : (
+              <Button variant="success" onClick={() => dispatch({ type: "finishGame" })}>
+                {t("tabooResult.show")}
+              </Button>
+            )}
+          </div>
         </section>
       )}
-      <div className="taboo-setup__screen" hidden={Boolean(round)} key={formVersion}>
+      <div
+        className="taboo-setup__screen"
+        hidden={Boolean(round) || Boolean(session)}
+        key={formVersion}
+      >
         {shortage && (
           <StatusMessage title={t("tabooRound.empty")} tone="error">
             {t("tabooSetup.cardShortage", shortage)}
