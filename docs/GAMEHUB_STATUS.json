@@ -492,7 +492,7 @@
         {
           "id": "PH-12-04",
           "title": "Spieler hinzufügen und manuell oder zufällig auf Teams verteilen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-12-05",
@@ -836,8 +836,8 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-12-04",
-      "reason": "Nächste Tabu-Erweiterung: Spieler hinzufügen und auf Teams verteilen. PH-12-07 (Spielmodi) kann nach dem Umbau folgen.",
+      "id": "PH-12-05",
+      "reason": "Nächste Tabu-Erweiterung: mehrere Karten und Kategorien hinzufügen. PH-12-07 (Spielmodi) kann nach dem Umbau folgen.",
       "prerequisite": "Keine."
     }
   ]

@@ -553,7 +553,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-12-04 – Spieler hinzufügen und auf Teams verteilen
 
 - **Ziel:** Spieler lassen sich anlegen und manuell oder zufällig auf Teams verteilen.
-- **Status:** planned
+- **Ergebnis:** Einklappbarer Bereich „Spieler und Teams“ im Setup: Namen eintragen, zufällig verteilen (Teamgrößen unterscheiden sich um höchstens eins) oder je Spieler das Team wählen. Reine Funktionen `parsePlayers` und `splitIntoTeams` in `src/business/shared/players.ts`, damit andere Spiele sie nutzen können. Die Verteilung ist eine Übersicht; Tabu zählt weiterhin Teams, nicht einzelne Spieler.
+- **Status:** done
 
 #### PH-12-05 – Mehrere Karten und Kategorien hinzufügen
 

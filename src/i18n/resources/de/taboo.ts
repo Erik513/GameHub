@@ -20,6 +20,18 @@ export const tabooTexts = {
       "Überspringen: Pro Runde darf ein Team nur so oft überspringen, wie in den Optionen eingestellt ist.",
     end: "Spielende: Wenn alle Runden gespielt sind, gewinnt das Team mit den meisten Punkten. Bei Gleichstand folgt auf Wunsch das Stechen: Jedes Team erklärt drei Begriffe auf Zeit.",
   },
+  tabooPlayers: {
+    title: "Spieler und Teams (optional)",
+    hint: "Trage die Mitspieler ein, ein Name pro Zeile. Verteile sie dann zufällig oder von Hand auf die Teams. Die Verteilung dient nur als Übersicht für euch.",
+    label: "Spielernamen",
+    placeholder: "Anna, Ben, Cara",
+    draw: "Zufällig auf Teams verteilen",
+    assignment: "Spieler",
+    teamOf: "Team von {{player}}",
+    unassigned: "Nicht zugeordnet",
+    teams: "Teams",
+    nobody: "noch niemand",
+  },
   tabooResult: {
     title: "Spiel beendet",
     winner: "Gewinner",

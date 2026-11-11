@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { ValidationIssue } from "../../business/games/taboo/model";
 import { Button, StatusMessage } from "../components";
 import { ChoiceGroup, StartBar } from "../game-kit";
+import { TabooPlayers } from "./TabooPlayers";
 import { TabooRules } from "./TabooRules";
 import {
   cardSources,
@@ -179,6 +180,7 @@ export function TabooSetupForm({
           </fieldset>
         </details>
       </form>
+      <TabooPlayers teamCount={teamCount} />
       {children && <div className="taboo-tools">{children}</div>}
       <StartBar>
         <Button form="taboo-setup-form" type="submit" variant="success" disabled={generating}>

@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-12-04 – Spieler hinzufügen und auf Teams verteilen
+
+- Neuer Bereich „Spieler und Teams (optional)“ im Tabu-Setup: Namen eintragen (Zeilen, Kommas oder Semikolon), zufällig auf die Teams verteilen oder je Spieler das Team auswählen. Übersicht der Teams mit ihren Spielern, Deutsch und Englisch.
+- Gemeinsame reine Logik `parsePlayers` und `splitIntoTeams` in `src/business/shared/players.ts` mit Tests.
+- Prüfungen: 263 Unit-Tests, 25 e2e, tsc, eslint, Architekturprüfung.
+
 ### PH-12-03 – Teamreihenfolge manuell oder zufällig
 
 - Neue Auswahl „Teamreihenfolge“ im Setup (ab zwei Teams): „Zufällig“ (Standard, wie bisher) oder „Wie eingegeben“. Mit Info-Button, in Deutsch und Englisch.

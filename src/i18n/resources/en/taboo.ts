@@ -19,6 +19,18 @@ export const tabooTexts = {
     skips: "Skipping: A team may only skip as often per round as set in the options.",
     end: "End of game: When all rounds are played, the team with the most points wins. If tied, the tiebreak follows if enabled: each team explains three words against the clock.",
   },
+  tabooPlayers: {
+    title: "Players and teams (optional)",
+    hint: "Enter the players, one name per line. Then split them across the teams at random or by hand. The split is only an overview for you.",
+    label: "Player names",
+    placeholder: "Anna, Ben, Cara",
+    draw: "Split randomly into teams",
+    assignment: "Players",
+    teamOf: "Team of {{player}}",
+    unassigned: "Not assigned",
+    teams: "Teams",
+    nobody: "nobody yet",
+  },
   tabooResult: {
     title: "Game over",
     winner: "Winner",

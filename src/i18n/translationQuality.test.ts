@@ -11,6 +11,8 @@ const allowedIdenticalValues = [
   "app.title",
   "games.quiz.title",
   "navigation.pause",
+  "tabooPlayers.placeholder",
+  "tabooPlayers.teams",
   "tabooRound.teamTotal",
   "tabooSetup.roundOptions.unlimited",
   "tabooSetup.skipOptions.1",
