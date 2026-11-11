@@ -117,6 +117,10 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     // Open the folded options so the whole setup is checked.
     fireEvent.click(screen.getByText(t("tabooSetup.moreOptions"), { selector: "summary" }));
     checkScreen("setup");
+    // An info dialog explains a setting and uses the selected language too.
+    fireEvent.click(screen.getAllByRole("button", { name: /^(Info zu|Info about) / })[0]!);
+    checkScreen("info dialog");
+    press("settings.close");
     press("tabooSetup.start");
     checkScreen("round overview before the first turn");
 
@@ -155,6 +159,6 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     checkScreen("final result");
 
     expect(missing).toEqual([]);
-    expect(checked).toHaveLength(12);
+    expect(checked).toHaveLength(13);
   });
 });

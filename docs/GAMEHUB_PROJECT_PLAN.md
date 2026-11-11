@@ -534,7 +534,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-12-01 – Info-Buttons mit Erklärfenster für Einstellungen
 
 - **Ziel:** Zu jeder erklärungsbedürftigen Einstellung gibt es einen Info-Button, der ein Fenster mit der Erklärung öffnet.
-- **Status:** planned
+- **Ergebnis:** Baustein `InfoButton` in `game-kit`; Erklärungen für Runden, Kartenquelle, Stechen, Überspringen und Schwierigkeit in Deutsch und Englisch.
+- **Status:** done
 
 #### PH-12-02 – Spielregeln erklären
 

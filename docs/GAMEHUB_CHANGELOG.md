@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-12-01 – Info-Buttons mit Erklärfenster
+
+- Neuer Baustein `InfoButton` in `game-kit` und optionales `info` an `ChoiceGroup`: ein „i“-Knopf rechts neben der Überschrift öffnet ein Fenster mit der Erklärung.
+- Erklärungen für Runden pro Team, Kartenquelle, Stechen bei Gleichstand, Überspringen pro Runde und Schwierigkeit, in Deutsch und Englisch.
+- `Button` ist standardmäßig `type="button"`, damit ein Knopf in einem Formular es nie versehentlich absendet.
+- Tests für das Fenster (öffnen, schließen, Escape, kein Absenden), alle fünf Erklärungen und den Durchlauf in beiden Sprachen; die mobile Layout-Prüfung bestätigt 44-Pixel-Ziele.
+
 ### PH-11-05 – Struktur für wiederverwendbare Spielbausteine umgesetzt
 
 - Spielmodul-Vertrag (`GameModule`: Kennung und Hauptfenster): `App` und `AppRoot` kennen kein Tabu mehr und bekommen `modules`; Tabu wird in `main.tsx` über `createTabooModule` angeschlossen. Ein Beispielmodul im Test belegt den Vertrag.

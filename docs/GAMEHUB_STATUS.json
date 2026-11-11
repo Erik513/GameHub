@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-11T22:40:38+01:00",
+    "updatedAt": "2026-11-11T22:44:09+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 50,
+      "completedTasks": 51,
       "totalTasks": 62,
-      "percent": 80.6
+      "percent": 82.3
     }
   },
   "environment": {
@@ -50,17 +50,17 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:40:38+01:00",
+      "lastRunAt": "2026-11-11T22:44:09+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:40:38+01:00",
+      "lastRunAt": "2026-11-11T22:44:09+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:40:38+01:00",
+      "lastRunAt": "2026-11-11T22:44:09+01:00",
       "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich."
     },
     "githubActions": {
@@ -70,7 +70,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:40:38+01:00",
+      "lastRunAt": "2026-11-11T22:44:09+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -80,13 +80,13 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:40:38+01:00",
+      "lastRunAt": "2026-11-11T22:44:09+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:40:38+01:00",
-      "passed": 244,
+      "lastRunAt": "2026-11-11T22:44:09+01:00",
+      "passed": 252,
       "failed": 0,
       "details": "235 Unit- und Komponententests bestanden, darunter Übersetzungsqualität (Platzhalter, identische Texte, ungenutzte Schlüssel) und ein Durchlauf aller zwölf Tabu-Ansichten in Deutsch und Englisch. Lokale Ausführung mit Node 25.5."
     },
@@ -99,7 +99,7 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:40:38+01:00",
+      "lastRunAt": "2026-11-11T22:44:09+01:00",
       "passed": 25,
       "failed": 0,
       "details": "25 Browserprüfungen (Chrome, Desktop und Mobil) lokal bestanden, dazu 5 mobile Layout-Prüfungen, die auf dem Desktop-Projekt bewusst übersprungen werden. Die Layout-Prüfung testet alle Tabu-Ansichten auf 360 und 412 Pixel Breite in Deutsch und Englisch."
@@ -477,7 +477,7 @@
         {
           "id": "PH-12-01",
           "title": "Info-Buttons mit Erklärfenster für Einstellungen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-12-02",
@@ -540,6 +540,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "PH-12-01 abgeschlossen: Info-Buttons mit Erklärfenster für Runden, Kartenquelle, Stechen, Überspringen und Schwierigkeit."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-11-05 abgeschlossen: Struktur für wiederverwendbare Spielbausteine umgesetzt (game-kit, business/shared, Spielmodul-Vertrag, eigene Textdatei je Spiel) und Leitfaden für neue Spiele geschrieben. Zustandsmaschine-Hooks und CSS je Spiel sind als PH-11-06 geplant."
@@ -831,11 +835,6 @@
     }
   ],
   "nextRecommendedTasks": [
-    {
-      "id": "PH-12-01",
-      "reason": "Info-Buttons mit Erklärfenster für Einstellungen; erste Erweiterung auf der neuen Struktur.",
-      "prerequisite": "Keine."
-    },
     {
       "id": "PH-11-06",
       "reason": "Zustandslogik als Hooks und CSS je Spiel, bevor die Spielmodi aus PH-12-07 entstehen.",

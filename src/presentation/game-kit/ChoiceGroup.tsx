@@ -1,3 +1,5 @@
+import { InfoButton, type InfoContent } from "./InfoButton";
+
 export interface ChoiceOption {
   readonly value: string;
   readonly label: string;
@@ -10,6 +12,8 @@ export interface ChoiceOption {
 }
 
 interface ChoiceGroupProps {
+  /** Adds an info button next to the legend that explains the setting. */
+  readonly info?: InfoContent;
   readonly initial: string;
   readonly legend: string;
   readonly name: string;
@@ -17,10 +21,11 @@ interface ChoiceGroupProps {
 }
 
 /** Radio group rendered as equally wide buttons; the value is read from the surrounding form. */
-export function ChoiceGroup({ initial, legend, name, options }: ChoiceGroupProps) {
+export function ChoiceGroup({ info, initial, legend, name, options }: ChoiceGroupProps) {
   return (
-    <fieldset className="kit-choice-group">
+    <fieldset className={info ? "kit-choice-group kit-choice-group--info" : "kit-choice-group"}>
       <legend>{legend}</legend>
+      {info && <InfoButton {...info} />}
       <div
         className="kit-choice-grid kit-choice-grid--equal"
         style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}

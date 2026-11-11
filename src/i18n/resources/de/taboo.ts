@@ -69,6 +69,19 @@ export const tabooTexts = {
     start: "Runde starten",
   },
   tabooSetup: {
+    infoLabel: "Info zu {{setting}}",
+    info: {
+      rounds:
+        "Eine Runde ist vorbei, wenn jedes Team einmal an der Reihe war. Kurz sind 3 Runden, Mittel 5 und Lang 10. Bei ∞ spielt ihr, bis ihr nach einer vollständig gespielten Runde das Ergebnis anzeigen lasst.",
+      cardSource:
+        "Nur lokal nutzt die mitgelieferten Karten, auch ohne Internet. Nur KI erstellt die Karten mit dem lokalen KI-Generator und lädt während der Runde nach. Beides mischt lokale und KI-Karten. Ohne KI bleibt das Spiel mit den lokalen Karten spielbar.",
+      tiebreak:
+        "Liegen nach der letzten Runde zwei oder drei Teams gleichauf, erklärt jedes davon drei Begriffe auf Zeit. Ein verbotenes Wort zählt als falsch und bringt eine neue Karte, einmal überspringen ist erlaubt. Wer die meisten Begriffe in der kürzesten Zeit schafft, gewinnt. Ist das Stechen aus, gewinnen gleichauf liegende Teams gemeinsam.",
+      skips:
+        "Wie oft ein Team pro Runde einen Begriff überspringen darf, ohne Punkt und ohne Strafe. Bei „Nie“ ist Überspringen gesperrt, bei ∞ darf beliebig oft übersprungen werden.",
+      difficulty:
+        "Die Schwierigkeit zeigt, wie schwer ein Begriff zu erklären ist. „Alle“ mischt einfache, mittlere und schwere Karten. Beim Stechen kommt immer je eine Karte jeder Schwierigkeit dran.",
+    },
     cardSource: "Kartenquelle",
     cardSources: { local: "Nur lokal", ai: "Nur KI", both: "Beides" },
     tiebreak: "Stechen bei Gleichstand",

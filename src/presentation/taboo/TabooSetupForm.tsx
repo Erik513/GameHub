@@ -39,6 +39,15 @@ export function TabooSetupForm({
   teamCount,
 }: TabooSetupFormProps) {
   const { t } = useTranslation();
+  const info = (
+    key: "rounds" | "cardSource" | "tiebreak" | "skips" | "difficulty",
+    legend: string,
+  ) => ({
+    closeLabel: t("settings.close"),
+    label: t("tabooSetup.infoLabel", { setting: legend }),
+    text: t(`tabooSetup.info.${key}`),
+    title: legend,
+  });
 
   return (
     <>
@@ -82,6 +91,7 @@ export function TabooSetupForm({
           ))}
         </div>
         <ChoiceGroup
+          info={info("rounds", t("tabooSetup.rounds"))}
           legend={t("tabooSetup.rounds")}
           name="rounds"
           initial={String(roundChoices.includes(3) ? 3 : roundChoices[0])}
@@ -95,6 +105,7 @@ export function TabooSetupForm({
         />
         {hasGenerators && (
           <ChoiceGroup
+            info={info("cardSource", t("tabooSetup.cardSource"))}
             legend={t("tabooSetup.cardSource")}
             name="cardSource"
             initial="both"
@@ -107,6 +118,7 @@ export function TabooSetupForm({
         <details className="taboo-more">
           <summary>{t("tabooSetup.moreOptions")}</summary>
           <ChoiceGroup
+            info={info("tiebreak", t("tabooSetup.tiebreak"))}
             legend={t("tabooSetup.tiebreak")}
             name="tiebreak"
             initial="on"
@@ -116,6 +128,7 @@ export function TabooSetupForm({
             }))}
           />
           <ChoiceGroup
+            info={info("skips", t("tabooSetup.skips"))}
             legend={t("tabooSetup.skips")}
             name="skips"
             initial="1"
@@ -126,6 +139,7 @@ export function TabooSetupForm({
             }))}
           />
           <ChoiceGroup
+            info={info("difficulty", t("tabooSetup.difficulty"))}
             legend={t("tabooSetup.difficulty")}
             name="difficulty"
             initial=""

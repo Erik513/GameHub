@@ -1617,3 +1617,28 @@ h1 {
   align-items: center;
   min-height: 2.75rem;
 }
+
+/* Info button next to the legend of a setting. */
+.kit-choice-group {
+  position: relative;
+}
+
+.kit-choice-group--info legend {
+  margin-bottom: 0;
+  line-height: 2.75rem;
+}
+
+.kit-info-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2.75rem;
+  padding: 0;
+  color: var(--color-ink-muted);
+}
+
+.kit-info-text {
+  margin: 0;
+  color: var(--color-ink);
+  line-height: 1.55;
+}

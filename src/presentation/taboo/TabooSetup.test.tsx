@@ -205,3 +205,35 @@ it("lets the group finish an unlimited game after every completed round", async 
     vi.useRealTimers();
   }
 });
+
+it.each([
+  ["Rounds per team", "A round is over when every team has had one turn."],
+  ["Card source", "Local only uses the cards that ship with the app"],
+  ["Tiebreak on a tie", "each of them explains three cards against the clock"],
+  ["Skips per round", "without a point and without a penalty"],
+  ["Difficulty", "The difficulty shows how hard a card is to explain."],
+])("explains the setting %s in an info dialog", async (setting, excerpt) => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup
+        cardLanguage="en"
+        cards={tabooStandardCards}
+        generators={{
+          local: {
+            capabilities: { languages: ["en"], maxCardsPerRequest: 10, worksOffline: true },
+            generate: vi.fn(),
+          },
+        }}
+      />
+    </I18nextProvider>,
+  );
+  fireEvent.click(screen.getByText("More options", { selector: "summary" }));
+  fireEvent.click(screen.getByRole("button", { name: `Info about ${setting}` }));
+  const dialog = screen.getByRole("dialog", { name: setting });
+  expect(dialog.textContent).toContain(excerpt);
+  fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
+  // Reading the explanation neither starts nor changes the game.
+  expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
+  expect(screen.getByRole("group", { name: setting })).toBeVisible();
+});

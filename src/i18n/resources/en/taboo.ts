@@ -69,6 +69,19 @@ export const tabooTexts = {
     start: "Start round",
   },
   tabooSetup: {
+    infoLabel: "Info about {{setting}}",
+    info: {
+      rounds:
+        "A round is over when every team has had one turn. Short is 3 rounds, Medium 5 and Long 10. With ∞ you play until you show the result after a completed round.",
+      cardSource:
+        "Local only uses the cards that ship with the app, even offline. AI only creates the cards with the local AI generator and reloads during the round. Both mixes local and AI cards. Without AI the game stays playable with the local cards.",
+      tiebreak:
+        "If two or three teams are tied after the last round, each of them explains three cards against the clock. A forbidden word counts as wrong and brings a new card, one skip is allowed. The most cards in the shortest time wins. With the tiebreak off, tied teams win together.",
+      skips:
+        "How often a team may skip a card per round, without a point and without a penalty. With None skipping is blocked, with ∞ you may skip as often as you like.",
+      difficulty:
+        "The difficulty shows how hard a card is to explain. All mixes easy, medium and hard cards. The tiebreak always uses one card of each difficulty.",
+    },
     cardSource: "Card source",
     cardSources: { local: "Local only", ai: "AI only", both: "Both" },
     tiebreak: "Tiebreak on a tie",
