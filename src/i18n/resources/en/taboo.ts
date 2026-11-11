@@ -9,6 +9,16 @@ export const tabooTexts = {
     invalid: "This file is not a valid GameHub Taboo card file.",
     storage: "Local cards could not be accessed.",
   },
+  tabooRules: {
+    open: "Rules",
+    title: "Taboo rules",
+    goal: "Goal: Your team tries to guess as many words as possible, without you saying the forbidden words on the card.",
+    turn: "Turns: Teams take turns. One member explains while the rest of the team guesses. The opponents watch for forbidden words.",
+    scoring:
+      "Scoring: A guessed word scores one point. Skipping and forbidden words score nothing. After the turn you can still change the results.",
+    skips: "Skipping: A team may only skip as often per round as set in the options.",
+    end: "End of game: When all rounds are played, the team with the most points wins. If tied, the tiebreak follows if enabled: each team explains three words against the clock.",
+  },
   tabooResult: {
     title: "Game over",
     winner: "Winner",

@@ -4,6 +4,11 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-12-02 – Spielregeln erklären
+
+- Neue Komponente `TabooRules`: Knopf „Spielregeln“ über dem Setup-Formular öffnet ein Fenster mit Ziel, Ablauf, Wertung, Überspringen und Spielende, in Deutsch und Englisch.
+- Test für Öffnen und Schließen in beiden Sprachen. Prüfungen: 254 Unit-Tests, e2e, tsc, eslint.
+
 ### PH-11-06 – Tabu-Stile je Spiel und Nachlade-Hook
 
 - Tabu-Stile aus `global.css` nach `src/presentation/styles/games/taboo.css` verschoben; berechnete Stile vor und nach der Trennung verglichen, keine Abweichung.

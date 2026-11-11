@@ -541,7 +541,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-12-02 – Spielregeln erklären
 
 - **Ziel:** Die Regeln von Tabu und der Spielvarianten sind in der App verständlich erklärt.
-- **Status:** planned
+- **Ergebnis:** Knopf „Spielregeln“ im Setup öffnet ein Fenster mit Ziel, Ablauf, Wertung, Überspringen und Spielende (Deutsch und Englisch). Die Regeln der Spielmodi folgen mit PH-12-07.
+- **Status:** done
 
 #### PH-12-03 – Teamreihenfolge manuell oder zufällig festlegen
 

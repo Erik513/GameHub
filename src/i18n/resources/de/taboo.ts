@@ -9,6 +9,17 @@ export const tabooTexts = {
     invalid: "Die Datei enthält keinen gültigen GameHub-Tabu-Kartensatz.",
     storage: "Auf die lokalen Karten konnte nicht zugegriffen werden.",
   },
+  tabooRules: {
+    open: "Spielregeln",
+    title: "Spielregeln Tabu",
+    goal: "Ziel: Dein Team soll möglichst viele Begriffe erraten, ohne dass du die verbotenen Wörter der Karte sagst.",
+    turn: "Ablauf: Die Teams sind reihum dran. Ein Mitglied erklärt, die anderen im Team raten. Alle Gegner passen auf die verbotenen Wörter auf.",
+    scoring:
+      "Wertung: Ein erratener Begriff gibt einen Punkt. Überspringen und verbotene Wörter geben keinen Punkt. Nach der Runde kannst du Wertungen noch ändern.",
+    skips:
+      "Überspringen: Pro Runde darf ein Team nur so oft überspringen, wie in den Optionen eingestellt ist.",
+    end: "Spielende: Wenn alle Runden gespielt sind, gewinnt das Team mit den meisten Punkten. Bei Gleichstand folgt auf Wunsch das Stechen: Jedes Team erklärt drei Begriffe auf Zeit.",
+  },
   tabooResult: {
     title: "Spiel beendet",
     winner: "Gewinner",
