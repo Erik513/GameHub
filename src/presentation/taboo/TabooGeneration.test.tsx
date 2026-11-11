@@ -117,7 +117,7 @@ it("keeps adding generated cards to a running round in AI only mode", async () =
   const user = userEvent.setup();
   let counter = 0;
   const generate = vi.fn<TabooCardGenerator["generate"]>().mockImplementation((request) => {
-    const candidates = Array.from({ length: request.count }, () => {
+    const candidates = Array.from({ length: Math.min(request.count, 3) }, () => {
       counter += 1;
       return {
         language: request.language,

@@ -121,7 +121,9 @@ describe("Taboo state machine", () => {
     });
     expect(ended).toMatchObject({ status: "roundEnded", scores: [1, 0, 0] });
     expect(ended).not.toHaveProperty("card");
-    expect(transitionTaboo(ended, start)).toBe(ended);
+    expect(transitionTaboo(ended, { ...start, remainingCards: [card] })).toBe(ended);
+    // Cards from earlier turns may be replayed in a later turn.
+    expect(transitionTaboo(ended, start)).toMatchObject({ status: "roundRunning", card });
     const next = transitionTaboo(ended, { ...start, card: { ...card, id: "four" } });
     expect(next).toMatchObject({
       status: "roundRunning",

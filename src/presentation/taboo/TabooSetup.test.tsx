@@ -100,3 +100,28 @@ it("randomizes the team order once and keeps it for the whole game", async () =>
   ).toEqual(["Team 2: 0", "Team 3: 0", "Team 1: 0"]);
   random.mockRestore();
 });
+
+it("lets a turn use more than its fair share of cards and reuses cards in later turns", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  const cards = tabooStandardCards.filter((card) => card.language === "en").slice(0, 6);
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup cardLanguage="en" cards={cards} />
+    </I18nextProvider>,
+  );
+  await user.click(
+    screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
+  );
+  await user.click(screen.getByRole("button", { name: "Start" }));
+  await user.click(screen.getByRole("button", { name: "Start round" }));
+  for (let played = 0; played < 5; played += 1) {
+    await user.click(screen.getByRole("button", { name: "Correct" }));
+  }
+  expect(screen.getByRole("timer")).toBeVisible();
+  await user.click(screen.getByRole("button", { name: "Correct" }));
+  expect(screen.queryByRole("timer")).not.toBeInTheDocument();
+  // All six cards were used by the first team; the second team still gets a full deck.
+  await user.click(screen.getByRole("button", { name: "Start round" }));
+  expect(screen.getByRole("timer")).toBeVisible();
+});

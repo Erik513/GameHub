@@ -124,7 +124,9 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
       scores: scores.map((score, index) =>
         event.outcome === "correct" && index === state.turn.teamIndex ? score + 1 : score,
       ),
-      resolvedCardIds: [...resolvedCardIds, event.cardId],
+      resolvedCardIds: resolvedCardIds.includes(event.cardId)
+        ? resolvedCardIds
+        : [...resolvedCardIds, event.cardId],
       results: [...state.results, { card: state.card, outcome: event.outcome }],
     };
     const [card, ...remainingCards] = state.remainingCards;
@@ -139,10 +141,11 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
       event.turn.teamIndex !== state.turn.teamIndex
     )
       return state;
+    // Cards may return in a later turn, but never twice within the same turn.
     const seen = new Set([
-      ...resolvedCardIds,
       state.card.id,
       ...state.remainingCards.map((c) => c.id),
+      ...state.results.map((result) => result.card.id),
     ]);
     const additions: TabooCard[] = [];
     for (const input of event.cards) {
@@ -194,7 +197,7 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
   }
 
   if (event.type !== "startRound") return state;
-  const seen = new Set(resolvedCardIds);
+  const seen = new Set<string>();
   const cards: TabooCard[] = [];
   for (const input of [event.card, ...(event.remainingCards ?? [])]) {
     const result = validateCard(input);

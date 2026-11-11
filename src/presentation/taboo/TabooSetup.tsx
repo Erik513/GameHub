@@ -148,16 +148,18 @@ export function TabooSetup({
   ) {
     if (!active) return;
     const current = base ?? active.state;
-    const used = new Set(current.resolvedCardIds);
-    const available = active.deck.filter((card) => !used.has(card.id));
     const { teams, roundsPerTeam } = current.configuration;
     const completed =
       current.status === "roundEnded"
         ? (current.turn.round - 1) * teams.length + current.turn.teamIndex + 1
         : 0;
-    const turnsLeft = teams.length * roundsPerTeam - completed;
-    if (turnsLeft <= 0) return;
-    const [card, ...remainingCards] = available.slice(0, Math.floor(available.length / turnsLeft));
+    if (teams.length * roundsPerTeam - completed <= 0) return;
+    // A turn never ends because of cards: unplayed cards come first, then earlier cards in new order.
+    const used = new Set(current.resolvedCardIds);
+    const [card, ...remainingCards] = [
+      ...active.deck.filter((candidate) => !used.has(candidate.id)),
+      ...shuffle(active.deck.filter((candidate) => used.has(candidate.id))),
+    ];
     if (!card) {
       setDeckEmpty(true);
       return;

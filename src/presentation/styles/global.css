@@ -1229,8 +1229,17 @@ h1 {
   background: var(--color-danger-fill);
 }
 
-.taboo-review__item > span:first-child {
+.taboo-review__card {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.taboo-review__card small {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  opacity: 0.8;
 }
 
 .taboo-review__item > span:last-child {

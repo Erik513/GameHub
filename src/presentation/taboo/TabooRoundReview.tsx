@@ -32,7 +32,10 @@ export function TabooRoundReview({ onRevise, results, teamName }: TabooRoundRevi
                     type="button"
                     onClick={() => onRevise(card.id, correct ? "forbiddenWord" : "correct")}
                   >
-                    <span>{card.term}</span>
+                    <span className="taboo-review__card">
+                      <span>{card.term}</span>
+                      <small>{card.forbiddenWords.join(" · ")}</small>
+                    </span>
                     <span lang={undefined}>
                       {t(correct ? "tabooRound.review.correct" : "tabooRound.review.wrong")}
                     </span>
