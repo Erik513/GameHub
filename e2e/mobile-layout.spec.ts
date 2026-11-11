@@ -1,0 +1,240 @@
+import { expect, test, type Page } from "@playwright/test";
+
+const labels = {
+  en: {
+    open: "View progress",
+    settings: "Settings",
+    close: "Close",
+    moreOptions: "More options",
+    start: "Start",
+    startRound: "Start round",
+    forbidden: "Forbidden word",
+    skip: "Skip",
+    correct: "Correct",
+    pause: "Pause",
+    resume: "Resume",
+    endRound: "End round",
+    show: "Show final results",
+    startTiebreak: "Start tiebreak",
+    endAttempt: "End attempt",
+    interfaceLanguage: "Interface language",
+  },
+  de: {
+    open: "Fortschritt ansehen",
+    settings: "Einstellungen",
+    close: "Schließen",
+    moreOptions: "Weitere Optionen",
+    start: "Starten",
+    startRound: "Runde starten",
+    forbidden: "Verbotenes Wort",
+    skip: "Überspringen",
+    correct: "Richtig",
+    pause: "Pause",
+    resume: "Fortsetzen",
+    endRound: "Runde beenden",
+    show: "Endergebnis anzeigen",
+    startTiebreak: "Stechen starten",
+    endAttempt: "Versuch beenden",
+    interfaceLanguage: "Oberflächensprache",
+  },
+} as const;
+
+const viewports = [
+  { name: "small phone", width: 360, height: 640 },
+  { name: "large phone", width: 412, height: 915 },
+] as const;
+
+/** Smallest comfortable touch target in CSS pixels. */
+const minimumTarget = 44;
+
+interface Violation {
+  readonly kind: string;
+  readonly detail: string;
+}
+
+/** Looks for layout problems that make a screen hard to use with one hand. */
+async function audit(page: Page, screen: string): Promise<string[]> {
+  const violations = await page.evaluate<Violation[], number>((minimum) => {
+    const found: Violation[] = [];
+    const describe = (element: Element) =>
+      `${element.tagName.toLowerCase()}${element.className ? `.${String(element.className).split(" ")[0]}` : ""} "${(element.textContent ?? "").trim().slice(0, 30)}"`;
+    const visible = (element: Element) => {
+      const rect = element.getBoundingClientRect();
+      // Visually hidden helpers (1px) are not part of the visible layout.
+      if (rect.width <= 2 || rect.height <= 2) return false;
+      if (element.closest("[hidden], .visually-hidden")) return false;
+      const style = getComputedStyle(element);
+      return style.visibility !== "hidden" && style.display !== "none";
+    };
+
+    if (document.documentElement.scrollWidth > window.innerWidth) {
+      found.push({
+        kind: "horizontal scroll",
+        detail: `${document.documentElement.scrollWidth} > ${window.innerWidth}`,
+      });
+    }
+
+    const targets = document.querySelectorAll(
+      "button, a[href], summary, select, input[type=text], label.taboo-choice, .taboo-review__item",
+    );
+    for (const element of targets) {
+      if (!visible(element)) continue;
+      const rect = element.getBoundingClientRect();
+      if (rect.height < minimum - 0.5 || rect.width < minimum - 0.5) {
+        found.push({
+          kind: "small touch target",
+          detail: `${describe(element)} ${Math.round(rect.width)}x${Math.round(rect.height)}`,
+        });
+      }
+      const name =
+        element.getAttribute("aria-label") ??
+        (element.textContent ?? "").trim() ??
+        element.getAttribute("title");
+      if (!name && element.matches("button, a[href], summary")) {
+        found.push({ kind: "control without a name", detail: describe(element) });
+      }
+      if (rect.left < -0.5 || rect.right > window.innerWidth + 0.5) {
+        found.push({ kind: "outside the screen", detail: describe(element) });
+      }
+    }
+
+    // Clipped or overflowing text inside buttons, chips and list rows.
+    for (const element of document.querySelectorAll(
+      "button, label.taboo-choice span, li, h1, h2, p",
+    )) {
+      if (!visible(element)) continue;
+      if (
+        element.scrollWidth > element.clientWidth + 1 &&
+        getComputedStyle(element).overflowX !== "visible"
+      ) {
+        found.push({ kind: "clipped text", detail: describe(element) });
+      }
+      const rect = element.getBoundingClientRect();
+      if (rect.right > window.innerWidth + 1) {
+        found.push({ kind: "text outside the screen", detail: describe(element) });
+      }
+    }
+
+    // The pinned main action must be reachable without scrolling the page.
+    const bar = document.querySelector(".game-start-bar");
+    if (bar && visible(bar)) {
+      const rect = bar.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight + 1) {
+        found.push({
+          kind: "action bar below the screen",
+          detail: `${Math.round(rect.bottom)} > ${window.innerHeight}`,
+        });
+      }
+    }
+    return found;
+  }, minimumTarget);
+  return violations.map((item) => `${screen}: ${item.kind} - ${item.detail}`);
+}
+
+for (const language of ["en", "de"] as const) {
+  for (const viewport of viewports) {
+    test(`every Taboo screen fits a ${viewport.name} in ${language}`, async ({
+      page,
+    }, testInfo) => {
+      test.skip(
+        testInfo.project.name !== "mobile-chromium",
+        "The layout audit runs on mobile only.",
+      );
+      const t = labels[language];
+      const problems: string[] = [];
+      const check = async (screen: string) => problems.push(...(await audit(page, screen)));
+      const press = (name: string, exact = true) =>
+        page.getByRole("button", { name, exact }).first().click();
+
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.clock.install();
+      // Keep the shuffled order stable: Team 1 plays first.
+      await page.addInitScript(() => {
+        Math.random = () => 0.99;
+      });
+      await page.goto("/");
+      if (language === "de") {
+        await press(labels.en.settings);
+        await page.getByRole("combobox", { name: labels.en.interfaceLanguage }).selectOption("de");
+        await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+      }
+      await check("game selection");
+      await press(t.settings);
+      await check("settings dialog");
+      await page.getByRole("dialog").getByRole("button", { name: t.close }).click();
+
+      await press(t.open);
+      await check("setup");
+      await page.getByText(t.moreOptions, { exact: true }).click();
+      await check("setup with more options");
+      await press(t.start);
+      await check("overview before the first turn");
+
+      // First turn with one wrong, one skipped and several scored cards for a long review.
+      await press(t.startRound);
+      await check("running round");
+      await press(t.forbidden);
+      await press(t.skip);
+      for (let card = 0; card < 4; card += 1) await press(t.correct);
+      await press(t.pause);
+      await check("paused round");
+      await press(t.resume);
+      await press(t.pause);
+      await press(t.endRound);
+      await check("round review");
+
+      for (let turn = 0; turn < 5; turn += 1) {
+        await press(t.startRound);
+        await page.clock.fastForward(60_000);
+      }
+      await press(t.show);
+      await check("final result or tiebreak overview");
+      // Team 1 scored in the first turn, so there is a single winner and no tiebreak.
+      expect(problems, problems.join("\n")).toEqual([]);
+    });
+  }
+}
+
+test("the tiebreak screens fit a small phone in both languages", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+  const problems: string[] = [];
+  for (const language of ["en", "de"] as const) {
+    const t = labels[language];
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.clock.install();
+    await page.addInitScript(() => {
+      Math.random = () => 0.99;
+    });
+    await page.goto("/");
+    if (language === "de") {
+      await page.getByRole("button", { name: labels.en.settings }).click();
+      await page.getByRole("combobox", { name: labels.en.interfaceLanguage }).selectOption("de");
+      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+    }
+    const check = async (screen: string) =>
+      problems.push(...(await audit(page, `${language} ${screen}`)));
+    const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
+
+    await press(t.open);
+    await press(t.start);
+    // Nobody scores in the six turns of a short game, so the game ends in a tie.
+    for (let turn = 0; turn < 6; turn += 1) {
+      await press(t.startRound);
+      await page.clock.fastForward(60_000);
+    }
+    await press(t.show);
+    await check("tiebreak overview");
+    await press(t.startTiebreak);
+    await check("tiebreak attempt");
+    await press(t.pause);
+    await check("paused tiebreak attempt");
+    await press(t.resume);
+    for (let card = 0; card < 3; card += 1) await press(t.correct);
+    await check("tiebreak overview with a result");
+    await press(t.startTiebreak);
+    await press(t.pause);
+    await press(t.endAttempt);
+    await check("final result after the tiebreak");
+  }
+  expect(problems, problems.join("\n")).toEqual([]);
+});

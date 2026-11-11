@@ -1601,3 +1601,19 @@ h1 {
 .taboo-round__bar[data-low="true"] span {
   background: var(--color-danger-fill);
 }
+
+/* Touch targets of at least 44px (found by the mobile layout audit). */
+.brand {
+  min-height: 2.75rem;
+}
+
+.dialog__close {
+  min-height: 2.75rem;
+  width: 2.75rem;
+}
+
+.taboo-tools > details > summary {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+}

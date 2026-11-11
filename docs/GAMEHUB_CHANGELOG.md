@@ -4,6 +4,11 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-11-04 – Oberflächentests auf Handybreite
+
+- Neue Browserprüfung `e2e/mobile-layout.spec.ts`: Alle Tabu-Ansichten (Menü, Einstellungen, Setup, Übersicht, Runde, Pause, Auswertung, Stechen, Ergebnis) werden auf 360 und 412 Pixel Breite in Deutsch und Englisch geprüft: kein horizontales Scrollen, Touch-Ziele mindestens 44 Pixel, nichts außerhalb des Bildschirms oder abgeschnitten, Aktionsleiste ohne Scrollen erreichbar, Bedienelemente haben einen Namen.
+- Gefundene Probleme behoben: Das Markenlogo in der Kopfzeile (21 Pixel hoch), der Schließen-Knopf der Dialoge (40 Pixel) und die Überschrift „Eigene Tabu-Karten“ (21 Pixel) waren zu klein für Touch.
+
 ### PH-11-03 – Sprach- und Oberflächenabdeckung geprüft
 
 - Fehler behoben: Das `lang`-Attribut der Seite blieb auf Deutsch, auch bei englischer Oberfläche (falsche Aussprache bei Screenreadern). Seitensprache und Meta-Beschreibung folgen jetzt der Oberflächensprache (`useDocumentLanguage`).

@@ -513,7 +513,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-11-04 – Oberflächentests ergänzen
 
 - **Ziel:** Komponenten- und E2E-Tests für alle Ansichten (Menü, Rundenübersicht, Runde, Pause, Stechen, Ergebnis) auf Handybreite.
-- **Status:** planned
+- **Ergebnis:** `e2e/mobile-layout.spec.ts` prüft alle Ansichten auf 360 und 412 Pixel in beiden Sprachen; Komponenten-Durchlauf in `src/presentation/languageFlows.test.tsx`.
+- **Status:** done
 
 #### PH-11-05 – Struktur prüfen und wiederverwendbare Spielbausteine dokumentieren
 
