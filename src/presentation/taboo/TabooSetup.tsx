@@ -83,6 +83,8 @@ export function TabooSetup({
     running: runningRound,
   });
   const [deckEmpty, setDeckEmpty] = useState(false);
+  // Whether the team order is drawn at random; a replay keeps a manual order.
+  const [randomOrder, setRandomOrder] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [generationEmpty, setGenerationEmpty] = useState(false);
   const activeGeneration = useRef<AbortController | undefined>(undefined);
@@ -122,7 +124,9 @@ export function TabooSetup({
       // Same setup: replay with the same cards in a fresh order.
       const reordered = createTabooGame({
         ...session.state.configuration,
-        teams: shuffleTeams(session.state.configuration.teams),
+        teams: randomOrder
+          ? shuffleTeams(session.state.configuration.teams)
+          : session.state.configuration.teams,
       });
       if (reordered.valid) setSession({ state: reordered.value, deck: shuffle(session.deck) });
     }
@@ -275,15 +279,16 @@ export function TabooSetup({
     setShortage(undefined);
     setSession(undefined);
     const data = new FormData(event.currentTarget);
+    const entered = Array.from({ length: Number(data.get("teamCount")) }, (_, index) => ({
+      id: String(index + 1),
+      name:
+        teamNameFrom(data.get(`teamName${index + 1}`)) ||
+        t("tabooSetup.team", { number: index + 1 }),
+    }));
+    const random = data.get("teamOrder") !== "entered";
+    setRandomOrder(random);
     const result = createTabooGame({
-      teams: shuffleTeams(
-        Array.from({ length: Number(data.get("teamCount")) }, (_, index) => ({
-          id: String(index + 1),
-          name:
-            teamNameFrom(data.get(`teamName${index + 1}`)) ||
-            t("tabooSetup.team", { number: index + 1 }),
-        })),
-      ),
+      teams: random ? shuffleTeams(entered) : entered,
       roundsPerTeam: data.get("rounds") === "unlimited" ? "unlimited" : Number(data.get("rounds")),
       roundDurationSeconds: Number(data.get("duration")),
       ...(data.get("tiebreak") === "off" ? {} : { tiebreak: true }),

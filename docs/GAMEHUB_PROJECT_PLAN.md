@@ -547,7 +547,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-12-03 – Teamreihenfolge manuell oder zufällig festlegen
 
 - **Ziel:** Die Reihenfolge der Teams kann selbst bestimmt oder zufällig ausgelost werden.
-- **Status:** planned
+- **Ergebnis:** Auswahl „Teamreihenfolge“ (Zufällig oder Wie eingegeben) im Setup mit Info-Button. „Wie eingegeben“ nimmt die Reihenfolge der Teamfelder; sie bleibt auch beim Neuspielen mit gleicher Konfiguration erhalten. Eine freie Umsortierung per Ziehen ist bewusst nicht enthalten.
+- **Status:** done
 
 #### PH-12-04 – Spieler hinzufügen und auf Teams verteilen
 

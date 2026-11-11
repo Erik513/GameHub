@@ -41,7 +41,7 @@ export function TabooSetupForm({
 }: TabooSetupFormProps) {
   const { t } = useTranslation();
   const info = (
-    key: "rounds" | "cardSource" | "tiebreak" | "skips" | "difficulty",
+    key: "rounds" | "cardSource" | "teamOrder" | "tiebreak" | "skips" | "difficulty",
     legend: string,
   ) => ({
     closeLabel: t("settings.close"),
@@ -92,6 +92,18 @@ export function TabooSetupForm({
             />
           ))}
         </div>
+        {teamCount > 1 && (
+          <ChoiceGroup
+            info={info("teamOrder", t("tabooSetup.teamOrder"))}
+            legend={t("tabooSetup.teamOrder")}
+            name="teamOrder"
+            initial="random"
+            options={(["random", "entered"] as const).map((value) => ({
+              value,
+              label: t(`tabooSetup.teamOrderOptions.${value}`),
+            }))}
+          />
+        )}
         <ChoiceGroup
           info={info("rounds", t("tabooSetup.rounds"))}
           legend={t("tabooSetup.rounds")}

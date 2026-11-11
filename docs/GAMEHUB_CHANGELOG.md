@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-12-03 – Teamreihenfolge manuell oder zufällig
+
+- Neue Auswahl „Teamreihenfolge“ im Setup (ab zwei Teams): „Zufällig“ (Standard, wie bisher) oder „Wie eingegeben“. Mit Info-Button, in Deutsch und Englisch.
+- Beim Neuspielen mit gleicher Konfiguration bleibt eine eingegebene Reihenfolge erhalten, eine zufällige wird neu gelost.
+- Test in beiden Sprachen. Prüfungen: 256 Unit-Tests, 25 e2e, tsc, eslint.
+
 ### PH-12-02 – Spielregeln erklären
 
 - Neue Komponente `TabooRules`: Knopf „Spielregeln“ über dem Setup-Formular öffnet ein Fenster mit Ziel, Ablauf, Wertung, Überspringen und Spielende, in Deutsch und Englisch.

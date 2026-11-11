@@ -81,6 +81,8 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info about {{setting}}",
     info: {
+      teamOrder:
+        "Random draws which team starts and how the turns follow. As entered uses the order of the team fields from top to bottom. When replaying with the same setup, an entered order is kept.",
       rounds:
         "A round is over when every team has had one turn. Short is 3 rounds, Medium 5 and Long 10. With ∞ you play until you show the result after a completed round.",
       cardSource:
@@ -109,6 +111,8 @@ export const tabooTexts = {
     team: "Team {{number}}",
     teamNameLabel: "Name of team {{number}}",
     rounds: "Rounds per team",
+    teamOrder: "Team order",
+    teamOrderOptions: { random: "Random", entered: "As entered" },
     duration: "Round duration (seconds)",
     difficulty: "Difficulty",
     anyDifficulty: "All",

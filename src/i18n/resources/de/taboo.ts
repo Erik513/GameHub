@@ -82,6 +82,8 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info zu {{setting}}",
     info: {
+      teamOrder:
+        "Zufällig lost vor dem Start aus, welches Team beginnt und wie es weitergeht. Wie eingegeben nimmt die Reihenfolge der Teamfelder von oben nach unten. Bei „Mit gleicher Konfiguration neu spielen“ bleibt eine eingegebene Reihenfolge erhalten.",
       rounds:
         "Eine Runde ist vorbei, wenn jedes Team einmal an der Reihe war. Kurz sind 3 Runden, Mittel 5 und Lang 10. Bei ∞ spielt ihr, bis ihr nach einer vollständig gespielten Runde das Ergebnis anzeigen lasst.",
       cardSource:
@@ -110,6 +112,8 @@ export const tabooTexts = {
     team: "Team {{number}}",
     teamNameLabel: "Name von Team {{number}}",
     rounds: "Runden pro Team",
+    teamOrder: "Teamreihenfolge",
+    teamOrderOptions: { random: "Zufällig", entered: "Wie eingegeben" },
     duration: "Rundendauer (Sekunden)",
     difficulty: "Schwierigkeit",
     anyDifficulty: "Alle",

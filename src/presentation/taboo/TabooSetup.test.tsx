@@ -237,3 +237,22 @@ it.each([
   expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
   expect(screen.getByRole("group", { name: setting })).toBeVisible();
 });
+
+it.each([
+  ["en", "As entered", "Start"],
+  ["de", "Wie eingegeben", "Starten"],
+] as const)("keeps the entered team order when chosen in %s", async (language, entered, start) => {
+  const random = vi.spyOn(Math, "random").mockReturnValue(0);
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n(language);
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup roundChoices={[1, 3]} cardLanguage={language} cards={tabooStandardCards} />
+    </I18nextProvider>,
+  );
+  await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
+  await user.click(screen.getByRole("radio", { name: entered }));
+  await user.click(screen.getByRole("button", { name: start }));
+  expect(document.querySelector(".kit-turn-strip strong")).toHaveTextContent("Team 1");
+  random.mockRestore();
+});
