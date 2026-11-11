@@ -115,3 +115,20 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Entscheidung:** GameHub verwendet Dark Mode als primäre Designsprache mit tiefem Anthrazit, warmem hellem Text, gedämpftem Kobaltblau und sparsamem Korallakzent. Gemeinsame Tokens steuern Farben, Typografie, Abstände, Radien und Fokuszustände. Verläufe, großflächige Glaseffekte und rein dekorative Oberflächen werden vermieden.
 - **Begründung:** Die Oberfläche soll zeitgemäß und spielerisch wirken, ohne wie ein austauschbares automatisch erzeugtes Landingpage-Design auszusehen.
 - **Konsequenzen:** Neue gemeinsame Komponenten verwenden die zentralen Tokens. Einzelne Spiele dürfen eigene Akzente ergänzen, müssen aber Lesbarkeit, Fokusdarstellung und gemeinsame Grundkomponenten bewahren.
+
+## ADR-015: Blaues Akzentfarbschema, Grün und Rot für Aktionen
+
+- **Status:** accepted
+- **Datum:** 2026-11-11
+- **Entscheidung:** Das Kobaltblau ist die einzige Akzentfarbe. Der Korallakzent aus ADR-014 entfällt. Grün kennzeichnet bestätigende Aktionen (Starten, Richtig), Rot ablehnende oder gefährliche Aktionen (Verbotenes Wort, Bestätigung beim Beenden).
+- **Begründung:** Der Auftraggeber wünscht ein einheitliches blaues Erscheinungsbild; Grün und Rot tragen eine feste Bedeutung.
+- **Konsequenzen:** Neue Spiele verwenden dieselben Tokens und die gemeinsamen Button-Varianten `success` und `danger`.
+
+## ADR-016: Tabu-Spielregeln für Karten, Reihenfolge, Pause und Stechen
+
+- **Status:** accepted
+- **Datum:** 2026-11-11
+- **Entscheidung:** Jede Tabu-Karte hat genau vier verbotene Wörter, bei KI-Karten möglichst mit einem Oberbegriff. Karten dürfen in späteren Zügen wiederkehren, aber nie zweimal im selben Zug; ein Zug endet nur durch die Zeit. Die Teamreihenfolge wird je Partie einmal zufällig bestimmt. Überspringen ist pro Runde begrenzt (Standard 1). Eine laufende Runde lässt sich pausieren (Karte verdeckt, Zeit angehalten), neu starten (mit neuen Karten) oder beenden. Bei Gleichstand von zwei bis drei Teams folgt standardmäßig ein Stechen: drei Begriffe auf Zeit, Strafe 5 Sekunden, ein Überspringen, 90 Sekunden Limit. Es gewinnen die meisten Begriffe in der kürzesten Zeit; exakt gleiche Ergebnisse teilen den Sieg.
+- **Begründung:** Spielfluss und Fairness am Tisch; Pause und Neustart dürfen kein Vorab-Sehen der Karten ermöglichen.
+- **Konsequenzen:** Die Regeln liegen vollständig in der Business-Schicht (Zustandsmaschine und Kartenauswahl) und sind durch Tests abgesichert. Gespeicherte oder importierte Karten mit drei verbotenen Wörtern werden nicht mehr akzeptiert.
+

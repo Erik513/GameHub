@@ -16,6 +16,21 @@ export const common = {
     newSetup: "Neue Partie konfigurieren",
     show: "Endergebnis anzeigen",
   },
+  tabooTiebreak: {
+    title: "Stechen",
+    round: "Stechen-Versuch",
+    rules:
+      "Gleichstand! Jedes Team erklärt drei Begriffe auf Zeit. Verbotenes Wort: +5 Sekunden, einmal überspringen ist erlaubt. Die meisten Begriffe in der kürzesten Zeit gewinnen.",
+    results: "Ergebnis Stechen",
+    result: "{{solved}}/{{total}} Begriffe · {{time}} s",
+    pending: "noch offen",
+    start: "Stechen starten",
+    cardOf: "Begriff {{current}}/{{total}}",
+    penalty: "+{{seconds}} s",
+    timer: "{{time}} Sekunden",
+    endAttempt: "Versuch beenden",
+    noCards: "Für das Stechen sind nicht genug Karten verfügbar.",
+  },
   tabooRound: {
     standings: "Gesamtpunktestand",
     teamTotal: "{{team}}: {{score}}",
@@ -54,6 +69,8 @@ export const common = {
   tabooSetup: {
     cardSource: "Kartenquelle",
     cardSources: { local: "Nur lokal", ai: "Nur KI", both: "Beides" },
+    tiebreak: "Stechen bei Gleichstand",
+    tiebreakOptions: { on: "An", off: "Aus" },
     skips: "Überspringen pro Runde",
     skipOptions: { "0": "Nie", "1": "1", "2": "2", "3": "3", unlimited: "Unbegrenzt" },
     moreOptions: "Weitere Optionen",

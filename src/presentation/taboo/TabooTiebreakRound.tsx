@@ -1,0 +1,175 @@
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import type { TabooCard } from "../../business/games/taboo/model";
+import {
+  TIEBREAK_CARD_COUNT,
+  TIEBREAK_LIMIT_SECONDS,
+  TIEBREAK_PENALTY_MS,
+  type TabooEvent,
+  type TabooOutcome,
+  type TiebreakActive,
+} from "../../business/games/taboo/stateMachine";
+import { Button } from "../components";
+import { formatSeconds } from "./formatTime";
+
+const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
+const outcomeVariants = {
+  correct: "success",
+  skipped: "secondary",
+  forbiddenWord: "danger",
+} as const;
+const limitMs = TIEBREAK_LIMIT_SECONDS * 1000;
+
+interface TabooTiebreakRoundProps {
+  active: TiebreakActive;
+  dispatch: (event: TabooEvent) => void;
+  onResume: () => void;
+  /** Start of the attempt and the time spent paused, so pauses do not count. */
+  pausedAt: number | undefined;
+  pausedMs: number;
+  pickReplacement: (card: TabooCard) => TabooCard | undefined;
+  startedAt: number;
+  teamName: string;
+}
+
+/** One timed tiebreak attempt: explain three cards as fast as possible. */
+export function TabooTiebreakRound({
+  active,
+  dispatch,
+  onResume,
+  pausedAt,
+  pausedMs,
+  pickReplacement,
+  startedAt,
+  teamName,
+}: TabooTiebreakRoundProps) {
+  const { t, i18n } = useTranslation();
+  const paused = pausedAt !== undefined;
+  const card = active.cards[active.index];
+  const [now, setNow] = useState(() => Date.now());
+  const readClock = useRef(Date.now);
+
+  useEffect(() => {
+    if (paused) return;
+    const clock = setInterval(() => setNow(Date.now()), 100);
+    return () => clearInterval(clock);
+  }, [paused]);
+
+  const elapsedMs = Math.max(0, (pausedAt ?? now) - startedAt - pausedMs);
+  const totalMs = elapsedMs + active.penaltyMs;
+  const timeUp = totalMs >= limitMs;
+
+  useEffect(() => {
+    if (timeUp && !paused) {
+      // Penalties are added by the game logic, so only the real time is reported.
+      dispatch({ type: "endTiebreakAttempt", elapsedMs: Math.max(0, limitMs - active.penaltyMs) });
+    }
+  }, [active.penaltyMs, dispatch, paused, timeUp]);
+
+  if (!card) return null;
+
+  function answer(outcome: TabooOutcome) {
+    const event: TabooEvent = {
+      type: "answerTiebreak",
+      outcome,
+      elapsedMs: readClock.current() - startedAt - pausedMs,
+    };
+    if (outcome === "skipped") {
+      const replacement = card ? pickReplacement(card) : undefined;
+      if (!replacement) return;
+      dispatch({ ...event, replacement });
+      return;
+    }
+    dispatch(event);
+  }
+
+  return (
+    <section className="taboo-round taboo-round--running" aria-label={t("tabooTiebreak.round")}>
+      <div className="taboo-round__hud">
+        <div className="taboo-round__hud-row">
+          <div>
+            <p className="taboo-round__team">{teamName}</p>
+            <p className="taboo-round__score">
+              {t("tabooTiebreak.title")}
+              {" · "}
+              {t("tabooTiebreak.cardOf", { current: active.index + 1, total: TIEBREAK_CARD_COUNT })}
+              {active.penaltyMs > 0 &&
+                ` · ${t("tabooTiebreak.penalty", { seconds: active.penaltyMs / 1000 })}`}
+            </p>
+          </div>
+          <p
+            role="timer"
+            data-low={totalMs >= limitMs - 10000}
+            aria-label={t("tabooTiebreak.timer", { time: formatSeconds(totalMs, i18n.language) })}
+          >
+            {formatSeconds(totalMs, i18n.language)}
+          </p>
+        </div>
+        <div className="taboo-round__bar" aria-hidden="true" data-low={totalMs >= limitMs - 10000}>
+          <span style={{ transform: `scaleX(${Math.max(0, 1 - totalMs / limitMs)})` }} />
+        </div>
+      </div>
+      {paused ? (
+        <div className="taboo-round__card taboo-round__card--paused">
+          <h2>{t("tabooRound.paused")}</h2>
+          <p>{t("tabooRound.pausedHint")}</p>
+          <Button variant="success" onClick={onResume}>
+            {t("navigation.resume")}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              dispatch({
+                type: "endTiebreakAttempt",
+                elapsedMs: Math.max(0, (pausedAt ?? now) - startedAt - pausedMs),
+              })
+            }
+          >
+            {t("tabooTiebreak.endAttempt")}
+          </Button>
+        </div>
+      ) : (
+        <div
+          className="taboo-round__card"
+          aria-live="polite"
+          aria-atomic="true"
+          lang={card.language}
+        >
+          <p className="taboo-round__difficulty" data-difficulty={card.difficulty}>
+            {t(`tabooSetup.difficulties.${card.difficulty}`)}
+          </p>
+          <h2>{card.term}</h2>
+          <p className="taboo-round__forbidden-label">{t("tabooRound.forbiddenLabel")}</p>
+          <ul>
+            {card.forbiddenWords.map((word) => (
+              <li key={word}>{word}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div className="taboo-round__actions" data-skip-hidden={active.skipUsed}>
+        {outcomes
+          .filter((outcome) => outcome !== "skipped" || !active.skipUsed)
+          .map((outcome) => (
+            <Button
+              key={outcome}
+              data-outcome={outcome}
+              disabled={paused}
+              variant={outcomeVariants[outcome]}
+              onClick={() => answer(outcome)}
+            >
+              {t(`tabooRound.${outcome}`)}
+              {outcome === "forbiddenWord" && (
+                <small aria-hidden="true">
+                  {t("tabooTiebreak.penalty", { seconds: TIEBREAK_PENALTY_MS / 1000 })}
+                </small>
+              )}
+              {outcome === "skipped" && (
+                <small aria-hidden="true">{t("tabooRound.skipOnce")}</small>
+              )}
+            </Button>
+          ))}
+      </div>
+    </section>
+  );
+}

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { GameConfiguration, TabooCard } from "./model";
-import { createTabooGame, transitionTaboo, type TabooEvent } from "./stateMachine";
+import {
+  TIEBREAK_PENALTY_MS,
+  createTabooGame,
+  transitionTaboo,
+  type TabooEvent,
+  type TabooState,
+} from "./stateMachine";
 
 const configuration: GameConfiguration = {
   teams: [
@@ -299,5 +305,162 @@ describe("Taboo state machine", () => {
     });
     const ended = transitionTaboo(restarted, { type: "endRound", turn });
     expect(transitionTaboo(ended, restart)).toBe(ended);
+  });
+
+  describe("tiebreak", () => {
+    const makeCards = (prefix: string, count = 3) =>
+      Array.from({ length: count }, (_, index) => ({ ...card, id: `${prefix}${index}` }));
+
+    function tiedAtTheEnd(extra: Partial<GameConfiguration> = {}, teamCount = 2) {
+      const config = {
+        ...configuration,
+        teams: [...configuration.teams, { id: "d", name: "Wolves" }].slice(0, teamCount),
+        roundsPerTeam: 1,
+        ...extra,
+      };
+      let state: TabooState = setup(config);
+      for (let teamIndex = 0; teamIndex < teamCount; teamIndex += 1) {
+        state = transitionTaboo(state, {
+          type: "startRound",
+          card: { ...card, id: `t${teamIndex}` },
+        });
+        state = transitionTaboo(state, { type: "endRound", turn: { round: 1, teamIndex } });
+      }
+      return state;
+    }
+
+    function startedAttempt(cards = makeCards("a")) {
+      const tied = transitionTaboo(tiedAtTheEnd({ tiebreak: true }), finish);
+      return transitionTaboo(tied, { type: "beginTiebreakAttempt", cards });
+    }
+
+    it("only plays a tiebreak when enabled and 2-3 teams share the lead", () => {
+      expect(transitionTaboo(tiedAtTheEnd(), finish)).toMatchObject({
+        status: "gameEnded",
+        winnerIds: ["a", "b"],
+      });
+      expect(transitionTaboo(tiedAtTheEnd({ tiebreak: true }), finish)).toMatchObject({
+        status: "tiebreak",
+        contenders: [0, 1],
+        attempts: [],
+      });
+      expect(transitionTaboo(tiedAtTheEnd({ tiebreak: true }, 3), finish)).toMatchObject({
+        status: "tiebreak",
+        contenders: [0, 1, 2],
+      });
+      expect(transitionTaboo(tiedAtTheEnd({ tiebreak: true }, 4), finish)).toMatchObject({
+        status: "gameEnded",
+        winnerIds: ["a", "b", "c", "d"],
+      });
+    });
+
+    it("ignores tiebreak events outside of a tiebreak", () => {
+      const initial = setup();
+      const cards = makeCards("a");
+      expect(transitionTaboo(initial, { type: "beginTiebreakAttempt", cards })).toBe(initial);
+      expect(
+        transitionTaboo(initial, { type: "answerTiebreak", outcome: "correct", elapsedMs: 1 }),
+      ).toBe(initial);
+      expect(transitionTaboo(initial, { type: "endTiebreakAttempt", elapsedMs: 1 })).toBe(initial);
+    });
+
+    it("validates the cards of an attempt and starts the next contender", () => {
+      const tied = transitionTaboo(tiedAtTheEnd({ tiebreak: true }), finish);
+      const begin = (cards: readonly TabooCard[]) =>
+        transitionTaboo(tied, { type: "beginTiebreakAttempt", cards });
+      expect(begin(makeCards("a", 2))).toBe(tied);
+      expect(begin([...makeCards("a", 2), { ...card, id: "a0" }])).toBe(tied);
+      expect(begin([...makeCards("a", 2), { ...card, id: "x", language: "de" }])).toBe(tied);
+      expect(begin([...makeCards("a", 2), { ...card, id: "" }])).toBe(tied);
+      const started = begin(makeCards("a"));
+      expect(started).toMatchObject({
+        active: { teamIndex: 0, index: 0, solved: 0, skipUsed: false, penaltyMs: 0 },
+        usedCardIds: ["a0", "a1", "a2"],
+      });
+      // An attempt is already running.
+      expect(
+        transitionTaboo(started, { type: "beginTiebreakAttempt", cards: makeCards("b") }),
+      ).toBe(started);
+    });
+
+    it("counts penalties and a single skip with a replacement card", () => {
+      const started = startedAttempt();
+      const answer = (outcome: "correct" | "skipped" | "forbiddenWord", extra = {}) =>
+        ({ type: "answerTiebreak", outcome, elapsedMs: 4000, ...extra }) as const;
+      expect(transitionTaboo(started, answer("skipped"))).toBe(started);
+      expect(
+        transitionTaboo(started, answer("skipped", { replacement: { ...card, id: "a0" } })),
+      ).toBe(started);
+      const penalised = transitionTaboo(started, answer("forbiddenWord"));
+      expect(penalised).toMatchObject({ active: { penaltyMs: TIEBREAK_PENALTY_MS, index: 0 } });
+      const skipped = transitionTaboo(
+        penalised,
+        answer("skipped", { replacement: { ...card, id: "r1" } }),
+      );
+      expect(skipped).toMatchObject({
+        active: { skipUsed: true, cards: [{ id: "r1" }, { id: "a1" }, { id: "a2" }] },
+        usedCardIds: ["a0", "a1", "a2", "r1"],
+      });
+      expect(
+        transitionTaboo(skipped, answer("skipped", { replacement: { ...card, id: "r2" } })),
+      ).toBe(skipped);
+      expect(transitionTaboo(skipped, answer("correct"))).toMatchObject({
+        active: { solved: 1, index: 1 },
+      });
+    });
+
+    it("finishes an attempt after three solved cards", () => {
+      const solve = (state: TabooState, elapsedMs: number) =>
+        transitionTaboo(state, { type: "answerTiebreak", outcome: "correct", elapsedMs });
+      let state = startedAttempt();
+      state = solve(solve(state, 3000), 6000);
+      state = transitionTaboo(state, {
+        type: "answerTiebreak",
+        outcome: "forbiddenWord",
+        elapsedMs: 7000,
+      });
+      state = solve(state, 10000);
+      expect(state).toMatchObject({
+        status: "tiebreak",
+        attempts: [{ teamIndex: 0, solved: 3, timeMs: 10000 + TIEBREAK_PENALTY_MS }],
+      });
+      expect(state).not.toHaveProperty("active");
+      // Answers without a running attempt do nothing.
+      expect(solve(state, 1)).toBe(state);
+      expect(transitionTaboo(state, { type: "endTiebreakAttempt", elapsedMs: 1 })).toBe(state);
+    });
+
+    it("ranks by solved cards first, then by time, and lets equal results share the win", () => {
+      const play = (state: TabooState, prefix: string, solved: number, elapsedMs: number) => {
+        let next = transitionTaboo(state, {
+          type: "beginTiebreakAttempt",
+          cards: makeCards(prefix),
+        });
+        for (let index = 0; index < solved; index += 1) {
+          next = transitionTaboo(next, { type: "answerTiebreak", outcome: "correct", elapsedMs });
+        }
+        return next.status === "tiebreak" && next.active
+          ? transitionTaboo(next, { type: "endTiebreakAttempt", elapsedMs })
+          : next;
+      };
+      const tied = transitionTaboo(tiedAtTheEnd({ tiebreak: true }), finish);
+      expect(play(play(tied, "a", 3, 20000), "b", 3, 15000)).toMatchObject({
+        status: "gameEnded",
+        winnerIds: ["b"],
+        tiebreak: [
+          { teamIndex: 0, solved: 3, timeMs: 20000 },
+          { teamIndex: 1, solved: 3, timeMs: 15000 },
+        ],
+      });
+      expect(play(play(tied, "a", 2, 90000), "b", 1, 10000)).toMatchObject({ winnerIds: ["a"] });
+      expect(play(play(tied, "a", 3, 12000), "b", 3, 12000)).toMatchObject({
+        winnerIds: ["a", "b"],
+      });
+      // Cards of the first attempt cannot be reused by the second contender.
+      const first = play(tied, "a", 0, 1000);
+      expect(transitionTaboo(first, { type: "beginTiebreakAttempt", cards: makeCards("a") })).toBe(
+        first,
+      );
+    });
   });
 });

@@ -75,6 +75,13 @@ describe("Taboo domain validation", () => {
       }).valid,
     ).toBe(true);
   });
+  it("accepts boolean tiebreak settings and rejects other values", () => {
+    expect(validateConfiguration({ ...configuration, tiebreak: true }).valid).toBe(true);
+    expect(validateConfiguration({ ...configuration, tiebreak: false }).valid).toBe(true);
+    expect(
+      validateConfiguration({ ...configuration, tiebreak: "yes" as unknown as boolean }).valid,
+    ).toBe(false);
+  });
   it("rejects unsupported configuration languages", () => {
     expect(validateConfiguration({ ...configuration, cardLanguage: "fr" as "en" }).valid).toBe(
       false,

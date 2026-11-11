@@ -34,6 +34,27 @@ interface TurnState extends GameState {
   readonly results: readonly TabooResult[];
 }
 
+export const TIEBREAK_CARD_COUNT = 3;
+export const TIEBREAK_PENALTY_MS = 5000;
+export const TIEBREAK_LIMIT_SECONDS = 90;
+export const TIEBREAK_MAX_TEAMS = 3;
+
+export interface TiebreakAttempt {
+  readonly teamIndex: number;
+  readonly solved: number;
+  /** Elapsed time including penalties, in milliseconds. */
+  readonly timeMs: number;
+}
+
+export interface TiebreakActive {
+  readonly teamIndex: number;
+  readonly cards: readonly TabooCard[];
+  readonly index: number;
+  readonly solved: number;
+  readonly skipUsed: boolean;
+  readonly penaltyMs: number;
+}
+
 export type TabooState =
   | Setup
   | (TurnState & {
@@ -42,7 +63,19 @@ export type TabooState =
       readonly remainingCards: readonly TabooCard[];
     })
   | (TurnState & { readonly status: "roundEnded" })
-  | (TurnState & { readonly status: "gameEnded"; readonly winnerIds: readonly string[] });
+  | (TurnState & {
+      readonly status: "tiebreak";
+      /** Team indexes of the tied teams in playing order. */
+      readonly contenders: readonly number[];
+      readonly attempts: readonly TiebreakAttempt[];
+      readonly usedCardIds: readonly string[];
+      readonly active?: TiebreakActive;
+    })
+  | (TurnState & {
+      readonly status: "gameEnded";
+      readonly winnerIds: readonly string[];
+      readonly tiebreak?: readonly TiebreakAttempt[];
+    });
 
 export type TabooEvent =
   | {
@@ -74,6 +107,14 @@ export type TabooEvent =
       readonly cardId: string;
       readonly outcome: TabooOutcome;
     }
+  | { readonly type: "beginTiebreakAttempt"; readonly cards: readonly TabooCard[] }
+  | {
+      readonly type: "answerTiebreak";
+      readonly outcome: TabooOutcome;
+      readonly elapsedMs: number;
+      readonly replacement?: TabooCard;
+    }
+  | { readonly type: "endTiebreakAttempt"; readonly elapsedMs: number }
   | { readonly type: "finishGame" };
 
 export function createTabooGame(input: GameConfiguration): ValidationResult<Setup> {
@@ -235,6 +276,13 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     };
   }
 
+  if (
+    event.type === "beginTiebreakAttempt" ||
+    event.type === "answerTiebreak" ||
+    event.type === "endTiebreakAttempt"
+  )
+    return transitionTiebreak(state, event);
+
   if (state.status !== "setup" && state.status !== "roundEnded") return state;
   let turn: Turn = { round: 1, teamIndex: 0 };
   if (state.status === "roundEnded") {
@@ -242,10 +290,23 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     if (!nextTurn) {
       if (event.type !== "finishGame") return state;
       const highestScore = scores.reduce((highest, score) => Math.max(highest, score), 0);
-      const winnerIds = configuration.teams
-        .filter((_, index) => scores[index] === highestScore)
-        .map((team) => team.id);
-      return { ...state, status: "gameEnded", winnerIds };
+      const leaders = configuration.teams
+        .map((team, index) => ({ team, index }))
+        .filter(({ index }) => scores[index] === highestScore);
+      if (
+        configuration.tiebreak === true &&
+        leaders.length >= 2 &&
+        leaders.length <= TIEBREAK_MAX_TEAMS
+      ) {
+        return {
+          ...state,
+          status: "tiebreak",
+          contenders: leaders.map(({ index }) => index),
+          attempts: [],
+          usedCardIds: [],
+        };
+      }
+      return { ...state, status: "gameEnded", winnerIds: leaders.map(({ team }) => team.id) };
     }
     turn = nextTurn;
   }
@@ -277,6 +338,129 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     scores,
     resolvedCardIds,
   };
+}
+
+type TiebreakState = Extract<TabooState, { status: "tiebreak" }>;
+
+function validTiebreakCard(
+  state: TiebreakState,
+  input: TabooCard,
+  taken: ReadonlySet<string>,
+): TabooCard | undefined {
+  const result = validateCard(input);
+  if (
+    !result.valid ||
+    result.value.language !== state.configuration.cardLanguage ||
+    taken.has(result.value.id)
+  )
+    return undefined;
+  return result.value;
+}
+
+function finishTiebreakAttempt(
+  state: TiebreakState,
+  active: TiebreakActive,
+  elapsedMs: number,
+): TabooState {
+  const attempts = [
+    ...state.attempts,
+    {
+      teamIndex: active.teamIndex,
+      solved: active.solved,
+      timeMs: Math.max(0, elapsedMs) + active.penaltyMs,
+    },
+  ];
+  const base = {
+    configuration: state.configuration,
+    scores: state.scores,
+    resolvedCardIds: state.resolvedCardIds,
+    turn: state.turn,
+    roundPoints: state.roundPoints,
+    results: state.results,
+  };
+  if (attempts.length < state.contenders.length) {
+    return {
+      ...base,
+      status: "tiebreak",
+      contenders: state.contenders,
+      attempts,
+      usedCardIds: state.usedCardIds,
+    };
+  }
+  // Most cards first, then the shortest time; equal results share the win.
+  const ranked = [...attempts].sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs);
+  const best = ranked[0];
+  const winners = ranked.filter(
+    (attempt) => attempt.solved === best?.solved && attempt.timeMs === best.timeMs,
+  );
+  return {
+    ...base,
+    status: "gameEnded",
+    winnerIds: winners.flatMap((attempt) => {
+      const team = state.configuration.teams[attempt.teamIndex];
+      return team ? [team.id] : [];
+    }),
+    tiebreak: attempts,
+  };
+}
+
+function transitionTiebreak(
+  state: TabooState,
+  event: Extract<
+    TabooEvent,
+    { type: "beginTiebreakAttempt" | "answerTiebreak" | "endTiebreakAttempt" }
+  >,
+): TabooState {
+  if (state.status !== "tiebreak") return state;
+  const { active } = state;
+  if (event.type === "beginTiebreakAttempt") {
+    const teamIndex = state.contenders[state.attempts.length];
+    if (active || teamIndex === undefined || event.cards.length !== TIEBREAK_CARD_COUNT)
+      return state;
+    const taken = new Set(state.usedCardIds);
+    const cards: TabooCard[] = [];
+    for (const input of event.cards) {
+      const card = validTiebreakCard(state, input, taken);
+      if (!card) return state;
+      taken.add(card.id);
+      cards.push(card);
+    }
+    return {
+      ...state,
+      usedCardIds: [...state.usedCardIds, ...cards.map((card) => card.id)],
+      resolvedCardIds: [
+        ...state.resolvedCardIds,
+        ...cards.map((card) => card.id).filter((id) => !state.resolvedCardIds.includes(id)),
+      ],
+      active: { teamIndex, cards, index: 0, solved: 0, skipUsed: false, penaltyMs: 0 },
+    };
+  }
+  if (!active) return state;
+  if (event.type === "endTiebreakAttempt") {
+    return finishTiebreakAttempt(state, active, event.elapsedMs);
+  }
+  if (event.outcome === "forbiddenWord") {
+    return { ...state, active: { ...active, penaltyMs: active.penaltyMs + TIEBREAK_PENALTY_MS } };
+  }
+  if (event.outcome === "skipped") {
+    if (active.skipUsed || !event.replacement) return state;
+    const replacement = validTiebreakCard(state, event.replacement, new Set(state.usedCardIds));
+    if (!replacement) return state;
+    return {
+      ...state,
+      usedCardIds: [...state.usedCardIds, replacement.id],
+      active: {
+        ...active,
+        skipUsed: true,
+        cards: active.cards.map((card, index) => (index === active.index ? replacement : card)),
+      },
+    };
+  }
+  const solved = active.solved + 1;
+  if (solved >= TIEBREAK_CARD_COUNT) {
+    return finishTiebreakAttempt(state, { ...active, solved }, event.elapsedMs);
+  }
+  return { ...state, active: { ...active, solved, index: active.index + 1 } };
 }
 
 export function countSkips(results: readonly TabooResult[]): number {

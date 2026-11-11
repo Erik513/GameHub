@@ -45,6 +45,14 @@ it.each([
     expect(duration.getAllByRole("radio")).toHaveLength(2);
     expect(duration.getByRole("radio", { name: /^60$/ })).toBeChecked();
     fireEvent.click(duration.getByRole("radio", { name: /^90$/ }));
+    // This test covers the shared win, so the tiebreak is switched off for the tie.
+    if (!correct) {
+      fireEvent.click(
+        within(screen.getByRole("group", { name: "Tiebreak on a tie" })).getByRole("radio", {
+          name: "Off",
+        }),
+      );
+    }
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     if (correct) fireEvent.click(screen.getByRole("button", { name: "Correct" }));

@@ -24,6 +24,8 @@ export interface GameConfiguration {
   readonly cardLanguage: GameHubLanguage;
   /** Allowed skips per turn; undefined means unlimited. */
   readonly skipsPerRound?: number;
+  /** Play a timed tiebreak when 2-3 teams share the lead at the end; undefined means off. */
+  readonly tiebreak?: boolean;
 }
 export interface ValidationIssue {
   readonly field: string;
@@ -75,6 +77,8 @@ export function validateConfiguration(
     (!Number.isSafeInteger(input.skipsPerRound) || input.skipsPerRound < 0)
   )
     issues.push({ field: "skipsPerRound", code: "non_negative_integer_required" });
+  if (input.tiebreak !== undefined && typeof input.tiebreak !== "boolean")
+    issues.push({ field: "tiebreak", code: "boolean_required" });
   return issues.length ? { valid: false, issues } : { valid: true, value: { ...input, teams } };
 }
 

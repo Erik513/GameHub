@@ -1442,3 +1442,54 @@ h1 {
   min-height: var(--touch-target);
   font-size: var(--text-md);
 }
+
+/* Difficulty shown on the card during play. */
+.taboo-round__difficulty {
+  align-self: center;
+  margin: 0;
+  padding: 0.15rem var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.taboo-round__difficulty[data-difficulty="easy"] {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.taboo-round__difficulty[data-difficulty="medium"] {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.taboo-round__difficulty[data-difficulty="hard"] {
+  border-color: var(--color-danger-fill);
+  color: var(--color-danger-fill);
+}
+
+.taboo-round__actions .button[data-outcome="forbiddenWord"] {
+  flex-direction: column;
+  gap: 0;
+}
+
+.taboo-round__actions .button[data-outcome="forbiddenWord"] small {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  opacity: 0.7;
+}
+
+.taboo-tiebreak__rules {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.taboo-tiebreak-results .taboo-scoreboard__score {
+  font-size: var(--text-md);
+}

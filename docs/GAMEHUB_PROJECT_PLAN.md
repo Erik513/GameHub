@@ -503,6 +503,24 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 - **Tests:** Je Spiel anhand der genehmigten Regeln.
 - **Status:** planned
 
+### Phase 10 – Mobile Bedienung und Spielablauf
+
+#### PH-10-01 – Mobile-first Oberfläche mit Daumenzone
+
+- **Ziel:** Hauptmenü und Tabu für die Bedienung mit einer Hand am Handy gestalten.
+- **Umfang:** Kompakte Kopfzeile, angeheftete Hauptaktionen, Bottom-Sheet-Dialog, große Touch-Ziele, blaues Akzentfarbschema, Grün und Rot für Aktionen.
+- **Akzeptanzkriterien:** Alle Ansichten sind bei 390 px Breite ohne horizontales Scrollen bedienbar; Hauptaktionen liegen unten.
+- **Tests:** Komponenten- und E2E-Tests auf Desktop und Mobil.
+- **Status:** done
+
+#### PH-10-02 – Spielablauf: Rundenübersicht, Pause, Überspringlimit und Stechen
+
+- **Ziel:** Den Tabu-Ablauf an die Anforderungen des Auftraggebers anpassen.
+- **Umfang:** Zufällige feste Teamreihenfolge, Rundenübersicht mit Punkteliste und Rundenauswertung (Wertung änderbar), vier verbotene Wörter je Karte, Überspringlimit pro Runde, Pause, Neustart mit neuen Karten, Runde beenden, einheitliche Navigation mit Zweifach-Bestätigung, Nachladen von KI-Karten und Stechen bei Gleichstand auf Zeit.
+- **Akzeptanzkriterien:** Die Regeln werden von der Zustandsmaschine durchgesetzt; Pause verdeckt die Karte und zählt nicht zur Zeit; Stechen gilt für zwei bis drei gleichauf liegende Teams.
+- **Tests:** Unit-Tests der Zustandsmaschine und Kartenauswahl, Komponenten- und E2E-Tests.
+- **Status:** done
+
 ## 6. Abhängigkeiten und Reihenfolge
 
 - Phase 1 ist Voraussetzung für alle Implementierungsphasen.
@@ -513,6 +531,7 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 - Phase 7 beginnt erst nach stabiler lokaler Kartenverwaltung. Sie ist für die Spielbarkeit nicht erforderlich.
 - Phase 8 schließt den ersten Release ab.
 - Phase 9 bleibt bis zu separaten Freigaben außerhalb des ersten Produktumfangs.
+- Phase 10 verfeinert Bedienung und Spielablauf des abgenommenen Tabu-Releases.
 
 ## 7. Risiken und Gegenmaßnahmen
 

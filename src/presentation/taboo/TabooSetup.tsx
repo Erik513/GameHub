@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { buildDeck, type DeckCriteria } from "../../business/games/taboo/deck";
 import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
@@ -12,10 +20,13 @@ import {
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { shuffleTeams } from "../../business/games/taboo/teamOrder";
+import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { useGameExit } from "../GameChrome";
 import { TabooRound } from "./TabooRound";
 import { TabooRoundReview } from "./TabooRoundReview";
 import { TabooScoreboard } from "./TabooScoreboard";
+import { TabooTiebreakResults, type TiebreakRow } from "./TabooTiebreakResults";
+import { TabooTiebreakRound } from "./TabooTiebreakRound";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 
 const categories = ["everyday", "nature", "culture"] as const;
@@ -45,6 +56,9 @@ export function TabooSetup({
     state: TabooState;
     deadline: number;
     pausedAt?: number | undefined;
+    /** Tiebreak stopwatch: start of the attempt and total time spent paused. */
+    startedAt?: number;
+    pausedMs?: number;
   }>();
   const [deckEmpty, setDeckEmpty] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -66,6 +80,7 @@ export function TabooSetup({
   const [formVersion, setFormVersion] = useState(0);
   const [teamCount, setTeamCount] = useState(2);
   const [restartUnavailable, setRestartUnavailable] = useState(false);
+  const [tiebreakNoCards, setTiebreakNoCards] = useState(false);
   const [refillTick, setRefillTick] = useState(0);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
@@ -100,15 +115,67 @@ export function TabooSetup({
   const togglePause = useCallback(() => {
     setRestartUnavailable(false);
     setRound((current) => {
-      if (current?.state.status !== "roundRunning") return current;
-      // Resuming moves the deadline by the time spent paused.
+      if (!current) return current;
       const { pausedAt } = current;
-      if (pausedAt === undefined) return { ...current, pausedAt: Date.now() };
-      return { state: current.state, deadline: current.deadline + (Date.now() - pausedAt) };
+      if (current.state.status === "roundRunning") {
+        // Resuming moves the deadline by the time spent paused.
+        if (pausedAt === undefined) return { ...current, pausedAt: Date.now() };
+        return { state: current.state, deadline: current.deadline + (Date.now() - pausedAt) };
+      }
+      if (current.state.status === "tiebreak" && current.state.active) {
+        if (pausedAt === undefined) return { ...current, pausedAt: Date.now() };
+        return {
+          state: current.state,
+          deadline: current.deadline,
+          ...(current.startedAt === undefined ? {} : { startedAt: current.startedAt }),
+          pausedMs: (current.pausedMs ?? 0) + (Date.now() - pausedAt),
+        };
+      }
+      return current;
     });
   }, []);
 
   const runningTurn = round?.state.status === "roundRunning" ? round.state.turn : undefined;
+  const tiebreakState = round?.state.status === "tiebreak" ? round.state : undefined;
+  const tiebreakActive = tiebreakState?.active !== undefined;
+
+  // All cards of the card language are available for the tiebreak, independent of the filters.
+  const tiebreakPool = useMemo(() => {
+    const language = round?.state.configuration.cardLanguage ?? cardLanguage;
+    const unique = new Map<string, TabooCard>();
+    for (const card of [...(session?.deck ?? []), ...cards]) {
+      if (card.language === language) unique.set(card.id, card);
+    }
+    return [...unique.values()];
+  }, [round?.state.configuration.cardLanguage, cardLanguage, cards, session]);
+
+  function beginTiebreak() {
+    if (round?.state.status !== "tiebreak") return;
+    const picked = pickTiebreakCards(
+      tiebreakPool,
+      new Set(round.state.usedCardIds),
+      new Set(round.state.resolvedCardIds),
+    );
+    const state = picked
+      ? transitionTaboo(round.state, { type: "beginTiebreakAttempt", cards: picked })
+      : round.state;
+    if (state === round.state) {
+      setTiebreakNoCards(true);
+      return;
+    }
+    setTiebreakNoCards(false);
+    setRound({ state, deadline: 0, startedAt: Date.now(), pausedMs: 0 });
+  }
+
+  function pickTiebreakReplacement(card: TabooCard) {
+    if (round?.state.status !== "tiebreak") return undefined;
+    return pickTiebreakCard(
+      tiebreakPool,
+      card.difficulty,
+      new Set(round.state.usedCardIds),
+      new Set(round.state.resolvedCardIds),
+    );
+  }
 
   // A restarted turn gets new cards: nothing shown in this turn may reappear (no peeking).
   const restartTurn = useCallback(() => {
@@ -148,7 +215,7 @@ export function TabooSetup({
       setDeckEmpty(false);
       setIssues([]);
     },
-    runningTurn && round
+    (runningTurn || tiebreakActive) && round
       ? { paused: round.pausedAt !== undefined, onToggle: togglePause }
       : undefined,
   );
@@ -252,6 +319,7 @@ export function TabooSetup({
       ),
       roundsPerTeam: Number(data.get("rounds")),
       roundDurationSeconds: Number(data.get("duration")),
+      ...(data.get("tiebreak") === "off" ? {} : { tiebreak: true }),
       ...(data.get("skips") === "unlimited" || !data.has("skips")
         ? {}
         : { skipsPerRound: Number(data.get("skips")) }),
@@ -343,6 +411,45 @@ export function TabooSetup({
 
   return (
     <div className="taboo-setup">
+      {tiebreakState && !tiebreakState.active && (
+        <section className="taboo-round taboo-overview" aria-label={t("tabooTiebreak.title")}>
+          <p className="taboo-overview__round">{t("tabooTiebreak.title")}</p>
+          <p className="taboo-tiebreak__rules">{t("tabooTiebreak.rules")}</p>
+          <h2>{t("tabooTiebreak.results")}</h2>
+          <TabooTiebreakResults rows={tiebreakRows(tiebreakState)} />
+          {tiebreakNoCards && (
+            <>
+              <StatusMessage title={t("tabooRound.empty")} tone="error">
+                {t("tabooTiebreak.noCards")}
+              </StatusMessage>
+              <Button variant="secondary" onClick={() => restart(false)}>
+                {t("tabooResult.newSetup")}
+              </Button>
+            </>
+          )}
+          <div className="game-start-bar">
+            <div className="taboo-overview__turn">
+              <span className="visually-hidden">{t("tabooRound.upNext")}: </span>
+              <strong>{tiebreakTeamName(tiebreakState)}</strong>
+            </div>
+            <Button variant="success" onClick={beginTiebreak} disabled={tiebreakNoCards}>
+              {t("tabooTiebreak.start")}
+            </Button>
+          </div>
+        </section>
+      )}
+      {tiebreakState?.active && round?.startedAt !== undefined && (
+        <TabooTiebreakRound
+          active={tiebreakState.active}
+          dispatch={dispatch}
+          onResume={togglePause}
+          pausedAt={round.pausedAt}
+          pausedMs={round.pausedMs ?? 0}
+          pickReplacement={pickTiebreakReplacement}
+          startedAt={round.startedAt}
+          teamName={tiebreakState.configuration.teams[tiebreakState.active.teamIndex]?.name ?? ""}
+        />
+      )}
       {finished && (
         <section className="taboo-round taboo-overview" aria-label={t("tabooResult.title")}>
           <p className="taboo-overview__round">{t("tabooResult.title")}</p>
@@ -364,6 +471,24 @@ export function TabooSetup({
             teams={finished.configuration.teams}
             winnerIds={finished.winnerIds}
           />
+          {finished.tiebreak && (
+            <>
+              <h2>{t("tabooTiebreak.results")}</h2>
+              <TabooTiebreakResults
+                rows={[...finished.tiebreak]
+                  .sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs)
+                  .map((attempt) => {
+                    const team = finished.configuration.teams[attempt.teamIndex];
+                    return {
+                      id: team?.id ?? String(attempt.teamIndex),
+                      name: team?.name ?? "",
+                      result: { solved: attempt.solved, timeMs: attempt.timeMs },
+                      winner: team ? finished.winnerIds.includes(team.id) : false,
+                    };
+                  })}
+              />
+            </>
+          )}
           <div className="game-start-bar game-start-bar--stack">
             <Button variant="success" onClick={() => restart(true)}>
               {t("tabooResult.sameSetup")}
@@ -519,6 +644,15 @@ export function TabooSetup({
           <details className="taboo-more">
             <summary>{t("tabooSetup.moreOptions")}</summary>
             <SetupChoices
+              legend={t("tabooSetup.tiebreak")}
+              name="tiebreak"
+              initial="on"
+              options={(["on", "off"] as const).map((value) => ({
+                value,
+                label: t(`tabooSetup.tiebreakOptions.${value}`),
+              }))}
+            />
+            <SetupChoices
               legend={t("tabooSetup.skips")}
               name="skips"
               initial="1"
@@ -562,6 +696,25 @@ export function TabooSetup({
       </div>
     </div>
   );
+}
+
+type TiebreakView = Extract<TabooState, { status: "tiebreak" }>;
+
+function tiebreakTeamName(state: TiebreakView) {
+  const teamIndex = state.contenders[state.attempts.length];
+  return teamIndex === undefined ? "" : (state.configuration.teams[teamIndex]?.name ?? "");
+}
+
+function tiebreakRows(state: TiebreakView): readonly TiebreakRow[] {
+  return state.contenders.map((teamIndex) => {
+    const team = state.configuration.teams[teamIndex];
+    const attempt = state.attempts.find((candidate) => candidate.teamIndex === teamIndex);
+    return {
+      id: team?.id ?? String(teamIndex),
+      name: team?.name ?? "",
+      ...(attempt ? { result: { solved: attempt.solved, timeMs: attempt.timeMs } } : {}),
+    };
+  });
 }
 
 function shuffle<T>(items: readonly T[]): T[] {

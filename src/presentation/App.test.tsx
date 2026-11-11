@@ -215,6 +215,45 @@ describe("App", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
+  it("pauses a tiebreak attempt without counting the pause", async () => {
+    vi.useFakeTimers();
+    const i18n = await createGameHubI18n("en");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={tabooStandardCards} />
+      </I18nextProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(
+      screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    act(() => void vi.advanceTimersByTime(60000));
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    act(() => void vi.advanceTimersByTime(60000));
+    fireEvent.click(screen.getByRole("button", { name: "Show final results" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start tiebreak" }));
+
+    act(() => void vi.advanceTimersByTime(3000));
+    expect(screen.getByRole("timer")).toHaveTextContent("3.0");
+    fireEvent.click(screen.getByRole("button", { name: "Pause" }));
+    expect(screen.getByRole("heading", { name: "Paused" })).toBeVisible();
+    act(() => void vi.advanceTimersByTime(20000));
+    expect(screen.getByRole("timer")).toHaveTextContent("3.0");
+    fireEvent.click(screen.getAllByRole("button", { name: "Resume" })[0]!);
+    act(() => void vi.advanceTimersByTime(2000));
+    expect(screen.getByRole("timer")).toHaveTextContent("5.0");
+
+    // Ending the attempt from the pause screen records the solved cards and the time.
+    fireEvent.click(screen.getByRole("button", { name: "Pause" }));
+    fireEvent.click(screen.getByRole("button", { name: "End attempt" }));
+    const results = within(screen.getByRole("list", { name: "Tiebreak results" })).getAllByRole(
+      "listitem",
+    );
+    expect(results.some((row) => row.textContent.endsWith(": 0/3 cards · 5.0 s"))).toBe(true);
+  });
+
   it("changes the language and reports the selection", async () => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n("en");

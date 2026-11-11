@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-11T17:50:00+01:00",
+    "updatedAt": "2026-11-11T21:10:27+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 43,
-      "totalTasks": 47,
-      "percent": 91.5
+      "completedTasks": 44,
+      "totalTasks": 48,
+      "percent": 91.7
     }
   },
   "environment": {
@@ -45,17 +45,17 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T16:19:59+01:00",
+      "lastRunAt": "2026-11-11T21:10:27+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T16:19:59+01:00",
+      "lastRunAt": "2026-11-11T21:10:27+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T16:19:59+01:00",
+      "lastRunAt": "2026-11-11T21:10:27+01:00",
       "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich."
     },
     "githubActions": {
@@ -65,7 +65,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T16:19:59+01:00",
+      "lastRunAt": "2026-11-11T21:10:27+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -75,15 +75,15 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T16:19:59+01:00",
+      "lastRunAt": "2026-11-11T21:10:27+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T16:19:59+01:00",
-      "passed": 142,
+      "lastRunAt": "2026-11-11T21:10:27+01:00",
+      "passed": 196,
       "failed": 0,
-      "details": "142 Unit- und Komponententests bestanden. Die Punktekorrektur ist abgedeckt."
+      "details": "196 Unit- und Komponententests bestanden. Abgedeckt sind unter anderem Rundenübersicht, Punkteliste, zufällige Teamreihenfolge, Überspringlimit, Pause, Neustart, Wertungskorrektur und Stechen. Lokale Ausführung mit Node 25.5."
     },
     "integrationTests": {
       "status": "passed",
@@ -94,10 +94,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T16:34:10+01:00",
+      "lastRunAt": "2026-11-11T21:10:27+01:00",
       "passed": 20,
       "failed": 0,
-      "details": "20 Browserprüfungen bestanden. Handybreite am Desktop, kompakte Zeitangabe und ausgeblendete Kartenverwaltung während der Runde sind geprüft."
+      "details": "20 Browserprüfungen (Chrome, Desktop und Mobil) lokal bestanden, inklusive Wertungskorrektur und gemeinsamem Sieg."
     },
     "renameValidation": {
       "status": "passed",
@@ -112,23 +112,23 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T16:34:10+01:00",
-      "overallLines": 95.54,
-      "overallBranches": 88.95,
-      "overallFunctions": 92.1,
-      "overallStatements": 93.44,
-      "criticalGameLogicLines": 100,
-      "businessLines": 100,
-      "dataInfrastructureLines": 91.94,
-      "uiLines": 100,
+      "lastRunAt": "2026-11-11T21:10:27+01:00",
+      "overallLines": 97.22,
+      "overallBranches": 91.64,
+      "overallFunctions": 95.13,
+      "overallStatements": 95.29,
+      "criticalGameLogicLines": 99.64,
+      "businessLines": 99.64,
+      "dataInfrastructureLines": 91.22,
+      "uiLines": 98.11,
       "i18nLines": 96.42,
       "branches": {
-        "criticalGameLogic": 99.45,
-        "business": null,
-        "dataInfrastructure": 87.5,
-        "ui": 100
+        "criticalGameLogic": 98.33,
+        "business": 98.33,
+        "dataInfrastructure": 90,
+        "ui": 92.15
       },
-      "details": "Alle Abdeckungsgrenzen sind erfüllt. Daten und Infrastruktur erreichen 91,94 % Zeilen- und 87,50 % Verzweigungsabdeckung."
+      "details": "Spiellogik erreicht 99,64 % Zeilen- und 98,33 % Verzweigungsabdeckung. Daten 91,22 % und Infrastruktur 100 % Zeilen, Oberfläche 98,11 % Zeilen und 92,15 % Verzweigungen."
     }
   },
   "phases": [
@@ -406,18 +406,6 @@
       ]
     },
     {
-      "id": "PH-10",
-      "name": "Mobile-Optimierung der Oberfläche",
-      "status": "done",
-      "tasks": [
-        {
-          "id": "PH-10-01",
-          "title": "Mobile-first Oberfläche mit Daumenzone",
-          "status": "done"
-        }
-      ]
-    },
-    {
       "id": "PH-09",
       "name": "Spätere Erweiterungen: Multiplayer und weitere Spiele",
       "status": "planned",
@@ -443,9 +431,50 @@
           "status": "planned"
         }
       ]
+    },
+    {
+      "id": "PH-10",
+      "name": "Mobile-Optimierung der Oberfläche",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "PH-10-01",
+          "title": "Mobile-first Oberfläche mit Daumenzone",
+          "status": "done"
+        },
+        {
+          "id": "PH-10-02",
+          "title": "Spielablauf: Rundenübersicht, Pause, Überspringlimit und Stechen",
+          "status": "done"
+        }
+      ]
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "Stechen bei Gleichstand ergänzt: Zwei bis drei gleichauf liegende Teams erklären je drei Begriffe auf Zeit (Strafe 5 Sekunden, einmal überspringen, 90 Sekunden Limit). Es gewinnt die kürzeste Zeit. Die Schwierigkeit steht auf den Karten."
+    },
+    {
+      "date": "2026-11-11",
+      "summary": "Laufende Runde überarbeitet: Rundenkopf mit Zeitbalken, Pause mit verdeckter Karte, Neustart mit neuen Karten, vorzeitiges Beenden, begrenztes Überspringen und klar abgesetzte verbotene Wörter."
+    },
+    {
+      "date": "2026-11-11",
+      "summary": "Rundenübersicht mit Punkteliste, zufälliger Teamreihenfolge und Rundenauswertung mit änderbarer Wertung; Endergebnis im Stil der übrigen Ansichten."
+    },
+    {
+      "date": "2026-11-11",
+      "summary": "Einheitliche Navigation und Bestätigungen: im Spiel nur noch „Spiel beenden“, Zweifach-Bestätigung am Button, kompaktes Einstellungsfenster."
+    },
+    {
+      "date": "2026-11-11",
+      "summary": "Tabu-Karten haben jetzt vier verbotene Wörter, Kartenquelle (lokal, KI, beides) und Teamnamen sind wählbar, KI-Karten werden während der Runde nachgeladen."
+    },
+    {
+      "date": "2026-11-11",
+      "summary": "PH-10-01: Oberfläche mobile-first überarbeitet, blaues Akzentfarbschema, Grün und Rot für Aktionen."
+    },
     {
       "date": "2026-11-11",
       "summary": "Tabu-Oberfläche überarbeitet: zentrierte Handybreite, kompakte Spielkonfiguration, aufklappbare Kartenoptionen und reine Zahlenanzeige im Countdown."

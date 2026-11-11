@@ -121,6 +121,9 @@ export function TabooRound({
           aria-atomic="true"
           lang={card.language}
         >
+          <p className="taboo-round__difficulty" data-difficulty={card.difficulty}>
+            {t(`tabooSetup.difficulties.${card.difficulty}`)}
+          </p>
           <h2>{card.term}</h2>
           <p className="taboo-round__forbidden-label">{t("tabooRound.forbiddenLabel")}</p>
           <ul>

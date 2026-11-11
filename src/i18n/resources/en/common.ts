@@ -16,6 +16,21 @@ export const common = {
     newSetup: "Set up a new game",
     show: "Show final results",
   },
+  tabooTiebreak: {
+    title: "Tiebreak",
+    round: "Tiebreak attempt",
+    rules:
+      "It's a tie! Every team explains three cards against the clock. Forbidden word: +5 seconds, one skip is allowed. The most cards in the shortest time wins.",
+    results: "Tiebreak results",
+    result: "{{solved}}/{{total}} cards · {{time}} s",
+    pending: "still to play",
+    start: "Start tiebreak",
+    cardOf: "Card {{current}}/{{total}}",
+    penalty: "+{{seconds}} s",
+    timer: "{{time}} seconds",
+    endAttempt: "End attempt",
+    noCards: "Not enough cards are available for the tiebreak.",
+  },
   tabooRound: {
     standings: "Total scores",
     teamTotal: "{{team}}: {{score}}",
@@ -54,6 +69,8 @@ export const common = {
   tabooSetup: {
     cardSource: "Card source",
     cardSources: { local: "Local only", ai: "AI only", both: "Both" },
+    tiebreak: "Tiebreak on a tie",
+    tiebreakOptions: { on: "On", off: "Off" },
     skips: "Skips per round",
     skipOptions: { "0": "None", "1": "1", "2": "2", "3": "3", unlimited: "Unlimited" },
     moreOptions: "More options",
