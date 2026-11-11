@@ -125,3 +125,24 @@ it("lets a turn use more than its fair share of cards and reuses cards in later 
   await user.click(screen.getByRole("button", { name: "Start round" }));
   expect(screen.getByRole("timer")).toBeVisible();
 });
+
+it.each([
+  ["None", false, 0],
+  ["Unlimited", true, 3],
+])("applies the skip option %s", async (option, canSkipAgain, skips) => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
+    </I18nextProvider>,
+  );
+  await user.click(screen.getByRole("radio", { name: option }));
+  await user.click(screen.getByRole("button", { name: "Start" }));
+  await user.click(screen.getByRole("button", { name: "Start round" }));
+  for (let index = 0; index < skips; index += 1) {
+    const skip = screen.queryByRole("button", { name: "Skip" });
+    if (skip) await user.click(skip);
+  }
+  expect(Boolean(screen.queryByRole("button", { name: "Skip" }))).toBe(canSkipAgain);
+});

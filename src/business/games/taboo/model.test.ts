@@ -64,6 +64,17 @@ describe("Taboo domain validation", () => {
         expect(validateConfiguration({ ...configuration, [field]: value }).valid).toBe(false);
     },
   );
+  it.each([-1, 1.5, NaN, Infinity])("rejects an invalid skip limit: %s", (skipsPerRound) => {
+    expect(validateConfiguration({ ...configuration, skipsPerRound }).valid).toBe(false);
+  });
+  it.each([0, 1, 3, undefined])("accepts the skip limit %s", (skipsPerRound) => {
+    expect(
+      validateConfiguration({
+        ...configuration,
+        ...(skipsPerRound === undefined ? {} : { skipsPerRound }),
+      }).valid,
+    ).toBe(true);
+  });
   it("rejects unsupported configuration languages", () => {
     expect(validateConfiguration({ ...configuration, cardLanguage: "fr" as "en" }).valid).toBe(
       false,

@@ -33,7 +33,12 @@ describe("Taboo state machine", () => {
   it("records results and lets a finished round be revised only for its own turn", () => {
     const turn = { round: 1, teamIndex: 0 };
     const second = { ...card, id: "second" };
-    const revise = { type: "reviseResult", turn, cardId: card.id, outcome: "skipped" } as const;
+    const revise = {
+      type: "reviseResult",
+      turn,
+      cardId: card.id,
+      outcome: "forbiddenWord",
+    } as const;
     const initial = setup();
     expect(transitionTaboo(initial, revise)).toBe(initial);
     const running = transitionTaboo(initial, { ...start, remainingCards: [second] });
@@ -63,6 +68,21 @@ describe("Taboo state machine", () => {
     const bothRight = transitionTaboo(wrong, { ...revise, cardId: second.id, outcome: "correct" });
     expect(bothRight).toMatchObject({ roundPoints: 1, scores: [1, 0, 0] });
     expect(bothRight).toMatchObject({ resolvedCardIds: [card.id, second.id] });
+
+    // Skipped cards stay in the list but are final.
+    const third = { ...card, id: "third" };
+    const skippedRound = transitionTaboo(
+      transitionTaboo(transitionTaboo(setup(), { ...start, remainingCards: [third] }), {
+        ...resolve,
+        outcome: "skipped",
+      }),
+      { ...resolve, cardId: third.id, outcome: "correct" },
+    );
+    expect(skippedRound).toMatchObject({ status: "roundEnded", scores: [1, 0, 0] });
+    expect(transitionTaboo(skippedRound, { ...revise, outcome: "correct" })).toBe(skippedRound);
+    expect(transitionTaboo(skippedRound, { ...revise, cardId: third.id, outcome: "skipped" })).toBe(
+      skippedRound,
+    );
   });
 
   it("awards a sole win to the second team after one round per team", () => {
@@ -211,5 +231,35 @@ describe("Taboo state machine", () => {
     expect(transitionTaboo(next, unchanged)).toBe(next);
     expect(transitionTaboo(next, { ...unchanged, turn: { round: 2, teamIndex: 0 } })).toBe(next);
     expect(transitionTaboo(setup(), { ...unchanged, cards: [fresh] })).toEqual(setup());
+  });
+
+  it("limits skips per turn and lets unlimited configurations skip freely", () => {
+    const turn = { round: 1, teamIndex: 0 };
+    const cards = ["a", "b", "c"].map((id) => ({ ...card, id }));
+    const skip = (cardId: string) =>
+      ({ type: "resolveCard", turn, cardId, outcome: "skipped" }) as const;
+    const limited = transitionTaboo(setup({ ...configuration, skipsPerRound: 1 }), {
+      type: "startRound",
+      card: cards[0]!,
+      remainingCards: [cards[1]!, cards[2]!],
+    });
+    const afterSkip = transitionTaboo(limited, skip("a"));
+    expect(afterSkip).toMatchObject({ card: { id: "b" } });
+    expect(transitionTaboo(afterSkip, skip("b"))).toBe(afterSkip);
+    expect(
+      transitionTaboo(afterSkip, { type: "resolveCard", turn, cardId: "b", outcome: "correct" }),
+    ).toMatchObject({ card: { id: "c" }, scores: [1, 0, 0] });
+
+    const none = transitionTaboo(setup({ ...configuration, skipsPerRound: 0 }), start);
+    expect(transitionTaboo(none, skip(card.id))).toBe(none);
+
+    const free = transitionTaboo(setup(), {
+      type: "startRound",
+      card: cards[0]!,
+      remainingCards: [cards[1]!, cards[2]!],
+    });
+    expect(transitionTaboo(transitionTaboo(free, skip("a")), skip("b"))).toMatchObject({
+      card: { id: "c" },
+    });
   });
 });

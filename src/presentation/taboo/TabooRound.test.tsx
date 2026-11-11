@@ -102,6 +102,8 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     fireEvent.click(within(round).getByRole("button", { name: "Correct" }));
     expect(within(round).getByRole("heading").textContent).not.toBe(firstTerm);
     fireEvent.click(within(round).getByRole("button", { name: "Skip" }));
+    // The single skip per round is used up, so the button disappears.
+    expect(within(round).queryByRole("button", { name: "Skip" })).not.toBeInTheDocument();
     fireEvent.click(within(round).getByRole("button", { name: "Forbidden word" }));
     expect(round).toHaveTextContent("Score: 1");
     expect(within(round).getByRole("timer")).toHaveTextContent(/^59$/);
@@ -115,11 +117,10 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
     const review = within(screen.getByRole("region", { name: "Played round: Team 1" }));
     const items = review.getAllByRole("button");
-    expect(items.map((item) => item.getAttribute("aria-pressed"))).toEqual([
-      "true",
-      "false",
-      "false",
-    ]);
+    // The skipped card stays visible but neutral and cannot be changed.
+    expect(review.getAllByRole("listitem")).toHaveLength(3);
+    expect(review.getByText("Skipped")).toBeVisible();
+    expect(items.map((item) => item.getAttribute("aria-pressed"))).toEqual(["true", "false"]);
     fireEvent.click(items[1]!);
     expect(standingsRow(0)).toHaveTextContent("Team 1: 2");
     expect(items[1]).toHaveAttribute("aria-pressed", "true");

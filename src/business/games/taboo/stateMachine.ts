@@ -95,7 +95,9 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     )
       return state;
     const previous = state.results.find((result) => result.card.id === event.cardId);
-    if (!previous || previous.outcome === event.outcome) return state;
+    // Skipped cards are not part of the scoring and cannot be revised.
+    if (!previous || previous.outcome === "skipped" || event.outcome === "skipped") return state;
+    if (previous.outcome === event.outcome) return state;
     const delta = Number(event.outcome === "correct") - Number(previous.outcome === "correct");
     return {
       ...state,
@@ -114,6 +116,14 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
       event.turn.round !== state.turn.round ||
       event.turn.teamIndex !== state.turn.teamIndex ||
       event.cardId !== state.card.id
+    )
+      return state;
+
+    const { skipsPerRound } = configuration;
+    if (
+      event.outcome === "skipped" &&
+      skipsPerRound !== undefined &&
+      countSkips(state.results) >= skipsPerRound
     )
       return state;
 
@@ -223,6 +233,10 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     scores,
     resolvedCardIds,
   };
+}
+
+export function countSkips(results: readonly TabooResult[]): number {
+  return results.filter((result) => result.outcome === "skipped").length;
 }
 
 export function getNextTabooTurn(

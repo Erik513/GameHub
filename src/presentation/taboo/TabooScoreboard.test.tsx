@@ -11,11 +11,11 @@ const teams = [
   { id: "d", name: "Wolves" },
 ];
 
-it("sorts teams by points, keeps playing order for ties and marks the active team", async () => {
+it("sorts teams by points, keeps playing order for ties and marks winners", async () => {
   const i18n = await createGameHubI18n("de");
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooScoreboard activeTeamId="c" scores={[1, 3, 1, 0]} teams={teams} winnerIds={["b"]} />
+      <TabooScoreboard scores={[1, 3, 1, 0]} teams={teams} winnerIds={["b"]} />
     </I18nextProvider>,
   );
   const rows = within(screen.getByRole("list", { name: "Gesamtpunktestand" })).getAllByRole(
@@ -27,7 +27,7 @@ it("sorts teams by points, keeps playing order for ties and marks the active tea
     "Bears: 1",
     "Wolves: 0",
   ]);
-  expect(rows[2]).toHaveAttribute("aria-current", "true");
+  expect(rows[2]).not.toHaveAttribute("aria-current");
   expect(rows[0]).toHaveAttribute("data-winner", "true");
 });
 

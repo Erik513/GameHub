@@ -21,6 +21,25 @@ export function TabooRoundReview({ onRevise, results, teamName }: TabooRoundRevi
           <p className="taboo-review__hint">{t("tabooRound.review.hint")}</p>
           <ul className="taboo-review__list">
             {results.map(({ card, outcome }) => {
+              const content = (label: string) => (
+                <>
+                  <span className="taboo-review__card">
+                    <span>{card.term}</span>
+                    <small>{card.forbiddenWords.join(" · ")}</small>
+                  </span>
+                  <span lang={undefined}>{label}</span>
+                </>
+              );
+              if (outcome === "skipped") {
+                // Skipped cards stay visible but neutral and cannot be changed.
+                return (
+                  <li key={card.id}>
+                    <div className="taboo-review__item" data-skipped="true" lang={card.language}>
+                      {content(t("tabooRound.review.skipped"))}
+                    </div>
+                  </li>
+                );
+              }
               const correct = outcome === "correct";
               return (
                 <li key={card.id}>
@@ -32,13 +51,7 @@ export function TabooRoundReview({ onRevise, results, teamName }: TabooRoundRevi
                     type="button"
                     onClick={() => onRevise(card.id, correct ? "forbiddenWord" : "correct")}
                   >
-                    <span className="taboo-review__card">
-                      <span>{card.term}</span>
-                      <small>{card.forbiddenWords.join(" · ")}</small>
-                    </span>
-                    <span lang={undefined}>
-                      {t(correct ? "tabooRound.review.correct" : "tabooRound.review.wrong")}
-                    </span>
+                    {content(t(correct ? "tabooRound.review.correct" : "tabooRound.review.wrong"))}
                   </button>
                 </li>
               );

@@ -22,6 +22,8 @@ export interface GameConfiguration {
   readonly roundDurationSeconds: number;
   readonly roundsPerTeam: number;
   readonly cardLanguage: GameHubLanguage;
+  /** Allowed skips per turn; undefined means unlimited. */
+  readonly skipsPerRound?: number;
 }
 export interface ValidationIssue {
   readonly field: string;
@@ -68,6 +70,11 @@ export function validateConfiguration(
   }
   if (input.cardLanguage !== "de" && input.cardLanguage !== "en")
     issues.push({ field: "cardLanguage", code: "unsupported_language" });
+  if (
+    input.skipsPerRound !== undefined &&
+    (!Number.isSafeInteger(input.skipsPerRound) || input.skipsPerRound < 0)
+  )
+    issues.push({ field: "skipsPerRound", code: "non_negative_integer_required" });
   return issues.length ? { valid: false, issues } : { valid: true, value: { ...input, teams } };
 }
 

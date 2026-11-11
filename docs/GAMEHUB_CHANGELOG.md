@@ -32,6 +32,11 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Einheitliche Navigation: Hauptmenü und Spiel-Hauptfenster zeigen Einstellungen (Zahnrad), das Spiel-Hauptfenster zusätzlich das Haus zurück zum GameHub. Während einer laufenden Partie (Übersicht, Runde, Ergebnis) gibt es oben nur noch ein X „Spiel beenden“. Die Bestätigung erfolgt ohne Dialog: Das erste Tippen färbt den Button für 3 Sekunden rot, erst ein zweites Tippen beendet (neue Komponente `ConfirmButton`, ein schnelles Doppeltippen zählt nicht). Es führt zurück ins Hauptfenster des Spiels mit der bisherigen Einrichtung. Neue Spiele binden sich über `useGameExit` ein.
 - Einstellungsfenster kompakter; Schließen-Button als kleines X.
 - Rundenübersicht kompakter: Die Karte „Als Nächstes dran“ entfällt. Der Teamname sitzt (klein, ohne Rahmen) als Erweiterung direkt über dem Button „Runde starten“.
+- Überspringen pro Runde begrenzt: Auswahl „Nie / 1 / 2 / 3 / Unbegrenzt“ unter „Weitere Optionen“, Standard 1 (neue Konfiguration `skipsPerRound`, von der Zustandsmaschine durchgesetzt). Ist das Limit aufgebraucht, verschwindet „Überspringen“ und „Verbotenes Wort“ füllt die linke Spalte.
+- Der Überspringen-Button zeigt klein darunter den Hinweis „nur 1× pro Runde“ (bei anderen Limits „noch X von Y“).
+- Aktionsbuttons in der Runde neu angeordnet: „Richtig“ groß rechts (zwei Zeilen hoch), links oben „Verbotenes Wort“, darunter „Überspringen“.
+- Punkteübersicht ohne Hervorhebung des nächsten Teams; das Team steht über „Runde starten“.
+- Übersprungene Karten erscheinen in der Rundenübersicht neutral (grau, „Übersprungen“) und sind nicht änderbar; die Zustandsmaschine lehnt Änderungen an ihnen ab. Änderbar bleiben nur richtige und falsche Karten.
 - Orange Akzente (Markierungen, Kartenrand, verbotene Wörter, Spielkarte) durch das blaue Akzentblau ersetzt; Rot bleibt für „Verbotenes Wort“.
 - Teamnamen im Tabu-Setup frei wählbar; leere Felder fallen auf „Team N“ zurück, doppelte Namen werden abgelehnt.
 

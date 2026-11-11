@@ -806,20 +806,36 @@ h1 {
   background: linear-gradient(to bottom, transparent, var(--color-canvas) 0.75rem);
 }
 
-.taboo-round__actions .button {
+.game-preview .taboo-round__actions .button {
   width: 100%;
+  margin-top: 0;
   min-height: var(--touch-target);
   padding-inline: var(--space-2);
   font-size: var(--text-md);
 }
 
-.taboo-round__actions .button:first-child {
-  grid-column: 1 / -1;
+/* Thumb layout: the big "correct" button on the right, "forbidden" above "skip" on the left. */
+.taboo-round__actions {
+  grid-template-rows: repeat(2, 4rem);
 }
 
-.taboo-round__actions .button:first-child {
-  min-height: 4.5rem;
+.taboo-round__actions .button[data-outcome="correct"] {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-height: 0;
   font-size: var(--text-lg);
+}
+
+.taboo-round__actions .button[data-outcome="forbiddenWord"] {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+}
+
+.taboo-round__actions .button[data-outcome="skipped"] {
+  grid-column: 1;
+  grid-row: 2;
+  min-height: 0;
 }
 
 .taboo-round h2 {
@@ -1162,10 +1178,6 @@ h1 {
   content: counter(rank);
 }
 
-.taboo-scoreboard li[aria-current="true"] {
-  border-color: var(--color-accent);
-}
-
 .taboo-scoreboard li[data-winner] {
   border-color: var(--color-success);
 }
@@ -1282,4 +1294,27 @@ h1 {
   50% {
     box-shadow: 0 0 0 0.25rem rgb(255 111 97 / 35%);
   }
+}
+
+.taboo-review__item[data-skipped="true"] {
+  border-color: var(--color-line);
+  background: var(--color-surface-muted);
+  color: var(--color-ink-muted);
+  cursor: default;
+}
+
+/* With no skips left, the red button takes the whole left column. */
+.taboo-round__actions[data-skip-hidden="true"] .button[data-outcome="forbiddenWord"] {
+  grid-row: 1 / span 2;
+}
+
+.taboo-round__actions .button[data-outcome="skipped"] {
+  flex-direction: column;
+  gap: 0;
+}
+
+.taboo-round__actions .button[data-outcome="skipped"] small {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  opacity: 0.7;
 }

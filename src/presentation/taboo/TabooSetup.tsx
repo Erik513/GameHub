@@ -203,6 +203,9 @@ export function TabooSetup({
       ),
       roundsPerTeam: Number(data.get("rounds")),
       roundDurationSeconds: Number(data.get("duration")),
+      ...(data.get("skips") === "unlimited" || !data.has("skips")
+        ? {}
+        : { skipsPerRound: Number(data.get("skips")) }),
       cardLanguage,
     });
     if (!result.valid) {
@@ -332,13 +335,7 @@ export function TabooSetup({
           )}
           {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
           <h2>{t("tabooRound.standings")}</h2>
-          <TabooScoreboard
-            activeTeamId={
-              overview.turn ? overview.configuration.teams[overview.turn.teamIndex]?.id : undefined
-            }
-            scores={overview.scores}
-            teams={overview.configuration.teams}
-          />
+          <TabooScoreboard scores={overview.scores} teams={overview.configuration.teams} />
           {ended && (
             <TabooRoundReview
               results={ended.results}
@@ -459,6 +456,15 @@ export function TabooSetup({
           )}
           <details className="taboo-more">
             <summary>{t("tabooSetup.moreOptions")}</summary>
+            <SetupChoices
+              legend={t("tabooSetup.skips")}
+              name="skips"
+              initial="1"
+              options={(["0", "1", "2", "3", "unlimited"] as const).map((value) => ({
+                value,
+                label: t(`tabooSetup.skipOptions.${value}`),
+              }))}
+            />
             <SetupChoices
               legend={t("tabooSetup.difficulty")}
               name="difficulty"
