@@ -662,33 +662,72 @@
   gap: var(--space-3);
 }
 
-.taboo-card-list h3,
-.taboo-card-list p {
+.taboo-card-list h3 {
   margin: 0;
 }
 
-.taboo-card-list ul {
+.taboo-card-list__category > summary small {
+  margin-left: auto;
+  margin-right: var(--space-3);
+  color: var(--color-ink-muted);
+  font-weight: normal;
+}
+
+.taboo-card-list__category > ul {
   display: grid;
-  gap: var(--space-2);
   margin: 0;
-  padding: 0;
+  padding: 0 var(--space-4) var(--space-2);
   list-style: none;
 }
 
-.taboo-card-list li {
-  padding: var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
+.taboo-card-list__category > ul > li {
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--color-line);
 }
 
-.taboo-card-list__row {
+.taboo-card-list__category > ul > li:first-child {
+  border-top: 0;
+}
+
+/* One compact row per card: term, difficulty and (for own cards) an edit button, then the words. */
+.taboo-card-row {
   display: grid;
-  gap: var(--space-3);
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  column-gap: var(--space-3);
+  align-items: center;
 }
 
-.taboo-card-list__row small {
-  display: block;
+.taboo-card-row__term {
+  overflow-wrap: anywhere;
+}
+
+.taboo-card-row__level {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+.taboo-card-row__level[data-difficulty="easy"] {
+  color: var(--color-success);
+}
+
+.taboo-card-row__level[data-difficulty="medium"] {
+  color: var(--color-medium);
+}
+
+.taboo-card-row__level[data-difficulty="hard"] {
+  color: var(--color-danger-fill);
+}
+
+.taboo-card-row__words {
+  grid-column: 1 / -1;
   color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+.taboo-card-row__edit {
+  min-height: var(--touch-target);
+  padding-inline: var(--space-2);
 }
 
 .taboo-card-list__edit {
@@ -703,4 +742,43 @@
 
 .taboo-card-list__actions > * {
   flex: 1;
+}
+
+.taboo-card-entry__pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.taboo-card-entry__pair > input {
+  grid-column: 1 / -1;
+  order: 3;
+}
+
+/* Standard and own categories are shown as two lightly separated groups. */
+.taboo-category-group {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.taboo-category-group + .taboo-category-group {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-line);
+}
+
+.taboo-category-group > small {
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+}
+
+.taboo-suggestion {
+  display: grid;
+  gap: var(--space-1);
+  justify-items: start;
+}
+
+.taboo-suggestion__problem {
+  color: var(--color-danger);
 }

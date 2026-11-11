@@ -574,6 +574,37 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 - **Akzeptanzkriterien:** Regeln werden vor Umsetzung mit dem Auftraggeber abgestimmt; neue Modi sind ein Teil der Business-Schicht und nutzen die gemeinsamen Oberflächenbausteine.
 - **Status:** planned
 
+### Phase 13 – Karten und Kategorien neu gestalten
+
+Auftrag des Auftraggebers: Logik und Ansicht von Karten und Kategorien werden vereinfacht und bleiben kompakt und für das Handy ausgelegt. Annahmen (noch nicht bestätigt): Das einfache Formular ersetzt die Mehrzeilen-Eingabe; die Kategorien-Ansicht zeigt auch die mitgelieferten Karten, aber nur zum Lesen; eine Kategorie entsteht durch ihre Karten (keine leeren Kategorien).
+
+#### PH-13-01 – Karten einfach hinzufügen
+
+- **Ziel:** Oben auf der Kartenseite steht ein schlankes Formular: Kategorie, Schwierigkeit, Begriff und die vier verbotenen Wörter in einem Feld, durch Komma getrennt.
+- **Akzeptanzkriterien:** Eine Karte wird mit denselben Regeln wie bisher geprüft; Fehler und doppelte Begriffe werden verständlich gemeldet; Deutsch und Englisch; mobil kompakt.
+- **Ergebnis:** Das Formular „Karte hinzufügen“ steht oben auf der Kartenseite: Kategorie und Schwierigkeit nebeneinander, darunter Begriff und die vier verbotenen Wörter in einem Feld. Nach dem Speichern bleiben Kategorie und Schwierigkeit erhalten, der Fokus springt zurück auf den Begriff. Die Mehrzeilen-Eingabe entfällt.
+- **Status:** done
+
+#### PH-13-02 – Kategorien-Ansicht mit Kartentabelle
+
+- **Ziel:** Jede Kategorie lässt sich ausklappen und zeigt ihre Karten kompakt untereinander (Begriff, verbotene Wörter, Schwierigkeit); eigene Karten lassen sich dort bearbeiten und löschen.
+- **Akzeptanzkriterien:** Standardkarten sind nur lesbar; die Ansicht bleibt auf einem kleinen Handy ohne seitliches Scrollen bedienbar.
+- **Ergebnis:** „Karten nach Kategorie“: jede Kategorie ist ein ausklappbarer Block mit Zähler („15 (2 eigene)“). Die Karten stehen als kompakte Zeilen untereinander (Begriff und Schwierigkeit in Ampelfarbe, darunter die verbotenen Wörter), eigene Karten zuerst und mit Bearbeiten-Knopf; Standardkarten sind nur lesbar. Beim Bearbeiten stehen Begriff, Wörter, Kategorie und Schwierigkeit in einem kleinen Formular, Löschen mit Zweit-Tipp. Es werden nur Karten der gewählten Kartensprache gezeigt.
+- **Status:** done
+
+#### PH-13-03 – Hauptmenü: Kategorien getrennt
+
+- **Ziel:** Im Setup sind die Kategorien leicht getrennt in Standard und Eigene.
+- **Ergebnis:** Im Setup stehen die Kategorien in zwei leicht getrennten Gruppen „Standard“ und „Eigene“ (Beschriftung nur, wenn es eigene Kategorien gibt).
+- **Status:** done
+
+#### PH-13-04 – KI-Vorschlag für verbotene Wörter
+
+- **Ziel:** Beim Anlegen oder Bearbeiten einer Karte kann die lokale KI (Ollama, falls erreichbar) anhand des Begriffs vier verbotene Wörter vorschlagen.
+- **Akzeptanzkriterien:** Der Knopf erscheint nur, wenn eine lokale KI gefunden wurde; der Vorschlag wird geprüft (vier verschiedene Wörter, keines gleich dem Begriff) und nur in das Feld eingetragen, nicht automatisch gespeichert; die Kartenerfassung funktioniert ohne KI unverändert. Keine Daten verlassen den Rechner (nur `127.0.0.1`).
+- **Ergebnis:** Neuer Knopf „Wörter mit KI vorschlagen“ im Formular „Karte hinzufügen“ und im Bearbeiten-Formular. Er erscheint nur, wenn beim Öffnen der Kartenseite eine lokale Ollama-KI gefunden wurde. Der Vorschlag (vier verschiedene Wörter, keines gleich dem Begriff, geprüft in `reviewForbiddenWords`) wird ins Feld geschrieben und nicht automatisch gespeichert. Port `TabooWordSuggester` in der Business-Schicht, Adapter `ollamaTabooWordSuggester` in der Infrastruktur (nur `127.0.0.1`). Nicht an einer echten KI ausprobiert (auf diesem Rechner lief keine), nur mit Testdoubles.
+- **Status:** done
+
 ### Phase 9: Spätere Erweiterungen
 
 #### Tabu-Spielmodi für später

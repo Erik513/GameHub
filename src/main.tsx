@@ -6,6 +6,7 @@ import { tabooStandardCards } from "./data/tabooStandardCards";
 import { tabooLocalCandidates } from "./data/tabooLocalCandidates";
 import { createLocalTabooCardGenerator } from "./infrastructure/localTabooCardGenerator";
 import { discoverOllamaTabooCardGenerator } from "./infrastructure/ollamaTabooCardGenerator";
+import { discoverOllamaTabooWordSuggester } from "./infrastructure/ollamaTabooWordSuggester";
 import { gameHubI18n } from "./i18n";
 import { parseSupportedLanguage, resolveInitialLanguage } from "./i18n/languagePreference";
 import {
@@ -44,6 +45,7 @@ createRoot(rootElement).render(
       modules={[
         createTabooModule({
           cards: tabooStandardCards,
+          findWordSuggester: discoverOllamaTabooWordSuggester,
           generators: {
             local: createLocalTabooCardGenerator(tabooLocalCandidates),
             discover: discoverOllamaTabooCardGenerator,

@@ -1,11 +1,12 @@
 import { useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { parseCardEntries } from "../../business/games/taboo/cardEntry";
-import { builtInCategoryIds, customCategoryIds } from "../../business/games/taboo/categories";
+import { customCategoryIds } from "../../business/games/taboo/categories";
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
+import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
 import { Button, StatusMessage } from "../components";
-import { useAutoGrow } from "../game-kit";
+import { TabooWordSuggestion } from "./TabooWordSuggestion";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { newCategoryChoice, resolveCategory } from "./categoryChoice";
 import { difficulties } from "./tabooSetupModel";
@@ -17,104 +18,126 @@ interface TabooCardEntryProps {
   disabled: boolean;
   /** Saves the cards and resolves with the number of cards that were really new. */
   onAdd: (cards: readonly TabooCard[]) => Promise<number>;
+  /** Offers AI suggestions for the forbidden words when a local AI is available. */
+  suggester?: TabooWordSuggester | undefined;
 }
 
-type Feedback =
-  | { type: "added"; added: number; skipped: number }
-  | { type: "invalid"; lines: string }
-  | { type: "noCategory" | "noCards" | "storage" };
+type Feedback = "added" | "exists" | "invalid" | "noCategory" | "storage";
 
-/** Form to add many cards at once: one card per line, all with the same category and difficulty. */
-export function TabooCardEntry({ cardLanguage, cards, disabled, onAdd }: TabooCardEntryProps) {
+/** Short form for one card: category, difficulty, term and the four forbidden words. */
+export function TabooCardEntry({
+  cardLanguage,
+  cards,
+  disabled,
+  onAdd,
+  suggester,
+}: TabooCardEntryProps) {
   const { t } = useTranslation();
-  const [text, setText] = useState("");
+  const [term, setTerm] = useState("");
+  const [words, setWords] = useState("");
   const [feedback, setFeedback] = useState<Feedback>();
-  const [choice, setChoice] = useState<string>(builtInCategoryIds[0]);
+  const [choice, setChoice] = useState<string>("everyday");
   const [name, setName] = useState("");
-  const input = useRef<HTMLTextAreaElement>(null);
-  useAutoGrow(input, text);
-  const custom = customCategoryIds(cards, cardLanguage);
+  const [difficulty, setDifficulty] = useState<(typeof difficulties)[number]>("easy");
+  const termInput = useRef<HTMLInputElement>(null);
+  const title = t("tabooEntry.title", { language: t(`tabooEntry.languages.${cardLanguage}`) });
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
     const categoryId = resolveCategory(choice, name);
     if (!categoryId) {
-      setFeedback({ type: "noCategory" });
+      setFeedback("noCategory");
       return;
     }
-    const difficulty = difficulties.find((value) => value === data.get("difficulty")) ?? "easy";
-    const { cards: entered, invalidLines } = parseCardEntries(
-      text,
+    // The line format uses a colon after the term, so a colon inside the term is not allowed.
+    const { cards: entered } = parseCardEntries(
+      `${term.replace(/[:\r\n]/gu, " ")}: ${words.replace(/[\r\n]/gu, " ")}`,
       { categoryId, difficulty, language: cardLanguage },
       () => `own-${crypto.randomUUID()}`,
     );
-    if (invalidLines.length > 0) {
-      setFeedback({ type: "invalid", lines: invalidLines.join(", ") });
-      return;
-    }
-    if (entered.length === 0) {
-      setFeedback({ type: "noCards" });
+    if (entered.length !== 1) {
+      setFeedback("invalid");
       return;
     }
     try {
       const added = await onAdd(entered);
-      setFeedback({ type: "added", added, skipped: entered.length - added });
-      setText("");
-      if (choice === newCategoryChoice) {
-        setChoice(categoryId);
-        setName("");
+      setFeedback(added > 0 ? "added" : "exists");
+      if (added > 0) {
+        setTerm("");
+        setWords("");
+        if (choice === newCategoryChoice) {
+          setChoice(categoryId);
+          setName("");
+        }
+        termInput.current?.focus();
       }
     } catch {
-      setFeedback({ type: "storage" });
+      setFeedback("storage");
     }
   }
 
   return (
     <form className="taboo-card-entry" noValidate onSubmit={(event) => void submit(event)}>
-      <h3>{t("tabooEntry.title")}</h3>
-      <p>{t("tabooEntry.hint", { language: t(`tabooEntry.languages.${cardLanguage}`) })}</p>
-      <TabooCategoryField
-        choice={choice}
-        custom={custom}
-        name={name}
-        onChoice={setChoice}
-        onName={setName}
-      />
+      <h3>{title}</h3>
+      <div className="taboo-card-entry__pair">
+        <TabooCategoryField
+          choice={choice}
+          custom={customCategoryIds(cards, cardLanguage)}
+          name={name}
+          onChoice={setChoice}
+          onName={setName}
+        />
+        <label className="field">
+          <span>{t("tabooEntry.difficulty")}</span>
+          <select
+            className="field__input"
+            onChange={(event) =>
+              setDifficulty(difficulties.find((value) => value === event.target.value) ?? "easy")
+            }
+            value={difficulty}
+          >
+            {difficulties.map((value) => (
+              <option key={value} value={value}>
+                {t(`tabooSetup.difficulties.${value}`)}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
       <label className="field">
-        <span>{t("tabooEntry.difficulty")}</span>
-        <select className="field__input" defaultValue="easy" name="difficulty">
-          {difficulties.map((value) => (
-            <option key={value} value={value}>
-              {t(`tabooSetup.difficulties.${value}`)}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="field">
-        <span>{t("tabooEntry.cards")}</span>
-        <textarea
-          className="field__input taboo-card-entry__input"
-          onChange={(event) => setText(event.target.value)}
-          placeholder={t("tabooEntry.placeholder")}
-          ref={input}
-          rows={3}
-          value={text}
+        <span>{t("tabooEntry.term")}</span>
+        <input
+          autoComplete="off"
+          className="field__input"
+          onChange={(event) => setTerm(event.target.value)}
+          placeholder={t("tabooEntry.termPlaceholder")}
+          ref={termInput}
+          value={term}
         />
       </label>
+      <label className="field">
+        <span>{t("tabooEntry.words")}</span>
+        <input
+          autoComplete="off"
+          className="field__input"
+          onChange={(event) => setWords(event.target.value)}
+          placeholder={t("tabooEntry.wordsPlaceholder")}
+          value={words}
+        />
+      </label>
+      <TabooWordSuggestion
+        categoryId={resolveCategory(choice, name) || undefined}
+        language={cardLanguage}
+        onWords={setWords}
+        suggester={suggester}
+        term={() => term}
+      />
       <Button disabled={disabled} type="submit" variant="secondary">
         {t("tabooEntry.add")}
       </Button>
       {feedback && (
-        <StatusMessage
-          title={t("tabooEntry.title")}
-          tone={feedback.type === "added" ? "success" : "error"}
-        >
-          {feedback.type === "added"
-            ? t("tabooEntry.added", { count: feedback.added, skipped: feedback.skipped })
-            : feedback.type === "invalid"
-              ? t("tabooEntry.invalid", { lines: feedback.lines })
-              : t(`tabooEntry.${feedback.type}`)}
+        <StatusMessage title={title} tone={feedback === "added" ? "success" : "error"}>
+          {t(`tabooEntry.${feedback}`)}
         </StatusMessage>
       )}
     </form>

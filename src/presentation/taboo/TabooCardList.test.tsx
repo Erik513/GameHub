@@ -25,6 +25,15 @@ const goal: TabooCard = {
   categoryId: "Sport",
   difficulty: "medium",
 };
+const sun: TabooCard = {
+  id: "std-sun",
+  language: "en",
+  term: "Sun",
+  forbiddenWords: ["star", "hot", "day", "light"],
+  categoryId: "nature",
+  difficulty: "hard",
+};
+const mond: TabooCard = { ...sun, id: "std-mond", language: "de", term: "Mond" };
 
 async function renderList(overrides: Partial<Parameters<typeof TabooCardList>[0]> = {}) {
   const user = userEvent.setup();
@@ -34,11 +43,13 @@ async function renderList(overrides: Partial<Parameters<typeof TabooCardList>[0]
   render(
     <I18nextProvider i18n={i18n}>
       <TabooCardList
-        allCards={[moon, goal, { ...moon, id: "std", term: "Sun" }]}
+        allCards={[moon, goal, sun, mond]}
+        cardLanguage="en"
         disabled={false}
         onRemove={onRemove}
         onUpdate={onUpdate}
         ownCards={[moon, goal]}
+        standardCards={[sun, mond]}
         {...overrides}
       />
     </I18nextProvider>,
@@ -46,35 +57,44 @@ async function renderList(overrides: Partial<Parameters<typeof TabooCardList>[0]
   return { user, onUpdate, onRemove };
 }
 
-it("filters the cards and shows an empty state", async () => {
-  const { user } = await renderList();
-  expect(screen.getByRole("heading", { name: "My cards (2)" })).toBeVisible();
-  await user.type(screen.getByRole("searchbox", { name: "Search cards" }), "sport");
-  expect(screen.getByText("Goal")).toBeVisible();
-  expect(screen.queryByText("Moon")).not.toBeInTheDocument();
-  await user.clear(screen.getByRole("searchbox", { name: "Search cards" }));
-  await user.type(screen.getByRole("searchbox", { name: "Search cards" }), "zzz");
-  expect(screen.getByText("No card matches the search.")).toBeVisible();
-});
+function category(name: string) {
+  return screen.getByText(name, { selector: "summary span" }).closest("details")!;
+}
 
-it("shows a hint when there are no own cards", async () => {
-  await renderList({ ownCards: [] });
-  expect(screen.getByText(/no own cards yet/)).toBeVisible();
+it("groups cards by category with counts and lists own cards before standard cards", async () => {
+  const { user } = await renderList();
+  expect(screen.getByRole("heading", { name: "Cards by category" })).toBeVisible();
+  const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
+  expect(names).toEqual(["Everyday life", "Nature", "Culture", "Sport"]);
+  expect(within(category("Nature")).getByText("2 (1 own)")).toBeInTheDocument();
+  expect(within(category("Sport")).getByText("1 (1 own)")).toBeInTheDocument();
+
+  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  const rows = within(category("Nature")).getAllByRole("listitem");
+  expect(rows.map((row) => row.querySelector("strong")?.textContent)).toEqual(["Moon", "Sun"]);
+  expect(rows[0]).toHaveTextContent("night · sky · orbit · space");
+  expect(rows[1]).toHaveTextContent("Hard");
+  // Only own cards can be edited, and cards of the other language are not shown.
+  expect(within(rows[0]!).getByRole("button", { name: "Edit card Moon" })).toBeVisible();
+  expect(within(rows[1]!).queryByRole("button")).toBeNull();
+  expect(screen.queryByText("Mond")).not.toBeInTheDocument();
 });
 
 it("edits a card, validates the input and saves a new category", async () => {
   const { user, onUpdate } = await renderList();
+  await user.click(screen.getByText("Nature", { selector: "summary span" }));
   await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
+  const words = () => screen.getByLabelText("Four forbidden words, separated by commas");
 
-  await user.clear(screen.getByLabelText("Forbidden word 4"));
-  await user.type(screen.getByLabelText("Forbidden word 4"), "night");
+  await user.clear(words());
+  await user.type(words(), "night, sky, orbit");
   await user.click(screen.getByRole("button", { name: "Save" }));
   expect(screen.getByRole("alert")).toHaveTextContent("four different forbidden words");
 
   await user.clear(screen.getByLabelText("Term"));
   await user.type(screen.getByLabelText("Term"), "Sun");
-  await user.clear(screen.getByLabelText("Forbidden word 4"));
-  await user.type(screen.getByLabelText("Forbidden word 4"), "space");
+  await user.clear(words());
+  await user.type(words(), "night, sky, orbit, space");
   await user.click(screen.getByRole("button", { name: "Save" }));
   expect(screen.getByRole("alert")).toHaveTextContent("already exists");
   expect(onUpdate).not.toHaveBeenCalled();
@@ -85,7 +105,7 @@ it("edits a card, validates the input and saves a new category", async () => {
   await user.click(screen.getByRole("button", { name: "Save" }));
   expect(screen.getByRole("alert")).toHaveTextContent("Enter a name");
   await user.type(screen.getByLabelText("Name of the new category"), "Space");
-  await user.selectOptions(screen.getByLabelText("Difficulty"), "Hard");
+  await user.selectOptions(screen.getByLabelText("Difficulty"), "hard");
   await user.click(screen.getByRole("button", { name: "Save" }));
 
   expect(onUpdate).toHaveBeenCalledWith({
@@ -99,6 +119,7 @@ it("edits a card, validates the input and saves a new category", async () => {
 
 it("cancels editing and reports a storage failure", async () => {
   const { user } = await renderList({ onUpdate: () => Promise.reject(new Error("disk")) });
+  await user.click(screen.getByText("Sport", { selector: "summary span" }));
   await user.click(screen.getByRole("button", { name: "Edit card Goal" }));
   await user.click(screen.getByRole("button", { name: "Cancel" }));
   expect(screen.queryByLabelText("Term")).not.toBeInTheDocument();
@@ -108,22 +129,23 @@ it("cancels editing and reports a storage failure", async () => {
   expect(await screen.findByRole("alert")).toHaveTextContent("could not be saved");
 });
 
-it("deletes a card only after a second tap", async () => {
+it("deletes a card from the editor only after a second tap", async () => {
   const { user, onRemove } = await renderList();
-  const row = screen.getByText("Moon").closest("li")!;
-  await user.click(within(row).getByRole("button", { name: "Delete card Moon" }));
+  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
+  await user.click(screen.getByRole("button", { name: "Delete card Moon" }));
   expect(onRemove).not.toHaveBeenCalled();
   await new Promise((resolve) => setTimeout(resolve, 450));
-  await user.click(within(row).getByRole("button", { name: "Tap again to delete Moon" }));
+  await user.click(screen.getByRole("button", { name: "Tap again to delete Moon" }));
   expect(onRemove).toHaveBeenCalledWith("own-moon");
 });
 
 it.each([
-  ["en", "Manage own cards", "Edit card Moon", "Save"],
-  ["de", "Eigene Karten verwalten", "Karte Moon bearbeiten", "Speichern"],
+  ["en", "Manage own cards", "Edit card Moon", "Save", "Nature"],
+  ["de", "Eigene Karten verwalten", "Karte Moon bearbeiten", "Speichern", "Natur"],
 ] as const)(
   "edits and deletes a stored card from the card page in %s",
-  async (language, manage, edit, save) => {
+  async (language, manage, edit, save, nature) => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n(language);
     const repository = new IndexedDbTabooCardRepository(new IDBFactory());
@@ -134,8 +156,9 @@ it.each([
       </I18nextProvider>,
     );
     await user.click(screen.getByRole("button", { name: manage }));
+    await user.click(screen.getByText(nature, { selector: "summary span" }));
     await user.click(await screen.findByRole("button", { name: edit }));
-    await user.type(screen.getByRole("textbox", { name: /Begriff|Term/ }), "s");
+    await user.type(screen.getAllByRole("textbox", { name: /Begriff|Term/ }).at(-1)!, "s");
     await user.click(screen.getByRole("button", { name: save }));
     await waitFor(async () => {
       expect((await repository.list())[0]?.term).toBe("Moons");
@@ -143,10 +166,9 @@ it.each([
     expect(await screen.findByText("Moons")).toBeVisible();
 
     await user.click(
-      screen.getByRole("button", {
-        name: /Moons (löschen|löschen)|Delete card Moons|Karte Moons löschen/,
-      }),
+      screen.getByRole("button", { name: /Edit card Moons|Karte Moons bearbeiten/ }),
     );
+    await user.click(screen.getByRole("button", { name: /Delete card Moons|Karte Moons löschen/ }));
     await new Promise((resolve) => setTimeout(resolve, 450));
     await user.click(
       screen.getByRole("button", { name: /Tap again to delete|Nochmal tippen, um/ }),

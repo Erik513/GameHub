@@ -7,6 +7,7 @@ import {
 } from "../../business/games/taboo/cardExchange";
 import type { TabooCardRepository } from "../../business/games/taboo/cardRepository";
 import type { TabooCard } from "../../business/games/taboo/model";
+import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { TabooCardEntry } from "./TabooCardEntry";
@@ -15,6 +16,9 @@ import { TabooSetup } from "./TabooSetup";
 import type { TabooGenerators } from "./TabooGeneration";
 
 interface TabooLibraryProps {
+  /** Looks for a local AI that can suggest forbidden words; resolves to nothing without one. */
+  findWordSuggester?:
+    ((signal: AbortSignal) => Promise<TabooWordSuggester | undefined>) | undefined;
   generators?: TabooGenerators | undefined;
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
@@ -23,12 +27,29 @@ interface TabooLibraryProps {
 
 type Feedback = { type: "invalid" | "storage" } | { type: "imported"; count: number };
 
-export function TabooLibrary({ cardLanguage, cards, repository, generators }: TabooLibraryProps) {
+export function TabooLibrary({
+  cardLanguage,
+  cards,
+  repository,
+  generators,
+  findWordSuggester,
+}: TabooLibraryProps) {
   const { t } = useTranslation();
   const [ownCards, setOwnCards] = useState<readonly TabooCard[]>();
   const [feedback, setFeedback] = useState<Feedback>();
   const [busy, setBusy] = useState(false);
   const [page, setPage] = useState<"setup" | "cards">("setup");
+  const [suggester, setSuggester] = useState<TabooWordSuggester>();
+
+  // The local AI is only looked up when the card page is opened.
+  useEffect(() => {
+    if (page !== "cards" || !findWordSuggester) return;
+    const controller = new AbortController();
+    void findWordSuggester(controller.signal).then((found) => {
+      if (!controller.signal.aborted) setSuggester(found);
+    });
+    return () => controller.abort();
+  }, [findWordSuggester, page]);
 
   useEffect(() => {
     if (!repository) return;
@@ -127,13 +148,17 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
             cards={allCards}
             disabled={busy}
             onAdd={saveCards}
+            suggester={suggester}
           />
           <TabooCardList
             allCards={allCards}
+            cardLanguage={cardLanguage}
             disabled={busy}
             onRemove={removeCard}
             onUpdate={updateCard}
             ownCards={ownCards ?? []}
+            standardCards={cards}
+            suggester={suggester}
           />
           <div className="taboo-setup__actions">
             <label>

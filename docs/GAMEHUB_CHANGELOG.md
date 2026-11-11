@@ -2,6 +2,17 @@
 
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
+## 2026-11-12
+
+### PH-13 – Karten und Kategorien neu gestalten
+
+- **PH-13-01:** Neues schlankes Formular „Karte hinzufügen“ oben auf der Kartenseite (Kategorie, Schwierigkeit, Begriff, vier verbotene Wörter in einem Feld mit Komma). Die Mehrzeilen-Eingabe ist entfallen.
+- **PH-13-02:** „Karten nach Kategorie“ ersetzt die flache Liste: jede Kategorie ausklappbar, Karten als kompakte Zeilen, eigene Karten bearbeitbar und löschbar, Standardkarten nur lesbar.
+- **PH-13-03:** Im Setup sind die Kategorien in „Standard“ und „Eigene“ getrennt.
+- **PH-13-04:** KI-Vorschlag für verbotene Wörter: Knopf „Wörter mit KI vorschlagen“ beim Hinzufügen und Bearbeiten, sichtbar nur mit erreichbarer lokaler Ollama-KI. Der Vorschlag wird geprüft und nur ins Feld eingetragen. Neuer Port `TabooWordSuggester`, Adapter `ollamaTabooWordSuggester`; die Modellsuche ist als `findOllamaModel` mit dem Kartengenerator geteilt. Ohne KI bleibt alles unverändert.
+- Annahmen: Eine Kategorie entsteht durch ihre Karten (keine leeren Kategorien); die Ansicht zeigt nur Karten der gewählten Kartensprache.
+- Prüfungen: 295 Unit-Tests, 25 e2e (frischer Build), tsc, eslint, Prettier, Architekturprüfung.
+
 ## 2026-11-11
 
 ### PH-12-06 – Karteneditor für eigene Karten

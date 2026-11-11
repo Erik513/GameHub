@@ -164,16 +164,27 @@ export function TabooSetupForm({
           )}
           <fieldset className="kit-choice-group">
             <legend>{t("tabooSetup.categories")}</legend>
-            <div className="kit-choice-grid kit-choice-grid--categories">
-              {categoryIds.map((category) => (
-                <label className="kit-choice" key={category}>
-                  <input type="checkbox" name="category" value={category} defaultChecked />
-                  <span>
-                    {isBuiltIn(category) ? t(`tabooSetup.category.${category}`) : category}
-                  </span>
-                </label>
-              ))}
-            </div>
+            {(["standard", "own"] as const).map((group) => {
+              const ids = categoryIds.filter((id) => isBuiltIn(id) === (group === "standard"));
+              if (ids.length === 0) return null;
+              return (
+                <div className="taboo-category-group" key={group}>
+                  {categoryIds.some((id) => !isBuiltIn(id)) && (
+                    <small>{t(`tabooSetup.categoryGroups.${group}`)}</small>
+                  )}
+                  <div className="kit-choice-grid kit-choice-grid--categories">
+                    {ids.map((category) => (
+                      <label className="kit-choice" key={category}>
+                        <input type="checkbox" name="category" value={category} defaultChecked />
+                        <span>
+                          {isBuiltIn(category) ? t(`tabooSetup.category.${category}`) : category}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </fieldset>
           <ChoiceGroup
             info={info("difficulty", t("tabooSetup.difficulty"))}

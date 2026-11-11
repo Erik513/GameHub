@@ -14,6 +14,7 @@ const allowedIdenticalValues = [
   "tabooPlayers.placeholder",
   "tabooPlayers.teams",
   "tabooRound.teamTotal",
+  "tabooSetup.categoryGroups.standard",
   "tabooSetup.roundOptions.unlimited",
   "tabooSetup.skipOptions.1",
   "tabooSetup.skipOptions.2",

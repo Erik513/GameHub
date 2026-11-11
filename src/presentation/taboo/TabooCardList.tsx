@@ -1,21 +1,29 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { selectNewTabooCards } from "../../business/games/taboo/cardExchange";
 import { builtInCategoryIds, customCategoryIds } from "../../business/games/taboo/categories";
 import { validateCard, type TabooCard } from "../../business/games/taboo/model";
+import type { SupportedLanguage } from "../../i18n";
+import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
 import { Button, ConfirmButton, StatusMessage } from "../components";
+import { TabooWordSuggestion } from "./TabooWordSuggestion";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { resolveCategory } from "./categoryChoice";
 import { difficulties, teamNameFrom } from "./tabooSetupModel";
 
 interface TabooCardListProps {
-  /** Every known card, used to find duplicate terms and the available categories. */
+  /** Every known card, used to find duplicate terms. */
   allCards: readonly TabooCard[];
+  cardLanguage: SupportedLanguage;
   disabled: boolean;
   onRemove: (id: string) => Promise<void>;
   onUpdate: (card: TabooCard) => Promise<void>;
-  /** The player's own cards; standard cards cannot be changed. */
+  /** The player's own cards; they can be edited and deleted. */
   ownCards: readonly TabooCard[];
+  /** The cards that ship with the app; they are shown read-only. */
+  standardCards: readonly TabooCard[];
+  /** Offers AI suggestions for the forbidden words when a local AI is available. */
+  suggester?: TabooWordSuggester | undefined;
 }
 
 type Problem = "invalid" | "duplicate" | "noCategory" | "storage";
@@ -23,29 +31,30 @@ type Problem = "invalid" | "duplicate" | "noCategory" | "storage";
 const isBuiltIn = (id: string): id is (typeof builtInCategoryIds)[number] =>
   (builtInCategoryIds as readonly string[]).includes(id);
 
-/** The player's own cards with a small editor: change a card or delete it. */
+/**
+ * All cards of the card language grouped by category. Every category can be opened to show its
+ * cards in compact rows; the player's own cards can be changed in place.
+ */
 export function TabooCardList({
   allCards,
+  cardLanguage,
   disabled,
   onRemove,
   onUpdate,
   ownCards,
+  standardCards,
+  suggester,
 }: TabooCardListProps) {
   const { t } = useTranslation();
-  const [filter, setFilter] = useState("");
   const [editing, setEditing] = useState<TabooCard>();
   const [problem, setProblem] = useState<Problem>();
   const [choice, setChoice] = useState("");
   const [name, setName] = useState("");
+  const editForm = useRef<HTMLFormElement>(null);
 
   const categoryName = (id: string) => (isBuiltIn(id) ? t(`tabooSetup.category.${id}`) : id);
-  const needle = filter.trim().toLowerCase();
-  const visible = ownCards.filter(
-    (card) =>
-      needle === "" ||
-      card.term.toLowerCase().includes(needle) ||
-      card.categoryId.toLowerCase().includes(needle),
-  );
+  const categoryIds = [...builtInCategoryIds, ...customCategoryIds(allCards, cardLanguage)];
+  const inLanguage = (card: TabooCard) => card.language === cardLanguage;
 
   function startEditing(card: TabooCard) {
     setEditing(card);
@@ -68,7 +77,7 @@ export function TabooCardList({
       ...editing,
       categoryId,
       difficulty: difficulty ?? editing.difficulty,
-      forbiddenWords: [1, 2, 3, 4].map((number) => teamNameFrom(data.get(`word${number}`))),
+      forbiddenWords: teamNameFrom(data.get("words")).split(/[,;]/u),
       term: teamNameFrom(data.get("term")),
     });
     if (!result.valid) {
@@ -99,126 +108,143 @@ export function TabooCardList({
     }
   }
 
-  if (ownCards.length === 0) {
+  function renderRow(card: TabooCard, own: boolean) {
+    if (own && editing?.id === card.id) {
+      return (
+        <form
+          className="taboo-card-list__edit"
+          noValidate
+          onSubmit={(event) => void save(event)}
+          ref={editForm}
+        >
+          <label className="field">
+            <span>{t("tabooList.term")}</span>
+            <input
+              autoComplete="off"
+              className="field__input"
+              defaultValue={card.term}
+              name="term"
+            />
+          </label>
+          <label className="field">
+            <span>{t("tabooList.words")}</span>
+            <input
+              autoComplete="off"
+              className="field__input"
+              defaultValue={card.forbiddenWords.join(", ")}
+              name="words"
+            />
+          </label>
+          <TabooWordSuggestion
+            categoryId={resolveCategory(choice, name) || undefined}
+            language={card.language}
+            onWords={(words) => {
+              const field = editForm.current?.elements.namedItem("words");
+              if (field instanceof HTMLInputElement) field.value = words;
+            }}
+            suggester={suggester}
+            term={() => {
+              const field = editForm.current?.elements.namedItem("term");
+              return field instanceof HTMLInputElement ? field.value : "";
+            }}
+          />
+          <div className="taboo-card-entry__pair">
+            <TabooCategoryField
+              choice={choice}
+              custom={customCategoryIds(allCards, card.language)}
+              name={name}
+              onChoice={setChoice}
+              onName={setName}
+            />
+            <label className="field">
+              <span>{t("tabooEntry.difficulty")}</span>
+              <select className="field__input" defaultValue={card.difficulty} name="difficulty">
+                {difficulties.map((value) => (
+                  <option key={value} value={value}>
+                    {t(`tabooSetup.difficulties.${value}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          {problem && (
+            <StatusMessage title={t("tabooList.edit")} tone="error">
+              {t(`tabooList.problems.${problem}`)}
+            </StatusMessage>
+          )}
+          <div className="taboo-card-list__actions">
+            <Button disabled={disabled} type="submit" variant="success">
+              {t("tabooList.save")}
+            </Button>
+            <Button onClick={() => setEditing(undefined)} variant="secondary">
+              {t("tabooList.cancel")}
+            </Button>
+            <ConfirmButton
+              armedContent={t("tabooList.deleteAgain")}
+              armedLabel={t("tabooList.deleteConfirm", { term: card.term })}
+              idleLabel={t("tabooList.deleteLabel", { term: card.term })}
+              onConfirm={() => void remove(card.id)}
+            >
+              {t("tabooList.delete")}
+            </ConfirmButton>
+          </div>
+        </form>
+      );
+    }
     return (
-      <section className="taboo-card-list">
-        <h3>{t("tabooList.title", { count: 0 })}</h3>
-        <p>{t("tabooList.empty")}</p>
-      </section>
+      <div className="taboo-card-row">
+        <strong className="taboo-card-row__term">{card.term}</strong>
+        <span className="taboo-card-row__level" data-difficulty={card.difficulty}>
+          {t(`tabooSetup.difficulties.${card.difficulty}`)}
+        </span>
+        <span className="taboo-card-row__words">{card.forbiddenWords.join(" · ")}</span>
+        {own && (
+          <Button
+            aria-label={t("tabooList.editLabel", { term: card.term })}
+            className="taboo-card-row__edit"
+            disabled={disabled}
+            onClick={() => startEditing(card)}
+            variant="quiet"
+          >
+            {t("tabooList.edit")}
+          </Button>
+        )}
+      </div>
     );
   }
 
   return (
     <section className="taboo-card-list">
-      <h3>{t("tabooList.title", { count: ownCards.length })}</h3>
-      <input
-        aria-label={t("tabooList.search")}
-        autoComplete="off"
-        className="field__input"
-        onChange={(event) => setFilter(event.target.value)}
-        placeholder={t("tabooList.search")}
-        type="search"
-        value={filter}
-      />
+      <h3>{t("tabooList.title")}</h3>
       {problem && !editing && (
-        <StatusMessage title={t("tabooList.title", { count: ownCards.length })} tone="error">
+        <StatusMessage title={t("tabooList.title")} tone="error">
           {t(`tabooList.problems.${problem}`)}
         </StatusMessage>
       )}
-      <ul aria-label={t("tabooList.title", { count: ownCards.length })}>
-        {visible.map((card) => (
-          <li key={card.id}>
-            {editing?.id === card.id ? (
-              <form
-                className="taboo-card-list__edit"
-                noValidate
-                onSubmit={(event) => void save(event)}
-              >
-                <label className="field">
-                  <span>{t("tabooList.term")}</span>
-                  <input
-                    autoComplete="off"
-                    className="field__input"
-                    defaultValue={card.term}
-                    name="term"
-                  />
-                </label>
-                {card.forbiddenWords.map((word, index) => (
-                  <label className="field" key={index}>
-                    <span>{t("tabooList.word", { number: index + 1 })}</span>
-                    <input
-                      autoComplete="off"
-                      className="field__input"
-                      defaultValue={word}
-                      name={`word${index + 1}`}
-                    />
-                  </label>
-                ))}
-                <TabooCategoryField
-                  choice={choice}
-                  custom={customCategoryIds(allCards, card.language)}
-                  name={name}
-                  onChoice={setChoice}
-                  onName={setName}
-                />
-                <label className="field">
-                  <span>{t("tabooEntry.difficulty")}</span>
-                  <select className="field__input" defaultValue={card.difficulty} name="difficulty">
-                    {difficulties.map((value) => (
-                      <option key={value} value={value}>
-                        {t(`tabooSetup.difficulties.${value}`)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {problem && (
-                  <StatusMessage title={t("tabooList.edit")} tone="error">
-                    {t(`tabooList.problems.${problem}`)}
-                  </StatusMessage>
-                )}
-                <div className="taboo-card-list__actions">
-                  <Button disabled={disabled} type="submit" variant="success">
-                    {t("tabooList.save")}
-                  </Button>
-                  <Button onClick={() => setEditing(undefined)} variant="secondary">
-                    {t("tabooList.cancel")}
-                  </Button>
-                </div>
-              </form>
-            ) : (
-              <div className="taboo-card-list__row">
-                <div>
-                  <strong>{card.term}</strong>
-                  <small>
-                    {categoryName(card.categoryId)} ·{" "}
-                    {t(`tabooSetup.difficulties.${card.difficulty}`)} ·{" "}
-                    {card.language.toUpperCase()}
-                  </small>
-                </div>
-                <div className="taboo-card-list__actions">
-                  <Button
-                    aria-label={t("tabooList.editLabel", { term: card.term })}
-                    disabled={disabled}
-                    onClick={() => startEditing(card)}
-                    variant="secondary"
-                  >
-                    {t("tabooList.edit")}
-                  </Button>
-                  <ConfirmButton
-                    armedLabel={t("tabooList.deleteConfirm", { term: card.term })}
-                    armedContent={t("tabooList.deleteAgain")}
-                    idleLabel={t("tabooList.deleteLabel", { term: card.term })}
-                    onConfirm={() => void remove(card.id)}
-                  >
-                    {t("tabooList.delete")}
-                  </ConfirmButton>
-                </div>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-      {visible.length === 0 && <p>{t("tabooList.noMatch")}</p>}
+      {categoryIds.map((categoryId) => {
+        const own = ownCards.filter((card) => inLanguage(card) && card.categoryId === categoryId);
+        const standard = standardCards.filter(
+          (card) => inLanguage(card) && card.categoryId === categoryId,
+        );
+        return (
+          <details className="taboo-more taboo-card-list__category" key={categoryId}>
+            <summary>
+              <span>{categoryName(categoryId)}</span>
+              <small>
+                {t("tabooList.count", { count: own.length + standard.length, own: own.length })}
+              </small>
+            </summary>
+            <ul>
+              {own.map((card) => (
+                <li key={card.id}>{renderRow(card, true)}</li>
+              ))}
+              {standard.map((card) => (
+                <li key={card.id}>{renderRow(card, false)}</li>
+              ))}
+            </ul>
+          </details>
+        );
+      })}
     </section>
   );
 }
