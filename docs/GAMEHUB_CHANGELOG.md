@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-08-04 – Release-Abnahme und Punktekorrektur
+
+- Versehentlich vergebene Tabu-Punkte lassen sich in der laufenden Runde und in der Zusammenfassung zurücknehmen.
+- Tastaturbedienung und zentrale Kontraste geprüft. 148 automatisierte Tests und 20 Browserprüfungen bestanden.
+- Ersten lokalen Tabu-Release abgenommen und auf GitHub Pages veröffentlicht.
+
 ### PH-08-03 – Veröffentlichung über GitHub Pages
 
 - Produktionsartefakt wird erst nach erfolgreichen Pflichtprüfungen von `main` veröffentlicht.

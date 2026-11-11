@@ -445,13 +445,23 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 
 #### PH-08-04 – Qualitäts- und Barrierefreiheitsabnahme
 
-Tabu-Feinschliff: Eine versehentlich falsche Wertung soll sich während der Runde rückgängig machen lassen. Die Rundenzusammenfassung soll eine Korrektur vor dem Start der nächsten Runde erlauben. Die Änderung betrifft ausschließlich die laufende Partie.
+Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde und in der Rundenzusammenfassung zurücknehmen. Die Korrektur betrifft das gerade gespielte Team. Gespielte Karten und Zeit bleiben unverändert.
 
 - **Ziel:** Release-Kriterien vollständig prüfen.
 - **Umfang:** Coverage, Lint, Typen, Tests, Browserprofile, Tastatur, Kontraste, lokalisierte Inhalte und dokumentierte Restrisiken.
 - **Akzeptanzkriterien:** Alle Grenzwerte und Pflichtprüfungen bestehen. Offene Probleme sind priorisiert und Release-Entscheidung dokumentiert.
 - **Tests:** Vollständige CI-Pipeline und manuelle Abnahmecheckliste.
-- **Status:** planned
+- **Status:** done
+
+**Abnahmecheckliste**
+
+- Deutsch und Englisch: vollständige Partien, Wertungen, Einzelsieg und Gleichstand in Desktop- und Mobilprofil geprüft.
+- Tastatur: Punktekorrektur per Tab und Enter geprüft. Einstellungen und Dialoge sind durch Komponenten- und Browserprüfungen abgedeckt.
+- Kontrast: sechs zentrale Farbkombinationen anhand der CSS-Farbwerte geprüft. Text mindestens 6,75:1, Fokusrahmen auf der Kartenfläche 8,39:1.
+- Offline: Start nach Netztrennung, eigene Karten und Cache-Wechsel bei Updates durch Browserprüfungen abgedeckt.
+- Nach dem ersten Release priorisieren: Screenreader-Prüfung auf realen Geräten und Praxistest mit einer laufenden Ollama-Instanz. Die Abnahme umfasst keine vollständige WCAG-Konformitätsprüfung.
+
+**Release-Entscheidung:** Der lokale Tabu-Erstrelease ist freigegeben. Die Pflichtprüfungen und die Veröffentlichung liefen erfolgreich im [GitHub-Lauf 43047050259](https://github.com/Erik513/GameHub/actions/runs/43047050259).
 
 ### Phase 9: Spätere Erweiterungen
 
