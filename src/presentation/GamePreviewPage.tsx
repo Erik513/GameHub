@@ -13,14 +13,13 @@ export function GamePreviewPage({ children, game, onBack }: GamePreviewPageProps
   const { t } = useTranslation();
 
   return (
-    <Card className="game-preview" data-accent={game.accent}>
-      <p className="eyebrow">{t("gamePreview.eyebrow")}</p>
-      <span className="game-status" data-status={game.availability}>
-        {t(`gameSelection.status.${game.availability}`)}
-      </span>
+    <Card
+      className={children ? "game-preview game-preview--playable" : "game-preview"}
+      data-accent={game.accent}
+    >
       <h1>{t(`games.${game.translationKey}.title`)}</h1>
       {children ?? <p>{t("gamePreview.description")}</p>}
-      <Button variant="secondary" onClick={onBack}>
+      <Button className="game-preview__back" variant="quiet" onClick={onBack}>
         {t("gamePreview.back")}
       </Button>
     </Card>

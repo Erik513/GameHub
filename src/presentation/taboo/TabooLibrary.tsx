@@ -81,7 +81,7 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
   }
 
   return (
-    <>
+    <TabooSetup cardLanguage={cardLanguage} cards={[...(ownCards ?? []), ...cards]}>
       {repository && (
         <details>
           <summary>{t("tabooLibrary.title")}</summary>
@@ -125,7 +125,6 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
           onSaved={(additions) => setOwnCards((current) => [...(current ?? []), ...additions])}
         />
       )}
-      <TabooSetup cardLanguage={cardLanguage} cards={[...(ownCards ?? []), ...cards]} />
-    </>
+    </TabooSetup>
   );
 }

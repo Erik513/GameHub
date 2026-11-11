@@ -67,6 +67,8 @@ export const common = {
     start: "Runde starten",
   },
   tabooSetup: {
+    cardOptions: "Kartenoptionen",
+    edit: "Einstellungen ändern",
     cardShortage:
       "Die Auswahl enthält {{available}} Karten. Für die geplanten Teamrunden werden mindestens {{required}} benötigt.",
     teams: "Teams",

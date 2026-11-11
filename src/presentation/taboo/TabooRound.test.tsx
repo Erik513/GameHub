@@ -50,7 +50,7 @@ it.each([
     if (correct) {
       fireEvent.click(screen.getByRole("button", { name: "Start round" }));
       expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Score: 0");
-      expect(screen.getByRole("timer")).toHaveTextContent("1 seconds left");
+      expect(screen.getByRole("timer")).toHaveTextContent(/^1$/);
     } else {
       expect(screen.getByRole("textbox", { name: "Team 1" })).toHaveValue("");
       expect(screen.getByRole("spinbutton", { name: "Rounds per team" })).toHaveValue(3);
@@ -80,8 +80,8 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const round = screen.getByRole("region", { name: "Active round" });
     expect(within(round).getAllByRole("listitem")).toHaveLength(3);
-    expect(within(round).getByRole("timer")).toHaveTextContent("60 seconds left");
-    expect(round).toHaveTextContent("Team: Owls");
+    expect(within(round).getByRole("timer")).toHaveTextContent(/^60$/);
+    expect(round).toHaveTextContent("Owls");
     void act(() => {
       vi.advanceTimersByTime(1000);
     });
@@ -91,7 +91,7 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     fireEvent.click(within(round).getByRole("button", { name: "Skip" }));
     fireEvent.click(within(round).getByRole("button", { name: "Forbidden word" }));
     expect(round).toHaveTextContent("Score: 1");
-    expect(within(round).getByRole("timer")).toHaveTextContent("59 seconds left");
+    expect(within(round).getByRole("timer")).toHaveTextContent(/^59$/);
     void act(() => {
       vi.advanceTimersByTime(59000);
     });
@@ -107,8 +107,8 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const nextRound = screen.getByRole("region", { name: "Active round" });
-    expect(nextRound).toHaveTextContent("Team: Foxes");
-    expect(within(nextRound).getByRole("timer")).toHaveTextContent("60 seconds left");
+    expect(nextRound).toHaveTextContent("Foxes");
+    expect(within(nextRound).getByRole("timer")).toHaveTextContent(/^60$/);
     expect(within(nextRound).getByRole("heading").textContent).not.toBe(firstTerm);
     void act(() => {
       vi.advanceTimersByTime(60000);

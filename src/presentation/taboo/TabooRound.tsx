@@ -34,10 +34,18 @@ export function TabooRound({ deadline, dispatch, state }: TabooRoundProps) {
 
   return (
     <section className="taboo-round" aria-label={t("tabooRound.title")}>
-      <p>{t("tabooRound.team", { team: configuration.teams[teamIndex]?.name ?? "" })}</p>
-      <p>{t("tabooRound.score", { score: scores[teamIndex] ?? 0 })}</p>
-      <p role="timer">{t("tabooRound.seconds", { seconds })}</p>
-      <div aria-live="polite" aria-atomic="true" lang={card.language}>
+      <div className="taboo-round__hud">
+        <div>
+          <p className="taboo-round__team">{configuration.teams[teamIndex]?.name}</p>
+          <p className="taboo-round__score">
+            {t("tabooRound.score", { score: scores[teamIndex] ?? 0 })}
+          </p>
+        </div>
+        <p role="timer" aria-label={t("tabooRound.seconds", { seconds })}>
+          {seconds}
+        </p>
+      </div>
+      <div className="taboo-round__card" aria-live="polite" aria-atomic="true" lang={card.language}>
         <h2>{card.term}</h2>
         <ul>
           {card.forbiddenWords.map((word) => (
@@ -45,7 +53,7 @@ export function TabooRound({ deadline, dispatch, state }: TabooRoundProps) {
           ))}
         </ul>
       </div>
-      <div className="taboo-setup__actions">
+      <div className="taboo-round__actions">
         {outcomes.map((outcome) => (
           <Button
             key={outcome}
@@ -63,7 +71,7 @@ export function TabooRound({ deadline, dispatch, state }: TabooRoundProps) {
           </Button>
         ))}
         <Button
-          variant="secondary"
+          variant="quiet"
           disabled={state.roundPoints === 0}
           onClick={() => dispatch({ type: "undoPoint", turn })}
         >

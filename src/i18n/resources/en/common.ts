@@ -67,6 +67,8 @@ export const common = {
     start: "Start round",
   },
   tabooSetup: {
+    cardOptions: "Card options",
+    edit: "Edit setup",
     cardShortage:
       "The filters match {{available}} cards. The scheduled turns need at least {{required}}.",
     teams: "Teams",

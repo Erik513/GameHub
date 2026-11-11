@@ -75,7 +75,7 @@ for (const labels of cases) {
     await expect(page.getByText("Owls: 1", { exact: true })).toBeVisible();
     await expect(round).toHaveCount(0);
     await page.getByRole("button", { name: labels.start }).click();
-    await expect(round.getByText("Team: Foxes")).toBeVisible();
+    await expect(round.getByText("Foxes", { exact: true })).toBeVisible();
     if (labels.language === "de") await round.getByRole("button", { name: labels.correct }).click();
     await page.clock.fastForward(60_000);
     await page.getByRole("button", { name: labels.show }).click();

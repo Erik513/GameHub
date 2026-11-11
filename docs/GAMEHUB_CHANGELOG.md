@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### Kompakte Tabu-Oberfläche
+
+- Tabu auf Desktop und Mobil in einer schmalen, zentrierten Ansicht dargestellt.
+- Teams, Runden und Zeit stehen vor aufklappbaren Kartenoptionen. Kartenverwaltung ist während der Partie ausgeblendet.
+- Laufende Runde mit großem Begriff, rein numerischem Countdown und klarer Reihenfolge der Kartenaktionen gestaltet.
+
 ### PH-08-04 – Release-Abnahme und Punktekorrektur
 
 - Versehentlich vergebene Tabu-Punkte lassen sich in der laufenden Runde und in der Zusammenfassung zurücknehmen.

@@ -2,11 +2,18 @@ import { expect, test } from "@playwright/test";
 
 test("plays a Taboo card from the game selection", async ({ page }) => {
   await page.goto("/#/games/taboo");
+  const setupWidth = await page
+    .getByRole("main")
+    .evaluate((main) => main.getBoundingClientRect().width);
+  expect(setupWidth).toBeLessThanOrEqual(432);
+  await expect(page.getByRole("combobox", { name: "Difficulty" })).toBeHidden();
   await page.getByRole("textbox", { name: "Team 1" }).fill("Owls");
   await page.getByRole("textbox", { name: "Team 2" }).fill("Foxes");
   await page.getByRole("button", { name: "Prepare game" }).click();
   await page.getByRole("button", { name: "Start round" }).click();
   const round = page.getByRole("region", { name: "Active round" });
+  await expect(round.getByRole("timer")).toHaveText(/^\d+$/);
+  await expect(page.getByText("Custom Taboo cards", { exact: true })).toBeHidden();
   await expect(round.getByRole("listitem")).toHaveCount(3);
   await round.getByRole("button", { name: "Correct" }).click();
   await expect(round.getByText("Score: 1")).toBeVisible();

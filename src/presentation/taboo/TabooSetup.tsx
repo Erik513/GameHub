@@ -1,4 +1,4 @@
-import { useCallback, useState, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { buildDeck, type DeckCriteria } from "../../business/games/taboo/deck";
 import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
@@ -20,9 +20,11 @@ type SetupState = Extract<ReturnType<typeof createTabooGame>, { valid: true }>["
 export function TabooSetup({
   cardLanguage,
   cards,
+  children,
 }: {
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
+  children?: ReactNode;
 }) {
   const { t } = useTranslation();
   const [teamCount, setTeamCount] = useState(2);
@@ -240,6 +242,9 @@ export function TabooSetup({
               teams: session.state.configuration.teams.map((team) => team.name).join(", "),
             })}
             <Button onClick={startRound}>{t("tabooRound.start")}</Button>
+            <Button variant="quiet" onClick={() => setSession(undefined)}>
+              {t("tabooSetup.edit")}
+            </Button>
           </StatusMessage>
         )}
         {issues.length > 0 && (
@@ -251,111 +256,119 @@ export function TabooSetup({
             </ul>
           </StatusMessage>
         )}
-        <form
-          noValidate
-          onSubmit={submit}
-          onChange={() => {
-            setShortage(undefined);
-            setSession(undefined);
-            setDeckEmpty(false);
-          }}
-        >
-          <fieldset>
-            <legend>{t("tabooSetup.teams")}</legend>
-            {Array.from({ length: teamCount }, (_, index) => (
-              <label className="language-control" key={index}>
-                {t("tabooSetup.team", { number: index + 1 })}
-                <input
-                  className="field__input"
-                  name="team"
-                  required
-                  aria-invalid={issues.some((issue) => issue.field === "teams.name")}
-                />
-              </label>
-            ))}
-            <div className="taboo-setup__actions">
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  setTeamCount(teamCount + 1);
-                  setSession(undefined);
-                }}
-              >
-                {t("tabooSetup.addTeam")}
-              </Button>
-              {teamCount > 2 && (
+        <div hidden={Boolean(session)}>
+          <form
+            noValidate
+            onSubmit={submit}
+            onChange={() => {
+              setShortage(undefined);
+              setSession(undefined);
+              setDeckEmpty(false);
+            }}
+          >
+            <fieldset className="taboo-team-fields">
+              <legend>{t("tabooSetup.teams")}</legend>
+              {Array.from({ length: teamCount }, (_, index) => (
+                <label className="language-control" key={index}>
+                  {t("tabooSetup.team", { number: index + 1 })}
+                  <input
+                    className="field__input"
+                    name="team"
+                    required
+                    aria-invalid={issues.some((issue) => issue.field === "teams.name")}
+                  />
+                </label>
+              ))}
+              <div className="taboo-setup__actions">
                 <Button
                   type="button"
                   variant="secondary"
                   onClick={() => {
-                    setTeamCount(teamCount - 1);
+                    setTeamCount(teamCount + 1);
                     setSession(undefined);
                   }}
                 >
-                  {t("tabooSetup.removeTeam")}
+                  {t("tabooSetup.addTeam")}
                 </Button>
-              )}
+                {teamCount > 2 && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => {
+                      setTeamCount(teamCount - 1);
+                      setSession(undefined);
+                    }}
+                  >
+                    {t("tabooSetup.removeTeam")}
+                  </Button>
+                )}
+              </div>
+            </fieldset>
+            <div className="taboo-setup__fields">
+              <label className="language-control">
+                {t("tabooSetup.rounds")}
+                <input
+                  className="field__input"
+                  name="rounds"
+                  type="number"
+                  min="1"
+                  defaultValue="3"
+                  required
+                  aria-invalid={issues.some((issue) => issue.field === "roundsPerTeam")}
+                />
+              </label>
+              <label className="language-control">
+                {t("tabooSetup.duration")}
+                <input
+                  className="field__input"
+                  name="duration"
+                  type="number"
+                  min="1"
+                  defaultValue="60"
+                  required
+                  aria-invalid={issues.some((issue) => issue.field === "roundDurationSeconds")}
+                />
+              </label>
             </div>
-          </fieldset>
-          <div className="taboo-setup__fields">
-            <label className="language-control">
-              {t("tabooSetup.rounds")}
-              <input
-                className="field__input"
-                name="rounds"
-                type="number"
-                min="1"
-                defaultValue="3"
-                required
-                aria-invalid={issues.some((issue) => issue.field === "roundsPerTeam")}
-              />
-            </label>
-            <label className="language-control">
-              {t("tabooSetup.duration")}
-              <input
-                className="field__input"
-                name="duration"
-                type="number"
-                min="1"
-                defaultValue="60"
-                required
-                aria-invalid={issues.some((issue) => issue.field === "roundDurationSeconds")}
-              />
-            </label>
-            <label className="language-control">
-              {t("language.cardLabel")}
-              <select name="language" defaultValue={cardLanguage}>
-                <option value="de">{t("language.options.de")}</option>
-                <option value="en">{t("language.options.en")}</option>
-              </select>
-            </label>
-            <label className="language-control">
-              {t("tabooSetup.difficulty")}
-              <select name="difficulty">
-                <option value="">{t("tabooSetup.anyDifficulty")}</option>
-                {difficulties.map((difficulty) => (
-                  <option key={difficulty} value={difficulty}>
-                    {t(`tabooSetup.difficulties.${difficulty}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <fieldset>
-            <legend>{t("tabooSetup.categories")}</legend>
-            <p>{t("tabooSetup.categoryHint")}</p>
-            <div className="taboo-setup__actions">
-              {categories.map((category) => (
-                <label key={category}>
-                  <input type="checkbox" name="category" value={category} />{" "}
-                  {t(`tabooSetup.category.${category}`)}
+            <details className="taboo-options">
+              <summary>{t("tabooSetup.cardOptions")}</summary>
+              <div className="taboo-setup__fields">
+                <label className="language-control">
+                  {t("language.cardLabel")}
+                  <select name="language" defaultValue={cardLanguage}>
+                    <option value="de">{t("language.options.de")}</option>
+                    <option value="en">{t("language.options.en")}</option>
+                  </select>
                 </label>
-              ))}
-            </div>
-          </fieldset>
-          <Button type="submit">{t("tabooSetup.start")}</Button>
-        </form>
+                <label className="language-control">
+                  {t("tabooSetup.difficulty")}
+                  <select name="difficulty">
+                    <option value="">{t("tabooSetup.anyDifficulty")}</option>
+                    {difficulties.map((difficulty) => (
+                      <option key={difficulty} value={difficulty}>
+                        {t(`tabooSetup.difficulties.${difficulty}`)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <fieldset>
+                <legend>{t("tabooSetup.categories")}</legend>
+                <p>{t("tabooSetup.categoryHint")}</p>
+                <div className="taboo-setup__actions">
+                  {categories.map((category) => (
+                    <label key={category}>
+                      <input type="checkbox" name="category" value={category} />{" "}
+                      {t(`tabooSetup.category.${category}`)}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </details>
+            <Button type="submit">{t("tabooSetup.start")}</Button>
+          </form>
+        </div>
+        {children && <div className="taboo-tools">{children}</div>}
       </div>
     </div>
   );
