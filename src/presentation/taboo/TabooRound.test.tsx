@@ -108,12 +108,25 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     void act(() => {
       vi.advanceTimersByTime(59000);
     });
-    expect(screen.getByRole("status")).toHaveTextContent("Round ended");
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
     void act(() => {
       vi.advanceTimersByTime(1000);
     });
-    expect(screen.getByRole("status")).toHaveTextContent("Round points: 1");
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    const review = within(screen.getByRole("region", { name: "Played round: Team 1" }));
+    const items = review.getAllByRole("button");
+    expect(items.map((item) => item.getAttribute("aria-pressed"))).toEqual([
+      "true",
+      "false",
+      "false",
+    ]);
+    fireEvent.click(items[1]!);
+    expect(standingsRow(0)).toHaveTextContent("Team 1: 2");
+    expect(items[1]).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(items[0]!);
+    expect(standingsRow(0)).toHaveTextContent("Team 1: 1");
+    fireEvent.click(items[0]!);
+    fireEvent.click(items[1]!);
     expect(standingsRow(0)).toHaveTextContent("Team 1: 1");
     expect(standingsRow(1)).toHaveTextContent("Team 2: 0");
     expect(upNext()).toHaveTextContent("Team 2");
@@ -127,7 +140,7 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     void act(() => {
       vi.advanceTimersByTime(60000);
     });
-    expect(screen.getByRole("status")).toHaveTextContent("Round points: 0");
+    expect(screen.getByText("No card was played in this round.")).toBeVisible();
     expect(standingsRow(0)).toHaveTextContent("Team 1: 1");
     expect(upNext()).toHaveTextContent("Team 1");
     expect(screen.getByText("Round 2/3")).toBeVisible();

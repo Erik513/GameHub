@@ -21,9 +21,17 @@ interface Setup extends GameState {
   readonly status: "setup";
 }
 
+export type TabooOutcome = "correct" | "skipped" | "forbiddenWord";
+
+export interface TabooResult {
+  readonly card: TabooCard;
+  readonly outcome: TabooOutcome;
+}
+
 interface TurnState extends GameState {
   readonly turn: Turn;
   readonly roundPoints: number;
+  readonly results: readonly TabooResult[];
 }
 
 export type TabooState =
@@ -46,7 +54,7 @@ export type TabooEvent =
       readonly type: "resolveCard";
       readonly turn: Turn;
       readonly cardId: string;
-      readonly outcome: "correct" | "skipped" | "forbiddenWord";
+      readonly outcome: TabooOutcome;
     }
   | {
       readonly type: "addCards";
@@ -54,7 +62,12 @@ export type TabooEvent =
       readonly cards: readonly TabooCard[];
     }
   | { readonly type: "endRound"; readonly turn: Turn }
-  | { readonly type: "undoPoint"; readonly turn: Turn }
+  | {
+      readonly type: "reviseResult";
+      readonly turn: Turn;
+      readonly cardId: string;
+      readonly outcome: TabooOutcome;
+    }
   | { readonly type: "finishGame" };
 
 export function createTabooGame(input: GameConfiguration): ValidationResult<Setup> {
@@ -74,18 +87,25 @@ export function createTabooGame(input: GameConfiguration): ValidationResult<Setu
 
 export function transitionTaboo(state: TabooState, event: TabooEvent): TabooState {
   const { configuration, scores, resolvedCardIds } = state;
-  if (event.type === "undoPoint") {
+  if (event.type === "reviseResult") {
     if (
-      (state.status !== "roundRunning" && state.status !== "roundEnded") ||
+      state.status !== "roundEnded" ||
       event.turn.round !== state.turn.round ||
-      event.turn.teamIndex !== state.turn.teamIndex ||
-      state.roundPoints === 0
+      event.turn.teamIndex !== state.turn.teamIndex
     )
       return state;
+    const previous = state.results.find((result) => result.card.id === event.cardId);
+    if (!previous || previous.outcome === event.outcome) return state;
+    const delta = Number(event.outcome === "correct") - Number(previous.outcome === "correct");
     return {
       ...state,
-      roundPoints: state.roundPoints - 1,
-      scores: scores.map((score, index) => (index === state.turn.teamIndex ? score - 1 : score)),
+      roundPoints: state.roundPoints + delta,
+      scores: scores.map((score, index) =>
+        index === state.turn.teamIndex ? score + delta : score,
+      ),
+      results: state.results.map((result) =>
+        result === previous ? { ...result, outcome: event.outcome } : result,
+      ),
     };
   }
   if (event.type === "resolveCard") {
@@ -105,6 +125,7 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
         event.outcome === "correct" && index === state.turn.teamIndex ? score + 1 : score,
       ),
       resolvedCardIds: [...resolvedCardIds, event.cardId],
+      results: [...state.results, { card: state.card, outcome: event.outcome }],
     };
     const [card, ...remainingCards] = state.remainingCards;
     return card
@@ -153,6 +174,7 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
       scores,
       resolvedCardIds,
       roundPoints: state.roundPoints,
+      results: state.results,
     };
   }
 
@@ -192,6 +214,7 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     configuration,
     turn,
     roundPoints: 0,
+    results: [],
     card,
     remainingCards,
     scores,

@@ -13,6 +13,7 @@ import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { shuffleTeams } from "../../business/games/taboo/teamOrder";
 import { TabooRound } from "./TabooRound";
+import { TabooRoundReview } from "./TabooRoundReview";
 import { TabooScoreboard } from "./TabooScoreboard";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 
@@ -316,23 +317,6 @@ export function TabooSetup({
               })}
             </p>
           )}
-          {ended && (
-            <StatusMessage title={t("tabooRound.ended")}>
-              <p>
-                {t("tabooRound.team", {
-                  team: ended.configuration.teams[ended.turn.teamIndex]?.name ?? "",
-                })}
-              </p>
-              <p>{t("tabooRound.earned", { score: ended.roundPoints })}</p>
-              <Button
-                variant="quiet"
-                disabled={ended.roundPoints === 0}
-                onClick={() => dispatch({ type: "undoPoint", turn: ended.turn })}
-              >
-                {t("tabooRound.undoPoint")}
-              </Button>
-            </StatusMessage>
-          )}
           {overview.turn ? (
             <div className="taboo-overview__turn">
               <span>{t("tabooRound.upNext")}</span>
@@ -349,6 +333,15 @@ export function TabooSetup({
             scores={overview.scores}
             teams={overview.configuration.teams}
           />
+          {ended && (
+            <TabooRoundReview
+              results={ended.results}
+              teamName={ended.configuration.teams[ended.turn.teamIndex]?.name ?? ""}
+              onRevise={(cardId, outcome) =>
+                dispatch({ type: "reviseResult", turn: ended.turn, cardId, outcome })
+              }
+            />
+          )}
           {deckEmpty && (
             <>
               <StatusMessage title={t("tabooRound.empty")} tone="error">

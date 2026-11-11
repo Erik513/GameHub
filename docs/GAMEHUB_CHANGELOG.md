@@ -25,6 +25,8 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Die Teamreihenfolge wird zu Beginn jeder Partie zufällig bestimmt und bleibt bis zum Ende gleich (neu: `shuffleTeams`). In der laufenden Runde stehen Team, „Runde X/Y“ und Punkte im Kopf.
 - Punkteübersicht auch im Endergebnis, mit hervorgehobenen Gewinnerteams.
 - Alle 20 Browserprüfungen lokal bestanden (Chrome, Desktop und Mobil).
+- Nach einer Runde entfällt die Meldung „Runde beendet“. Stattdessen zeigt die Übersicht „Als Nächstes dran“, den Gesamtpunktestand und die gespielte Runde mit allen Kartenbegriffen in Grün (richtig) oder Rot (nicht gewertet). Ein Tipp auf einen Begriff ändert die Wertung und passt die Punkte an (neues Ereignis `reviseResult`).
+- „Letzten Punkt zurücknehmen“ entfällt in Runde und Übersicht; Korrekturen erfolgen nur in der Rundenübersicht.
 - Orange Akzente (Markierungen, Kartenrand, verbotene Wörter, Spielkarte) durch das blaue Akzentblau ersetzt; Rot bleibt für „Verbotenes Wort“.
 - Teamnamen im Tabu-Setup frei wählbar; leere Felder fallen auf „Team N“ zurück, doppelte Namen werden abgelehnt.
 

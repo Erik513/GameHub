@@ -30,40 +30,41 @@ function setup(input = configuration) {
 }
 
 describe("Taboo state machine", () => {
-  it("undoes points only for the current turn and leaves played cards resolved", () => {
-    const initial = setup();
+  it("records results and lets a finished round be revised only for its own turn", () => {
     const turn = { round: 1, teamIndex: 0 };
-    const undo = { type: "undoPoint", turn } as const;
-    expect(transitionTaboo(initial, undo)).toBe(initial);
-    const running = transitionTaboo(initial, {
-      ...start,
-      remainingCards: [
-        { ...card, id: "second" },
-        { ...card, id: "third" },
+    const second = { ...card, id: "second" };
+    const revise = { type: "reviseResult", turn, cardId: card.id, outcome: "skipped" } as const;
+    const initial = setup();
+    expect(transitionTaboo(initial, revise)).toBe(initial);
+    const running = transitionTaboo(initial, { ...start, remainingCards: [second] });
+    expect(transitionTaboo(running, revise)).toBe(running);
+    const resolve = { type: "resolveCard", turn, cardId: card.id, outcome: "correct" } as const;
+    const afterFirst = transitionTaboo(running, resolve);
+    const ended = transitionTaboo(afterFirst, {
+      ...resolve,
+      cardId: second.id,
+      outcome: "forbiddenWord",
+    });
+    expect(ended).toMatchObject({
+      status: "roundEnded",
+      roundPoints: 1,
+      scores: [1, 0, 0],
+      results: [
+        { card: { id: card.id }, outcome: "correct" },
+        { card: { id: second.id }, outcome: "forbiddenWord" },
       ],
     });
-    expect(transitionTaboo(running, undo)).toBe(running);
-    const correct = { type: "resolveCard", turn, cardId: card.id, outcome: "correct" } as const;
-    const scored = transitionTaboo(running, correct);
-    expect(transitionTaboo(scored, { ...undo, turn: { round: 2, teamIndex: 0 } })).toBe(scored);
-    expect(transitionTaboo(scored, { ...undo, turn: { round: 1, teamIndex: 1 } })).toBe(scored);
-    const corrected = transitionTaboo(scored, undo);
-    expect(corrected).toMatchObject({
-      status: "roundRunning",
-      scores: [0, 0, 0],
-      card: { id: "second" },
-      resolvedCardIds: [card.id],
-    });
-    const ended = transitionTaboo(transitionTaboo(corrected, { ...correct, cardId: "second" }), {
-      type: "endRound",
-      turn,
-    });
-    expect(transitionTaboo(ended, undo)).toMatchObject({
-      status: "roundEnded",
-      roundPoints: 0,
-      scores: [0, 0, 0],
-    });
+    expect(transitionTaboo(ended, { ...revise, turn: { round: 2, teamIndex: 0 } })).toBe(ended);
+    expect(transitionTaboo(ended, { ...revise, turn: { round: 1, teamIndex: 1 } })).toBe(ended);
+    expect(transitionTaboo(ended, { ...revise, cardId: "unknown" })).toBe(ended);
+    expect(transitionTaboo(ended, { ...revise, outcome: "correct" })).toBe(ended);
+    const wrong = transitionTaboo(ended, revise);
+    expect(wrong).toMatchObject({ roundPoints: 0, scores: [0, 0, 0] });
+    const bothRight = transitionTaboo(wrong, { ...revise, cardId: second.id, outcome: "correct" });
+    expect(bothRight).toMatchObject({ roundPoints: 1, scores: [1, 0, 0] });
+    expect(bothRight).toMatchObject({ resolvedCardIds: [card.id, second.id] });
   });
+
   it("awards a sole win to the second team after one round per team", () => {
     const initial = setup({
       ...configuration,
