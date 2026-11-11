@@ -19,7 +19,7 @@
     }
   },
   "environment": {
-    "checkedAt": "2026-11-09T19:23:00+01:00",
+    "checkedAt": "2026-11-11T21:58:23+01:00",
     "operatingShell": "PowerShell 7.6.9",
     "node": {
       "available": true,
@@ -40,7 +40,12 @@
     "repositoryInitialized": true,
     "repositoryPath": "C:\\Users\\Kosta\\source\\repos\\GameHub",
     "remoteUrl": "https://github.com/Erik513/GameHub",
-    "defaultBranch": "main"
+    "defaultBranch": "main",
+    "agentShell": {
+      "nodeOnPath": false,
+      "pnpmOnPath": false,
+      "usedNode": "25.5.0 (LM Studio)"
+    }
   },
   "quality": {
     "typecheck": {
@@ -777,9 +782,9 @@
     {
       "id": "ISSUE-003",
       "severity": "warning",
-      "status": "open",
-      "summary": "Auf Laufwerk C sind nur etwa 0,43 GB frei.",
-      "impact": "Die Installation des gebündelten Playwright-Chromium-Browsers scheiterte an ENOSPC. E2E-Tests verwenden erfolgreich das lokal installierte Chrome."
+      "status": "resolved",
+      "summary": "Auf Laufwerk C war zeitweise kaum Speicherplatz frei (etwa 0,43 GB).",
+      "impact": "Aktuell sind etwa 20,9 GB frei. Die Browserprüfungen laufen weiterhin mit dem lokal installierten Chrome."
     },
     {
       "id": "ISSUE-004",
@@ -787,6 +792,13 @@
       "status": "resolved",
       "summary": "Für GameHub war kein GitHub-Remote konfiguriert.",
       "impact": "Remote ist verbunden und der erste GitHub-Actions-Lauf wurde erfolgreich abgeschlossen."
+    },
+    {
+      "id": "ISSUE-005",
+      "severity": "info",
+      "status": "open",
+      "summary": "In der Umgebung des Entwicklungsassistenten sind Node und pnpm nicht im PATH (angenommen: in der eigenen Shell des Auftraggebers verfügbar, nicht geprüft).",
+      "impact": "Lokale Prüfungen laufen dort mit dem mitgelieferten Node 25.5 von LM Studio (Vorgabe ist Node 24 oder neuer). Die CI verwendet Node 24 mit pnpm 11.25.0."
     }
   ],
   "nextRecommendedTasks": [
