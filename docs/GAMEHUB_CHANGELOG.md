@@ -4,6 +4,11 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-11-05 – Strukturvorschlag für wiederverwendbare Spielbausteine (in Arbeit)
+
+- Neues Dokument `docs/GAMEHUB_GAME_MODULES.md`: Ist-Zustand (815 Zeilen in `TabooSetup.tsx`, Tabu-Wissen in `App.tsx`, gemischtes CSS und gemeinsamer Namensraum für Texte), Zielbild mit `game-kit`, `business/shared` und einem Spielmodul-Vertrag, drei Optionen mit Empfehlung (moderater Umbau) und die Entscheidungen, die der Auftraggeber treffen muss.
+- Freigabe erteilt (Option B, moderater Umbau; Spielmodi erst danach). Umgesetzt: Schritt 1 (`shuffle` und `teamOrder` nach `src/business/shared/`) und Schritt 2 (Bausteine `ChoiceGroup`, `Scoreboard`, `StartBar` und `TurnStrip` in `src/presentation/game-kit/`, CSS-Klassen mit Präfix `kit-`). Das Verhalten ist unverändert, alle Tests bestehen. Offen: Schritte 3 bis 6 (Zeit-Hooks, Zerlegung von `TabooSetup`, Spielmodul-Vertrag mit eigenem Namensraum, Leitfaden).
+
 ### PH-11-04 – Oberflächentests auf Handybreite
 
 - Neue Browserprüfung `e2e/mobile-layout.spec.ts`: Alle Tabu-Ansichten (Menü, Einstellungen, Setup, Übersicht, Runde, Pause, Auswertung, Stechen, Ergebnis) werden auf 360 und 412 Pixel Breite in Deutsch und Englisch geprüft: kein horizontales Scrollen, Touch-Ziele mindestens 44 Pixel, nichts außerhalb des Bildschirms oder abgeschnitten, Aktionsleiste ohne Scrollen erreichbar, Bedienelemente haben einen Namen.

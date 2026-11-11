@@ -1,8 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
-import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
-import { createGameHubI18n } from "../../i18n";
-import { TabooScoreboard } from "./TabooScoreboard";
+import { Scoreboard } from "./Scoreboard";
 
 const teams = [
   { id: "a", name: "Owls" },
@@ -11,12 +9,9 @@ const teams = [
   { id: "d", name: "Wolves" },
 ];
 
-it("sorts teams by points, keeps playing order for ties and marks winners", async () => {
-  const i18n = await createGameHubI18n("de");
+it("sorts teams by points, keeps playing order for ties and marks winners", () => {
   render(
-    <I18nextProvider i18n={i18n}>
-      <TabooScoreboard scores={[1, 3, 1, 0]} teams={teams} winnerIds={["b"]} />
-    </I18nextProvider>,
+    <Scoreboard label="Gesamtpunktestand" scores={[1, 3, 1, 0]} teams={teams} winnerIds={["b"]} />,
   );
   const rows = within(screen.getByRole("list", { name: "Gesamtpunktestand" })).getAllByRole(
     "listitem",
@@ -31,12 +26,7 @@ it("sorts teams by points, keeps playing order for ties and marks winners", asyn
   expect(rows[0]).toHaveAttribute("data-winner", "true");
 });
 
-it("treats missing scores as zero", async () => {
-  const i18n = await createGameHubI18n("en");
-  render(
-    <I18nextProvider i18n={i18n}>
-      <TabooScoreboard scores={[]} teams={teams.slice(0, 1)} />
-    </I18nextProvider>,
-  );
+it("treats missing scores as zero", () => {
+  render(<Scoreboard label="Total scores" scores={[]} teams={teams.slice(0, 1)} />);
   expect(screen.getByRole("listitem")).toHaveTextContent("Owls: 0");
 });

@@ -92,7 +92,7 @@ it("randomizes the team order once and keeps it for the whole game", async () =>
   await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
   await user.click(screen.getByRole("button", { name: "Start" }));
   expect(screen.getByText("Round 1/3")).toBeVisible();
-  expect(document.querySelector(".taboo-overview__turn strong")).toHaveTextContent("Team 2");
+  expect(document.querySelector(".kit-turn-strip strong")).toHaveTextContent("Team 2");
   expect(
     within(screen.getByRole("list", { name: "Total scores" }))
       .getAllByRole("listitem")

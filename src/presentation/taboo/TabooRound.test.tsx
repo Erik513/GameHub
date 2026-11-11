@@ -21,7 +21,7 @@ function standingsRow(index: number) {
 }
 
 function upNext() {
-  return document.querySelector(".taboo-overview__turn strong")!;
+  return document.querySelector(".kit-turn-strip strong")!;
 }
 
 it.each([

@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-11T22:18:54+01:00",
+    "updatedAt": "2026-11-11T22:20:25+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -460,7 +460,7 @@
         {
           "id": "PH-11-05",
           "title": "Struktur prüfen und wiederverwendbare Spielbausteine dokumentieren",
-          "status": "planned"
+          "status": "in_progress"
         }
       ]
     },
@@ -535,6 +535,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "PH-11-05 begonnen: Strukturvorschlag für wiederverwendbare Spielbausteine in docs/GAMEHUB_GAME_MODULES.md erstellt. Es wurde nichts umgebaut, der Vorschlag wartet auf die Freigabe des Auftraggebers."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-11-04 abgeschlossen: Mobile Layout-Prüfung für alle Tabu-Ansichten (kein horizontales Scrollen, Touch-Ziele mindestens 44 Pixel, kein abgeschnittener Text, Aktionsleiste erreichbar, Bedienelemente benannt). Dabei drei zu kleine Touch-Ziele gefunden und behoben."

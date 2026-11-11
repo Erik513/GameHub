@@ -75,7 +75,7 @@ async function audit(page: Page, screen: string): Promise<string[]> {
     }
 
     const targets = document.querySelectorAll(
-      "button, a[href], summary, select, input[type=text], label.taboo-choice, .taboo-review__item",
+      "button, a[href], summary, select, input[type=text], label.kit-choice, .taboo-review__item",
     );
     for (const element of targets) {
       if (!visible(element)) continue;
@@ -100,7 +100,7 @@ async function audit(page: Page, screen: string): Promise<string[]> {
 
     // Clipped or overflowing text inside buttons, chips and list rows.
     for (const element of document.querySelectorAll(
-      "button, label.taboo-choice span, li, h1, h2, p",
+      "button, label.kit-choice span, li, h1, h2, p",
     )) {
       if (!visible(element)) continue;
       if (
@@ -116,7 +116,7 @@ async function audit(page: Page, screen: string): Promise<string[]> {
     }
 
     // The pinned main action must be reachable without scrolling the page.
-    const bar = document.querySelector(".game-start-bar");
+    const bar = document.querySelector(".kit-start-bar");
     if (bar && visible(bar)) {
       const rect = bar.getBoundingClientRect();
       if (rect.bottom > window.innerHeight + 1) {

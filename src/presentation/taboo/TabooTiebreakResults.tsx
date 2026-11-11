@@ -15,12 +15,12 @@ export function TabooTiebreakResults({ rows }: { rows: readonly TiebreakRow[] })
   const { t, i18n } = useTranslation();
 
   return (
-    <ol className="taboo-scoreboard taboo-tiebreak-results" aria-label={t("tabooTiebreak.results")}>
+    <ol className="kit-scoreboard taboo-tiebreak-results" aria-label={t("tabooTiebreak.results")}>
       {rows.map(({ id, name, result, winner }) => (
         <li data-winner={winner ? true : undefined} key={id}>
-          <span className="taboo-scoreboard__name">{name}</span>
+          <span className="kit-scoreboard__name">{name}</span>
           <span className="visually-hidden">: </span>
-          <span className="taboo-scoreboard__score">
+          <span className="kit-scoreboard__score">
             {result
               ? t("tabooTiebreak.result", {
                   solved: result.solved,

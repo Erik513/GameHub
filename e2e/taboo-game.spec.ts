@@ -76,7 +76,7 @@ for (const labels of cases) {
       await review.getByRole("button").nth(2).click();
       await expect(review.getByRole("button").nth(1)).toHaveAttribute("aria-pressed", "false");
     }
-    await expect(page.locator(".taboo-overview__turn")).toContainText(labels.next);
+    await expect(page.locator(".kit-turn-strip")).toContainText(labels.next);
     await expect(page.getByRole("listitem").filter({ hasText: /^Team 1: 1$/ })).toBeVisible();
     await expect(round).toHaveCount(0);
     await page.getByRole("button", { name: labels.start, exact: true }).click();

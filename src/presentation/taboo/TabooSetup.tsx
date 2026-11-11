@@ -19,13 +19,13 @@ import {
 } from "../../business/games/taboo/stateMachine";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
-import { shuffle } from "../../business/games/taboo/shuffle";
-import { shuffleTeams } from "../../business/games/taboo/teamOrder";
+import { shuffle } from "../../business/shared/shuffle";
+import { shuffleTeams } from "../../business/shared/teamOrder";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { useGameExit } from "../GameChrome";
 import { TabooRound } from "./TabooRound";
 import { TabooRoundReview } from "./TabooRoundReview";
-import { TabooScoreboard } from "./TabooScoreboard";
+import { ChoiceGroup, Scoreboard, StartBar, TurnStrip, type ChoiceOption } from "../game-kit";
 import { TabooTiebreakResults, type TiebreakRow } from "./TabooTiebreakResults";
 import { TabooTiebreakRound } from "./TabooTiebreakRound";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
@@ -443,15 +443,15 @@ export function TabooSetup({
               </Button>
             </>
           )}
-          <div className="game-start-bar">
-            <div className="taboo-overview__turn">
-              <span className="visually-hidden">{t("tabooRound.upNext")}: </span>
-              <strong>{tiebreakTeamName(tiebreakState)}</strong>
-            </div>
+          <StartBar>
+            <TurnStrip
+              hiddenLabel={t("tabooRound.upNext")}
+              name={tiebreakTeamName(tiebreakState) ?? ""}
+            />
             <Button variant="success" onClick={beginTiebreak} disabled={tiebreakNoCards}>
               {t("tabooTiebreak.start")}
             </Button>
-          </div>
+          </StartBar>
         </section>
       )}
       {tiebreakState?.active && round?.startedAt !== undefined && (
@@ -482,7 +482,8 @@ export function TabooSetup({
             </strong>
           </div>
           <h2>{t("tabooRound.standings")}</h2>
-          <TabooScoreboard
+          <Scoreboard
+            label={t("tabooRound.standings")}
             scores={finished.scores}
             teams={finished.configuration.teams}
             winnerIds={finished.winnerIds}
@@ -505,14 +506,14 @@ export function TabooSetup({
               />
             </>
           )}
-          <div className="game-start-bar game-start-bar--stack">
+          <StartBar stacked>
             <Button variant="success" onClick={() => restart(true)}>
               {t("tabooResult.sameSetup")}
             </Button>
             <Button variant="secondary" onClick={() => restart(false)}>
               {t("tabooResult.newSetup")}
             </Button>
-          </div>
+          </StartBar>
         </section>
       )}
       {round?.state.status === "roundRunning" && (
@@ -545,7 +546,11 @@ export function TabooSetup({
           )}
           {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
           <h2>{t("tabooRound.standings")}</h2>
-          <TabooScoreboard scores={overview.scores} teams={overview.configuration.teams} />
+          <Scoreboard
+            label={t("tabooRound.standings")}
+            scores={overview.scores}
+            teams={overview.configuration.teams}
+          />
           {ended && (
             <TabooRoundReview
               results={ended.results}
@@ -565,9 +570,7 @@ export function TabooSetup({
               </Button>
             </>
           )}
-          <div
-            className={canFinishEarly ? "game-start-bar game-start-bar--stack" : "game-start-bar"}
-          >
+          <StartBar stacked={canFinishEarly}>
             {canFinishEarly && (
               <Button variant="secondary" onClick={() => dispatch({ type: "finishGame" })}>
                 {t("tabooResult.show")}
@@ -575,10 +578,10 @@ export function TabooSetup({
             )}
             {overview.turn ? (
               <>
-                <div className="taboo-overview__turn">
-                  <span className="visually-hidden">{t("tabooRound.upNext")}: </span>
-                  <strong>{overview.configuration.teams[overview.turn.teamIndex]?.name}</strong>
-                </div>
+                <TurnStrip
+                  hiddenLabel={t("tabooRound.upNext")}
+                  name={overview.configuration.teams[overview.turn.teamIndex]?.name ?? ""}
+                />
                 <Button variant="success" onClick={() => startRound()} disabled={deckEmpty}>
                   {t("tabooRound.start")}
                 </Button>
@@ -588,7 +591,7 @@ export function TabooSetup({
                 {t("tabooResult.show")}
               </Button>
             )}
-          </div>
+          </StartBar>
         </section>
       )}
       <div
@@ -629,7 +632,7 @@ export function TabooSetup({
             setDeckEmpty(false);
           }}
         >
-          <SetupChoices
+          <ChoiceGroup
             legend={t("tabooSetup.teams")}
             name="teamCount"
             initial="2"
@@ -648,20 +651,20 @@ export function TabooSetup({
               />
             ))}
           </div>
-          <SetupChoices
+          <ChoiceGroup
             legend={t("tabooSetup.rounds")}
             name="rounds"
             initial={String(roundChoices.includes(3) ? 3 : roundChoices[0])}
             options={roundChoices.map((value) => roundOption(value, t))}
           />
-          <SetupChoices
+          <ChoiceGroup
             legend={t("tabooSetup.duration")}
             name="duration"
             initial="60"
             options={["60", "90", "120"].map((value) => ({ value, label: value }))}
           />
           {generators && (
-            <SetupChoices
+            <ChoiceGroup
               legend={t("tabooSetup.cardSource")}
               name="cardSource"
               initial="both"
@@ -673,7 +676,7 @@ export function TabooSetup({
           )}
           <details className="taboo-more">
             <summary>{t("tabooSetup.moreOptions")}</summary>
-            <SetupChoices
+            <ChoiceGroup
               legend={t("tabooSetup.tiebreak")}
               name="tiebreak"
               initial="on"
@@ -682,7 +685,7 @@ export function TabooSetup({
                 label: t(`tabooSetup.tiebreakOptions.${value}`),
               }))}
             />
-            <SetupChoices
+            <ChoiceGroup
               legend={t("tabooSetup.skips")}
               name="skips"
               initial="1"
@@ -692,7 +695,7 @@ export function TabooSetup({
                 ...(value === "unlimited" ? { ariaLabel: t("tabooSetup.unlimited") } : {}),
               }))}
             />
-            <SetupChoices
+            <ChoiceGroup
               legend={t("tabooSetup.difficulty")}
               name="difficulty"
               initial=""
@@ -705,11 +708,11 @@ export function TabooSetup({
                 })),
               ]}
             />
-            <fieldset className="taboo-choice-group">
+            <fieldset className="kit-choice-group">
               <legend>{t("tabooSetup.categories")}</legend>
-              <div className="taboo-choice-grid taboo-choice-grid--categories">
+              <div className="kit-choice-grid kit-choice-grid--categories">
                 {categories.map((category) => (
-                  <label className="taboo-choice" key={category}>
+                  <label className="kit-choice" key={category}>
                     <input type="checkbox" name="category" value={category} defaultChecked />
                     <span>{t(`tabooSetup.category.${category}`)}</span>
                   </label>
@@ -719,11 +722,11 @@ export function TabooSetup({
           </details>
         </form>
         {children && <div className="taboo-tools">{children}</div>}
-        <div className="game-start-bar">
+        <StartBar>
           <Button form="taboo-setup-form" type="submit" variant="success" disabled={generating}>
             {t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
           </Button>
-        </div>
+        </StartBar>
       </div>
     </div>
   );
@@ -752,27 +755,10 @@ function teamNameFrom(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-interface SetupOption {
-  value: string;
-  label: string;
-  /** Accessible name when the visible label is only a symbol. */
-  ariaLabel?: string;
-  /** Small secondary text below the label. */
-  hint?: string;
-  tone?: "easy" | "medium" | "hard";
-}
-
-interface SetupChoicesProps {
-  legend: string;
-  name: string;
-  initial: string;
-  options: readonly SetupOption[];
-}
-
 function roundOption(
   value: number | "unlimited",
   t: ReturnType<typeof useTranslation>["t"],
-): SetupOption {
+): ChoiceOption {
   if (value === "unlimited") {
     return {
       value,
@@ -789,27 +775,4 @@ function roundOption(
   return name
     ? { value: String(value), label: t(`tabooSetup.roundOptions.${name}`), hint: String(value) }
     : { value: String(value), label: String(value) };
-}
-
-/** Radio group rendered as equally wide buttons. */
-function SetupChoices({ legend, name, initial, options }: SetupChoicesProps) {
-  return (
-    <fieldset className="taboo-choice-group">
-      <legend>{legend}</legend>
-      <div
-        className="taboo-choice-grid taboo-choice-grid--equal"
-        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
-      >
-        {options.map(({ value, label, ariaLabel, hint, tone }) => (
-          <label className="taboo-choice" data-tone={tone} key={value}>
-            <input type="radio" name={name} value={value} defaultChecked={value === initial} />
-            <span aria-label={ariaLabel}>
-              {label}
-              {hint && <small>{hint}</small>}
-            </span>
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  );
 }
