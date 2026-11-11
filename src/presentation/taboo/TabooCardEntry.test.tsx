@@ -108,7 +108,6 @@ it("offers a custom category as a filter in the setup", async () => {
       <TabooSetup cardLanguage="en" cards={[own, ...tabooStandardCards]} roundChoices={[1]} />
     </I18nextProvider>,
   );
-  await user.click(screen.getByText("More options"));
   expect(screen.getByRole("checkbox", { name: "Sport" })).toBeChecked();
   await user.click(screen.getByRole("checkbox", { name: "Sport" }));
   expect(screen.getByRole("checkbox", { name: "Sport" })).not.toBeChecked();

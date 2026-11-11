@@ -51,7 +51,6 @@ for (const labels of cases) {
     await page.getByRole("button", { name: labels.open }).click();
     if (labels.language === "de") {
       // The German game ends in a tie; switch the tiebreak off to check the shared win.
-      await page.getByText("Weitere Optionen", { exact: true }).click();
       await page
         .getByRole("group", { name: "Stechen bei Gleichstand" })
         .getByRole("radio", { name: "Aus" })

@@ -115,7 +115,6 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     press("settings.close");
 
     // Open the folded options so the whole setup is checked.
-    fireEvent.click(screen.getByText(t("tabooSetup.moreOptions"), { selector: "summary" }));
     checkScreen("setup");
     // An info dialog explains a setting and uses the selected language too.
     fireEvent.click(screen.getAllByRole("button", { name: /^(Info zu|Info about) / })[0]!);

@@ -5,7 +5,6 @@ const labels = {
     open: "View progress",
     settings: "Settings",
     close: "Close",
-    moreOptions: "More options",
     start: "Start",
     startRound: "Start round",
     forbidden: "Forbidden word",
@@ -23,7 +22,6 @@ const labels = {
     open: "Fortschritt ansehen",
     settings: "Einstellungen",
     close: "Schließen",
-    moreOptions: "Weitere Optionen",
     start: "Starten",
     startRound: "Runde starten",
     forbidden: "Verbotenes Wort",
@@ -165,8 +163,6 @@ for (const language of ["en", "de"] as const) {
 
       await press(t.open);
       await check("setup");
-      await page.getByText(t.moreOptions, { exact: true }).click();
-      await check("setup with more options");
       await press(t.start);
       await check("overview before the first turn");
 

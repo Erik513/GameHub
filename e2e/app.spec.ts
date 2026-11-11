@@ -6,7 +6,6 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
     .getByRole("main")
     .evaluate((main) => main.getBoundingClientRect().width);
   expect(setupWidth).toBeLessThanOrEqual(480);
-  await page.getByText("More options", { exact: true }).click();
   await expect(page.getByRole("group", { name: "Difficulty" })).toBeVisible();
   const nature = page.getByRole("checkbox", { name: "Nature" });
   const choice = page.locator("label").filter({ has: nature });

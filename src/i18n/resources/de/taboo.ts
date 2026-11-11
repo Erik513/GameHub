@@ -159,7 +159,6 @@ export const tabooTexts = {
     roundOptions: { short: "Kurz", medium: "Mittel", long: "Lang", unlimited: "∞" },
     skips: "Überspringen pro Runde",
     skipOptions: { "0": "Nie", "1": "1", "2": "2", "3": "3", unlimited: "∞" },
-    moreOptions: "Weitere Optionen",
     preparingCards: "Karten werden vorbereitet …",
     noExtraCards: "Keine neuen Zusatzkarten verfügbar.",
     cardShortage:

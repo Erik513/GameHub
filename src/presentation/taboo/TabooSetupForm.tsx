@@ -129,6 +129,27 @@ export function TabooSetupForm({
             initial="60"
             options={["60", "90", "120"].map((value) => ({ value, label: value }))}
           />
+          <ChoiceGroup
+            info={info("skips", t("tabooSetup.skips"))}
+            legend={t("tabooSetup.skips")}
+            name="skips"
+            initial="1"
+            options={(["0", "1", "2", "3", "unlimited"] as const).map((value) => ({
+              value,
+              label: t(`tabooSetup.skipOptions.${value}`),
+              ...(value === "unlimited" ? { ariaLabel: t("tabooSetup.unlimited") } : {}),
+            }))}
+          />
+          <ChoiceGroup
+            info={info("tiebreak", t("tabooSetup.tiebreak"))}
+            legend={t("tabooSetup.tiebreak")}
+            name="tiebreak"
+            initial="on"
+            options={(["on", "off"] as const).map((value) => ({
+              value,
+              label: t(`tabooSetup.tiebreakOptions.${value}`),
+            }))}
+          />
           {hasGenerators && (
             <ChoiceGroup
               info={info("cardSource", t("tabooSetup.cardSource"))}
@@ -141,58 +162,34 @@ export function TabooSetupForm({
               }))}
             />
           )}
-          <details className="taboo-more">
-            <summary>{t("tabooSetup.moreOptions")}</summary>
-            <ChoiceGroup
-              info={info("tiebreak", t("tabooSetup.tiebreak"))}
-              legend={t("tabooSetup.tiebreak")}
-              name="tiebreak"
-              initial="on"
-              options={(["on", "off"] as const).map((value) => ({
+          <fieldset className="kit-choice-group">
+            <legend>{t("tabooSetup.categories")}</legend>
+            <div className="kit-choice-grid kit-choice-grid--categories">
+              {categoryIds.map((category) => (
+                <label className="kit-choice" key={category}>
+                  <input type="checkbox" name="category" value={category} defaultChecked />
+                  <span>
+                    {isBuiltIn(category) ? t(`tabooSetup.category.${category}`) : category}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <ChoiceGroup
+            info={info("difficulty", t("tabooSetup.difficulty"))}
+            legend={t("tabooSetup.difficulty")}
+            multiple
+            name="difficulty"
+            initial=""
+            options={[
+              { value: "", label: t("tabooSetup.anyDifficulty") },
+              ...difficulties.map((value) => ({
                 value,
-                label: t(`tabooSetup.tiebreakOptions.${value}`),
-              }))}
-            />
-            <ChoiceGroup
-              info={info("skips", t("tabooSetup.skips"))}
-              legend={t("tabooSetup.skips")}
-              name="skips"
-              initial="1"
-              options={(["0", "1", "2", "3", "unlimited"] as const).map((value) => ({
-                value,
-                label: t(`tabooSetup.skipOptions.${value}`),
-                ...(value === "unlimited" ? { ariaLabel: t("tabooSetup.unlimited") } : {}),
-              }))}
-            />
-            <ChoiceGroup
-              info={info("difficulty", t("tabooSetup.difficulty"))}
-              legend={t("tabooSetup.difficulty")}
-              multiple
-              name="difficulty"
-              initial=""
-              options={[
-                { value: "", label: t("tabooSetup.anyDifficulty") },
-                ...difficulties.map((value) => ({
-                  value,
-                  label: t(`tabooSetup.difficulties.${value}`),
-                  tone: value,
-                })),
-              ]}
-            />
-            <fieldset className="kit-choice-group">
-              <legend>{t("tabooSetup.categories")}</legend>
-              <div className="kit-choice-grid kit-choice-grid--categories">
-                {categoryIds.map((category) => (
-                  <label className="kit-choice" key={category}>
-                    <input type="checkbox" name="category" value={category} defaultChecked />
-                    <span>
-                      {isBuiltIn(category) ? t(`tabooSetup.category.${category}`) : category}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-          </details>
+                label: t(`tabooSetup.difficulties.${value}`),
+                tone: value,
+              })),
+            ]}
+          />
         </section>
       </form>
       {children && <div className="taboo-tools">{children}</div>}

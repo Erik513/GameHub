@@ -1092,14 +1092,14 @@ h1 {
   position: relative;
 }
 
+/* The info button is centered on the legend line and adds no height of its own. */
 .kit-choice-group--info legend {
-  margin-bottom: 0;
-  line-height: 2.75rem;
+  line-height: 1.3;
 }
 
 .kit-info-button {
   position: absolute;
-  top: 0;
+  top: -0.9rem;
   right: 0;
   width: 2.75rem;
   padding: 0;

@@ -228,7 +228,6 @@ it.each([
       />
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByText("More options", { selector: "summary" }));
   fireEvent.click(screen.getByRole("button", { name: `Info about ${setting}` }));
   const dialog = screen.getByRole("dialog", { name: setting });
   expect(dialog.textContent).toContain(excerpt);
