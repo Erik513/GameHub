@@ -463,46 +463,6 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 
 **Release-Entscheidung:** Der lokale Tabu-Erstrelease ist freigegeben. Die Pflichtprüfungen und die Veröffentlichung liefen erfolgreich im [GitHub-Lauf 43047050259](https://github.com/Erik513/GameHub/actions/runs/43047050259).
 
-### Phase 9: Spätere Erweiterungen
-
-#### Tabu-Spielmodi für später
-
-- **Race:** Pro Team wird eine Zielzahl gelöster Karten festgelegt, zum Beispiel zehn. Jedes Team darf höchstens einmal überspringen. Es gewinnt das Team, das die Zielzahl in der kürzesten eigenen Spielzeit erreicht. Zwei Abläufe sind vorgesehen: Jedes Team spielt seinen Lauf am Stück, oder die Teams wechseln sich nach jeder Karte ab. Beim Wechsel zählt für jedes Team nur seine aktive Zeit.
-- **Countdown-Duell:** Jedes Team hat ein eigenes Zeitkonto. Es läuft jeweils nur die Uhr des aktiven Teams, während geraten wird. Sobald der Begriff erraten wurde, pausiert diese Uhr und die des nächsten Teams läuft weiter. Wer zuerst keine Zeit mehr hat, verliert.
-- **Vor der Umsetzung klären:** Wer erklärt und wer rät im Countdown-Duell? Zählt Überspringen dort ebenfalls als erlaubter Wechsel und ist es auf einmal pro Team begrenzt? Im Race ist zu klären, ob eine übersprungene Karte ersetzt oder später erneut gespielt wird und wie Gleichstände behandelt werden.
-
-#### PH-09-01 – Multiplayer-Discovery und ADR
-
-- **Ziel:** Online-Multiplayer fachlich und technisch entscheiden.
-- **Umfang:** Autoritätsmodell, Lobby, Synchronisierung, Datenschutz, Hosting und Konfliktbehandlung analysieren.
-- **Akzeptanzkriterien:** Genehmigtes ADR und abgegrenzter Folgeplan liegen vor. Keine Implementierung ohne Freigabe.
-- **Tests:** Review der Ereignismodelle und Prototyp nur nach gesonderter Beauftragung.
-- **Status:** planned
-
-#### PH-09-02 – Spielmodulvertrag überprüfen und erweitern
-
-- **Ziel:** Den frühen Spielmodulvertrag anhand weiterer Spielanforderungen kontrolliert weiterentwickeln.
-- **Umfang:** Erfahrungen aus Tabu und den Spezifikationen weiterer Spiele auswerten und den bestehenden Vertrag nur bei nachgewiesenem Bedarf um Start- oder Persistenzschnittstellen ergänzen.
-- **Akzeptanzkriterien:** Der erweiterte Vertrag bleibt genreunabhängig, rückwärtskompatibel und ist durch Tabu sowie ein zweites Testmodul belegt.
-- **Tests:** Contract-Tests und Architekturprüfung.
-- **Status:** planned
-
-#### PH-09-03 – Scharade
-
-- **Ziel:** Zweites Spiel nach eigener Spezifikation ergänzen.
-- **Umfang:** Anforderungen, Business-Logik, UI, Karten und Tests als separates Modul.
-- **Akzeptanzkriterien:** Werden vor Implementierungsstart mit dem Auftraggeber konkretisiert.
-- **Tests:** Unit-, Komponenten- und E2E-Tests gemäß genehmigter Spezifikation.
-- **Status:** planned
-
-#### PH-09-04 – Wer bin ich und Quiz
-
-- **Ziel:** Weitere geplante Spiele schrittweise ergänzen.
-- **Umfang:** Je Spiel separate Spezifikation, Logik, UI, Daten und Qualitätssicherung.
-- **Akzeptanzkriterien:** Jeweils vor Implementierungsstart zu genehmigen.
-- **Tests:** Je Spiel anhand der genehmigten Regeln.
-- **Status:** planned
-
 ### Phase 10 – Mobile Bedienung und Spielablauf
 
 #### PH-10-01 – Mobile-first Oberfläche mit Daumenzone
@@ -596,6 +556,46 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 - **Akzeptanzkriterien:** Regeln werden vor Umsetzung mit dem Auftraggeber abgestimmt; neue Modi sind ein Teil der Business-Schicht und nutzen die gemeinsamen Oberflächenbausteine.
 - **Status:** planned
 
+### Phase 9: Spätere Erweiterungen
+
+#### Tabu-Spielmodi für später
+
+- **Race:** Pro Team wird eine Zielzahl gelöster Karten festgelegt, zum Beispiel zehn. Jedes Team darf höchstens einmal überspringen. Es gewinnt das Team, das die Zielzahl in der kürzesten eigenen Spielzeit erreicht. Zwei Abläufe sind vorgesehen: Jedes Team spielt seinen Lauf am Stück, oder die Teams wechseln sich nach jeder Karte ab. Beim Wechsel zählt für jedes Team nur seine aktive Zeit.
+- **Countdown-Duell:** Jedes Team hat ein eigenes Zeitkonto. Es läuft jeweils nur die Uhr des aktiven Teams, während geraten wird. Sobald der Begriff erraten wurde, pausiert diese Uhr und die des nächsten Teams läuft weiter. Wer zuerst keine Zeit mehr hat, verliert.
+- **Vor der Umsetzung klären:** Wer erklärt und wer rät im Countdown-Duell? Zählt Überspringen dort ebenfalls als erlaubter Wechsel und ist es auf einmal pro Team begrenzt? Im Race ist zu klären, ob eine übersprungene Karte ersetzt oder später erneut gespielt wird und wie Gleichstände behandelt werden.
+
+#### PH-09-01 – Multiplayer-Discovery und ADR
+
+- **Ziel:** Online-Multiplayer fachlich und technisch entscheiden.
+- **Umfang:** Autoritätsmodell, Lobby, Synchronisierung, Datenschutz, Hosting und Konfliktbehandlung analysieren.
+- **Akzeptanzkriterien:** Genehmigtes ADR und abgegrenzter Folgeplan liegen vor. Keine Implementierung ohne Freigabe.
+- **Tests:** Review der Ereignismodelle und Prototyp nur nach gesonderter Beauftragung.
+- **Status:** planned
+
+#### PH-09-02 – Spielmodulvertrag überprüfen und erweitern
+
+- **Ziel:** Den frühen Spielmodulvertrag anhand weiterer Spielanforderungen kontrolliert weiterentwickeln.
+- **Umfang:** Erfahrungen aus Tabu und den Spezifikationen weiterer Spiele auswerten und den bestehenden Vertrag nur bei nachgewiesenem Bedarf um Start- oder Persistenzschnittstellen ergänzen.
+- **Akzeptanzkriterien:** Der erweiterte Vertrag bleibt genreunabhängig, rückwärtskompatibel und ist durch Tabu sowie ein zweites Testmodul belegt.
+- **Tests:** Contract-Tests und Architekturprüfung.
+- **Status:** planned
+
+#### PH-09-03 – Scharade
+
+- **Ziel:** Zweites Spiel nach eigener Spezifikation ergänzen.
+- **Umfang:** Anforderungen, Business-Logik, UI, Karten und Tests als separates Modul.
+- **Akzeptanzkriterien:** Werden vor Implementierungsstart mit dem Auftraggeber konkretisiert.
+- **Tests:** Unit-, Komponenten- und E2E-Tests gemäß genehmigter Spezifikation.
+- **Status:** planned
+
+#### PH-09-04 – Wer bin ich und Quiz
+
+- **Ziel:** Weitere geplante Spiele schrittweise ergänzen.
+- **Umfang:** Je Spiel separate Spezifikation, Logik, UI, Daten und Qualitätssicherung.
+- **Akzeptanzkriterien:** Jeweils vor Implementierungsstart zu genehmigen.
+- **Tests:** Je Spiel anhand der genehmigten Regeln.
+- **Status:** planned
+
 ## 6. Abhängigkeiten und Reihenfolge
 
 - Phase 1 ist Voraussetzung für alle Implementierungsphasen.
@@ -605,8 +605,10 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 - Phase 6 macht den lokalen Modus dauerhaft und offline nutzbar.
 - Phase 7 beginnt erst nach stabiler lokaler Kartenverwaltung. Sie ist für die Spielbarkeit nicht erforderlich.
 - Phase 8 schließt den ersten Release ab.
-- Phase 9 bleibt bis zu separaten Freigaben außerhalb des ersten Produktumfangs.
 - Phase 10 verfeinert Bedienung und Spielablauf des abgenommenen Tabu-Releases.
+- Phase 11 prüft Qualität und Struktur von Tabu; `PH-11-05` (wiederverwendbare Spielbausteine) bereitet `PH-09-02` vor.
+- Phase 12 erweitert Tabu um Regeln, Spieler, Karten und Spielmodi.
+- Phase 9 (Multiplayer und weitere Spiele) folgt nach Phase 12 und bleibt bis zu separaten Freigaben außerhalb des bisherigen Produktumfangs. Die Phasennummer bleibt aus Gründen stabiler IDs bestehen.
 
 ## 7. Risiken und Gegenmaßnahmen
 
