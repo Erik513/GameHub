@@ -1,4 +1,4 @@
-import { useCallback, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { buildDeck, type DeckCriteria } from "../../business/games/taboo/deck";
 import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
@@ -12,6 +12,7 @@ import {
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { TabooRound } from "./TabooRound";
+import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 
 const categories = ["everyday", "nature", "culture"] as const;
 const difficulties = ["easy", "medium", "hard"] as const;
@@ -21,12 +22,12 @@ export function TabooSetup({
   cardLanguage,
   cards,
   children,
-  generation,
+  generators,
 }: {
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
   children?: ReactNode;
-  generation?: ReactNode;
+  generators?: TabooGenerators | undefined;
 }) {
   const { t } = useTranslation();
   const [teamCount, setTeamCount] = useState(2);
@@ -38,6 +39,10 @@ export function TabooSetup({
     deadline: number;
   }>();
   const [deckEmpty, setDeckEmpty] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [generationEmpty, setGenerationEmpty] = useState(false);
+  const activeGeneration = useRef<AbortController | undefined>(undefined);
+  useEffect(() => () => activeGeneration.current?.abort(), []);
   const [formVersion, setFormVersion] = useState(0);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
@@ -85,8 +90,10 @@ export function TabooSetup({
     });
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (activeGeneration.current) return;
+    setGenerationEmpty(false);
     setDeckEmpty(false);
     setShortage(undefined);
     setSession(undefined);
@@ -120,7 +127,33 @@ export function TabooSetup({
       categoryIds: selectedCategories.length === categories.length ? [] : selectedCategories,
       difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
     };
-    const deck = buildDeck(cards, filters, Math.random).cards;
+    let additions: readonly TabooCard[] = [];
+    if (generators && data.has("extraCards")) {
+      const controller = new AbortController();
+      activeGeneration.current = controller;
+      setGenerating(true);
+      try {
+        additions = await generateHiddenCards(
+          generators,
+          selectedCategories.map((categoryId) => ({
+            language: filters.language,
+            categoryId,
+            difficulty: filters.difficulties?.[0] ?? "easy",
+            count: 2,
+          })),
+          cards,
+          controller.signal,
+        );
+      } catch {
+        additions = [];
+      } finally {
+        activeGeneration.current = undefined;
+        setGenerating(false);
+      }
+      if (controller.signal.aborted) return;
+      setGenerationEmpty(additions.length === 0);
+    }
+    const deck = buildDeck([...cards, ...additions], filters, Math.random).cards;
     if (deck.length < required) {
       setShortage({ available: deck.length, required });
       return;
@@ -270,8 +303,9 @@ export function TabooSetup({
         <div hidden={Boolean(session)}>
           <form
             noValidate
-            onSubmit={submit}
+            onSubmit={(event) => void submit(event)}
             onChange={() => {
+              activeGeneration.current?.abort();
               setShortage(undefined);
               setSession(undefined);
               setDeckEmpty(false);
@@ -370,10 +404,18 @@ export function TabooSetup({
                 ))}
               </div>
             </fieldset>
-            {generation}
-            <Button type="submit">{t("tabooSetup.start")}</Button>
+            {generators && (
+              <label className="taboo-categories__choice">
+                <input type="checkbox" name="extraCards" disabled={generating} />
+                <span>{t("tabooSetup.extraCards")}</span>
+              </label>
+            )}
+            <Button type="submit" disabled={generating}>
+              {t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
+            </Button>
           </form>
         </div>
+        {generationEmpty && <p role="status">{t("tabooSetup.noExtraCards")}</p>}
         {children && <div className="taboo-tools">{children}</div>}
       </div>
     </div>

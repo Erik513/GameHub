@@ -1,74 +1,57 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { expect, it, vi } from "vitest";
 import type { TabooCardGenerator } from "../../business/games/taboo/cardGenerator";
-import { tabooLocalCandidates } from "../../data/tabooLocalCandidates";
-import { createLocalTabooCardGenerator } from "../../infrastructure/localTabooCardGenerator";
 import { createGameHubI18n } from "../../i18n";
-import { TabooGeneration } from "./TabooGeneration";
+import { TabooSetup } from "./TabooSetup";
 
-it("previews local suggestions and saves only the confirmed selection", async () => {
-  const i18n = await createGameHubI18n("de");
-  const repository = {
-    list: vi.fn().mockResolvedValue([]),
-    addAll: vi.fn().mockResolvedValue(undefined),
-  };
-  const onSaved = vi.fn();
-  render(
-    <I18nextProvider i18n={i18n}>
-      <form>
-        <input name="language" defaultValue="de" />
-        <input name="category" defaultValue="everyday" />
-        <TabooGeneration
-          standardCards={[]}
-          repository={repository}
-          onSaved={onSaved}
-          generators={{ local: createLocalTabooCardGenerator(tabooLocalCandidates, () => 0) }}
-        />
-      </form>
-    </I18nextProvider>,
-  );
-  fireEvent.click(screen.getByRole("button", { name: "Karten mit KI ergänzen" }));
-  const spoon = await screen.findByRole("checkbox", { name: /Löffel/ });
-  expect(spoon).toBeChecked();
-  expect(repository.addAll).not.toHaveBeenCalled();
-  fireEvent.click(spoon);
-  fireEvent.click(screen.getByRole("button", { name: "Ausgewählte Karten speichern" }));
-  expect(await screen.findByText("Gespeicherte Karten: 1")).toBeVisible();
-  expect(repository.addAll).toHaveBeenCalledOnce();
-  expect(repository.addAll.mock.calls[0]?.[0]).toMatchObject([{ term: "Seife" }]);
-  expect(onSaved).toHaveBeenCalledOnce();
-});
-
-it("uses the automatically discovered generator and can cancel it", async () => {
+it("adds new cards to the active deck without revealing them during setup", async () => {
   const i18n = await createGameHubI18n("en");
-  const repository = { list: vi.fn().mockResolvedValue([]), addAll: vi.fn() };
+  const user = userEvent.setup();
+  const generate = vi.fn<TabooCardGenerator["generate"]>().mockResolvedValue({
+    status: "complete",
+    candidates: [
+      {
+        language: "en",
+        categoryId: "nature",
+        difficulty: "easy",
+        term: "Otter",
+        forbiddenWords: ["river", "fur", "swim"],
+      },
+      {
+        language: "en",
+        categoryId: "nature",
+        difficulty: "easy",
+        term: "Orca",
+        forbiddenWords: ["ocean", "whale", "black"],
+      },
+    ],
+  });
   const generator: TabooCardGenerator = {
     capabilities: { languages: ["en"], maxCardsPerRequest: 10, worksOffline: false },
-    generate: (_, cancellation) =>
-      new Promise((resolve) => {
-        cancellation?.subscribe(() => resolve({ status: "failed", code: "cancelled" }));
-      }),
+    generate,
   };
-  const discover = vi.fn().mockResolvedValue(generator);
   render(
     <I18nextProvider i18n={i18n}>
-      <form>
-        <input name="category" defaultValue="nature" />
-        <TabooGeneration
-          standardCards={[]}
-          repository={repository}
-          onSaved={vi.fn()}
-          generators={{ local: generator, discover }}
-        />
-      </form>
+      <TabooSetup cardLanguage="en" cards={[]} generators={{ local: generator }} />
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByRole("button", { name: "Add cards with AI" }));
-  expect(discover).toHaveBeenCalledOnce();
-  await Promise.resolve();
-  await Promise.resolve();
-  fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
-  expect(await screen.findByRole("alert")).toHaveTextContent("Generation was cancelled.");
-  expect(repository.addAll).not.toHaveBeenCalled();
+  await user.type(screen.getByRole("textbox", { name: "Team 1" }), "Owls");
+  await user.type(screen.getByRole("textbox", { name: "Team 2" }), "Foxes");
+  await user.clear(screen.getByRole("spinbutton", { name: "Rounds per team" }));
+  await user.type(screen.getByRole("spinbutton", { name: "Rounds per team" }), "1");
+  await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
+  await user.click(screen.getByRole("checkbox", { name: "Culture" }));
+  await user.click(screen.getByRole("checkbox", { name: "Add extra cards" }));
+  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  expect(generate.mock.calls[0]?.[0]).toEqual({
+    language: "en",
+    categoryId: "nature",
+    difficulty: "easy",
+    count: 2,
+  });
+  expect(screen.queryByText(/Otter|Orca|river|whale/)).not.toBeInTheDocument();
+  await user.click(await screen.findByRole("button", { name: "Start round" }));
+  expect(screen.getByRole("heading", { name: /Otter|Orca/ })).toBeVisible();
 });

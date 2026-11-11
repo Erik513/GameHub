@@ -37,19 +37,11 @@ test("is installable and starts a Taboo round after an offline reload", async ({
   await context.setOffline(true);
   await page.reload();
   await page.getByRole("button", { name: "View progress" }).click();
-  const generation = page.locator(".taboo-generation");
-  await page.getByRole("checkbox", { name: "Nature" }).uncheck();
-  await page.getByRole("checkbox", { name: "Culture" }).uncheck();
-  await generation.getByRole("button", { name: "Add cards with AI" }).click();
-  await expect(generation.getByRole("status")).toHaveText("Ready: 2 · Rejected: 0");
-  await generation.getByRole("button", { name: "Save selected cards" }).click();
-  await expect(generation.getByRole("status")).toHaveText("Saved cards: 2");
-  await page.reload();
-  await page.getByText("Custom Taboo cards", { exact: true }).click();
-  await expect(page.getByRole("button", { name: "Export own cards" })).toBeEnabled();
+  await page.getByRole("checkbox", { name: "Add extra cards" }).check();
   await page.getByRole("textbox", { name: "Team 1" }).fill("Owls");
   await page.getByRole("textbox", { name: "Team 2" }).fill("Foxes");
   await page.getByRole("button", { name: "Prepare game" }).click();
+  await expect(page.getByText("No new extra cards are available.")).toHaveCount(0);
   await page.getByRole("button", { name: "Start round" }).click();
   await expect(
     page.getByRole("region", { name: "Active round" }).getByRole("listitem"),

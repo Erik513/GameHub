@@ -411,10 +411,10 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 
 #### PH-07-05 – Generierungsoberfläche und lokale Speicherung
 
-- **Ziel:** Nutzer können Karten kontrolliert erzeugen und übernehmen.
-- **Umfang:** Providerwahl, Parameter, Vorschau, Validierungsfehler, Auswahl und Speicherung.
-- **Akzeptanzkriterien:** Speicherung erfolgt erst nach Bestätigung. UI ist deutsch/englisch und ohne Provider verständlich deaktiviert.
-- **Tests:** Komponenten- und Integrationsabläufe in beiden Sprachen.
+- **Ziel:** Auf Wunsch neue Karten verdeckt in die laufende Partie mischen.
+- **Umfang:** Zusatzkarten im Setup aktivieren. Anbieter automatisch auswählen und die bestehenden Spielfilter verwenden.
+- **Akzeptanzkriterien:** Neue Karten werden geprüft, gemischt und erst im Spiel sichtbar. Sie gelten für die vorbereitete Partie und werden nicht automatisch gespeichert.
+- **Tests:** Spielablauf ohne vorzeitige Anzeige, Anbietererkennung und Offlinebetrieb.
 - **Status:** done
 
 ### Phase 8: Veröffentlichung, E2E-Tests und Qualitätssicherung

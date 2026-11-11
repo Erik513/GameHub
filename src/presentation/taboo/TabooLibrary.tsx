@@ -10,7 +10,7 @@ import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { TabooSetup } from "./TabooSetup";
-import { TabooGeneration, type TabooGenerators } from "./TabooGeneration";
+import type { TabooGenerators } from "./TabooGeneration";
 
 interface TabooLibraryProps {
   generators?: TabooGenerators | undefined;
@@ -84,16 +84,7 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
     <TabooSetup
       cardLanguage={cardLanguage}
       cards={[...(ownCards ?? []), ...cards]}
-      generation={
-        repository && (
-          <TabooGeneration
-            standardCards={cards}
-            repository={repository}
-            generators={generators}
-            onSaved={(additions) => setOwnCards((current) => [...(current ?? []), ...additions])}
-          />
-        )
-      }
+      generators={generators}
     >
       {repository && (
         <details>

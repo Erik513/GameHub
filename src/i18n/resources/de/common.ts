@@ -1,35 +1,4 @@
 export const common = {
-  tabooGeneration: {
-    title: "Zusätzliche Karten",
-    provider: "Anbieter",
-    local: "Lokaler Kartenvorrat",
-    model: "Installiertes Ollama-Modell",
-    category: "Kategorie",
-    count: "Anzahl der Karten",
-    generate: "Karten mit KI ergänzen",
-    localFallback: "Aus dem lokalen Kartenvorrat",
-    noProvider: "Es ist kein Kartenanbieter verfügbar.",
-    working: "Vorschläge werden vorbereitet",
-    cancel: "Abbrechen",
-    saved: "Gespeicherte Karten: {{count}}",
-    preview: "Vorschläge prüfen",
-    review: "Gültig: {{accepted}} · Abgelehnt: {{rejected}}",
-    duplicate: "Die Karte ist bereits vorhanden.",
-    mismatch: "Die Karte passt nicht zur Anfrage.",
-    invalidCard: "Die Karte erfüllt die Tabu-Regeln nicht.",
-    rejected: "Karte {{number}}: {{reason}}",
-    save: "Ausgewählte Karten speichern",
-    errors: {
-      cancelled: "Die Generierung wurde abgebrochen.",
-      unsupported_request: "Wähle mindestens eine Kategorie.",
-      unavailable:
-        "Anbieter oder Modell ist nicht erreichbar. Prüfe den lokalen Ollama-Dienst und den Browserzugriff.",
-      timeout: "Der Anbieter hat nicht rechtzeitig geantwortet.",
-      invalid_response: "Die Antwort des Anbieters konnte nicht gelesen werden.",
-      generation_failed: "Der Anbieter konnte keine Karten vorschlagen.",
-      storage: "Auf den lokalen Kartenspeicher konnte nicht zugegriffen werden.",
-    },
-  },
   tabooLibrary: {
     title: "Eigene Tabu-Karten",
     hint: "Importiere eine GameHub-JSON-Datei oder sichere deine eigenen Karten.",
@@ -68,6 +37,9 @@ export const common = {
     start: "Runde starten",
   },
   tabooSetup: {
+    extraCards: "Zusatzkarten mit KI",
+    preparingCards: "Karten werden vorbereitet …",
+    noExtraCards: "Keine neuen Zusatzkarten verfügbar.",
     cardOptions: "Kartenoptionen",
     edit: "Einstellungen ändern",
     cardShortage:
