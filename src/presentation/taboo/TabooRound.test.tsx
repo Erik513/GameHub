@@ -42,9 +42,10 @@ it.each([
       }),
     );
     const duration = within(screen.getByRole("group", { name: "Round duration (seconds)" }));
-    expect(duration.getAllByRole("radio")).toHaveLength(2);
+    expect(duration.getAllByRole("radio")).toHaveLength(3);
     expect(duration.getByRole("radio", { name: /^60$/ })).toBeChecked();
     fireEvent.click(duration.getByRole("radio", { name: /^90$/ }));
+    expect(duration.getByRole("radio", { name: /^120$/ })).toBeVisible();
     // This test covers the shared win, so the tiebreak is switched off for the tie.
     if (!correct) {
       fireEvent.click(
