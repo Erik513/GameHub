@@ -439,6 +439,8 @@ function transitionTiebreak(
     };
   }
   if (!active) return state;
+  // A broken clock value must never reach the ranking.
+  if (!Number.isFinite(event.elapsedMs)) return state;
   if (event.type === "endTiebreakAttempt") {
     return finishTiebreakAttempt(state, active, event.elapsedMs);
   }

@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-11-01 – Spiellogik und Randfälle geprüft
+
+- Neue Zufallsprüfung (`stateMachine.invariants.test.ts`): 400 simulierte Partien mit gültigen und ungültigen Ereignissen, Prüfung von Punkten, eindeutigen Karten, Zustandsübergängen, Stechen-Daten und endgültigem Spielende.
+- Gefundener Fehler behoben: Ungültige Zeitwerte (`NaN`, unendlich) im Stechen konnten die Rangfolge verfälschen und werden jetzt ignoriert.
+- Zusätzliche Tests: zu wenige Karten für das Stechen, Kartensprache im Stechen.
+- Regeln und Randfälle dokumentiert in `docs/GAMEHUB_TABOO_LOGIC.md`.
+
 ### PH-10-03 – Feinschliff nach Rückmeldung
 
 - Rundenzahl pro Team: Kurz (3), Mittel (5), Lang (10) und Unbegrenzt (∞). Bei unbegrenzten Spielen lässt sich das Ergebnis nach jeder vollständig gespielten Runde anzeigen (`roundsPerTeam: "unlimited"`).

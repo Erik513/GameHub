@@ -115,4 +115,42 @@ describe("Taboo tiebreak", () => {
     fireEvent.click(within(attempt).getByRole("button", { name: "Forbidden word" }));
     expect(within(attempt).getByText("Easy")).toBeVisible();
   });
+
+  it("explains when there are too few cards for a tiebreak and offers a new setup", async () => {
+    const i18n = await createGameHubI18n("en");
+    const twoCards = tabooStandardCards.filter((card) => card.language === "en").slice(0, 2);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={twoCards} />
+      </I18nextProvider>,
+    );
+    reachTiebreak();
+    press("Start tiebreak");
+    expect(screen.getByRole("alert")).toHaveTextContent("Not enough cards are available");
+    expect(screen.getByRole("button", { name: "Start tiebreak" })).toBeDisabled();
+    expect(screen.queryByRole("timer")).not.toBeInTheDocument();
+    press("Set up a new game");
+    expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
+  });
+
+  it("never uses cards of another language for a tiebreak", async () => {
+    const i18n = await createGameHubI18n("en");
+    const mixed = [
+      ...tabooStandardCards.filter((card) => card.language === "en").slice(0, 4),
+      ...tabooStandardCards.filter((card) => card.language === "de").slice(0, 12),
+    ];
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={mixed} />
+      </I18nextProvider>,
+    );
+    reachTiebreak();
+    press("Start tiebreak");
+    // Only four English cards exist, which is enough for three cards plus one replacement.
+    const attempt = screen.getByRole("region", { name: "Tiebreak attempt" });
+    expect(attempt.querySelector("[lang='de']")).toBeNull();
+    fireEvent.click(within(attempt).getByRole("button", { name: "Skip" }));
+    expect(attempt.querySelector("[lang='de']")).toBeNull();
+    expect(within(attempt).getByRole("heading")).toBeVisible();
+  });
 });

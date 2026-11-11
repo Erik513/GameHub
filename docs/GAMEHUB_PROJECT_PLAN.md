@@ -495,7 +495,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 
 - **Ziel:** Alle Regeln der Zustandsmaschine systematisch auf Randfälle prüfen (leere oder zu kleine Kartensätze, Abbruch in Pause, unbegrenzte Runden, Stechen mit Gleichstand, Wiederverwendung von Karten).
 - **Akzeptanzkriterien:** Randfälle sind dokumentiert, getestet und bei Fehlern behoben.
-- **Status:** planned
+- **Ergebnis:** Dokumentiert in `docs/GAMEHUB_TABOO_LOGIC.md`. Eine Zufallsprüfung mit 400 Partien sichert die Invarianten ab.
+- **Status:** done
 
 #### PH-11-02 – Testabdeckung prüfen und erhöhen
 
