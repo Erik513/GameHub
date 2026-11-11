@@ -52,9 +52,25 @@ for (const labels of cases) {
     await page.getByRole("button", { name: labels.start }).click();
     const round = page.getByRole("region", { name: labels.active });
     await round.getByRole("button", { name: labels.correct }).click();
+    if (labels.language === "en") {
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Tab");
+      await expect(round.getByRole("button", { name: "Undo last point" })).toBeFocused();
+      await page.keyboard.press("Enter");
+      await expect(round.getByText("Score: 0")).toBeVisible();
+      await round.getByRole("button", { name: "Correct" }).click();
+      await round.getByRole("button", { name: "Correct" }).click();
+    }
     await round.getByRole("button", { name: labels.skip }).click();
     await round.getByRole("button", { name: labels.forbidden }).click();
     await page.clock.fastForward(60_000);
+    if (labels.language === "en") {
+      const undo = page.getByRole("button", { name: "Undo last point" });
+      await undo.focus();
+      await page.keyboard.press("Enter");
+      await expect(page.getByText("Round points: 1")).toBeVisible();
+    }
     await expect(page.getByText(labels.next)).toBeVisible();
     await expect(page.getByText("Owls: 1", { exact: true })).toBeVisible();
     await expect(round).toHaveCount(0);

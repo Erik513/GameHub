@@ -30,6 +30,40 @@ function setup(input = configuration) {
 }
 
 describe("Taboo state machine", () => {
+  it("undoes points only for the current turn and leaves played cards resolved", () => {
+    const initial = setup();
+    const turn = { round: 1, teamIndex: 0 };
+    const undo = { type: "undoPoint", turn } as const;
+    expect(transitionTaboo(initial, undo)).toBe(initial);
+    const running = transitionTaboo(initial, {
+      ...start,
+      remainingCards: [
+        { ...card, id: "second" },
+        { ...card, id: "third" },
+      ],
+    });
+    expect(transitionTaboo(running, undo)).toBe(running);
+    const correct = { type: "resolveCard", turn, cardId: card.id, outcome: "correct" } as const;
+    const scored = transitionTaboo(running, correct);
+    expect(transitionTaboo(scored, { ...undo, turn: { round: 2, teamIndex: 0 } })).toBe(scored);
+    expect(transitionTaboo(scored, { ...undo, turn: { round: 1, teamIndex: 1 } })).toBe(scored);
+    const corrected = transitionTaboo(scored, undo);
+    expect(corrected).toMatchObject({
+      status: "roundRunning",
+      scores: [0, 0, 0],
+      card: { id: "second" },
+      resolvedCardIds: [card.id],
+    });
+    const ended = transitionTaboo(transitionTaboo(corrected, { ...correct, cardId: "second" }), {
+      type: "endRound",
+      turn,
+    });
+    expect(transitionTaboo(ended, undo)).toMatchObject({
+      status: "roundEnded",
+      roundPoints: 0,
+      scores: [0, 0, 0],
+    });
+  });
   it("awards a sole win to the second team after one round per team", () => {
     const initial = setup({
       ...configuration,

@@ -62,6 +62,13 @@ export function TabooRound({ deadline, dispatch, state }: TabooRoundProps) {
             {t(`tabooRound.${outcome}`)}
           </Button>
         ))}
+        <Button
+          variant="secondary"
+          disabled={state.roundPoints === 0}
+          onClick={() => dispatch({ type: "undoPoint", turn })}
+        >
+          {t("tabooRound.undoPoint")}
+        </Button>
       </div>
     </section>
   );

@@ -32,7 +32,6 @@ export function TabooSetup({
   const [round, setRound] = useState<{
     state: TabooState;
     deadline: number;
-    startingScore: number;
   }>();
   const [deckEmpty, setDeckEmpty] = useState(false);
   const [formVersion, setFormVersion] = useState(0);
@@ -79,7 +78,6 @@ export function TabooSetup({
     setRound({
       state,
       deadline: Date.now() + state.configuration.roundDurationSeconds * 1000,
-      startingScore: state.scores[state.turn.teamIndex] ?? 0,
     });
   }
 
@@ -175,7 +173,7 @@ export function TabooSetup({
             </p>
             <p>
               {t("tabooRound.earned", {
-                score: (ended.scores[ended.turn.teamIndex] ?? 0) - round.startingScore,
+                score: ended.roundPoints,
               })}
             </p>
           </StatusMessage>
@@ -187,6 +185,13 @@ export function TabooSetup({
               </li>
             ))}
           </ul>
+          <Button
+            variant="secondary"
+            disabled={ended.roundPoints === 0}
+            onClick={() => dispatch({ type: "undoPoint", turn: ended.turn })}
+          >
+            {t("tabooRound.undoPoint")}
+          </Button>
           {nextTurn ? (
             <>
               <p>

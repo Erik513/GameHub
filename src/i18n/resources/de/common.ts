@@ -47,6 +47,7 @@ export const common = {
     show: "Endergebnis anzeigen",
   },
   tabooRound: {
+    undoPoint: "Letzten Punkt zurücknehmen",
     earned: "Rundenpunkte: {{score}}",
     standings: "Gesamtpunktestand",
     teamTotal: "{{team}}: {{score}}",

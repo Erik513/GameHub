@@ -23,6 +23,7 @@ interface Setup extends GameState {
 
 interface TurnState extends GameState {
   readonly turn: Turn;
+  readonly roundPoints: number;
 }
 
 export type TabooState =
@@ -48,6 +49,7 @@ export type TabooEvent =
       readonly outcome: "correct" | "skipped" | "forbiddenWord";
     }
   | { readonly type: "endRound"; readonly turn: Turn }
+  | { readonly type: "undoPoint"; readonly turn: Turn }
   | { readonly type: "finishGame" };
 
 export function createTabooGame(input: GameConfiguration): ValidationResult<Setup> {
@@ -67,6 +69,20 @@ export function createTabooGame(input: GameConfiguration): ValidationResult<Setu
 
 export function transitionTaboo(state: TabooState, event: TabooEvent): TabooState {
   const { configuration, scores, resolvedCardIds } = state;
+  if (event.type === "undoPoint") {
+    if (
+      (state.status !== "roundRunning" && state.status !== "roundEnded") ||
+      event.turn.round !== state.turn.round ||
+      event.turn.teamIndex !== state.turn.teamIndex ||
+      state.roundPoints === 0
+    )
+      return state;
+    return {
+      ...state,
+      roundPoints: state.roundPoints - 1,
+      scores: scores.map((score, index) => (index === state.turn.teamIndex ? score - 1 : score)),
+    };
+  }
   if (event.type === "resolveCard") {
     if (
       state.status !== "roundRunning" ||
@@ -79,6 +95,7 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     const updated = {
       configuration,
       turn: state.turn,
+      roundPoints: state.roundPoints + (event.outcome === "correct" ? 1 : 0),
       scores: scores.map((score, index) =>
         event.outcome === "correct" && index === state.turn.teamIndex ? score + 1 : score,
       ),
@@ -96,7 +113,14 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
       event.turn.teamIndex !== state.turn.teamIndex
     )
       return state;
-    return { status: "roundEnded", configuration, turn: state.turn, scores, resolvedCardIds };
+    return {
+      status: "roundEnded",
+      configuration,
+      turn: state.turn,
+      scores,
+      resolvedCardIds,
+      roundPoints: state.roundPoints,
+    };
   }
 
   if (state.status !== "setup" && state.status !== "roundEnded") return state;
@@ -134,6 +158,7 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     status: "roundRunning",
     configuration,
     turn,
+    roundPoints: 0,
     card,
     remainingCards,
     scores,
