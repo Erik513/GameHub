@@ -66,6 +66,8 @@ it("checks fresh storage before submitting one atomic batch and propagates stora
   const repository = {
     list: vi.fn().mockResolvedValue([moon]),
     addAll: vi.fn().mockResolvedValue(undefined),
+    update: vi.fn().mockResolvedValue(undefined),
+    remove: vi.fn().mockResolvedValue(undefined),
   };
   expect(await saveGeneratedCards(repository, [moon], [])).toEqual([]);
   expect(repository.addAll).not.toHaveBeenCalled();

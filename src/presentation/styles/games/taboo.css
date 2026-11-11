@@ -657,3 +657,51 @@
 .taboo-players__body > * {
   margin: 0;
 }
+
+.taboo-card-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.taboo-card-list h3,
+.taboo-card-list p {
+  margin: 0;
+}
+
+.taboo-card-list ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.taboo-card-list li {
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+.taboo-card-list__row {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.taboo-card-list__row small {
+  display: block;
+  color: var(--color-ink-muted);
+}
+
+.taboo-card-list__edit {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.taboo-card-list__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.taboo-card-list__actions > * {
+  flex: 1;
+}

@@ -76,4 +76,44 @@ export class IndexedDbTabooCardRepository implements TabooCardRepository {
       database.close();
     }
   }
+
+  async update(card: TabooCard): Promise<void> {
+    const result = validateCard(card);
+    if (!result.valid) throw new TypeError("Invalid custom Taboo card.");
+    const database = await this.open();
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const transaction = database.transaction(cardStore, "readwrite");
+        const store = transaction.objectStore(cardStore);
+        transaction.oncomplete = () => resolve();
+        transaction.onabort = () =>
+          reject(new Error("Card update aborted.", { cause: transaction.error }));
+        const existing = store.getKey(result.value.id);
+        existing.onsuccess = () => {
+          if (existing.result === undefined) {
+            transaction.abort();
+            return;
+          }
+          store.put(result.value);
+        };
+      });
+    } finally {
+      database.close();
+    }
+  }
+
+  async remove(id: string): Promise<void> {
+    const database = await this.open();
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const transaction = database.transaction(cardStore, "readwrite");
+        transaction.oncomplete = () => resolve();
+        transaction.onabort = () =>
+          reject(new Error("Card delete aborted.", { cause: transaction.error }));
+        transaction.objectStore(cardStore).delete(id);
+      });
+    } finally {
+      database.close();
+    }
+  }
 }

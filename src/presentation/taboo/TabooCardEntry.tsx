@@ -2,13 +2,13 @@ import { useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { parseCardEntries } from "../../business/games/taboo/cardEntry";
 import { builtInCategoryIds, customCategoryIds } from "../../business/games/taboo/categories";
-import { normalizeText, type TabooCard } from "../../business/games/taboo/model";
+import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { useAutoGrow } from "../game-kit";
+import { TabooCategoryField } from "./TabooCategoryField";
+import { newCategoryChoice, resolveCategory } from "./categoryChoice";
 import { difficulties } from "./tabooSetupModel";
-
-const newCategory = "__new__";
 
 interface TabooCardEntryProps {
   cardLanguage: SupportedLanguage;
@@ -38,7 +38,7 @@ export function TabooCardEntry({ cardLanguage, cards, disabled, onAdd }: TabooCa
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const categoryId = choice === newCategory ? normalizeText(name) : choice;
+    const categoryId = resolveCategory(choice, name);
     if (!categoryId) {
       setFeedback({ type: "noCategory" });
       return;
@@ -61,7 +61,7 @@ export function TabooCardEntry({ cardLanguage, cards, disabled, onAdd }: TabooCa
       const added = await onAdd(entered);
       setFeedback({ type: "added", added, skipped: entered.length - added });
       setText("");
-      if (choice === newCategory) {
+      if (choice === newCategoryChoice) {
         setChoice(categoryId);
         setName("");
       }
@@ -74,37 +74,13 @@ export function TabooCardEntry({ cardLanguage, cards, disabled, onAdd }: TabooCa
     <form className="taboo-card-entry" noValidate onSubmit={(event) => void submit(event)}>
       <h3>{t("tabooEntry.title")}</h3>
       <p>{t("tabooEntry.hint", { language: t(`tabooEntry.languages.${cardLanguage}`) })}</p>
-      <label className="field">
-        <span>{t("tabooEntry.category")}</span>
-        <select
-          className="field__input"
-          onChange={(event) => setChoice(event.target.value)}
-          value={choice}
-        >
-          {builtInCategoryIds.map((id) => (
-            <option key={id} value={id}>
-              {t(`tabooSetup.category.${id}`)}
-            </option>
-          ))}
-          {custom.map((id) => (
-            <option key={id} value={id}>
-              {id}
-            </option>
-          ))}
-          <option value={newCategory}>{t("tabooEntry.newCategory")}</option>
-        </select>
-      </label>
-      {choice === newCategory && (
-        <input
-          aria-label={t("tabooEntry.newCategoryName")}
-          autoComplete="off"
-          className="field__input"
-          maxLength={24}
-          onChange={(event) => setName(event.target.value)}
-          placeholder={t("tabooEntry.newCategoryName")}
-          value={name}
-        />
-      )}
+      <TabooCategoryField
+        choice={choice}
+        custom={custom}
+        name={name}
+        onChoice={setChoice}
+        onName={setName}
+      />
       <label className="field">
         <span>{t("tabooEntry.difficulty")}</span>
         <select className="field__input" defaultValue="easy" name="difficulty">

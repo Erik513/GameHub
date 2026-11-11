@@ -10,6 +10,7 @@ import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { TabooCardEntry } from "./TabooCardEntry";
+import { TabooCardList } from "./TabooCardList";
 import { TabooSetup } from "./TabooSetup";
 import type { TabooGenerators } from "./TabooGeneration";
 
@@ -53,6 +54,18 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
     if (additions.length > 0) await repository.addAll(additions);
     setOwnCards([...saved, ...additions]);
     return additions.length;
+  }
+
+  async function updateCard(card: TabooCard) {
+    if (!repository) return;
+    await repository.update(card);
+    setOwnCards((current) => current?.map((item) => (item.id === card.id ? card : item)));
+  }
+
+  async function removeCard(id: string) {
+    if (!repository) return;
+    await repository.remove(id);
+    setOwnCards((current) => current?.filter((item) => item.id !== id));
   }
 
   async function importCards(file: File) {
@@ -114,6 +127,13 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
             cards={allCards}
             disabled={busy}
             onAdd={saveCards}
+          />
+          <TabooCardList
+            allCards={allCards}
+            disabled={busy}
+            onRemove={removeCard}
+            onUpdate={updateCard}
+            ownCards={ownCards ?? []}
           />
           <div className="taboo-setup__actions">
             <label>

@@ -126,3 +126,24 @@ it("rejects an invalid card before touching the storage", async () => {
   ).rejects.toThrow("Invalid custom Taboo card.");
   expect(await repository.list()).toEqual([]);
 });
+
+it("updates a saved card, rejects unknown or invalid cards and removes a card", async () => {
+  const repository = new IndexedDbTabooCardRepository(new IDBFactory());
+  const other = { ...card, id: "sun", term: "Sun" };
+  await repository.addAll([card, other]);
+
+  await repository.update({ ...card, term: " Full moon ", difficulty: "hard" });
+  expect(await repository.list()).toEqual([
+    { ...card, term: "Full moon", difficulty: "hard" },
+    other,
+  ]);
+
+  await expect(repository.update({ ...card, id: "missing" })).rejects.toThrow("aborted");
+  await expect(
+    repository.update({ ...card, forbiddenWords: ["a", "a", "b", "c"] }),
+  ).rejects.toThrow(TypeError);
+
+  await repository.remove("moon");
+  await repository.remove("never-existed");
+  expect(await repository.list()).toEqual([other]);
+});

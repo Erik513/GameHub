@@ -75,6 +75,8 @@ it("reports a storage error when the saved cards cannot be read or written", asy
   const failing = {
     list: vi.fn().mockRejectedValue(new Error("no storage")),
     addAll: vi.fn().mockRejectedValue(new Error("no storage")),
+    update: vi.fn().mockRejectedValue(new Error("no storage")),
+    remove: vi.fn().mockRejectedValue(new Error("no storage")),
   };
   render(
     <I18nextProvider i18n={i18n}>
@@ -99,7 +101,12 @@ it("ignores an empty file selection and works without a repository", async () =>
   );
   expect(screen.queryByRole("button", { name: "Manage own cards" })).not.toBeInTheDocument();
   unmount();
-  const repository = { list: vi.fn().mockResolvedValue([]), addAll: vi.fn() };
+  const repository = {
+    list: vi.fn().mockResolvedValue([]),
+    addAll: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
+  };
   render(
     <I18nextProvider i18n={i18n}>
       <TabooLibrary repository={repository} cardLanguage="en" cards={[]} />

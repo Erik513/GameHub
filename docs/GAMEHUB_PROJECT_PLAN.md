@@ -565,7 +565,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-12-06 – Kartenimport und -export mit einfachem Editor
 
 - **Ziel:** Karten lassen sich importieren, exportieren und in einem einfachen Editor bearbeiten.
-- **Status:** planned
+- **Ergebnis:** Import und Export gab es bereits. Neu: Liste „Meine Karten“ auf der Kartenseite mit Suche, Bearbeiten (Begriff, vier verbotene Wörter, Kategorie inklusive neuer Kategorie, Schwierigkeit) und Löschen mit Bestätigung. Das Speicher-Interface `TabooCardRepository` hat dafür `update` und `remove`. Standardkarten bleiben unveränderbar.
+- **Status:** done
 
 #### PH-12-07 – Spielmodi: Klassisch, Auf Zeit, Gegen die Zeit
 

@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-12-06 – Karteneditor für eigene Karten
+
+- Neue Liste „Meine Karten“ (`TabooCardList`) auf der Kartenseite: Suche nach Begriff oder Kategorie, Bearbeiten (Begriff, vier verbotene Wörter, Kategorie oder neue Kategorie, Schwierigkeit) und Löschen mit Zweit-Tipp-Bestätigung. Eingaben werden mit denselben Regeln wie beim Hinzufügen geprüft (vier verschiedene Wörter, kein doppelter Begriff).
+- `TabooCardRepository` und die IndexedDB-Umsetzung haben `update` und `remove`; die Auswahl der Kategorie ist als `TabooCategoryField` gemeinsam mit dem Hinzufügen-Formular genutzt.
+- Tests: Datenschicht, Liste und Durchlauf über die Kartenseite in Deutsch und Englisch. Prüfungen: 281 Unit-Tests, 25 e2e, tsc, eslint.
+
 ### Nachbesserung zu PH-12-04 und PH-12-05
 
 - „Mittel“ ist gelb statt blau (Ampel: grün, gelb, rot) (Auswahl und Anzeige in der Runde), damit es nicht wie ein gewöhnliches ausgewähltes Element aussieht.
