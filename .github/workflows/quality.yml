@@ -55,6 +55,12 @@ jobs:
       - name: Build production assets
         run: pnpm build
 
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v7
@@ -63,6 +69,28 @@ jobs:
           name: coverage-report
           path: coverage/
           retention-days: 14
+
+  deploy:
+    name: Publish GameHub to GitHub Pages
+    needs: [quality, e2e]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy verified artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Check the published entry page
+        env:
+          GAMEHUB_PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+        run: curl --fail --silent --show-error --retry 5 --retry-all-errors "$GAMEHUB_PAGES_URL" | grep -F '<title>GameHub</title>'
 
   e2e:
     name: Playwright E2E

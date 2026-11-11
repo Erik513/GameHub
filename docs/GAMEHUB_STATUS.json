@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "github_pages_planned",
-    "updatedAt": "2026-11-11T15:58:01+01:00",
+    "updatedAt": "2026-11-11T16:02:41+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -396,7 +396,7 @@
         {
           "id": "PH-08-03",
           "title": "GitHub-Pages-Build und Deployment",
-          "status": "planned"
+          "status": "in_progress"
         },
         {
           "id": "PH-08-04",
