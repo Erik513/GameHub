@@ -11,7 +11,11 @@ self.addEventListener("install", (event) => {
       .open(cacheName)
       .then((cache) =>
         cache.addAll([...assets].map((url) => new Request(url, { cache: "reload" }))),
-      ),
+      )
+      .catch(async (error) => {
+        await caches.delete(cacheName);
+        throw error;
+      }),
   );
 });
 

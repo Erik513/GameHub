@@ -433,7 +433,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Installation/Audit, Cache-Aufbau, Netztrennung, App-Neustart und lokale Partie.
 - **Akzeptanzkriterien:** Mitgelieferte Karten und Kernspiel funktionieren nach Netztrennung. Updatefehler zerstören keinen spielbaren Cache.
 - **Tests:** Playwright mit Offline-Kontext und Produktions-Build.
-- **Status:** planned
+- **Status:** done
 
 #### PH-08-03 – GitHub-Pages-Build und Deployment
 

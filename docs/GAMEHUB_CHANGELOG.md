@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-08-02 – Offline- und Update-Prüfungen
+
+- Fehlgeschlagene Cache-Installation räumt ihren eigenen Cache auf. Die bisherige Version bleibt offline verfügbar.
+- Versionswechsel, Aufräumen des alten Caches und erneuter Offline-Start im Browser geprüft.
+- 20 Browserprüfungen auf Desktop und Mobil bestanden.
+
 ### PH-08-01 – Kritische Tabu-Spielabläufe
 
 - Vollständige Partien mit Einzelsieg und Gleichstand auf Deutsch und Englisch im Browser geprüft.
