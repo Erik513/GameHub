@@ -59,5 +59,6 @@ Bausteine in `src/presentation/game-kit/`, die ein neues Spiel einfach benutzt:
 
 ## Noch nicht umgesetzt
 
-- Die Tabu-Stile stehen noch in der gemeinsamen `global.css`; eine Datei pro Spiel (`styles/games/<spiel>.css`) ist geplant.
-- Die Zustandslogik von Tabu (Nachladen, Pause, Neustart, Stechen) liegt noch gebündelt im Container `TabooSetup.tsx`; Hooks für wiederkehrende Abläufe folgen, wenn das zweite Spiel sie braucht.
+- Pause, Neustart und Stechen von Tabu liegen noch im Container `TabooSetup.tsx`; Hooks dafür folgen, wenn das zweite Spiel sie braucht. Das Nachladen der KI-Karten ist bereits `useTabooRefill`.
+
+Stile je Spiel: `src/presentation/styles/games/<spiel>.css`, in `main.tsx` nach `global.css` importiert.

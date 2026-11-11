@@ -527,7 +527,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 
 - **Ziel:** Die Zustandslogik aus `TabooSetup.tsx` (Nachladen, Pause, Neustart, Stechen) als Hooks herauslösen und die Tabu-Stile in eine eigene Datei je Spiel verschieben.
 - **Akzeptanzkriterien:** Verhalten und Tests unverändert; Layout-Prüfung besteht.
-- **Status:** planned
+- **Ergebnis:** Tabu-Stile in `styles/games/taboo.css`, Nachladen der KI-Karten als Hook `useTabooRefill`. Pause, Neustart und Stechen bleiben im Container, bis ein zweites Spiel sie braucht.
+- **Status:** done
 
 ### Phase 12 – Tabu-Erweiterungen
 

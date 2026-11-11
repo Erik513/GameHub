@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-11-06 – Tabu-Stile je Spiel und Nachlade-Hook
+
+- Tabu-Stile aus `global.css` nach `src/presentation/styles/games/taboo.css` verschoben; berechnete Stile vor und nach der Trennung verglichen, keine Abweichung.
+- Nachladen der KI-Karten als Hook `useTabooRefill` aus `TabooSetup.tsx` herausgelöst (815 auf 450 Zeilen insgesamt). Pause, Neustart und Stechen bleiben bewusst im Container.
+- Prüfungen: 252 Unit-Tests, 25 e2e (5 mobile-only übersprungen auf Desktop), tsc, eslint und Architekturprüfung sauber.
+
 ### PH-12-01 – Info-Buttons mit Erklärfenster
 
 - Neuer Baustein `InfoButton` in `game-kit` und optionales `info` an `ChoiceGroup`: ein „i“-Knopf rechts neben der Überschrift öffnet ein Fenster mit der Erklärung.

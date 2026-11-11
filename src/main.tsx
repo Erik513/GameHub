@@ -14,6 +14,7 @@ import {
 } from "./infrastructure/localStorageLanguagePreferenceStore";
 import { createTabooModule } from "./presentation/taboo/tabooModule";
 import "./presentation/styles/global.css";
+import "./presentation/styles/games/taboo.css";
 
 const rootElement = document.getElementById("root");
 

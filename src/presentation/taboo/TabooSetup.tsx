@@ -23,6 +23,7 @@ import { shuffleTeams } from "../../business/shared/teamOrder";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { useGameExit } from "../GameChrome";
 import { TabooRound } from "./TabooRound";
+import { useTabooRefill } from "./useTabooRefill";
 import { TabooResultView } from "./TabooResultView";
 import { TabooSetupForm } from "./TabooSetupForm";
 import { TabooTiebreakOverview } from "./TabooTiebreakOverview";
@@ -33,7 +34,6 @@ import {
   defaultRoundChoices,
   difficulties,
   maxCardsPerRequest,
-  refillThreshold,
   teamNameFrom,
   type RoundChoice,
   type SetupState,
@@ -67,28 +67,30 @@ export function TabooSetup({
     startedAt?: number;
     pausedMs?: number;
   }>();
+  const dispatch = useCallback((event: TabooEvent) => {
+    setRound((current) => {
+      if (!current) return current;
+      const state = transitionTaboo(current.state, event);
+      return state === current.state ? current : { ...current, state };
+    });
+  }, []);
+  const runningRound = round?.state.status === "roundRunning" ? round.state : undefined;
+  const refill = useTabooRefill({
+    cards,
+    deck: session?.deck,
+    dispatch,
+    generators,
+    running: runningRound,
+  });
   const [deckEmpty, setDeckEmpty] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [generationEmpty, setGenerationEmpty] = useState(false);
   const activeGeneration = useRef<AbortController | undefined>(undefined);
   useEffect(() => () => activeGeneration.current?.abort(), []);
-  // AI-only games refill a running round in the background so the deck cannot run dry mid-turn.
-  const aiRefill = useRef<{ language: SupportedLanguage; categories: readonly string[] }>(
-    undefined,
-  );
-  const refillState = useRef({
-    busy: false,
-    counter: 0,
-    attempts: new Map<string, number>(),
-    added: [] as TabooCard[],
-  });
-  const refillController = useRef<AbortController | undefined>(undefined);
-  useEffect(() => () => refillController.current?.abort(), []);
   const [formVersion, setFormVersion] = useState(0);
   const [teamCount, setTeamCount] = useState(2);
   const [restartUnavailable, setRestartUnavailable] = useState(false);
   const [tiebreakNoCards, setTiebreakNoCards] = useState(false);
-  const [refillTick, setRefillTick] = useState(0);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
   const nextTurn = ended ? getNextTabooTurn(ended) : null;
@@ -108,8 +110,7 @@ export function TabooSetup({
 
   function restart(keepConfiguration: boolean) {
     setGenerationEmpty(false);
-    refillController.current?.abort();
-    refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
+    refill.reset();
     setRound(undefined);
     setDeckEmpty(false);
     setIssues([]);
@@ -223,8 +224,7 @@ export function TabooSetup({
   useGameExit(
     Boolean(round) || Boolean(session),
     () => {
-      refillController.current?.abort();
-      refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
+      refill.reset();
       setRound(undefined);
       setSession(undefined);
       setDeckEmpty(false);
@@ -234,55 +234,6 @@ export function TabooSetup({
       ? { paused: round.pausedAt !== undefined, onToggle: togglePause }
       : undefined,
   );
-
-  const dispatch = useCallback((event: TabooEvent) => {
-    setRound((current) => {
-      if (!current) return current;
-      const state = transitionTaboo(current.state, event);
-      return state === current.state ? current : { ...current, state };
-    });
-  }, []);
-
-  const runningRound = round?.state.status === "roundRunning" ? round.state : undefined;
-  useEffect(() => {
-    const plan = aiRefill.current;
-    const control = refillState.current;
-    if (!generators || !plan || !runningRound || control.busy) return;
-    if (runningRound.remainingCards.length > refillThreshold) return;
-    const { turn } = runningRound;
-    const turnKey = `${turn.round}:${turn.teamIndex}`;
-    if ((control.attempts.get(turnKey) ?? 0) >= plan.categories.length) return;
-    const index = control.counter++;
-    const request = {
-      language: plan.language,
-      categoryId: plan.categories[index % plan.categories.length] ?? "everyday",
-      difficulty: difficulties[index % difficulties.length] ?? "easy",
-      count: maxCardsPerRequest,
-    };
-    const controller = new AbortController();
-    refillController.current = controller;
-    control.busy = true;
-    void generateHiddenCards(
-      generators,
-      [request],
-      [...cards, ...(session?.deck ?? []), ...control.added],
-      controller.signal,
-    )
-      .catch(() => [] as readonly TabooCard[])
-      .then((generated) => {
-        control.busy = false;
-        if (controller.signal.aborted) return;
-        const additions = shuffle(generated);
-        control.added.push(...additions);
-        control.attempts.set(
-          turnKey,
-          additions.length > 0 ? 0 : (control.attempts.get(turnKey) ?? 0) + 1,
-        );
-        // Re-render so the effect can request further batches if the deck is still short.
-        dispatch({ type: "addCards", turn, cards: additions });
-        setRefillTick((tick) => tick + 1);
-      });
-  }, [cards, dispatch, generators, refillTick, runningRound, session]);
 
   function startRound(
     active: { state: SetupState; deck: readonly TabooCard[] } | undefined = session,
@@ -364,11 +315,11 @@ export function TabooSetup({
       difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
     };
     const cardSource = generators ? data.get("cardSource") : "local";
-    aiRefill.current =
+    refill.configure(
       cardSource === "ai"
         ? { language: filters.language, categories: selectedCategories }
-        : undefined;
-    refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
+        : undefined,
+    );
     let additions: readonly TabooCard[] = [];
     if (generators && (cardSource === "ai" || cardSource === "both")) {
       const controller = new AbortController();
