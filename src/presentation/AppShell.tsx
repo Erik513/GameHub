@@ -9,6 +9,7 @@ interface AppShellProps {
   children: ReactNode;
   currentRoute: string;
   onCardLanguageChange: (language: SupportedLanguage) => void;
+  onCloseGame?: (() => void) | undefined;
   onLanguageChange: (language: SupportedLanguage) => void;
 }
 
@@ -17,6 +18,7 @@ export function AppShell({
   children,
   currentRoute,
   onCardLanguageChange,
+  onCloseGame,
   onLanguageChange,
 }: AppShellProps) {
   const { t } = useTranslation();
@@ -38,13 +40,16 @@ export function AppShell({
             {t("navigation.home")}
           </a>
         </nav>
-        <Button
-          className="settings-button"
-          variant="secondary"
-          onClick={() => setSettingsOpen(true)}
-        >
-          {t("settings.open")}
-        </Button>
+        <div className="site-header__actions">
+          {onCloseGame && (
+            <Button variant="secondary" onClick={onCloseGame}>
+              {t("navigation.closeGame")}
+            </Button>
+          )}
+          <Button variant="secondary" onClick={() => setSettingsOpen(true)}>
+            {t("settings.open")}
+          </Button>
+        </div>
       </header>
       <main className="main-content">{children}</main>
       <SettingsDialog

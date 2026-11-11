@@ -4,6 +4,7 @@ import { I18nextProvider } from "react-i18next";
 import { expect, it, vi } from "vitest";
 import type { TabooCardGenerator } from "../../business/games/taboo/cardGenerator";
 import { createGameHubI18n } from "../../i18n";
+import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { TabooSetup } from "./TabooSetup";
 
 it("adds new cards to the active deck without revealing them during setup", async () => {
@@ -42,7 +43,7 @@ it("adds new cards to the active deck without revealing them during setup", asyn
   );
   await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
-  await user.click(screen.getByRole("checkbox", { name: "Add extra cards" }));
+  await user.click(screen.getByRole("radio", { name: "Both" }));
   await user.click(screen.getByRole("button", { name: "Prepare game" }));
   expect(generate.mock.calls[0]?.[0]).toEqual({
     language: "en",
@@ -51,6 +52,61 @@ it("adds new cards to the active deck without revealing them during setup", asyn
     count: 2,
   });
   expect(screen.queryByText(/Otter|Orca|river|whale/)).not.toBeInTheDocument();
+  await user.click(await screen.findByRole("button", { name: "Start round" }));
+  expect(screen.getByRole("heading", { name: /Otter|Orca/ })).toBeVisible();
+});
+
+async function renderWithGenerator(cards: Parameters<typeof TabooSetup>[0]["cards"]) {
+  const i18n = await createGameHubI18n("en");
+  const generate = vi.fn<TabooCardGenerator["generate"]>().mockResolvedValue({
+    status: "complete",
+    candidates: [
+      {
+        language: "en",
+        categoryId: "nature",
+        difficulty: "easy",
+        term: "Otter",
+        forbiddenWords: ["river", "fur", "swim"],
+      },
+      {
+        language: "en",
+        categoryId: "nature",
+        difficulty: "easy",
+        term: "Orca",
+        forbiddenWords: ["ocean", "whale", "black"],
+      },
+    ],
+  });
+  const generator: TabooCardGenerator = {
+    capabilities: { languages: ["en"], maxCardsPerRequest: 10, worksOffline: false },
+    generate,
+  };
+  const user = userEvent.setup();
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup cardLanguage="en" cards={cards} generators={{ local: generator }} />
+    </I18nextProvider>,
+  );
+  await user.click(
+    screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
+  );
+  await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
+  await user.click(screen.getByRole("checkbox", { name: "Culture" }));
+  return { generate, user };
+}
+
+it("does not call the generator when only local cards are selected", async () => {
+  const { generate, user } = await renderWithGenerator(tabooStandardCards);
+  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  expect(generate).not.toHaveBeenCalled();
+  expect(await screen.findByRole("button", { name: "Start round" })).toBeVisible();
+});
+
+it("builds the deck from generated cards only when AI only is selected", async () => {
+  const { generate, user } = await renderWithGenerator(tabooStandardCards);
+  await user.click(screen.getByRole("radio", { name: "AI only" }));
+  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  expect(generate).toHaveBeenCalledTimes(1);
   await user.click(await screen.findByRole("button", { name: "Start round" }));
   expect(screen.getByRole("heading", { name: /Otter|Orca/ })).toBeVisible();
 });

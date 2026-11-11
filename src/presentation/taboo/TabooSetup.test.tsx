@@ -41,3 +41,32 @@ it.each([
   expect(screen.getByRole("status")).toHaveTextContent(ready);
   expect(screen.getByRole("status")).toHaveTextContent("Team 1, Team 2, Team 3");
 });
+
+it("uses custom team names and falls back to defaults for blank fields", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
+    </I18nextProvider>,
+  );
+  await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
+  await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Foxes");
+  await user.type(screen.getByRole("textbox", { name: "Name of team 3" }), "  Owls ");
+  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  expect(screen.getByRole("status")).toHaveTextContent("Foxes, Team 2, Owls");
+});
+
+it("rejects duplicate custom team names", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
+    </I18nextProvider>,
+  );
+  await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Same");
+  await user.type(screen.getByRole("textbox", { name: "Name of team 2" }), "Same");
+  await user.click(screen.getByRole("button", { name: "Prepare game" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("Use a different name for each team.");
+});

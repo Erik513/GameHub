@@ -76,10 +76,15 @@ export function App({
       cardLanguage={cardLanguage}
       currentRoute={selectedGame ? currentRoute : homeRoute}
       onCardLanguageChange={onCardLanguageChange}
+      onCloseGame={
+        selectedGame && selectedGame.availability !== "planned"
+          ? () => navigate(homeRoute)
+          : undefined
+      }
       onLanguageChange={(language) => onLanguageChange?.(language)}
     >
       {selectedGame && selectedGame.availability !== "planned" ? (
-        <GamePreviewPage game={selectedGame} onBack={() => navigate(homeRoute)}>
+        <GamePreviewPage game={selectedGame}>
           {gameScreens[selectedGame.translationKey]?.(
             cardLanguage,
             tabooCards,

@@ -60,7 +60,7 @@ test("navigates between the game library and preview", async ({ page }) => {
   await expect(page).toHaveURL(/#\/games\/taboo$/);
   await expect(page.getByRole("heading", { name: "Taboo" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Back to all games" }).click();
+  await page.getByRole("button", { name: "Close game" }).click();
   await expect(page).toHaveURL(/#\/$/);
   await expect(page.getByRole("heading", { name: "Choose a game" })).toBeVisible();
 });

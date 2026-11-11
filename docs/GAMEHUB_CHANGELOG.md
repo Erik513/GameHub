@@ -11,6 +11,11 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Laufende Tabu-Runde: Begriff füllt die Ansicht, Aktionsbuttons liegen angeheftet in der Daumenzone, Countdown färbt sich in den letzten 10 Sekunden.
 - Einstellungen als Bottom-Sheet, Touch-Ziele mindestens 48 px, Eingabefelder gegen iOS-Zoom abgesichert, Theme-Farbe angepasst.
 - Rundenende und Ergebnis mit Standings-Karten und vollbreiten Buttons.
+- Kartensprache aus dem Tabu-Setup entfernt; es gilt die Kartensprache aus den Einstellungen.
+- Kartenquelle wählbar: nur lokal, nur KI oder beides kombiniert. Schwierigkeit und Kategorien liegen unter „Weitere Optionen“.
+- Start-, Richtig- und Weiter-Aktionen grün, „Verbotenes Wort“ rot.
+- „Zurück zu allen Spielen“ durch „Spiel schließen“ in der Kopfzeile neben den Einstellungen ersetzt.
+- Teamnamen im Tabu-Setup frei wählbar; leere Felder fallen auf „Team N“ zurück, doppelte Namen werden abgelehnt.
 
 ### Kompakte Tabu-Oberfläche
 

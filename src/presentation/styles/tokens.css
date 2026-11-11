@@ -10,6 +10,10 @@
   --color-accent-contrast: #101114;
   --color-play: #f4775f;
   --color-danger: #ff8d82;
+  --color-success: #5fd38d;
+  --color-success-hover: #7ce0a4;
+  --color-danger-fill: #ff6f61;
+  --color-danger-fill-hover: #ff8a7e;
   --color-focus: #9bb1ff;
   --font-sans: "Aptos", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-display: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif;

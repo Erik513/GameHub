@@ -16,6 +16,8 @@ import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 
 const categories = ["everyday", "nature", "culture"] as const;
 const difficulties = ["easy", "medium", "hard"] as const;
+const cardSources = ["local", "ai", "both"] as const;
+const maxCardsPerRequest = 10;
 type SetupState = Extract<ReturnType<typeof createTabooGame>, { valid: true }>["value"];
 
 export function TabooSetup({
@@ -43,6 +45,7 @@ export function TabooSetup({
   const activeGeneration = useRef<AbortController | undefined>(undefined);
   useEffect(() => () => activeGeneration.current?.abort(), []);
   const [formVersion, setFormVersion] = useState(0);
+  const [teamCount, setTeamCount] = useState(2);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
   const nextTurn = ended ? getNextTabooTurn(ended) : null;
@@ -54,6 +57,7 @@ export function TabooSetup({
     if (!keepConfiguration) {
       setSession(undefined);
       setFormVersion((version) => version + 1);
+      setTeamCount(2);
     }
   }
 
@@ -99,11 +103,13 @@ export function TabooSetup({
     const result = createTabooGame({
       teams: Array.from({ length: Number(data.get("teamCount")) }, (_, index) => ({
         id: String(index + 1),
-        name: t("tabooSetup.team", { number: index + 1 }),
+        name:
+          teamNameFrom(data.get(`teamName${index + 1}`)) ||
+          t("tabooSetup.team", { number: index + 1 }),
       })),
       roundsPerTeam: Number(data.get("rounds")),
       roundDurationSeconds: Number(data.get("duration")),
-      cardLanguage: data.get("language") === "de" ? "de" : "en",
+      cardLanguage,
     });
     if (!result.valid) {
       setIssues(result.issues);
@@ -125,23 +131,25 @@ export function TabooSetup({
       categoryIds: selectedCategories.length === categories.length ? [] : selectedCategories,
       difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
     };
+    const cardSource = generators ? data.get("cardSource") : "local";
     let additions: readonly TabooCard[] = [];
-    if (generators && data.has("extraCards")) {
+    if (generators && (cardSource === "ai" || cardSource === "both")) {
       const controller = new AbortController();
       activeGeneration.current = controller;
       setGenerating(true);
+      // Mixed decks only add a few extras; AI-only decks must cover every planned turn.
+      const perCategory =
+        cardSource === "ai" ? Math.max(2, Math.ceil(required / selectedCategories.length)) : 2;
+      const requests = selectedCategories.flatMap((categoryId) =>
+        Array.from({ length: Math.ceil(perCategory / maxCardsPerRequest) }, (_, index) => ({
+          language: filters.language,
+          categoryId,
+          difficulty: filters.difficulties?.[0] ?? ("easy" as const),
+          count: Math.min(maxCardsPerRequest, perCategory - index * maxCardsPerRequest),
+        })),
+      );
       try {
-        additions = await generateHiddenCards(
-          generators,
-          selectedCategories.map((categoryId) => ({
-            language: filters.language,
-            categoryId,
-            difficulty: filters.difficulties?.[0] ?? "easy",
-            count: 2,
-          })),
-          cards,
-          controller.signal,
-        );
+        additions = await generateHiddenCards(generators, requests, cards, controller.signal);
       } catch {
         additions = [];
       } finally {
@@ -151,7 +159,8 @@ export function TabooSetup({
       if (controller.signal.aborted) return;
       setGenerationEmpty(additions.length === 0);
     }
-    const deck = buildDeck([...cards, ...additions], filters, Math.random).cards;
+    const pool = cardSource === "ai" ? additions : [...cards, ...additions];
+    const deck = buildDeck(pool, filters, Math.random).cards;
     if (deck.length < required) {
       setShortage({ available: deck.length, required });
       return;
@@ -197,7 +206,9 @@ export function TabooSetup({
             ))}
           </ul>
           <div className="taboo-setup__actions">
-            <Button onClick={() => restart(true)}>{t("tabooResult.sameSetup")}</Button>
+            <Button variant="success" onClick={() => restart(true)}>
+              {t("tabooResult.sameSetup")}
+            </Button>
             <Button variant="secondary" onClick={() => restart(false)}>
               {t("tabooResult.newSetup")}
             </Button>
@@ -243,7 +254,7 @@ export function TabooSetup({
                   team: ended.configuration.teams[nextTurn.teamIndex]?.name ?? "",
                 })}
               </p>
-              <Button onClick={startRound} disabled={deckEmpty}>
+              <Button variant="success" onClick={startRound} disabled={deckEmpty}>
                 {t("tabooRound.start")}
               </Button>
             </>
@@ -283,7 +294,9 @@ export function TabooSetup({
             {t("tabooSetup.readyDetail", {
               teams: session.state.configuration.teams.map((team) => team.name).join(", "),
             })}
-            <Button onClick={startRound}>{t("tabooRound.start")}</Button>
+            <Button variant="success" onClick={startRound}>
+              {t("tabooRound.start")}
+            </Button>
             <Button variant="quiet" onClick={() => setSession(undefined)}>
               {t("tabooSetup.edit")}
             </Button>
@@ -302,7 +315,10 @@ export function TabooSetup({
           <form
             noValidate
             onSubmit={(event) => void submit(event)}
-            onChange={() => {
+            onChange={(event) => {
+              if (event.target instanceof HTMLInputElement && event.target.name === "teamCount") {
+                setTeamCount(Number(event.target.value));
+              }
               activeGeneration.current?.abort();
               setShortage(undefined);
               setSession(undefined);
@@ -315,6 +331,19 @@ export function TabooSetup({
               initial="2"
               options={["2", "3", "4", "5", "6"].map((value) => ({ value, label: value }))}
             />
+            <div className="taboo-team-names">
+              {Array.from({ length: teamCount }, (_, index) => (
+                <input
+                  aria-label={t("tabooSetup.teamNameLabel", { number: index + 1 })}
+                  autoComplete="off"
+                  className="field__input"
+                  key={index}
+                  maxLength={24}
+                  name={`teamName${index + 1}`}
+                  placeholder={t("tabooSetup.team", { number: index + 1 })}
+                />
+              ))}
+            </div>
             <SetupChoices
               legend={t("tabooSetup.rounds")}
               name="rounds"
@@ -327,45 +356,44 @@ export function TabooSetup({
               initial="60"
               options={["60", "90"].map((value) => ({ value, label: value }))}
             />
-            <SetupChoices
-              legend={t("language.cardLabel")}
-              name="language"
-              initial={cardLanguage}
-              options={["de", "en"].map((value) => ({
-                value,
-                label: value === "de" ? t("language.options.de") : t("language.options.en"),
-              }))}
-            />
-            <SetupChoices
-              legend={t("tabooSetup.difficulty")}
-              name="difficulty"
-              initial=""
-              options={[
-                { value: "", label: t("tabooSetup.anyDifficulty") },
-                ...difficulties.map((value) => ({
-                  value,
-                  label: t(`tabooSetup.difficulties.${value}`),
-                })),
-              ]}
-            />
-            <fieldset className="taboo-choice-group">
-              <legend>{t("tabooSetup.categories")}</legend>
-              <div className="taboo-choice-grid taboo-choice-grid--categories">
-                {categories.map((category) => (
-                  <label className="taboo-choice" key={category}>
-                    <input type="checkbox" name="category" value={category} defaultChecked />
-                    <span>{t(`tabooSetup.category.${category}`)}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
             {generators && (
-              <label className="taboo-choice taboo-choice--toggle">
-                <input type="checkbox" name="extraCards" disabled={generating} />
-                <span>{t("tabooSetup.extraCards")}</span>
-              </label>
+              <SetupChoices
+                legend={t("tabooSetup.cardSource")}
+                name="cardSource"
+                initial="local"
+                options={cardSources.map((value) => ({
+                  value,
+                  label: t(`tabooSetup.cardSources.${value}`),
+                }))}
+              />
             )}
-            <Button type="submit" disabled={generating}>
+            <details className="taboo-more">
+              <summary>{t("tabooSetup.moreOptions")}</summary>
+              <SetupChoices
+                legend={t("tabooSetup.difficulty")}
+                name="difficulty"
+                initial=""
+                options={[
+                  { value: "", label: t("tabooSetup.anyDifficulty") },
+                  ...difficulties.map((value) => ({
+                    value,
+                    label: t(`tabooSetup.difficulties.${value}`),
+                  })),
+                ]}
+              />
+              <fieldset className="taboo-choice-group">
+                <legend>{t("tabooSetup.categories")}</legend>
+                <div className="taboo-choice-grid taboo-choice-grid--categories">
+                  {categories.map((category) => (
+                    <label className="taboo-choice" key={category}>
+                      <input type="checkbox" name="category" value={category} defaultChecked />
+                      <span>{t(`tabooSetup.category.${category}`)}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </details>
+            <Button type="submit" variant="success" disabled={generating}>
               {t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
             </Button>
           </form>
@@ -375,6 +403,10 @@ export function TabooSetup({
       </div>
     </div>
   );
+}
+
+function teamNameFrom(value: FormDataEntryValue | null) {
+  return typeof value === "string" ? value.trim() : "";
 }
 
 interface SetupChoicesProps {

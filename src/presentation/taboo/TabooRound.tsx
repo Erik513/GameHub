@@ -4,6 +4,11 @@ import type { TabooEvent, TabooState } from "../../business/games/taboo/stateMac
 import { Button } from "../components";
 
 const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
+const outcomeVariants = {
+  correct: "success",
+  skipped: "secondary",
+  forbiddenWord: "danger",
+} as const;
 type RunningRound = Extract<TabooState, { status: "roundRunning" }>;
 
 interface TabooRoundProps {
@@ -58,7 +63,7 @@ export function TabooRound({ deadline, dispatch, state }: TabooRoundProps) {
           <Button
             key={outcome}
             disabled={seconds === 0}
-            variant={outcome === "correct" ? "primary" : "secondary"}
+            variant={outcomeVariants[outcome]}
             onClick={() => {
               dispatch(
                 Date.now() >= deadline

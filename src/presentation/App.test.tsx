@@ -73,7 +73,7 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Taboo" })).toBeVisible();
     expect(window.location.hash).toBe("#/games/taboo");
 
-    await user.click(screen.getByRole("button", { name: "Back to all games" }));
+    await user.click(screen.getByRole("button", { name: "Close game" }));
     expect(screen.getByRole("heading", { name: "Choose a game" })).toBeVisible();
   });
 

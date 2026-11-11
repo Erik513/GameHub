@@ -37,7 +37,7 @@ test("is installable and starts a Taboo round after an offline reload", async ({
   await context.setOffline(true);
   await page.reload();
   await page.getByRole("button", { name: "View progress" }).click();
-  await page.getByRole("checkbox", { name: "Add extra cards" }).check();
+  await page.getByRole("radio", { name: "Both" }).check();
   await page.getByRole("button", { name: "Prepare game" }).click();
   await expect(page.getByText("No new extra cards are available.")).toHaveCount(0);
   await page.getByRole("button", { name: "Start round" }).click();

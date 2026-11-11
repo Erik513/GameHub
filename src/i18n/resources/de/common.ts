@@ -37,7 +37,9 @@ export const common = {
     start: "Runde starten",
   },
   tabooSetup: {
-    extraCards: "Zusatzkarten mit KI",
+    cardSource: "Kartenquelle",
+    cardSources: { local: "Nur lokal", ai: "Nur KI", both: "Beides" },
+    moreOptions: "Weitere Optionen",
     preparingCards: "Karten werden vorbereitet …",
     noExtraCards: "Keine neuen Zusatzkarten verfügbar.",
     cardOptions: "Kartenoptionen",
@@ -46,6 +48,7 @@ export const common = {
       "Die Auswahl enthält {{available}} Karten. Für die geplanten Teamrunden werden mindestens {{required}} benötigt.",
     teams: "Teams",
     team: "Team {{number}}",
+    teamNameLabel: "Name von Team {{number}}",
     addTeam: "Team hinzufügen",
     removeTeam: "Letztes Team entfernen",
     rounds: "Runden pro Team",
@@ -90,6 +93,7 @@ export const common = {
   navigation: {
     home: "Spiele",
     ariaLabel: "Hauptnavigation",
+    closeGame: "Spiel schließen",
   },
   settings: {
     open: "Einstellungen",
@@ -153,6 +157,5 @@ export const common = {
     eyebrow: "Spielvorschau",
     description:
       "Dieses Spiel ist bereits Teil von GameHub und wird in einem späteren Entwicklungsschritt spielbar.",
-    back: "Zurück zu allen Spielen",
   },
 } as const;

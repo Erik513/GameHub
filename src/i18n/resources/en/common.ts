@@ -37,7 +37,9 @@ export const common = {
     start: "Start round",
   },
   tabooSetup: {
-    extraCards: "Add extra cards",
+    cardSource: "Card source",
+    cardSources: { local: "Local only", ai: "AI only", both: "Both" },
+    moreOptions: "More options",
     preparingCards: "Preparing cards…",
     noExtraCards: "No new extra cards are available.",
     cardOptions: "Card options",
@@ -46,6 +48,7 @@ export const common = {
       "The filters match {{available}} cards. The scheduled turns need at least {{required}}.",
     teams: "Teams",
     team: "Team {{number}}",
+    teamNameLabel: "Name of team {{number}}",
     addTeam: "Add team",
     removeTeam: "Remove last team",
     rounds: "Rounds per team",
@@ -90,6 +93,7 @@ export const common = {
   navigation: {
     home: "Games",
     ariaLabel: "Main navigation",
+    closeGame: "Close game",
   },
   settings: {
     open: "Settings",
@@ -152,6 +156,5 @@ export const common = {
     eyebrow: "Game preview",
     description:
       "This game is already part of GameHub and will become playable in a later development step.",
-    back: "Back to all games",
   },
 } as const;
