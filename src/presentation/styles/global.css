@@ -1035,7 +1035,7 @@ h1 {
 }
 
 .kit-choice[data-tone="medium"] span {
-  color: var(--color-accent);
+  color: var(--color-medium);
 }
 
 .kit-choice[data-tone="hard"] span {
@@ -1049,9 +1049,9 @@ h1 {
 }
 
 .kit-choice[data-tone="medium"] input:checked + span {
-  border-color: var(--color-accent);
+  border-color: var(--color-medium);
   color: var(--color-accent-contrast);
-  background: var(--color-accent);
+  background: var(--color-medium);
 }
 
 .kit-choice[data-tone="hard"] input:checked + span {

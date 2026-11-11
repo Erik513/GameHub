@@ -167,6 +167,7 @@ export function TabooSetupForm({
             <ChoiceGroup
               info={info("difficulty", t("tabooSetup.difficulty"))}
               legend={t("tabooSetup.difficulty")}
+              multiple
               name="difficulty"
               initial=""
               options={[

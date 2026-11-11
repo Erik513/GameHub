@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { TabooCard } from "../../business/games/taboo/model";
+import type { Difficulty, TabooCard } from "../../business/games/taboo/model";
 import type { TabooEvent, TabooState } from "../../business/games/taboo/stateMachine";
 import { shuffle } from "../../business/shared/shuffle";
 import type { SupportedLanguage } from "../../i18n";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
-import { difficulties, maxCardsPerRequest, refillThreshold } from "./tabooSetupModel";
+import { maxCardsPerRequest, refillThreshold } from "./tabooSetupModel";
 
 export interface RefillPlan {
   readonly categories: readonly string[];
+  /** Difficulties the player allowed; the refill cycles through them. */
+  readonly difficulties: readonly Difficulty[];
   readonly language: SupportedLanguage;
 }
 
@@ -61,7 +63,7 @@ export function useTabooRefill({ cards, deck, dispatch, generators, running }: R
     const request = {
       language: current.language,
       categoryId: current.categories[index % current.categories.length] ?? "everyday",
-      difficulty: difficulties[index % difficulties.length] ?? "easy",
+      difficulty: current.difficulties[index % current.difficulties.length] ?? "easy",
       count: maxCardsPerRequest,
     };
     const abort = new AbortController();

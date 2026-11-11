@@ -457,8 +457,8 @@
 }
 
 .taboo-round__difficulty[data-difficulty="medium"] {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--color-medium);
+  color: var(--color-medium);
 }
 
 .taboo-round__difficulty[data-difficulty="hard"] {
@@ -517,7 +517,7 @@
 }
 
 .taboo-round__difficulty[data-difficulty="medium"] {
-  --dot: var(--color-accent);
+  --dot: var(--color-medium);
   color: var(--color-ink-muted);
 }
 
@@ -532,9 +532,17 @@
   min-height: 2.75rem;
 }
 
+.taboo-rules {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-2);
+}
+
 .taboo-rules-button {
-  align-self: flex-start;
+  gap: var(--space-2);
+  width: auto;
   min-height: 2.75rem;
+  padding-inline: var(--space-4);
 }
 
 .taboo-rules-list {

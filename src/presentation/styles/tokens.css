@@ -11,6 +11,8 @@
   --color-danger: #ff8d82;
   --color-success: #5fd38d;
   --color-warning: #e7b866;
+  /* Medium difficulty: a clear yellow between the green and the red. */
+  --color-medium: #f2cf4f;
   --color-success-hover: #7ce0a4;
   --color-danger-fill: #ff6f61;
   --color-danger-fill-hover: #ff8a7e;

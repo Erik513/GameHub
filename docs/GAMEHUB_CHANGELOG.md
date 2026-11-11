@@ -6,6 +6,8 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ### Nachbesserung zu PH-12-04 und PH-12-05
 
+- „Mittel“ ist gelb statt blau (Ampel: grün, gelb, rot) (Auswahl und Anzeige in der Runde), damit es nicht wie ein gewöhnliches ausgewähltes Element aussieht.
+- Schwierigkeit ist mehrfach wählbar (z. B. leicht und schwer). „Alle“ schließt die anderen aus; wählt man nichts oder alle drei, gilt wieder „Alle“. Umgesetzt als Option `multiple` im Baustein `ChoiceGroup`; die KI-Erzeugung und das Nachladen verwenden nur die gewählten Schwierigkeiten. Tests für die Auswahlregeln.
 - Eigene Karten (Hinzufügen, Import, Export) liegen auf einer eigenen Seite innerhalb von Tabu, erreichbar über „Eigene Karten verwalten“ im Setup; „Zurück“ führt ins Setup, das ausgefüllt erhalten bleibt.
 - Das Setup ist in zwei Abschnitte gegliedert: „Teams und Spieler“ (Teamanzahl, Namen, Reihenfolge, Spielerliste) und „Spieleinstellungen“ (Runden, Dauer, Kartenquelle, weitere Optionen). Die Spielerliste hat eine eigene Überschrift „Spieler (optional)“ und ist weiter einklappbar („Namen eintragen und verteilen“), ihr Hinweistext ist verständlicher formuliert (Namen durch Komma oder Zeilenumbruch trennen), und sie hat Innenabstand zum Rand.
 - Mehrzeilige Eingabefelder (Spieler, Karten) wachsen mit dem Inhalt (`useAutoGrow` in `game-kit`).

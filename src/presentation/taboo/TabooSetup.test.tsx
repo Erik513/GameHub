@@ -16,7 +16,7 @@ it("blocks a six-turn setup when the chosen filters match only five cards", asyn
   );
   await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
-  await user.click(screen.getByRole("radio", { name: "Easy" }));
+  await user.click(screen.getByRole("checkbox", { name: "Easy" }));
   await user.click(screen.getByRole("button", { name: "Start" }));
   expect(screen.getByRole("alert")).toHaveTextContent("The filters match 5 cards");
   expect(screen.queryByRole("button", { name: "Start round" })).not.toBeInTheDocument();

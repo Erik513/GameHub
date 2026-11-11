@@ -319,12 +319,19 @@ export function TabooSetup({
       language: result.value.configuration.cardLanguage,
       minimumCards: 1,
       categoryIds: selectedCategories.length === categoryIds.length ? [] : selectedCategories,
-      difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
+      difficulties: difficulties.filter((difficulty) =>
+        data.getAll("difficulty").includes(difficulty),
+      ),
     };
+    const chosenDifficulties = filters.difficulties?.length ? filters.difficulties : difficulties;
     const cardSource = generators ? data.get("cardSource") : "local";
     refill.configure(
       cardSource === "ai"
-        ? { language: filters.language, categories: selectedCategories }
+        ? {
+            language: filters.language,
+            categories: selectedCategories,
+            difficulties: chosenDifficulties,
+          }
         : undefined,
     );
     let additions: readonly TabooCard[] = [];
@@ -342,8 +349,7 @@ export function TabooSetup({
         Array.from({ length: Math.ceil(perCategory / maxCardsPerRequest) }, (_, index) => ({
           language: filters.language,
           categoryId,
-          difficulty:
-            filters.difficulties?.[0] ?? difficulties[index % difficulties.length] ?? "easy",
+          difficulty: chosenDifficulties[index % chosenDifficulties.length] ?? "easy",
           count: Math.min(maxCardsPerRequest, perCategory - index * maxCardsPerRequest),
         })),
       );
