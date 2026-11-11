@@ -3,8 +3,8 @@
   "project": {
     "id": "gamehub",
     "name": "GameHub",
-    "stage": "taboo_e2e_planned",
-    "updatedAt": "2026-11-11T00:20:52+01:00",
+    "stage": "offline_e2e_planned",
+    "updatedAt": "2026-11-11T15:51:32+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 38,
+      "completedTasks": 39,
       "totalTasks": 46,
-      "percent": 82.61
+      "percent": 84.78
     }
   },
   "environment": {
@@ -94,10 +94,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T00:20:52+01:00",
-      "passed": 14,
+      "lastRunAt": "2026-11-11T00:25:27+01:00",
+      "passed": 18,
       "failed": 0,
-      "details": "14 Browserprüfungen bestanden. Lokale Vorschläge und Speicherung nach Offline-Neuladen auf Desktop und Mobil geprüft."
+      "details": "18 Browserprüfungen bestanden, darunter vollständige Tabu-Partien auf Deutsch und Englisch in beiden Browserprofilen."
     },
     "renameValidation": {
       "status": "passed",
@@ -381,12 +381,12 @@
     {
       "id": "PH-08",
       "name": "Veröffentlichung, E2E-Tests und Qualitätssicherung",
-      "status": "planned",
+      "status": "in_progress",
       "tasks": [
         {
           "id": "PH-08-01",
           "title": "Kritische E2E-Spielabläufe",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-08-02",
@@ -434,6 +434,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "PH-08-01 abgeschlossen: Tabu-Partie, Kartenaktionen, Einzelsieg, Gleichstand, Neustart und Neuladen im Browser geprüft."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-07-05 abgeschlossen: Tabu-Kartenvorschläge mit Anbieterwahl, Vorschau und bestätigter lokaler Speicherung."
@@ -643,9 +647,9 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-08-01",
-      "reason": "Den vollständigen Tabu-Spielablauf im Browser absichern.",
-      "prerequisite": "Spielablauf und Kartenvorschläge sind umgesetzt."
+      "id": "PH-08-02",
+      "reason": "Offlinebetrieb und PWA-Lebenszyklus mit Browserprüfungen absichern.",
+      "prerequisite": "Die kritischen Spielabläufe sind geprüft."
     }
   ]
 }

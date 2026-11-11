@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-08-01 – Kritische Tabu-Spielabläufe
+
+- Vollständige Partien mit Einzelsieg und Gleichstand auf Deutsch und Englisch im Browser geprüft.
+- Kartenaktionen, Teamwechsel, Neustart und Neuladen abgedeckt. 18 Desktop- und Mobilprüfungen bestanden.
+- Race und Countdown-Duell als spätere Tabu-Spielmodi im Projektplan festgehalten.
+
 ### PH-07-05 – Tabu-Kartenvorschläge und lokale Speicherung
 
 - Lokalen Kartenvorrat und optionales Ollama-Modell in der Tabu-Ansicht auswählbar gemacht.

@@ -425,7 +425,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Setup, komplette Partie, Wertung, Gleichstand, Sprachwechsel, Reload und mobile Ansicht.
 - **Akzeptanzkriterien:** Kritische Abläufe laufen deterministisch in unterstützten Zielprofilen und beiden Sprachen.
 - **Tests:** Playwright-Suite.
-- **Status:** planned
+- **Status:** done
 
 #### PH-08-02 – Offline- und PWA-E2E
 
@@ -454,6 +454,12 @@ Tabu-Feinschliff: Eine versehentlich falsche Wertung soll sich während der Rund
 - **Status:** planned
 
 ### Phase 9: Spätere Erweiterungen
+
+#### Tabu-Spielmodi für später
+
+- **Race:** Pro Team wird eine Zielzahl gelöster Karten festgelegt, zum Beispiel zehn. Jedes Team darf höchstens einmal überspringen. Es gewinnt das Team, das die Zielzahl in der kürzesten eigenen Spielzeit erreicht. Zwei Abläufe sind vorgesehen: Jedes Team spielt seinen Lauf am Stück, oder die Teams wechseln sich nach jeder Karte ab. Beim Wechsel zählt für jedes Team nur seine aktive Zeit.
+- **Countdown-Duell:** Jedes Team hat ein eigenes Zeitkonto. Es läuft jeweils nur die Uhr des aktiven Teams, während geraten wird. Sobald der Begriff erraten wurde, pausiert diese Uhr und die des nächsten Teams läuft weiter. Wer zuerst keine Zeit mehr hat, verliert.
+- **Vor der Umsetzung klären:** Wer erklärt und wer rät im Countdown-Duell? Zählt Überspringen dort ebenfalls als erlaubter Wechsel und ist es auf einmal pro Team begrenzt? Im Race ist zu klären, ob eine übersprungene Karte ersetzt oder später erneut gespielt wird und wie Gleichstände behandelt werden.
 
 #### PH-09-01 – Multiplayer-Discovery und ADR
 
