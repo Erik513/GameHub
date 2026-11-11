@@ -1,7 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const isContinuousIntegration = Boolean(process.env.CI);
-const localChromeChannel = isContinuousIntegration ? {} : { channel: "chrome" as const };
 
 export default defineConfig({
   testDir: "./e2e",
@@ -12,23 +11,21 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: "http://127.0.0.1:4173",
+    channel: "chrome",
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
-    video: isContinuousIntegration ? "retain-on-failure" : "off",
   },
   projects: [
     {
       name: "desktop-chromium",
       use: {
         ...devices["Desktop Chrome"],
-        ...localChromeChannel,
       },
     },
     {
       name: "mobile-chromium",
       use: {
         ...devices["Pixel 7"],
-        ...localChromeChannel,
       },
     },
   ],
