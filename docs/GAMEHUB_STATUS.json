@@ -497,7 +497,7 @@
         {
           "id": "PH-12-05",
           "title": "Mehrere Karten und Kategorien hinzufügen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-12-06",
@@ -836,8 +836,8 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-12-05",
-      "reason": "Nächste Tabu-Erweiterung: mehrere Karten und Kategorien hinzufügen. PH-12-07 (Spielmodi) kann nach dem Umbau folgen.",
+      "id": "PH-12-06",
+      "reason": "Nächste Tabu-Erweiterung: Kartenimport und -export mit einfachem Editor. PH-12-07 (Spielmodi) kann nach dem Umbau folgen.",
       "prerequisite": "Keine."
     }
   ]

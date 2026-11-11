@@ -576,3 +576,19 @@
   min-height: 2.75rem;
   width: auto;
 }
+
+.taboo-card-entry {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.taboo-card-entry h3,
+.taboo-card-entry p {
+  margin: 0;
+}
+
+.taboo-card-entry__input {
+  width: 100%;
+  resize: vertical;
+}

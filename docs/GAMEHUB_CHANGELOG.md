@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-12-05 – Mehrere Karten und Kategorien hinzufügen
+
+- Neues Formular „Karten hinzufügen“ (`TabooCardEntry`): mehrere Karten als Textzeilen, gemeinsame Kategorie und Schwierigkeit, neue Kategorie per Namen. Ungültige Zeilen werden mit Nummer gemeldet, dann wird nichts gespeichert; vorhandene Begriffe werden übersprungen.
+- Reine Logik `parseCardEntries` und `customCategoryIds` in `src/business/games/taboo/` mit Tests. Eigene Kategorien erscheinen im Setup als Filter (`tabooSetup`-Auswahl ist nun dynamisch).
+- Prüfungen: 270 Unit-Tests, 25 e2e, tsc, eslint, Architekturprüfung.
+
 ### PH-12-04 – Spieler hinzufügen und auf Teams verteilen
 
 - Neuer Bereich „Spieler und Teams (optional)“ im Tabu-Setup: Namen eintragen (Zeilen, Kommas oder Semikolon), zufällig auf die Teams verteilen oder je Spieler das Team auswählen. Übersicht der Teams mit ihren Spielern, Deutsch und Englisch.

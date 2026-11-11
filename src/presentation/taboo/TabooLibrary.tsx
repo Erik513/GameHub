@@ -9,6 +9,7 @@ import type { TabooCardRepository } from "../../business/games/taboo/cardReposit
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
+import { TabooCardEntry } from "./TabooCardEntry";
 import { TabooSetup } from "./TabooSetup";
 import type { TabooGenerators } from "./TabooGeneration";
 
@@ -43,6 +44,16 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
     };
   }, [repository]);
 
+  /** Saves cards that are new (by id and term) and returns how many were added. */
+  async function saveCards(incoming: readonly TabooCard[]): Promise<number> {
+    if (!repository) return 0;
+    const saved = await repository.list();
+    const additions = selectNewTabooCards(incoming, [...cards, ...saved]);
+    if (additions.length > 0) await repository.addAll(additions);
+    setOwnCards([...saved, ...additions]);
+    return additions.length;
+  }
+
   async function importCards(file: File) {
     if (!repository) return;
     setBusy(true);
@@ -55,11 +66,7 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
         setFeedback({ type: "invalid" });
         return;
       }
-      const saved = await repository.list();
-      const additions = selectNewTabooCards(incoming, [...cards, ...saved]);
-      if (additions.length > 0) await repository.addAll(additions);
-      setOwnCards([...saved, ...additions]);
-      setFeedback({ type: "imported", count: additions.length });
+      setFeedback({ type: "imported", count: await saveCards(incoming) });
     } catch {
       setFeedback({ type: "storage" });
     } finally {
@@ -90,6 +97,12 @@ export function TabooLibrary({ cardLanguage, cards, repository, generators }: Ta
         <details>
           <summary>{t("tabooLibrary.title")}</summary>
           <p>{t("tabooLibrary.hint")}</p>
+          <TabooCardEntry
+            cardLanguage={cardLanguage}
+            cards={[...(ownCards ?? []), ...cards]}
+            disabled={busy}
+            onAdd={saveCards}
+          />
           <div className="taboo-setup__actions">
             <label>
               {t("tabooLibrary.import")}

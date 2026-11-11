@@ -15,6 +15,7 @@ import {
 } from "./tabooSetupModel";
 
 interface TabooSetupFormProps {
+  categoryIds: readonly string[];
   children?: ReactNode;
   deckEmpty: boolean;
   generating: boolean;
@@ -27,8 +28,12 @@ interface TabooSetupFormProps {
   teamCount: number;
 }
 
+const isBuiltIn = (id: string): id is (typeof categories)[number] =>
+  (categories as readonly string[]).includes(id);
+
 /** The setup form of a Taboo game with its error messages and the start button. */
 export function TabooSetupForm({
+  categoryIds,
   children,
   deckEmpty,
   generating,
@@ -170,10 +175,12 @@ export function TabooSetupForm({
           <fieldset className="kit-choice-group">
             <legend>{t("tabooSetup.categories")}</legend>
             <div className="kit-choice-grid kit-choice-grid--categories">
-              {categories.map((category) => (
+              {categoryIds.map((category) => (
                 <label className="kit-choice" key={category}>
                   <input type="checkbox" name="category" value={category} defaultChecked />
-                  <span>{t(`tabooSetup.category.${category}`)}</span>
+                  <span>
+                    {isBuiltIn(category) ? t(`tabooSetup.category.${category}`) : category}
+                  </span>
                 </label>
               ))}
             </div>

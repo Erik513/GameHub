@@ -559,7 +559,8 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 #### PH-12-05 – Mehrere Karten und Kategorien hinzufügen
 
 - **Ziel:** Eigene Karten und Kategorien lassen sich in größerer Zahl anlegen.
-- **Status:** planned
+- **Ergebnis:** Formular „Karten hinzufügen“ in „Eigene Tabu-Karten“: eine Karte pro Zeile („Begriff: Wort1, Wort2, Wort3, Wort4“), gemeinsame Kategorie und Schwierigkeit, ungültige Zeilen werden genannt und verhindern das Speichern. Eigene Kategorien sind Namen, die direkt im Formular angelegt werden; die Kategorie-Kennung einer Karte ist dieser Name (keine neue Speicherstruktur, Import/Export bleiben kompatibel). Eigene Kategorien erscheinen im Setup als Filter, auch für die KI-Erzeugung. Bearbeiten und Löschen folgt mit PH-12-06.
+- **Status:** done
 
 #### PH-12-06 – Kartenimport und -export mit einfachem Editor
 

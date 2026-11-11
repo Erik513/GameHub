@@ -19,6 +19,7 @@ import {
 } from "../../business/games/taboo/stateMachine";
 import type { SupportedLanguage } from "../../i18n";
 import { shuffle } from "../../business/shared/shuffle";
+import { customCategoryIds } from "../../business/games/taboo/categories";
 import { shuffleTeams } from "../../business/shared/teamOrder";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { useGameExit } from "../GameChrome";
@@ -56,6 +57,7 @@ export function TabooSetup({
   roundChoices?: readonly RoundChoice[];
 }) {
   const { t } = useTranslation();
+  const categoryIds = [...categories, ...customCategoryIds(cards, cardLanguage)];
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
   const [session, setSession] = useState<{ state: SetupState; deck: readonly TabooCard[] }>();
   const [shortage, setShortage] = useState<{ available: number; required: number }>();
@@ -301,7 +303,7 @@ export function TabooSetup({
       setIssues(result.issues);
       return;
     }
-    const selectedCategories = categories.filter((category) =>
+    const selectedCategories = categoryIds.filter((category) =>
       data.getAll("category").includes(category),
     );
     if (selectedCategories.length === 0) {
@@ -316,7 +318,7 @@ export function TabooSetup({
     const filters: DeckCriteria = {
       language: result.value.configuration.cardLanguage,
       minimumCards: 1,
-      categoryIds: selectedCategories.length === categories.length ? [] : selectedCategories,
+      categoryIds: selectedCategories.length === categoryIds.length ? [] : selectedCategories,
       difficulties: difficulties.filter((difficulty) => data.get("difficulty") === difficulty),
     };
     const cardSource = generators ? data.get("cardSource") : "local";
@@ -437,6 +439,7 @@ export function TabooSetup({
         key={formVersion}
       >
         <TabooSetupForm
+          categoryIds={categoryIds}
           deckEmpty={deckEmpty}
           generating={generating}
           hasGenerators={Boolean(generators)}
