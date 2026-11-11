@@ -723,22 +723,22 @@ h1 {
   -webkit-user-select: none;
 }
 
-.taboo-round__hud p {
+.kit-hud p {
   margin: 0;
 }
 
-.taboo-round__team {
+.kit-hud__title {
   font-size: var(--text-lg);
   font-weight: var(--weight-bold);
   overflow-wrap: anywhere;
 }
 
-.taboo-round__score {
+.kit-hud__meta {
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
 }
 
-.taboo-round [role="timer"] {
+.kit-hud [role="timer"] {
   min-width: 2ch;
   color: var(--color-ink);
   font-size: 3.5rem;
@@ -748,7 +748,7 @@ h1 {
   text-align: right;
 }
 
-.taboo-round [role="timer"][data-low="true"] {
+.kit-hud [role="timer"][data-low="true"] {
   color: var(--color-accent);
 }
 
@@ -1098,7 +1098,7 @@ h1 {
   white-space: nowrap;
 }
 
-.taboo-round .taboo-round__team {
+.taboo-round .kit-hud__title {
   font-size: 1.5rem;
   line-height: 1.1;
 }
@@ -1311,7 +1311,7 @@ h1 {
 }
 
 /* Round header: one block with team, round, points and seconds, plus a time bar. */
-.taboo-round__hud {
+.kit-hud {
   display: grid;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
@@ -1319,21 +1319,21 @@ h1 {
   background: var(--color-surface-muted);
 }
 
-.taboo-round__hud-row {
+.kit-hud__row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
 }
 
-.taboo-round__bar {
+.kit-hud__bar {
   height: 0.5rem;
   overflow: hidden;
   border-radius: 999px;
   background: var(--color-line);
 }
 
-.taboo-round__bar span {
+.kit-hud__bar span {
   display: block;
   height: 100%;
   border-radius: inherit;
@@ -1342,7 +1342,7 @@ h1 {
   transition: transform 120ms linear;
 }
 
-.taboo-round__bar[data-low="true"] span {
+.kit-hud__bar[data-low="true"] span {
   background: var(--color-danger-fill);
 }
 
@@ -1586,19 +1586,19 @@ h1 {
 }
 
 /* Time display changes color in the last seconds: amber first, then red. */
-.taboo-round [role="timer"][data-warn="true"] {
+.kit-hud [role="timer"][data-warn="true"] {
   color: var(--color-warning);
 }
 
-.taboo-round [role="timer"][data-low="true"] {
+.kit-hud [role="timer"][data-low="true"] {
   color: var(--color-danger-fill);
 }
 
-.taboo-round__bar[data-warn="true"] span {
+.kit-hud__bar[data-warn="true"] span {
   background: var(--color-warning);
 }
 
-.taboo-round__bar[data-low="true"] span {
+.kit-hud__bar[data-low="true"] span {
   background: var(--color-danger-fill);
 }
 

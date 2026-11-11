@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   countSkips,
@@ -6,6 +5,7 @@ import {
   type TabooState,
 } from "../../business/games/taboo/stateMachine";
 import { Button, ConfirmButton } from "../components";
+import { TimerHud, useCountdown } from "../game-kit";
 
 const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
 const outcomeVariants = {
@@ -49,60 +49,31 @@ export function TabooRound({
         ? t("tabooRound.skipOnce")
         : t("tabooRound.skipsLeft", { left: skipsLeft, total: skipsPerRound });
   const skipsUsedUp = skipsPerRound !== undefined && countSkips(state.results) >= skipsPerRound;
-  const totalMs = configuration.roundDurationSeconds * 1000;
-  const [remainingFraction, setRemainingFraction] = useState(() =>
-    Math.min(1, Math.max(0, (deadline - Date.now()) / totalMs)),
-  );
-  const [seconds, setSeconds] = useState(() =>
-    Math.max(0, Math.ceil((deadline - Date.now()) / 1000)),
-  );
-
-  useEffect(() => {
-    if (paused) return;
-    const clock = setInterval(() => {
-      const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-      setSeconds(remaining);
-      setRemainingFraction(Math.min(1, Math.max(0, (deadline - Date.now()) / totalMs)));
-      if (remaining === 0) {
-        clearInterval(clock);
-        dispatch({ type: "endRound", turn: { round, teamIndex } });
-      }
-    }, 100);
-    return () => clearInterval(clock);
-  }, [deadline, dispatch, paused, round, teamIndex, totalMs]);
+  const { fraction, seconds } = useCountdown({
+    deadline,
+    durationMs: configuration.roundDurationSeconds * 1000,
+    onElapsed: () => dispatch({ type: "endRound", turn: { round, teamIndex } }),
+    paused,
+  });
 
   return (
     <section className="taboo-round taboo-round--running" aria-label={t("tabooRound.title")}>
-      <div className="taboo-round__hud">
-        <div className="taboo-round__hud-row">
-          <div>
-            <p className="taboo-round__team">{configuration.teams[teamIndex]?.name}</p>
-            <p className="taboo-round__score">
-              {configuration.roundsPerTeam === "unlimited"
-                ? t("tabooRound.roundOfUnlimited", { round })
-                : t("tabooRound.roundOf", { round, total: configuration.roundsPerTeam })}
-              {" · "}
-              {t("tabooRound.score", { score: scores[teamIndex] ?? 0 })}
-            </p>
-          </div>
-          <p
-            role="timer"
-            data-low={seconds <= 10}
-            data-warn={seconds > 10 && seconds <= 20}
-            aria-label={t("tabooRound.seconds", { seconds })}
-          >
-            {seconds}
-          </p>
-        </div>
-        <div
-          className="taboo-round__bar"
-          aria-hidden="true"
-          data-low={seconds <= 10}
-          data-warn={seconds > 10 && seconds <= 20}
-        >
-          <span style={{ transform: `scaleX(${remainingFraction})` }} />
-        </div>
-      </div>
+      <TimerHud
+        fraction={fraction}
+        meta={
+          <>
+            {configuration.roundsPerTeam === "unlimited"
+              ? t("tabooRound.roundOfUnlimited", { round })
+              : t("tabooRound.roundOf", { round, total: configuration.roundsPerTeam })}
+            {" · "}
+            {t("tabooRound.score", { score: scores[teamIndex] ?? 0 })}
+          </>
+        }
+        remainingSeconds={seconds}
+        time={String(seconds)}
+        timerLabel={t("tabooRound.seconds", { seconds })}
+        title={configuration.teams[teamIndex]?.name ?? ""}
+      />
       {paused ? (
         <div className="taboo-round__card taboo-round__card--paused">
           <h2>{t("tabooRound.paused")}</h2>

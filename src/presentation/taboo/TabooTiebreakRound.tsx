@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { TabooCard } from "../../business/games/taboo/model";
 import {
@@ -9,6 +9,7 @@ import {
   type TiebreakActive,
 } from "../../business/games/taboo/stateMachine";
 import { Button } from "../components";
+import { TimerHud, useStopwatch } from "../game-kit";
 import { formatSeconds } from "./formatTime";
 
 const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
@@ -45,17 +46,8 @@ export function TabooTiebreakRound({
   const { t, i18n } = useTranslation();
   const paused = pausedAt !== undefined;
   const card = active.cards[active.index];
-  const [now, setNow] = useState(() => Date.now());
   const readClock = useRef(Date.now);
-
-  useEffect(() => {
-    if (paused) return;
-    const clock = setInterval(() => setNow(Date.now()), 100);
-    return () => clearInterval(clock);
-  }, [paused]);
-
-  const elapsedMs = Math.max(0, (pausedAt ?? now) - startedAt - pausedMs);
-  const totalMs = elapsedMs;
+  const totalMs = useStopwatch({ pausedAt, pausedMs, startedAt });
   const timeUp = totalMs >= limitMs;
 
   useEffect(() => {
@@ -83,34 +75,20 @@ export function TabooTiebreakRound({
 
   return (
     <section className="taboo-round taboo-round--running" aria-label={t("tabooTiebreak.round")}>
-      <div className="taboo-round__hud">
-        <div className="taboo-round__hud-row">
-          <div>
-            <p className="taboo-round__team">{teamName}</p>
-            <p className="taboo-round__score">
-              {t("tabooTiebreak.title")}
-              {" · "}
-              {t("tabooTiebreak.cardOf", { current: active.index + 1, total: TIEBREAK_CARD_COUNT })}
-            </p>
-          </div>
-          <p
-            role="timer"
-            data-low={limitMs - totalMs <= 10000}
-            data-warn={limitMs - totalMs > 10000 && limitMs - totalMs <= 20000}
-            aria-label={t("tabooTiebreak.timer", { time: formatSeconds(totalMs, i18n.language) })}
-          >
-            {formatSeconds(totalMs, i18n.language)}
-          </p>
-        </div>
-        <div
-          className="taboo-round__bar"
-          aria-hidden="true"
-          data-low={limitMs - totalMs <= 10000}
-          data-warn={limitMs - totalMs > 10000 && limitMs - totalMs <= 20000}
-        >
-          <span style={{ transform: `scaleX(${Math.max(0, 1 - totalMs / limitMs)})` }} />
-        </div>
-      </div>
+      <TimerHud
+        fraction={1 - totalMs / limitMs}
+        meta={
+          <>
+            {t("tabooTiebreak.title")}
+            {" · "}
+            {t("tabooTiebreak.cardOf", { current: active.index + 1, total: TIEBREAK_CARD_COUNT })}
+          </>
+        }
+        remainingSeconds={(limitMs - totalMs) / 1000}
+        time={formatSeconds(totalMs, i18n.language)}
+        timerLabel={t("tabooTiebreak.timer", { time: formatSeconds(totalMs, i18n.language) })}
+        title={teamName}
+      />
       {paused ? (
         <div className="taboo-round__card taboo-round__card--paused">
           <h2>{t("tabooRound.paused")}</h2>
@@ -123,7 +101,7 @@ export function TabooTiebreakRound({
             onClick={() =>
               dispatch({
                 type: "endTiebreakAttempt",
-                elapsedMs: Math.max(0, (pausedAt ?? now) - startedAt - pausedMs),
+                elapsedMs: totalMs,
               })
             }
           >
