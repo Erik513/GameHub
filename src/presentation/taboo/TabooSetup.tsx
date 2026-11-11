@@ -352,14 +352,14 @@ export function TabooSetup({
                   </select>
                 </label>
               </div>
-              <fieldset>
+              <fieldset className="taboo-categories">
                 <legend>{t("tabooSetup.categories")}</legend>
                 <p>{t("tabooSetup.categoryHint")}</p>
-                <div className="taboo-setup__actions">
+                <div className="taboo-categories__choices">
                   {categories.map((category) => (
-                    <label key={category}>
-                      <input type="checkbox" name="category" value={category} />{" "}
-                      {t(`tabooSetup.category.${category}`)}
+                    <label className="taboo-categories__choice" key={category}>
+                      <input type="checkbox" name="category" value={category} />
+                      <span>{t(`tabooSetup.category.${category}`)}</span>
                     </label>
                   ))}
                 </div>
