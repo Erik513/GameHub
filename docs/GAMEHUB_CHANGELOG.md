@@ -14,7 +14,9 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Kartensprache aus dem Tabu-Setup entfernt; es gilt die Kartensprache aus den Einstellungen.
 - Kartenquelle wählbar: nur lokal, nur KI oder beides kombiniert. Schwierigkeit und Kategorien liegen unter „Weitere Optionen“.
 - Start-, Richtig- und Weiter-Aktionen grün, „Verbotenes Wort“ rot.
-- „Zurück zu allen Spielen“ durch „Spiel schließen“ in der Kopfzeile neben den Einstellungen ersetzt.
+- „Zurück zu allen Spielen“ durch ein Haus-Symbol („Spiel schließen“) ganz rechts in der Kopfzeile ersetzt.
+- Einstellungen als Zahnrad-Symbol dargestellt.
+- „Nur KI“ erzeugt pro Runde rund 12 Karten statt einer Karte pro Runde; bei „Alle“ wechselt die Schwierigkeit zwischen den Anfragen.
 - Teamnamen im Tabu-Setup frei wählbar; leere Felder fallen auf „Team N“ zurück, doppelte Namen werden abgelehnt.
 
 ### Kompakte Tabu-Oberfläche

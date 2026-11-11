@@ -18,6 +18,7 @@ const categories = ["everyday", "nature", "culture"] as const;
 const difficulties = ["easy", "medium", "hard"] as const;
 const cardSources = ["local", "ai", "both"] as const;
 const maxCardsPerRequest = 10;
+const aiCardsPerTurn = 12;
 type SetupState = Extract<ReturnType<typeof createTabooGame>, { valid: true }>["value"];
 
 export function TabooSetup({
@@ -137,14 +138,18 @@ export function TabooSetup({
       const controller = new AbortController();
       activeGeneration.current = controller;
       setGenerating(true);
-      // Mixed decks only add a few extras; AI-only decks must cover every planned turn.
+      // Mixed decks only add a few extras. AI-only decks must last a full timed round per turn,
+      // so they are generated generously instead of one card per turn.
       const perCategory =
-        cardSource === "ai" ? Math.max(2, Math.ceil(required / selectedCategories.length)) : 2;
+        cardSource === "ai"
+          ? Math.max(2, Math.ceil((required * aiCardsPerTurn) / selectedCategories.length))
+          : 2;
       const requests = selectedCategories.flatMap((categoryId) =>
         Array.from({ length: Math.ceil(perCategory / maxCardsPerRequest) }, (_, index) => ({
           language: filters.language,
           categoryId,
-          difficulty: filters.difficulties?.[0] ?? ("easy" as const),
+          difficulty:
+            filters.difficulties?.[0] ?? difficulties[index % difficulties.length] ?? "easy",
           count: Math.min(maxCardsPerRequest, perCategory - index * maxCardsPerRequest),
         })),
       );

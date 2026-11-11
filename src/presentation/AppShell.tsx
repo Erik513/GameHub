@@ -41,14 +41,45 @@ export function AppShell({
           </a>
         </nav>
         <div className="site-header__actions">
+          <Button
+            aria-label={t("settings.open")}
+            className="icon-button"
+            title={t("settings.open")}
+            variant="secondary"
+            onClick={() => setSettingsOpen(true)}
+          >
+            <svg aria-hidden="true" focusable="false" height="20" viewBox="0 0 24 24" width="20">
+              <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" />
+              <path
+                d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="2"
+              />
+              <circle cx="12" cy="12" r="6.5" fill="none" stroke="currentColor" strokeWidth="2" />
+            </svg>
+          </Button>
           {onCloseGame && (
-            <Button variant="secondary" onClick={onCloseGame}>
-              {t("navigation.closeGame")}
+            <Button
+              aria-label={t("navigation.closeGame")}
+              className="icon-button"
+              title={t("navigation.closeGame")}
+              variant="secondary"
+              onClick={onCloseGame}
+            >
+              <svg aria-hidden="true" focusable="false" height="20" viewBox="0 0 24 24" width="20">
+                <path
+                  d="M3 11.5 12 4l9 7.5M5.5 10v9.5h4.5v-6h4v6h4.5V10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
             </Button>
           )}
-          <Button variant="secondary" onClick={() => setSettingsOpen(true)}>
-            {t("settings.open")}
-          </Button>
         </div>
       </header>
       <main className="main-content">{children}</main>

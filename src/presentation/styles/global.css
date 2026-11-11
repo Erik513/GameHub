@@ -1028,3 +1028,8 @@ h1 {
 .site-header .brand {
   font-size: var(--text-md);
 }
+
+.site-header .icon-button {
+  width: 2.75rem;
+  padding: 0;
+}
