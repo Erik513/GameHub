@@ -185,3 +185,18 @@ describe("ConfirmButton", () => {
     }
   });
 });
+
+describe("ConfirmButton armed content", () => {
+  it("explains the second tap by showing the armed label", () => {
+    render(
+      <ConfirmButton armedLabel="Tap again to delete" idleLabel="Delete" onConfirm={vi.fn()}>
+        x
+      </ConfirmButton>,
+    );
+    expect(screen.queryByText("Tap again to delete")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    expect(screen.getByRole("button", { name: "Tap again to delete" })).toHaveTextContent(
+      "Tap again to delete",
+    );
+  });
+});

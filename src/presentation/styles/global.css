@@ -1275,6 +1275,9 @@ h1 {
 }
 
 .site-header .confirm-button[data-armed="true"] {
+  width: auto;
+  gap: var(--space-2);
+  padding-inline: var(--space-3);
   animation: confirm-pulse 1s ease-in-out infinite;
 }
 
@@ -1404,4 +1407,38 @@ h1 {
   width: 100%;
   min-height: var(--touch-target);
   margin-top: var(--space-3);
+}
+
+/* Final screen: winner block in the same style as the other round blocks. */
+.taboo-result {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.taboo-result > span:first-child {
+  color: var(--color-success);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.taboo-result strong {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 2.75rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.game-start-bar--stack {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.game-preview .game-start-bar--stack .button {
+  min-height: var(--touch-target);
+  font-size: var(--text-md);
 }

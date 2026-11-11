@@ -93,25 +93,33 @@ export function AppShell({
                   )}
                 </Button>
               )}
-              <ConfirmButton
-                armedLabel={t(
-                  gameExit.pause ? "navigation.stopRoundConfirm" : "navigation.exitGameConfirm",
-                )}
-                className="icon-button"
-                idleLabel={t(gameExit.pause ? "navigation.stopRound" : "navigation.exitGame")}
-                onConfirm={() => (gameExit.pause ? gameExit.pause.stop() : gameExit.run())}
-              >
-                {gameExit.pause ? (
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    width="20"
-                  >
-                    <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />
-                  </svg>
-                ) : (
+              {!gameExit.pause && (
+                <ConfirmButton
+                  armedContent={
+                    <>
+                      <svg
+                        aria-hidden="true"
+                        focusable="false"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        width="20"
+                      >
+                        <path
+                          d="M5 5l14 14M19 5L5 19"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeWidth="2.5"
+                        />
+                      </svg>
+                      <span>{t("navigation.exitGameConfirm")}</span>
+                    </>
+                  }
+                  armedLabel={t("navigation.exitGameConfirm")}
+                  className="icon-button"
+                  idleLabel={t("navigation.exitGame")}
+                  onConfirm={() => gameExit.run()}
+                >
                   <svg
                     aria-hidden="true"
                     focusable="false"
@@ -127,8 +135,8 @@ export function AppShell({
                       strokeWidth="2.5"
                     />
                   </svg>
-                )}
-              </ConfirmButton>
+                </ConfirmButton>
+              )}
             </>
           ) : (
             <>

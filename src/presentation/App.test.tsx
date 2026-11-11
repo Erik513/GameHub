@@ -123,7 +123,7 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Close game" })).toBeVisible();
   });
 
-  it("pauses and stops only the running round from the header", async () => {
+  it("pauses a running round and can restart or end it from the pause screen", async () => {
     vi.useFakeTimers();
     const i18n = await createGameHubI18n("en");
     render(
@@ -158,20 +158,61 @@ describe("App", () => {
     act(() => void vi.advanceTimersByTime(5000));
     expect(screen.getByRole("timer")).toHaveTextContent("50");
 
-    // Stopping ends only the round (two-step red confirmation) and shows the round overview.
-    fireEvent.click(screen.getByRole("button", { name: "Stop round" }));
+    // The header offers no way to end the game during a round, only to pause it.
+    expect(screen.queryByRole("button", { name: "End game" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Correct" }));
+    expect(screen.getByText(/Score: 1/)).toBeVisible();
+
+    // Restarting a turn needs a second tap, discards its points and shows new cards.
+    const shownBeforeRestart = [term, screen.getByRole("heading", { level: 2 }).textContent];
+    fireEvent.click(screen.getByRole("button", { name: "Pause" }));
+    fireEvent.click(screen.getByRole("button", { name: "Restart round" }));
     act(() => void vi.advanceTimersByTime(600));
-    fireEvent.click(screen.getByRole("button", { name: "Tap again to stop" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tap again to restart" }));
+    act(() => void vi.advanceTimersByTime(200));
+    expect(screen.getByRole("timer")).toHaveTextContent("60");
+    expect(screen.getByText(/Score: 0/)).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "Paused" })).not.toBeInTheDocument();
+    expect(shownBeforeRestart).not.toContain(screen.getByRole("heading", { level: 2 }).textContent);
+
+    // Ending the round keeps its result and shows the overview; only there can the game end.
+    fireEvent.click(screen.getByRole("button", { name: "Correct" }));
+    fireEvent.click(screen.getByRole("button", { name: "Pause" }));
+    fireEvent.click(screen.getByRole("button", { name: "End round" }));
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
-    expect(screen.getByText("Round 1/3")).toBeVisible();
-    expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
-
-    // Only from the overview can the whole game be ended.
     fireEvent.click(screen.getByRole("button", { name: "End game" }));
     act(() => void vi.advanceTimersByTime(600));
     fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
     expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
+  });
+
+  it("tells the players when a restarted round has no new cards left", async () => {
+    vi.useFakeTimers();
+    const i18n = await createGameHubI18n("en");
+    const twoCards = tabooStandardCards.filter((card) => card.language === "en").slice(0, 2);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={twoCards} />
+      </I18nextProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(
+      screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+    // Both cards were shown in this turn, so a restart cannot offer anything new.
+    fireEvent.click(screen.getByRole("button", { name: "Correct" }));
+    fireEvent.click(screen.getByRole("button", { name: "Pause" }));
+    fireEvent.click(screen.getByRole("button", { name: "Restart round" }));
+    act(() => void vi.advanceTimersByTime(600));
+    fireEvent.click(screen.getByRole("button", { name: "Tap again to restart" }));
+    expect(screen.getByRole("alert")).toHaveTextContent("No new cards available.");
+    expect(screen.getByRole("heading", { name: "Paused" })).toBeVisible();
+    // The message disappears once the round continues.
+    fireEvent.click(screen.getAllByRole("button", { name: "Resume" })[0]!);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
   it("changes the language and reports the selection", async () => {

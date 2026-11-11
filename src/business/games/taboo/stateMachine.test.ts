@@ -262,4 +262,42 @@ describe("Taboo state machine", () => {
       card: { id: "c" },
     });
   });
+
+  it("restarts a running turn with new cards and without its points and results", () => {
+    const turn = { round: 1, teamIndex: 0 };
+    const second = { ...card, id: "second" };
+    const third = { ...card, id: "third" };
+    const fourth = { ...card, id: "fourth" };
+    const restart = { type: "restartRound", turn, card: fourth } as const;
+    const initial = setup();
+    expect(transitionTaboo(initial, restart)).toBe(initial);
+    const running = transitionTaboo(initial, { ...start, remainingCards: [second, third] });
+    const scored = transitionTaboo(running, {
+      type: "resolveCard",
+      turn,
+      cardId: card.id,
+      outcome: "correct",
+    });
+    expect(scored).toMatchObject({ scores: [1, 0, 0], roundPoints: 1, card: { id: "second" } });
+    expect(transitionTaboo(scored, { ...restart, turn: { round: 1, teamIndex: 1 } })).toBe(scored);
+    // Cards already shown in this turn cannot come back after a restart.
+    expect(transitionTaboo(scored, { ...restart, card: second })).toBe(scored);
+    expect(transitionTaboo(scored, { ...restart, card })).toBe(scored);
+    expect(transitionTaboo(scored, { ...restart, remainingCards: [fourth] })).toBe(scored);
+    expect(transitionTaboo(scored, { ...restart, card: { ...fourth, language: "de" } })).toBe(
+      scored,
+    );
+    const restarted = transitionTaboo(scored, { ...restart, remainingCards: [third] });
+    expect(restarted).toMatchObject({
+      status: "roundRunning",
+      scores: [0, 0, 0],
+      roundPoints: 0,
+      results: [],
+      card: { id: "fourth" },
+      remainingCards: [{ id: "third" }],
+      resolvedCardIds: [card.id, "second"],
+    });
+    const ended = transitionTaboo(restarted, { type: "endRound", turn });
+    expect(transitionTaboo(ended, restart)).toBe(ended);
+  });
 });

@@ -61,6 +61,12 @@ export type TabooEvent =
       readonly turn: Turn;
       readonly cards: readonly TabooCard[];
     }
+  | {
+      readonly type: "restartRound";
+      readonly turn: Turn;
+      readonly card: TabooCard;
+      readonly remainingCards?: readonly TabooCard[];
+    }
   | { readonly type: "endRound"; readonly turn: Turn }
   | {
       readonly type: "reviseResult";
@@ -172,6 +178,44 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     return additions.length === 0
       ? state
       : { ...state, remainingCards: [...state.remainingCards, ...additions] };
+  }
+  if (event.type === "restartRound") {
+    if (
+      state.status !== "roundRunning" ||
+      event.turn.round !== state.turn.round ||
+      event.turn.teamIndex !== state.turn.teamIndex
+    )
+      return state;
+    // The turn starts over with new cards: cards already shown in this turn may not return, so
+    // the team cannot profit from having seen them.
+    const seen = new Set([state.card.id, ...state.results.map((result) => result.card.id)]);
+    const cards: TabooCard[] = [];
+    for (const input of [event.card, ...(event.remainingCards ?? [])]) {
+      const result = validateCard(input);
+      if (
+        !result.valid ||
+        result.value.language !== configuration.cardLanguage ||
+        seen.has(result.value.id)
+      )
+        return state;
+      seen.add(result.value.id);
+      cards.push(result.value);
+    }
+    const [card, ...remainingCards] = cards;
+    if (!card) return state;
+    return {
+      ...state,
+      card,
+      remainingCards,
+      roundPoints: 0,
+      results: [],
+      resolvedCardIds: resolvedCardIds.includes(state.card.id)
+        ? resolvedCardIds
+        : [...resolvedCardIds, state.card.id],
+      scores: scores.map((score, index) =>
+        index === state.turn.teamIndex ? score - state.roundPoints : score,
+      ),
+    };
   }
   if (event.type === "endRound") {
     if (

@@ -3,8 +3,6 @@ import { createContext, useContext, useEffect, useRef } from "react";
 export interface GamePauseControl {
   readonly paused: boolean;
   readonly toggle: () => void;
-  /** Ends only the current timed round, not the whole game. */
-  readonly stop: () => void;
 }
 
 export interface GameExit {
@@ -19,7 +17,6 @@ export const GameChromeContext = createContext<RegisterGameExit>(() => undefined
 interface PauseOptions {
   readonly paused: boolean;
   readonly onToggle: () => void;
-  readonly onStop: () => void;
 }
 
 /**
@@ -31,29 +28,19 @@ export function useGameExit(active: boolean, onExit: () => void, pause?: PauseOp
   const register = useContext(GameChromeContext);
   const latestExit = useRef(onExit);
   const latestToggle = useRef(pause?.onToggle);
-  const latestStop = useRef(pause?.onStop);
   const hasPause = pause !== undefined;
   const paused = pause?.paused ?? false;
 
   useEffect(() => {
     latestExit.current = onExit;
     latestToggle.current = pause?.onToggle;
-    latestStop.current = pause?.onStop;
   });
 
   useEffect(() => {
     if (!active) return;
     register({
       run: () => latestExit.current(),
-      ...(hasPause
-        ? {
-            pause: {
-              paused,
-              toggle: () => latestToggle.current?.(),
-              stop: () => latestStop.current?.(),
-            },
-          }
-        : {}),
+      ...(hasPause ? { pause: { paused, toggle: () => latestToggle.current?.() } } : {}),
     });
     return () => register(undefined);
   }, [active, hasPause, paused, register]);

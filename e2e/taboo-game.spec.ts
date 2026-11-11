@@ -29,7 +29,7 @@ const cases = [
     forbidden: "Verbotenes Wort",
     next: "Team 2",
     show: "Endergebnis anzeigen",
-    winner: "Gemeinsam gewonnen haben Team 1, Team 2.",
+    winner: "Gemeinsam gewonnen: Team 1, Team 2",
     restart: "Mit gleicher Konfiguration neu spielen",
     score: "Punkte: 0",
   },

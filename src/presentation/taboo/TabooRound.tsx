@@ -5,7 +5,7 @@ import {
   type TabooEvent,
   type TabooState,
 } from "../../business/games/taboo/stateMachine";
-import { Button } from "../components";
+import { Button, ConfirmButton } from "../components";
 
 const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
 const outcomeVariants = {
@@ -19,11 +19,21 @@ interface TabooRoundProps {
   deadline: number;
   dispatch: (event: TabooEvent) => void;
   onResume: () => void;
+  onRestart: () => void;
   paused: boolean;
+  restartUnavailable?: boolean;
   state: RunningRound;
 }
 
-export function TabooRound({ deadline, dispatch, onResume, paused, state }: TabooRoundProps) {
+export function TabooRound({
+  deadline,
+  dispatch,
+  onResume,
+  onRestart,
+  paused,
+  restartUnavailable = false,
+  state,
+}: TabooRoundProps) {
   const { t } = useTranslation();
   const { card, configuration, scores, turn } = state;
   const { round, teamIndex } = turn;
@@ -91,6 +101,17 @@ export function TabooRound({ deadline, dispatch, onResume, paused, state }: Tabo
           <p>{t("tabooRound.pausedHint")}</p>
           <Button variant="success" onClick={onResume}>
             {t("navigation.resume")}
+          </Button>
+          {restartUnavailable && <p role="alert">{t("tabooRound.noNewCards")}</p>}
+          <ConfirmButton
+            armedLabel={t("tabooRound.restartRoundConfirm")}
+            idleLabel={t("tabooRound.restartRound")}
+            onConfirm={onRestart}
+          >
+            {t("tabooRound.restartRound")}
+          </ConfirmButton>
+          <Button variant="secondary" onClick={() => dispatch({ type: "endRound", turn })}>
+            {t("tabooRound.endRound")}
           </Button>
         </div>
       ) : (

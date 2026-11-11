@@ -4,6 +4,8 @@ import { Button } from "./Button";
 interface ConfirmButtonProps {
   /** Accessible name and announcement while the button waits for the second press. */
   armedLabel: string;
+  /** Visible content while armed; defaults to the armed label so users see what a second tap does. */
+  armedContent?: ReactNode;
   children: ReactNode;
   className?: string;
   /** Presses right after arming are ignored so a double tap cannot confirm by accident. */
@@ -18,6 +20,7 @@ interface ConfirmButtonProps {
  * a second press within that time confirms the action.
  */
 export function ConfirmButton({
+  armedContent,
   armedLabel,
   children,
   className = "",
@@ -55,7 +58,7 @@ export function ConfirmButton({
         variant={armed ? "danger" : "secondary"}
         onClick={handleClick}
       >
-        {children}
+        {armed ? (armedContent ?? armedLabel) : children}
       </Button>
       <span className="visually-hidden" role="status">
         {armed ? armedLabel : ""}

@@ -65,6 +65,7 @@ export function TabooSetup({
   useEffect(() => () => refillController.current?.abort(), []);
   const [formVersion, setFormVersion] = useState(0);
   const [teamCount, setTeamCount] = useState(2);
+  const [restartUnavailable, setRestartUnavailable] = useState(false);
   const [refillTick, setRefillTick] = useState(0);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
@@ -97,6 +98,7 @@ export function TabooSetup({
   }
 
   const togglePause = useCallback(() => {
+    setRestartUnavailable(false);
     setRound((current) => {
       if (current?.state.status !== "roundRunning") return current;
       // Resuming moves the deadline by the time spent paused.
@@ -107,6 +109,33 @@ export function TabooSetup({
   }, []);
 
   const runningTurn = round?.state.status === "roundRunning" ? round.state.turn : undefined;
+
+  // A restarted turn gets new cards: nothing shown in this turn may reappear (no peeking).
+  const restartTurn = useCallback(() => {
+    if (!session || round?.state.status !== "roundRunning") return;
+    const turnState = round.state;
+    const shown = new Set([turnState.card.id, ...turnState.results.map((r) => r.card.id)]);
+    const played = new Set([...turnState.resolvedCardIds, turnState.card.id]);
+    const candidates = session.deck.filter((candidate) => !shown.has(candidate.id));
+    const [card, ...remainingCards] = [
+      ...candidates.filter((candidate) => !played.has(candidate.id)),
+      ...shuffle(candidates.filter((candidate) => played.has(candidate.id))),
+    ];
+    const state = card
+      ? transitionTaboo(turnState, {
+          type: "restartRound",
+          turn: turnState.turn,
+          card,
+          remainingCards,
+        })
+      : turnState;
+    if (state === turnState) {
+      setRestartUnavailable(true);
+      return;
+    }
+    setRestartUnavailable(false);
+    setRound({ state, deadline: Date.now() + state.configuration.roundDurationSeconds * 1000 });
+  }, [round, session]);
 
   // Leaving a game returns to the main window with the previous setup still filled in.
   useGameExit(
@@ -120,11 +149,7 @@ export function TabooSetup({
       setIssues([]);
     },
     runningTurn && round
-      ? {
-          paused: round.pausedAt !== undefined,
-          onToggle: togglePause,
-          onStop: () => dispatch({ type: "endRound", turn: runningTurn }),
-        }
+      ? { paused: round.pausedAt !== undefined, onToggle: togglePause }
       : undefined,
   );
 
@@ -201,6 +226,7 @@ export function TabooSetup({
     const state = transitionTaboo(current, { type: "startRound", card, remainingCards });
     if (state.status !== "roundRunning" || state === current) return;
     setDeckEmpty(false);
+    setRestartUnavailable(false);
     setRound({
       state,
       deadline: Date.now() + state.configuration.roundDurationSeconds * 1000,
@@ -318,22 +344,27 @@ export function TabooSetup({
   return (
     <div className="taboo-setup">
       {finished && (
-        <section className="taboo-round" aria-label={t("tabooResult.title")}>
-          <StatusMessage title={t("tabooResult.title")} tone="success">
-            {t(finished.winnerIds.length === 1 ? "tabooResult.winner" : "tabooResult.tie", {
-              teams: finished.configuration.teams
+        <section className="taboo-round taboo-overview" aria-label={t("tabooResult.title")}>
+          <p className="taboo-overview__round">{t("tabooResult.title")}</p>
+          <div className="taboo-result" role="status">
+            <span>
+              {t(finished.winnerIds.length === 1 ? "tabooResult.winner" : "tabooResult.tie")}
+            </span>
+            <span className="visually-hidden">: </span>
+            <strong>
+              {finished.configuration.teams
                 .filter((team) => finished.winnerIds.includes(team.id))
                 .map((team) => team.name)
-                .join(", "),
-            })}
-          </StatusMessage>
+                .join(", ")}
+            </strong>
+          </div>
           <h2>{t("tabooRound.standings")}</h2>
           <TabooScoreboard
             scores={finished.scores}
             teams={finished.configuration.teams}
             winnerIds={finished.winnerIds}
           />
-          <div className="taboo-setup__actions">
+          <div className="game-start-bar game-start-bar--stack">
             <Button variant="success" onClick={() => restart(true)}>
               {t("tabooResult.sameSetup")}
             </Button>
@@ -348,6 +379,8 @@ export function TabooSetup({
           deadline={round.deadline}
           dispatch={dispatch}
           onResume={togglePause}
+          onRestart={restartTurn}
+          restartUnavailable={restartUnavailable}
           paused={round.pausedAt !== undefined}
           state={round.state}
         />
