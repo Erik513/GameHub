@@ -29,6 +29,8 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - „Letzten Punkt zurücknehmen“ entfällt in Runde und Übersicht; Korrekturen erfolgen nur in der Rundenübersicht.
 - Die Rundenübersicht zeigt unter jedem Begriff auch die vier verbotenen Wörter.
 - Eine Runde endet nicht mehr nach wenigen Karten: Sie bekommt alle ungespielten Karten, danach früher gespielte Karten in neuer Reihenfolge (nie zweimal in derselben Runde). Die Zustandsmaschine erlaubt dafür das Wiederverwenden von Karten in späteren Runden.
+- Einheitliche Navigation: Hauptmenü und Spiel-Hauptfenster zeigen Einstellungen (Zahnrad), das Spiel-Hauptfenster zusätzlich das Haus zurück zum GameHub. Während einer laufenden Partie (Übersicht, Runde, Ergebnis) gibt es oben nur noch ein X „Spiel beenden“. Es fragt nach und führt zurück ins Hauptfenster des Spiels mit der bisherigen Einrichtung. Neue Spiele binden sich über `useGameExit` ein.
+- Einstellungsfenster kompakter; Schließen-Button als kleines X.
 - Orange Akzente (Markierungen, Kartenrand, verbotene Wörter, Spielkarte) durch das blaue Akzentblau ersetzt; Rot bleibt für „Verbotenes Wort“.
 - Teamnamen im Tabu-Setup frei wählbar; leere Felder fallen auf „Team N“ zurück, doppelte Namen werden abgelehnt.
 

@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
-import { Button } from "./components";
+import { Button, Dialog } from "./components";
+import { GameChromeContext, type GameExit } from "./GameChrome";
 import { SettingsDialog } from "./SettingsDialog";
 
 interface AppShellProps {
@@ -25,6 +26,12 @@ export function AppShell({
 }: AppShellProps) {
   const { t } = useTranslation();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [gameExit, setGameExit] = useState<GameExit>();
+  const [confirmingExit, setConfirmingExit] = useState(false);
+  const registerGameExit = useCallback((exit: GameExit | undefined) => {
+    setGameExit(exit);
+    if (!exit) setConfirmingExit(false);
+  }, []);
 
   return (
     <div className="app-shell">
@@ -50,48 +57,113 @@ export function AppShell({
           </a>
         </nav>
         <div className="site-header__actions">
-          <Button
-            aria-label={t("settings.open")}
-            className="icon-button"
-            title={t("settings.open")}
-            variant="secondary"
-            onClick={() => setSettingsOpen(true)}
-          >
-            <svg aria-hidden="true" focusable="false" height="20" viewBox="0 0 24 24" width="20">
-              <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" />
-              <path
-                d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="2"
-              />
-              <circle cx="12" cy="12" r="6.5" fill="none" stroke="currentColor" strokeWidth="2" />
-            </svg>
-          </Button>
-          {onCloseGame && (
+          {gameExit ? (
             <Button
-              aria-label={t("navigation.closeGame")}
+              aria-label={t("navigation.exitGame")}
               className="icon-button"
-              title={t("navigation.closeGame")}
+              title={t("navigation.exitGame")}
               variant="secondary"
-              onClick={onCloseGame}
+              onClick={() => setConfirmingExit(true)}
             >
               <svg aria-hidden="true" focusable="false" height="20" viewBox="0 0 24 24" width="20">
                 <path
-                  d="M3 11.5 12 4l9 7.5M5.5 10v9.5h4.5v-6h4v6h4.5V10"
+                  d="M5 5l14 14M19 5L5 19"
                   fill="none"
                   stroke="currentColor"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                 />
               </svg>
             </Button>
+          ) : (
+            <>
+              <Button
+                aria-label={t("settings.open")}
+                className="icon-button"
+                title={t("settings.open")}
+                variant="secondary"
+                onClick={() => setSettingsOpen(true)}
+              >
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  width="20"
+                >
+                  <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <path
+                    d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="6.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </Button>
+              {onCloseGame && (
+                <Button
+                  aria-label={t("navigation.closeGame")}
+                  className="icon-button"
+                  title={t("navigation.closeGame")}
+                  variant="secondary"
+                  onClick={onCloseGame}
+                >
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    width="20"
+                  >
+                    <path
+                      d="M3 11.5 12 4l9 7.5M5.5 10v9.5h4.5v-6h4v6h4.5V10"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                </Button>
+              )}
+            </>
           )}
         </div>
       </header>
-      <main className="main-content">{children}</main>
+      <GameChromeContext.Provider value={registerGameExit}>
+        <main className="main-content">{children}</main>
+      </GameChromeContext.Provider>
+      <Dialog
+        closeLabel={t("settings.close")}
+        description={t("navigation.exitConfirm.description")}
+        onClose={() => setConfirmingExit(false)}
+        open={confirmingExit}
+        title={t("navigation.exitConfirm.title")}
+      >
+        <div className="confirm-actions">
+          <Button
+            variant="danger"
+            onClick={() => {
+              setConfirmingExit(false);
+              gameExit?.run();
+            }}
+          >
+            {t("navigation.exitConfirm.confirm")}
+          </Button>
+          <Button variant="secondary" onClick={() => setConfirmingExit(false)}>
+            {t("navigation.exitConfirm.cancel")}
+          </Button>
+        </div>
+      </Dialog>
       <SettingsDialog
         cardLanguage={cardLanguage}
         onCardLanguageChange={onCardLanguageChange}

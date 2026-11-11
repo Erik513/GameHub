@@ -51,8 +51,23 @@ export function Dialog({ children, closeLabel, description, onClose, open, title
       >
         <div className="dialog__header">
           <h2 id={titleId}>{title}</h2>
-          <Button ref={closeButtonRef} variant="quiet" onClick={onClose}>
-            {closeLabel}
+          <Button
+            ref={closeButtonRef}
+            aria-label={closeLabel}
+            className="icon-button dialog__close"
+            title={closeLabel}
+            variant="quiet"
+            onClick={onClose}
+          >
+            <svg aria-hidden="true" focusable="false" height="18" viewBox="0 0 24 24" width="18">
+              <path
+                d="M5 5l14 14M19 5L5 19"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="2.5"
+              />
+            </svg>
           </Button>
         </div>
         {description ? <p id={descriptionId}>{description}</p> : null}

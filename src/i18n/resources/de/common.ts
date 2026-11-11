@@ -95,6 +95,14 @@ export const common = {
   navigation: {
     home: "Spiele",
     ariaLabel: "Hauptnavigation",
+    exitGame: "Spiel beenden",
+    exitConfirm: {
+      title: "Spiel beenden?",
+      description:
+        "Der aktuelle Spielstand geht verloren. Du kehrst zum Hauptfenster des Spiels zurück.",
+      confirm: "Beenden",
+      cancel: "Weiterspielen",
+    },
     closeGame: "Spiel schließen",
   },
   settings: {

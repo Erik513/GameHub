@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createGameHubI18n, type SupportedLanguage } from "../i18n";
+import { tabooStandardCards } from "../data/tabooStandardCards";
 import { App } from "./App";
 
 const languageCases = [
@@ -75,6 +76,38 @@ describe("App", () => {
 
     await user.click(screen.getByRole("button", { name: "Close game" }));
     expect(screen.getByRole("heading", { name: "Choose a game" })).toBeVisible();
+  });
+
+  it("offers only an end-game action during a game and returns to the game's main window", async () => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n("en");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App cardLanguage="en" onCardLanguageChange={vi.fn()} tabooCards={tabooStandardCards} />
+      </I18nextProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "View progress" }));
+    // Main window of the game: settings and the way back to the hub are available.
+    expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();
+    expect(screen.queryByRole("button", { name: "End game" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Start" }));
+
+    // During the game: no hub navigation, no settings.
+    expect(screen.queryByRole("button", { name: "Settings" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Close game" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "End game" }));
+    const dialog = screen.getByRole("dialog", { name: "End the game?" });
+    await user.click(within(dialog).getByRole("button", { name: "Keep playing" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: "End game" }));
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "End game" }));
+    expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Close game" })).toBeVisible();
   });
 
   it("changes the language and reports the selection", async () => {

@@ -12,6 +12,7 @@ import {
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
 import { shuffleTeams } from "../../business/games/taboo/teamOrder";
+import { useGameExit } from "../GameChrome";
 import { TabooRound } from "./TabooRound";
 import { TabooRoundReview } from "./TabooRoundReview";
 import { TabooScoreboard } from "./TabooScoreboard";
@@ -93,6 +94,16 @@ export function TabooSetup({
       if (reordered.valid) setSession({ state: reordered.value, deck: shuffle(session.deck) });
     }
   }
+
+  // Leaving a game returns to the main window with the previous setup still filled in.
+  useGameExit(Boolean(round) || Boolean(session), () => {
+    refillController.current?.abort();
+    refillState.current = { busy: false, counter: 0, attempts: new Map(), added: [] };
+    setRound(undefined);
+    setSession(undefined);
+    setDeckEmpty(false);
+    setIssues([]);
+  });
 
   const dispatch = useCallback((event: TabooEvent) => {
     setRound((current) => {
