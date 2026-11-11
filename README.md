@@ -1,5 +1,7 @@
 # GameHub
 
+[GameHub im Browser öffnen](https://erik513.github.io/GameHub/)
+
 GameHub ist eine geplante kostenlose, international ausgerichtete, mobile-first Spielesammlung. Die Progressive Web App soll Partyspiele, Quiz-, Karten- und weitere Gesellschaftsspiele auf Smartphones, Tablets und PCs bündeln, offline spielbar sein und über GitHub Pages veröffentlicht werden können. Der Einstieg erfolgt immer über eine Spielauswahl; neue Spiele werden als eigenständige Module in einem zentralen Spielkatalog registriert.
 
 Tabu ist lokal spielbar. GameHub enthält deutsche und englische Standardkarten und kann eigene Tabu-Karten lokal speichern. Ein Produktionsbuild unterstützt nach dem ersten Online-Aufruf den Offlinebetrieb.

@@ -192,8 +192,8 @@
   "project": {
     "id": "gamehub",
     "name": "GameHub",
-    "stage": "github_pages_planned",
-    "updatedAt": "2026-11-11T16:02:41+01:00",
+    "stage": "release_review_planned",
+    "updatedAt": "2026-11-11T16:12:31+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -202,9 +202,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 40,
+      "completedTasks": 41,
       "totalTasks": 46,
-      "percent": 86.96
+      "percent": 89.13
     }
   },
   "environment": {
@@ -249,8 +249,8 @@
     },
     "githubActions": {
       "status": "passed",
-      "lastRunAt": "2026-11-10T17:06:41+01:00",
-      "details": "Der GitHub-Actions-Lauf 42851108987 auf main war erfolgreich: statische Prüfungen, Tests, Produktions-Build und Playwright-E2E wurden abgeschlossen."
+      "lastRunAt": "2026-11-11T16:12:31+01:00",
+      "details": "Lauf 43045518260 hat Pflichtprüfungen und GitHub-Pages-Veröffentlichung erfolgreich abgeschlossen. Öffentliche URL, Assets und direkter Tabu-Link wurden geprüft."
     },
     "architectureCheck": {
       "status": "passed",
@@ -585,7 +585,7 @@
         {
           "id": "PH-08-03",
           "title": "GitHub-Pages-Build und Deployment",
-          "status": "in_progress"
+          "status": "done"
         },
         {
           "id": "PH-08-04",
@@ -623,6 +623,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-11",
+      "summary": "PH-08-03 abgeschlossen: GameHub auf GitHub Pages veröffentlicht. Öffentlicher Tabu-Link, Assets und Offline-Neuladen geprüft."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-08-02 abgeschlossen: Fehlerhafte Updates erhalten den bisherigen Offline-Cache. Vollständige Updates lösen ihn nach dem Schließen der App ab."
@@ -840,9 +844,9 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-08-03",
-      "reason": "Den Produktionsbuild über GitHub Pages veröffentlichen und die bereitgestellte App prüfen.",
-      "prerequisite": "Spielablauf und Offlinebetrieb sind im Browser geprüft."
+      "id": "PH-08-04",
+      "reason": "Qualität und Barrierefreiheit der Veröffentlichung abnehmen.",
+      "prerequisite": "GitHub-Pages-Deployment und öffentliche App sind geprüft."
     }
   ]
 };

@@ -441,7 +441,7 @@ Laufende Tabu-Partien und deren Ergebnisse bleiben im Arbeitsspeicher. Sprachein
 - **Umfang:** Base-Pfad, statisches Routing, Pages-Workflow, Umgebungs- und Berechtigungsgrenzen.
 - **Akzeptanzkriterien:** Deployment-URL lädt Assets und direkte unterstützte Routen korrekt. Workflow veröffentlicht nur nach erfolgreichen Pflichtprüfungen.
 - **Tests:** Produktions-Build, Link-/Asset-Smoke-Test und Deployment-Workflow.
-- **Status:** planned
+- **Status:** done
 
 #### PH-08-04 – Qualitäts- und Barrierefreiheitsabnahme
 

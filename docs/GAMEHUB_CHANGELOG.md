@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-11
 
+### PH-08-03 – Veröffentlichung über GitHub Pages
+
+- Produktionsartefakt wird erst nach erfolgreichen Pflichtprüfungen von `main` veröffentlicht.
+- Browserprüfungen verwenden das vorinstallierte Chrome des GitHub-Runners. Fehler liefern Screenshots und Traces.
+- Öffentliche App unter https://erik513.github.io/GameHub/ geprüft. Assets, direkter Tabu-Link und Offline-Neuladen waren erfolgreich.
+
 ### PH-08-02 – Offline- und Update-Prüfungen
 
 - Fehlgeschlagene Cache-Installation räumt ihren eigenen Cache auf. Die bisherige Version bleibt offline verfügbar.
