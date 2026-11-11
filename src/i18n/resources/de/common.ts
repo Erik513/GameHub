@@ -51,7 +51,7 @@ export const common = {
     rounds: "Runden pro Team",
     duration: "Rundendauer (Sekunden)",
     difficulty: "Schwierigkeit",
-    anyDifficulty: "Alle Stufen",
+    anyDifficulty: "Alle",
     categories: "Kategorien",
     selectCategory: "Wähle mindestens eine Kategorie.",
     start: "Partie vorbereiten",

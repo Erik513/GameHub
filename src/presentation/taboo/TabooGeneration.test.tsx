@@ -37,10 +37,9 @@ it("adds new cards to the active deck without revealing them during setup", asyn
       <TabooSetup cardLanguage="en" cards={[]} generators={{ local: generator }} />
     </I18nextProvider>,
   );
-  await user.type(screen.getByRole("textbox", { name: "Team 1" }), "Owls");
-  await user.type(screen.getByRole("textbox", { name: "Team 2" }), "Foxes");
-  await user.clear(screen.getByRole("spinbutton", { name: "Rounds per team" }));
-  await user.type(screen.getByRole("spinbutton", { name: "Rounds per team" }), "1");
+  await user.click(
+    screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
+  );
   await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
   await user.click(screen.getByRole("checkbox", { name: "Add extra cards" }));

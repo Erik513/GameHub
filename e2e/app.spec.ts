@@ -6,17 +6,15 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
     .getByRole("main")
     .evaluate((main) => main.getBoundingClientRect().width);
   expect(setupWidth).toBeLessThanOrEqual(432);
-  await expect(page.getByRole("combobox", { name: "Difficulty" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Difficulty" })).toBeVisible();
   const nature = page.getByRole("checkbox", { name: "Nature" });
   const choice = page.locator("label").filter({ has: nature });
   expect((await choice.boundingBox())?.height).toBeGreaterThanOrEqual(48);
   await expect(nature).toBeChecked();
-  await choice.getByText("Nature", { exact: true }).click();
+  await nature.click();
   await expect(nature).not.toBeChecked();
   await nature.press("Space");
   await expect(nature).toBeChecked();
-  await page.getByRole("textbox", { name: "Team 1" }).fill("Owls");
-  await page.getByRole("textbox", { name: "Team 2" }).fill("Foxes");
   await page.getByRole("button", { name: "Prepare game" }).click();
   await page.getByRole("button", { name: "Start round" }).click();
   const round = page.getByRole("region", { name: "Active round" });

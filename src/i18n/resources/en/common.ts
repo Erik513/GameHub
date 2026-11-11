@@ -51,7 +51,7 @@ export const common = {
     rounds: "Rounds per team",
     duration: "Round duration (seconds)",
     difficulty: "Difficulty",
-    anyDifficulty: "All levels",
+    anyDifficulty: "All",
     categories: "Categories",
     selectCategory: "Select at least one category.",
     start: "Prepare game",

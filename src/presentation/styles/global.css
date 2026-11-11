@@ -533,12 +533,6 @@ h1 {
   border-radius: var(--radius-md);
 }
 
-.taboo-setup__fields {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
-  gap: var(--space-4);
-}
-
 .taboo-setup__actions {
   display: flex;
   flex-wrap: wrap;
@@ -613,37 +607,6 @@ h1 {
   padding-inline: 0;
 }
 
-.game-preview--playable .taboo-setup__fields {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
-}
-
-.game-preview--playable .taboo-team-fields {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
-  padding: 0;
-  border: 0;
-}
-
-.taboo-team-fields > legend {
-  padding: 0;
-  margin-bottom: var(--space-2);
-}
-
-.taboo-team-fields > .taboo-setup__actions {
-  grid-column: 1 / -1;
-}
-
-.game-preview--playable .taboo-setup__fields .language-control {
-  grid-template-rows: 1fr auto;
-}
-
-.game-preview--playable .field__input,
-.game-preview--playable .language-control select {
-  width: 100%;
-  min-width: 0;
-}
-
 .taboo-tools > details {
   border-top: 1px solid var(--color-line);
   padding-block: var(--space-3);
@@ -663,54 +626,7 @@ h1 {
   margin-top: var(--space-3);
 }
 
-.taboo-setup .taboo-categories {
-  gap: var(--space-2);
-  padding: 0;
-  border: 0;
-}
-
-.taboo-categories > legend {
-  padding: 0;
-  font-weight: var(--weight-bold);
-}
-
-.taboo-categories__choices {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.taboo-categories__choice {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  min-height: 48px;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  cursor: pointer;
-}
-
-.taboo-categories__choice:has(input:checked) {
-  border-color: var(--color-accent);
-  background: var(--color-surface-muted);
-}
-
-.taboo-categories__choice input {
-  flex: 0 0 auto;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin: 0;
-  accent-color: var(--color-accent);
-}
-
-@media (max-width: 22.5rem) {
-  .game-preview--playable .taboo-setup__fields > label:has(select) {
-    grid-column: 1 / -1;
-  }
-}
-
-.taboo-tools input[type="file"] {
+.taboo-setup .taboo-tools input[type="file"] {
   max-width: 100%;
 }
 
@@ -785,4 +701,74 @@ h1 {
 .taboo-round__actions .button:first-child,
 .taboo-round__actions .button:last-child {
   grid-column: 1 / -1;
+}
+
+.taboo-setup .taboo-choice-group {
+  padding: 0;
+  border: 0;
+}
+
+.taboo-choice-group legend {
+  padding: 0;
+  margin-bottom: var(--space-2);
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}
+
+.taboo-choice-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.taboo-choice-grid--categories {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.taboo-choice {
+  position: relative;
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.taboo-choice input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.taboo-choice span {
+  display: grid;
+  min-height: 48px;
+  place-items: center;
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: var(--color-surface-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  text-align: center;
+}
+
+.taboo-choice input:checked + span {
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+}
+
+.taboo-choice input:focus-visible + span {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.taboo-choice--toggle {
+  justify-self: start;
 }

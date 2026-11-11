@@ -30,7 +30,6 @@ export function TabooSetup({
   generators?: TabooGenerators | undefined;
 }) {
   const { t } = useTranslation();
-  const [teamCount, setTeamCount] = useState(2);
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
   const [session, setSession] = useState<{ state: SetupState; deck: readonly TabooCard[] }>();
   const [shortage, setShortage] = useState<{ available: number; required: number }>();
@@ -54,7 +53,6 @@ export function TabooSetup({
     setIssues([]);
     if (!keepConfiguration) {
       setSession(undefined);
-      setTeamCount(2);
       setFormVersion((version) => version + 1);
     }
   }
@@ -99,9 +97,9 @@ export function TabooSetup({
     setSession(undefined);
     const data = new FormData(event.currentTarget);
     const result = createTabooGame({
-      teams: data.getAll("team").map((name, index) => ({
+      teams: Array.from({ length: Number(data.get("teamCount")) }, (_, index) => ({
         id: String(index + 1),
-        name: typeof name === "string" ? name : "",
+        name: t("tabooSetup.team", { number: index + 1 }),
       })),
       roundsPerTeam: Number(data.get("rounds")),
       roundDurationSeconds: Number(data.get("duration")),
@@ -311,93 +309,50 @@ export function TabooSetup({
               setDeckEmpty(false);
             }}
           >
-            <fieldset className="taboo-team-fields">
-              <legend>{t("tabooSetup.teams")}</legend>
-              {Array.from({ length: teamCount }, (_, index) => (
-                <label className="language-control" key={index}>
-                  {t("tabooSetup.team", { number: index + 1 })}
-                  <input
-                    className="field__input"
-                    name="team"
-                    required
-                    aria-invalid={issues.some((issue) => issue.field === "teams.name")}
-                  />
-                </label>
-              ))}
-              <div className="taboo-setup__actions">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => {
-                    setTeamCount(teamCount + 1);
-                    setSession(undefined);
-                  }}
-                >
-                  {t("tabooSetup.addTeam")}
-                </Button>
-                {teamCount > 2 && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => {
-                      setTeamCount(teamCount - 1);
-                      setSession(undefined);
-                    }}
-                  >
-                    {t("tabooSetup.removeTeam")}
-                  </Button>
-                )}
-              </div>
-            </fieldset>
-            <div className="taboo-setup__fields">
-              <label className="language-control">
-                {t("tabooSetup.rounds")}
-                <input
-                  className="field__input"
-                  name="rounds"
-                  type="number"
-                  min="1"
-                  defaultValue="3"
-                  required
-                  aria-invalid={issues.some((issue) => issue.field === "roundsPerTeam")}
-                />
-              </label>
-              <label className="language-control">
-                {t("tabooSetup.duration")}
-                <input
-                  className="field__input"
-                  name="duration"
-                  type="number"
-                  min="1"
-                  defaultValue="60"
-                  required
-                  aria-invalid={issues.some((issue) => issue.field === "roundDurationSeconds")}
-                />
-              </label>
-              <label className="language-control">
-                {t("language.cardLabel")}
-                <select name="language" defaultValue={cardLanguage}>
-                  <option value="de">{t("language.options.de")}</option>
-                  <option value="en">{t("language.options.en")}</option>
-                </select>
-              </label>
-              <label className="language-control">
-                {t("tabooSetup.difficulty")}
-                <select name="difficulty">
-                  <option value="">{t("tabooSetup.anyDifficulty")}</option>
-                  {difficulties.map((difficulty) => (
-                    <option key={difficulty} value={difficulty}>
-                      {t(`tabooSetup.difficulties.${difficulty}`)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <fieldset className="taboo-categories">
+            <SetupChoices
+              legend={t("tabooSetup.teams")}
+              name="teamCount"
+              initial="2"
+              options={["2", "3", "4", "5", "6"].map((value) => ({ value, label: value }))}
+            />
+            <SetupChoices
+              legend={t("tabooSetup.rounds")}
+              name="rounds"
+              initial="3"
+              options={["1", "2", "3", "4", "5"].map((value) => ({ value, label: value }))}
+            />
+            <SetupChoices
+              legend={t("tabooSetup.duration")}
+              name="duration"
+              initial="60"
+              options={["15", "30", "45", "60", "90"].map((value) => ({ value, label: value }))}
+            />
+            <SetupChoices
+              legend={t("language.cardLabel")}
+              name="language"
+              initial={cardLanguage}
+              options={["de", "en"].map((value) => ({
+                value,
+                label: value === "de" ? t("language.options.de") : t("language.options.en"),
+              }))}
+            />
+            <SetupChoices
+              legend={t("tabooSetup.difficulty")}
+              name="difficulty"
+              initial=""
+              options={[
+                { value: "", label: t("tabooSetup.anyDifficulty") },
+                ...difficulties.map((value) => ({
+                  value,
+                  label: t(`tabooSetup.difficulties.${value}`),
+                })),
+              ]}
+            />
+            <fieldset className="taboo-choice-group">
               <legend>{t("tabooSetup.categories")}</legend>
-              <div className="taboo-categories__choices">
+              <div className="taboo-choice-grid taboo-choice-grid--categories">
                 {categories.map((category) => (
-                  <label className="taboo-categories__choice" key={category}>
+                  <label className="taboo-choice" key={category}>
                     <input type="checkbox" name="category" value={category} defaultChecked />
                     <span>{t(`tabooSetup.category.${category}`)}</span>
                   </label>
@@ -405,7 +360,7 @@ export function TabooSetup({
               </div>
             </fieldset>
             {generators && (
-              <label className="taboo-categories__choice">
+              <label className="taboo-choice taboo-choice--toggle">
                 <input type="checkbox" name="extraCards" disabled={generating} />
                 <span>{t("tabooSetup.extraCards")}</span>
               </label>
@@ -419,5 +374,28 @@ export function TabooSetup({
         {children && <div className="taboo-tools">{children}</div>}
       </div>
     </div>
+  );
+}
+
+interface SetupChoicesProps {
+  legend: string;
+  name: string;
+  initial: string;
+  options: readonly { value: string; label: string }[];
+}
+
+function SetupChoices({ legend, name, initial, options }: SetupChoicesProps) {
+  return (
+    <fieldset className="taboo-choice-group">
+      <legend>{legend}</legend>
+      <div className="taboo-choice-grid">
+        {options.map(({ value, label }) => (
+          <label className="taboo-choice" key={value}>
+            <input type="radio" name={name} value={value} defaultChecked={value === initial} />
+            <span>{label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
   );
 }
