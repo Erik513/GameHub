@@ -330,14 +330,7 @@ export function TabooSetup({
               })}
             </p>
           )}
-          {overview.turn ? (
-            <div className="taboo-overview__turn">
-              <span>{t("tabooRound.upNext")}</span>
-              <strong>{overview.configuration.teams[overview.turn.teamIndex]?.name}</strong>
-            </div>
-          ) : (
-            <p>{t("tabooRound.allRoundsPlayed")}</p>
-          )}
+          {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
           <h2>{t("tabooRound.standings")}</h2>
           <TabooScoreboard
             activeTeamId={
@@ -367,9 +360,15 @@ export function TabooSetup({
           )}
           <div className="game-start-bar">
             {overview.turn ? (
-              <Button variant="success" onClick={() => startRound()} disabled={deckEmpty}>
-                {t("tabooRound.start")}
-              </Button>
+              <>
+                <div className="taboo-overview__turn">
+                  <span className="visually-hidden">{t("tabooRound.upNext")}: </span>
+                  <strong>{overview.configuration.teams[overview.turn.teamIndex]?.name}</strong>
+                </div>
+                <Button variant="success" onClick={() => startRound()} disabled={deckEmpty}>
+                  {t("tabooRound.start")}
+                </Button>
+              </>
             ) : (
               <Button variant="success" onClick={() => dispatch({ type: "finishGame" })}>
                 {t("tabooResult.show")}
