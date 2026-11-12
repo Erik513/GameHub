@@ -19,7 +19,12 @@ import {
 } from "../../business/games/taboo/stateMachine";
 import type { SupportedLanguage } from "../../i18n";
 import { shuffle } from "../../business/shared/shuffle";
-import { customCategoryIds } from "../../business/games/taboo/categories";
+import {
+  availableCategories,
+  builtInCategories,
+  customCategoryIds,
+  type TabooCategoryInfo,
+} from "../../business/games/taboo/categories";
 import { shuffleTeams } from "../../business/shared/teamOrder";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { useGameExit } from "../GameChrome";
@@ -31,7 +36,6 @@ import { TabooTiebreakOverview } from "./TabooTiebreakOverview";
 import { TabooTurnOverview } from "./TabooTurnOverview";
 import {
   aiCardsPerTurn,
-  categories,
   defaultRoundChoices,
   difficulties,
   maxCardsPerRequest,
@@ -45,19 +49,29 @@ import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 export function TabooSetup({
   cardLanguage,
   cards,
+  categoryInfos = builtInCategories,
   children,
   generators,
   roundChoices = defaultRoundChoices,
 }: {
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
+  /** The standard categories with their names; only those with cards are offered. */
+  categoryInfos?: readonly TabooCategoryInfo[];
   children?: ReactNode;
   generators?: TabooGenerators | undefined;
   /** Selectable rounds per team; tests use short games, the app offers short/medium/long/unlimited. */
   roundChoices?: readonly RoundChoice[];
 }) {
   const { t } = useTranslation();
-  const categoryIds = [...categories, ...customCategoryIds(cards, cardLanguage)];
+  const categoryIds = [
+    ...availableCategories(categoryInfos, cards, cardLanguage).map((info) => info.id),
+    ...customCategoryIds(
+      cards,
+      cardLanguage,
+      categoryInfos.map((info) => info.id),
+    ),
+  ];
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
   const [session, setSession] = useState<{ state: SetupState; deck: readonly TabooCard[] }>();
   const [shortage, setShortage] = useState<{ available: number; required: number }>();
@@ -446,6 +460,7 @@ export function TabooSetup({
       >
         <TabooSetupForm
           categoryIds={categoryIds}
+          categoryInfos={categoryInfos}
           deckEmpty={deckEmpty}
           generating={generating}
           hasGenerators={Boolean(generators)}

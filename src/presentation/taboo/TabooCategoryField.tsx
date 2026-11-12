@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { newCategoryChoice } from "./categoryChoice";
-import { builtInCategoryIds } from "../../business/games/taboo/categories";
+import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
+import { useCategoryLabel } from "./categoryLabel";
 
 interface TabooCategoryFieldProps {
   choice: string;
-  /** The player's own category names that can be picked besides the built-in ones. */
+  /** The standard categories with their names. */
+  standardCategories: readonly TabooCategoryInfo[];
+  /** The player's own category names that can be picked besides the standard ones. */
   custom: readonly string[];
   name: string;
   onChoice: (choice: string) => void;
@@ -14,12 +17,14 @@ interface TabooCategoryFieldProps {
 /** Category select with built-in and own categories plus the option to type a new name. */
 export function TabooCategoryField({
   choice,
+  standardCategories,
   custom,
   name,
   onChoice,
   onName,
 }: TabooCategoryFieldProps) {
   const { t } = useTranslation();
+  const categoryLabel = useCategoryLabel(standardCategories);
 
   return (
     <>
@@ -30,9 +35,9 @@ export function TabooCategoryField({
           onChange={(event) => onChoice(event.target.value)}
           value={choice}
         >
-          {builtInCategoryIds.map((id) => (
+          {standardCategories.map(({ id }) => (
             <option key={id} value={id}>
-              {t(`tabooSetup.category.${id}`)}
+              {categoryLabel(id)}
             </option>
           ))}
           {custom.map((id) => (

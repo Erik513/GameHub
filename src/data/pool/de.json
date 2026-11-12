@@ -1,0 +1,78 @@
+{
+  "format": "gamehub-taboo-pack",
+  "version": 1,
+  "language": "de",
+  "categories": [
+    {
+      "id": "everyday",
+      "names": {
+        "de": "Alltag",
+        "en": "Everyday life"
+      }
+    },
+    {
+      "id": "nature",
+      "names": {
+        "de": "Natur",
+        "en": "Nature"
+      }
+    },
+    {
+      "id": "culture",
+      "names": {
+        "de": "Kultur",
+        "en": "Culture"
+      }
+    },
+    {
+      "id": "food",
+      "names": {
+        "de": "Essen und Trinken",
+        "en": "Food and drink"
+      }
+    },
+    {
+      "id": "animals",
+      "names": {
+        "de": "Tiere",
+        "en": "Animals"
+      }
+    },
+    {
+      "id": "sport",
+      "names": {
+        "de": "Sport und Freizeit",
+        "en": "Sports and leisure"
+      }
+    },
+    {
+      "id": "jobs",
+      "names": {
+        "de": "Berufe",
+        "en": "Jobs"
+      }
+    },
+    {
+      "id": "places",
+      "names": {
+        "de": "Orte und Reisen",
+        "en": "Places and travel"
+      }
+    },
+    {
+      "id": "media",
+      "names": {
+        "de": "Film, Musik und Medien",
+        "en": "Film, music and media"
+      }
+    },
+    {
+      "id": "tech",
+      "names": {
+        "de": "Technik",
+        "en": "Technology"
+      }
+    }
+  ],
+  "cards": []
+}

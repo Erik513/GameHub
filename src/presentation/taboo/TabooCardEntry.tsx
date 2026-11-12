@@ -1,12 +1,14 @@
 import { useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { parseCardEntries } from "../../business/games/taboo/cardEntry";
-import { customCategoryIds } from "../../business/games/taboo/categories";
+import {
+  builtInCategories,
+  customCategoryIds,
+  type TabooCategoryInfo,
+} from "../../business/games/taboo/categories";
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
-import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
 import { Button, StatusMessage } from "../components";
-import { TabooWordSuggestion } from "./TabooWordSuggestion";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { newCategoryChoice, resolveCategory } from "./categoryChoice";
 import { difficulties } from "./tabooSetupModel";
@@ -15,11 +17,11 @@ interface TabooCardEntryProps {
   cardLanguage: SupportedLanguage;
   /** All cards that are known, used to offer the player's own category names. */
   cards: readonly TabooCard[];
+  /** The standard categories a card can be added to. */
+  categoryInfos?: readonly TabooCategoryInfo[];
   disabled: boolean;
   /** Saves the cards and resolves with the number of cards that were really new. */
   onAdd: (cards: readonly TabooCard[]) => Promise<number>;
-  /** Offers AI suggestions for the forbidden words when a local AI is available. */
-  suggester?: TabooWordSuggester | undefined;
 }
 
 type Feedback = "added" | "exists" | "invalid" | "noCategory" | "storage";
@@ -28,15 +30,15 @@ type Feedback = "added" | "exists" | "invalid" | "noCategory" | "storage";
 export function TabooCardEntry({
   cardLanguage,
   cards,
+  categoryInfos = builtInCategories,
   disabled,
   onAdd,
-  suggester,
 }: TabooCardEntryProps) {
   const { t } = useTranslation();
   const [term, setTerm] = useState("");
   const [words, setWords] = useState("");
   const [feedback, setFeedback] = useState<Feedback>();
-  const [choice, setChoice] = useState<string>("everyday");
+  const [choice, setChoice] = useState<string>(categoryInfos[0]?.id ?? "everyday");
   const [name, setName] = useState("");
   const [difficulty, setDifficulty] = useState<(typeof difficulties)[number]>("easy");
   const termInput = useRef<HTMLInputElement>(null);
@@ -82,7 +84,12 @@ export function TabooCardEntry({
       <div className="taboo-card-entry__pair">
         <TabooCategoryField
           choice={choice}
-          custom={customCategoryIds(cards, cardLanguage)}
+          custom={customCategoryIds(
+            cards,
+            cardLanguage,
+            categoryInfos.map((info) => info.id),
+          )}
+          standardCategories={categoryInfos}
           name={name}
           onChoice={setChoice}
           onName={setName}
@@ -115,25 +122,16 @@ export function TabooCardEntry({
           value={term}
         />
       </label>
-      <div className="taboo-words">
-        <label className="field">
-          <span>{t("tabooEntry.words")}</span>
-          <input
-            autoComplete="off"
-            className="field__input"
-            onChange={(event) => setWords(event.target.value)}
-            placeholder={t("tabooEntry.wordsPlaceholder")}
-            value={words}
-          />
-        </label>
-        <TabooWordSuggestion
-          categoryId={resolveCategory(choice, name) || undefined}
-          language={cardLanguage}
-          onWords={setWords}
-          suggester={suggester}
-          term={() => term}
+      <label className="field">
+        <span>{t("tabooEntry.words")}</span>
+        <input
+          autoComplete="off"
+          className="field__input"
+          onChange={(event) => setWords(event.target.value)}
+          placeholder={t("tabooEntry.wordsPlaceholder")}
+          value={words}
         />
-      </div>
+      </label>
       <Button disabled={disabled} type="submit" variant="secondary">
         {t("tabooEntry.add")}
       </Button>

@@ -533,7 +533,7 @@
         },
         {
           "id": "PH-13-04",
-          "title": "KI-Vorschlag für verbotene Wörter anhand des Begriffs",
+          "title": "KI-Vorschlag für verbotene Wörter anhand des Begriffs (umgesetzt, später auf Wunsch wieder entfernt)",
           "status": "done"
         },
         {
@@ -552,6 +552,43 @@
           "id": "PH-14-01",
           "title": "Qualitätstest: kleines Browser-Modell für verbotene Wörter (Ergebnis: nicht brauchbar)",
           "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "PH-15",
+      "name": "Großer Kartenpool für Tabu",
+      "status": "in_progress",
+      "tasks": [
+        {
+          "id": "PH-15-01",
+          "title": "Planung und Entscheidungen zu Größe, Kategorien, Prüfaufwand und Sprachen",
+          "status": "done"
+        },
+        {
+          "id": "PH-15-02",
+          "title": "Paketformat, Laden mit Rückfall und Kategorien aus den Daten",
+          "status": "done"
+        },
+        {
+          "id": "PH-15-03",
+          "title": "Erzeugungsskript am PC (Ollama oder LM Studio, fortsetzbar, Prüfregeln)",
+          "status": "planned"
+        },
+        {
+          "id": "PH-15-04",
+          "title": "Prüfwerkzeug mit zweitem KI-Durchgang und Durchsicht",
+          "status": "planned"
+        },
+        {
+          "id": "PH-15-05",
+          "title": "Pool in Etappen erzeugen, prüfen und einbauen",
+          "status": "planned"
+        },
+        {
+          "id": "PH-15-06",
+          "title": "Optional: gespielte Karten merken",
+          "status": "planned"
         }
       ]
     },

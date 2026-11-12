@@ -4,6 +4,22 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-15-02 – Kartenpaket und Kategorien aus den Daten
+
+- Neues Paketformat `gamehub-taboo-pack` (Version 1) je Sprache: Kategorien mit deutschem und englischem Namen und Karten ohne eigene Sprachangabe. `src/data/pool/de.json` und `en.json` enthalten die zehn Kategorien und noch keine Karten.
+- `parseTabooCardPack` (Business) prüft alles und verwirft das ganze Paket bei einem Fehler (falsches Format, doppelte Kennungen oder Begriffe, Karte in unbekannter Kategorie, ungültige Wörter). `loadTabooCardPack` (Daten) lädt es als eigenen Teil der App; fehlt oder fehlschlägt es, bleiben die 45 eingebauten Karten. Der Build enthält `de-*.js` und `en-*.js`, beide stehen in der Dateiliste des Offline-Speichers.
+- Kategorienamen kommen aus den Daten (`TabooCategoryInfo`, `builtInCategories`, `categoryName`); die Schlüssel `tabooSetup.category.*` sind entfallen. Setup, Karten-Formular, Kartenliste und Auswahlfeld nehmen die Kategorien als Parameter. Die Kategorien der eingebauten Karten erscheinen immer, Paket-Kategorien erst mit Karten.
+- Tests: Paketprüfung (18 Fehlerfälle), Zusammenführen, Laden der echten Dateien, Bibliothek mit Paket in beiden Sprachen und mit fehlendem, fehlerhaftem und fremdsprachigem Paket. Prüfungen: 314 Unit-Tests, 25 e2e, tsc, eslint, Architekturprüfung.
+
+### PH-15 – Planung eines großen Kartenpools
+
+- Neues Dokument `docs/GAMEHUB_CARD_POOL.md`: Ziel, Ist-Zustand, Größen- und Aufwandsschätzung, Aufbau (Pakete je Sprache als eigener Teil mit Rückfall, Kategorien aus den Daten, Erzeugungsskript am PC, Prüfung), offene Entscheidungen und Risiken. Phase 15 mit Aufgaben `PH-15-01` bis `PH-15-06` im Plan und Status. Noch keine Umsetzung. Entschieden: 500 Karten je Sprache zuerst (später bis 1.500), zweiter KI-Durchgang plus Stichproben, Deutsch und Englisch unabhängig erzeugen. Kategorien: zehn (Tabelle im Dokument), gespielte Karten merken später. `PH-15-01` damit erledigt, als Nächstes `PH-15-02`.
+
+### KI-Knopf für Wortvorschläge entfernt
+
+- Auf Wunsch des Auftraggebers ist der KI-Knopf („Wörter mit KI vorschlagen“) im Formular „Karte hinzufügen“ und im Bearbeiten-Formular wieder entfernt: Er braucht installiertes Ollama, und Fremde sollen nichts extra installieren müssen. Gelöscht: Komponente `TabooWordSuggestion`, Port `TabooWordSuggester` mit Prüfung, Ollama-Adapter für Wortvorschläge, die zugehörigen Texte, Stile und Tests. Die Kartenerzeugung im Setup (Ollama) und `findOllamaModel` bleiben. Geplant statt dessen: Kartenpakete am PC erzeugen und mitliefern.
+- Prüfungen: 284 Unit-Tests, e2e, tsc, eslint.
+
 ### PH-14 – Lokale KI am Rechner (Test und Entscheidung)
 
 - Wegwerf-Seite `prototypes/ai-word-test.html`: lädt ein kleines Modell per WebLLM im Browser und erzeugt verbotene Wörter für deutsche und englische Beispielbegriffe; zeigt Geräteprüfung, Zeiten und Beanstandungen. Nicht Teil von App und Build, keine neue Abhängigkeit in `package.json`.

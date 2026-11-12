@@ -1,11 +1,9 @@
 import type { useTranslation } from "react-i18next";
-import { builtInCategoryIds } from "../../business/games/taboo/categories";
 import type { ValidationIssue } from "../../business/games/taboo/model";
 import type { createTabooGame, TabooState } from "../../business/games/taboo/stateMachine";
 import type { ChoiceOption } from "../game-kit";
 import type { TiebreakRow } from "./TabooTiebreakResults";
 
-export const categories = builtInCategoryIds;
 export const difficulties = ["easy", "medium", "hard"] as const;
 export const cardSources = ["both", "local", "ai"] as const;
 export type RoundChoice = number | "unlimited";

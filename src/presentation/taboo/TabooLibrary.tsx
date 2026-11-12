@@ -6,8 +6,9 @@ import {
   serializeTabooCards,
 } from "../../business/games/taboo/cardExchange";
 import type { TabooCardRepository } from "../../business/games/taboo/cardRepository";
+import { mergeStandardCards, type TabooCardPack } from "../../business/games/taboo/cardPack";
+import { builtInCategories, mergeCategoryInfos } from "../../business/games/taboo/categories";
 import type { TabooCard } from "../../business/games/taboo/model";
-import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Icon, StatusMessage } from "../components";
 import { useGameBack } from "../GameChrome";
@@ -17,9 +18,8 @@ import { TabooSetup } from "./TabooSetup";
 import type { TabooGenerators } from "./TabooGeneration";
 
 interface TabooLibraryProps {
-  /** Looks for a local AI that can suggest forbidden words; resolves to nothing without one. */
-  findWordSuggester?:
-    ((signal: AbortSignal) => Promise<TabooWordSuggester | undefined>) | undefined;
+  /** Loads the card pack of a language; resolves to nothing when there is none. */
+  loadCardPack?: ((language: SupportedLanguage) => Promise<TabooCardPack | undefined>) | undefined;
   generators?: TabooGenerators | undefined;
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
@@ -33,27 +33,35 @@ export function TabooLibrary({
   cards,
   repository,
   generators,
-  findWordSuggester,
+  loadCardPack,
 }: TabooLibraryProps) {
   const { t } = useTranslation();
   const [ownCards, setOwnCards] = useState<readonly TabooCard[]>();
   const [feedback, setFeedback] = useState<Feedback>();
   const [busy, setBusy] = useState(false);
   const [page, setPage] = useState<"setup" | "cards">("setup");
-  const [suggester, setSuggester] = useState<TabooWordSuggester>();
+  const [loadedPack, setLoadedPack] = useState<TabooCardPack>();
+  // A pack of another language than the current card language is not used.
+  const pack = loadedPack?.language === cardLanguage ? loadedPack : undefined;
+
+  // The pack of the card language is loaded as its own part of the app; without it the cards that
+  // are built into the code are used.
+  useEffect(() => {
+    if (!loadCardPack) return;
+    let active = true;
+    void loadCardPack(cardLanguage).then(
+      (loaded) => {
+        if (active) setLoadedPack(loaded);
+      },
+      () => undefined,
+    );
+    return () => {
+      active = false;
+    };
+  }, [cardLanguage, loadCardPack]);
   const fileInput = useRef<HTMLInputElement>(null);
   // The shell shows one back button at the top right while the card page is open.
   useGameBack(page === "cards", () => setPage("setup"));
-
-  // The local AI is only looked up when the card page is opened.
-  useEffect(() => {
-    if (page !== "cards" || !findWordSuggester) return;
-    const controller = new AbortController();
-    void findWordSuggester(controller.signal).then((found) => {
-      if (!controller.signal.aborted) setSuggester(found);
-    });
-    return () => controller.abort();
-  }, [findWordSuggester, page]);
 
   useEffect(() => {
     if (!repository) return;
@@ -129,13 +137,20 @@ export function TabooLibrary({
     setTimeout(() => urlApi.revokeObjectURL(url), 1000);
   }
 
-  const allCards = [...(ownCards ?? []), ...cards];
+  const standardCards = mergeStandardCards(cards, pack?.cards ?? []);
+  const categoryInfos = mergeCategoryInfos(builtInCategories, pack?.categories ?? []);
+  const allCards = [...(ownCards ?? []), ...standardCards];
 
   return (
     <>
       {/* The setup stays mounted so a half-filled form survives a visit to the card page. */}
       <div hidden={page === "cards"}>
-        <TabooSetup cardLanguage={cardLanguage} cards={allCards} generators={generators}>
+        <TabooSetup
+          cardLanguage={cardLanguage}
+          cards={allCards}
+          categoryInfos={categoryInfos}
+          generators={generators}
+        >
           {repository && (
             <Button variant="secondary" onClick={() => setPage("cards")}>
               <Icon name="cards" />
@@ -151,9 +166,9 @@ export function TabooLibrary({
           <TabooCardEntry
             cardLanguage={cardLanguage}
             cards={allCards}
+            categoryInfos={categoryInfos}
             disabled={busy}
             onAdd={saveCards}
-            suggester={suggester}
           />
           <TabooCardList
             allCards={allCards}
@@ -163,8 +178,8 @@ export function TabooLibrary({
             onRemove={removeCard}
             onUpdate={updateCard}
             ownCards={ownCards ?? []}
-            standardCards={cards}
-            suggester={suggester}
+            categoryInfos={categoryInfos}
+            standardCards={standardCards}
           />
           <input
             accept=".json,application/json"

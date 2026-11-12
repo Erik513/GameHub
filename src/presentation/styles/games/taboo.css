@@ -790,26 +790,6 @@
   margin: 0 0 0 var(--space-2);
 }
 
-.taboo-words {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--space-2);
-  align-items: end;
-}
-
-.taboo-words > .field {
-  min-width: 0;
-}
-
-.taboo-words__note {
-  grid-column: 1 / -1;
-  color: var(--color-ink-muted);
-}
-
-.taboo-words__note--problem {
-  color: var(--color-danger);
-}
-
 /* The edit button sits under the difficulty in the right column. */
 /* The edit button sits directly under the difficulty badge. */
 
@@ -827,12 +807,4 @@
 
 .taboo-card-row__words {
   grid-row: 2;
-}
-
-/* Next to a text field the icon button is exactly as tall as the field. */
-.game-preview .taboo-words .icon-button--small {
-  width: var(--control-height);
-  min-width: var(--control-height);
-  height: var(--control-height);
-  min-height: var(--control-height);
 }

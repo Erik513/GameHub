@@ -35,13 +35,6 @@ export const tabooTexts = {
     nobody: "noch niemand",
   },
   tabooEntry: {
-    suggestUnavailable: "Keine lokale KI gefunden (Ollama starten).",
-    suggest: "Wörter mit KI vorschlagen",
-    suggesting: "KI überlegt …",
-    suggestProblems: {
-      needTerm: "Gib zuerst einen Begriff ein.",
-      failed: "Die KI konnte keine passenden Wörter vorschlagen.",
-    },
     title: "Karte hinzufügen ({{language}})",
     category: "Kategorie",
     newCategory: "Neue Kategorie …",
@@ -191,6 +184,5 @@ export const tabooTexts = {
     invalidDuration: "Gib eine positive ganze Sekundenzahl ein.",
     invalidRounds: "Gib eine positive ganze Rundenzahl ein.",
     difficulties: { easy: "Einfach", medium: "Mittel", hard: "Schwer" },
-    category: { everyday: "Alltag", nature: "Natur", culture: "Kultur" },
   },
 } as const;

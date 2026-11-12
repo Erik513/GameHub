@@ -1,13 +1,14 @@
 import type { FormEvent, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { ValidationIssue } from "../../business/games/taboo/model";
 import { Button, StatusMessage } from "../components";
 import { ChoiceGroup, StartBar } from "../game-kit";
+import { useCategoryLabel } from "./categoryLabel";
 import { TabooPlayers } from "./TabooPlayers";
 import { TabooRules } from "./TabooRules";
 import {
   cardSources,
-  categories,
   difficulties,
   issueMessageKey,
   roundOption,
@@ -16,6 +17,7 @@ import {
 
 interface TabooSetupFormProps {
   categoryIds: readonly string[];
+  categoryInfos: readonly TabooCategoryInfo[];
   children?: ReactNode;
   deckEmpty: boolean;
   generating: boolean;
@@ -28,12 +30,10 @@ interface TabooSetupFormProps {
   teamCount: number;
 }
 
-const isBuiltIn = (id: string): id is (typeof categories)[number] =>
-  (categories as readonly string[]).includes(id);
-
 /** The setup form of a Taboo game with its error messages and the start button. */
 export function TabooSetupForm({
   categoryIds,
+  categoryInfos,
   children,
   deckEmpty,
   generating,
@@ -46,6 +46,8 @@ export function TabooSetupForm({
   teamCount,
 }: TabooSetupFormProps) {
   const { t } = useTranslation();
+  const categoryLabel = useCategoryLabel(categoryInfos);
+  const isStandard = (id: string) => categoryInfos.some((info) => info.id === id);
   const info = (
     key: "rounds" | "cardSource" | "teamOrder" | "tiebreak" | "skips" | "difficulty",
     legend: string,
@@ -183,20 +185,18 @@ export function TabooSetupForm({
           <fieldset className="kit-choice-group">
             <legend>{t("tabooSetup.categories")}</legend>
             {(["standard", "own"] as const).map((group) => {
-              const ids = categoryIds.filter((id) => isBuiltIn(id) === (group === "standard"));
+              const ids = categoryIds.filter((id) => isStandard(id) === (group === "standard"));
               if (ids.length === 0) return null;
               return (
                 <div className="taboo-category-group" key={group}>
-                  {categoryIds.some((id) => !isBuiltIn(id)) && (
+                  {categoryIds.some((id) => !isStandard(id)) && (
                     <small>{t(`tabooSetup.categoryGroups.${group}`)}</small>
                   )}
                   <div className="kit-choice-grid kit-choice-grid--categories">
                     {ids.map((category) => (
                       <label className="kit-choice" key={category}>
                         <input type="checkbox" name="category" value={category} defaultChecked />
-                        <span>
-                          {isBuiltIn(category) ? t(`tabooSetup.category.${category}`) : category}
-                        </span>
+                        <span>{categoryLabel(category)}</span>
                       </label>
                     ))}
                   </div>

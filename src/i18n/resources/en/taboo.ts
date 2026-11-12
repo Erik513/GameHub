@@ -34,13 +34,6 @@ export const tabooTexts = {
     nobody: "nobody yet",
   },
   tabooEntry: {
-    suggestUnavailable: "No local AI found (start Ollama).",
-    suggest: "Suggest words with AI",
-    suggesting: "AI is thinking …",
-    suggestProblems: {
-      needTerm: "Enter a term first.",
-      failed: "The AI could not suggest suitable words.",
-    },
     title: "Add card ({{language}})",
     category: "Category",
     newCategory: "New category …",
@@ -189,6 +182,5 @@ export const tabooTexts = {
     invalidDuration: "Enter a positive whole number of seconds.",
     invalidRounds: "Enter a positive whole number of rounds.",
     difficulties: { easy: "Easy", medium: "Medium", hard: "Hard" },
-    category: { everyday: "Everyday life", nature: "Nature", culture: "Culture" },
   },
 } as const;

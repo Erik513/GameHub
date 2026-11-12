@@ -1,12 +1,16 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { selectNewTabooCards } from "../../business/games/taboo/cardExchange";
-import { builtInCategoryIds, customCategoryIds } from "../../business/games/taboo/categories";
+import {
+  availableCategories,
+  builtInCategories,
+  customCategoryIds,
+  type TabooCategoryInfo,
+} from "../../business/games/taboo/categories";
 import { validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
-import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
 import { Button, ConfirmButton, Icon, StatusMessage } from "../components";
-import { TabooWordSuggestion } from "./TabooWordSuggestion";
+import { useCategoryLabel } from "./categoryLabel";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { resolveCategory } from "./categoryChoice";
 import { difficulties, teamNameFrom } from "./tabooSetupModel";
@@ -15,6 +19,8 @@ interface TabooCardListProps {
   /** Every known card, used to find duplicate terms. */
   allCards: readonly TabooCard[];
   cardLanguage: SupportedLanguage;
+  /** The standard categories with their names. */
+  categoryInfos?: readonly TabooCategoryInfo[];
   disabled: boolean;
   /** Saves the given cards of one category as a file. */
   onExport: (categoryId: string, cards: readonly TabooCard[]) => void;
@@ -24,14 +30,9 @@ interface TabooCardListProps {
   ownCards: readonly TabooCard[];
   /** The cards that ship with the app; they are shown read-only. */
   standardCards: readonly TabooCard[];
-  /** Offers AI suggestions for the forbidden words when a local AI is available. */
-  suggester?: TabooWordSuggester | undefined;
 }
 
 type Problem = "invalid" | "duplicate" | "noCategory" | "storage";
-
-const isBuiltIn = (id: string): id is (typeof builtInCategoryIds)[number] =>
-  (builtInCategoryIds as readonly string[]).includes(id);
 
 /**
  * All cards of the card language grouped by category. Every category can be opened to show its
@@ -40,23 +41,26 @@ const isBuiltIn = (id: string): id is (typeof builtInCategoryIds)[number] =>
 export function TabooCardList({
   allCards,
   cardLanguage,
+  categoryInfos = builtInCategories,
   disabled,
   onExport,
   onRemove,
   onUpdate,
   ownCards,
   standardCards,
-  suggester,
 }: TabooCardListProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState<TabooCard>();
   const [problem, setProblem] = useState<Problem>();
   const [choice, setChoice] = useState("");
   const [name, setName] = useState("");
-  const editForm = useRef<HTMLFormElement>(null);
 
-  const categoryName = (id: string) => (isBuiltIn(id) ? t(`tabooSetup.category.${id}`) : id);
-  const categoryIds = [...builtInCategoryIds, ...customCategoryIds(allCards, cardLanguage)];
+  const categoryName = useCategoryLabel(categoryInfos);
+  const standardIds = categoryInfos.map((info) => info.id);
+  const categoryIds = [
+    ...availableCategories(categoryInfos, allCards, cardLanguage).map((info) => info.id),
+    ...customCategoryIds(allCards, cardLanguage, standardIds),
+  ];
   const inLanguage = (card: TabooCard) => card.language === cardLanguage;
 
   function startEditing(card: TabooCard) {
@@ -114,12 +118,7 @@ export function TabooCardList({
   function renderRow(card: TabooCard, own: boolean) {
     if (own && editing?.id === card.id) {
       return (
-        <form
-          className="taboo-card-list__edit"
-          noValidate
-          onSubmit={(event) => void save(event)}
-          ref={editForm}
-        >
+        <form className="taboo-card-list__edit" noValidate onSubmit={(event) => void save(event)}>
           <label className="field">
             <span>{t("tabooList.term")}</span>
             <input
@@ -129,34 +128,20 @@ export function TabooCardList({
               name="term"
             />
           </label>
-          <div className="taboo-words">
-            <label className="field">
-              <span>{t("tabooList.words")}</span>
-              <input
-                autoComplete="off"
-                className="field__input"
-                defaultValue={card.forbiddenWords.join(", ")}
-                name="words"
-              />
-            </label>
-            <TabooWordSuggestion
-              categoryId={resolveCategory(choice, name) || undefined}
-              language={card.language}
-              onWords={(words) => {
-                const field = editForm.current?.elements.namedItem("words");
-                if (field instanceof HTMLInputElement) field.value = words;
-              }}
-              suggester={suggester}
-              term={() => {
-                const field = editForm.current?.elements.namedItem("term");
-                return field instanceof HTMLInputElement ? field.value : "";
-              }}
+          <label className="field">
+            <span>{t("tabooList.words")}</span>
+            <input
+              autoComplete="off"
+              className="field__input"
+              defaultValue={card.forbiddenWords.join(", ")}
+              name="words"
             />
-          </div>
+          </label>
           <div className="taboo-card-entry__pair">
             <TabooCategoryField
               choice={choice}
-              custom={customCategoryIds(allCards, card.language)}
+              custom={customCategoryIds(allCards, card.language, standardIds)}
+              standardCategories={categoryInfos}
               name={name}
               onChoice={setChoice}
               onName={setName}

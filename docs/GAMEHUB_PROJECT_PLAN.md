@@ -598,7 +598,9 @@ Auftrag des Auftraggebers: Logik und Ansicht von Karten und Kategorien werden ve
 - **Ergebnis:** Im Setup stehen die Kategorien in zwei leicht getrennten Gruppen „Standard“ und „Eigene“ (Beschriftung nur, wenn es eigene Kategorien gibt).
 - **Status:** done
 
-#### PH-13-04 – KI-Vorschlag für verbotene Wörter
+#### PH-13-04 – KI-Vorschlag für verbotene Wörter (später wieder entfernt)
+
+- **Hinweis:** Der Knopf wurde umgesetzt und später auf Wunsch des Auftraggebers wieder entfernt, weil die KI nur mit installiertem Ollama am Rechner läuft und Fremde nichts extra installieren sollen. Port, Adapter und Texte sind gelöscht (im Verlauf der Versionsverwaltung ab Commit `5a02b09` auffindbar). Die Kartenerzeugung im Setup über Ollama bleibt.
 
 - **Ziel:** Beim Anlegen oder Bearbeiten einer Karte kann die lokale KI (Ollama, falls erreichbar) anhand des Begriffs vier verbotene Wörter vorschlagen.
 - **Akzeptanzkriterien:** Der Knopf erscheint nur, wenn eine lokale KI gefunden wurde; der Vorschlag wird geprüft (vier verschiedene Wörter, keines gleich dem Begriff) und nur in das Feld eingetragen, nicht automatisch gespeichert; die Kartenerfassung funktioniert ohne KI unverändert. Keine Daten verlassen den Rechner (nur `127.0.0.1`).
@@ -613,12 +615,23 @@ Auftrag des Auftraggebers: Logik und Ansicht von Karten und Kategorien werden ve
 
 ### Phase 14 – Lokale KI am Rechner
 
-Auftrag des Auftraggebers: Die KI sollte ohne Zusatzprogramm und auch am Handy laufen. Ergebnis der Prüfung: Ein kleines Modell im Browser ist dafür zu schlecht (Messung `PH-14-01`); die Wikipedia-Alternative hat der Auftraggeber abgelehnt. **Entscheidung (ADR-018): Die KI gibt es nur am Rechner über ein lokal installiertes Programm (Ollama). Am Handy bleibt der KI-Knopf deaktiviert, alle Karten bleiben ohne KI nutzbar.**
+Auftrag des Auftraggebers: Die KI sollte ohne Zusatzprogramm und auch am Handy laufen. Ergebnis der Prüfung: Ein kleines Modell im Browser ist dafür zu schlecht (Messung `PH-14-01`); die Wikipedia-Alternative hat der Auftraggeber abgelehnt. **Entscheidung (ADR-018): Die KI gibt es nur am Rechner über ein lokal installiertes Programm (Ollama). Am Handy gibt es keine KI, alle Karten bleiben ohne KI nutzbar. Der KI-Knopf für Wortvorschläge wurde danach wieder entfernt.**
 
 #### PH-14-01 – Qualitätstest
 
 - **Ergebnis:** Qwen2.5-0.5B im Browser (WebLLM): schnell (0,2 bis 0,4 s je Karte), aber nur etwa 2 bis 3 von 20 Karten sinnvoll, Deutsch deutlich schlechter. Größere Modelle (1,5 Mrd. und mehr) brauchen mindestens 1,6 GB Grafikspeicher und sind für Handys unrealistisch; sie wurden nicht getestet. Die Testseite `prototypes/ai-word-test.html` bleibt als Werkzeug erhalten.
 - **Status:** done
+
+### Phase 15 – Großer Kartenpool für Tabu
+
+Ausgangspunkt: Eine KI am Handy ist nicht möglich (`PH-14-01`, `ADR-018`). Der Auftraggeber erzeugt die Karten stattdessen am PC mit einer guten KI, prüft sie und liefert sie mit der App aus. Die vollständige Planung steht in `docs/GAMEHUB_CARD_POOL.md`. Sie ist ein Vorschlag; die Entscheidungen in Abschnitt 6 dieses Dokuments brauchen die Zustimmung des Auftraggebers.
+
+- **PH-15-01:** Entscheidungen klären. Entschieden: 500 Karten je Sprache zuerst, später bis 1.500; zweiter KI-Durchgang plus Stichproben; Deutsch und Englisch unabhängig erzeugen. Kategorien: zehn (Alltag, Natur, Kultur, Essen und Trinken, Tiere, Sport und Freizeit, Berufe, Orte und Reisen, Film/Musik/Medien, Technik), Tabelle in `docs/GAMEHUB_CARD_POOL.md`. Gespielte Karten merken: später (`PH-15-06` bleibt optional). Status: done
+- **PH-15-02:** Paketformat, Laden als eigener Teil mit Rückfall auf die 45 eingebauten Karten, Kategorien aus den Daten statt aus festen Schlüsseln. **Ergebnis:** Format `gamehub-taboo-pack` (Version 1) je Sprache in `src/data/pool/de.json` und `en.json` mit den zehn Kategorien (Kennung, deutscher und englischer Name) und einer leeren Kartenliste; `parseTabooCardPack` prüft streng und lehnt ein beschädigtes Paket ganz ab; `loadTabooCardPack` lädt es per dynamischem Import als eigenen Teil der App (im Build `de-*.js` und `en-*.js`, vom Offline-Speicher mit vorgehalten). Die Kategorienamen stehen in den Daten (`builtInCategories` für die Rückfallkarten, Paketdateien für den Rest), die Übersetzungsschlüssel `tabooSetup.category.*` sind entfallen. Im Setup erscheinen die drei Kategorien der Rückfallkarten immer, die übrigen Kategorien des Pakets erst, wenn sie Karten haben; im Formular „Karte hinzufügen“ sind alle zehn wählbar. Status: done
+- **PH-15-03:** Erzeugungsskript am PC, fortsetzbar, mit Prüfregeln und Ablehnungsliste. Status: planned
+- **PH-15-04:** Prüfwerkzeug und Regelliste. Status: planned
+- **PH-15-05:** Pool in Etappen erzeugen und einbauen, zuerst eine Kategorie als Probelauf. Status: planned
+- **PH-15-06:** Optional: gespielte Karten merken. Status: planned
 
 ### Phase 9: Spätere Erweiterungen
 

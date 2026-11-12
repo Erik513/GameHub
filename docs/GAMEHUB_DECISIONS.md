@@ -144,6 +144,14 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 
 - **Status:** accepted
 - **Datum:** 2026-11-12
-- **Entscheidung:** KI-Funktionen (Kartenerzeugung, Wortvorschläge) nutzen ausschließlich ein lokal laufendes Programm am selben Rechner, das über `127.0.0.1` angesprochen wird (Ollama). Es wird kein Modell im Browser ausgeführt und kein Online-Dienst (auch nicht Wikipedia) für Vorschläge genutzt.
+- **Entscheidung:** KI-Funktionen (Kartenerzeugung; der Wortvorschlags-Knopf wurde wieder entfernt) nutzen ausschließlich ein lokal laufendes Programm am selben Rechner, das über `127.0.0.1` angesprochen wird (Ollama). Es wird kein Modell im Browser ausgeführt und kein Online-Dienst (auch nicht Wikipedia) für Vorschläge genutzt.
 - **Begründung:** Ein kleines Browser-Modell (Qwen2.5-0.5B) lieferte im Test kaum brauchbare Wörter, besonders auf Deutsch; größere Modelle sind für Handys zu schwer. Online-Dienste scheiden wegen Kosten, Schlüsseln und Datenabfluss aus (AGENTS.md); die Wikipedia-Variante hat der Auftraggeber abgelehnt.
-- **Konsequenzen:** Am Handy ist der KI-Knopf deaktiviert, mitgelieferte und eigene Karten bleiben voll nutzbar. Die Anbieter bleiben austauschbare Adapter hinter den Business-Ports (ADR-008-Linie). LM Studio wurde kurz ergänzt und auf Wunsch des Auftraggebers wieder entfernt, weil er es nicht beauftragt hatte; es kann später gesondert beauftragt werden.
+- **Konsequenzen:** Am Handy gibt es keine KI, mitgelieferte und eigene Karten bleiben voll nutzbar. Die Anbieter bleiben austauschbare Adapter hinter den Business-Ports (ADR-008-Linie). LM Studio wurde kurz ergänzt und auf Wunsch des Auftraggebers wieder entfernt, weil er es nicht beauftragt hatte; es kann später gesondert beauftragt werden.
+
+## ADR-019: Kartenpakete je Sprache und Kategorienamen aus den Daten
+
+- **Status:** accepted
+- **Datum:** 2026-11-12
+- **Entscheidung:** Der große Kartenpool wird als Paket je Sprache (`gamehub-taboo-pack`, Version 1) mit Kategorien und Karten ausgeliefert und als eigener Teil der App per dynamischem Import geladen. Die 45 Karten im Code bleiben als Rückfall. Kategorienamen (Deutsch und Englisch) stehen in den Daten statt in den Übersetzungsressourcen; die drei Kategorien der Rückfallkarten bleiben immer sichtbar, weitere erst mit Karten.
+- **Begründung:** Neue Kategorien und Karten sollen ohne Codeänderung dazukommen (`docs/GAMEHUB_CARD_POOL.md`); die KI am Handy ist nicht möglich (`ADR-018`). Der Auftraggeber hat die Planung und `PH-15-02` freigegeben.
+- **Konsequenzen:** Der Offline-Speicher lädt die Pakete beim Installieren mit; bei sehr großen Paketen (ab etwa 20.000 Karten je Sprache) wäre ein Nachladen je Kategorie zu prüfen. Ein beschädigtes Paket wird ganz abgelehnt. Die Kategorienamen sind an die Pakete gebunden, nicht an die Oberflächensprache; Namen eigener Kategorien bleiben die vom Spieler getippten Texte.

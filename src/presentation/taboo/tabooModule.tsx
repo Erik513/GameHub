@@ -1,6 +1,7 @@
 import type { TabooCardRepository } from "../../business/games/taboo/cardRepository";
+import type { TabooCardPack } from "../../business/games/taboo/cardPack";
 import type { TabooCard } from "../../business/games/taboo/model";
-import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
+import type { SupportedLanguage } from "../../i18n";
 import type { GameModule } from "../gameModule";
 import type { TabooGenerators } from "./TabooGeneration";
 import { TabooLibrary } from "./TabooLibrary";
@@ -9,9 +10,9 @@ interface TabooModuleOptions {
   /** The standard cards that ship with the app. */
   readonly cards?: readonly TabooCard[];
   readonly generators?: TabooGenerators | undefined;
-  /** Looks for a local AI that suggests forbidden words; resolves to nothing without one. */
-  readonly findWordSuggester?:
-    ((signal: AbortSignal) => Promise<TabooWordSuggester | undefined>) | undefined;
+  /** Loads the card pack of a language, the part of the cards that is not in the code. */
+  readonly loadCardPack?:
+    ((language: SupportedLanguage) => Promise<TabooCardPack | undefined>) | undefined;
   /** Storage for the player's own cards. */
   readonly repository?: TabooCardRepository | undefined;
 }
@@ -19,8 +20,8 @@ interface TabooModuleOptions {
 /** Wires Taboo with its cards, storage and generators for the composition root. */
 export function createTabooModule({
   cards = [],
-  findWordSuggester,
   generators,
+  loadCardPack,
   repository,
 }: TabooModuleOptions = {}): GameModule {
   return {
@@ -29,8 +30,8 @@ export function createTabooModule({
       <TabooLibrary
         cardLanguage={cardLanguage}
         cards={cards}
-        findWordSuggester={findWordSuggester}
         generators={generators}
+        loadCardPack={loadCardPack}
         repository={repository}
       />
     ),
