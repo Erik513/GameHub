@@ -16,7 +16,7 @@ Aufbau von oben nach unten:
 
 1. **Kopfleiste [ist]:** links der Name des Spiels, rechts die zwei Knöpfe **Einstellungen** und **Home**.
 2. **Werkzeugleiste [ist]**, eine Reihe unter der Kopfleiste, die Knöpfe teilen sich die Breite:
-   - immer ein Knopf **Spieler** (öffnet die Spielerverwaltung, `ADR-022`; das Hauptmenü bekommt ihn automatisch, ebenso die Spielauswahl des GameHub);
+   - immer ein Knopf **Spieler** (öffnet die Spielerverwaltung, `ADR-022`; das Hauptmenü bekommt ihn automatisch);
    - immer ein Knopf **Spielregeln** (öffnet das Infofenster mit den Regeln);
    - optional ein Knopf zur **Datenansicht oder zum Editor**, wo man eigene Inhalte hinzufügen, ändern, importieren und exportieren kann (bei Tabu „Karten“). Spiele ohne eigene Inhalte haben ihn nicht.
 3. **Inhalt [ist]**, immer in genau dieser Reihenfolge:
@@ -38,11 +38,15 @@ Jedes Spiel hat diese drei Typen:
 
 Spielspezifische Zusatzansichten (bei Tabu Auswertung und Stechen) sind Varianten dieser drei Typen und folgen denselben Regeln.
 
-### 2.3 Unteransichten und die Kopfleiste
+### 2.3 GameHub (Spielauswahl)
+
+Die Spielauswahl ist auf dem Handy kompakt: Kopfleiste mit „GameHub“ links und rechts dem Textknopf **Spieler** (Symbol und Text, weil das Symbol allein nicht selbsterklärend ist) und dem Symbolknopf **Einstellungen**; darunter sofort die Spiele als Karten. Überschrift und Einleitung sind nur für Screenreader da (ab Tabletbreite sichtbar). Der Spielerknopf der Spielauswahl steht in der Kopfleiste, nicht im Inhalt.
+
+### 2.4 Unteransichten und die Kopfleiste
 
 In allen Ansichten außer dem Hauptmenü, also in Spielansichten und im Editor, zeigt die Kopfleiste **nur interne Navigation oder „Spiel beenden“**. Es gibt dort **keinen Home-Knopf und keinen Knopf für Spracheinstellungen** **[ist]**. Ein Spiel verlässt man nur über das Hauptmenü.
 
-### 2.4 Infofenster
+### 2.5 Infofenster
 
 Es gibt **ein** Infofenster für alles (Spielregeln, Erklärungen, Auswahl, Einstellungen, Spielerverwaltung, Auswahl aus der Spielerliste), den Baustein `Dialog` **[ist]**. Es besteht immer aus:
 

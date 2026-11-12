@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### GameHub-Ansicht auf dem Handy kompakt
+
+- Der Knopf „Spieler“ des GameHub steht jetzt in der Kopfleiste (neben den Einstellungen) statt im Inhalt der Spielauswahl, mit Symbol und Text, weil das Symbol allein nicht selbsterklärend ist.
+- Die Spielauswahl ist auf dem Handy kompakt: Überschrift und Einleitung sind nur noch für Screenreader sichtbar (ab Tabletbreite wie bisher sichtbar), die Spielkarten beginnen direkt unter der Kopfleiste.
+- Geprüft: 440 Unit-Tests, 25 e2e-Tests (5 übersprungen), im Browser auf 375 Pixel Breite.
+
 ### PH-17-06 – Spielerverwaltung
 
 - Neu: dauerhaft gespeicherte Spielerliste für alle Spiele (`ADR-022`). Reine Logik in `src/business/shared/playerRoster.ts` mit Tests, Port `PlayerRosterStore`, Adapter im lokalen Browserspeicher (`gamehub.players`; kaputte Daten werden ignoriert, fehlender Speicher bricht nichts).

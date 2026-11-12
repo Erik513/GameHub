@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
 import { Button, ConfirmButton, Icon } from "./components";
 import { GameChromeContext, type GameExit } from "./GameChrome";
+import { PlayerRosterButton } from "./game-kit";
 import { SettingsDialog } from "./SettingsDialog";
 
 interface AppShellProps {
@@ -150,6 +151,7 @@ export function AppShell({
             </>
           ) : (
             <>
+              {!gameTitle && <PlayerRosterButton />}
               <Button
                 aria-label={t("settings.open")}
                 className="icon-button"

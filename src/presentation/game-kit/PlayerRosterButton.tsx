@@ -8,8 +8,8 @@ type Problem = "empty" | "invalid" | "duplicate" | "full";
 
 /**
  * The button "Players" that opens the window to manage the saved players: add a name, delete a
- * name. It is shown in the main menu of every game and on the game selection of the GameHub.
- * Without a player list in the app it shows nothing.
+ * name. It is shown in the main menu of every game and in the header of the GameHub, always with
+ * its text because the symbol alone is not clear. Without a player list in the app it shows nothing.
  */
 export function PlayerRosterButton() {
   const { t } = useTranslation();
