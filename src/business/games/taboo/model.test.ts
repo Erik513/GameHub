@@ -118,3 +118,22 @@ describe("Taboo domain validation", () => {
     expect(validateCard({ ...card, difficulty: "extreme" as "easy" }).valid).toBe(false);
   });
 });
+
+it("keeps the players of a team, cleaned up, and leaves them out when there are none", () => {
+  const result = validateConfiguration({
+    teams: [
+      { id: "1", name: "Red", players: [" Anna ", "", "Ben"] },
+      { id: "2", name: "Blue", players: [] },
+    ],
+    roundDurationSeconds: 60,
+    roundsPerTeam: 3,
+    cardLanguage: "en",
+  });
+  expect(result).toMatchObject({ valid: true });
+  if (result.valid) {
+    expect(result.value.teams).toEqual([
+      { id: "1", name: "Red", players: ["Anna", "Ben"] },
+      { id: "2", name: "Blue" },
+    ]);
+  }
+});

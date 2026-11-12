@@ -1,7 +1,11 @@
 export { ChoiceGroup, type ChoiceOption } from "./ChoiceGroup";
 export { InfoButton, type InfoContent } from "./InfoButton";
+export { PlayersSetup } from "./PlayersSetup";
 export { Scoreboard } from "./Scoreboard";
+export { SetupScreen } from "./SetupScreen";
+export { SetupSection } from "./SetupSection";
 export { StartBar, TurnStrip } from "./StartBar";
+export { TeamsSetup } from "./TeamsSetup";
 export { TimerHud } from "./TimerHud";
 export { useAutoGrow } from "./useAutoGrow";
 export { useCountdown } from "./useCountdown";

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { newCategoryChoice } from "./categoryChoice";
 import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
-import { useCategoryLabel } from "./categoryLabel";
+import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
 
 interface TabooCategoryFieldProps {
   choice: string;
@@ -25,6 +25,9 @@ export function TabooCategoryField({
 }: TabooCategoryFieldProps) {
   const { t } = useTranslation();
   const categoryLabel = useCategoryLabel(standardCategories);
+  const sortCategories = useCategorySorter(standardCategories);
+  const standardIds = sortCategories(standardCategories.map((category) => category.id));
+  const customIds = sortCategories(custom);
 
   return (
     <>
@@ -35,12 +38,12 @@ export function TabooCategoryField({
           onChange={(event) => onChoice(event.target.value)}
           value={choice}
         >
-          {standardCategories.map(({ id }) => (
+          {standardIds.map((id) => (
             <option key={id} value={id}>
               {categoryLabel(id)}
             </option>
           ))}
-          {custom.map((id) => (
+          {customIds.map((id) => (
             <option key={id} value={id}>
               {id}
             </option>

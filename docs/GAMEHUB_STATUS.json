@@ -583,7 +583,7 @@
         {
           "id": "PH-15-05",
           "title": "Pool in Etappen erzeugen, prüfen und einbauen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-15-06",
@@ -605,6 +605,33 @@
         {
           "id": "PH-16-02",
           "title": "PC-Layout für Tabu (Setup, Runde, Ergebnis, Kartenseite) mit Prüfung im Desktop-Format",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "PH-17",
+      "name": "Gemeinsame Bausteine für Teams, Spieler und Spieleinstellungen",
+      "status": "planned",
+      "tasks": [
+        {
+          "id": "PH-17-01",
+          "title": "Entwurf: gemeinsame Ansicht für Teams, Spieler und Einstellungen (freigegeben)",
+          "status": "done"
+        },
+        {
+          "id": "PH-17-02",
+          "title": "Umsetzung im game-kit und Umstellung von Tabu darauf",
+          "status": "done"
+        },
+        {
+          "id": "PH-17-03",
+          "title": "Optional: Spieler und Teams merken und in allen Spielen anbieten",
+          "status": "planned"
+        },
+        {
+          "id": "PH-17-04",
+          "title": "Optional: eigene Adressen für Unterseiten eines Spiels (zum Beispiel Kartenseite)",
           "status": "planned"
         }
       ]

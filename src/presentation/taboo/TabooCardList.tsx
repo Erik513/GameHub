@@ -10,7 +10,8 @@ import {
 import { validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, ConfirmButton, Icon, StatusMessage } from "../components";
-import { useCategoryLabel } from "./categoryLabel";
+import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
+import { sortCardsForList } from "../../business/games/taboo/ordering";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { resolveCategory } from "./categoryChoice";
 import { difficulties, teamNameFrom } from "./tabooSetupModel";
@@ -56,11 +57,17 @@ export function TabooCardList({
   const [name, setName] = useState("");
 
   const categoryName = useCategoryLabel(categoryInfos);
+  const sortCategories = useCategorySorter(categoryInfos);
   const standardIds = categoryInfos.map((info) => info.id);
-  const categoryIds = [
-    ...availableCategories(categoryInfos, allCards, cardLanguage).map((info) => info.id),
-    ...customCategoryIds(allCards, cardLanguage, standardIds),
-  ];
+  // The player's own categories come first so they are found quickly, then the standard ones.
+  const ownCategoryIds = sortCategories(customCategoryIds(allCards, cardLanguage, standardIds));
+  const standardCategoryIds = sortCategories(
+    availableCategories(categoryInfos, allCards, cardLanguage).map((info) => info.id),
+  );
+  const groups = [
+    { key: "own", ids: ownCategoryIds },
+    { key: "standard", ids: standardCategoryIds },
+  ] as const;
   const inLanguage = (card: TabooCard) => card.language === cardLanguage;
 
   function startEditing(card: TabooCard) {
@@ -212,46 +219,86 @@ export function TabooCardList({
           {t(`tabooList.problems.${problem}`)}
         </StatusMessage>
       )}
-      {categoryIds.map((categoryId) => {
-        const own = ownCards.filter((card) => inLanguage(card) && card.categoryId === categoryId);
-        const standard = standardCards.filter(
-          (card) => inLanguage(card) && card.categoryId === categoryId,
-        );
-        return (
-          <details className="taboo-more taboo-card-list__category" key={categoryId}>
-            <summary>
-              <span>{categoryName(categoryId)}</span>
-              {own.length > 0 && (
-                <Button
-                  aria-label={t("tabooList.exportLabel", { category: categoryName(categoryId) })}
-                  className="icon-button--small"
-                  disabled={disabled}
-                  onClick={(event) => {
-                    // The button sits inside the summary and must not open or close the category.
-                    event.preventDefault();
-                    onExport(categoryId, own);
-                  }}
-                  title={t("tabooList.exportLabel", { category: categoryName(categoryId) })}
-                  variant="secondary"
-                >
-                  <Icon name="download" />
-                </Button>
-              )}
+      {groups.map((group) =>
+        group.ids.length === 0 ? null : (
+          <div className="taboo-card-list__group" key={group.key}>
+            {ownCategoryIds.length > 0 && (
               <small>
-                {t("tabooList.count", { count: own.length + standard.length, own: own.length })}
+                {t(
+                  `tabooList.groups.${group.key === "own" ? "ownCategories" : "standardCategories"}`,
+                )}
               </small>
-            </summary>
-            <ul>
-              {own.map((card) => (
-                <li key={card.id}>{renderRow(card, true)}</li>
-              ))}
-              {standard.map((card) => (
-                <li key={card.id}>{renderRow(card, false)}</li>
-              ))}
-            </ul>
-          </details>
-        );
-      })}
+            )}
+            {group.ids.map((categoryId) => {
+              const own = ownCards.filter(
+                (card) => inLanguage(card) && card.categoryId === categoryId,
+              );
+              const standard = standardCards.filter(
+                (card) => inLanguage(card) && card.categoryId === categoryId,
+              );
+              return (
+                <details className="kit-disclosure taboo-card-list__category" key={categoryId}>
+                  <summary>
+                    <span>{categoryName(categoryId)}</span>
+                    {own.length > 0 && (
+                      <Button
+                        aria-label={t("tabooList.exportLabel", {
+                          category: categoryName(categoryId),
+                        })}
+                        className="icon-button--small"
+                        disabled={disabled}
+                        onClick={(event) => {
+                          // The button sits inside the summary and must not open or close the category.
+                          event.preventDefault();
+                          onExport(categoryId, own);
+                        }}
+                        title={t("tabooList.exportLabel", { category: categoryName(categoryId) })}
+                        variant="secondary"
+                      >
+                        <Icon name="download" />
+                      </Button>
+                    )}
+                    <small>
+                      {t("tabooList.count", {
+                        count: own.length + standard.length,
+                        own: own.length,
+                      })}
+                    </small>
+                  </summary>
+                  {own.length > 0 && (
+                    <>
+                      {standard.length > 0 && (
+                        <small className="taboo-card-list__label">
+                          {t("tabooList.groups.ownCards")}
+                        </small>
+                      )}
+                      <ul>
+                        {sortCardsForList(own, cardLanguage).map((card) => (
+                          <li key={card.id}>{renderRow(card, true)}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  {standard.length > 0 && (
+                    <>
+                      {own.length > 0 && (
+                        <small className="taboo-card-list__label">
+                          {t("tabooList.groups.standardCards")}
+                        </small>
+                      )}
+                      <ul>
+                        {sortCardsForList(standard, cardLanguage).map((card) => (
+                          <li key={card.id}>{renderRow(card, false)}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </details>
+              );
+            })}
+          </div>
+        ),
+      )}
     </section>
   );
 }

@@ -20,19 +20,6 @@ export const tabooTexts = {
     skips: "Skipping: A team may only skip as often per round as set in the options.",
     end: "End of game: When all rounds are played, the team with the most points wins. If tied, the tiebreak follows if enabled: each team explains three words against the clock.",
   },
-  tabooPlayers: {
-    title: "Players (optional)",
-    summary: "Enter names and split",
-    hint: "Enter the names of all players, separated by commas or line breaks. Then split them across the teams at random or by hand. The split is only an overview for you.",
-    label: "Player names",
-    placeholder: "Anna, Ben, Cara",
-    draw: "Split randomly into teams",
-    assignment: "Players",
-    teamOf: "Team of {{player}}",
-    unassigned: "Not assigned",
-    teams: "Teams",
-    nobody: "nobody yet",
-  },
   tabooEntry: {
     title: "Add card ({{language}})",
     category: "Category",
@@ -52,6 +39,12 @@ export const tabooTexts = {
     languages: { de: "German", en: "English" },
   },
   tabooList: {
+    groups: {
+      ownCategories: "Own categories",
+      standardCategories: "Standard categories",
+      ownCards: "Own cards",
+      standardCards: "Built-in cards",
+    },
     export: "Export",
     exportLabel: "Export category {{category}}",
     title: "Cards by category",
@@ -136,8 +129,6 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info about {{setting}}",
     info: {
-      teamOrder:
-        "Random draws which team starts and how the turns follow. As entered uses the order of the team fields from top to bottom. When replaying with the same setup, an entered order is kept.",
       rounds:
         "A round is over when every team has had one turn. Short is 3 rounds, Medium 5 and Long 10. With ∞ you play until you show the result after a completed round.",
       cardSource:
@@ -161,15 +152,8 @@ export const tabooTexts = {
     noExtraCards: "No new extra cards are available.",
     cardShortage:
       "The filters match {{available}} cards. The scheduled turns need at least {{required}}.",
-    teams: "Teams",
-    team: "Team {{number}}",
-    teamNameLabel: "Name of team {{number}}",
     rounds: "Rounds per team",
     categoryGroups: { standard: "Standard", own: "Own" },
-    teamsSection: "Teams and players",
-    settingsSection: "Game settings",
-    teamOrder: "Team order",
-    teamOrderOptions: { random: "Random", entered: "As entered" },
     duration: "Round duration (seconds)",
     difficulty: "Difficulty",
     anyDifficulty: "All",

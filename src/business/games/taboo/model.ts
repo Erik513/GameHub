@@ -4,6 +4,8 @@ export type Difficulty = "easy" | "medium" | "hard";
 export interface Team {
   readonly id: string;
   readonly name: string;
+  /** The players of the team when the player entered them; the game does not need them. */
+  readonly players?: readonly string[];
 }
 export interface Category {
   readonly id: string;
@@ -56,10 +58,14 @@ export function validateConfiguration(
   input: GameConfiguration,
 ): ValidationResult<GameConfiguration> {
   const issues: ValidationIssue[] = [];
-  const teams = input.teams.map((team) => ({
-    id: normalizeText(team.id),
-    name: normalizeText(team.name),
-  }));
+  const teams = input.teams.map((team) => {
+    const players = (team.players ?? []).map(normalizeText).filter(Boolean);
+    return {
+      id: normalizeText(team.id),
+      name: normalizeText(team.name),
+      ...(players.length > 0 ? { players } : {}),
+    };
+  });
   if (teams.length < 2) issues.push({ field: "teams", code: "minimum_two" });
   for (const field of ["id", "name"] as const) {
     if (teams.some((team) => !team[field]))

@@ -1,0 +1,178 @@
+/* Styles of the shared setup building blocks (setup screen, teams, players). */
+
+.kit-disclosure {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+.kit-disclosure > summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  color: var(--color-ink-muted);
+  font-weight: var(--weight-bold);
+  cursor: pointer;
+}
+
+.kit-disclosure[open] > summary {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.kit-disclosure > fieldset {
+  margin: var(--space-4);
+}
+
+.kit-disclosure > summary {
+  justify-content: space-between;
+  list-style: none;
+}
+
+.kit-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.kit-disclosure > summary::after {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-right: 2px solid currentcolor;
+  border-bottom: 2px solid currentcolor;
+  transform: rotate(45deg);
+  content: "";
+}
+
+.kit-disclosure[open] > summary::after {
+  transform: rotate(-135deg);
+}
+
+.kit-team-names {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-top: calc(var(--space-2) * -1);
+}
+
+.kit-team-names .field__input {
+  min-height: var(--control-height);
+  border-radius: var(--radius-md);
+}
+
+.kit-players__hint {
+  margin: 0.5rem 0;
+  color: var(--color-ink-muted);
+}
+
+.kit-players__input {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  resize: vertical;
+}
+
+.kit-players__list,
+.kit-players__teams {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kit-players__list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.kit-players__list select {
+  min-height: 2.75rem;
+  width: auto;
+}
+
+.kit-disclosure__body {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.kit-disclosure__body > * {
+  margin: 0;
+}
+
+.kit-setup-section {
+  margin-bottom: var(--space-4);
+}
+
+.kit-setup-section__body {
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+}
+
+.kit-chapter > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--touch-target);
+  list-style: none;
+  cursor: pointer;
+}
+
+.kit-chapter > summary::-webkit-details-marker {
+  display: none;
+}
+
+.kit-chapter > summary h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.kit-chapter > summary::after {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-right: 2px solid currentcolor;
+  border-bottom: 2px solid currentcolor;
+  transform: rotate(-135deg);
+  content: "";
+}
+
+.kit-chapter:not([open]) > summary::after {
+  transform: rotate(45deg);
+}
+
+.kit-players {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.kit-players > h3 {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.kit-players__body {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.kit-players__body > * {
+  margin: 0;
+}
+
+/* Rules and cards buttons share one toolbar row at the top right of the setup. */
+.kit-setup-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-end;
+  margin-bottom: var(--space-2);
+}
+
+.kit-setup-toolbar .button {
+  width: auto;
+  min-height: 2.75rem;
+  gap: var(--space-2);
+  padding-inline: var(--space-4);
+}

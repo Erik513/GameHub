@@ -24,7 +24,14 @@ interface ChoiceGroupProps {
    */
   readonly multiple?: boolean;
   readonly name: string;
+  /** Reports the chosen value of a single choice group (radio buttons); not used with `multiple`. */
+  readonly onChange?: (value: string) => void;
   readonly options: readonly ChoiceOption[];
+  /**
+   * Makes a single choice group controlled: the shown choice is always `value`. Without it the
+   * group is uncontrolled and starts with `initial`; the form reads the result.
+   */
+  readonly value?: string;
 }
 
 /** Radio group (or checkbox group with `multiple`) rendered as equally wide buttons; the value is read from the surrounding form. */
@@ -34,7 +41,9 @@ export function ChoiceGroup({
   legend,
   multiple = false,
   name,
+  onChange,
   options,
+  value: controlled,
 }: ChoiceGroupProps) {
   const [selected, setSelected] = useState<readonly string[]>([initial]);
   const specific = options.filter((option) => option.value !== "").length;
@@ -69,7 +78,15 @@ export function ChoiceGroup({
                 value={value}
               />
             ) : (
-              <input type="radio" name={name} value={value} defaultChecked={value === initial} />
+              <input
+                {...(controlled === undefined
+                  ? { defaultChecked: value === initial }
+                  : { checked: controlled === value })}
+                name={name}
+                onChange={() => onChange?.(value)}
+                type="radio"
+                value={value}
+              />
             )}
             <span aria-label={ariaLabel}>
               {label}

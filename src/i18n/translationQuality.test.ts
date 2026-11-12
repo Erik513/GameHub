@@ -10,9 +10,11 @@ import { findIdenticalValues, findPlaceholderMismatches } from "./translationPar
 const allowedIdenticalValues = [
   "app.title",
   "games.quiz.title",
+  "kitPlayers.placeholder",
+  "kitPlayers.teams",
+  "kitTeams.defaultName",
+  "kitTeams.legend",
   "navigation.pause",
-  "tabooPlayers.placeholder",
-  "tabooPlayers.teams",
   "tabooRound.teamTotal",
   "tabooSetup.categoryGroups.standard",
   "tabooSetup.roundOptions.unlimited",
@@ -20,8 +22,6 @@ const allowedIdenticalValues = [
   "tabooSetup.skipOptions.2",
   "tabooSetup.skipOptions.3",
   "tabooSetup.skipOptions.unlimited",
-  "tabooSetup.team",
-  "tabooSetup.teams",
 ];
 
 /** Keys that are only read by tests or kept for the project foundation. */

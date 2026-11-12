@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import { builtInCategories } from "../business/games/taboo/categories";
 import { loadTabooCardPack } from "./tabooCardPool";
+import { tabooStandardCards } from "./tabooStandardCards";
 
 it.each(["de", "en"] as const)(
   "ships a valid %s pack that lists all categories",
@@ -20,5 +21,33 @@ it.each(["de", "en"] as const)(
       expect(ids).toContain(card.categoryId);
       expect(card.language).toBe(language);
     }
+  },
+);
+
+it.each(["de", "en"] as const)(
+  "ships a large %s pool with enough cards in every category and difficulty",
+  async (language) => {
+    const pack = await loadTabooCardPack(language);
+    const cards = pack?.cards ?? [];
+    expect(cards.length).toBeGreaterThanOrEqual(500);
+    for (const category of pack?.categories ?? []) {
+      for (const difficulty of ["easy", "medium", "hard"]) {
+        const count = cards.filter(
+          (card) => card.categoryId === category.id && card.difficulty === difficulty,
+        ).length;
+        expect(count, `${category.id}/${difficulty}`).toBeGreaterThanOrEqual(15);
+      }
+    }
+  },
+);
+
+it.each(["de", "en"] as const)(
+  "keeps ids and terms of the %s pool and the built-in cards apart",
+  async (language) => {
+    const pack = await loadTabooCardPack(language);
+    const builtIn = tabooStandardCards.filter((card) => card.language === language);
+    const all = [...builtIn, ...(pack?.cards ?? [])];
+    expect(new Set(all.map((card) => card.id)).size).toBe(all.length);
+    expect(new Set(all.map((card) => card.term.toLowerCase())).size).toBe(all.length);
   },
 );

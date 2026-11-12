@@ -26,6 +26,7 @@ import {
   type TabooCategoryInfo,
 } from "../../business/games/taboo/categories";
 import { shuffleTeams } from "../../business/shared/teamOrder";
+import { buildTeams, initialTeamSetup, type TeamSetupValue } from "../../business/shared/teamSetup";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { useGameExit } from "../GameChrome";
 import { TabooRound } from "./TabooRound";
@@ -39,7 +40,6 @@ import {
   defaultRoundChoices,
   difficulties,
   maxCardsPerRequest,
-  teamNameFrom,
   type RoundChoice,
   type SetupState,
 } from "./tabooSetupModel";
@@ -99,14 +99,12 @@ export function TabooSetup({
     running: runningRound,
   });
   const [deckEmpty, setDeckEmpty] = useState(false);
-  // Whether the team order is drawn at random; a replay keeps a manual order.
-  const [randomOrder, setRandomOrder] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [generationEmpty, setGenerationEmpty] = useState(false);
   const activeGeneration = useRef<AbortController | undefined>(undefined);
   useEffect(() => () => activeGeneration.current?.abort(), []);
   const [formVersion, setFormVersion] = useState(0);
-  const [teamCount, setTeamCount] = useState(2);
+  const [teamSetup, setTeamSetup] = useState<TeamSetupValue>(initialTeamSetup);
   const [restartUnavailable, setRestartUnavailable] = useState(false);
   const [tiebreakNoCards, setTiebreakNoCards] = useState(false);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
@@ -135,14 +133,15 @@ export function TabooSetup({
     if (!keepConfiguration) {
       setSession(undefined);
       setFormVersion((version) => version + 1);
-      setTeamCount(2);
+      setTeamSetup(initialTeamSetup());
     } else if (session) {
       // Same setup: replay with the same cards in a fresh order.
       const reordered = createTabooGame({
         ...session.state.configuration,
-        teams: randomOrder
-          ? shuffleTeams(session.state.configuration.teams)
-          : session.state.configuration.teams,
+        teams:
+          teamSetup.order === "random"
+            ? shuffleTeams(session.state.configuration.teams)
+            : session.state.configuration.teams,
       });
       if (reordered.valid) setSession({ state: reordered.value, deck: shuffle(session.deck) });
     }
@@ -295,16 +294,11 @@ export function TabooSetup({
     setShortage(undefined);
     setSession(undefined);
     const data = new FormData(event.currentTarget);
-    const entered = Array.from({ length: Number(data.get("teamCount")) }, (_, index) => ({
-      id: String(index + 1),
-      name:
-        teamNameFrom(data.get(`teamName${index + 1}`)) ||
-        t("tabooSetup.team", { number: index + 1 }),
-    }));
-    const random = data.get("teamOrder") !== "entered";
-    setRandomOrder(random);
+    const teams = buildTeams(teamSetup, {
+      defaultName: (number) => t("kitTeams.defaultName", { number }),
+    });
     const result = createTabooGame({
-      teams: random ? shuffleTeams(entered) : entered,
+      teams,
       roundsPerTeam: data.get("rounds") === "unlimited" ? "unlimited" : Number(data.get("rounds")),
       roundDurationSeconds: Number(data.get("duration")),
       ...(data.get("tiebreak") === "off" ? {} : { tiebreak: true }),
@@ -388,10 +382,8 @@ export function TabooSetup({
     setSession(active);
   }
 
-  function handleFormChange(event: FormEvent<HTMLFormElement>) {
-    if (event.target instanceof HTMLInputElement && event.target.name === "teamCount") {
-      setTeamCount(Number(event.target.value));
-    }
+  /** Any change of the setup invalidates the prepared cards and a running preparation. */
+  function handleFormChange() {
     activeGeneration.current?.abort();
     setShortage(undefined);
     setSession(undefined);
@@ -469,7 +461,11 @@ export function TabooSetup({
           onSubmit={(event) => void submit(event)}
           roundChoices={roundChoices}
           shortage={shortage}
-          teamCount={teamCount}
+          teamSetup={teamSetup}
+          onTeamSetupChange={(next) => {
+            handleFormChange();
+            setTeamSetup(next);
+          }}
         >
           {children}
         </TabooSetupForm>

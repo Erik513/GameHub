@@ -63,17 +63,28 @@ function category(name: string) {
   return screen.getByText(name, { selector: "summary span" }).closest("details")!;
 }
 
-it("groups cards by category with counts and lists own cards before standard cards", async () => {
+it("groups cards by category in alphabetical order with counts and shows cards from easy to hard", async () => {
   const { user } = await renderList();
   expect(screen.getByRole("heading", { name: "Cards by category" })).toBeVisible();
   const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
-  expect(names).toEqual(["Everyday life", "Nature", "Culture", "Sport"]);
+  expect(names).toEqual(["Sport", "Culture", "Everyday life", "Nature"]);
   expect(within(category("Nature")).getByText("2 (1 own)")).toBeInTheDocument();
   expect(within(category("Sport")).getByText("1 (1 own)")).toBeInTheDocument();
 
   await user.click(screen.getByText("Nature", { selector: "summary span" }));
   const rows = within(category("Nature")).getAllByRole("listitem");
   expect(rows.map((row) => row.querySelector("strong")?.textContent)).toEqual(["Moon", "Sun"]);
+  // Own and built-in cards of a category are separate blocks with labels.
+  const labels = [...category("Nature").querySelectorAll(".taboo-card-list__label")].map(
+    (label) => label.textContent,
+  );
+  expect(labels).toEqual(["Own cards", "Built-in cards"]);
+  // Own and standard categories are two labeled groups, the own ones first.
+  expect(
+    [...document.querySelectorAll(".taboo-card-list__group > small")].map(
+      (item) => item.textContent,
+    ),
+  ).toEqual(["Own categories", "Standard categories"]);
   expect(rows[0]).toHaveTextContent("night · sky · orbit · space");
   expect(rows[1]).toHaveTextContent("Hard");
   // Only own cards can be edited, and cards of the other language are not shown.
@@ -189,3 +200,47 @@ it.each([
     });
   },
 );
+
+it("sorts custom categories among the others and the cards of a category by difficulty and name", async () => {
+  const mk = (
+    id: string,
+    term: string,
+    categoryId: string,
+    difficulty: TabooCard["difficulty"],
+  ): TabooCard => ({
+    id,
+    language: "en",
+    term,
+    forbiddenWords: ["a", "b", "c", "d"],
+    categoryId,
+    difficulty,
+  });
+  const own = [
+    mk("o1", "Zeppelin", "Zebras", "hard"),
+    mk("o2", "apple pie", "Zebras", "easy"),
+    mk("o3", "Bagel", "Zebras", "easy"),
+    mk("o4", "Fax", "aardvarks", "medium"),
+  ];
+  const standard = [mk("s1", "Anchor", "nature", "hard"), mk("s2", "Moss", "nature", "easy")];
+  const { user } = await renderList({
+    allCards: [...own, ...standard],
+    ownCards: own,
+    standardCards: standard,
+  });
+  const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
+  expect(names).toEqual(["aardvarks", "Zebras", "Culture", "Everyday life", "Nature"]);
+
+  await user.click(screen.getByText("Zebras", { selector: "summary span" }));
+  expect(
+    within(category("Zebras"))
+      .getAllByRole("listitem")
+      .map((row) => row.querySelector("strong")?.textContent),
+  ).toEqual(["apple pie", "Bagel", "Zeppelin"]);
+
+  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  expect(
+    within(category("Nature"))
+      .getAllByRole("listitem")
+      .map((row) => row.querySelector("strong")?.textContent),
+  ).toEqual(["Moss", "Anchor"]);
+});

@@ -21,19 +21,6 @@ export const tabooTexts = {
       "Überspringen: Pro Runde darf ein Team nur so oft überspringen, wie in den Optionen eingestellt ist.",
     end: "Spielende: Wenn alle Runden gespielt sind, gewinnt das Team mit den meisten Punkten. Bei Gleichstand folgt auf Wunsch das Stechen: Jedes Team erklärt drei Begriffe auf Zeit.",
   },
-  tabooPlayers: {
-    title: "Spieler (optional)",
-    summary: "Namen eintragen und verteilen",
-    hint: "Gib die Namen aller Mitspieler ein, getrennt durch Komma oder Zeilenumbruch. Danach verteilst du sie zufällig oder von Hand auf die Teams. Die Verteilung dient nur als Übersicht für euch.",
-    label: "Spielernamen",
-    placeholder: "Anna, Ben, Cara",
-    draw: "Zufällig auf Teams verteilen",
-    assignment: "Spieler",
-    teamOf: "Team von {{player}}",
-    unassigned: "Nicht zugeordnet",
-    teams: "Teams",
-    nobody: "noch niemand",
-  },
   tabooEntry: {
     title: "Karte hinzufügen ({{language}})",
     category: "Kategorie",
@@ -54,6 +41,12 @@ export const tabooTexts = {
     languages: { de: "Deutsch", en: "Englisch" },
   },
   tabooList: {
+    groups: {
+      ownCategories: "Eigene Kategorien",
+      standardCategories: "Standard-Kategorien",
+      ownCards: "Eigene Karten",
+      standardCards: "Mitgelieferte Karten",
+    },
     export: "Exportieren",
     exportLabel: "Kategorie {{category}} exportieren",
     title: "Karten nach Kategorie",
@@ -138,8 +131,6 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info zu {{setting}}",
     info: {
-      teamOrder:
-        "Zufällig lost vor dem Start aus, welches Team beginnt und wie es weitergeht. Wie eingegeben nimmt die Reihenfolge der Teamfelder von oben nach unten. Bei „Mit gleicher Konfiguration neu spielen“ bleibt eine eingegebene Reihenfolge erhalten.",
       rounds:
         "Eine Runde ist vorbei, wenn jedes Team einmal an der Reihe war. Kurz sind 3 Runden, Mittel 5 und Lang 10. Bei ∞ spielt ihr, bis ihr nach einer vollständig gespielten Runde das Ergebnis anzeigen lasst.",
       cardSource:
@@ -163,15 +154,8 @@ export const tabooTexts = {
     noExtraCards: "Keine neuen Zusatzkarten verfügbar.",
     cardShortage:
       "Die Auswahl enthält {{available}} Karten. Für die geplanten Teamrunden werden mindestens {{required}} benötigt.",
-    teams: "Teams",
-    team: "Team {{number}}",
-    teamNameLabel: "Name von Team {{number}}",
     rounds: "Runden pro Team",
     categoryGroups: { standard: "Standard", own: "Eigene" },
-    teamsSection: "Teams und Spieler",
-    settingsSection: "Spieleinstellungen",
-    teamOrder: "Teamreihenfolge",
-    teamOrderOptions: { random: "Zufällig", entered: "Wie eingegeben" },
     duration: "Rundendauer (Sekunden)",
     difficulty: "Schwierigkeit",
     anyDifficulty: "Alle",

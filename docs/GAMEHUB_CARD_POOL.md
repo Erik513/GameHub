@@ -14,7 +14,7 @@ Tabu soll am Handy praktisch nie dieselben Karten zeigen. Eine KI am Handy ist d
 - Der Dienst-Worker legt **jede** gebaute Datei beim Installieren in den Cache. Wird der Pool als eigener Teil der App gebaut, ist er automatisch offline verfügbar und wird mit jedem Update neu geladen.
 - Es gibt einen Prüfpfad für erzeugte Karten (`reviewGeneratedCards`: Aufbau, Sprache, Dubletten) und einen Kartengenerator hinter einem Port (Ollama). Beides lässt sich für den Pool wiederverwenden.
 
-**Stand `PH-15-02` (erledigt):** Das Paketformat, das Laden mit Rückfall und die Kategorien aus den Daten sind umgesetzt; die Pakete `src/data/pool/de.json` und `en.json` enthalten die zehn Kategorien und noch keine Karten. Siehe `ADR-019`.
+**Stand (2026-11-12):** `PH-15-02` bis `PH-15-05` sind erledigt. Die Pakete `src/data/pool/de.json` und `en.json` enthalten die zehn Kategorien und 523 beziehungsweise 521 Karten. Die Karten wurden von Claude geschrieben (siehe Changelog) und liefen durch die Regeln der Skripte `import-card-batch`, `review-card-pool` und `generate-card-pool`. Siehe `ADR-019`.
 
 ## 3. Größe und Aufwand (Schätzung, nicht gemessen)
 

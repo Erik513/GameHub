@@ -4,13 +4,46 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
-### PH-15-05 – Etappen: Essen und Trinken, Tiere, Sport, Berufe, Orte, Medien, Technik (in Arbeit)
+### PH-17-02 – Gemeinsame Team- und Spieleransicht umgesetzt
+
+- Neue reine Logik `src/business/shared/teamSetup.ts`: `buildTeams` (Namen auffüllen, Reihenfolge zufällig oder wie eingegeben, Spieler den Teams zuordnen), `TeamRules`, `validateTeamSetup`, `initialTeamSetup`, `clampTeamCount`. Tests mit festem Zufall.
+- Neue Bausteine im `game-kit`: `SetupScreen`, `SetupSection`, `TeamsSetup` (gesteuert), `PlayersSetup` (nur Spielerliste) und intern `PlayerListField`. `ChoiceGroup` kann gesteuert genutzt werden (`value`, `onChange`).
+- Texte in `src/i18n/resources/<sprache>/kit.ts`, Stile in `src/presentation/styles/kit-setup.css` (aus `taboo.css`, `taboo-more` heißt jetzt `kit-disclosure`).
+- Tabu umgestellt: `TabooSetupForm` baut auf den Bausteinen auf, `TabooSetup` hält einen `TeamSetupValue` und ruft `buildTeams` auf; `TabooPlayers` und die Tabu-Teamtexte sind entfallen. `Team` im Tabu-Modell hat optional `players`; die Spieler kommen im Spielzustand an, die Rundenübersicht zeigt sie noch nicht.
+- Verhalten unverändert (alle bisherigen Tests liefen ohne Anpassung der Erwartungen, e2e grün). Kleine Verbesserung: Die Teamliste unter der Spielerverteilung zeigt eingetragene Teamnamen statt „Team N“.
+- Im Browser geprüft: Teams ändern, Namen, Spielerverteilung, Start mit den eingetragenen Teamnamen. Leitfaden für neue Spiele ergänzt.
+- Jedes Kapitel des Setups („Teams und Spieler“, „Spieleinstellungen“) lässt sich auf- und zuklappen (`SetupSection`, standardmäßig offen, `defaultOpen` einstellbar). Zugeklappte Werte bleiben im Formular und werden beim Start übernommen.
+
+### PH-17-01 – Entwurf der gemeinsamen Team- und Spieleransicht
+
+- Neues Dokument `docs/GAMEHUB_SETUP_KIT.md`: Ist-Zustand im Tabu-Setup, was Spiele brauchen, Entwurf (reine Logik `buildTeams` und `TeamRules` in `business/shared`; `SetupScreen`, `SetupSection`, `TeamsSetup` und optional `PlayersSetup` im `game-kit`; Texte in `kit.ts`; Stile im `game-kit`; Handy- und PC-Layout mitgedacht), Umbau von Tabu in vier verhaltensgleichen Schritten, fünf offene Entscheidungen und Risiken. Noch nichts umgesetzt. Freigabe durch den Auftraggeber: Teams gesteuert mit Spielern, `PlayersSetup` gleich mit, Merken später (`ADR-020`); Rundenübersicht mit Spielern und Grenzen 2 bis 6 Teams als Vorgabe angenommen.
+
+### Eigene Kategorien und Karten in der Kartenliste getrennt
+
+- In „Karten nach Kategorie“ stehen jetzt zwei beschriftete Gruppen: zuerst „Eigene Kategorien“, dann „Standard-Kategorien“ (die Beschriftungen erscheinen nur, wenn es eigene Kategorien gibt). Innerhalb einer Kategorie stehen „Eigene Karten“ und „Mitgelieferte Karten“ als getrennte Blöcke, die eigenen zuerst (Beschriftung nur, wenn beide vorhanden sind). Sortiert wird weiter alphabetisch und von leicht nach schwer, jeweils innerhalb der Gruppe oder des Blocks.
+- Im Browser geprüft mit einer eigenen Kategorie („Zauberei“) und einer eigenen Karte in „Technik“. Prüfungen: 361 Unit-Tests, 25 e2e, tsc, eslint.
+
+### Sortierung der Kategorien und Karten
+
+- Kategorien erscheinen alphabetisch nach ihrem angezeigten Namen (in der Oberflächensprache, Umlaute wie ihr Grundbuchstabe, Groß- und Kleinschreibung egal): in „Karten nach Kategorie“, im Auswahlfeld beim Hinzufügen und Bearbeiten und im Setup (dort getrennt in Standard und Eigene, jeweils alphabetisch). Eigene Kategorien sortieren sich automatisch zwischen die anderen ein.
+- Karten einer Kategorie stehen von leicht bis schwer, innerhalb einer Schwierigkeit alphabetisch nach Begriff. Eigene und mitgelieferte Karten werden dabei gemischt (vorher standen die eigenen zuerst).
+- Neue reine Logik `src/business/games/taboo/ordering.ts` (`sortCardsForList`, `sortByLabel`, `compareText`) mit Tests. Im Browser geprüft (Setup, Auswahl, Liste, Technik von „Batterie“ bis „Wärmebildkamera“). Prüfungen: 361 Unit-Tests, 25 e2e, tsc, eslint.
+
+### PH-15-05 – Pool übernommen
+
+- Auf Wunsch des Auftraggebers wurden alle geschriebenen Karten übernommen: `src/data/pool/de.json` hat 523 und `en.json` 521 Karten in allen zehn Kategorien (17 bis 19 je Kategorie und Schwierigkeit). Zusammen mit den 45 eingebauten Karten je Sprache sind es rund 570.
+- Build: Die Pakete sind eigene Teile (`de-*.js` etwa 74 kB, `en-*.js` etwa 72 kB, gepackt je etwa 15 kB), vom Offline-Speicher mit vorgehalten; der Hauptteil der App ist unverändert groß.
+- Neue Tests: Jede Kategorie und Schwierigkeit hat mindestens 15 Karten, und Kennungen und Begriffe sind über Pool und eingebaute Karten hinweg eindeutig. Prüfungen: 355 Unit-Tests, 25 e2e (frischer Build), tsc, eslint.
+- Im Browser geprüft: Das Setup zeigt alle zehn Kategorien auf Handy-Breite; eine Partie nur mit „Technik“ spielte eine Karte aus dem Pool („Oszilloskop“, schwer). Die Karten wurden von Claude geschrieben, ohne unabhängigen zweiten Prüfdurchgang und ohne Durchsicht durch den Auftraggeber.
+
+### PH-15-05 – Etappen: alle zehn Kategorien geschrieben (in Arbeit)
 
 - Neues Werkzeug `scripts/import-card-batch.mjs`: schickt eine Stapeldatei mit Karten durch dieselben Regeln wie die erzeugten Karten und legt die angenommenen im Arbeitspaket in `work/` ab (Ablehnungen mit Grund in der Liste, mit `--score` zusätzlich ein Urteil, `--dry-run` zur Vorschau).
 - Erste Etappe: je Sprache 51 Karten der Kategorie „Essen und Trinken“ (je 17 leicht, mittel, schwer), von Claude geschrieben. Das lokale 27-Mrd.-Modell wurde nach dem Zeitlimit-Fehler nicht weiter benutzt. Die Regeln lehnten je Sprache zwei Karten ab, deren Begriffe es schon gab („Apfel“, „Brot“), sie wurden ersetzt. Die Karten liegen nur in `work/` (nicht versioniert) und sind noch nicht in den Pool übernommen. Wichtig: Es gab keinen unabhängigen zweiten Prüfdurchgang, die Urteile (5) setzte der Import; die Stichprobe per Prüfseite ist die Kontrolle.
 - Zweite Etappe: je Sprache 52 Karten der Kategorie „Tiere“ (17 leicht, 17 mittel, 18 schwer). Auch sie liegen nur in `work/`; die Regeln lehnten je Sprache drei schon vorhandene Begriffe ab (Hund, Eichhörnchen, Biene beziehungsweise Dog, Squirrel, Bee).
 - Dritte und vierte Etappe: je Sprache etwa 53 Karten der Kategorien „Sport und Freizeit“ und „Berufe“ (18 leicht, 17 mittel, 18 schwer, bei Berufen 19/17/17). Die Regeln lehnten englisch zwei Karten ab, weil ein verbotenes Wort Teil des Begriffs war („Snowboarding“ mit „snow“, „Lawyer“ mit „law“); sie wurden mit anderen Wörtern ersetzt. Arbeitspaket jetzt je Sprache etwa 210 Karten in vier Kategorien, alles nur in `work/`, nichts übernommen.
 - Fünfte bis siebte Etappe: „Orte und Reisen“, „Film, Musik und Medien“ und „Technik“, je Sprache zwischen 52 und 53 Karten. Die Regeln lehnten viele Karten ab: Begriffe, die es schon gab („Museum“, „Kino“, „Buch“, „Gitarre“, „Theater“ und andere), und verbotene Wörter, die den Begriff enthielten („Bagpipes“ mit „pipes“, „Farm“ mit „farmer“, „Speedometer“ mit „speed“). Sie wurden durch andere Karten ersetzt. Arbeitspaket jetzt Deutsch 367 und Englisch 366 Karten in sieben Kategorien, alles nur in `work/`, nichts in den Pool übernommen. Die drei Kategorien der eingebauten Karten (Alltag, Natur, Kultur) sind noch nicht ergänzt.
+- Letzte Etappe: Alltag, Natur und Kultur ergänzt (je Sprache 51 bis 53 neue Karten je Kategorie zusätzlich zu den 15 eingebauten). Die Regeln lehnten fünf Karten ab, weil ein verbotenes Wort den Begriff enthielt („Decke“ mit „zudecken“, „Erdbeben“ mit „Beben“, „Watering can“ mit „Water“, „Thunderstorm“ mit „thunder“, „Heath“ mit „heather“); sie wurden ersetzt. Arbeitspaket jetzt **Deutsch 523 und Englisch 521 Karten in allen zehn Kategorien**, nur in `work/`, noch nicht in `src/data/pool` übernommen. Die ersten Etappen sind damit komplett; offen sind die Durchsicht durch den Auftraggeber und die Übernahme.
 
 ### Korrektur an den Kartenwerkzeugen: Antworten als Datenstrom
 

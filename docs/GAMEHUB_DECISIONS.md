@@ -155,3 +155,11 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Entscheidung:** Der große Kartenpool wird als Paket je Sprache (`gamehub-taboo-pack`, Version 1) mit Kategorien und Karten ausgeliefert und als eigener Teil der App per dynamischem Import geladen. Die 45 Karten im Code bleiben als Rückfall. Kategorienamen (Deutsch und Englisch) stehen in den Daten statt in den Übersetzungsressourcen; die drei Kategorien der Rückfallkarten bleiben immer sichtbar, weitere erst mit Karten.
 - **Begründung:** Neue Kategorien und Karten sollen ohne Codeänderung dazukommen (`docs/GAMEHUB_CARD_POOL.md`); die KI am Handy ist nicht möglich (`ADR-018`). Der Auftraggeber hat die Planung und `PH-15-02` freigegeben.
 - **Konsequenzen:** Der Offline-Speicher lädt die Pakete beim Installieren mit; bei sehr großen Paketen (ab etwa 20.000 Karten je Sprache) wäre ein Nachladen je Kategorie zu prüfen. Ein beschädigtes Paket wird ganz abgelehnt. Die Kategorienamen sind an die Pakete gebunden, nicht an die Oberflächensprache; Namen eigener Kategorien bleiben die vom Spieler getippten Texte.
+
+## ADR-020: Gemeinsame Bausteine für Teams, Spieler und Einstellungen
+
+- **Status:** accepted
+- **Datum:** 2026-11-12
+- **Entscheidung:** Teams, Spieler und der Rahmen des Setups (Abschnitte, Werkzeugleiste oben rechts, Startleiste) werden als wiederverwendbare Bausteine im `game-kit` gebaut: `SetupScreen`, `SetupSection`, `TeamsSetup` (gesteuert, liefert Teams mit Spielern) und `PlayersSetup` (nur Spielerliste). Die reine Logik (`buildTeams`, `TeamRules`, Validierung) liegt in `src/business/shared/`, Texte in einer gemeinsamen Datei `kit.ts` je Sprache, Stile im `game-kit`. Spieleinstellungen bleiben Formularfelder des Spiels (`ChoiceGroup`, `InfoButton`), es gibt kein Einstellungs-Schema. Das Merken von Teams und Spielern zwischen Spielen folgt später (`PH-17-03`).
+- **Begründung:** Teams, Spieler und Einstellungen werden in jedem Spiel gebraucht; der Auftraggeber will dieselbe Ansicht für alle Spiele. Spielerzuordnungen sollen ins Spiel gelangen können.
+- **Konsequenzen:** Erweitert ADR-017. Tabu wird verhaltensgleich umgestellt; die zugänglichen Namen bleiben gleich, damit Tests stabil bleiben. Das PC-Layout (Phase 16) wird in `SetupScreen` gebündelt.

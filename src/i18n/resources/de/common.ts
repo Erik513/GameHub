@@ -1,6 +1,8 @@
+import { kitTexts } from "./kit";
 import { tabooTexts } from "./taboo";
 
 export const common = {
+  ...kitTexts,
   ...tabooTexts,
   app: {
     eyebrow: "Projektgrundlage",
