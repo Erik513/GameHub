@@ -15,6 +15,13 @@ export function Dialog({ children, closeLabel, description, onClose, open, title
   const descriptionId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
+  // The latest close handler is kept in a ref so a new function on every render does not move the
+  // focus back to the close button while someone types in the window.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
   useEffect(() => {
     if (!open) {
       return;
@@ -24,13 +31,13 @@ export function Dialog({ children, closeLabel, description, onClose, open, title
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        onClose();
+        onCloseRef.current();
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose, open]);
+  }, [open]);
 
   if (!open) {
     return null;

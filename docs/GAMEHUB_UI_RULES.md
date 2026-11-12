@@ -15,7 +15,8 @@ Jedes Spiel besteht aus denselben wenigen Ansichten. Ein neues Spiel füllt sie 
 Aufbau von oben nach unten:
 
 1. **Kopfleiste [ist]:** links der Name des Spiels, rechts die zwei Knöpfe **Einstellungen** und **Home**.
-2. **Werkzeugleiste [ist]**, rechts oben unter der Kopfleiste:
+2. **Werkzeugleiste [ist]**, eine Reihe unter der Kopfleiste, die Knöpfe teilen sich die Breite:
+   - immer ein Knopf **Spieler** (öffnet die Spielerverwaltung, `ADR-022`; das Hauptmenü bekommt ihn automatisch, ebenso die Spielauswahl des GameHub);
    - immer ein Knopf **Spielregeln** (öffnet das Infofenster mit den Regeln);
    - optional ein Knopf zur **Datenansicht oder zum Editor**, wo man eigene Inhalte hinzufügen, ändern, importieren und exportieren kann (bei Tabu „Karten“). Spiele ohne eigene Inhalte haben ihn nicht.
 3. **Inhalt [ist]**, immer in genau dieser Reihenfolge:
@@ -43,7 +44,7 @@ In allen Ansichten außer dem Hauptmenü, also in Spielansichten und im Editor, 
 
 ### 2.4 Infofenster
 
-Es gibt **ein** Infofenster für alles (Spielregeln, Erklärungen, Auswahl, Einstellungen), den Baustein `Dialog` **[ist]**. Es besteht immer aus:
+Es gibt **ein** Infofenster für alles (Spielregeln, Erklärungen, Auswahl, Einstellungen, Spielerverwaltung, Auswahl aus der Spielerliste), den Baustein `Dialog` **[ist]**. Es besteht immer aus:
 
 1. Überschrift oben links,
 2. Schließen-Knopf oben rechts (mit Rahmen, ohne Bestätigung),
@@ -91,12 +92,13 @@ Alle Ansichten bestehen aus diesen Bausteinen im `game-kit` und in `components`;
 
 | Ansicht | Baustein |
 |---|---|
-| Hauptmenü | `SetupScreen` (Rahmen mit Meldungen, Knopf für Spielregeln `rules`, optionaler Knopf für den Editor `editor`, Felder als `SetupSection`, Startleiste), darin `TeamsSetup` oder `PlayersSetup`, `ChoiceGroup`, `InfoButton` |
+| Hauptmenü | `SetupScreen` (Rahmen mit Meldungen, Knopf `Spieler` (automatisch), Knopf für Spielregeln `rules`, optionaler Knopf für den Editor `editor`, Felder als `SetupSection`, Startleiste), darin `TeamsSetup` oder `PlayersSetup`, `ChoiceGroup`, `InfoButton` |
 | Editor | `ManageScreen` (Titel, Hinweis, Kapitel als `SetupSection`, Aktionsreihe, Meldungen) |
 | Zwischenstand und Endstand | `ScoreScreen` (Überschrift, optional Sieger, Punktestand, weitere Inhalte, Hauptaktion unten); der Endstand ist derselbe Baustein mit `winner` |
 | Das eigentliche Spiel | `TimerHud`, `StartBar` und Inhalt des Spiels |
 | Infofenster | `Dialog` |
 | Knopfreihe | `ActionRow` (gleich breit, gleich hoch, Reihenfolge wie übergeben) |
+| Spielerverwaltung | `PlayerRosterButton` (Knopf und Fenster: hinzufügen, löschen) und `RosterPicker` (Auswahl aus der Liste im Feld „Teams und Spieler“) |
 | Weiteres | `ConfirmButton`, `Button`, `StatusMessage`, `EmptyState`, `Scoreboard`, `TurnStrip` |
 
 Entscheidung: Es gibt bewusst **keinen** zusätzlichen `GameMenu`- und keinen `FinalScreen`-Baustein. `SetupScreen` ist das Hauptmenü, `ScoreScreen` deckt Zwischen- und Endstand ab (so wenige Bausteine wie möglich).

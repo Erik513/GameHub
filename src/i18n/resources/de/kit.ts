@@ -35,4 +35,33 @@ export const kitTexts = {
     teams: "Teams",
     nobody: "noch niemand",
   },
+  kitRoster: {
+    open: "Spieler",
+    title: "Spieler",
+    description:
+      "Diese Spieler bleiben gespeichert. In jedem Spiel kannst du aus der Liste wählen, wer mitspielt.",
+    nameLabel: "Name des Spielers",
+    namePlaceholder: "Neuer Spieler",
+    add: "Hinzufügen",
+    listLabel: "Gespeicherte Spieler",
+    empty: "Noch keine Spieler gespeichert.",
+    remove: "Spieler {{name}} entfernen",
+    removeConfirm: "Nochmal tippen, um {{name}} zu entfernen",
+    removeAgain: "Nochmal tippen",
+    problems: {
+      empty: "Gib einen Namen ein.",
+      invalid:
+        "Der Name darf höchstens 24 Zeichen haben und kein Komma und kein Semikolon enthalten.",
+      duplicate: "Diesen Spieler gibt es schon.",
+      full: "Die Liste ist voll (höchstens 100 Spieler).",
+    },
+    pickOpen: "Aus Spielerliste wählen",
+    pickTitle: "Spieler wählen",
+    pickInfo: "Wähle, wer heute mitspielt.",
+    pickEmpty: "Die Spielerliste ist leer. Lege Spieler über den Knopf „Spieler“ im Hauptmenü an.",
+    pickAll: "Alle wählen",
+    pickNone: "Keinen wählen",
+    pickApply: "Übernehmen",
+    pickCancel: "Abbrechen",
+  },
 };

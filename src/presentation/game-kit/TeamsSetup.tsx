@@ -12,6 +12,7 @@ import {
 import { Button } from "../components";
 import { ChoiceGroup } from "./ChoiceGroup";
 import { PlayerListField } from "./PlayerListField";
+import { RosterPicker } from "./RosterPicker";
 import { useTeamSetupMemory } from "./TeamSetupMemoryContext";
 
 interface TeamsSetupProps {
@@ -162,6 +163,7 @@ function TeamPlayers({ count, onChange, required, value }: TeamPlayersProps) {
       <details className="kit-disclosure" open={required || undefined}>
         <summary>{t("kitPlayers.summary")}</summary>
         <div className="kit-disclosure__body">
+          <RosterPicker onChange={changeText} value={value.playersText} />
           <PlayerListField
             hint={t(required ? "kitPlayers.hintRequired" : "kitPlayers.hint")}
             onChange={changeText}

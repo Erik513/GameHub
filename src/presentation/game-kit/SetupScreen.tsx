@@ -1,5 +1,6 @@
 import type { FormEventHandler, ReactNode } from "react";
 import { Button } from "../components";
+import { PlayerRosterButton } from "./PlayerRosterButton";
 import { StartBar } from "./StartBar";
 
 interface SetupScreenProps {
@@ -39,6 +40,7 @@ export function SetupScreen({
     <>
       {messages}
       <div className="kit-setup-toolbar">
+        <PlayerRosterButton />
         {editor}
         {rules}
       </div>

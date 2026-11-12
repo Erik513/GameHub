@@ -35,4 +35,33 @@ export const kitTexts = {
     teams: "Teams",
     nobody: "nobody yet",
   },
+  kitRoster: {
+    open: "Players",
+    title: "Players",
+    description:
+      "These players stay saved. In every game you can choose from the list who is playing.",
+    nameLabel: "Name of the player",
+    namePlaceholder: "New player",
+    add: "Add",
+    listLabel: "Saved players",
+    empty: "No players saved yet.",
+    remove: "Remove player {{name}}",
+    removeConfirm: "Tap again to remove {{name}}",
+    removeAgain: "Tap again",
+    problems: {
+      empty: "Enter a name.",
+      invalid:
+        "The name can have at most 24 characters and must not contain a comma or a semicolon.",
+      duplicate: "This player exists already.",
+      full: "The list is full (at most 100 players).",
+    },
+    pickOpen: "Choose from player list",
+    pickTitle: "Choose players",
+    pickInfo: "Choose who is playing today.",
+    pickEmpty: "The player list is empty. Add players with the Players button in the main menu.",
+    pickAll: "Choose all",
+    pickNone: "Choose none",
+    pickApply: "Apply",
+    pickCancel: "Cancel",
+  },
 };

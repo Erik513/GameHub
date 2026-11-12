@@ -4,6 +4,15 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-17-06 – Spielerverwaltung
+
+- Neu: dauerhaft gespeicherte Spielerliste für alle Spiele (`ADR-022`). Reine Logik in `src/business/shared/playerRoster.ts` mit Tests, Port `PlayerRosterStore`, Adapter im lokalen Browserspeicher (`gamehub.players`; kaputte Daten werden ignoriert, fehlender Speicher bricht nichts).
+- Knopf „Spieler“ in der Werkzeugleiste jedes Spiel-Hauptmenüs (kommt automatisch aus `SetupScreen`) und auf der Spielauswahl des GameHub. Er öffnet ein Fenster zum Hinzufügen (Enter oder „Hinzufügen“) und Löschen (zwei Tipps) von Spielern; Meldungen bei leerem, doppeltem oder ungültigem Namen.
+- In „Teams und Spieler“ (`TeamsSetup`, `PlayersSetup`) wählt „Aus Spielerliste wählen“, wer heute mitspielt (Häkchen, „Alle wählen“, „Übernehmen“, „Abbrechen“). Ausgewählte kommen ins Spielerfeld, abgewählte Listenspieler gehen, von Hand getippte Namen bleiben. Danach wie bisher verteilen. „Letzte Gruppe laden“ (`PH-17-03`) bleibt.
+- Werkzeugleiste unter der Kopfleiste ist jetzt eine Reihe mit gleich breiten Knöpfen (passt mit drei Knöpfen auf ein 375-Pixel-Handy).
+- Fehler behoben: `Dialog` setzte den Fokus bei jedem Rendern auf den Schließen-Knopf zurück; Tippen in Eingabefeldern eines Fensters war dadurch nicht möglich.
+- Geprüft: 440 Unit-Tests, 25 e2e-Tests (5 übersprungen), Typen, ESLint, Prettier, Schichtprüfung; im Browser auf Spielauswahl und Tabu-Hauptmenü (Desktop und 375-Pixel-Handy).
+
 ### PH-17-03 – Teams und Spieler zwischen Spielen merken
 
 - Neu: Port `TeamSetupMemory` und reine Prüfung gespeicherter Daten in `src/business/shared/savedTeamSetup.ts`; Adapter `src/infrastructure/localStorageTeamSetupMemory.ts` (lokaler Browserspeicher, Schlüssel `gamehub.teamSetup`; kaputte oder fehlende Daten werden ignoriert, fehlender Speicher bricht nichts).

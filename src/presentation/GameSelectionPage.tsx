@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { GameModuleDescriptor } from "../app/gameCatalog";
 import { Button, Card, EmptyState } from "./components";
+import { PlayerRosterButton } from "./game-kit";
 
 interface GameSelectionPageProps {
   games: readonly GameModuleDescriptor[];
@@ -23,6 +24,9 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
           title={t("feedback.emptyGames.title")}
         />
       ) : null}
+      <div className="kit-setup-toolbar">
+        <PlayerRosterButton />
+      </div>
       <ul className="game-grid" aria-label={t("gameSelection.title")}>
         {games.map((game, index) => {
           const isPlanned = game.availability === "planned";

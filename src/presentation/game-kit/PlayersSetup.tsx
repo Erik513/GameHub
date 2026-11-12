@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { parsePlayers } from "../../business/shared/players";
 import { Button } from "../components";
 import { PlayerListField } from "./PlayerListField";
+import { RosterPicker } from "./RosterPicker";
 import { useTeamSetupMemory } from "./TeamSetupMemoryContext";
 
 interface PlayersSetupProps {
@@ -24,6 +25,7 @@ export function PlayersSetup({ onChange, value }: PlayersSetupProps) {
     <section aria-labelledby={headingId} className="kit-players">
       <h3 id={headingId}>{t("kitPlayers.titleRequired")}</h3>
       <div className="kit-players__body">
+        <RosterPicker onChange={onChange} value={value} />
         {showLoad && (
           <Button onClick={() => onChange(savedText)} variant="secondary">
             {t("kitPlayers.loadLast")}
