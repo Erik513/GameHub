@@ -573,7 +573,7 @@
         {
           "id": "PH-15-03",
           "title": "Erzeugungsskript am PC (Ollama oder LM Studio, fortsetzbar, Prüfregeln)",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "PH-15-04",
@@ -588,6 +588,23 @@
         {
           "id": "PH-15-06",
           "title": "Optional: gespielte Karten merken",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "PH-16",
+      "name": "PC-Layout für alle Spiele",
+      "status": "planned",
+      "tasks": [
+        {
+          "id": "PH-16-01",
+          "title": "Anforderungen und Entwurf: Handy- und PC-Layout je Spiel, Bausteine im game-kit",
+          "status": "planned"
+        },
+        {
+          "id": "PH-16-02",
+          "title": "PC-Layout für Tabu (Setup, Runde, Ergebnis, Kartenseite) mit Prüfung im Desktop-Format",
           "status": "planned"
         }
       ]

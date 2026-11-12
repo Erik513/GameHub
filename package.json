@@ -15,6 +15,7 @@
     "typecheck": "tsc -b --pretty false",
     "test:architecture": "node scripts/check-business-boundaries.mjs",
     "docs:sync": "node scripts/sync-dashboard.mjs",
+    "pool:generate": "node scripts/generate-card-pool.mjs",
     "docs:check": "node scripts/sync-dashboard.mjs --check",
     "check:translations": "vitest run src/i18n/translationParity.test.ts",
     "lint": "eslint . --max-warnings 0",

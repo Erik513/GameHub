@@ -4,6 +4,18 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-15-03 – Erzeugungsskript für den Kartenpool
+
+- Neues Werkzeug `pnpm pool:generate` (`scripts/generate-card-pool.mjs`): erzeugt Karten am PC mit Ollama oder LM Studio, je Kategorie und Schwierigkeit in Portionen, bis zum Ziel je Zelle (Standard 17, also etwa 500 je Sprache bei zehn Kategorien). Optionen für Sprache, Kategorie, Schwierigkeit, Ziel, Portionsgröße, Anbieter, Modell, Temperatur und Arbeitsordner; `--dry-run` zeigt nur den Auftrag an die KI.
+- Ausgabe nur in `work/` (nicht versioniert): Arbeitspaket im Paketformat und Ablehnungsliste mit Grund. Fortsetzbar; bereits vorhandene Begriffe (eingebaute Karten, Paket, Arbeitspaket) werden gemieden und abgelehnt. Die App bleibt unverändert; Übernahme in den Pool folgt mit `PH-15-04`.
+- Neue getestete Regeln in `src/business/games/taboo/poolGeneration.ts`: Auftrag an die KI (Sprache, Kategorie mit Beschreibung, Schwierigkeit, Familienfreundlichkeit, Oberbegriff), Lesen der Antwort auch mit Text um das JSON, stabile Kennung aus Sprache, Kategorie und Begriff, strengere Annahme (kein verbotenes Wort enthält den Begriff oder ist Teil davon, keine Ziffern in Wörtern, Längen, keine Dubletten).
+- Bei LM Studio wird nur ein bereits geladenes Chat-Modell genutzt, außer `--model` ist angegeben.
+- Geprüft mit einer nachgebildeten Ollama-Schnittstelle (Lauf, Fortsetzen, Ablehnungen), nicht mit einer echten KI. Prüfungen: 333 Unit-Tests, tsc, eslint.
+
+### Anforderung: Handy- und PC-Layout für alle Spiele
+
+- Neue Phase 16 im Plan (`PH-16-01`, `PH-16-02`, beide geplant): Jedes Spiel soll ein Handy- und ein PC-Layout haben, damit man auch am PC spielen kann. Nur festgehalten, noch nicht umgesetzt.
+
 ### PH-15-02 – Kartenpaket und Kategorien aus den Daten
 
 - Neues Paketformat `gamehub-taboo-pack` (Version 1) je Sprache: Kategorien mit deutschem und englischem Namen und Karten ohne eigene Sprachangabe. `src/data/pool/de.json` und `en.json` enthalten die zehn Kategorien und noch keine Karten.

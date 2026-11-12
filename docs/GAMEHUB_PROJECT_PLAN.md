@@ -628,10 +628,17 @@ Ausgangspunkt: Eine KI am Handy ist nicht möglich (`PH-14-01`, `ADR-018`). Der 
 
 - **PH-15-01:** Entscheidungen klären. Entschieden: 500 Karten je Sprache zuerst, später bis 1.500; zweiter KI-Durchgang plus Stichproben; Deutsch und Englisch unabhängig erzeugen. Kategorien: zehn (Alltag, Natur, Kultur, Essen und Trinken, Tiere, Sport und Freizeit, Berufe, Orte und Reisen, Film/Musik/Medien, Technik), Tabelle in `docs/GAMEHUB_CARD_POOL.md`. Gespielte Karten merken: später (`PH-15-06` bleibt optional). Status: done
 - **PH-15-02:** Paketformat, Laden als eigener Teil mit Rückfall auf die 45 eingebauten Karten, Kategorien aus den Daten statt aus festen Schlüsseln. **Ergebnis:** Format `gamehub-taboo-pack` (Version 1) je Sprache in `src/data/pool/de.json` und `en.json` mit den zehn Kategorien (Kennung, deutscher und englischer Name) und einer leeren Kartenliste; `parseTabooCardPack` prüft streng und lehnt ein beschädigtes Paket ganz ab; `loadTabooCardPack` lädt es per dynamischem Import als eigenen Teil der App (im Build `de-*.js` und `en-*.js`, vom Offline-Speicher mit vorgehalten). Die Kategorienamen stehen in den Daten (`builtInCategories` für die Rückfallkarten, Paketdateien für den Rest), die Übersetzungsschlüssel `tabooSetup.category.*` sind entfallen. Im Setup erscheinen die drei Kategorien der Rückfallkarten immer, die übrigen Kategorien des Pakets erst, wenn sie Karten haben; im Formular „Karte hinzufügen“ sind alle zehn wählbar. Status: done
-- **PH-15-03:** Erzeugungsskript am PC, fortsetzbar, mit Prüfregeln und Ablehnungsliste. Status: planned
+- **PH-15-03:** Erzeugungsskript am PC, fortsetzbar, mit Prüfregeln und Ablehnungsliste. **Ergebnis:** `pnpm pool:generate` (`scripts/generate-card-pool.mjs`, Entwicklerwerkzeug, nicht Teil von App und Build) fragt Ollama oder LM Studio je Kategorie und Schwierigkeit in Portionen, prüft jede Karte streng und schreibt ein Arbeitspaket `work/pool-<Sprache>.json` im Format der ausgelieferten Pakete plus eine Ablehnungsliste `work/pool-<Sprache>.rejected.jsonl`. Es lässt sich abbrechen und fortsetzen, vermeidet schon vorhandene Begriffe und bricht Zellen ohne Fortschritt nach einigen leeren Anfragen ab. Die Regeln liegen getestet im Business-Code (`poolGeneration.ts`). Bei LM Studio wird nur ein bereits geladenes Chat-Modell genommen (sonst `--model` angeben), um kein großes Modell ungewollt zu laden. Geprüft mit einer nachgebildeten Ollama-Schnittstelle, nicht mit einer echten KI. Status: done
 - **PH-15-04:** Prüfwerkzeug und Regelliste. Status: planned
 - **PH-15-05:** Pool in Etappen erzeugen und einbauen, zuerst eine Kategorie als Probelauf. Status: planned
 - **PH-15-06:** Optional: gespielte Karten merken. Status: planned
+
+### Phase 16 – PC-Layout für alle Spiele
+
+Anforderung des Auftraggebers (2026-11-12): **Jedes Spiel bekommt ein Handy-Layout und ein PC-Layout**, damit man auch am PC spielen kann. Bisher gibt es nur das Handy-Layout (eine schmale Spalte, Bedienung unten, Prüfung über `e2e/mobile-layout.spec.ts`). Der Leitfaden für neue Spiele (`docs/GAMEHUB_NEW_GAME_GUIDE.md`) und die Bausteine im `game-kit` sollen beide Größen berücksichtigen. Noch nicht begonnen; Reihenfolge und Zeitpunkt gegenüber den anderen Aufgaben legt der Auftraggeber fest.
+
+- **PH-16-01:** Anforderungen und Entwurf: Breakpoints, Aufteilung (zum Beispiel Einstellungen neben dem Spielbereich), was am PC anders ist (Tastatur, Maus), Bausteine im `game-kit`. Status: planned
+- **PH-16-02:** PC-Layout für Tabu mit Layoutprüfung im Desktop-Format neben der Handy-Prüfung. Status: planned
 
 ### Phase 9: Spätere Erweiterungen
 
