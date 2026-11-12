@@ -478,8 +478,8 @@ h1 {
   max-height: 92dvh;
   overflow: auto;
   overscroll-behavior: contain;
-  padding: var(--space-5) calc(var(--space-4) + var(--safe-right))
-    calc(var(--space-5) + var(--safe-bottom)) calc(var(--space-4) + var(--safe-left));
+  padding: var(--space-4) calc(var(--space-4) + var(--safe-right))
+    calc(var(--space-4) + var(--safe-bottom)) calc(var(--space-4) + var(--safe-left));
   border: 1px solid var(--color-line);
   border-bottom: 0;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
@@ -495,12 +495,28 @@ h1 {
 }
 
 .dialog__header h2 {
-  margin-bottom: var(--space-3);
+  margin: 0;
   font-size: var(--text-lg);
 }
 
+/* The text below the title of every window. */
+.dialog > p {
+  margin: var(--space-2) 0 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}
+
 .dialog__content {
-  margin-top: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+/* The close button sits in the top right corner of every window, framed like other icon buttons. */
+.dialog .dialog__header .dialog__close {
+  flex: none;
+  width: 2.75rem;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0;
 }
 
 .status-message {
@@ -927,32 +943,6 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 
-.dialog__close {
-  min-height: 2.5rem;
-  width: 2.5rem;
-  padding: 0;
-  color: var(--color-ink-muted);
-}
-
-.dialog {
-  padding: var(--space-4) calc(var(--space-4) + var(--safe-right))
-    calc(var(--space-4) + var(--safe-bottom)) calc(var(--space-4) + var(--safe-left));
-}
-
-.dialog__header h2 {
-  margin: 0;
-}
-
-.dialog > p {
-  margin: var(--space-2) 0 0;
-  color: var(--color-ink-muted);
-  font-size: var(--text-sm);
-}
-
-.dialog__content {
-  margin-top: var(--space-4);
-}
-
 .settings-fields {
   gap: var(--space-3);
 }
@@ -1089,11 +1079,6 @@ h1 {
 /* Touch targets of at least 44px (found by the mobile layout audit). */
 .brand {
   min-height: 2.75rem;
-}
-
-.dialog__close {
-  min-height: 2.75rem;
-  width: 2.75rem;
 }
 
 /* Info button next to the legend of a setting. */

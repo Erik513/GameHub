@@ -56,7 +56,7 @@ export function Dialog({ children, closeLabel, description, onClose, open, title
             aria-label={closeLabel}
             className="icon-button dialog__close"
             title={closeLabel}
-            variant="quiet"
+            variant="secondary"
             onClick={onClose}
           >
             <svg aria-hidden="true" focusable="false" height="18" viewBox="0 0 24 24" width="18">

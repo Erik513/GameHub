@@ -68,7 +68,7 @@ it("groups cards by category in alphabetical order with counts and shows cards f
   const { user } = await renderList();
   expect(screen.getByRole("heading", { name: "Cards by category" })).toBeVisible();
   const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
-  expect(names).toEqual(["Sport", "Culture", "Everyday life", "Nature"]);
+  expect(names).toEqual(["Culture", "Everyday life", "Nature", "Sport"]);
   expect(within(category("Nature")).getByText("2 (1 own)")).toBeInTheDocument();
   expect(within(category("Sport")).getByText("1 (1 own)")).toBeInTheDocument();
 
@@ -85,7 +85,7 @@ it("groups cards by category in alphabetical order with counts and shows cards f
     [...document.querySelectorAll(".taboo-card-list__group > small")].map(
       (item) => item.textContent,
     ),
-  ).toEqual(["Own categories", "Standard categories"]);
+  ).toEqual(["Standard categories", "Own categories"]);
   expect(rows[0]).toHaveTextContent("night · sky · orbit · space");
   expect(rows[1]).toHaveTextContent("Hard");
   // Only own cards can be edited, and cards of the other language are not shown.
@@ -262,7 +262,7 @@ it("sorts custom categories among the others and the cards of a category by diff
     standardCards: standard,
   });
   const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
-  expect(names).toEqual(["aardvarks", "Zebras", "Culture", "Everyday life", "Nature"]);
+  expect(names).toEqual(["Culture", "Everyday life", "Nature", "aardvarks", "Zebras"]);
 
   await user.click(screen.getByText("Zebras", { selector: "summary span" }));
   expect(

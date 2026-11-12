@@ -9,6 +9,7 @@ import {
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, StatusMessage } from "../components";
+import { SetupSection } from "../game-kit";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { newCategoryChoice, resolveCategory } from "./categoryChoice";
 import { difficulties } from "./tabooSetupModel";
@@ -79,67 +80,68 @@ export function TabooCardEntry({
   }
 
   return (
-    <form className="taboo-card-entry" noValidate onSubmit={(event) => void submit(event)}>
-      <h3>{title}</h3>
-      <div className="taboo-card-entry__pair">
-        <TabooCategoryField
-          choice={choice}
-          custom={customCategoryIds(
-            cards,
-            cardLanguage,
-            categoryInfos.map((info) => info.id),
-          )}
-          standardCategories={categoryInfos}
-          name={name}
-          onChoice={setChoice}
-          onName={setName}
-        />
+    <SetupSection title={title}>
+      <form className="taboo-card-entry" noValidate onSubmit={(event) => void submit(event)}>
+        <div className="taboo-card-entry__pair">
+          <TabooCategoryField
+            choice={choice}
+            custom={customCategoryIds(
+              cards,
+              cardLanguage,
+              categoryInfos.map((info) => info.id),
+            )}
+            standardCategories={categoryInfos}
+            name={name}
+            onChoice={setChoice}
+            onName={setName}
+          />
+          <label className="field">
+            <span>{t("tabooEntry.difficulty")}</span>
+            <select
+              className="field__input"
+              onChange={(event) =>
+                setDifficulty(difficulties.find((value) => value === event.target.value) ?? "easy")
+              }
+              value={difficulty}
+            >
+              {difficulties.map((value) => (
+                <option key={value} value={value}>
+                  {t(`tabooSetup.difficulties.${value}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
         <label className="field">
-          <span>{t("tabooEntry.difficulty")}</span>
-          <select
+          <span>{t("tabooEntry.term")}</span>
+          <input
+            autoComplete="off"
             className="field__input"
-            onChange={(event) =>
-              setDifficulty(difficulties.find((value) => value === event.target.value) ?? "easy")
-            }
-            value={difficulty}
-          >
-            {difficulties.map((value) => (
-              <option key={value} value={value}>
-                {t(`tabooSetup.difficulties.${value}`)}
-              </option>
-            ))}
-          </select>
+            onChange={(event) => setTerm(event.target.value)}
+            placeholder={t("tabooEntry.termPlaceholder")}
+            ref={termInput}
+            value={term}
+          />
         </label>
-      </div>
-      <label className="field">
-        <span>{t("tabooEntry.term")}</span>
-        <input
-          autoComplete="off"
-          className="field__input"
-          onChange={(event) => setTerm(event.target.value)}
-          placeholder={t("tabooEntry.termPlaceholder")}
-          ref={termInput}
-          value={term}
-        />
-      </label>
-      <label className="field">
-        <span>{t("tabooEntry.words")}</span>
-        <input
-          autoComplete="off"
-          className="field__input"
-          onChange={(event) => setWords(event.target.value)}
-          placeholder={t("tabooEntry.wordsPlaceholder")}
-          value={words}
-        />
-      </label>
-      <Button disabled={disabled} type="submit" variant="secondary">
-        {t("tabooEntry.add")}
-      </Button>
-      {feedback && (
-        <StatusMessage title={title} tone={feedback === "added" ? "success" : "error"}>
-          {t(`tabooEntry.${feedback}`)}
-        </StatusMessage>
-      )}
-    </form>
+        <label className="field">
+          <span>{t("tabooEntry.words")}</span>
+          <input
+            autoComplete="off"
+            className="field__input"
+            onChange={(event) => setWords(event.target.value)}
+            placeholder={t("tabooEntry.wordsPlaceholder")}
+            value={words}
+          />
+        </label>
+        <Button disabled={disabled} type="submit" variant="secondary">
+          {t("tabooEntry.add")}
+        </Button>
+        {feedback && (
+          <StatusMessage title={title} tone={feedback === "added" ? "success" : "error"}>
+            {t(`tabooEntry.${feedback}`)}
+          </StatusMessage>
+        )}
+      </form>
+    </SetupSection>
   );
 }

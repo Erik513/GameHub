@@ -54,12 +54,12 @@ export function TabooCardExport({
       </Button>
       <Dialog
         closeLabel={t("settings.close")}
+        description={t(options.length > 0 ? "tabooLibrary.exportInfo" : "tabooLibrary.exportEmpty")}
         onClose={() => setOpen(false)}
         open={open}
         title={t("tabooLibrary.export")}
       >
         <div className="taboo-card-export">
-          <p>{t(options.length > 0 ? "tabooLibrary.exportInfo" : "tabooLibrary.exportEmpty")}</p>
           {options.map((id) => (
             <Button
               disabled={disabled}

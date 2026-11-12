@@ -10,6 +10,7 @@ import {
 import { validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, ConfirmButton, Icon, StatusMessage } from "../components";
+import { SetupSection } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
 import { sortCardsForList } from "../../business/games/taboo/ordering";
 import { TabooCategoryField } from "./TabooCategoryField";
@@ -56,14 +57,14 @@ export function TabooCardList({
   const categoryName = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);
   const standardIds = categoryInfos.map((info) => info.id);
-  // The player's own categories come first so they are found quickly, then the standard ones.
+  // The same order as in the category choice of the menu: standard categories, then the own ones.
   const ownCategoryIds = sortCategories(customCategoryIds(allCards, cardLanguage, standardIds));
   const standardCategoryIds = sortCategories(
     availableCategories(categoryInfos, allCards, cardLanguage).map((info) => info.id),
   );
   const groups = [
-    { key: "own", ids: ownCategoryIds },
     { key: "standard", ids: standardCategoryIds },
+    { key: "own", ids: ownCategoryIds },
   ] as const;
   const inLanguage = (card: TabooCard) => card.language === cardLanguage;
 
@@ -228,95 +229,98 @@ export function TabooCardList({
   }
 
   return (
-    <section className="taboo-card-list">
-      <h3>{t("tabooList.title")}</h3>
-      {problem && !editing && (
-        <StatusMessage title={t("tabooList.title")} tone="error">
-          {t(`tabooList.problems.${problem}`)}
-        </StatusMessage>
-      )}
-      {groups.map((group) =>
-        group.ids.length === 0 ? null : (
-          <div className="taboo-card-list__group" key={group.key}>
-            {ownCategoryIds.length > 0 && (
-              <small>
-                {t(
-                  `tabooList.groups.${group.key === "own" ? "ownCategories" : "standardCategories"}`,
-                )}
-              </small>
-            )}
-            {group.ids.map((categoryId) => {
-              const own = ownCards.filter(
-                (card) => inLanguage(card) && card.categoryId === categoryId,
-              );
-              const standard = standardCards.filter(
-                (card) => inLanguage(card) && card.categoryId === categoryId,
-              );
-              return (
-                <details className="kit-disclosure taboo-card-list__category" key={categoryId}>
-                  <summary>
-                    <span>{categoryName(categoryId)}</span>
-                    <small>
-                      {t("tabooList.count", {
-                        count: own.length + standard.length,
-                        own: own.length,
-                      })}
-                    </small>
-                  </summary>
-                  {own.length > 0 && (
-                    <>
-                      {standard.length > 0 && (
-                        <small className="taboo-card-list__label">
-                          {t("tabooList.groups.ownCards")}
-                        </small>
-                      )}
-                      <ul>
-                        {sortCardsForList(own, cardLanguage).map((card) => (
-                          <li key={card.id}>{renderRow(card, true)}</li>
-                        ))}
-                      </ul>
-                      {group.key === "own" && (
-                        <div className="taboo-card-list__category-actions">
-                          <ConfirmButton
-                            armedContent={t("tabooList.deleteCategoryAgain", { count: own.length })}
-                            armedLabel={t("tabooList.deleteCategoryConfirm", {
-                              category: categoryName(categoryId),
-                              count: own.length,
-                            })}
-                            idleLabel={t("tabooList.deleteCategoryLabel", {
-                              category: categoryName(categoryId),
-                              count: own.length,
-                            })}
-                            idleVariant="danger"
-                            onConfirm={() => void removeCategory(categoryId, own)}
-                          >
-                            <Icon name="trash" />
-                            {t("tabooList.deleteCategory")}
-                          </ConfirmButton>
-                        </div>
-                      )}
-                    </>
+    <SetupSection title={t("tabooList.title")}>
+      <div className="taboo-card-list">
+        {problem && !editing && (
+          <StatusMessage title={t("tabooList.title")} tone="error">
+            {t(`tabooList.problems.${problem}`)}
+          </StatusMessage>
+        )}
+        {groups.map((group) =>
+          group.ids.length === 0 ? null : (
+            <div className="taboo-card-list__group" key={group.key}>
+              {ownCategoryIds.length > 0 && (
+                <small>
+                  {t(
+                    `tabooList.groups.${group.key === "own" ? "ownCategories" : "standardCategories"}`,
                   )}
-                  {standard.length > 0 && (
-                    <>
-                      {own.length > 0 && (
-                        <small className="taboo-card-list__label">
-                          {t("tabooList.groups.standardCards")}
-                        </small>
-                      )}
-                      <ul>
-                        {sortCardsForList(standard, cardLanguage).map((card) => (
-                          <li key={card.id}>{renderRow(card, false)}</li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                </details>
-              );
-            })}
-          </div>
-        ),
-      )}
-    </section>
+                </small>
+              )}
+              {group.ids.map((categoryId) => {
+                const own = ownCards.filter(
+                  (card) => inLanguage(card) && card.categoryId === categoryId,
+                );
+                const standard = standardCards.filter(
+                  (card) => inLanguage(card) && card.categoryId === categoryId,
+                );
+                return (
+                  <details className="kit-disclosure taboo-card-list__category" key={categoryId}>
+                    <summary>
+                      <span>{categoryName(categoryId)}</span>
+                      <small>
+                        {t("tabooList.count", {
+                          count: own.length + standard.length,
+                          own: own.length,
+                        })}
+                      </small>
+                    </summary>
+                    {own.length > 0 && (
+                      <>
+                        {standard.length > 0 && (
+                          <small className="taboo-card-list__label">
+                            {t("tabooList.groups.ownCards")}
+                          </small>
+                        )}
+                        <ul>
+                          {sortCardsForList(own, cardLanguage).map((card) => (
+                            <li key={card.id}>{renderRow(card, true)}</li>
+                          ))}
+                        </ul>
+                        {group.key === "own" && (
+                          <div className="taboo-card-list__category-actions">
+                            <ConfirmButton
+                              armedContent={t("tabooList.deleteCategoryAgain", {
+                                count: own.length,
+                              })}
+                              armedLabel={t("tabooList.deleteCategoryConfirm", {
+                                category: categoryName(categoryId),
+                                count: own.length,
+                              })}
+                              idleLabel={t("tabooList.deleteCategoryLabel", {
+                                category: categoryName(categoryId),
+                                count: own.length,
+                              })}
+                              idleVariant="danger"
+                              onConfirm={() => void removeCategory(categoryId, own)}
+                            >
+                              <Icon name="trash" />
+                              {t("tabooList.deleteCategory")}
+                            </ConfirmButton>
+                          </div>
+                        )}
+                      </>
+                    )}
+                    {standard.length > 0 && (
+                      <>
+                        {own.length > 0 && (
+                          <small className="taboo-card-list__label">
+                            {t("tabooList.groups.standardCards")}
+                          </small>
+                        )}
+                        <ul>
+                          {sortCardsForList(standard, cardLanguage).map((card) => (
+                            <li key={card.id}>{renderRow(card, false)}</li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                  </details>
+                );
+              })}
+            </div>
+          ),
+        )}
+      </div>
+    </SetupSection>
   );
 }
