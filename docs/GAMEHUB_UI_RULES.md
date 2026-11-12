@@ -26,6 +26,8 @@ Aufbau von oben nach unten:
 
 **Sprachen:** Die Einstellungen des GameHub (Knopf in der Kopfleiste) enthalten **nur die Oberflächensprache**. Die Sprache der Inhalte (bei Tabu die Kartensprache) ist eine Einstellung des Spiels und steht als erste Knopfgruppe in dessen „Spieleinstellungen“ (Englisch links, Deutsch rechts). Ein Spiel bekommt dafür `cardLanguage` und `onCardLanguageChange` vom Spielmodul-Vertrag; die App speichert die Wahl weiterhin zentral.
 
+**Spielmodus:** Hat ein Spiel mehrere Modi, steht die Knopfgruppe **Spielmodus** in den „Spieleinstellungen“ (bei Tabu nach der Kartensprache). Der Modus bestimmt, welche weiteren Gruppen sichtbar sind; Einstellungen, die für alle Modi gelten (Kartenquelle, Schwierigkeit, Kategorien), bleiben immer da.
+
 Die Felder des Inhalts sind Kapitel (Box mit Überschrift und Pfeil), auf- und zuklappbar, standardmäßig offen **[ist]**. Zugeklappte Eingaben bleiben im Formular und zählen beim Start.
 
 ### 2.2 Spielansichten (während eines Spiels)

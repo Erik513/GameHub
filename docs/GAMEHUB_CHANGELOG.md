@@ -2,6 +2,18 @@
 
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
+## 2026-11-13
+
+### PH-12-07-B – Oberfläche „Auf Zeit“
+
+- Setup: Neue Knopfgruppe „Spielmodus“ (Klassisch, Auf Zeit) in den Spieleinstellungen. Im Modus „Auf Zeit“ erscheint „Karten pro Team“ (5, 10, 15) statt Runden, Rundendauer, Überspringen und Stechen; Kartenquelle, Schwierigkeit und Kategorien bleiben. Info-Knöpfe erklären beide Gruppen. Das Rennen braucht je Team Zielzahl plus zwei Ersatzkarten, sonst meldet das Setup den Kartenmangel.
+- Spiel: `TabooRaceGame` (Übersicht vor jedem Lauf mit den bisherigen Zeiten, Endstand mit Sieger und sortierten Zeiten über `ScoreScreen`), `TabooRaceRun` (Stoppuhr, Karte, Richtig, einmal Überspringen, Verbotenes Wort mit Ersatzkarte, Pause mit „Lauf neu starten“) und `TabooRaceResults`. Die Spiellogik bleibt in `race.ts`; die Oberfläche liefert nur Uhr und Ersatzkarten.
+- Das Fenster „Spielregeln“ erklärt den neuen Modus. Alle Texte in Deutsch und Englisch.
+- Fehler behoben: Die Auswahlgruppen im Tabu-Setup hatten wieder einen eigenen Rahmen (Rückschritt des letzten Umbaus der Einstellungen); der Stil in `taboo.css` ist bereinigt.
+- Beim Wechsel des Spielmodus bleiben alle Einstellungen erhalten: Die Gruppen beider Modi bleiben im Formular und werden nur ausgeblendet (statt neu aufgebaut), auch bei Wechsel hin und zurück.
+- Tests: Komponentenläufe in beiden Sprachen (Setup-Gruppen, ganzes Rennen mit zwei Teams und Sieger, Überspringen und verbotenes Wort) und eine neue Handy-Layoutprüfung aller Rennansichten (Setup, Übersicht, Lauf, Pause, Endstand) in beiden Sprachen.
+- Geprüft: 533 Unit-Tests, 26 e2e-Tests (6 übersprungen), Typen, ESLint, Prettier, Schichtprüfung; im Browser auf 375 Pixel Breite.
+
 ## 2026-11-12
 
 ### PH-12-07-A – Spiellogik „Auf Zeit“

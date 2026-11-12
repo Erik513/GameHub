@@ -23,6 +23,7 @@ export const tabooTexts = {
     skips:
       "Überspringen: Pro Runde darf ein Team nur so oft überspringen, wie in den Optionen eingestellt ist.",
     end: "Spielende: Wenn alle Runden gespielt sind, gewinnt das Team mit den meisten Punkten. Bei Gleichstand folgt auf Wunsch das Stechen: Jedes Team erklärt drei Begriffe auf Zeit.",
+    race: "Auf Zeit: Jedes Team spielt einen eigenen Lauf und löst die gewählte Zahl Karten so schnell wie möglich. Einmal überspringen ist erlaubt, ein verbotenes Wort bringt eine neue Karte und kostet nur Zeit. Die kürzeste Zeit gewinnt, gleiche Zeiten gewinnen gemeinsam.",
   },
   tabooEntry: {
     title: "Karte hinzufügen ({{language}})",
@@ -81,6 +82,28 @@ export const tabooTexts = {
     newSetup: "Neue Partie konfigurieren",
     show: "Endergebnis anzeigen",
   },
+  tabooMode: {
+    legend: "Spielmodus",
+    classic: "Klassisch",
+    race: "Auf Zeit",
+  },
+  tabooRace: {
+    title: "Auf Zeit",
+    overview: "Übersicht Auf Zeit",
+    run: "Lauf Auf Zeit",
+    intro: "Jedes Team löst {{count}} Karten so schnell wie möglich. Einmal überspringen pro Team.",
+    times: "Zeiten",
+    pending: "noch nicht gespielt",
+    time: "{{time}} s",
+    start: "Lauf starten",
+    cardOf: "Karte {{current}}/{{total}}",
+    timer: "{{time}} Sekunden",
+    forbiddenHint: "kostet Zeit, neue Karte",
+    restartRun: "Lauf neu starten",
+    restartRunConfirm: "Nochmal tippen zum Neustart",
+    noCards: "Für den nächsten Lauf sind nicht genug Karten da.",
+    finalTimes: "Endzeiten",
+  },
   tabooTiebreak: {
     title: "Stechen",
     round: "Stechen-Versuch",
@@ -135,6 +158,9 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info zu {{setting}}",
     info: {
+      mode: "Klassisch spielt Runden um Punkte. Auf Zeit: Jedes Team löst nacheinander dieselbe Zahl Karten, die kürzeste Zeit gewinnt.",
+      raceTarget:
+        "Wie viele Karten jedes Team lösen muss. Jedes Team bekommt dieselbe Mischung aus leichten, mittleren und schweren Karten. Jedes Team darf einmal überspringen.",
       rounds:
         "Eine Runde ist vorbei, wenn jedes Team einmal an der Reihe war. Kurz sind 3 Runden, Mittel 5 und Lang 10. Bei ∞ spielt ihr, bis ihr nach einer vollständig gespielten Runde das Ergebnis anzeigen lasst.",
       cardSource:
@@ -146,6 +172,7 @@ export const tabooTexts = {
       difficulty:
         "Die Schwierigkeit zeigt, wie schwer ein Begriff zu erklären ist. „Alle“ mischt einfache, mittlere und schwere Karten. Beim Stechen kommt immer je eine Karte jeder Schwierigkeit dran.",
     },
+    raceTarget: "Karten pro Team",
     cardSource: "Kartenquelle",
     cardSources: { local: "Nur lokal", ai: "Nur KI", both: "Beides" },
     tiebreak: "Stechen bei Gleichstand",

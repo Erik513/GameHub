@@ -240,3 +240,56 @@ test("the tiebreak screens fit a small phone in both languages", async ({ page }
   }
   expect(problems, problems.join("\n")).toEqual([]);
 });
+
+const raceLabels = {
+  en: { mode: "Game mode", race: "Race", startRun: "Start run" },
+  de: { mode: "Spielmodus", race: "Auf Zeit", startRun: "Lauf starten" },
+} as const;
+
+test("the race screens fit a small phone in both languages", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+  const problems: string[] = [];
+  for (const language of ["en", "de"] as const) {
+    const t = labels[language];
+    const race = raceLabels[language];
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.clock.install();
+    await page.addInitScript(() => {
+      Math.random = () => 0.99;
+    });
+    await page.goto("/");
+    if (language === "de") {
+      await page.getByRole("button", { name: labels.en.settings }).click();
+      await page
+        .getByRole("group", { name: labels.en.interfaceLanguage })
+        .getByRole("radio", { name: "German" })
+        .check({ force: true });
+      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+    }
+    const check = async (screen: string) =>
+      problems.push(...(await audit(page, `${language} ${screen}`)));
+    const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
+
+    await press(t.open);
+    const mode = page.getByRole("group", { name: race.mode });
+    // Bring the group to the middle so the start bar at the bottom does not cover it.
+    await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
+    await mode.getByRole("radio", { name: race.race }).check({ force: true });
+    await check("race setup");
+    await press(t.start);
+    await check("race overview before the first run");
+
+    await press(race.startRun);
+    await check("running race");
+    await press(t.pause);
+    await check("paused race");
+    await press(t.resume);
+    for (let card = 0; card < 10; card += 1) await press(t.correct);
+    await check("race overview with a time");
+
+    await press(race.startRun);
+    for (let card = 0; card < 10; card += 1) await press(t.correct);
+    await check("race result");
+  }
+  expect(problems, problems.join("\n")).toEqual([]);
+});

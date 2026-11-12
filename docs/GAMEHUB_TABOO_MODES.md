@@ -1,6 +1,6 @@
 # Entwurf: Tabu-Spielmodi „Auf Zeit“ und „Gegen die Zeit“
 
-Dieses Dokument gehört zu `PH-12-07`. Die **Regeln** sind laut Akzeptanzkriterium vor der Umsetzung mit dem Auftraggeber abzustimmen. Der Auftraggeber hat am 2026-11-12 die Abläufe festgelegt (Abschnitt 1); alles, was er nicht ausdrücklich beantwortet hat, ist als **Annahme** gekennzeichnet und wartet auf Bestätigung (Abschnitt 6). Stand: Teilaufgabe A (Spiellogik „Auf Zeit“) ist gebaut, die übrigen noch nicht.
+Dieses Dokument gehört zu `PH-12-07`. Die **Regeln** sind laut Akzeptanzkriterium vor der Umsetzung mit dem Auftraggeber abzustimmen. Der Auftraggeber hat am 2026-11-12 die Abläufe festgelegt (Abschnitt 1); alles, was er nicht ausdrücklich beantwortet hat, ist als **Annahme** gekennzeichnet und wartet auf Bestätigung (Abschnitt 6). Stand: Teilaufgaben A (Spiellogik „Auf Zeit“) und B (Oberfläche „Auf Zeit“) sind gebaut, C bis E noch nicht.
 
 Bezug: `docs/GAMEHUB_TABOO_LOGIC.md` (klassischer Modus), `docs/GAMEHUB_UI_RULES.md` (Ansichten und Knöpfe), `ADR-017` (Spielbausteine).
 
@@ -77,7 +77,7 @@ Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. W
 Die Umsetzung ist groß (der Container `TabooSetup.tsx` hat rund 470 Zeilen). Nach Freigabe in kleinen, einzeln prüfbaren Schritten:
 
 1. **PH-12-07-A (erledigt):** Business „Auf Zeit“: `race.ts` (Zustandsmaschine mit `overview`, `running`, `finished`; Ereignisse `beginRun`, `answerCard`, `restartRun`), `raceCards.ts` (Schwierigkeitsmischung, Kartenauswahl, Ersatzkarten), Tests und Zufallsprüfung mit 60 Durchläufen.
-2. **PH-12-07-B:** Oberfläche „Auf Zeit“ (Spielmodus-Auswahl im Setup, Lauf, Übersicht, Endstand, Spielregeln, e2e).
+2. **PH-12-07-B (erledigt):** Oberfläche „Auf Zeit“: Knopfgruppe „Spielmodus“ (Klassisch, Auf Zeit) und „Karten pro Team“ im Setup (die Gruppen des klassischen Modus entfallen im Rennen), `TabooRaceGame` (Übersicht vor jedem Lauf, Endstand mit `ScoreScreen`), `TabooRaceRun` (Stoppuhr mit `TimerHud`, Richtig, Überspringen einmal, Verbotenes Wort, Pause mit Neustart des Laufs), `TabooRaceResults`, Regeln im Fenster „Spielregeln“, Texte in Deutsch und Englisch. Für das Rennen sind je Team Zielzahl plus zwei Ersatzkarten nötig (die Kartenprüfung im Setup meldet es). Tests: Komponentenläufe in beiden Sprachen und eine Handy-Layoutprüfung aller Ansichten.
 3. **PH-12-07-C:** Business „Gegen die Zeit“.
 4. **PH-12-07-D:** Oberfläche „Gegen die Zeit“.
 5. **PH-12-07-E:** Dokumentation (Logik, Regeln, Leitfaden), Abschlussprüfung.

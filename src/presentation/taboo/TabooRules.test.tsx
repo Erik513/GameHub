@@ -20,7 +20,7 @@ it.each([
     expect(screen.queryByRole("dialog")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: open }));
     const dialog = screen.getByRole("dialog", { name: title });
-    expect(within(dialog).getAllByRole("listitem")).toHaveLength(5);
+    expect(within(dialog).getAllByRole("listitem")).toHaveLength(6);
     expect(within(dialog).getByText(new RegExp(`^${goal}`))).toBeTruthy();
     fireEvent.click(within(dialog).getByRole("button", { name: close }));
     expect(screen.queryByRole("dialog")).toBeNull();

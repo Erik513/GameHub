@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { buildDeck, type DeckCriteria } from "../../business/games/taboo/deck";
+import { createRaceGame, type RaceState } from "../../business/games/taboo/race";
 import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
 import {
   createTabooGame,
@@ -31,6 +32,7 @@ import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/
 import { hasTeamSetupContent } from "../../business/shared/savedTeamSetup";
 import { useGameExit } from "../GameChrome";
 import { useTeamSetupMemory } from "../game-kit";
+import { TabooRaceGame } from "./TabooRaceGame";
 import { TabooRound } from "./TabooRound";
 import { useTabooRefill } from "./useTabooRefill";
 import { TabooResultView } from "./TabooResultView";
@@ -44,6 +46,7 @@ import {
   maxCardsPerRequest,
   type RoundChoice,
   type SetupState,
+  type TabooMode,
 } from "./tabooSetupModel";
 import { TabooTiebreakRound } from "./TabooTiebreakRound";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
@@ -80,6 +83,13 @@ export function TabooSetup({
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
   const [session, setSession] = useState<{ state: SetupState; deck: readonly TabooCard[] }>();
   const [shortage, setShortage] = useState<{ available: number; required: number }>();
+  const [mode, setMode] = useState<TabooMode>("classic");
+  // The game of the mode "Auf Zeit"; the key starts it anew when the same setup is played again.
+  const [raceSession, setRaceSession] = useState<{
+    key: number;
+    pool: readonly TabooCard[];
+    state: RaceState;
+  }>();
   const [round, setRound] = useState<{
     state: TabooState;
     deadline: number;
@@ -245,6 +255,24 @@ export function TabooSetup({
     setRound({ state, deadline: Date.now() + state.configuration.roundDurationSeconds * 1000 });
   }, [round, session]);
 
+  function restartRace(keepConfiguration: boolean) {
+    if (!raceSession) return;
+    if (!keepConfiguration) {
+      setRaceSession(undefined);
+      setFormVersion((version) => version + 1);
+      setTeamSetup(initialTeamSetup());
+      return;
+    }
+    const { configuration } = raceSession.state;
+    const again = createRaceGame({
+      ...configuration,
+      teams: teamSetup.order === "random" ? shuffleTeams(configuration.teams) : configuration.teams,
+    });
+    if (again.valid) {
+      setRaceSession({ key: raceSession.key + 1, pool: raceSession.pool, state: again.value });
+    }
+  }
+
   // Leaving a game returns to the main window with the previous setup still filled in.
   useGameExit(
     Boolean(round) || Boolean(session),
@@ -303,18 +331,26 @@ export function TabooSetup({
     const teams = buildTeams(teamSetup, {
       defaultName: (number) => t("kitTeams.defaultName", { number }),
     });
-    const result = createTabooGame({
-      teams,
-      roundsPerTeam: data.get("rounds") === "unlimited" ? "unlimited" : Number(data.get("rounds")),
-      roundDurationSeconds: Number(data.get("duration")),
-      ...(data.get("tiebreak") === "off" ? {} : { tiebreak: true }),
-      ...(data.get("skips") === "unlimited" || !data.has("skips")
-        ? {}
-        : { skipsPerRound: Number(data.get("skips")) }),
-      cardLanguage,
-    });
-    if (!result.valid) {
-      setIssues(result.issues);
+    const raceTarget = Number(data.get("raceTarget"));
+    const classic =
+      mode === "classic"
+        ? createTabooGame({
+            teams,
+            roundsPerTeam:
+              data.get("rounds") === "unlimited" ? "unlimited" : Number(data.get("rounds")),
+            roundDurationSeconds: Number(data.get("duration")),
+            ...(data.get("tiebreak") === "off" ? {} : { tiebreak: true }),
+            ...(data.get("skips") === "unlimited" || !data.has("skips")
+              ? {}
+              : { skipsPerRound: Number(data.get("skips")) }),
+            cardLanguage,
+          })
+        : undefined;
+    const race =
+      mode === "race" ? createRaceGame({ teams, cardLanguage, target: raceTarget }) : undefined;
+    const checked = classic ?? race;
+    if (!checked?.valid) {
+      setIssues(checked?.issues ?? []);
       return;
     }
     const selectedCategories = categoryIds.filter((category) =>
@@ -327,12 +363,15 @@ export function TabooSetup({
     setIssues([]);
     // The group is remembered for the next game, of any game.
     if (hasTeamSetupContent(teamSetup)) memory?.write(teamSetup);
-    const { roundsPerTeam } = result.value.configuration;
-    // With unlimited rounds one card per team is enough to start; cards are reused later.
-    const required =
-      result.value.configuration.teams.length * (roundsPerTeam === "unlimited" ? 1 : roundsPerTeam);
+    const teamCount = checked.value.configuration.teams.length;
+    // With unlimited rounds one card per team is enough to start; cards are reused later. A race
+    // never uses a card twice, so it needs the cards of all runs and two spare ones per team.
+    const roundsPerTeam = classic?.valid ? classic.value.configuration.roundsPerTeam : 1;
+    const required = race?.valid
+      ? teamCount * (raceTarget + 2)
+      : teamCount * (roundsPerTeam === "unlimited" ? 1 : roundsPerTeam);
     const filters: DeckCriteria = {
-      language: result.value.configuration.cardLanguage,
+      language: checked.value.configuration.cardLanguage,
       minimumCards: 1,
       categoryIds: selectedCategories.length === categoryIds.length ? [] : selectedCategories,
       difficulties: difficulties.filter((difficulty) =>
@@ -359,7 +398,12 @@ export function TabooSetup({
       // so they are generated generously instead of one card per turn.
       const perCategory =
         cardSource === "ai"
-          ? Math.max(2, Math.ceil((required * aiCardsPerTurn) / selectedCategories.length))
+          ? Math.max(
+              2,
+              Math.ceil(
+                (required * (race?.valid ? 2 : aiCardsPerTurn)) / selectedCategories.length,
+              ),
+            )
           : 2;
       const requests = selectedCategories.flatMap((categoryId) =>
         Array.from({ length: Math.ceil(perCategory / maxCardsPerRequest) }, (_, index) => ({
@@ -386,8 +430,11 @@ export function TabooSetup({
       setShortage({ available: deck.length, required });
       return;
     }
-    const active = { state: result.value, deck };
-    setSession(active);
+    if (race?.valid) {
+      setRaceSession({ key: 0, pool: deck, state: race.value });
+      return;
+    }
+    if (classic?.valid) setSession({ state: classic.value, deck });
   }
 
   /** Any change of the setup invalidates the prepared cards and a running preparation. */
@@ -395,6 +442,7 @@ export function TabooSetup({
     activeGeneration.current?.abort();
     setShortage(undefined);
     setSession(undefined);
+    setRaceSession(undefined);
     setDeckEmpty(false);
   }
 
@@ -418,6 +466,16 @@ export function TabooSetup({
           pickReplacement={pickTiebreakReplacement}
           startedAt={round.startedAt}
           teamName={tiebreakState.configuration.teams[tiebreakState.active.teamIndex]?.name ?? ""}
+        />
+      )}
+      {raceSession && (
+        <TabooRaceGame
+          initial={raceSession.state}
+          key={raceSession.key}
+          onExit={() => setRaceSession(undefined)}
+          onNewSetup={() => restartRace(false)}
+          onSameSetup={() => restartRace(true)}
+          pool={raceSession.pool}
         />
       )}
       {finished && (
@@ -455,7 +513,7 @@ export function TabooSetup({
       )}
       <div
         className="taboo-setup__screen"
-        hidden={Boolean(round) || Boolean(session)}
+        hidden={Boolean(round) || Boolean(session) || Boolean(raceSession)}
         key={formVersion}
       >
         <TabooSetupForm
@@ -466,8 +524,13 @@ export function TabooSetup({
           generating={generating}
           hasGenerators={Boolean(generators)}
           issues={issues}
+          mode={mode}
           onCardLanguageChange={onCardLanguageChange}
           onChange={handleFormChange}
+          onModeChange={(next) => {
+            handleFormChange();
+            setMode(next);
+          }}
           onSubmit={(event) => void submit(event)}
           roundChoices={roundChoices}
           shortage={shortage}

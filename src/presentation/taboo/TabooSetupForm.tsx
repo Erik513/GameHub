@@ -2,6 +2,7 @@ import type { FormEvent, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { ValidationIssue } from "../../business/games/taboo/model";
+import { defaultRaceTarget, raceTargetChoices } from "../../business/games/taboo/race";
 import type { SupportedLanguage } from "../../i18n";
 import type { TeamSetupValue } from "../../business/shared/teamSetup";
 import { StatusMessage } from "../components";
@@ -13,7 +14,9 @@ import {
   difficulties,
   issueMessageKey,
   roundOption,
+  tabooModes,
   type RoundChoice,
+  type TabooMode,
 } from "./tabooSetupModel";
 
 interface TabooSetupFormProps {
@@ -25,6 +28,9 @@ interface TabooSetupFormProps {
   generating: boolean;
   hasGenerators: boolean;
   issues: readonly ValidationIssue[];
+  /** The game mode; the settings below depend on it. */
+  mode: TabooMode;
+  onModeChange: (mode: TabooMode) => void;
   /** Changes the card language; without it the language is not offered. */
   onCardLanguageChange?: ((language: SupportedLanguage) => void) | undefined;
   onChange: (event: FormEvent<HTMLFormElement>) => void;
@@ -46,8 +52,10 @@ export function TabooSetupForm({
   generating,
   hasGenerators,
   issues,
+  mode,
   onCardLanguageChange,
   onChange,
+  onModeChange,
   onSubmit,
   onTeamSetupChange,
   roundChoices,
@@ -59,7 +67,7 @@ export function TabooSetupForm({
   const sortCategories = useCategorySorter(categoryInfos);
   const isStandard = (id: string) => categoryInfos.some((info) => info.id === id);
   const info = (
-    key: "rounds" | "cardSource" | "tiebreak" | "skips" | "difficulty",
+    key: "mode" | "rounds" | "raceTarget" | "cardSource" | "tiebreak" | "skips" | "difficulty",
     legend: string,
   ) => ({
     closeLabel: t("settings.close"),
@@ -121,39 +129,64 @@ export function TabooSetupForm({
           />
         )}
         <ChoiceGroup
-          info={info("rounds", t("tabooSetup.rounds"))}
-          legend={t("tabooSetup.rounds")}
-          name="rounds"
-          initial={String(roundChoices.includes(3) ? 3 : roundChoices[0])}
-          options={roundChoices.map((value) => roundOption(value, t))}
+          info={info("mode", t("tabooMode.legend"))}
+          initial={mode}
+          legend={t("tabooMode.legend")}
+          name="mode"
+          onChange={(next) => onModeChange(next === "race" ? "race" : "classic")}
+          options={tabooModes.map((value) => ({ value, label: t(`tabooMode.${value}`) }))}
+          value={mode}
         />
-        <ChoiceGroup
-          legend={t("tabooSetup.duration")}
-          name="duration"
-          initial="60"
-          options={["60", "90", "120"].map((value) => ({ value, label: value }))}
-        />
-        <ChoiceGroup
-          info={info("skips", t("tabooSetup.skips"))}
-          legend={t("tabooSetup.skips")}
-          name="skips"
-          initial="1"
-          options={(["0", "1", "2", "3", "unlimited"] as const).map((value) => ({
-            value,
-            label: t(`tabooSetup.skipOptions.${value}`),
-            ...(value === "unlimited" ? { ariaLabel: t("tabooSetup.unlimited") } : {}),
-          }))}
-        />
-        <ChoiceGroup
-          info={info("tiebreak", t("tabooSetup.tiebreak"))}
-          legend={t("tabooSetup.tiebreak")}
-          name="tiebreak"
-          initial="on"
-          options={(["on", "off"] as const).map((value) => ({
-            value,
-            label: t(`tabooSetup.tiebreakOptions.${value}`),
-          }))}
-        />
+        {/* The settings of both modes stay in the form and are only hidden, so a choice is kept when
+            the mode is changed and changed back. */}
+        <div className="taboo-mode-settings" hidden={mode !== "race"}>
+          <ChoiceGroup
+            info={info("raceTarget", t("tabooSetup.raceTarget"))}
+            legend={t("tabooSetup.raceTarget")}
+            name="raceTarget"
+            initial={String(defaultRaceTarget)}
+            options={raceTargetChoices.map((value) => ({
+              value: String(value),
+              label: String(value),
+            }))}
+          />
+        </div>
+        <div className="taboo-mode-settings" hidden={mode !== "classic"}>
+          <ChoiceGroup
+            info={info("rounds", t("tabooSetup.rounds"))}
+            legend={t("tabooSetup.rounds")}
+            name="rounds"
+            initial={String(roundChoices.includes(3) ? 3 : roundChoices[0])}
+            options={roundChoices.map((value) => roundOption(value, t))}
+          />
+          <ChoiceGroup
+            legend={t("tabooSetup.duration")}
+            name="duration"
+            initial="60"
+            options={["60", "90", "120"].map((value) => ({ value, label: value }))}
+          />
+          <ChoiceGroup
+            info={info("skips", t("tabooSetup.skips"))}
+            legend={t("tabooSetup.skips")}
+            name="skips"
+            initial="1"
+            options={(["0", "1", "2", "3", "unlimited"] as const).map((value) => ({
+              value,
+              label: t(`tabooSetup.skipOptions.${value}`),
+              ...(value === "unlimited" ? { ariaLabel: t("tabooSetup.unlimited") } : {}),
+            }))}
+          />
+          <ChoiceGroup
+            info={info("tiebreak", t("tabooSetup.tiebreak"))}
+            legend={t("tabooSetup.tiebreak")}
+            name="tiebreak"
+            initial="on"
+            options={(["on", "off"] as const).map((value) => ({
+              value,
+              label: t(`tabooSetup.tiebreakOptions.${value}`),
+            }))}
+          />
+        </div>
         {hasGenerators && (
           <ChoiceGroup
             info={info("cardSource", t("tabooSetup.cardSource"))}

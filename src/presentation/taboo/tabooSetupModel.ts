@@ -6,6 +6,9 @@ import type { TiebreakRow } from "./TabooTiebreakResults";
 
 export const difficulties = ["easy", "medium", "hard"] as const;
 export const cardSources = ["both", "local", "ai"] as const;
+/** The game modes the player can choose in the setup. */
+export const tabooModes = ["classic", "race"] as const;
+export type TabooMode = (typeof tabooModes)[number];
 export type RoundChoice = number | "unlimited";
 export const defaultRoundChoices: readonly RoundChoice[] = [3, 5, 10, "unlimited"];
 export const maxCardsPerRequest = 10;

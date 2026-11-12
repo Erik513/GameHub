@@ -22,6 +22,7 @@ export const tabooTexts = {
       "Scoring: A guessed word scores one point. Skipping and forbidden words score nothing. After the turn you can still change the results.",
     skips: "Skipping: A team may only skip as often per round as set in the options.",
     end: "End of game: When all rounds are played, the team with the most points wins. If tied, the tiebreak follows if enabled: each team explains three words against the clock.",
+    race: "Race: Every team plays one run on its own and solves the chosen number of cards as fast as possible. One skip is allowed, a forbidden word brings a new card and only costs time. The shortest time wins, equal times win together.",
   },
   tabooEntry: {
     title: "Add card ({{language}})",
@@ -79,6 +80,28 @@ export const tabooTexts = {
     newSetup: "Set up a new game",
     show: "Show final results",
   },
+  tabooMode: {
+    legend: "Game mode",
+    classic: "Classic",
+    race: "Race",
+  },
+  tabooRace: {
+    title: "Race",
+    overview: "Race overview",
+    run: "Race run",
+    intro: "Every team solves {{count}} cards as fast as possible. One skip per team.",
+    times: "Times",
+    pending: "still to play",
+    time: "{{time}} s",
+    start: "Start run",
+    cardOf: "Card {{current}}/{{total}}",
+    timer: "{{time}} seconds",
+    forbiddenHint: "costs time, new card",
+    restartRun: "Restart run",
+    restartRunConfirm: "Tap again to restart",
+    noCards: "Not enough cards are available for the next run.",
+    finalTimes: "Final times",
+  },
   tabooTiebreak: {
     title: "Tiebreak",
     round: "Tiebreak attempt",
@@ -133,6 +156,9 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info about {{setting}}",
     info: {
+      mode: "Classic plays rounds for points. Race: every team solves the same number of cards one after another, the shortest time wins.",
+      raceTarget:
+        "How many cards every team has to solve. Every team gets the same mix of easy, medium and hard cards. Each team may skip once.",
       rounds:
         "A round is over when every team has had one turn. Short is 3 rounds, Medium 5 and Long 10. With ∞ you play until you show the result after a completed round.",
       cardSource:
@@ -144,6 +170,7 @@ export const tabooTexts = {
       difficulty:
         "The difficulty shows how hard a card is to explain. All mixes easy, medium and hard cards. The tiebreak always uses one card of each difficulty.",
     },
+    raceTarget: "Cards per team",
     cardSource: "Card source",
     cardSources: { local: "Local only", ai: "AI only", both: "Both" },
     tiebreak: "Tiebreak on a tie",
