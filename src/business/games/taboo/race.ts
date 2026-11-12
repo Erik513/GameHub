@@ -13,7 +13,7 @@ import type { TabooOutcome } from "./stateMachine";
 
 /** The target numbers the player can choose in the setup. */
 export const raceTargetChoices: readonly number[] = [5, 10, 15];
-export const defaultRaceTarget = 10;
+export const defaultRaceTarget = 5;
 /** The most cards a run can have; the setup offers fewer, this guards the logic. */
 export const maxRaceTarget = 50;
 

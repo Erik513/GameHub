@@ -115,19 +115,6 @@ export function TabooSetupForm({
         <TeamsSetup onChange={onTeamSetupChange} value={teamSetup} />
       </SetupSection>
       <SetupSection title={t("kitSetup.settingsSection")}>
-        {onCardLanguageChange && (
-          <ChoiceGroup
-            initial={cardLanguage}
-            legend={t("language.cardLabel")}
-            name="cardLanguage"
-            onChange={(language) => onCardLanguageChange(language === "de" ? "de" : "en")}
-            options={[
-              { value: "en", label: t("language.options.en") },
-              { value: "de", label: t("language.options.de") },
-            ]}
-            value={cardLanguage}
-          />
-        )}
         <ChoiceGroup
           info={info("mode", t("tabooMode.legend"))}
           initial={mode}
@@ -187,6 +174,21 @@ export function TabooSetupForm({
             }))}
           />
         </div>
+      </SetupSection>
+      <SetupSection title={t("tabooSetup.cardsSection")}>
+        {onCardLanguageChange && (
+          <ChoiceGroup
+            initial={cardLanguage}
+            legend={t("language.cardLabel")}
+            name="cardLanguage"
+            onChange={(language) => onCardLanguageChange(language === "de" ? "de" : "en")}
+            options={[
+              { value: "en", label: t("language.options.en") },
+              { value: "de", label: t("language.options.de") },
+            ]}
+            value={cardLanguage}
+          />
+        )}
         {hasGenerators && (
           <ChoiceGroup
             info={info("cardSource", t("tabooSetup.cardSource"))}

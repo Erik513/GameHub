@@ -21,12 +21,13 @@ Aufbau von oben nach unten:
    - optional ein Knopf zur **Datenansicht oder zum Editor**, wo man eigene Inhalte hinzufügen, ändern, importieren und exportieren kann (bei Tabu „Karten“). Spiele ohne eigene Inhalte haben ihn nicht.
 3. **Inhalt [ist]**, immer in genau dieser Reihenfolge:
    - Feld **Teams und Spieler**,
-   - Feld **Spieleinstellungen**.
+   - Feld **Spieleinstellungen**: nur Einstellungen, die den Ablauf des Spiels bestimmen (bei mehreren Modi zuerst der Spielmodus, dann die Gruppen des gewählten Modus),
+   - bei Bedarf weitere Felder für Einstellungen, die **nicht** vom Spielmodus abhängen, getrennt von den Spieleinstellungen (bei Tabu das Feld **Karten** mit Kartensprache, Kartenquelle, Schwierigkeit und Kategorien).
 4. **Starten [ist]:** der Knopf steht ganz unten und ist **immer fest am unteren Rand**, bei kurzem wie bei langem Inhalt.
 
-**Sprachen:** Die Einstellungen des GameHub (Knopf in der Kopfleiste) enthalten **nur die Oberflächensprache**. Die Sprache der Inhalte (bei Tabu die Kartensprache) ist eine Einstellung des Spiels und steht als erste Knopfgruppe in dessen „Spieleinstellungen“ (Englisch links, Deutsch rechts). Ein Spiel bekommt dafür `cardLanguage` und `onCardLanguageChange` vom Spielmodul-Vertrag; die App speichert die Wahl weiterhin zentral.
+**Sprachen:** Die Einstellungen des GameHub (Knopf in der Kopfleiste) enthalten **nur die Oberflächensprache**. Die Sprache der Inhalte (bei Tabu die Kartensprache) ist eine Einstellung des Spiels und steht als erste Knopfgruppe im Feld der Inhalte (bei Tabu „Karten“; Englisch links, Deutsch rechts). Ein Spiel bekommt dafür `cardLanguage` und `onCardLanguageChange` vom Spielmodul-Vertrag; die App speichert die Wahl weiterhin zentral.
 
-**Spielmodus:** Hat ein Spiel mehrere Modi, steht die Knopfgruppe **Spielmodus** in den „Spieleinstellungen“ (bei Tabu nach der Kartensprache). Der Modus bestimmt, welche weiteren Gruppen sichtbar sind; Einstellungen, die für alle Modi gelten (Kartenquelle, Schwierigkeit, Kategorien), bleiben immer da.
+**Spielmodus:** Hat ein Spiel mehrere Modi, steht die Knopfgruppe **Spielmodus** als erste Gruppe in den „Spieleinstellungen“. Der Modus bestimmt, welche weiteren Gruppen dort sichtbar sind; die Werte aller Modi bleiben beim Wechseln erhalten. Einstellungen, die nicht vom Modus abhängen (bei Tabu Kartensprache, Kartenquelle, Schwierigkeit, Kategorien), stehen in einem eigenen Feld.
 
 Die Felder des Inhalts sind Kapitel (Box mit Überschrift und Pfeil), auf- und zuklappbar, standardmäßig offen **[ist]**. Zugeklappte Eingaben bleiben im Formular und zählen beim Start.
 

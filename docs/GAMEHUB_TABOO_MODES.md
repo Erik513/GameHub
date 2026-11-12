@@ -17,7 +17,7 @@ Bezug: `docs/GAMEHUB_TABOO_LOGIC.md` (klassischer Modus), `docs/GAMEHUB_UI_RULES
 
 Kurz: Wer die Zielzahl Karten am schnellsten löst, gewinnt.
 
-**Einstellungen:** Zielzahl gelöster Karten (Annahme: wählbar 5, 10 oder 15, Standard 10).
+**Einstellungen:** Zielzahl gelöster Karten (wählbar 5, 10 oder 15, Standard 5; Entscheidung des Auftraggebers).
 
 **Ablauf:**
 
@@ -77,7 +77,7 @@ Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. W
 Die Umsetzung ist groß (der Container `TabooSetup.tsx` hat rund 470 Zeilen). Nach Freigabe in kleinen, einzeln prüfbaren Schritten:
 
 1. **PH-12-07-A (erledigt):** Business „Auf Zeit“: `race.ts` (Zustandsmaschine mit `overview`, `running`, `finished`; Ereignisse `beginRun`, `answerCard`, `restartRun`), `raceCards.ts` (Schwierigkeitsmischung, Kartenauswahl, Ersatzkarten), Tests und Zufallsprüfung mit 60 Durchläufen.
-2. **PH-12-07-B (erledigt):** Oberfläche „Auf Zeit“: Knopfgruppe „Spielmodus“ (Klassisch, Auf Zeit) und „Karten pro Team“ im Setup (die Gruppen des klassischen Modus entfallen im Rennen), `TabooRaceGame` (Übersicht vor jedem Lauf, Endstand mit `ScoreScreen`), `TabooRaceRun` (Stoppuhr mit `TimerHud`, Richtig, Überspringen einmal, Verbotenes Wort, Pause mit Neustart des Laufs), `TabooRaceResults`, Regeln im Fenster „Spielregeln“, Texte in Deutsch und Englisch. Für das Rennen sind je Team Zielzahl plus zwei Ersatzkarten nötig (die Kartenprüfung im Setup meldet es). Tests: Komponentenläufe in beiden Sprachen und eine Handy-Layoutprüfung aller Ansichten.
+2. **PH-12-07-B (erledigt):** Oberfläche „Auf Zeit“: Knopfgruppe „Spielmodus“ (Klassisch, Auf Zeit) und „Karten pro Team“ im Setup (die Gruppen des klassischen Modus sind im Rennen ausgeblendet, ihre Werte bleiben erhalten); die Einstellungen, die nicht vom Modus abhängen, stehen im eigenen Feld „Karten“, `TabooRaceGame` (Übersicht vor jedem Lauf, Endstand mit `ScoreScreen`), `TabooRaceRun` (Stoppuhr mit `TimerHud`, Richtig, Überspringen einmal, Verbotenes Wort, Pause mit Neustart des Laufs), `TabooRaceResults`, Regeln im Fenster „Spielregeln“, Texte in Deutsch und Englisch. Für das Rennen sind je Team Zielzahl plus zwei Ersatzkarten nötig (die Kartenprüfung im Setup meldet es). Tests: Komponentenläufe in beiden Sprachen und eine Handy-Layoutprüfung aller Ansichten.
 3. **PH-12-07-C:** Business „Gegen die Zeit“.
 4. **PH-12-07-D:** Oberfläche „Gegen die Zeit“.
 5. **PH-12-07-E:** Dokumentation (Logik, Regeln, Leitfaden), Abschlussprüfung.
@@ -88,7 +88,7 @@ Nach jedem Schritt gilt: alle Tests, Typen, ESLint, Prettier, Schichtprüfung un
 
 Diese Punkte hat der Auftraggeber nicht ausdrücklich entschieden:
 
-1. **Zielzahl bei Auf Zeit:** Auswahl 5, 10 oder 15, Standard 10?
+1. **Zielzahl bei Auf Zeit:** Auswahl 5, 10 oder 15; Standard 5 (vom Auftraggeber festgelegt).
 2. **Verbotenes Wort bei Auf Zeit und Gegen die Zeit:** Karte wird ersetzt und zählt nicht, die Uhr läuft weiter (also keine zusätzliche Zeitstrafe)?
 3. **Überspringen bei Gegen die Zeit:** Einmal pro Team, Uhr läuft weiter?
 4. **Gleichstand bei Auf Zeit:** Vergleich auf Zehntelsekunden, bei Gleichheit gemeinsamer Sieg?

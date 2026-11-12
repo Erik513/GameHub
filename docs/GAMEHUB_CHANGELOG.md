@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Setup in drei Felder, Standard 5 Karten
+
+- Das Tabu-Setup hat jetzt drei Felder: „Teams und Spieler“, „Spieleinstellungen“ (Spielmodus und die Gruppen des gewählten Modus) und „Karten“ (Kartensprache, Kartenquelle, Schwierigkeit, Kategorien). Einstellungen, die nicht vom Spielmodus abhängen, sind damit von den Spieleinstellungen getrennt. Regel in `docs/GAMEHUB_UI_RULES.md` ergänzt.
+- „Karten pro Team“ im Modus „Auf Zeit“ steht standardmäßig auf 5 (Auswahl 5, 10, 15).
+- Geprüft: 533 Unit-Tests, 26 e2e-Tests (6 übersprungen), Typen, ESLint, Prettier; im Browser auf 375 Pixel Breite.
+
 ### PH-12-07-B – Oberfläche „Auf Zeit“
 
 - Setup: Neue Knopfgruppe „Spielmodus“ (Klassisch, Auf Zeit) in den Spieleinstellungen. Im Modus „Auf Zeit“ erscheint „Karten pro Team“ (5, 10, 15) statt Runden, Rundendauer, Überspringen und Stechen; Kartenquelle, Schwierigkeit und Kategorien bleiben. Info-Knöpfe erklären beide Gruppen. Das Rennen braucht je Team Zielzahl plus zwei Ersatzkarten, sonst meldet das Setup den Kartenmangel.

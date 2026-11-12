@@ -171,6 +171,7 @@ export const tabooTexts = {
         "The difficulty shows how hard a card is to explain. All mixes easy, medium and hard cards. The tiebreak always uses one card of each difficulty.",
     },
     raceTarget: "Cards per team",
+    cardsSection: "Cards",
     cardSource: "Card source",
     cardSources: { local: "Local only", ai: "AI only", both: "Both" },
     tiebreak: "Tiebreak on a tie",

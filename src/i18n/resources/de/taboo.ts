@@ -173,6 +173,7 @@ export const tabooTexts = {
         "Die Schwierigkeit zeigt, wie schwer ein Begriff zu erklären ist. „Alle“ mischt einfache, mittlere und schwere Karten. Beim Stechen kommt immer je eine Karte jeder Schwierigkeit dran.",
     },
     raceTarget: "Karten pro Team",
+    cardsSection: "Karten",
     cardSource: "Kartenquelle",
     cardSources: { local: "Nur lokal", ai: "Nur KI", both: "Beides" },
     tiebreak: "Stechen bei Gleichstand",

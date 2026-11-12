@@ -74,7 +74,7 @@ it.each(["en", "de"] as const)(
         .getAllByRole("radio")
         .map((radio) => (radio as HTMLInputElement).value),
     ).toEqual(["5", "10", "15"]);
-    expect(within(target).getByRole("radio", { name: "10" })).toBeChecked();
+    expect(within(target).getByRole("radio", { name: "5" })).toBeChecked();
     // Going back to the classic mode brings the round settings back.
     await user.click(
       within(screen.getByRole("group", { name: text.mode })).getByRole("radio", {
