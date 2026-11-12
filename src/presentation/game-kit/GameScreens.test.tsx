@@ -44,7 +44,7 @@ it("frames an editor with title, hint, chapters, a row of actions and messages",
   const screenRegion = screen.getByRole("region", { name: "Own cards" });
   expect(within(screenRegion).getByRole("heading", { name: "Own cards" })).toBeVisible();
   expect(within(screenRegion).getByText("Import or export cards.")).toBeVisible();
-  const row = screenRegion.querySelector(".kit-action-row")!;
+  const row = screenRegion.querySelector<HTMLElement>(".kit-action-row")!;
   expect(within(row).getAllByRole("button")).toHaveLength(2);
   expect(within(screenRegion).getByRole("status")).toHaveTextContent("Imported 3");
 });

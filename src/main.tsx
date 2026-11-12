@@ -13,6 +13,7 @@ import {
   createLocalStorageCardLanguagePreferenceStore,
   createLocalStorageLanguagePreferenceStore,
 } from "./infrastructure/localStorageLanguagePreferenceStore";
+import { createLocalStorageTeamSetupMemory } from "./infrastructure/localStorageTeamSetupMemory";
 import { createTabooModule } from "./presentation/taboo/tabooModule";
 import "./presentation/styles/global.css";
 import "./presentation/styles/kit-setup.css";
@@ -57,6 +58,7 @@ createRoot(rootElement).render(
       cardLanguagePreferenceStore={cardLanguagePreferenceStore}
       initialCardLanguage={initialCardLanguage}
       languagePreferenceStore={languagePreferenceStore}
+      teamSetupMemory={createLocalStorageTeamSetupMemory(window.localStorage)}
     />
   </StrictMode>,
 );

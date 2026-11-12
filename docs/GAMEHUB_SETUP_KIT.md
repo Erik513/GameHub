@@ -60,7 +60,11 @@ Der Baustein erscheint in jedem Spiel, deshalb wird das PC-Layout hier **mitgeda
 - PC: zwei Spalten (links Teams und Spieler, rechts Einstellungen), Startknopf rechts unten statt Leiste über die ganze Breite.
 - `SetupScreen` ist der einzige Ort, der das Raster festlegt; Spiele ändern nichts.
 
-### 4.5 Merken zwischen Spielen (optional, `PH-17-03`)
+### 4.5 Merken zwischen Spielen (`PH-17-03`, umgesetzt)
+
+**Umgesetzt anders als zuerst entworfen:** Die Gruppe ist ein kleiner Datensatz (Teamnamen, Reihenfolge, Spielerliste, Verteilung) und liegt im lokalen Speicher des Browsers (`localStorage`, Schlüssel `gamehub.teamSetup`), nicht in IndexedDB. Das vermeidet eine Schemaänderung der Kartendatenbank und passt zu den Spracheinstellungen. Der Port `TeamSetupMemory` (`src/business/shared/savedTeamSetup.ts`) kapselt den Speicher; ein Wechsel auf IndexedDB ändert nur den Adapter `src/infrastructure/localStorageTeamSetupMemory.ts`.
+
+Ursprünglicher Entwurf:
 
 Ein Port `PlayerRosterRepository` in `business/shared` und eine IndexedDB-Ablage (Schemaversion 2 mit Migration) für die zuletzt benutzten Teams und Spieler. `TeamsSetup` bietet dann „Letzte Gruppe laden“ an, in jedem Spiel. Nicht Teil von `PH-17-02`.
 

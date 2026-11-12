@@ -1,6 +1,7 @@
 import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import { parsePlayers, splitIntoTeams } from "../../business/shared/players";
+import { sameTeamSetup } from "../../business/shared/savedTeamSetup";
 import {
   clampTeamCount,
   defaultTeamRules,
@@ -11,6 +12,7 @@ import {
 import { Button } from "../components";
 import { ChoiceGroup } from "./ChoiceGroup";
 import { PlayerListField } from "./PlayerListField";
+import { useTeamSetupMemory } from "./TeamSetupMemoryContext";
 
 interface TeamsSetupProps {
   readonly onChange: (value: TeamSetupValue) => void;
@@ -37,9 +39,19 @@ export function TeamsSetup({
     (_, index) => rules.minTeams + index,
   );
   const update = (patch: Partial<TeamSetupValue>) => onChange({ ...value, ...patch });
+  // The last group of any game can be taken over; the button only shows when it would change something.
+  const remembered = useTeamSetupMemory()?.read();
+  // The remembered group is fitted to the limits of this game before it is compared or taken over.
+  const saved = remembered && { ...remembered, count: clampTeamCount(remembered.count, rules) };
+  const showLoad = saved !== undefined && !sameTeamSetup(saved, value);
 
   return (
     <>
+      {showLoad && (
+        <Button onClick={() => onChange(saved)} variant="secondary">
+          {t("kitTeams.loadLast")}
+        </Button>
+      )}
       <ChoiceGroup
         initial={String(count)}
         legend={t("kitTeams.legend")}

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { expect, it, vi } from "vitest";
 import { createGameHubI18n } from "../../i18n";
+import { TeamSetupMemoryProvider } from "../game-kit";
 import { TabooSetup } from "./TabooSetup";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 
@@ -254,4 +255,28 @@ it.each([
   await user.click(screen.getByRole("button", { name: start }));
   expect(document.querySelector(".kit-turn-strip strong")).toHaveTextContent("Team 1");
   random.mockRestore();
+});
+
+it("remembers the group for the next game when a game starts, but not an empty setup", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  const written: unknown[] = [];
+  const memory = { read: () => undefined, write: (value: unknown) => written.push(value) };
+  const view = () => (
+    <I18nextProvider i18n={i18n}>
+      <TeamSetupMemoryProvider memory={memory}>
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
+      </TeamSetupMemoryProvider>
+    </I18nextProvider>
+  );
+  const first = render(view());
+  await user.click(screen.getByRole("button", { name: "Start" }));
+  expect(written).toEqual([]);
+  first.unmount();
+
+  render(view());
+  await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Foxes");
+  await user.click(screen.getByRole("button", { name: "Start" }));
+  expect(written).toHaveLength(1);
+  expect(written[0]).toMatchObject({ count: 2, names: ["Foxes", ""], order: "random" });
 });

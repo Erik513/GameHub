@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { gameHubI18n, type SupportedLanguage } from "../i18n";
+import type { TeamSetupMemory } from "../business/shared/savedTeamSetup";
 import type { LanguagePreferenceStore } from "../i18n/languagePreference";
 import { App } from "../presentation/App";
+import { TeamSetupMemoryProvider } from "../presentation/game-kit";
 import { useDocumentLanguage } from "./useDocumentLanguage";
 import type { GameModule } from "../presentation/gameModule";
 
@@ -11,6 +13,8 @@ interface AppRootProps {
   cardLanguagePreferenceStore?: LanguagePreferenceStore;
   initialCardLanguage?: SupportedLanguage;
   languagePreferenceStore?: LanguagePreferenceStore;
+  /** Remembers the last teams and players for all games. */
+  teamSetupMemory?: TeamSetupMemory;
 }
 
 function DocumentLanguage() {
@@ -23,6 +27,7 @@ export function AppRoot({
   cardLanguagePreferenceStore,
   initialCardLanguage = "en",
   languagePreferenceStore,
+  teamSetupMemory,
 }: AppRootProps) {
   const [cardLanguage, setCardLanguage] = useState(initialCardLanguage);
 
@@ -34,12 +39,14 @@ export function AppRoot({
   return (
     <I18nextProvider i18n={gameHubI18n}>
       <DocumentLanguage />
-      <App
-        modules={modules}
-        cardLanguage={cardLanguage}
-        onCardLanguageChange={handleCardLanguageChange}
-        onLanguageChange={(language) => languagePreferenceStore?.write(language)}
-      />
+      <TeamSetupMemoryProvider memory={teamSetupMemory}>
+        <App
+          modules={modules}
+          cardLanguage={cardLanguage}
+          onCardLanguageChange={handleCardLanguageChange}
+          onLanguageChange={(language) => languagePreferenceStore?.write(language)}
+        />
+      </TeamSetupMemoryProvider>
     </I18nextProvider>
   );
 }

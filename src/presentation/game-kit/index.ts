@@ -9,6 +9,8 @@ export { SetupScreen } from "./SetupScreen";
 export { SetupSection } from "./SetupSection";
 export { StartBar, TurnStrip } from "./StartBar";
 export { TeamsSetup } from "./TeamsSetup";
+export { TeamSetupMemoryProvider } from "./TeamSetupMemoryProvider";
+export { useTeamSetupMemory } from "./TeamSetupMemoryContext";
 export { TimerHud } from "./TimerHud";
 export { useAutoGrow } from "./useAutoGrow";
 export { useCountdown } from "./useCountdown";

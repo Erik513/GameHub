@@ -4,6 +4,14 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-17-03 – Teams und Spieler zwischen Spielen merken
+
+- Neu: Port `TeamSetupMemory` und reine Prüfung gespeicherter Daten in `src/business/shared/savedTeamSetup.ts`; Adapter `src/infrastructure/localStorageTeamSetupMemory.ts` (lokaler Browserspeicher, Schlüssel `gamehub.teamSetup`; kaputte oder fehlende Daten werden ignoriert, fehlender Speicher bricht nichts).
+- `game-kit`: `TeamSetupMemoryProvider` und `useTeamSetupMemory`; `TeamsSetup` zeigt „Letzte Gruppe laden“, `PlayersSetup` „Letzte Spieler laden“, jeweils nur wenn eine Gruppe gemerkt ist, die sich vom aktuellen Stand unterscheidet. Eine Teamzahl über der Grenze des Spiels wird eingepasst. Texte in Deutsch und Englisch.
+- Tabu merkt die Gruppe beim Start (nicht bei einem leeren Setup). Die Gruppe gilt in allen Spielen.
+- Abweichung vom Entwurf: `localStorage` statt IndexedDB (kleiner Datensatz, keine Änderung der Kartendatenbank); der Port erlaubt späteren Wechsel.
+- Geprüft: 421 Unit-Tests, 25 e2e-Tests (5 übersprungen), Typen, ESLint, Prettier, Schichtprüfung; im Browser: Speichern beim Start, Laden nach Neuladen.
+
 ### PH-17-05 – Feste Ansichten im game-kit umgesetzt
 
 - Neue Bausteine: `ActionRow` (Knopfreihe, gleich breit und hoch), `ScoreScreen` (Zwischenstand, Stechen-Übersicht und Endstand mit optionalem Sieger) und `ManageScreen` (Rahmen des Editors mit Titel, Hinweis, Kapiteln, Aktionsreihe, Meldungen). Tests für alle drei.

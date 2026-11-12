@@ -6,6 +6,7 @@ export const kitTexts = {
     infoLabel: "Info about {{setting}}",
   },
   kitTeams: {
+    loadLast: "Load last group",
     legend: "Teams",
     defaultName: "Team {{number}}",
     nameLabel: "Name of team {{number}}",
@@ -16,6 +17,7 @@ export const kitTexts = {
       "Random draws which team starts and how the turns follow. As entered uses the order of the team fields from top to bottom. When replaying with the same setup, an entered order is kept.",
   },
   kitPlayers: {
+    loadLast: "Load last players",
     title: "Players (optional)",
     titleRequired: "Players",
     summary: "Enter names and split",

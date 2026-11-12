@@ -6,6 +6,7 @@ export const kitTexts = {
     infoLabel: "Info zu {{setting}}",
   },
   kitTeams: {
+    loadLast: "Letzte Gruppe laden",
     legend: "Teams",
     defaultName: "Team {{number}}",
     nameLabel: "Name von Team {{number}}",
@@ -16,6 +17,7 @@ export const kitTexts = {
       "Zufällig lost vor dem Start aus, welches Team beginnt und wie es weitergeht. Wie eingegeben nimmt die Reihenfolge der Teamfelder von oben nach unten. Bei „Mit gleicher Konfiguration neu spielen“ bleibt eine eingegebene Reihenfolge erhalten.",
   },
   kitPlayers: {
+    loadLast: "Letzte Spieler laden",
     title: "Spieler (optional)",
     titleRequired: "Spieler",
     summary: "Namen eintragen und verteilen",

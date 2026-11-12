@@ -28,7 +28,9 @@ import {
 import { shuffleTeams } from "../../business/shared/teamOrder";
 import { buildTeams, initialTeamSetup, type TeamSetupValue } from "../../business/shared/teamSetup";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
+import { hasTeamSetupContent } from "../../business/shared/savedTeamSetup";
 import { useGameExit } from "../GameChrome";
+import { useTeamSetupMemory } from "../game-kit";
 import { TabooRound } from "./TabooRound";
 import { useTabooRefill } from "./useTabooRefill";
 import { TabooResultView } from "./TabooResultView";
@@ -105,6 +107,7 @@ export function TabooSetup({
   useEffect(() => () => activeGeneration.current?.abort(), []);
   const [formVersion, setFormVersion] = useState(0);
   const [teamSetup, setTeamSetup] = useState<TeamSetupValue>(initialTeamSetup);
+  const memory = useTeamSetupMemory();
   const [restartUnavailable, setRestartUnavailable] = useState(false);
   const [tiebreakNoCards, setTiebreakNoCards] = useState(false);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
@@ -319,6 +322,8 @@ export function TabooSetup({
       return;
     }
     setIssues([]);
+    // The group is remembered for the next game, of any game.
+    if (hasTeamSetupContent(teamSetup)) memory?.write(teamSetup);
     const { roundsPerTeam } = result.value.configuration;
     // With unlimited rounds one card per team is enough to start; cards are reused later.
     const required =
