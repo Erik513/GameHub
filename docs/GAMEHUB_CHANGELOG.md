@@ -4,6 +4,11 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-12-07 – Regelentwurf der Spielmodi
+
+- Der Auftraggeber hat die Abläufe der Modi festgelegt. „Auf Zeit“: jedes Team spielt am Stück bis zur Zielzahl, Überspringen einmal pro Team mit ersetzter Karte, gleiche Zeit ist gemeinsamer Sieg. „Gegen die Zeit“: Zeitkonto 2, 3 oder 5 Minuten; der Vorschlag „Gegnerteam erklärt“ wurde abgelehnt, weil es absichtlich trödeln könnte, deshalb erklärt und rät das aktive Team selbst.
+- `docs/GAMEHUB_TABOO_MODES.md` hält die Regeln, die Einbindung in die Architektur (zwei neue reine Zustandsmaschinen, `mode` in der Konfiguration, Knopfgruppe „Spielmodus“ im Setup, bestehende Ansichtstypen), die Teilaufgaben A bis E und sieben offene Annahmen fest. Es wurde noch nichts gebaut; `PH-12-07` steht auf `in_progress` bis zur Bestätigung.
+
 ### Kartensprache ist eine Einstellung von Tabu
 
 - Das Einstellungsfenster des GameHub enthält nur noch die Oberflächensprache. Die Kartensprache steht als erste Knopfgruppe (Englisch links) in den Spieleinstellungen von Tabu.
