@@ -191,20 +191,6 @@
   line-height: 1.1;
 }
 
-.taboo-overview {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-}
-
-.taboo-overview__round {
-  color: var(--color-ink-muted);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-bold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .taboo-review {
   display: grid;
   gap: var(--space-3);
@@ -356,30 +342,6 @@
   margin-top: var(--space-3);
 }
 
-/* Final screen: winner block in the same style as the other round blocks. */
-.taboo-result {
-  display: grid;
-  gap: var(--space-1);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-muted);
-}
-
-.taboo-result > span:first-child {
-  color: var(--color-success);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-bold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.taboo-result strong {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 9vw, 2.75rem);
-  line-height: 1.05;
-  overflow-wrap: anywhere;
-}
-
 /* Difficulty shown on the card during play. */
 .taboo-round__difficulty {
   align-self: center;
@@ -505,20 +467,6 @@
   width: 100%;
 }
 
-.taboo-cards-page {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.taboo-cards-page > h2,
-.taboo-cards-page > p {
-  margin: 0;
-}
-
-.taboo-cards-page > .button:first-child {
-  justify-self: start;
-}
-
 .taboo-card-list {
   display: grid;
   gap: var(--space-3);
@@ -591,32 +539,10 @@
   gap: var(--space-3);
 }
 
-.taboo-card-list__actions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
-}
-
-.game-preview .taboo-card-list__actions .button {
-  width: 100%;
-  min-width: 0;
-  height: auto;
-  min-height: 2.75rem;
-  margin: 0;
-  padding: 0 var(--space-2);
-  white-space: normal;
-}
-
 .taboo-card-list__category-actions {
   display: flex;
   justify-content: flex-end;
   padding: 0 var(--space-4) var(--space-4);
-}
-
-/* An armed icon button widens so the second tap shows what it will do. */
-.game-preview .confirm-button.icon-button--small[data-armed="true"] {
-  font-size: var(--text-sm);
-  line-height: 1.1;
 }
 
 .taboo-card-entry__pair {
@@ -699,17 +625,6 @@
 
 .taboo-card-list__label {
   padding: var(--space-2) var(--space-4) 0;
-}
-
-.taboo-cards-tools {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
-}
-
-.taboo-cards-tools .button {
-  width: 100%;
-  margin: 0;
 }
 
 .taboo-card-export {

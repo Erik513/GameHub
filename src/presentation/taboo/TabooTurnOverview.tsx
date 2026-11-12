@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { TabooOutcome } from "../../business/games/taboo/stateMachine";
 import { Button, StatusMessage } from "../components";
-import { Scoreboard, StartBar, TurnStrip } from "../game-kit";
+import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooRoundReview } from "./TabooRoundReview";
 import type { EndedState, OverviewData } from "./tabooSetupModel";
 
@@ -32,30 +32,60 @@ export function TabooTurnOverview({
 }: TabooTurnOverviewProps) {
   const { t } = useTranslation();
 
+  const roundText =
+    overview.turn &&
+    (overview.configuration.roundsPerTeam === "unlimited"
+      ? t("tabooRound.roundOfUnlimited", { round: overview.turn.round })
+      : t("tabooRound.roundOf", {
+          round: overview.turn.round,
+          total: overview.configuration.roundsPerTeam,
+        }));
+
   return (
-    <section className="taboo-round taboo-overview" aria-label={t("tabooRound.overview")}>
-      {overview.turn && (
-        <p className="taboo-overview__round">
-          {overview.configuration.roundsPerTeam === "unlimited"
-            ? t("tabooRound.roundOfUnlimited", { round: overview.turn.round })
-            : t("tabooRound.roundOf", {
-                round: overview.turn.round,
-                total: overview.configuration.roundsPerTeam,
-              })}
-        </p>
-      )}
-      {generationEmpty && !ended && (
-        <p className="taboo-tiebreak__rules" role="status">
-          {t("tabooSetup.noExtraCards")}
-        </p>
-      )}
-      {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
-      <h2>{t("tabooRound.standings")}</h2>
-      <Scoreboard
-        label={t("tabooRound.standings")}
-        scores={overview.scores}
-        teams={overview.configuration.teams}
-      />
+    <ScoreScreen
+      actions={
+        <>
+          {canFinishEarly && (
+            <Button variant="secondary" onClick={() => onFinish()}>
+              {t("tabooResult.show")}
+            </Button>
+          )}
+          {overview.turn ? (
+            <>
+              <TurnStrip
+                hiddenLabel={t("tabooRound.upNext")}
+                name={overview.configuration.teams[overview.turn.teamIndex]?.name ?? ""}
+              />
+              <Button variant="success" onClick={() => onStart()} disabled={deckEmpty}>
+                {t("tabooRound.start")}
+              </Button>
+            </>
+          ) : (
+            <Button variant="success" onClick={() => onFinish()}>
+              {t("tabooResult.show")}
+            </Button>
+          )}
+        </>
+      }
+      ariaLabel={t("tabooRound.overview")}
+      intro={
+        <>
+          {generationEmpty && !ended && (
+            <p className="taboo-tiebreak__rules" role="status">
+              {t("tabooSetup.noExtraCards")}
+            </p>
+          )}
+          {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
+        </>
+      }
+      stackedActions={canFinishEarly}
+      standings={{
+        scores: overview.scores,
+        teams: overview.configuration.teams,
+        title: t("tabooRound.standings"),
+      }}
+      {...(roundText ? { eyebrow: roundText } : {})}
+    >
       {ended && (
         <TabooRoundReview
           results={ended.results}
@@ -73,28 +103,6 @@ export function TabooTurnOverview({
           </Button>
         </>
       )}
-      <StartBar stacked={canFinishEarly}>
-        {canFinishEarly && (
-          <Button variant="secondary" onClick={() => onFinish()}>
-            {t("tabooResult.show")}
-          </Button>
-        )}
-        {overview.turn ? (
-          <>
-            <TurnStrip
-              hiddenLabel={t("tabooRound.upNext")}
-              name={overview.configuration.teams[overview.turn.teamIndex]?.name ?? ""}
-            />
-            <Button variant="success" onClick={() => onStart()} disabled={deckEmpty}>
-              {t("tabooRound.start")}
-            </Button>
-          </>
-        ) : (
-          <Button variant="success" onClick={() => onFinish()}>
-            {t("tabooResult.show")}
-          </Button>
-        )}
-      </StartBar>
-    </section>
+    </ScoreScreen>
   );
 }

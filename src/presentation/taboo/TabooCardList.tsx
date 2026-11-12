@@ -10,7 +10,7 @@ import {
 import { validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, ConfirmButton, Icon, StatusMessage } from "../components";
-import { SetupSection } from "../game-kit";
+import { ActionRow, SetupSection } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
 import { sortCardsForList } from "../../business/games/taboo/ordering";
 import { TabooCategoryField } from "./TabooCategoryField";
@@ -177,7 +177,7 @@ export function TabooCardList({
               {t(`tabooList.problems.${problem}`)}
             </StatusMessage>
           )}
-          <div className="taboo-card-list__actions">
+          <ActionRow>
             <Button
               aria-label={t("tabooList.save")}
               className="icon-button--small"
@@ -198,10 +198,10 @@ export function TabooCardList({
             >
               <Icon name="trash" />
             </ConfirmButton>
-            <Button onClick={() => setEditing(undefined)} variant="secondary">
+            <Button onClick={() => setEditing(undefined)} variant="danger">
               {t("tabooList.cancel")}
             </Button>
-          </div>
+          </ActionRow>
         </form>
       );
     }

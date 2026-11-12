@@ -180,3 +180,93 @@
   gap: var(--space-2);
   padding-inline: var(--space-4);
 }
+
+/* A row of buttons: every button equally wide and equally high. */
+.kit-action-row {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-2);
+}
+
+.game-preview .kit-action-row .button {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0 var(--space-2);
+  white-space: normal;
+}
+
+/* An armed delete button shows what the second tap does, so its text gets smaller. */
+.game-preview .kit-action-row .confirm-button[data-armed="true"] {
+  font-size: var(--text-sm);
+  line-height: 1.1;
+}
+
+/* The editor screen of a game: title, hint, chapters, actions. */
+.kit-manage {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.kit-manage > h2,
+.kit-manage > p {
+  margin: 0;
+}
+
+/* Standings between the turns and the final screen. */
+.kit-score-screen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.kit-score-screen > h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.kit-score-screen > p {
+  margin: 0;
+}
+
+.kit-score-screen > .button {
+  width: 100%;
+  min-height: var(--touch-target);
+  margin-top: 0;
+}
+
+.kit-score-screen__eyebrow {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The winner block of the final screen. */
+.kit-winner {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.kit-winner > span:first-child {
+  color: var(--color-success);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kit-winner strong {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 2.75rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}

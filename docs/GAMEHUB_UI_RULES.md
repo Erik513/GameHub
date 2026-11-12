@@ -87,24 +87,29 @@ Weitere Fenstertypen gibt es nicht. Ein Fenster ist kurz; was länger als ein Bi
 
 ## 7. Bausteine
 
-Vorhanden: `SetupScreen`, `SetupSection`, `TeamsSetup`, `PlayersSetup`, `ChoiceGroup`, `InfoButton`, `StartBar`, `TurnStrip`, `Scoreboard`, `TimerHud`, `Dialog`, `ConfirmButton`, `Button`, `StatusMessage`, `EmptyState`.
+Alle Ansichten bestehen aus diesen Bausteinen im `game-kit` und in `components`; ein Spiel baut keine eigenen Rahmen.
 
-Fehlt (wird in `PH-17-05` gebaut, soweit ein Spiel sie sonst selbst bauen müsste):
-
-| Baustein | Zweck |
+| Ansicht | Baustein |
 |---|---|
-| `GameMenu` | Hauptmenü aus Werkzeugleiste (Regeln, optional Editor), Feldern und Startleiste; Spiele geben nur Inhalt und Knopftexte an |
-| `ActionRow` | Knopfreihe gleich breit, feste Reihenfolge und Farben (ersetzt CSS aus `taboo.css`) |
-| `ScoreScreen` und `FinalScreen` | Zwischenstand und Endstand mit Scoreboard und Hauptaktion |
-| `ManageScreen` | Rahmen des Editors: Kapitel, Liste, Aktionsleiste unten (Importieren, Exportieren je halb) |
+| Hauptmenü | `SetupScreen` (Rahmen mit Meldungen, Knopf für Spielregeln `rules`, optionaler Knopf für den Editor `editor`, Felder als `SetupSection`, Startleiste), darin `TeamsSetup` oder `PlayersSetup`, `ChoiceGroup`, `InfoButton` |
+| Editor | `ManageScreen` (Titel, Hinweis, Kapitel als `SetupSection`, Aktionsreihe, Meldungen) |
+| Zwischenstand und Endstand | `ScoreScreen` (Überschrift, optional Sieger, Punktestand, weitere Inhalte, Hauptaktion unten); der Endstand ist derselbe Baustein mit `winner` |
+| Das eigentliche Spiel | `TimerHud`, `StartBar` und Inhalt des Spiels |
+| Infofenster | `Dialog` |
+| Knopfreihe | `ActionRow` (gleich breit, gleich hoch, Reihenfolge wie übergeben) |
+| Weiteres | `ConfirmButton`, `Button`, `StatusMessage`, `EmptyState`, `Scoreboard`, `TurnStrip` |
 
-## 8. Umbau von Tabu in `PH-17-05`
+Entscheidung: Es gibt bewusst **keinen** zusätzlichen `GameMenu`- und keinen `FinalScreen`-Baustein. `SetupScreen` ist das Hauptmenü, `ScoreScreen` deckt Zwischen- und Endstand ab (so wenige Bausteine wie möglich).
 
-1. Knopf „Abbrechen“ wird rot, damit die Farbregel (5.2) überall gilt.
-2. `ActionRow` bauen und Karteneditor, Kategorieaktionen und Exportfenster darauf umstellen.
-3. `GameMenu`, `ScoreScreen`, `FinalScreen`, `ManageScreen` aus den vorhandenen Tabu-Ansichten herauslösen, Verhalten und zugängliche Namen unverändert.
-4. Spielstile enthalten danach nur noch Spielinhalt; Bedienelemente stehen im Kit.
-5. Leitfaden `docs/GAMEHUB_NEW_GAME_GUIDE.md` verweist auf diese Regeln. Wo möglich prüfen Tests die Regeln (zum Beispiel jeder Fensterkopf gleich, kein Home-Knopf in Unteransichten, rote Löschknöpfe).
+## 8. Umbau von Tabu (`PH-17-05`, erledigt)
+
+1. Der Knopf „Abbrechen“ im Karteneditor ist rot.
+2. `ActionRow` ersetzt die eigenen Knopfreihen im Karteneditor und die Reihe Importieren/Exportieren.
+3. `ManageScreen` rahmt die Kartenseite, `ScoreScreen` die Rundenübersicht, das Stechen und den Endstand, `SetupScreen` hat `rules` und `editor` statt einer freien Werkzeugleiste.
+4. Die Stile dafür liegen im Kit (`kit-setup.css`: `kit-action-row`, `kit-manage`, `kit-score-screen`, `kit-winner`), nicht mehr in `taboo.css`.
+5. Verhalten und zugängliche Namen sind unverändert, die Tests laufen ohne Änderung der Erwartungen.
+
+**Noch offen:** Die Ansicht „Das eigentliche Spiel“ (`TabooRound`) und die Auswertung (`TabooRoundReview`) sind noch Tabu-eigene Ansichten mit Kit-Bausteinen darin. Ein eigener Rahmen dafür wird erst gebaut, wenn ein zweites Spiel ihn braucht (`ADR-017`).
 
 ## 9. Annahmen (bitte bei Bedarf korrigieren)
 

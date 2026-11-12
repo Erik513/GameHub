@@ -94,12 +94,8 @@ export function TabooSetupForm({
       onSubmit={onSubmit}
       startDisabled={generating}
       startLabel={t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
-      toolbar={
-        <>
-          {children}
-          <TabooRules />
-        </>
-      }
+      editor={children}
+      rules={<TabooRules />}
     >
       <SetupSection title={t("kitSetup.teamsSection")}>
         <TeamsSetup onChange={onTeamSetupChange} value={teamSetup} />

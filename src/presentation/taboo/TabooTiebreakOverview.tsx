@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button, StatusMessage } from "../components";
-import { StartBar, TurnStrip } from "../game-kit";
+import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooTiebreakResults } from "./TabooTiebreakResults";
 import { tiebreakRows, tiebreakTeamName, type TiebreakView } from "./tabooSetupModel";
 
@@ -21,9 +21,19 @@ export function TabooTiebreakOverview({
   const { t } = useTranslation();
 
   return (
-    <section className="taboo-round taboo-overview" aria-label={t("tabooTiebreak.title")}>
-      <p className="taboo-overview__round">{t("tabooTiebreak.title")}</p>
-      <p className="taboo-tiebreak__rules">{t("tabooTiebreak.rules")}</p>
+    <ScoreScreen
+      actions={
+        <>
+          <TurnStrip hiddenLabel={t("tabooRound.upNext")} name={tiebreakTeamName(state) ?? ""} />
+          <Button variant="success" onClick={onBegin} disabled={noCards}>
+            {t("tabooTiebreak.start")}
+          </Button>
+        </>
+      }
+      ariaLabel={t("tabooTiebreak.title")}
+      eyebrow={t("tabooTiebreak.title")}
+      intro={<p className="taboo-tiebreak__rules">{t("tabooTiebreak.rules")}</p>}
+    >
       <h2>{t("tabooTiebreak.results")}</h2>
       <TabooTiebreakResults rows={tiebreakRows(state)} />
       {noCards && (
@@ -36,12 +46,6 @@ export function TabooTiebreakOverview({
           </Button>
         </>
       )}
-      <StartBar>
-        <TurnStrip hiddenLabel={t("tabooRound.upNext")} name={tiebreakTeamName(state) ?? ""} />
-        <Button variant="success" onClick={onBegin} disabled={noCards}>
-          {t("tabooTiebreak.start")}
-        </Button>
-      </StartBar>
-    </section>
+    </ScoreScreen>
   );
 }

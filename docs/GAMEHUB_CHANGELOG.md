@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-17-05 – Feste Ansichten im game-kit umgesetzt
+
+- Neue Bausteine: `ActionRow` (Knopfreihe, gleich breit und hoch), `ScoreScreen` (Zwischenstand, Stechen-Übersicht und Endstand mit optionalem Sieger) und `ManageScreen` (Rahmen des Editors mit Titel, Hinweis, Kapiteln, Aktionsreihe, Meldungen). Tests für alle drei.
+- `SetupScreen` ist das Hauptmenü: statt einer freien Werkzeugleiste hat es die Plätze `rules` (Pflicht) und `editor` (optional).
+- Tabu umgestellt (Kartenseite, Karteneditor, Rundenübersicht, Stechen, Endstand); die Stile wanderten aus `taboo.css` ins Kit (`kit-action-row`, `kit-manage`, `kit-score-screen`, `kit-winner`). Verhalten unverändert; „Abbrechen“ im Karteneditor ist jetzt rot (Regel „Abbrechen ist rot“).
+- Geprüft: 394 Unit-Tests, 25 e2e-Tests (5 übersprungen) inklusive Handy-Layout, Typen, ESLint, Prettier; Zwischenstand im Browser angesehen.
+
 ### ADR-021 – Feste Ansichten und Oberflächenregeln
 
 - Der Auftraggeber hat die Ansichten und Oberflächenregeln für alle Spiele vorgegeben (Hauptmenü, Spielansichten, Infofenster, einheitliche Bedienelemente, Knopfregeln). Festgehalten in `docs/GAMEHUB_UI_RULES.md` und `ADR-021`; Umsetzung als Aufgabe `PH-17-05` geplant (noch nicht gebaut).

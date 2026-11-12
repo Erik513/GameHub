@@ -11,6 +11,7 @@ import { builtInCategories, mergeCategoryInfos } from "../../business/games/tabo
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Icon, StatusMessage } from "../components";
+import { ManageScreen } from "../game-kit";
 import { useGameBack } from "../GameChrome";
 import { TabooCardEntry } from "./TabooCardEntry";
 import { TabooCardExport } from "./TabooCardExport";
@@ -161,9 +162,41 @@ export function TabooLibrary({
         </TabooSetup>
       </div>
       {repository && page === "cards" && (
-        <section aria-labelledby="taboo-cards-title" className="taboo-cards-page">
-          <h2 id="taboo-cards-title">{t("tabooLibrary.title")}</h2>
-          <p>{t("tabooLibrary.hint")}</p>
+        <ManageScreen
+          actions={
+            <>
+              <Button
+                disabled={busy}
+                onClick={() => fileInput.current?.click()}
+                variant="secondary"
+              >
+                <Icon name="upload" />
+                {t("tabooLibrary.import")}
+              </Button>
+              <TabooCardExport
+                allCards={allCards}
+                cardLanguage={cardLanguage}
+                categoryInfos={categoryInfos}
+                disabled={busy}
+                onExport={exportCategory}
+              />
+            </>
+          }
+          hint={t("tabooLibrary.hint")}
+          messages={
+            feedback && (
+              <StatusMessage
+                title={t("tabooLibrary.title")}
+                tone={feedback.type === "imported" ? "success" : "error"}
+              >
+                {feedback.type === "imported"
+                  ? t("tabooLibrary.imported", { count: feedback.count })
+                  : t(`tabooLibrary.${feedback.type}`)}
+              </StatusMessage>
+            )
+          }
+          title={t("tabooLibrary.title")}
+        >
           <TabooCardEntry
             cardLanguage={cardLanguage}
             cards={allCards}
@@ -195,30 +228,7 @@ export function TabooLibrary({
             tabIndex={-1}
             type="file"
           />
-          <div className="taboo-cards-tools">
-            <Button disabled={busy} onClick={() => fileInput.current?.click()} variant="secondary">
-              <Icon name="upload" />
-              {t("tabooLibrary.import")}
-            </Button>
-            <TabooCardExport
-              allCards={allCards}
-              cardLanguage={cardLanguage}
-              categoryInfos={categoryInfos}
-              disabled={busy}
-              onExport={exportCategory}
-            />
-          </div>
-          {feedback && (
-            <StatusMessage
-              title={t("tabooLibrary.title")}
-              tone={feedback.type === "imported" ? "success" : "error"}
-            >
-              {feedback.type === "imported"
-                ? t("tabooLibrary.imported", { count: feedback.count })
-                : t(`tabooLibrary.${feedback.type}`)}
-            </StatusMessage>
-          )}
-        </section>
+        </ManageScreen>
       )}
     </>
   );

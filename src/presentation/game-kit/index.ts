@@ -1,7 +1,10 @@
+export { ActionRow } from "./ActionRow";
 export { ChoiceGroup, type ChoiceOption } from "./ChoiceGroup";
 export { InfoButton, type InfoContent } from "./InfoButton";
+export { ManageScreen } from "./ManageScreen";
 export { PlayersSetup } from "./PlayersSetup";
 export { Scoreboard } from "./Scoreboard";
+export { ScoreScreen } from "./ScoreScreen";
 export { SetupScreen } from "./SetupScreen";
 export { SetupSection } from "./SetupSection";
 export { StartBar, TurnStrip } from "./StartBar";

@@ -158,7 +158,7 @@ it("shows the editor buttons as save symbol, red delete symbol and a text cancel
   const { user } = await renderList();
   await user.click(screen.getByText("Nature", { selector: "summary span" }));
   await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
-  const actions = document.querySelector(".taboo-card-list__actions")!;
+  const actions = document.querySelector(".kit-action-row")!;
   const buttons = [...actions.querySelectorAll("button")];
   expect(buttons.map((button) => button.textContent)).toEqual(["", "", "Cancel"]);
   expect(buttons.map((button) => button.getAttribute("aria-label"))).toEqual([
@@ -167,6 +167,7 @@ it("shows the editor buttons as save symbol, red delete symbol and a text cancel
     null,
   ]);
   expect(buttons[1]).toHaveClass("button--danger");
+  expect(buttons[2]).toHaveClass("button--danger");
 });
 
 it.each([

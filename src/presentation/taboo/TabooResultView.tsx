@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "../components";
-import { Scoreboard, StartBar } from "../game-kit";
+import { ScoreScreen } from "../game-kit";
 import type { FinishedState } from "./tabooSetupModel";
 import { TabooTiebreakResults } from "./TabooTiebreakResults";
 
@@ -15,25 +15,34 @@ export function TabooResultView({ finished, onNewSetup, onSameSetup }: TabooResu
   const { t } = useTranslation();
 
   return (
-    <section className="taboo-round taboo-overview" aria-label={t("tabooResult.title")}>
-      <p className="taboo-overview__round">{t("tabooResult.title")}</p>
-      <div className="taboo-result" role="status">
-        <span>{t(finished.winnerIds.length === 1 ? "tabooResult.winner" : "tabooResult.tie")}</span>
-        <span className="visually-hidden">: </span>
-        <strong>
-          {finished.configuration.teams
-            .filter((team) => finished.winnerIds.includes(team.id))
-            .map((team) => team.name)
-            .join(", ")}
-        </strong>
-      </div>
-      <h2>{t("tabooRound.standings")}</h2>
-      <Scoreboard
-        label={t("tabooRound.standings")}
-        scores={finished.scores}
-        teams={finished.configuration.teams}
-        winnerIds={finished.winnerIds}
-      />
+    <ScoreScreen
+      actions={
+        <>
+          <Button variant="success" onClick={() => onSameSetup()}>
+            {t("tabooResult.sameSetup")}
+          </Button>
+          <Button variant="secondary" onClick={() => onNewSetup()}>
+            {t("tabooResult.newSetup")}
+          </Button>
+        </>
+      }
+      ariaLabel={t("tabooResult.title")}
+      eyebrow={t("tabooResult.title")}
+      stackedActions
+      standings={{
+        scores: finished.scores,
+        teams: finished.configuration.teams,
+        title: t("tabooRound.standings"),
+        winnerIds: finished.winnerIds,
+      }}
+      winner={{
+        label: t(finished.winnerIds.length === 1 ? "tabooResult.winner" : "tabooResult.tie"),
+        names: finished.configuration.teams
+          .filter((team) => finished.winnerIds.includes(team.id))
+          .map((team) => team.name)
+          .join(", "),
+      }}
+    >
       {finished.tiebreak && (
         <>
           <h2>{t("tabooTiebreak.results")}</h2>
@@ -52,14 +61,6 @@ export function TabooResultView({ finished, onNewSetup, onSameSetup }: TabooResu
           />
         </>
       )}
-      <StartBar stacked>
-        <Button variant="success" onClick={() => onSameSetup()}>
-          {t("tabooResult.sameSetup")}
-        </Button>
-        <Button variant="secondary" onClick={() => onNewSetup()}>
-          {t("tabooResult.newSetup")}
-        </Button>
-      </StartBar>
-    </section>
+    </ScoreScreen>
   );
 }
