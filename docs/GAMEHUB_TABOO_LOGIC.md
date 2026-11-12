@@ -25,6 +25,21 @@ Dieses Dokument beschreibt die Regeln der Zustandsmaschine (`src/business/games/
 | Gleichstand | Zwei bis drei führende Teams spielen ein Stechen. Mehr als drei oder deaktiviert: gemeinsamer Sieg. |
 | Stechen | Pro Team drei Karten (leicht, mittel, schwer), 90 Sekunden. Verbotenes Wort: falsch, neue Karte gleicher Schwierigkeit. Überspringen einmal. Mehr richtige Karten vor kürzerer Zeit. Gleiches Ergebnis: gemeinsamer Sieg. |
 
+## Modus „Auf Zeit“ (`race.ts`)
+
+Eigene Zustandsmaschine neben der klassischen (Regeln: `docs/GAMEHUB_TABOO_MODES.md`). Zustände: `overview` (vor jedem Lauf) → `running` → `overview` … → `finished`.
+
+| Bereich | Regel |
+|---|---|
+| Start | `beginRun` nimmt genau `target` gültige, ungenutzte Karten der Kartensprache; sonst keine Änderung. Das nächste Team ist immer das mit der kleinsten Nummer ohne Lauf. |
+| Richtig | Zählt; mit der Zielzahl endet der Lauf, die Zeit des letzten Treffers wird festgehalten. |
+| Überspringen | Einmal pro Team (Lauf), die Karte wird durch eine gültige, ungenutzte ersetzt und zählt nicht. Ohne Ersatzkarte oder beim zweiten Mal keine Änderung. |
+| Verbotenes Wort | Die Karte wird ersetzt und zählt nicht (`wrong` steigt); es gibt keine zusätzliche Zeitstrafe, die Uhr läuft weiter. |
+| Zeit | `elapsedMs` kommt von außen; `NaN` und unendliche Werte werden ignoriert, Negatives wird auf 0 begrenzt. |
+| Neustart | `restartRun` wirft den Lauf weg; seine Karten bleiben „benutzt“, das Team spielt mit neuen Karten erneut. |
+| Sieg | Kürzeste Zeit, verglichen in Zehntelsekunden; gleiche Zeit ist gemeinsamer Sieg. `finished` ist endgültig. |
+| Karten | `raceCards.ts`: gleiche Schwierigkeitsmischung für jedes Team, Ersatz gleicher Schwierigkeit, nie eine Karte doppelt. |
+
 ## Geprüfte Randfälle
 
 - Ereignisse für den falschen Zug, die falsche Karte oder den falschen Zustand ändern nichts.

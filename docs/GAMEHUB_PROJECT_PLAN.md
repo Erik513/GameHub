@@ -573,6 +573,7 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 - **Ziel:** Neben dem klassischen Modus gibt es „Auf Zeit“ (feste Kartenzahl, das Team mit der kürzesten Zeit gewinnt) und „Gegen die Zeit“ (jedes Team hat ein Zeitkonto, das beim Raten herunterläuft und bei richtiger Antwort stoppt; es gewinnt das Team mit Restzeit).
 - **Akzeptanzkriterien:** Regeln werden vor Umsetzung mit dem Auftraggeber abgestimmt; neue Modi sind ein Teil der Business-Schicht und nutzen die gemeinsamen Oberflächenbausteine.
 - **Stand 2026-11-12:** Abläufe vom Auftraggeber festgelegt (Auf Zeit: jedes Team am Stück, Überspringen einmal und ersetzt, Gleichstand gemeinsamer Sieg; Gegen die Zeit: Zeitkonto 2, 3 oder 5 Minuten, das aktive Team erklärt und rät selbst, damit niemand Zeit durch Trödeln stehlen kann). Regelentwurf mit Annahmen und Teilaufgaben A bis E: `docs/GAMEHUB_TABOO_MODES.md`. Umsetzung nach Bestätigung der offenen Punkte.
+- **Teilaufgaben (Dashboard):** `PH-12-07-A` Spiellogik „Auf Zeit“ (**done**: `race.ts`, `raceCards.ts`, 100 % Zeilen- und 95 % Zweigabdeckung), `PH-12-07-B` Oberfläche „Auf Zeit“, `PH-12-07-C` Spiellogik „Gegen die Zeit“, `PH-12-07-D` Oberfläche „Gegen die Zeit“, `PH-12-07-E` Dokumentation und Abschlussprüfung (je planned).
 - **Status:** in_progress
 
 ### Phase 13 – Karten und Kategorien neu gestalten

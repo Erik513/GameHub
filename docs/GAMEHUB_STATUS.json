@@ -543,6 +543,31 @@
           "id": "PH-12-07",
           "title": "Spielmodi: Klassisch, Auf Zeit, Gegen die Zeit",
           "status": "in_progress"
+        },
+        {
+          "id": "PH-12-07-A",
+          "title": "Spielmodi A: Auf Zeit, Spiellogik (Zustandsmaschine, Karten, Tests)",
+          "status": "done"
+        },
+        {
+          "id": "PH-12-07-B",
+          "title": "Spielmodi B: Auf Zeit, Oberfläche (Spielmodus im Setup, Lauf, Übersicht, Endstand, Regeln, e2e)",
+          "status": "planned"
+        },
+        {
+          "id": "PH-12-07-C",
+          "title": "Spielmodi C: Gegen die Zeit, Spiellogik",
+          "status": "planned"
+        },
+        {
+          "id": "PH-12-07-D",
+          "title": "Spielmodi D: Gegen die Zeit, Oberfläche",
+          "status": "planned"
+        },
+        {
+          "id": "PH-12-07-E",
+          "title": "Spielmodi E: Dokumentation und Abschlussprüfung",
+          "status": "planned"
         }
       ],
       "gameIds": [

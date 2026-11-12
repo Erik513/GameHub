@@ -54,11 +54,16 @@ export function validateCategory(input: Category): ValidationResult<Category> {
   return issues.length ? { valid: false, issues } : { valid: true, value };
 }
 
-export function validateConfiguration(
-  input: GameConfiguration,
-): ValidationResult<GameConfiguration> {
+/**
+ * Cleans the teams of a game (trimmed names, only non-empty players) and reports what is wrong:
+ * fewer than two teams, empty or duplicate ids and names. Every game mode uses the same rules.
+ */
+export function validateTeams(input: readonly Team[]): {
+  readonly teams: readonly Team[];
+  readonly issues: readonly ValidationIssue[];
+} {
   const issues: ValidationIssue[] = [];
-  const teams = input.teams.map((team) => {
+  const teams = input.map((team) => {
     const players = (team.players ?? []).map(normalizeText).filter(Boolean);
     return {
       id: normalizeText(team.id),
@@ -73,6 +78,14 @@ export function validateConfiguration(
     if (new Set(teams.map((team) => identity(team[field]))).size !== teams.length)
       issues.push({ field: `teams.${field}`, code: "duplicate" });
   }
+  return { teams, issues };
+}
+
+export function validateConfiguration(
+  input: GameConfiguration,
+): ValidationResult<GameConfiguration> {
+  const { teams, issues: teamIssues } = validateTeams(input.teams);
+  const issues: ValidationIssue[] = [...teamIssues];
   if (!Number.isSafeInteger(input.roundDurationSeconds) || input.roundDurationSeconds <= 0)
     issues.push({ field: "roundDurationSeconds", code: "positive_integer_required" });
   if (

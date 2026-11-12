@@ -1,6 +1,6 @@
 # Entwurf: Tabu-Spielmodi „Auf Zeit“ und „Gegen die Zeit“
 
-Dieses Dokument gehört zu `PH-12-07`. Die **Regeln** sind laut Akzeptanzkriterium vor der Umsetzung mit dem Auftraggeber abzustimmen. Der Auftraggeber hat am 2026-11-12 die Abläufe festgelegt (Abschnitt 1); alles, was er nicht ausdrücklich beantwortet hat, ist als **Annahme** gekennzeichnet und wartet auf Bestätigung (Abschnitt 6). Es wurde noch **nichts gebaut**.
+Dieses Dokument gehört zu `PH-12-07`. Die **Regeln** sind laut Akzeptanzkriterium vor der Umsetzung mit dem Auftraggeber abzustimmen. Der Auftraggeber hat am 2026-11-12 die Abläufe festgelegt (Abschnitt 1); alles, was er nicht ausdrücklich beantwortet hat, ist als **Annahme** gekennzeichnet und wartet auf Bestätigung (Abschnitt 6). Stand: Teilaufgabe A (Spiellogik „Auf Zeit“) ist gebaut, die übrigen noch nicht.
 
 Bezug: `docs/GAMEHUB_TABOO_LOGIC.md` (klassischer Modus), `docs/GAMEHUB_UI_RULES.md` (Ansichten und Knöpfe), `ADR-017` (Spielbausteine).
 
@@ -60,7 +60,7 @@ Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. W
 **Business-Schicht** (rein, ohne React und Browser, mit Zufall und Uhrzeit als Eingabe, wie die klassische Zustandsmaschine):
 
 - Neue Zustandsmaschinen `race.ts` und `countdown.ts` im Ordner `src/business/games/taboo/`. Sie nutzen dieselben Karten, Filter und denselben Stapel (`buildDeck`) wie der klassische Modus; Ereignisse sind zum Beispiel `startRun`, `correct`, `skip`, `forbiddenWord`, `tick`, `pause`.
-- `GameConfiguration` bekommt den Modus (`mode: "classic" | "race" | "countdown"`, Standard `classic`) und die modusbezogenen Werte (`raceTarget`, `countdownSeconds`). Bestehende Partien und Tests bleiben unverändert gültig.
+- **Umgesetzt anders als zuerst entworfen:** Jeder Modus hat eine **eigene Konfiguration** (`RaceConfiguration`, später `CountdownConfiguration`) neben der klassischen `GameConfiguration`, statt ein `mode`-Feld in diese zu stecken. Der Modus wird in der Oberfläche gewählt (Teilaufgabe B). So bleibt der klassische Modus unverändert und bekommt keine Felder, die er nicht braucht. Die Prüfung der Teams ist als `validateTeams` gemeinsam.
 - Prüfung und Zufallsprüfung (Invarianten wie in `stateMachine.invariants.test.ts`): Zeiten nie negativ, Zielzahl nie überschritten, Überspringen höchstens einmal je Team, Konten nur beim aktiven Team verringert, ausgeschiedene Teams nie wieder dran, kein ungültiges Ereignis ändert den Zustand.
 
 **Oberfläche:**
@@ -76,7 +76,7 @@ Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. W
 
 Die Umsetzung ist groß (der Container `TabooSetup.tsx` hat rund 470 Zeilen). Nach Freigabe in kleinen, einzeln prüfbaren Schritten:
 
-1. **PH-12-07-A:** Business „Auf Zeit“ (Zustandsmaschine, Konfiguration, Tests, Zufallsprüfung).
+1. **PH-12-07-A (erledigt):** Business „Auf Zeit“: `race.ts` (Zustandsmaschine mit `overview`, `running`, `finished`; Ereignisse `beginRun`, `answerCard`, `restartRun`), `raceCards.ts` (Schwierigkeitsmischung, Kartenauswahl, Ersatzkarten), Tests und Zufallsprüfung mit 60 Durchläufen.
 2. **PH-12-07-B:** Oberfläche „Auf Zeit“ (Spielmodus-Auswahl im Setup, Lauf, Übersicht, Endstand, Spielregeln, e2e).
 3. **PH-12-07-C:** Business „Gegen die Zeit“.
 4. **PH-12-07-D:** Oberfläche „Gegen die Zeit“.
@@ -93,5 +93,5 @@ Diese Punkte hat der Auftraggeber nicht ausdrücklich entschieden:
 3. **Überspringen bei Gegen die Zeit:** Einmal pro Team, Uhr läuft weiter?
 4. **Gleichstand bei Auf Zeit:** Vergleich auf Zehntelsekunden, bei Gleichheit gemeinsamer Sieg?
 5. **Mehr als zwei Teams bei Gegen die Zeit:** Ausgeschiedene Teams fallen aus dem Reihum, die Platzierung folgt der Reihenfolge des Ausscheidens?
-6. **Kartengerechtigkeit bei Auf Zeit:** Bekommt jedes Team Karten gleicher Schwierigkeit (gleiche Mischung), damit die Zeiten vergleichbar sind, oder werden einfach nacheinander Karten gezogen?
+6. **Kartengerechtigkeit bei Auf Zeit:** In `PH-12-07-A` umgesetzt als **gleiche Schwierigkeitsmischung für jedes Team** (Zielzahl möglichst gleichmäßig auf leicht, mittel, schwer verteilt, der Rest zuerst auf leicht, dann mittel; Reihenfolge gemischt; Ersatzkarten gleicher Schwierigkeit). Vorläufig, bitte bestätigen.
 7. **Reihenfolge der Modi in der Auswahl:** Klassisch, Auf Zeit, Gegen die Zeit?

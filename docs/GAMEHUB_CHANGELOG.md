@@ -4,6 +4,15 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-12-07-A – Spiellogik „Auf Zeit“
+
+- Neu: `src/business/games/taboo/race.ts`, eine reine Zustandsmaschine mit eigener Konfiguration (`RaceConfiguration`): Zustände `overview`, `running`, `finished`; Ereignisse `beginRun`, `answerCard` (richtig, überspringen einmal, verbotenes Wort, jeweils mit Ersatzkarte), `restartRun`. Zeiten kommen von außen (ungültige Werte werden ignoriert), Sieger nach Zehntelsekunden, gleiche Zeit ist gemeinsamer Sieg. Zielzahlen 5, 10, 15 (Standard 10).
+- Neu: `raceCards.ts` mit gleicher Schwierigkeitsmischung für jedes Team, Auswahl ungespielter Karten und Ersatzkarten gleicher Schwierigkeit.
+- `validateTeams` aus `model.ts` herausgelöst, damit alle Modi dieselbe Teamprüfung nutzen (klassischer Modus unverändert).
+- Tests: Regeltests, Kartentests und eine Zufallsprüfung mit 60 Durchläufen und Invarianten; Abdeckung von `race.ts` 100 % Zeilen, 95 % Zweige.
+- Entwurf angepasst: eigene Konfiguration je Modus statt `mode` in `GameConfiguration`; Kartengerechtigkeit (Annahme 6) als gleiche Schwierigkeitsmischung umgesetzt.
+- Geprüft: 527 Unit-Tests, Typen, ESLint, Prettier, Schichtprüfung. Die Oberfläche folgt in `PH-12-07-B`.
+
 ### PH-12-07 – Regelentwurf der Spielmodi
 
 - Der Auftraggeber hat die Abläufe der Modi festgelegt. „Auf Zeit“: jedes Team spielt am Stück bis zur Zielzahl, Überspringen einmal pro Team mit ersetzter Karte, gleiche Zeit ist gemeinsamer Sieg. „Gegen die Zeit“: Zeitkonto 2, 3 oder 5 Minuten; der Vorschlag „Gegnerteam erklärt“ wurde abgelehnt, weil es absichtlich trödeln könnte, deshalb erklärt und rät das aktive Team selbst.
