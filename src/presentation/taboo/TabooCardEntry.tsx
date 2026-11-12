@@ -115,23 +115,25 @@ export function TabooCardEntry({
           value={term}
         />
       </label>
-      <label className="field">
-        <span>{t("tabooEntry.words")}</span>
-        <input
-          autoComplete="off"
-          className="field__input"
-          onChange={(event) => setWords(event.target.value)}
-          placeholder={t("tabooEntry.wordsPlaceholder")}
-          value={words}
+      <div className="taboo-words">
+        <label className="field">
+          <span>{t("tabooEntry.words")}</span>
+          <input
+            autoComplete="off"
+            className="field__input"
+            onChange={(event) => setWords(event.target.value)}
+            placeholder={t("tabooEntry.wordsPlaceholder")}
+            value={words}
+          />
+        </label>
+        <TabooWordSuggestion
+          categoryId={resolveCategory(choice, name) || undefined}
+          language={cardLanguage}
+          onWords={setWords}
+          suggester={suggester}
+          term={() => term}
         />
-      </label>
-      <TabooWordSuggestion
-        categoryId={resolveCategory(choice, name) || undefined}
-        language={cardLanguage}
-        onWords={setWords}
-        suggester={suggester}
-        term={() => term}
-      />
+      </div>
       <Button disabled={disabled} type="submit" variant="secondary">
         {t("tabooEntry.add")}
       </Button>

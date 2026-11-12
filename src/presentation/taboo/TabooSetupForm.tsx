@@ -77,7 +77,10 @@ export function TabooSetupForm({
           </ul>
         </StatusMessage>
       )}
-      <TabooRules />
+      <div className="taboo-toolbar">
+        {children}
+        <TabooRules />
+      </div>
       <form id="taboo-setup-form" noValidate onSubmit={onSubmit} onChange={onChange}>
         <section aria-labelledby="taboo-teams-heading" className="taboo-section">
           <h2 id="taboo-teams-heading">{t("tabooSetup.teamsSection")}</h2>
@@ -162,6 +165,21 @@ export function TabooSetupForm({
               }))}
             />
           )}
+          <ChoiceGroup
+            info={info("difficulty", t("tabooSetup.difficulty"))}
+            legend={t("tabooSetup.difficulty")}
+            multiple
+            name="difficulty"
+            initial=""
+            options={[
+              { value: "", label: t("tabooSetup.anyDifficulty") },
+              ...difficulties.map((value) => ({
+                value,
+                label: t(`tabooSetup.difficulties.${value}`),
+                tone: value,
+              })),
+            ]}
+          />
           <fieldset className="kit-choice-group">
             <legend>{t("tabooSetup.categories")}</legend>
             {(["standard", "own"] as const).map((group) => {
@@ -186,24 +204,8 @@ export function TabooSetupForm({
               );
             })}
           </fieldset>
-          <ChoiceGroup
-            info={info("difficulty", t("tabooSetup.difficulty"))}
-            legend={t("tabooSetup.difficulty")}
-            multiple
-            name="difficulty"
-            initial=""
-            options={[
-              { value: "", label: t("tabooSetup.anyDifficulty") },
-              ...difficulties.map((value) => ({
-                value,
-                label: t(`tabooSetup.difficulties.${value}`),
-                tone: value,
-              })),
-            ]}
-          />
         </section>
       </form>
-      {children && <div className="taboo-tools">{children}</div>}
       <StartBar>
         <Button form="taboo-setup-form" type="submit" variant="success" disabled={generating}>
           {t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}

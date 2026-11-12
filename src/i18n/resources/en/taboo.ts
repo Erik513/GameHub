@@ -1,12 +1,11 @@
 /** All texts of the Taboo game; the shared app texts live in `common.ts`. */
 export const tabooTexts = {
   tabooLibrary: {
-    manage: "Manage own cards",
+    manage: "Cards",
     back: "Back",
     title: "Custom Taboo cards",
-    hint: "Import a GameHub JSON file or save a backup of your own cards.",
+    hint: "Import a GameHub JSON file. You can export one category at a time in the card list.",
     import: "Import cards",
-    export: "Export own cards",
     imported: "Imported cards: {{count}}. Existing cards were kept.",
     invalid: "This file is not a valid GameHub Taboo card file.",
     storage: "Local cards could not be accessed.",
@@ -35,6 +34,7 @@ export const tabooTexts = {
     nobody: "nobody yet",
   },
   tabooEntry: {
+    suggestUnavailable: "No local AI found (start Ollama).",
     suggest: "Suggest words with AI",
     suggesting: "AI is thinking …",
     suggestProblems: {
@@ -59,6 +59,8 @@ export const tabooTexts = {
     languages: { de: "German", en: "English" },
   },
   tabooList: {
+    export: "Export",
+    exportLabel: "Export category {{category}}",
     title: "Cards by category",
     count: "{{count}} ({{own}} own)",
     term: "Term",

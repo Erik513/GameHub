@@ -20,7 +20,7 @@ const texts = {
     words: "Four forbidden words, separated by commas",
     needTerm: "Enter a term first.",
     failed: "The AI could not suggest suitable words.",
-    manage: "Manage own cards",
+    manage: "Cards",
   },
   de: {
     suggest: "Wörter mit KI vorschlagen",
@@ -28,7 +28,7 @@ const texts = {
     words: "Vier verbotene Wörter, mit Komma getrennt",
     needTerm: "Gib zuerst einen Begriff ein.",
     failed: "Die KI konnte keine passenden Wörter vorschlagen.",
-    manage: "Eigene Karten verwalten",
+    manage: "Karten",
   },
 } as const;
 
@@ -52,9 +52,10 @@ async function renderEntry(language: "en" | "de", suggester?: TabooWordSuggester
   return userEvent.setup();
 }
 
-it("shows no suggestion button without a local AI", async () => {
+it("shows a disabled suggestion button with an explanation without a local AI", async () => {
   await renderEntry("en");
-  expect(screen.queryByRole("button", { name: texts.en.suggest })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: texts.en.suggest })).toBeDisabled();
+  expect(screen.getByText("No local AI found (start Ollama).")).toBeVisible();
 });
 
 it.each(["en", "de"] as const)(
@@ -149,5 +150,5 @@ it("keeps the card page working when no local AI is found", async () => {
   );
   await user.click(screen.getByRole("button", { name: texts.en.manage }));
   expect(screen.getByRole("heading", { name: "Add card (English)" })).toBeVisible();
-  expect(screen.queryByRole("button", { name: texts.en.suggest })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: texts.en.suggest })).toBeDisabled();
 });

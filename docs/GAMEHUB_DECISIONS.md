@@ -140,3 +140,10 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Begründung:** Neue Spiele und die Spielmodi aus `PH-12-07` sollen sich um Kopfzeile, Navigation, Aktionsleiste, Zeitanzeige und Handy-Layout nicht kümmern müssen. Der Auftraggeber hat Option B (moderater Umbau) freigegeben.
 - **Konsequenzen:** Erweitert ADR-013. Eine allgemeine Spiel-Engine wird bewusst nicht gebaut, bevor ein zweites Spiel sie braucht. Offen: eigene CSS-Datei je Spiel und Hooks für die Tabu-Zustandslogik (`PH-11-06`).
 
+## ADR-018: KI nur am Rechner (Ollama), nicht im Browser
+
+- **Status:** accepted
+- **Datum:** 2026-11-12
+- **Entscheidung:** KI-Funktionen (Kartenerzeugung, Wortvorschläge) nutzen ausschließlich ein lokal laufendes Programm am selben Rechner, das über `127.0.0.1` angesprochen wird (Ollama). Es wird kein Modell im Browser ausgeführt und kein Online-Dienst (auch nicht Wikipedia) für Vorschläge genutzt.
+- **Begründung:** Ein kleines Browser-Modell (Qwen2.5-0.5B) lieferte im Test kaum brauchbare Wörter, besonders auf Deutsch; größere Modelle sind für Handys zu schwer. Online-Dienste scheiden wegen Kosten, Schlüsseln und Datenabfluss aus (AGENTS.md); die Wikipedia-Variante hat der Auftraggeber abgelehnt.
+- **Konsequenzen:** Am Handy ist der KI-Knopf deaktiviert, mitgelieferte und eigene Karten bleiben voll nutzbar. Die Anbieter bleiben austauschbare Adapter hinter den Business-Ports (ADR-008-Linie). LM Studio wurde kurz ergänzt und auf Wunsch des Auftraggebers wieder entfernt, weil er es nicht beauftragt hatte; es kann später gesondert beauftragt werden.

@@ -1,7 +1,7 @@
 import { useCallback, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
-import { Button, ConfirmButton } from "./components";
+import { Button, ConfirmButton, Icon } from "./components";
 import { GameChromeContext, type GameExit } from "./GameChrome";
 import { SettingsDialog } from "./SettingsDialog";
 
@@ -53,7 +53,17 @@ export function AppShell({
           </a>
         </nav>
         <div className="site-header__actions">
-          {gameExit ? (
+          {gameExit?.back ? (
+            <Button
+              aria-label={t("navigation.back")}
+              className="icon-button"
+              title={t("navigation.back")}
+              variant="secondary"
+              onClick={() => gameExit.run()}
+            >
+              <Icon name="arrowLeft" />
+            </Button>
+          ) : gameExit ? (
             <>
               {gameExit.pause && (
                 <Button

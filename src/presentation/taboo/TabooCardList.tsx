@@ -5,7 +5,7 @@ import { builtInCategoryIds, customCategoryIds } from "../../business/games/tabo
 import { validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
-import { Button, ConfirmButton, StatusMessage } from "../components";
+import { Button, ConfirmButton, Icon, StatusMessage } from "../components";
 import { TabooWordSuggestion } from "./TabooWordSuggestion";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { resolveCategory } from "./categoryChoice";
@@ -16,6 +16,8 @@ interface TabooCardListProps {
   allCards: readonly TabooCard[];
   cardLanguage: SupportedLanguage;
   disabled: boolean;
+  /** Saves the given cards of one category as a file. */
+  onExport: (categoryId: string, cards: readonly TabooCard[]) => void;
   onRemove: (id: string) => Promise<void>;
   onUpdate: (card: TabooCard) => Promise<void>;
   /** The player's own cards; they can be edited and deleted. */
@@ -39,6 +41,7 @@ export function TabooCardList({
   allCards,
   cardLanguage,
   disabled,
+  onExport,
   onRemove,
   onUpdate,
   ownCards,
@@ -126,28 +129,30 @@ export function TabooCardList({
               name="term"
             />
           </label>
-          <label className="field">
-            <span>{t("tabooList.words")}</span>
-            <input
-              autoComplete="off"
-              className="field__input"
-              defaultValue={card.forbiddenWords.join(", ")}
-              name="words"
+          <div className="taboo-words">
+            <label className="field">
+              <span>{t("tabooList.words")}</span>
+              <input
+                autoComplete="off"
+                className="field__input"
+                defaultValue={card.forbiddenWords.join(", ")}
+                name="words"
+              />
+            </label>
+            <TabooWordSuggestion
+              categoryId={resolveCategory(choice, name) || undefined}
+              language={card.language}
+              onWords={(words) => {
+                const field = editForm.current?.elements.namedItem("words");
+                if (field instanceof HTMLInputElement) field.value = words;
+              }}
+              suggester={suggester}
+              term={() => {
+                const field = editForm.current?.elements.namedItem("term");
+                return field instanceof HTMLInputElement ? field.value : "";
+              }}
             />
-          </label>
-          <TabooWordSuggestion
-            categoryId={resolveCategory(choice, name) || undefined}
-            language={card.language}
-            onWords={(words) => {
-              const field = editForm.current?.elements.namedItem("words");
-              if (field instanceof HTMLInputElement) field.value = words;
-            }}
-            suggester={suggester}
-            term={() => {
-              const field = editForm.current?.elements.namedItem("term");
-              return field instanceof HTMLInputElement ? field.value : "";
-            }}
-          />
+          </div>
           <div className="taboo-card-entry__pair">
             <TabooCategoryField
               choice={choice}
@@ -201,12 +206,13 @@ export function TabooCardList({
         {own && (
           <Button
             aria-label={t("tabooList.editLabel", { term: card.term })}
-            className="taboo-card-row__edit"
+            className="icon-button--small taboo-card-row__edit"
             disabled={disabled}
             onClick={() => startEditing(card)}
-            variant="quiet"
+            title={t("tabooList.editLabel", { term: card.term })}
+            variant="secondary"
           >
-            {t("tabooList.edit")}
+            <Icon name="pencil" />
           </Button>
         )}
       </div>
@@ -230,6 +236,22 @@ export function TabooCardList({
           <details className="taboo-more taboo-card-list__category" key={categoryId}>
             <summary>
               <span>{categoryName(categoryId)}</span>
+              {own.length > 0 && (
+                <Button
+                  aria-label={t("tabooList.exportLabel", { category: categoryName(categoryId) })}
+                  className="icon-button--small"
+                  disabled={disabled}
+                  onClick={(event) => {
+                    // The button sits inside the summary and must not open or close the category.
+                    event.preventDefault();
+                    onExport(categoryId, own);
+                  }}
+                  title={t("tabooList.exportLabel", { category: categoryName(categoryId) })}
+                  variant="secondary"
+                >
+                  <Icon name="download" />
+                </Button>
+              )}
               <small>
                 {t("tabooList.count", { count: own.length + standard.length, own: own.length })}
               </small>

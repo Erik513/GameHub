@@ -1,12 +1,11 @@
 /** All texts of the Taboo game; the shared app texts live in `common.ts`. */
 export const tabooTexts = {
   tabooLibrary: {
-    manage: "Eigene Karten verwalten",
+    manage: "Karten",
     back: "Zurück",
     title: "Eigene Tabu-Karten",
-    hint: "Importiere eine GameHub-JSON-Datei oder sichere deine eigenen Karten.",
+    hint: "Importiere eine GameHub-JSON-Datei. Exportieren kannst du je Kategorie in der Kartenliste.",
     import: "Karten importieren",
-    export: "Eigene Karten exportieren",
     imported: "Importierte Karten: {{count}}. Vorhandene Karten wurden beibehalten.",
     invalid: "Die Datei enthält keinen gültigen GameHub-Tabu-Kartensatz.",
     storage: "Auf die lokalen Karten konnte nicht zugegriffen werden.",
@@ -36,6 +35,7 @@ export const tabooTexts = {
     nobody: "noch niemand",
   },
   tabooEntry: {
+    suggestUnavailable: "Keine lokale KI gefunden (Ollama starten).",
     suggest: "Wörter mit KI vorschlagen",
     suggesting: "KI überlegt …",
     suggestProblems: {
@@ -61,6 +61,8 @@ export const tabooTexts = {
     languages: { de: "Deutsch", en: "Englisch" },
   },
   tabooList: {
+    export: "Exportieren",
+    exportLabel: "Kategorie {{category}} exportieren",
     title: "Karten nach Kategorie",
     count: "{{count}} ({{own}} eigene)",
     term: "Begriff",

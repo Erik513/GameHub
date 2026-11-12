@@ -6,6 +6,8 @@ export interface GamePauseControl {
 }
 
 export interface GameExit {
+  /** A plain back button without confirmation, for a sub page inside a game. */
+  readonly back?: boolean;
   readonly run: () => void;
   readonly pause?: GamePauseControl;
 }
@@ -44,4 +46,23 @@ export function useGameExit(active: boolean, onExit: () => void, pause?: PauseOp
     });
     return () => register(undefined);
   }, [active, hasPause, paused, register]);
+}
+
+/**
+ * Lets a game show a sub page (for example its card library). While active, the shell hides the
+ * hub navigation and settings and shows one back button that calls `onBack` directly.
+ */
+export function useGameBack(active: boolean, onBack: () => void) {
+  const register = useContext(GameChromeContext);
+  const latestBack = useRef(onBack);
+
+  useEffect(() => {
+    latestBack.current = onBack;
+  });
+
+  useEffect(() => {
+    if (!active) return;
+    register({ back: true, run: () => latestBack.current() });
+    return () => register(undefined);
+  }, [active, register]);
 }

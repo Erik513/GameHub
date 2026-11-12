@@ -605,6 +605,21 @@ Auftrag des Auftraggebers: Logik und Ansicht von Karten und Kategorien werden ve
 - **Ergebnis:** Neuer Knopf „Wörter mit KI vorschlagen“ im Formular „Karte hinzufügen“ und im Bearbeiten-Formular. Er erscheint nur, wenn beim Öffnen der Kartenseite eine lokale Ollama-KI gefunden wurde. Der Vorschlag (vier verschiedene Wörter, keines gleich dem Begriff, geprüft in `reviewForbiddenWords`) wird ins Feld geschrieben und nicht automatisch gespeichert. Port `TabooWordSuggester` in der Business-Schicht, Adapter `ollamaTabooWordSuggester` in der Infrastruktur (nur `127.0.0.1`). Nicht an einer echten KI ausprobiert (auf diesem Rechner lief keine), nur mit Testdoubles.
 - **Status:** done
 
+#### PH-13-05 – Kartenseite verfeinern
+
+- **Ziel:** Die Kartenseite wirkt aufgeräumt: Aktionen sind echte Knöpfe (Bearbeiten als Stiftsymbol), der Export gilt für genau eine Kategorie und der Import ist ein gestalteter Knopf statt des rohen Dateifelds.
+- **Ergebnis:** Bearbeiten ist ein Knopf mit Stiftsymbol (kein blauer Text mehr), über zwei Zeilen der Kartenzeile. Der Export steht je Kategorie in der geöffneten Kategorie und enthält nur deren eigene Karten; der globale Export entfällt (ein Gesamt-Backup aller eigenen Karten ist damit nicht mehr möglich, bei Bedarf als eigene Aufgabe). Der Import ist ein Knopf mit Symbol, das rohe Dateifeld ist versteckt. Zurück und KI-Vorschlag sind ebenfalls Knöpfe mit Symbol. Gemeinsamer Baustein `Icon`. Nachbesserung: kleine Symbolknöpfe (2,25 rem) direkt neben dem Kartennamen und dem Kategorienamen; Knopf „Karten“ (vorher „Eigene Karten verwalten“) steht mit „Spielregeln“ in einer Leiste oben rechts im Setup; Die Kartenseite zeigt in der Kopfzeile der App nur einen Zurück-Pfeil oben rechts (Einstellungen und Home sind dort ausgeblendet und nur im Hauptformular sichtbar), umgesetzt über `useGameBack` in `GameChrome`; der KI-Knopf (Funkel-Symbol) sitzt neben dem Wörterfeld und ist ohne gefundene KI sichtbar, aber deaktiviert mit Hinweis.
+- **Status:** done
+
+### Phase 14 – Lokale KI am Rechner
+
+Auftrag des Auftraggebers: Die KI sollte ohne Zusatzprogramm und auch am Handy laufen. Ergebnis der Prüfung: Ein kleines Modell im Browser ist dafür zu schlecht (Messung `PH-14-01`); die Wikipedia-Alternative hat der Auftraggeber abgelehnt. **Entscheidung (ADR-018): Die KI gibt es nur am Rechner über ein lokal installiertes Programm (Ollama). Am Handy bleibt der KI-Knopf deaktiviert, alle Karten bleiben ohne KI nutzbar.**
+
+#### PH-14-01 – Qualitätstest
+
+- **Ergebnis:** Qwen2.5-0.5B im Browser (WebLLM): schnell (0,2 bis 0,4 s je Karte), aber nur etwa 2 bis 3 von 20 Karten sinnvoll, Deutsch deutlich schlechter. Größere Modelle (1,5 Mrd. und mehr) brauchen mindestens 1,6 GB Grafikspeicher und sind für Handys unrealistisch; sie wurden nicht getestet. Die Testseite `prototypes/ai-word-test.html` bleibt als Werkzeug erhalten.
+- **Status:** done
+
 ### Phase 9: Spätere Erweiterungen
 
 #### Tabu-Spielmodi für später

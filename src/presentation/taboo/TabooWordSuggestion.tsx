@@ -5,7 +5,7 @@ import {
   reviewForbiddenWords,
   type TabooWordSuggester,
 } from "../../business/games/taboo/wordSuggester";
-import { Button } from "../components";
+import { Button, Icon } from "../components";
 
 interface TabooWordSuggestionProps {
   categoryId?: string | undefined;
@@ -17,7 +17,7 @@ interface TabooWordSuggestionProps {
   term: () => string;
 }
 
-/** Button that asks the local AI for forbidden words; hidden when no AI is available. */
+/** Icon button that asks the local AI for forbidden words; disabled when no AI was found. */
 export function TabooWordSuggestion({
   categoryId,
   language,
@@ -28,7 +28,6 @@ export function TabooWordSuggestion({
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<"needTerm" | "failed">();
-  if (!suggester) return null;
 
   async function suggest(provider: TabooWordSuggester) {
     const text = term().trim();
@@ -50,16 +49,33 @@ export function TabooWordSuggestion({
     else setProblem("failed");
   }
 
+  const label = t("tabooEntry.suggest");
+
   return (
-    <div className="taboo-suggestion">
-      <Button disabled={busy} onClick={() => void suggest(suggester)} variant="quiet">
-        {t(busy ? "tabooEntry.suggesting" : "tabooEntry.suggest")}
+    <>
+      <Button
+        aria-label={label}
+        className="icon-button--small"
+        disabled={busy || !suggester}
+        onClick={() => suggester && void suggest(suggester)}
+        title={suggester ? label : t("tabooEntry.suggestUnavailable")}
+        variant="secondary"
+      >
+        <Icon name="sparkle" />
       </Button>
+      {busy && (
+        <small className="taboo-words__note" role="status">
+          {t("tabooEntry.suggesting")}
+        </small>
+      )}
+      {!suggester && (
+        <small className="taboo-words__note">{t("tabooEntry.suggestUnavailable")}</small>
+      )}
       {problem && (
-        <small className="taboo-suggestion__problem" role="alert">
+        <small className="taboo-words__note taboo-words__note--problem" role="alert">
           {t(`tabooEntry.suggestProblems.${problem}`)}
         </small>
       )}
-    </div>
+    </>
   );
 }

@@ -23,6 +23,7 @@ export const common = {
     resume: "Fortsetzen",
     exitGame: "Spiel beenden",
     exitGameConfirm: "Nochmal tippen zum Beenden",
+    back: "Zurück",
     closeGame: "Spiel schließen",
   },
   settings: {

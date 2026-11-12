@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   parseTabooCardFile,
@@ -9,7 +9,8 @@ import type { TabooCardRepository } from "../../business/games/taboo/cardReposit
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { TabooWordSuggester } from "../../business/games/taboo/wordSuggester";
 import type { SupportedLanguage } from "../../i18n";
-import { Button, StatusMessage } from "../components";
+import { Button, Icon, StatusMessage } from "../components";
+import { useGameBack } from "../GameChrome";
 import { TabooCardEntry } from "./TabooCardEntry";
 import { TabooCardList } from "./TabooCardList";
 import { TabooSetup } from "./TabooSetup";
@@ -40,6 +41,9 @@ export function TabooLibrary({
   const [busy, setBusy] = useState(false);
   const [page, setPage] = useState<"setup" | "cards">("setup");
   const [suggester, setSuggester] = useState<TabooWordSuggester>();
+  const fileInput = useRef<HTMLInputElement>(null);
+  // The shell shows one back button at the top right while the card page is open.
+  useGameBack(page === "cards", () => setPage("setup"));
 
   // The local AI is only looked up when the card page is opened.
   useEffect(() => {
@@ -109,15 +113,18 @@ export function TabooLibrary({
     }
   }
 
-  function exportCards() {
-    if (!ownCards?.length) return;
+  function exportCategory(categoryId: string, categoryCards: readonly TabooCard[]) {
     const urlApi = URL;
     const url = urlApi.createObjectURL(
-      new Blob([serializeTabooCards(ownCards)], { type: "application/json" }),
+      new Blob([serializeTabooCards(categoryCards)], { type: "application/json" }),
     );
+    const slug = categoryId
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, "-")
+      .replace(/^-|-$/gu, "");
     const link = document.createElement("a");
     link.href = url;
-    link.download = "gamehub-taboo-cards.json";
+    link.download = `gamehub-taboo-${slug || "cards"}.json`;
     link.click();
     setTimeout(() => urlApi.revokeObjectURL(url), 1000);
   }
@@ -131,6 +138,7 @@ export function TabooLibrary({
         <TabooSetup cardLanguage={cardLanguage} cards={allCards} generators={generators}>
           {repository && (
             <Button variant="secondary" onClick={() => setPage("cards")}>
+              <Icon name="cards" />
               {t("tabooLibrary.manage")}
             </Button>
           )}
@@ -138,9 +146,6 @@ export function TabooLibrary({
       </div>
       {repository && page === "cards" && (
         <section aria-labelledby="taboo-cards-title" className="taboo-cards-page">
-          <Button variant="quiet" onClick={() => setPage("setup")}>
-            {t("tabooLibrary.back")}
-          </Button>
           <h2 id="taboo-cards-title">{t("tabooLibrary.title")}</h2>
           <p>{t("tabooLibrary.hint")}</p>
           <TabooCardEntry
@@ -154,30 +159,31 @@ export function TabooLibrary({
             allCards={allCards}
             cardLanguage={cardLanguage}
             disabled={busy}
+            onExport={exportCategory}
             onRemove={removeCard}
             onUpdate={updateCard}
             ownCards={ownCards ?? []}
             standardCards={cards}
             suggester={suggester}
           />
-          <div className="taboo-setup__actions">
-            <label>
-              {t("tabooLibrary.import")}
-              <input
-                type="file"
-                accept=".json,application/json"
-                disabled={busy}
-                onChange={(event) => {
-                  const file = event.currentTarget.files?.[0];
-                  event.currentTarget.value = "";
-                  if (file) void importCards(file);
-                }}
-              />
-            </label>
-            <Button variant="secondary" disabled={busy || !ownCards?.length} onClick={exportCards}>
-              {t("tabooLibrary.export")}
-            </Button>
-          </div>
+          <input
+            accept=".json,application/json"
+            aria-label={t("tabooLibrary.import")}
+            className="visually-hidden"
+            disabled={busy}
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              event.currentTarget.value = "";
+              if (file) void importCards(file);
+            }}
+            ref={fileInput}
+            tabIndex={-1}
+            type="file"
+          />
+          <Button disabled={busy} onClick={() => fileInput.current?.click()} variant="secondary">
+            <Icon name="upload" />
+            {t("tabooLibrary.import")}
+          </Button>
           {feedback && (
             <StatusMessage
               title={t("tabooLibrary.title")}

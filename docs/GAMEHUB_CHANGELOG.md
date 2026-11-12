@@ -4,14 +4,23 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-14 – Lokale KI am Rechner (Test und Entscheidung)
+
+- Wegwerf-Seite `prototypes/ai-word-test.html`: lädt ein kleines Modell per WebLLM im Browser und erzeugt verbotene Wörter für deutsche und englische Beispielbegriffe; zeigt Geräteprüfung, Zeiten und Beanstandungen. Nicht Teil von App und Build, keine neue Abhängigkeit in `package.json`.
+- Erster Befund: Im Browser dieses Rechners ist WebGPU samt f16 verfügbar; das kleinste Qwen-Modell (0,5 Mrd.) braucht laut WebLLM etwa 945 MB Grafikspeicher, SmolLM2-360M etwa 376 MB. - Messung 1 (dieser Rechner, WebGPU, Qwen2.5-0.5B-Instruct q4f16): Laden 29 s (erstmals, ca. 280 MB), danach 0,2 bis 0,4 s pro Karte. Qualität **nicht brauchbar**: Von 20 Begriffen (10 Deutsch, 10 Englisch) hatten 14 vier Wörter, aber nur etwa 2 bis 3 waren sinnvoll. Typische Fehler: erfundene Wörter („Gäcker“, „Zubler“), Buchstaben statt Wörter („Pizza“ → s, p, i, z), Wörter, die den Begriff enthalten („Regenbogen“ → Bogen), unpassende Wörter („Bibliothek“ → Leiche). Deutsch ist deutlich schlechter als Englisch. Die Prüfzahl „6 von 20 ohne Beanstandung“ der Seite überschätzt die Qualität, weil sie nur Form prüft und nicht den Sinn.
+- Entscheidung (Auftraggeber): größeres Modell nicht testen, Aufgabe „anders lösen“. Erkundung: Kandidatenwörter aus der Einleitung des Wikipedia-Artikels (kostenlos, ohne Schlüssel, vom Browser aus per `origin=*` abrufbar). Messung an denselben 20 Begriffen mit einfachem Filter (Stoppwörter, Wörter mit dem Begriff darin, auf Deutsch nur großgeschriebene Wörter, Häufigkeit): meist sinnvolle Nachbarwörter (Regenbogen → Regentropfen, Sonnenlicht, Strahlen, Licht, Sonne, Farben; Gewitter → Blitz, Donner, Entladungen), aber auch Rauschen („Vorlage“, „Infobox“, Ländernamen, englisch „known“, „used“). Als Auswahlliste zum Antippen brauchbar, als fertige Karte nicht. Links aus dem Artikel waren deutlich schlechter.
+- Entscheidung (Auftraggeber, `ADR-018`): Wikipedia abgelehnt, KI nur am Rechner (Ollama), am Handy ohne KI.
+- Ein kurz ergänzter Adapter für LM Studio wurde auf Wunsch des Auftraggebers wieder entfernt (nicht beauftragt). Die KI-Anbindung bleibt bei Ollama. Gemessen vor dem Rückbau: Der LM-Studio-Server dieses Rechners sendet keinen CORS-Header; für eine spätere Anbindung müsste dort „CORS aktivieren“ eingeschaltet werden.
+
 ### PH-13 – Karten und Kategorien neu gestalten
 
 - **PH-13-01:** Neues schlankes Formular „Karte hinzufügen“ oben auf der Kartenseite (Kategorie, Schwierigkeit, Begriff, vier verbotene Wörter in einem Feld mit Komma). Die Mehrzeilen-Eingabe ist entfallen.
 - **PH-13-02:** „Karten nach Kategorie“ ersetzt die flache Liste: jede Kategorie ausklappbar, Karten als kompakte Zeilen, eigene Karten bearbeitbar und löschbar, Standardkarten nur lesbar.
 - **PH-13-03:** Im Setup sind die Kategorien in „Standard“ und „Eigene“ getrennt.
 - **PH-13-04:** KI-Vorschlag für verbotene Wörter: Knopf „Wörter mit KI vorschlagen“ beim Hinzufügen und Bearbeiten, sichtbar nur mit erreichbarer lokaler Ollama-KI. Der Vorschlag wird geprüft und nur ins Feld eingetragen. Neuer Port `TabooWordSuggester`, Adapter `ollamaTabooWordSuggester`; die Modellsuche ist als `findOllamaModel` mit dem Kartengenerator geteilt. Ohne KI bleibt alles unverändert.
+- **PH-13-05:** Kartenseite verfeinert: Bearbeiten als Stift-Knopf, Export nur je Kategorie, Import als gestalteter Knopf, Zurück und KI-Vorschlag als Knöpfe mit Symbol (neuer Baustein `Icon`). Der globale Export entfällt. Nachbesserung: kompakte Symbolknöpfe neben den Namen (Stift bei der Karte direkt unter der Schwierigkeit rechts; alle Symbolknöpfe (Stift, Export, KI) haben die normale Knopfform (keine runden Knöpfe) und 2,5 rem Größe; der KI-Knopf neben dem Wörterfeld ist genauso hoch wie das Feld (3 rem), Kartenzeilen niedriger (ein zu großer oberer Außenabstand der Knöpfe im Spielbereich ist für diese Symbolknöpfe aufgehoben), Download bei der Kategorie), Leiste „Karten“ und „Spielregeln“ oben rechts im Setup, Zurück-Pfeil in der Kopfzeile der App (oben rechts) auf der Kartenseite, wo Einstellungen und Home ausgeblendet sind (neuer Hook `useGameBack`, Texte `navigation.back`). Das Export-Symbol in der Kategoriezeile sitzt jetzt auf einer Höhe mit Namen und Zähler (ein fremder oberer Außenabstand der Knöpfe ist aufgehoben), KI-Knopf neben dem Wörterfeld (ohne KI deaktiviert mit Hinweis).
 - Annahmen: Eine Kategorie entsteht durch ihre Karten (keine leeren Kategorien); die Ansicht zeigt nur Karten der gewählten Kartensprache.
-- Prüfungen: 295 Unit-Tests, 25 e2e (frischer Build), tsc, eslint, Prettier, Architekturprüfung.
+- Prüfungen: 297 Unit-Tests, 25 e2e (frischer Build), tsc, eslint, Prettier, Architekturprüfung.
 
 ## 2026-11-11
 
@@ -23,7 +32,7 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ### Nachbesserung zu PH-12-04 und PH-12-05
 
-- Reihenfolge der Spieleinstellungen: Runden, Rundendauer, Überspringen, Stechen, Kartenquelle, Kategorien, Schwierigkeit. Die Kartenquelle steht direkt über den Kategorien, die beiden Filter am Ende.
+- Reihenfolge der Spieleinstellungen: Runden, Rundendauer, Überspringen, Stechen, Kartenquelle, Schwierigkeit, Kategorien. Die Kategorien stehen zuletzt; die Trennlinie zwischen Standard- und eigenen Kategorien ist entfallen, nur die kleinen Beschriftungen bleiben.
 - „Überspringen pro Runde“ steht direkt unter „Rundendauer (Sekunden)“. Die Abstände im Setup sind vereinheitlicht: zwischen allen Einstellungen 16 px, zwischen den Abschnitten 32 px; der Info-Knopf vergrößert die Zeile der Beschriftung nicht mehr.
 - Der einklappbare Bereich „Weitere Optionen“ entfällt: Stechen, Überspringen, Schwierigkeit und Kategorien stehen direkt untereinander im Abschnitt „Spieleinstellungen". Der Übersetzungsschlüssel `tabooSetup.moreOptions` und die zugehörigen Testschritte sind entfernt.
 - „Mittel“ ist gelb statt blau (Ampel: grün, gelb, rot) (Auswahl und Anzeige in der Runde), damit es nicht wie ein gewöhnliches ausgewähltes Element aussieht.

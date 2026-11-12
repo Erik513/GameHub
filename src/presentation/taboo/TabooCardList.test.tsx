@@ -40,12 +40,14 @@ async function renderList(overrides: Partial<Parameters<typeof TabooCardList>[0]
   const i18n = await createGameHubI18n("en");
   const onUpdate = vi.fn(() => Promise.resolve());
   const onRemove = vi.fn(() => Promise.resolve());
+  const onExport = vi.fn();
   render(
     <I18nextProvider i18n={i18n}>
       <TabooCardList
         allCards={[moon, goal, sun, mond]}
         cardLanguage="en"
         disabled={false}
+        onExport={onExport}
         onRemove={onRemove}
         onUpdate={onUpdate}
         ownCards={[moon, goal]}
@@ -54,7 +56,7 @@ async function renderList(overrides: Partial<Parameters<typeof TabooCardList>[0]
       />
     </I18nextProvider>,
   );
-  return { user, onUpdate, onRemove };
+  return { user, onUpdate, onRemove, onExport };
 }
 
 function category(name: string) {
@@ -78,6 +80,15 @@ it("groups cards by category with counts and lists own cards before standard car
   expect(within(rows[0]!).getByRole("button", { name: "Edit card Moon" })).toBeVisible();
   expect(within(rows[1]!).queryByRole("button")).toBeNull();
   expect(screen.queryByText("Mond")).not.toBeInTheDocument();
+});
+
+it("exports one category at a time and only offers it where own cards exist", async () => {
+  const { user, onExport } = await renderList();
+  await user.click(screen.getByText("Sport", { selector: "summary span" }));
+  await user.click(screen.getByText("Culture", { selector: "summary span" }));
+  expect(screen.queryByRole("button", { name: "Export category Culture" })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "Export category Sport" }));
+  expect(onExport).toHaveBeenCalledExactlyOnceWith("Sport", [goal]);
 });
 
 it("edits a card, validates the input and saves a new category", async () => {
@@ -141,8 +152,8 @@ it("deletes a card from the editor only after a second tap", async () => {
 });
 
 it.each([
-  ["en", "Manage own cards", "Edit card Moon", "Save", "Nature"],
-  ["de", "Eigene Karten verwalten", "Karte Moon bearbeiten", "Speichern", "Natur"],
+  ["en", "Cards", "Edit card Moon", "Save", "Nature"],
+  ["de", "Karten", "Karte Moon bearbeiten", "Speichern", "Natur"],
 ] as const)(
   "edits and deletes a stored card from the card page in %s",
   async (language, manage, edit, save, nature) => {
