@@ -36,6 +36,44 @@ export async function fetchJson(url, init) {
   return response.json();
 }
 
+/**
+ * Explains a failed request. Node reports every network problem as "fetch failed"; the real reason
+ * (for example a refused connection or a timeout) sits in `error.cause`.
+ */
+export function describeError(error) {
+  const cause = error?.cause;
+  const detail = cause?.code ?? cause?.message;
+  return detail ? `${error.message} (${detail})` : String(error?.message ?? error);
+}
+
+/**
+ * Sends a request and hands every line of the streamed answer to `onLine`. A streamed answer is
+ * used because a thinking model can take many minutes before the first word, and a request that
+ * waits for the whole answer is cut off by Node after 5 minutes without any data.
+ */
+async function streamLines(url, init, onLine) {
+  const response = await fetch(url, { redirect: "error", ...init });
+  if (!response.ok) throw new Error(`${url} answered ${response.status}`);
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let lines = 0;
+  for await (const chunk of response.body) {
+    buffer += decoder.decode(chunk, { stream: true });
+    let end = buffer.indexOf("\n");
+    while (end >= 0) {
+      const line = buffer.slice(0, end).trim();
+      buffer = buffer.slice(end + 1);
+      if (line) onLine(line);
+      lines += 1;
+      // A dot every 200 lines shows that the model is still answering.
+      if (lines % 200 === 0) process.stdout.write(".");
+      end = buffer.indexOf("\n");
+    }
+  }
+  if (buffer.trim()) onLine(buffer.trim());
+  if (lines >= 200) process.stdout.write("\n");
+}
+
 function ollamaProvider(options, schema) {
   return {
     name: "ollama",
@@ -51,22 +89,29 @@ function ollamaProvider(options, schema) {
       return model;
     },
     async chat(model, prompt) {
-      const reply = await fetchJson(`${options.ollamaUrl}/api/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: AbortSignal.timeout(600_000),
-        body: JSON.stringify({
-          model,
-          stream: false,
-          format: schema,
-          options: { temperature: options.temperature },
-          messages: [
-            { role: "system", content: prompt.system },
-            { role: "user", content: prompt.user },
-          ],
-        }),
-      });
-      return String(reply?.message?.content ?? "");
+      let text = "";
+      await streamLines(
+        `${options.ollamaUrl}/api/chat`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(1_200_000),
+          body: JSON.stringify({
+            model,
+            stream: true,
+            format: schema,
+            options: { temperature: options.temperature },
+            messages: [
+              { role: "system", content: prompt.system },
+              { role: "user", content: prompt.user },
+            ],
+          }),
+        },
+        (line) => {
+          text += JSON.parse(line)?.message?.content ?? "";
+        },
+      );
+      return text;
     },
   };
 }
@@ -96,26 +141,38 @@ function lmStudioProvider(options, schema) {
       );
     },
     async chat(model, prompt) {
-      const reply = await fetchJson(`${options.lmstudioUrl}/v1/chat/completions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: AbortSignal.timeout(600_000),
-        body: JSON.stringify({
-          model,
-          temperature: options.temperature,
-          // Thinking models spend many tokens on reasoning before the answer.
-          max_tokens: 8000,
-          response_format: {
-            type: "json_schema",
-            json_schema: { name: "cards", strict: true, schema },
-          },
-          messages: [
-            { role: "system", content: prompt.system },
-            { role: "user", content: prompt.user },
-          ],
-        }),
-      });
-      return String(reply?.choices?.[0]?.message?.content ?? "");
+      let text = "";
+      await streamLines(
+        `${options.lmstudioUrl}/v1/chat/completions`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(1_200_000),
+          body: JSON.stringify({
+            model,
+            stream: true,
+            temperature: options.temperature,
+            // Thinking models spend many tokens on reasoning before the answer.
+            max_tokens: 8000,
+            response_format: {
+              type: "json_schema",
+              json_schema: { name: "cards", strict: true, schema },
+            },
+            messages: [
+              { role: "system", content: prompt.system },
+              { role: "user", content: prompt.user },
+            ],
+          }),
+        },
+        (line) => {
+          if (!line.startsWith("data:")) return;
+          const payload = line.slice(5).trim();
+          if (payload === "[DONE]") return;
+          // The reasoning of a thinking model arrives as `reasoning_content` and is not part of the answer.
+          text += JSON.parse(payload)?.choices?.[0]?.delta?.content ?? "";
+        },
+      );
+      return text;
     },
   };
 }
@@ -128,7 +185,7 @@ export async function chooseProvider(options, schema) {
     try {
       return { provider, model: await provider.chooseModel() };
     } catch (error) {
-      problems.push(`${name}: ${error.message}`);
+      problems.push(`${name}: ${describeError(error)}`);
     }
   }
   throw new Error(`No AI available.\n  ${problems.join("\n  ")}`);

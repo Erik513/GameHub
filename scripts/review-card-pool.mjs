@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 import {
   chooseProvider,
+  describeError,
   providerDefaults,
   providerFlags,
   readJson,
@@ -256,7 +257,7 @@ async function main() {
           );
           verdict = review.parseJudgeResponse(text);
         } catch (error) {
-          console.log(`  request failed: ${error.message}`);
+          console.log(`  request failed: ${describeError(error)}`);
         }
         done += 1;
         if (!verdict) {

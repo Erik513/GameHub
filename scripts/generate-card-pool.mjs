@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 import {
   chooseProvider,
+  describeError,
   providerDefaults,
   providerFlags,
   readJson,
@@ -199,7 +200,7 @@ async function main() {
           try {
             text = await provider.chat(model, prompt);
           } catch (error) {
-            console.log(`  request failed: ${error.message}`);
+            console.log(`  request failed: ${describeError(error)}`);
           }
           const review = generation.reviewPoolCards(
             { category, difficulty, language },

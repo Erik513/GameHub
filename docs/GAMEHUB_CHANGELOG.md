@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### Korrektur an den Kartenwerkzeugen: Antworten als Datenstrom
+
+- Der erste echte Probelauf mit `qwen/qwen3.6-27b` (LM Studio) brach nach etwa fünf Minuten mit „fetch failed“ ab. Ursache: Node bricht eine Anfrage ab, wenn fünf Minuten lang gar keine Daten kommen (Kopfzeilen-Zeitlimit), und ein Modell, das vor der Antwort lange nachdenkt, sendet bei nicht gestreamten Antworten erst nach dem Ende etwas.
+- Beide Anbieter (Ollama, LM Studio) werden jetzt im Datenstrom abgefragt (`scripts/lib/pool-tools.mjs`); die Nachdenk-Anteile von LM Studio (`reasoning_content`) werden verworfen, ein Punkt je 200 Zeilen zeigt, dass das Modell antwortet. Das Zeitlimit gilt nun für die ganze Anfrage (20 Minuten). Fehlermeldungen nennen die eigentliche Ursache (zum Beispiel `ECONNREFUSED`).
+- Geprüft mit einer nachgebildeten Schnittstelle, die beide Datenstromformate liefert (erzeugen und prüfen), und mit einer nicht erreichbaren Adresse (Ursache sichtbar). Ein erneuter Lauf mit dem echten Modell läuft.
+
 ### PH-15-04 – Prüfwerkzeug für den Kartenpool
 
 - Neues Werkzeug `scripts/review-card-pool.mjs` (Entwicklerwerkzeug, nicht Teil von App und Build) mit `judge`, `sheet` und `merge`. `judge`: zweiter KI-Durchgang (1 bis 5 mit Problemtext, fortsetzbar). `sheet`: HTML-Prüfseite mit allen zweifelhaften und ungeprüften Karten und einer Stichprobe der guten je Kategorie und Schwierigkeit, Abwählen per Kästchen, Liste kopieren. `merge`: übernimmt gute, nicht abgewählte Karten in `src/data/pool/<Sprache>.json` (nur als gültiges Paket, Vorschau mit `--dry-run`, wiederholbar ohne Doppelungen).
