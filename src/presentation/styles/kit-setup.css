@@ -332,3 +332,11 @@
 .kit-roster__list--pick li {
   padding-right: var(--space-3);
 }
+
+/* The line-up after the start: teams and players, the start button at the bottom. */
+.kit-lineup {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-4);
+}

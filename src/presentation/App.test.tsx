@@ -102,6 +102,7 @@ describe("App", () => {
     expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();
     expect(screen.queryByRole("button", { name: "End game" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
 
     // During the game: no hub navigation, no settings.
     expect(screen.queryByRole("button", { name: "Settings" })).not.toBeInTheDocument();
@@ -143,6 +144,7 @@ describe("App", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     // Between turns only the end-game action exists; there is nothing to pause.
     expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
@@ -213,6 +215,7 @@ describe("App", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     for (let shown = 0; shown < 5; shown += 1) {
       fireEvent.click(screen.getByRole("button", { name: "Correct" }));
@@ -242,6 +245,7 @@ describe("App", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     // Three short rounds for two teams: six turns that nobody scores in.
     for (let turn = 0; turn < 6; turn += 1) {
       fireEvent.click(screen.getByRole("button", { name: "Start round" }));

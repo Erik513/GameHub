@@ -46,11 +46,17 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+/** The menu opens the line-up; the cards are prepared when the game is started from there. */
+function openLineup() {
+  fireEvent.submit(document.querySelector("#taboo-setup-form")!);
+  return document.querySelector("#taboo-lineup-form")!;
+}
+
 describe("Taboo setup while extra cards are generated", () => {
   it("ignores a second submit while the first one is still generating", async () => {
     const { generate, generator } = pendingGenerator();
     await renderSetup(generator);
-    const form = document.querySelector("form")!;
+    const form = openLineup();
     fireEvent.submit(form);
     await vi.waitFor(() => expect(generate).toHaveBeenCalledTimes(1));
     expect(screen.getByRole("button", { name: "Preparing cards…" })).toBeDisabled();
@@ -66,20 +72,18 @@ describe("Taboo setup while extra cards are generated", () => {
   it("drops the result when the setup is changed during the generation", async () => {
     const { generate, generator, releases } = pendingGenerator();
     await renderSetup(generator);
-    fireEvent.submit(document.querySelector("form")!);
+    fireEvent.submit(openLineup());
     await vi.waitFor(() => expect(generate).toHaveBeenCalledTimes(1));
-    // Changing any option cancels the preparation.
+    // Changing the teams cancels the preparation.
     fireEvent.click(
-      within(screen.getByRole("group", { name: "Round duration (seconds)" })).getByRole("radio", {
-        name: "90",
-      }),
+      within(screen.getByRole("group", { name: "Teams" })).getByRole("radio", { name: "3" }),
     );
     await act(async () => {
       releases[0]?.({ status: "failed", code: "cancelled" });
       await Promise.resolve();
     });
     expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Start" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Start game" })).toBeEnabled();
   });
 
   it("starts with the local cards and says so when no extra card could be generated", async () => {
@@ -88,8 +92,9 @@ describe("Taboo setup while extra cards are generated", () => {
       generate: vi.fn().mockRejectedValue(new Error("offline")),
     };
     await renderSetup(failing);
+    const lineup = openLineup();
     await act(async () => {
-      fireEvent.submit(document.querySelector("form")!);
+      fireEvent.submit(lineup);
       await Promise.resolve();
     });
     expect(await screen.findByRole("region", { name: "Round overview" })).toBeVisible();

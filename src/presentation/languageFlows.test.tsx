@@ -121,6 +121,8 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     checkScreen("info dialog");
     press("settings.close");
     press("tabooSetup.start");
+    checkScreen("line-up");
+    press("tabooLineup.start");
     checkScreen("round overview before the first turn");
 
     // First turn: a wrong and a skipped card (no points), pause and end the round early.
@@ -158,6 +160,6 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     checkScreen("final result");
 
     expect(missing).toEqual([]);
-    expect(checked).toHaveLength(13);
+    expect(checked).toHaveLength(14);
   });
 });

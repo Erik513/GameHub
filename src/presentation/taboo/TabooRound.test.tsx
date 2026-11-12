@@ -55,6 +55,7 @@ it.each([
       );
     }
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     if (correct) fireEvent.click(screen.getByRole("button", { name: "Correct" }));
     void act(() => {
@@ -73,6 +74,9 @@ it.each([
       }),
     );
     if (correct) {
+      // The same settings lead back to the line-up, where the game is started again.
+      expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
+      fireEvent.click(screen.getByRole("button", { name: "Start game" }));
       fireEvent.click(screen.getByRole("button", { name: "Start round" }));
       expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Score: 0");
       expect(screen.getByRole("timer")).toHaveTextContent(/^90$/);
@@ -99,6 +103,7 @@ it("plays cards without resetting the countdown and ends the round on time", asy
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const round = screen.getByRole("region", { name: "Active round" });
     expect(within(round).getAllByRole("listitem")).toHaveLength(4);
@@ -169,6 +174,7 @@ it("shows the remaining time as a shrinking bar", async () => {
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const bar = () => document.querySelector<HTMLElement>(".kit-hud__bar span")!;
     expect(bar().style.transform).toBe("scaleX(1)");

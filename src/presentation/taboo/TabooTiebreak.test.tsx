@@ -28,6 +28,7 @@ function reachTiebreak() {
     screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
   );
   press("Start");
+  press("Start game");
   press("Start round");
   advance(60000);
   press("Start round");
@@ -88,6 +89,8 @@ describe("Taboo tiebreak", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 1");
     expect(resultRows()).toEqual(["Team 1: 3/3 cards · 10.0 s", "Team 2: 1/3 cards · 90.0 s"]);
     press("Play again with the same setup");
+    // The same settings lead to the line-up, the game starts again from there.
+    press("Start game");
     expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
   });
 

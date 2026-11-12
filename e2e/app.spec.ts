@@ -16,6 +16,7 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
   await nature.press("Space");
   await expect(nature).toBeChecked();
   await page.getByRole("button", { name: "Start", exact: true }).click();
+  await page.getByRole("button", { name: "Start game", exact: true }).click();
   await page.getByRole("button", { name: "Start round" }).click();
   const round = page.getByRole("region", { name: "Active round" });
   await expect(round.getByRole("timer")).toHaveText(/^\d+$/);

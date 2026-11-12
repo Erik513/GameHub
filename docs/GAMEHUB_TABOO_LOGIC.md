@@ -38,7 +38,7 @@ Eigene Zustandsmaschine neben der klassischen (Regeln: `docs/GAMEHUB_TABOO_MODES
 | Zeit | `elapsedMs` kommt von außen; `NaN` und unendliche Werte werden ignoriert, Negatives wird auf 0 begrenzt. |
 | Neustart | `restartRun` wirft den Lauf weg; seine Karten bleiben „benutzt“, das Team spielt mit neuen Karten erneut. |
 | Sieg | Kürzeste Zeit, verglichen in Zehntelsekunden; gleiche Zeit ist gemeinsamer Sieg. `finished` ist endgültig. |
-| Karten | `raceCards.ts`: gleiche Schwierigkeitsmischung für jedes Team, Ersatz gleicher Schwierigkeit, nie eine Karte doppelt. |
+| Karten | `raceCards.ts`: genau dieselbe Schwierigkeitsmischung für jedes Team, nur aus den gewählten Schwierigkeiten, ohne Auffüllen aus anderen; Ersatz derselben Schwierigkeit oder nichts; nie eine Karte doppelt. `raceCardShortage` prüft vor dem Start, ob jede Schwierigkeit genug Karten hat (alle Läufe plus zwei Ersatzkarten je Team). |
 
 ## Geprüfte Randfälle
 

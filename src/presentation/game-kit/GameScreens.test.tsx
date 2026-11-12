@@ -1,6 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import { expect, it } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 import { ActionRow } from "./ActionRow";
+import { LineupScreen } from "./LineupScreen";
 import { ManageScreen } from "./ManageScreen";
 import { ScoreScreen } from "./ScoreScreen";
 
@@ -89,4 +92,38 @@ it("shows the winner on the final screen and works without standings", () => {
   rerender(<ScoreScreen actions={<button type="button">Go</button>} ariaLabel="Plain" />);
   expect(screen.queryByRole("heading")).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Go" })).toBeVisible();
+});
+
+it("frames the line-up with messages and a start button that submits the form", async () => {
+  const onSubmit = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
+  const { rerender } = render(
+    <LineupScreen
+      ariaLabel="Line-up"
+      formId="lineup"
+      messages={<p role="alert">Not enough players</p>}
+      onSubmit={onSubmit}
+      startLabel="Start game"
+    >
+      <input aria-label="Team name" />
+    </LineupScreen>,
+  );
+  const lineup = screen.getByRole("region", { name: "Line-up" });
+  expect(within(lineup).getByRole("alert")).toHaveTextContent("Not enough players");
+  expect(within(lineup).getByRole("textbox", { name: "Team name" })).toBeVisible();
+  await userEvent.click(screen.getByRole("button", { name: "Start game" }));
+  expect(onSubmit).toHaveBeenCalledOnce();
+
+  rerender(
+    <LineupScreen
+      ariaLabel="Line-up"
+      formId="lineup"
+      onSubmit={onSubmit}
+      startDisabled
+      startLabel="Preparing"
+    >
+      <p>Body</p>
+    </LineupScreen>,
+  );
+  expect(screen.getByRole("button", { name: "Preparing" })).toBeDisabled();
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });

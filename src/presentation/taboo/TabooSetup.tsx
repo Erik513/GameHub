@@ -10,7 +10,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { buildDeck, type DeckCriteria } from "../../business/games/taboo/deck";
 import { createRaceGame, type RaceState } from "../../business/games/taboo/race";
-import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
+import { raceCardShortage } from "../../business/games/taboo/raceCards";
+import type { Difficulty, TabooCard, ValidationIssue } from "../../business/games/taboo/model";
 import {
   createTabooGame,
   getNextTabooTurn,
@@ -26,17 +27,17 @@ import {
   customCategoryIds,
   type TabooCategoryInfo,
 } from "../../business/games/taboo/categories";
-import { shuffleTeams } from "../../business/shared/teamOrder";
 import { buildTeams, initialTeamSetup, type TeamSetupValue } from "../../business/shared/teamSetup";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { hasTeamSetupContent } from "../../business/shared/savedTeamSetup";
-import { useGameExit } from "../GameChrome";
-import { useTeamSetupMemory } from "../game-kit";
+import { useGameBack, useGameExit } from "../GameChrome";
+import { LineupScreen, SetupSection, TeamsSetup, useTeamSetupMemory } from "../game-kit";
 import { TabooRaceGame } from "./TabooRaceGame";
 import { TabooRound } from "./TabooRound";
 import { useTabooRefill } from "./useTabooRefill";
 import { TabooResultView } from "./TabooResultView";
 import { TabooSetupForm } from "./TabooSetupForm";
+import { TabooSetupMessages } from "./TabooSetupMessages";
 import { TabooTiebreakOverview } from "./TabooTiebreakOverview";
 import { TabooTurnOverview } from "./TabooTurnOverview";
 import {
@@ -45,8 +46,10 @@ import {
   difficulties,
   maxCardsPerRequest,
   type RoundChoice,
+  readTabooSettings,
   type SetupState,
   type TabooMode,
+  type TabooSettings,
 } from "./tabooSetupModel";
 import { TabooTiebreakRound } from "./TabooTiebreakRound";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
@@ -82,10 +85,21 @@ export function TabooSetup({
   ];
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
   const [session, setSession] = useState<{ state: SetupState; deck: readonly TabooCard[] }>();
-  const [shortage, setShortage] = useState<{ available: number; required: number }>();
+  const [shortage, setShortage] = useState<{
+    available: number;
+    difficulty?: Difficulty;
+    required: number;
+  }>();
   const [mode, setMode] = useState<TabooMode>("classic");
+  // The settings of the main menu, read when "Start" is pressed; the line-up follows.
+  const [settings, setSettings] = useState<TabooSettings>();
+  const [lineupOpen, setLineupOpen] = useState(false);
+  // The cards of the game that was just played; a replay with the same settings reuses them.
+  const replayDeck = useRef<readonly TabooCard[] | undefined>(undefined);
   // The game of the mode "Auf Zeit"; the key starts it anew when the same setup is played again.
   const [raceSession, setRaceSession] = useState<{
+    /** The difficulties of the game; every team gets the same mix of them. */
+    difficulties: readonly Difficulty[];
     key: number;
     pool: readonly TabooCard[];
     state: RaceState;
@@ -148,18 +162,15 @@ export function TabooSetup({
     setIssues([]);
     if (!keepConfiguration) {
       setSession(undefined);
+      setSettings(undefined);
+      setLineupOpen(false);
       setFormVersion((version) => version + 1);
       setTeamSetup(initialTeamSetup());
     } else if (session) {
-      // Same setup: replay with the same cards in a fresh order.
-      const reordered = createTabooGame({
-        ...session.state.configuration,
-        teams:
-          teamSetup.order === "random"
-            ? shuffleTeams(session.state.configuration.teams)
-            : session.state.configuration.teams,
-      });
-      if (reordered.valid) setSession({ state: reordered.value, deck: shuffle(session.deck) });
+      // Same settings: back to the line-up, where the teams can be drawn anew; the cards are reused.
+      replayDeck.current = session.deck;
+      setSession(undefined);
+      setLineupOpen(true);
     }
   }
 
@@ -259,18 +270,16 @@ export function TabooSetup({
     if (!raceSession) return;
     if (!keepConfiguration) {
       setRaceSession(undefined);
+      setSettings(undefined);
+      setLineupOpen(false);
       setFormVersion((version) => version + 1);
       setTeamSetup(initialTeamSetup());
       return;
     }
-    const { configuration } = raceSession.state;
-    const again = createRaceGame({
-      ...configuration,
-      teams: teamSetup.order === "random" ? shuffleTeams(configuration.teams) : configuration.teams,
-    });
-    if (again.valid) {
-      setRaceSession({ key: raceSession.key + 1, pool: raceSession.pool, state: again.value });
-    }
+    // Same settings: back to the line-up, the cards of the race are reused.
+    replayDeck.current = raceSession.pool;
+    setRaceSession(undefined);
+    setLineupOpen(true);
   }
 
   // Leaving a game returns to the main window with the previous setup still filled in.
@@ -280,6 +289,7 @@ export function TabooSetup({
       refill.reset();
       setRound(undefined);
       setSession(undefined);
+      setLineupOpen(false);
       setDeckEmpty(false);
       setIssues([]);
     },
@@ -287,6 +297,15 @@ export function TabooSetup({
       ? { paused: round.pausedAt !== undefined, onToggle: togglePause }
       : undefined,
   );
+
+  const lineupVisible = lineupOpen && !session && !round && !raceSession && Boolean(settings);
+  // On the line-up the header offers a way back to the main menu.
+  useGameBack(lineupVisible, () => {
+    activeGeneration.current?.abort();
+    setLineupOpen(false);
+    setShortage(undefined);
+    setIssues([]);
+  });
 
   function startRound(
     active: { state: SetupState; deck: readonly TabooCard[] } | undefined = session,
@@ -320,49 +339,65 @@ export function TabooSetup({
     });
   }
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
+  /** The main menu: the settings are read once, then the line-up of the teams follows. */
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (activeGeneration.current) return;
+    const read = readTabooSettings(new FormData(event.currentTarget), {
+      categoryIds,
+      hasGenerators: Boolean(generators),
+      mode,
+    });
+    if (read.categories.length === 0) {
+      setIssues([{ field: "categories", code: "required" }]);
+      return;
+    }
+    setIssues([]);
+    setShortage(undefined);
+    setDeckEmpty(false);
+    setGenerationEmpty(false);
+    setSettings(read);
+    setLineupOpen(true);
+  }
+
+  /** The line-up: the teams are known now, so the game and its cards are prepared and it starts. */
+  async function startGame(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (activeGeneration.current || !settings) return;
     setGenerationEmpty(false);
     setDeckEmpty(false);
     setShortage(undefined);
     setSession(undefined);
-    const data = new FormData(event.currentTarget);
+    const reusable = replayDeck.current;
+    replayDeck.current = undefined;
     const teams = buildTeams(teamSetup, {
       defaultName: (number) => t("kitTeams.defaultName", { number }),
     });
-    const raceTarget = Number(data.get("raceTarget"));
+    const raceTarget = settings.raceTarget;
     const classic =
-      mode === "classic"
+      settings.mode === "classic"
         ? createTabooGame({
             teams,
-            roundsPerTeam:
-              data.get("rounds") === "unlimited" ? "unlimited" : Number(data.get("rounds")),
-            roundDurationSeconds: Number(data.get("duration")),
-            ...(data.get("tiebreak") === "off" ? {} : { tiebreak: true }),
-            ...(data.get("skips") === "unlimited" || !data.has("skips")
-              ? {}
-              : { skipsPerRound: Number(data.get("skips")) }),
+            roundsPerTeam: settings.rounds,
+            roundDurationSeconds: settings.duration,
+            ...(settings.tiebreak ? { tiebreak: true } : {}),
+            ...(settings.skips === undefined ? {} : { skipsPerRound: settings.skips }),
             cardLanguage,
           })
         : undefined;
     const race =
-      mode === "race" ? createRaceGame({ teams, cardLanguage, target: raceTarget }) : undefined;
+      settings.mode === "race"
+        ? createRaceGame({ teams, cardLanguage, target: raceTarget })
+        : undefined;
     const checked = classic ?? race;
     if (!checked?.valid) {
       setIssues(checked?.issues ?? []);
       return;
     }
-    const selectedCategories = categoryIds.filter((category) =>
-      data.getAll("category").includes(category),
-    );
-    if (selectedCategories.length === 0) {
-      setIssues([{ field: "categories", code: "required" }]);
-      return;
-    }
     setIssues([]);
     // The group is remembered for the next game, of any game.
     if (hasTeamSetupContent(teamSetup)) memory?.write(teamSetup);
+    const selectedCategories = settings.categories;
     const teamCount = checked.value.configuration.teams.length;
     // With unlimited rounds one card per team is enough to start; cards are reused later. A race
     // never uses a card twice, so it needs the cards of all runs and two spare ones per team.
@@ -374,12 +409,10 @@ export function TabooSetup({
       language: checked.value.configuration.cardLanguage,
       minimumCards: 1,
       categoryIds: selectedCategories.length === categoryIds.length ? [] : selectedCategories,
-      difficulties: difficulties.filter((difficulty) =>
-        data.getAll("difficulty").includes(difficulty),
-      ),
+      difficulties: settings.difficulties,
     };
     const chosenDifficulties = filters.difficulties?.length ? filters.difficulties : difficulties;
-    const cardSource = generators ? data.get("cardSource") : "local";
+    const cardSource = settings.cardSource;
     refill.configure(
       cardSource === "ai"
         ? {
@@ -389,49 +422,68 @@ export function TabooSetup({
           }
         : undefined,
     );
-    let additions: readonly TabooCard[] = [];
-    if (generators && (cardSource === "ai" || cardSource === "both")) {
-      const controller = new AbortController();
-      activeGeneration.current = controller;
-      setGenerating(true);
-      // Mixed decks only add a few extras. AI-only decks must last a full timed round per turn,
-      // so they are generated generously instead of one card per turn.
-      const perCategory =
-        cardSource === "ai"
-          ? Math.max(
-              2,
-              Math.ceil(
-                (required * (race?.valid ? 2 : aiCardsPerTurn)) / selectedCategories.length,
-              ),
-            )
-          : 2;
-      const requests = selectedCategories.flatMap((categoryId) =>
-        Array.from({ length: Math.ceil(perCategory / maxCardsPerRequest) }, (_, index) => ({
-          language: filters.language,
-          categoryId,
-          difficulty: chosenDifficulties[index % chosenDifficulties.length] ?? "easy",
-          count: Math.min(maxCardsPerRequest, perCategory - index * maxCardsPerRequest),
-        })),
-      );
-      try {
-        additions = await generateHiddenCards(generators, requests, cards, controller.signal);
-      } catch {
-        additions = [];
-      } finally {
-        activeGeneration.current = undefined;
-        setGenerating(false);
+    // A race needs enough cards of every difficulty it uses, so every team gets the same mix.
+    const shortageOf = (candidate: readonly TabooCard[]) =>
+      race?.valid
+        ? raceCardShortage(candidate, teamCount, raceTarget, chosenDifficulties)
+        : candidate.length < required
+          ? { available: candidate.length, required }
+          : undefined;
+    // A replay reuses the cards of the game before when they are enough for the new line-up.
+    let deck: readonly TabooCard[] | undefined =
+      reusable && !shortageOf(reusable) ? shuffle(reusable) : undefined;
+    if (!deck) {
+      let additions: readonly TabooCard[] = [];
+      if (generators && (cardSource === "ai" || cardSource === "both")) {
+        const controller = new AbortController();
+        activeGeneration.current = controller;
+        setGenerating(true);
+        // Mixed decks only add a few extras. AI-only decks must last a full timed round per turn,
+        // so they are generated generously instead of one card per turn.
+        const perCategory =
+          cardSource === "ai"
+            ? Math.max(
+                2,
+                Math.ceil(
+                  (required * (race?.valid ? 2 : aiCardsPerTurn)) / selectedCategories.length,
+                ),
+              )
+            : 2;
+        const requests = selectedCategories.flatMap((categoryId) =>
+          Array.from({ length: Math.ceil(perCategory / maxCardsPerRequest) }, (_, index) => ({
+            language: filters.language,
+            categoryId,
+            difficulty: chosenDifficulties[index % chosenDifficulties.length] ?? "easy",
+            count: Math.min(maxCardsPerRequest, perCategory - index * maxCardsPerRequest),
+          })),
+        );
+        try {
+          additions = await generateHiddenCards(generators, requests, cards, controller.signal);
+        } catch {
+          additions = [];
+        } finally {
+          activeGeneration.current = undefined;
+          setGenerating(false);
+        }
+        if (controller.signal.aborted) return;
+        setGenerationEmpty(additions.length === 0);
       }
-      if (controller.signal.aborted) return;
-      setGenerationEmpty(additions.length === 0);
+      const pool = cardSource === "ai" ? additions : [...cards, ...additions];
+      deck = buildDeck(pool, filters, Math.random).cards;
     }
-    const pool = cardSource === "ai" ? additions : [...cards, ...additions];
-    const deck = buildDeck(pool, filters, Math.random).cards;
-    if (deck.length < required) {
-      setShortage({ available: deck.length, required });
+    const missing = shortageOf(deck);
+    if (missing) {
+      setShortage(missing);
       return;
     }
+    setLineupOpen(false);
     if (race?.valid) {
-      setRaceSession({ key: 0, pool: deck, state: race.value });
+      setRaceSession({
+        difficulties: chosenDifficulties,
+        key: 0,
+        pool: deck,
+        state: race.value,
+      });
       return;
     }
     if (classic?.valid) setSession({ state: classic.value, deck });
@@ -468,11 +520,41 @@ export function TabooSetup({
           teamName={tiebreakState.configuration.teams[tiebreakState.active.teamIndex]?.name ?? ""}
         />
       )}
+      {lineupVisible && (
+        <LineupScreen
+          ariaLabel={t("tabooLineup.label")}
+          formId="taboo-lineup-form"
+          messages={
+            <TabooSetupMessages deckEmpty={deckEmpty} issues={issues} shortage={shortage} />
+          }
+          onSubmit={(event) => void startGame(event)}
+          startDisabled={generating}
+          startLabel={t(generating ? "tabooSetup.preparingCards" : "tabooLineup.start")}
+        >
+          <SetupSection title={t("kitSetup.teamsSection")}>
+            <TeamsSetup
+              onChange={(next) => {
+                // A changed line-up invalidates the cards that are being prepared.
+                activeGeneration.current?.abort();
+                setShortage(undefined);
+                setIssues([]);
+                setTeamSetup(next);
+              }}
+              playersOpen
+              value={teamSetup}
+            />
+          </SetupSection>
+        </LineupScreen>
+      )}
       {raceSession && (
         <TabooRaceGame
+          difficulties={raceSession.difficulties}
           initial={raceSession.state}
-          key={raceSession.key}
-          onExit={() => setRaceSession(undefined)}
+          key={`race-${raceSession.key}`}
+          onExit={() => {
+            setRaceSession(undefined);
+            setLineupOpen(false);
+          }}
           onNewSetup={() => restartRace(false)}
           onSameSetup={() => restartRace(true)}
           pool={raceSession.pool}
@@ -513,8 +595,8 @@ export function TabooSetup({
       )}
       <div
         className="taboo-setup__screen"
-        hidden={Boolean(round) || Boolean(session) || Boolean(raceSession)}
-        key={formVersion}
+        hidden={Boolean(round) || Boolean(session) || Boolean(raceSession) || lineupVisible}
+        key={`form-${formVersion}`}
       >
         <TabooSetupForm
           cardLanguage={cardLanguage}
@@ -534,11 +616,6 @@ export function TabooSetup({
           onSubmit={(event) => void submit(event)}
           roundChoices={roundChoices}
           shortage={shortage}
-          teamSetup={teamSetup}
-          onTeamSetupChange={(next) => {
-            handleFormChange();
-            setTeamSetup(next);
-          }}
         >
           {children}
         </TabooSetupForm>

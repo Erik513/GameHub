@@ -4,6 +4,28 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### PH-17-07 – Aufstellung nach dem Start
+
+- Das Hauptmenü von Tabu enthält nur noch Spieleinstellungen und Karten. „Starten“ führt zur neuen Ansicht **Aufstellung**: Teams, Namen, Reihenfolge, Spielerliste (offen), Auswahl aus der gespeicherten Spielerliste und Zuweisung von Hand oder per Knopf zufällig. „Spiel starten“ steht fest unten; die Kopfleiste hat den Zurückknopf (`ADR-023`, ändert die Regel aus `ADR-021`).
+- Neu im `game-kit`: `LineupScreen` (Rahmen mit Meldungen und Startknopf), `TeamsSetup` kann die Spielerliste offen zeigen (`playersOpen`).
+- Tabu: `TabooSetup` liest die Einstellungen beim ersten Start einmal (`readTabooSettings`, neuer reiner Teil in `tabooSetupModel.ts`) und bereitet erst beim Start der Aufstellung die Karten vor, weil dort die Teamzahl feststeht (auch die Prüfung auf genug Karten und die KI-Kartenvorbereitung). `TabooSetupMessages` zeigt die Fehler in beiden Ansichten. Ein Teamwechsel während der Kartenvorbereitung bricht sie ab.
+- „Mit gleicher Konfiguration neu spielen“ führt in die Aufstellung (Teams vorbelegt), die Karten des vorigen Spiels werden wiederverwendet, wenn sie für die neue Aufstellung reichen. Im Endstand wird nichts gelost oder verteilt.
+- Tests: neue Tests für die Aufstellung und `LineupScreen`, alle Abläufe um den zweiten Schritt ergänzt (Unit, e2e, Sprachdurchlauf, Handy-Layoutprüfung der Aufstellung in beiden Sprachen).
+- Geprüft: 544 Unit-Tests, 26 e2e-Tests (6 übersprungen), Typen, ESLint, Prettier, Schichtprüfung; im Browser auf 375 Pixel Breite.
+
+### Fehler behoben: „Neue Partie konfigurieren“ nach „Auf Zeit“
+
+- Nach dem Endstand von „Auf Zeit“ blieb der Endstand stehen und das Setup erschien darunter, die Knöpfe taten nichts mehr. Ursache: Das Rennen und das Setup-Formular benutzten im selben Container beide den Schlüssel `0` (React meldete doppelte Schlüssel), dadurch wurde das Rennen nicht entfernt. Die Schlüssel haben jetzt Vorsilben (`race-…`, `form-…`).
+- Der Komponententest prüft jetzt, dass nach „Neue Partie konfigurieren“ der Endstand verschwunden ist (vorher prüfte er nur, dass das Setup sichtbar ist). Im Browser geprüft: Endstand, „Mit gleicher Konfiguration neu spielen“, nochmal Endstand, „Neue Partie konfigurieren“.
+
+### Auf Zeit: faire Karten für alle Teams
+
+- Frage des Auftraggebers: Bekommen alle Teams dieselbe Schwierigkeitsmischung? Die Mischung war je Lauf gleich verteilt, konnte aber still abweichen: Fehlte eine Schwierigkeit, füllte die Kartenwahl aus einer anderen auf, ebenso bei Ersatzkarten.
+- Jetzt streng: Die Kartenwahl (`raceCards.ts`) liefert genau die Mischung (bei 5 Karten 2 leichte, 2 mittlere, 1 schwere) und nie Karten einer anderen Schwierigkeit; Ersatzkarten haben dieselbe Schwierigkeit, sonst sind Überspringen und Verbotenes Wort gesperrt. Die Mischung gilt nur für die im Setup gewählten Schwierigkeiten.
+- Neu: `raceCardShortage` prüft vor dem Start, ob jede benutzte Schwierigkeit genug Karten hat (Karten aller Läufe plus zwei Ersatzkarten je Team). Sonst meldet das Setup „Zu wenige Karten der Schwierigkeit …“ (Deutsch und Englisch), statt ungleiche Karten zu geben.
+- Tests: Mischung bei mehreren Teams nacheinander, Filter, kein Auffüllen, Kartenmangel, ganze Oberflächenläufe (beide Teams haben dieselbe Mischung) und die Meldung in beiden Sprachen.
+- Geprüft: 541 Unit-Tests, 26 e2e-Tests (6 übersprungen), Typen, ESLint, Prettier, Schichtprüfung.
+
 ### Setup in drei Felder, Standard 5 Karten
 
 - Das Tabu-Setup hat jetzt drei Felder: „Teams und Spieler“, „Spieleinstellungen“ (Spielmodus und die Gruppen des gewählten Modus) und „Karten“ (Kartensprache, Kartenquelle, Schwierigkeit, Kategorien). Einstellungen, die nicht vom Spielmodus abhängen, sind damit von den Spieleinstellungen getrennt. Regel in `docs/GAMEHUB_UI_RULES.md` ergänzt.

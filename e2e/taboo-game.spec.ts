@@ -6,6 +6,7 @@ const cases = [
     open: "View progress",
     rounds: "Rounds per team",
     prepare: "Start",
+    lineup: "Start game",
     start: "Start round",
     active: "Active round",
     correct: "Correct",
@@ -22,6 +23,7 @@ const cases = [
     open: "Fortschritt ansehen",
     rounds: "Runden pro Team",
     prepare: "Starten",
+    lineup: "Spiel starten",
     start: "Runde starten",
     active: "Laufende Runde",
     correct: "Richtig",
@@ -60,6 +62,7 @@ for (const labels of cases) {
         .check();
     }
     await page.getByRole("button", { name: labels.prepare, exact: true }).click();
+    await page.getByRole("button", { name: labels.lineup, exact: true }).click();
     await page.getByRole("button", { name: labels.start, exact: true }).click();
     const round = page.getByRole("region", { name: labels.active });
     await round.getByRole("button", { name: labels.correct }).click();
@@ -98,6 +101,8 @@ for (const labels of cases) {
       }),
     ).toBeVisible();
     await page.getByRole("button", { name: labels.restart }).click();
+    // The same settings lead to the line-up, the game starts again from there.
+    await page.getByRole("button", { name: labels.lineup, exact: true }).click();
     await page.getByRole("button", { name: labels.start, exact: true }).click();
     await expect(round.getByText(labels.score)).toBeVisible();
     await page.reload();

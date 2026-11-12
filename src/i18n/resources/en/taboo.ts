@@ -80,6 +80,10 @@ export const tabooTexts = {
     newSetup: "Set up a new game",
     show: "Show final results",
   },
+  tabooLineup: {
+    label: "Line-up",
+    start: "Start game",
+  },
   tabooMode: {
     legend: "Game mode",
     classic: "Classic",
@@ -170,6 +174,8 @@ export const tabooTexts = {
       difficulty:
         "The difficulty shows how hard a card is to explain. All mixes easy, medium and hard cards. The tiebreak always uses one card of each difficulty.",
     },
+    raceCardShortage:
+      "Not enough {{difficulty}} cards: {{available}} available, {{required}} needed so that every team gets the same mix.",
     raceTarget: "Cards per team",
     cardsSection: "Cards",
     cardSource: "Card source",

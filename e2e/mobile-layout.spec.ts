@@ -6,6 +6,7 @@ const labels = {
     settings: "Settings",
     close: "Close",
     start: "Start",
+    startGame: "Start game",
     startRound: "Start round",
     forbidden: "Forbidden word",
     skip: "Skip",
@@ -23,6 +24,7 @@ const labels = {
     settings: "Einstellungen",
     close: "Schließen",
     start: "Starten",
+    startGame: "Spiel starten",
     startRound: "Runde starten",
     forbidden: "Verbotenes Wort",
     skip: "Überspringen",
@@ -167,6 +169,8 @@ for (const language of ["en", "de"] as const) {
       await press(t.open);
       await check("setup");
       await press(t.start);
+      await check("line-up");
+      await press(t.startGame);
       await check("overview before the first turn");
 
       // First turn with one wrong, one skipped and several scored cards for a long review.
@@ -219,6 +223,7 @@ test("the tiebreak screens fit a small phone in both languages", async ({ page }
 
     await press(t.open);
     await press(t.start);
+    await press(t.startGame);
     // Nobody scores in the six turns of a short game, so the game ends in a tie.
     for (let turn = 0; turn < 6; turn += 1) {
       await press(t.startRound);
@@ -277,6 +282,8 @@ test("the race screens fit a small phone in both languages", async ({ page }, te
     await mode.getByRole("radio", { name: race.race }).check({ force: true });
     await check("race setup");
     await press(t.start);
+    await check("race line-up");
+    await press(t.startGame);
     await check("race overview before the first run");
 
     await press(race.startRun);

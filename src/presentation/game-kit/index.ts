@@ -1,6 +1,7 @@
 export { ActionRow } from "./ActionRow";
 export { ChoiceGroup, type ChoiceOption } from "./ChoiceGroup";
 export { InfoButton, type InfoContent } from "./InfoButton";
+export { LineupScreen } from "./LineupScreen";
 export { ManageScreen } from "./ManageScreen";
 export { PlayerRosterButton } from "./PlayerRosterButton";
 export { usePlayerRoster } from "./PlayerRosterContext";

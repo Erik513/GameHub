@@ -1,5 +1,7 @@
 # Entwurf: Gemeinsame Ansicht für Teams, Spieler und Spieleinstellungen
 
+> **Stand 2026-11-13 (`ADR-023`):** Teams und Spieler stehen nicht mehr im Hauptmenü, sondern in der Ansicht **Aufstellung** nach „Starten“ (`LineupScreen`). Dieses Dokument beschreibt die ursprüngliche Aufteilung; die Bausteine `TeamsSetup` und `PlayersSetup` sind unverändert, nur ihr Ort ist ein anderer.
+
 Dieses Dokument gehört zu Phase 17 (`PH-17-01`). Die Entscheidungen in Abschnitt 6 sind getroffen (siehe `ADR-020`); gebaut wird in `PH-17-02`. Es baut auf `ADR-017` (Spielbausteine und Spielmodul-Vertrag) und `docs/GAMEHUB_NEW_GAME_GUIDE.md` auf.
 
 ## 1. Ziel

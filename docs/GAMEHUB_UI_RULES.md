@@ -19,8 +19,7 @@ Aufbau von oben nach unten:
    - immer ein Knopf **Spieler** (öffnet die Spielerverwaltung, `ADR-022`; das Hauptmenü bekommt ihn automatisch);
    - immer ein Knopf **Spielregeln** (öffnet das Infofenster mit den Regeln);
    - optional ein Knopf zur **Datenansicht oder zum Editor**, wo man eigene Inhalte hinzufügen, ändern, importieren und exportieren kann (bei Tabu „Karten“). Spiele ohne eigene Inhalte haben ihn nicht.
-3. **Inhalt [ist]**, immer in genau dieser Reihenfolge:
-   - Feld **Teams und Spieler**,
+3. **Inhalt [ist]**, immer in genau dieser Reihenfolge (das Feld „Teams und Spieler“ gehört **nicht** mehr ins Hauptmenü, siehe 2.1a):
    - Feld **Spieleinstellungen**: nur Einstellungen, die den Ablauf des Spiels bestimmen (bei mehreren Modi zuerst der Spielmodus, dann die Gruppen des gewählten Modus),
    - bei Bedarf weitere Felder für Einstellungen, die **nicht** vom Spielmodus abhängen, getrennt von den Spieleinstellungen (bei Tabu das Feld **Karten** mit Kartensprache, Kartenquelle, Schwierigkeit und Kategorien).
 4. **Starten [ist]:** der Knopf steht ganz unten und ist **immer fest am unteren Rand**, bei kurzem wie bei langem Inhalt.
@@ -30,6 +29,16 @@ Aufbau von oben nach unten:
 **Spielmodus:** Hat ein Spiel mehrere Modi, steht die Knopfgruppe **Spielmodus** als erste Gruppe in den „Spieleinstellungen“. Der Modus bestimmt, welche weiteren Gruppen dort sichtbar sind; die Werte aller Modi bleiben beim Wechseln erhalten. Einstellungen, die nicht vom Modus abhängen (bei Tabu Kartensprache, Kartenquelle, Schwierigkeit, Kategorien), stehen in einem eigenen Feld.
 
 Die Felder des Inhalts sind Kapitel (Box mit Überschrift und Pfeil), auf- und zuklappbar, standardmäßig offen **[ist]**. Zugeklappte Eingaben bleiben im Formular und zählen beim Start.
+
+### 2.1a Aufstellung (nach „Starten“, `ADR-023`)
+
+Der Knopf „Starten“ im Hauptmenü führt zur Ansicht **Aufstellung**; erst ihr Knopf „Spiel starten“ startet das Spiel.
+
+- **Inhalt [ist]:** Feld „Teams und Spieler“ (Teamanzahl, Namen, Reihenfolge, Spielerliste, Auswahl aus der gespeicherten Spielerliste, Zuweisung von Hand oder per Knopf „Zufällig auf Teams verteilen“). Die Spielerliste ist offen.
+- **Hauptaktion:** „Spiel starten“ steht fest unten. Erst dort werden die Karten vorbereitet (auch das Nachladen durch die lokale KI) und geprüft, ob genug Karten da sind, weil erst hier die Teamzahl feststeht; Meldungen erscheinen in der Aufstellung.
+- **Kopfleiste:** nur der Zurückknopf (zurück ins Hauptmenü), wie in jeder Unteransicht.
+- **Spielende:** „Mit gleicher Konfiguration neu spielen“ führt in die Aufstellung (Teams vorbelegt, Einstellungen und Karten bleiben). Im Endstand selbst wird nichts gelost oder verteilt.
+- **Baustein:** `LineupScreen` im `game-kit`.
 
 ### 2.2 Spielansichten (während eines Spiels)
 
@@ -101,6 +110,7 @@ Alle Ansichten bestehen aus diesen Bausteinen im `game-kit` und in `components`;
 
 | Ansicht | Baustein |
 |---|---|
+| Aufstellung | `LineupScreen` (Meldungen, Teams und Spieler als `SetupSection` mit `TeamsSetup` oder `PlayersSetup`, Startknopf unten fest) |
 | Hauptmenü | `SetupScreen` (Rahmen mit Meldungen, Knopf `Spieler` (automatisch), Knopf für Spielregeln `rules`, optionaler Knopf für den Editor `editor`, Felder als `SetupSection`, Startleiste), darin `TeamsSetup` oder `PlayersSetup`, `ChoiceGroup`, `InfoButton` |
 | Editor | `ManageScreen` (Titel, Hinweis, Kapitel als `SetupSection`, Aktionsreihe, Meldungen) |
 | Zwischenstand und Endstand | `ScoreScreen` (Überschrift, optional Sieger, Punktestand, weitere Inhalte, Hauptaktion unten); der Endstand ist derselbe Baustein mit `winner` |

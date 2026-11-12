@@ -19,6 +19,8 @@ interface TeamsSetupProps {
   readonly onChange: (value: TeamSetupValue) => void;
   /** Off hides the player list, optional shows it, required also asks for a player in every team. */
   readonly players?: "off" | "optional" | "required";
+  /** Opens the player list from the start, for example on the line-up screen. */
+  readonly playersOpen?: boolean;
   readonly rules?: TeamRules;
   readonly value: TeamSetupValue;
 }
@@ -30,6 +32,7 @@ interface TeamsSetupProps {
 export function TeamsSetup({
   onChange,
   players = "optional",
+  playersOpen = false,
   rules = defaultTeamRules,
   value,
 }: TeamsSetupProps) {
@@ -102,6 +105,7 @@ export function TeamsSetup({
         <TeamPlayers
           count={count}
           onChange={update}
+          open={playersOpen}
           required={players === "required"}
           value={value}
         />
@@ -113,12 +117,13 @@ export function TeamsSetup({
 interface TeamPlayersProps {
   readonly count: number;
   readonly onChange: (patch: Partial<TeamSetupValue>) => void;
+  readonly open: boolean;
   readonly required: boolean;
   readonly value: TeamSetupValue;
 }
 
 /** The player list with its assignment to the teams: draw at random or choose by hand. */
-function TeamPlayers({ count, onChange, required, value }: TeamPlayersProps) {
+function TeamPlayers({ count, onChange, open, required, value }: TeamPlayersProps) {
   const { t } = useTranslation();
   const headingId = useId();
   const players = parsePlayers(value.playersText);
@@ -160,7 +165,7 @@ function TeamPlayers({ count, onChange, required, value }: TeamPlayersProps) {
   return (
     <section aria-labelledby={headingId} className="kit-players">
       <h3 id={headingId}>{t(required ? "kitPlayers.titleRequired" : "kitPlayers.title")}</h3>
-      <details className="kit-disclosure" open={required || undefined}>
+      <details className="kit-disclosure" open={required || open || undefined}>
         <summary>{t("kitPlayers.summary")}</summary>
         <div className="kit-disclosure__body">
           <RosterPicker onChange={changeText} value={value.playersText} />

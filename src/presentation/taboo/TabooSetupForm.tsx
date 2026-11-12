@@ -1,18 +1,16 @@
 import type { FormEvent, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
-import type { ValidationIssue } from "../../business/games/taboo/model";
+import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
 import { defaultRaceTarget, raceTargetChoices } from "../../business/games/taboo/race";
 import type { SupportedLanguage } from "../../i18n";
-import type { TeamSetupValue } from "../../business/shared/teamSetup";
-import { StatusMessage } from "../components";
-import { ChoiceGroup, SetupScreen, SetupSection, TeamsSetup } from "../game-kit";
+import { ChoiceGroup, SetupScreen, SetupSection } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
 import { TabooRules } from "./TabooRules";
+import { TabooSetupMessages } from "./TabooSetupMessages";
 import {
   cardSources,
   difficulties,
-  issueMessageKey,
   roundOption,
   tabooModes,
   type RoundChoice,
@@ -36,10 +34,8 @@ interface TabooSetupFormProps {
   onChange: (event: FormEvent<HTMLFormElement>) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   roundChoices: readonly RoundChoice[];
-  shortage: { available: number; required: number } | undefined;
-  /** What the player entered about teams and players. */
-  teamSetup: TeamSetupValue;
-  onTeamSetupChange: (value: TeamSetupValue) => void;
+  /** Too few cards; `difficulty` is set when a difficulty is short for a fair race. */
+  shortage: { available: number; required: number; difficulty?: Difficulty } | undefined;
 }
 
 /** The setup form of a Taboo game with its error messages and the start button. */
@@ -57,10 +53,8 @@ export function TabooSetupForm({
   onChange,
   onModeChange,
   onSubmit,
-  onTeamSetupChange,
   roundChoices,
   shortage,
-  teamSetup,
 }: TabooSetupFormProps) {
   const { t } = useTranslation();
   const categoryLabel = useCategoryLabel(categoryInfos);
@@ -76,29 +70,7 @@ export function TabooSetupForm({
     title: legend,
   });
 
-  const messages = (
-    <>
-      {shortage && (
-        <StatusMessage title={t("tabooRound.empty")} tone="error">
-          {t("tabooSetup.cardShortage", shortage)}
-        </StatusMessage>
-      )}
-      {deckEmpty && (
-        <StatusMessage title={t("tabooRound.empty")} tone="error">
-          {t("tabooRound.emptyHint")}
-        </StatusMessage>
-      )}
-      {issues.length > 0 && (
-        <StatusMessage title={t("tabooSetup.invalidSetup")} tone="error">
-          <ul>
-            {issues.map((issue) => (
-              <li key={issue.field + issue.code}>{t(issueMessageKey(issue))}</li>
-            ))}
-          </ul>
-        </StatusMessage>
-      )}
-    </>
-  );
+  const messages = <TabooSetupMessages deckEmpty={deckEmpty} issues={issues} shortage={shortage} />;
 
   return (
     <SetupScreen
@@ -111,9 +83,6 @@ export function TabooSetupForm({
       editor={children}
       rules={<TabooRules />}
     >
-      <SetupSection title={t("kitSetup.teamsSection")}>
-        <TeamsSetup onChange={onTeamSetupChange} value={teamSetup} />
-      </SetupSection>
       <SetupSection title={t("kitSetup.settingsSection")}>
         <ChoiceGroup
           info={info("mode", t("tabooMode.legend"))}

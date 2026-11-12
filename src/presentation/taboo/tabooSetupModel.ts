@@ -1,5 +1,5 @@
 import type { useTranslation } from "react-i18next";
-import type { ValidationIssue } from "../../business/games/taboo/model";
+import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
 import type { createTabooGame, TabooState } from "../../business/games/taboo/stateMachine";
 import type { ChoiceOption } from "../game-kit";
 import type { TiebreakRow } from "./TabooTiebreakResults";
@@ -82,4 +82,47 @@ export function roundOption(
   return name
     ? { value: String(value), label: t(`tabooSetup.roundOptions.${name}`), hint: String(value) }
     : { value: String(value), label: String(value) };
+}
+
+/** The settings of the main menu, read once when "Start" is pressed. */
+export interface TabooSettings {
+  readonly cardSource: (typeof cardSources)[number];
+  /** The chosen categories; never empty. */
+  readonly categories: readonly string[];
+  /** The chosen difficulties; empty means every difficulty. */
+  readonly difficulties: readonly Difficulty[];
+  readonly duration: number;
+  readonly mode: TabooMode;
+  readonly raceTarget: number;
+  readonly rounds: number | "unlimited";
+  /** Skips per round; undefined means as many as you like. */
+  readonly skips: number | undefined;
+  readonly tiebreak: boolean;
+}
+
+/** Reads the form of the main menu. Settings of the mode that is not chosen are read too, but unused. */
+export function readTabooSettings(
+  data: FormData,
+  options: { categoryIds: readonly string[]; hasGenerators: boolean; mode: TabooMode },
+): TabooSettings {
+  const source = data.get("cardSource");
+  const rounds = data.get("rounds");
+  const skips = data.get("skips");
+  return {
+    cardSource: options.hasGenerators
+      ? (cardSources.find((candidate) => candidate === source) ?? "both")
+      : "local",
+    categories: options.categoryIds.filter((category) =>
+      data.getAll("category").includes(category),
+    ),
+    difficulties: difficulties.filter((difficulty) =>
+      data.getAll("difficulty").includes(difficulty),
+    ),
+    duration: Number(data.get("duration")),
+    mode: options.mode,
+    raceTarget: Number(data.get("raceTarget")),
+    rounds: rounds === "unlimited" ? "unlimited" : Number(rounds),
+    skips: skips === "unlimited" || skips === null ? undefined : Number(skips),
+    tiebreak: data.get("tiebreak") !== "off",
+  };
 }

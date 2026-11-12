@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { TabooCard } from "../../business/games/taboo/model";
+import type { Difficulty, TabooCard } from "../../business/games/taboo/model";
 import {
   getRaceNextTeam,
   rankRaceAttempts,
@@ -22,6 +22,8 @@ interface Clock {
 }
 
 interface TabooRaceGameProps {
+  /** The difficulties of the game; every team gets the same mix of them. */
+  difficulties: readonly Difficulty[];
   /** The game as it was set up, in the overview before the first run. */
   initial: RaceState;
   /** Leaves the game and returns to the main menu with the setup still filled in. */
@@ -37,6 +39,7 @@ interface TabooRaceGameProps {
  * the final times. The rules are in `race.ts`; this view only drives them with the clock.
  */
 export function TabooRaceGame({
+  difficulties,
   initial,
   onExit,
   onNewSetup,
@@ -72,7 +75,14 @@ export function TabooRaceGame({
   );
 
   function beginRun() {
-    const cards = pickRaceCards(pool, configuration.target, new Set(state.usedCardIds), new Set());
+    const cards = pickRaceCards(
+      pool,
+      configuration.target,
+      new Set(state.usedCardIds),
+      new Set(),
+      Math.random,
+      difficulties,
+    );
     const next = cards ? transitionRace(state, { type: "beginRun", cards }) : state;
     if (next === state) {
       setNoCards(true);
@@ -84,11 +94,17 @@ export function TabooRaceGame({
   }
 
   const teamName = (index: number) => configuration.teams[index]?.name ?? "";
+  // Skipping and a forbidden word need a new card of the same difficulty, so the mix stays fair.
+  const onTable = running?.active.cards[running.active.solved];
+  const canReplace =
+    onTable === undefined ||
+    pickRaceReplacement(pool, onTable, new Set(state.usedCardIds), new Set()) !== undefined;
 
   if (running && clock) {
     return (
       <TabooRaceRun
         active={running.active}
+        canReplace={canReplace}
         dispatch={dispatch}
         onResume={togglePause}
         pausedAt={clock.pausedAt}

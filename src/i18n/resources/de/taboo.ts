@@ -82,6 +82,10 @@ export const tabooTexts = {
     newSetup: "Neue Partie konfigurieren",
     show: "Endergebnis anzeigen",
   },
+  tabooLineup: {
+    label: "Aufstellung",
+    start: "Spiel starten",
+  },
   tabooMode: {
     legend: "Spielmodus",
     classic: "Klassisch",
@@ -172,6 +176,8 @@ export const tabooTexts = {
       difficulty:
         "Die Schwierigkeit zeigt, wie schwer ein Begriff zu erklären ist. „Alle“ mischt einfache, mittlere und schwere Karten. Beim Stechen kommt immer je eine Karte jeder Schwierigkeit dran.",
     },
+    raceCardShortage:
+      "Zu wenige Karten der Schwierigkeit {{difficulty}}: {{available}} vorhanden, {{required}} nötig, damit jedes Team dieselbe Mischung bekommt.",
     raceTarget: "Karten pro Team",
     cardsSection: "Karten",
     cardSource: "Kartenquelle",

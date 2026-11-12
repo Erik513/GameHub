@@ -16,6 +16,8 @@ const outcomeVariants = {
 
 interface TabooRaceRunProps {
   active: RaceActive;
+  /** False when no card of the same difficulty is left; skipping and wrong cards are blocked then. */
+  canReplace: boolean;
   dispatch: (event: RaceEvent) => void;
   onResume: () => void;
   /** When the run is paused, and how long it was paused before, so pauses do not count. */
@@ -31,6 +33,7 @@ interface TabooRaceRunProps {
 /** One run of the mode "Auf Zeit": explain the cards one after another, the clock counts up. */
 export function TabooRaceRun({
   active,
+  canReplace,
   dispatch,
   onResume,
   pausedAt,
@@ -118,7 +121,7 @@ export function TabooRaceRun({
             <Button
               key={outcome}
               data-outcome={outcome}
-              disabled={paused}
+              disabled={paused || (outcome !== "correct" && !canReplace)}
               variant={outcomeVariants[outcome]}
               onClick={() => answer(outcome)}
             >

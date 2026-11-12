@@ -13,6 +13,7 @@ const texts = {
     target: "Cards per team",
     rounds: "Rounds per team",
     start: "Start",
+    startGame: "Start game",
     overview: "Race overview",
     startRun: "Start run",
     run: "Race run",
@@ -31,6 +32,7 @@ const texts = {
     target: "Karten pro Team",
     rounds: "Runden pro Team",
     start: "Starten",
+    startGame: "Spiel starten",
     overview: "Übersicht Auf Zeit",
     startRun: "Lauf starten",
     run: "Lauf Auf Zeit",
@@ -96,6 +98,7 @@ it.each(["en", "de"] as const)(
       within(screen.getByRole("group", { name: text.target })).getByRole("radio", { name: "5" }),
     );
     await user.click(screen.getByRole("button", { name: text.start }));
+    await user.click(screen.getByRole("button", { name: text.startGame }));
 
     const overview = await screen.findByRole("region", { name: text.overview });
     expect(within(overview).getAllByText(text.pending)).toHaveLength(2);
@@ -126,6 +129,8 @@ it.each(["en", "de"] as const)(
 
     await user.click(screen.getByRole("button", { name: text.newSetup }));
     expect(screen.getByRole("group", { name: text.mode })).toBeVisible();
+    // The final screen is gone, only the setup is left.
+    expect(screen.queryByRole("region", { name: text.result })).not.toBeInTheDocument();
   },
 );
 
@@ -133,6 +138,7 @@ it("allows one skip per run and replaces a card with a forbidden word", async ()
   vi.spyOn(Date, "now").mockImplementation(() => 5_000_000);
   const { text, user } = await startRace("en");
   await user.click(screen.getByRole("button", { name: text.start }));
+  await user.click(screen.getByRole("button", { name: text.startGame }));
   await user.click(await screen.findByRole("button", { name: text.startRun }));
 
   const run = screen.getByRole("region", { name: text.run });
@@ -182,3 +188,56 @@ it("keeps the settings of both modes when the mode is changed and changed back",
   expect(radio("Cards per team", "15")).toBeChecked();
   expect(box("Difficulty", "Easy")).toBeChecked();
 });
+
+it("gives every team exactly the same mix of difficulties", async () => {
+  vi.spyOn(Date, "now").mockImplementation(() => 7_000_000);
+  const { text, user } = await startRace("en");
+  await user.click(
+    within(screen.getByRole("group", { name: text.target })).getByRole("radio", { name: "5" }),
+  );
+  await user.click(screen.getByRole("button", { name: text.start }));
+  await user.click(screen.getByRole("button", { name: text.startGame }));
+
+  const mixes: string[][] = [];
+  for (let team = 0; team < 2; team += 1) {
+    await user.click(await screen.findByRole("button", { name: text.startRun }));
+    const levels: string[] = [];
+    for (let card = 0; card < 5; card += 1) {
+      const run = screen.getByRole("region", { name: text.run });
+      levels.push(run.querySelector(".taboo-round__difficulty")?.textContent ?? "");
+      await user.click(within(run).getByRole("button", { name: new RegExp(`^${text.correct}`) }));
+    }
+    mixes.push(levels.sort());
+  }
+  // Five cards are two easy, two medium and one hard for each team, in any order.
+  expect(mixes[0]).toEqual(["Easy", "Easy", "Hard", "Medium", "Medium"]);
+  expect(mixes[1]).toEqual(mixes[0]);
+});
+
+it.each([
+  ["en", "Not enough Medium cards"],
+  ["de", "Zu wenige Karten der Schwierigkeit Mittel"],
+] as const)(
+  "reports a missing difficulty instead of giving the teams unequal cards in %s",
+  async (language, message) => {
+    const text = texts[language];
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n(language);
+    // Only easy and hard cards: a fair race with all difficulties is not possible.
+    const cards = tabooStandardCards.filter((card) => card.difficulty !== "medium");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup cardLanguage={language} cards={cards} />
+      </I18nextProvider>,
+    );
+    await user.click(
+      within(screen.getByRole("group", { name: text.mode })).getByRole("radio", {
+        name: text.race,
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: text.start }));
+    await user.click(screen.getByRole("button", { name: text.startGame }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(message);
+    expect(screen.queryByRole("region", { name: text.overview })).not.toBeInTheDocument();
+  },
+);
