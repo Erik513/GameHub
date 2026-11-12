@@ -21,7 +21,7 @@ const card: TabooCard = {
 
 function upload(text: string) {
   const file = Object.assign(new File([], "cards.json"), { text: () => Promise.resolve(text) });
-  fireEvent.change(screen.getByLabelText("Import cards"), { target: { files: [file] } });
+  fireEvent.change(screen.getByLabelText("Import"), { target: { files: [file] } });
 }
 
 it("imports once, keeps own cards after a standard deck update and exports a restorable backup", async () => {
@@ -33,20 +33,26 @@ it("imports once, keeps own cards after a standard deck update and exports a res
       <TabooLibrary repository={repo} cardLanguage="en" cards={cards} />
     </I18nextProvider>
   );
+  // Only the player's own categories can be exported.
+  const own: TabooCard = { ...card, categoryId: "Space" };
   const { unmount } = render(view(repository, []));
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
   upload("invalid");
   expect(await screen.findByRole("alert")).toHaveTextContent("not a valid");
-  upload(serializeTabooCards([card]));
+  upload(serializeTabooCards([own]));
   expect(await screen.findByText(/Imported cards: 1/)).toBeVisible();
-  upload(serializeTabooCards([card]));
+  upload(serializeTabooCards([own]));
   expect(await screen.findByText(/Imported cards: 0/)).toBeVisible();
   unmount();
   const reopened = new IndexedDbTabooCardRepository(factory);
   render(view(reopened, [{ ...card, id: "standard-sun", term: "Sun" }]));
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
-  fireEvent.click(await screen.findByText("Nature", { selector: "summary span" }));
-  const exportButton = await screen.findByRole("button", { name: "Export category Nature" });
+  // The saved cards load after the page opens; the export only offers them once they are shown.
+  expect(await screen.findByText("1 (1 own)")).toBeVisible();
+  fireEvent.click(screen.getByRole("button", { name: "Export" }));
+  const exportButton = within(screen.getByRole("dialog")).getByRole("button", {
+    name: "Space (1)",
+  });
   const createUrl = vi.fn<(blob: Blob) => string>().mockReturnValue("blob:test");
   vi.stubGlobal(
     "URL",
@@ -65,8 +71,8 @@ it("imports once, keeps own cards after a standard deck update and exports a res
       reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
       reader.readAsText(blob);
     });
-    expect(parseTabooCardFile(text)).toEqual([card]);
-    expect(await reopened.list()).toEqual([card]);
+    expect(parseTabooCardFile(text)).toEqual([own]);
+    expect(await reopened.list()).toEqual([own]);
   } finally {
     vi.unstubAllGlobals();
   }
@@ -87,11 +93,10 @@ it("reports a storage error when the saved cards cannot be read or written", asy
   );
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Local cards could not be accessed.");
-  // Importing fails the same way and no category offers an export without own cards.
+  // Importing fails the same way.
   upload(serializeTabooCards([card]));
   await waitFor(() => expect(failing.list).toHaveBeenCalledTimes(2));
   expect(await screen.findByRole("alert")).toBeVisible();
-  expect(screen.queryByRole("button", { name: /^Export category/ })).not.toBeInTheDocument();
 });
 
 it("ignores an empty file selection and works without a repository", async () => {
@@ -115,7 +120,7 @@ it("ignores an empty file selection and works without a repository", async () =>
     </I18nextProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
-  fireEvent.change(screen.getByLabelText("Import cards"), { target: { files: [] } });
+  fireEvent.change(screen.getByLabelText("Import"), { target: { files: [] } });
   expect(repository.addAll).not.toHaveBeenCalled();
 });
 
@@ -171,7 +176,7 @@ it("opens the file chooser from the import button", async () => {
   );
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
   const chooser = vi.spyOn(HTMLInputElement.prototype, "click").mockImplementation(() => undefined);
-  fireEvent.click(screen.getByRole("button", { name: "Import cards" }));
+  fireEvent.click(screen.getByRole("button", { name: "Import" }));
   expect(chooser).toHaveBeenCalledOnce();
   chooser.mockRestore();
 });

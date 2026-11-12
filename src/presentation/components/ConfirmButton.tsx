@@ -11,6 +11,8 @@ interface ConfirmButtonProps {
   /** Presses right after arming are ignored so a double tap cannot confirm by accident. */
   guardMs?: number;
   idleLabel: string;
+  /** Look of the button before it is armed; "danger" shows it red from the start. */
+  idleVariant?: "secondary" | "danger";
   onConfirm: () => void;
   timeoutMs?: number;
 }
@@ -26,6 +28,7 @@ export function ConfirmButton({
   className = "",
   guardMs = 400,
   idleLabel,
+  idleVariant = "secondary",
   onConfirm,
   timeoutMs = 3000,
 }: ConfirmButtonProps) {
@@ -55,7 +58,7 @@ export function ConfirmButton({
         className={`confirm-button ${className}`.trim()}
         data-armed={armed}
         title={armed ? armedLabel : idleLabel}
-        variant={armed ? "danger" : "secondary"}
+        variant={armed ? "danger" : idleVariant}
         onClick={handleClick}
       >
         {armed ? (armedContent ?? armedLabel) : children}

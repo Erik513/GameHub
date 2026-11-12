@@ -23,8 +23,6 @@ interface TabooCardListProps {
   /** The standard categories with their names. */
   categoryInfos?: readonly TabooCategoryInfo[];
   disabled: boolean;
-  /** Saves the given cards of one category as a file. */
-  onExport: (categoryId: string, cards: readonly TabooCard[]) => void;
   onRemove: (id: string) => Promise<void>;
   onUpdate: (card: TabooCard) => Promise<void>;
   /** The player's own cards; they can be edited and deleted. */
@@ -44,7 +42,6 @@ export function TabooCardList({
   cardLanguage,
   categoryInfos = builtInCategories,
   disabled,
-  onExport,
   onRemove,
   onUpdate,
   ownCards,
@@ -112,6 +109,16 @@ export function TabooCardList({
     }
   }
 
+  async function removeCategory(categoryId: string, cards: readonly TabooCard[]) {
+    try {
+      for (const card of cards) await onRemove(card.id);
+      if (editing?.categoryId === categoryId) setEditing(undefined);
+      setProblem(undefined);
+    } catch {
+      setProblem("storage");
+    }
+  }
+
   async function remove(id: string) {
     try {
       await onRemove(id);
@@ -170,20 +177,29 @@ export function TabooCardList({
             </StatusMessage>
           )}
           <div className="taboo-card-list__actions">
-            <Button disabled={disabled} type="submit" variant="success">
-              {t("tabooList.save")}
-            </Button>
-            <Button onClick={() => setEditing(undefined)} variant="secondary">
-              {t("tabooList.cancel")}
+            <Button
+              aria-label={t("tabooList.save")}
+              className="icon-button--small"
+              disabled={disabled}
+              title={t("tabooList.save")}
+              type="submit"
+              variant="success"
+            >
+              <Icon name="check" />
             </Button>
             <ConfirmButton
               armedContent={t("tabooList.deleteAgain")}
               armedLabel={t("tabooList.deleteConfirm", { term: card.term })}
+              className="icon-button--small"
               idleLabel={t("tabooList.deleteLabel", { term: card.term })}
+              idleVariant="danger"
               onConfirm={() => void remove(card.id)}
             >
-              {t("tabooList.delete")}
+              <Icon name="trash" />
             </ConfirmButton>
+            <Button onClick={() => setEditing(undefined)} variant="secondary">
+              {t("tabooList.cancel")}
+            </Button>
           </div>
         </form>
       );
@@ -240,24 +256,6 @@ export function TabooCardList({
                 <details className="kit-disclosure taboo-card-list__category" key={categoryId}>
                   <summary>
                     <span>{categoryName(categoryId)}</span>
-                    {own.length > 0 && (
-                      <Button
-                        aria-label={t("tabooList.exportLabel", {
-                          category: categoryName(categoryId),
-                        })}
-                        className="icon-button--small"
-                        disabled={disabled}
-                        onClick={(event) => {
-                          // The button sits inside the summary and must not open or close the category.
-                          event.preventDefault();
-                          onExport(categoryId, own);
-                        }}
-                        title={t("tabooList.exportLabel", { category: categoryName(categoryId) })}
-                        variant="secondary"
-                      >
-                        <Icon name="download" />
-                      </Button>
-                    )}
                     <small>
                       {t("tabooList.count", {
                         count: own.length + standard.length,
@@ -277,6 +275,26 @@ export function TabooCardList({
                           <li key={card.id}>{renderRow(card, true)}</li>
                         ))}
                       </ul>
+                      {group.key === "own" && (
+                        <div className="taboo-card-list__category-actions">
+                          <ConfirmButton
+                            armedContent={t("tabooList.deleteCategoryAgain", { count: own.length })}
+                            armedLabel={t("tabooList.deleteCategoryConfirm", {
+                              category: categoryName(categoryId),
+                              count: own.length,
+                            })}
+                            idleLabel={t("tabooList.deleteCategoryLabel", {
+                              category: categoryName(categoryId),
+                              count: own.length,
+                            })}
+                            idleVariant="danger"
+                            onConfirm={() => void removeCategory(categoryId, own)}
+                          >
+                            <Icon name="trash" />
+                            {t("tabooList.deleteCategory")}
+                          </ConfirmButton>
+                        </div>
+                      )}
                     </>
                   )}
                   {standard.length > 0 && (

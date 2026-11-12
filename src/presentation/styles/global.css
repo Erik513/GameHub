@@ -824,7 +824,8 @@ h1 {
 }
 
 .game-preview--playable,
-.game-preview--playable > .taboo-setup {
+.game-preview--playable > div:not([hidden]),
+.game-preview--playable .taboo-setup {
   display: flex;
   flex: 1;
   flex-direction: column;

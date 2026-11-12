@@ -592,12 +592,31 @@
 }
 
 .taboo-card-list__actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
 }
 
-.taboo-card-list__actions > * {
-  flex: 1;
+.game-preview .taboo-card-list__actions .button {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0 var(--space-2);
+  white-space: normal;
+}
+
+.taboo-card-list__category-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+/* An armed icon button widens so the second tap shows what it will do. */
+.game-preview .confirm-button.icon-button--small[data-armed="true"] {
+  font-size: var(--text-sm);
+  line-height: 1.1;
 }
 
 .taboo-card-entry__pair {
@@ -680,4 +699,20 @@
 
 .taboo-card-list__label {
   padding: var(--space-2) var(--space-4) 0;
+}
+
+.taboo-cards-tools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.taboo-cards-tools .button {
+  width: 100%;
+  margin: 0;
+}
+
+.taboo-card-export {
+  display: grid;
+  gap: var(--space-3);
 }

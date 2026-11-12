@@ -13,6 +13,7 @@ import type { SupportedLanguage } from "../../i18n";
 import { Button, Icon, StatusMessage } from "../components";
 import { useGameBack } from "../GameChrome";
 import { TabooCardEntry } from "./TabooCardEntry";
+import { TabooCardExport } from "./TabooCardExport";
 import { TabooCardList } from "./TabooCardList";
 import { TabooSetup } from "./TabooSetup";
 import type { TabooGenerators } from "./TabooGeneration";
@@ -174,7 +175,6 @@ export function TabooLibrary({
             allCards={allCards}
             cardLanguage={cardLanguage}
             disabled={busy}
-            onExport={exportCategory}
             onRemove={removeCard}
             onUpdate={updateCard}
             ownCards={ownCards ?? []}
@@ -195,10 +195,19 @@ export function TabooLibrary({
             tabIndex={-1}
             type="file"
           />
-          <Button disabled={busy} onClick={() => fileInput.current?.click()} variant="secondary">
-            <Icon name="upload" />
-            {t("tabooLibrary.import")}
-          </Button>
+          <div className="taboo-cards-tools">
+            <Button disabled={busy} onClick={() => fileInput.current?.click()} variant="secondary">
+              <Icon name="upload" />
+              {t("tabooLibrary.import")}
+            </Button>
+            <TabooCardExport
+              allCards={allCards}
+              cardLanguage={cardLanguage}
+              categoryInfos={categoryInfos}
+              disabled={busy}
+              onExport={exportCategory}
+            />
+          </div>
           {feedback && (
             <StatusMessage
               title={t("tabooLibrary.title")}

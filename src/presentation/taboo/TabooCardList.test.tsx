@@ -35,19 +35,20 @@ const sun: TabooCard = {
 };
 const mond: TabooCard = { ...sun, id: "std-mond", language: "de", term: "Mond" };
 
-async function renderList(overrides: Partial<Parameters<typeof TabooCardList>[0]> = {}) {
+async function renderList(
+  overrides: Partial<Parameters<typeof TabooCardList>[0]> = {},
+  language: "en" | "de" = "en",
+) {
   const user = userEvent.setup();
-  const i18n = await createGameHubI18n("en");
+  const i18n = await createGameHubI18n(language);
   const onUpdate = vi.fn(() => Promise.resolve());
   const onRemove = vi.fn(() => Promise.resolve());
-  const onExport = vi.fn();
   render(
     <I18nextProvider i18n={i18n}>
       <TabooCardList
         allCards={[moon, goal, sun, mond]}
         cardLanguage="en"
         disabled={false}
-        onExport={onExport}
         onRemove={onRemove}
         onUpdate={onUpdate}
         ownCards={[moon, goal]}
@@ -56,7 +57,7 @@ async function renderList(overrides: Partial<Parameters<typeof TabooCardList>[0]
       />
     </I18nextProvider>,
   );
-  return { user, onUpdate, onRemove, onExport };
+  return { user, onUpdate, onRemove };
 }
 
 function category(name: string) {
@@ -91,15 +92,6 @@ it("groups cards by category in alphabetical order with counts and shows cards f
   expect(within(rows[0]!).getByRole("button", { name: "Edit card Moon" })).toBeVisible();
   expect(within(rows[1]!).queryByRole("button")).toBeNull();
   expect(screen.queryByText("Mond")).not.toBeInTheDocument();
-});
-
-it("exports one category at a time and only offers it where own cards exist", async () => {
-  const { user, onExport } = await renderList();
-  await user.click(screen.getByText("Sport", { selector: "summary span" }));
-  await user.click(screen.getByText("Culture", { selector: "summary span" }));
-  expect(screen.queryByRole("button", { name: "Export category Culture" })).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Export category Sport" }));
-  expect(onExport).toHaveBeenCalledExactlyOnceWith("Sport", [goal]);
 });
 
 it("edits a card, validates the input and saves a new category", async () => {
@@ -161,6 +153,48 @@ it("deletes a card from the editor only after a second tap", async () => {
   await user.click(screen.getByRole("button", { name: "Tap again to delete Moon" }));
   expect(onRemove).toHaveBeenCalledWith("own-moon");
 });
+
+it("shows the editor buttons as save symbol, red delete symbol and a text cancel button", async () => {
+  const { user } = await renderList();
+  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
+  const actions = document.querySelector(".taboo-card-list__actions")!;
+  const buttons = [...actions.querySelectorAll("button")];
+  expect(buttons.map((button) => button.textContent)).toEqual(["", "", "Cancel"]);
+  expect(buttons.map((button) => button.getAttribute("aria-label"))).toEqual([
+    "Save",
+    "Delete card Moon",
+    null,
+  ]);
+  expect(buttons[1]).toHaveClass("button--danger");
+});
+
+it.each([
+  ["en", "Delete category Sport with 1 cards", "Tap again to delete Sport with 1 cards"],
+  [
+    "de",
+    "Kategorie Sport mit 1 Karten löschen",
+    "Nochmal tippen, um Sport mit 1 Karten zu löschen",
+  ],
+] as const)(
+  "deletes a custom category with all its own cards after a second tap in %s",
+  async (language, idle, armed) => {
+    const { user, onRemove } = await renderList({}, language);
+    // Standard categories cannot be deleted.
+    await user.click(
+      screen.getByText(language === "en" ? "Nature" : "Natur", { selector: "summary span" }),
+    );
+    expect(
+      screen.queryByRole("button", { name: /(Delete category|Kategorie) Nat/ }),
+    ).not.toBeInTheDocument();
+    await user.click(screen.getByText("Sport", { selector: "summary span" }));
+    await user.click(screen.getByRole("button", { name: idle }));
+    expect(onRemove).not.toHaveBeenCalled();
+    await new Promise((resolve) => setTimeout(resolve, 450));
+    await user.click(screen.getByRole("button", { name: armed }));
+    expect(onRemove).toHaveBeenCalledExactlyOnceWith("own-goal");
+  },
+);
 
 it.each([
   ["en", "Cards", "Edit card Moon", "Save", "Nature"],
