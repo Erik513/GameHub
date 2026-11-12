@@ -4,11 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
-### PH-15-05 – Erste Etappen: Essen und Trinken, Tiere (in Arbeit)
+### PH-15-05 – Erste Etappen: Essen und Trinken, Tiere, Sport, Berufe (in Arbeit)
 
 - Neues Werkzeug `scripts/import-card-batch.mjs`: schickt eine Stapeldatei mit Karten durch dieselben Regeln wie die erzeugten Karten und legt die angenommenen im Arbeitspaket in `work/` ab (Ablehnungen mit Grund in der Liste, mit `--score` zusätzlich ein Urteil, `--dry-run` zur Vorschau).
 - Erste Etappe: je Sprache 51 Karten der Kategorie „Essen und Trinken“ (je 17 leicht, mittel, schwer), von Claude geschrieben. Das lokale 27-Mrd.-Modell wurde nach dem Zeitlimit-Fehler nicht weiter benutzt. Die Regeln lehnten je Sprache zwei Karten ab, deren Begriffe es schon gab („Apfel“, „Brot“), sie wurden ersetzt. Die Karten liegen nur in `work/` (nicht versioniert) und sind noch nicht in den Pool übernommen. Wichtig: Es gab keinen unabhängigen zweiten Prüfdurchgang, die Urteile (5) setzte der Import; die Stichprobe per Prüfseite ist die Kontrolle.
 - Zweite Etappe: je Sprache 52 Karten der Kategorie „Tiere“ (17 leicht, 17 mittel, 18 schwer). Auch sie liegen nur in `work/`; die Regeln lehnten je Sprache drei schon vorhandene Begriffe ab (Hund, Eichhörnchen, Biene beziehungsweise Dog, Squirrel, Bee).
+- Dritte und vierte Etappe: je Sprache etwa 53 Karten der Kategorien „Sport und Freizeit“ und „Berufe“ (18 leicht, 17 mittel, 18 schwer, bei Berufen 19/17/17). Die Regeln lehnten englisch zwei Karten ab, weil ein verbotenes Wort Teil des Begriffs war („Snowboarding“ mit „snow“, „Lawyer“ mit „law“); sie wurden mit anderen Wörtern ersetzt. Arbeitspaket jetzt je Sprache etwa 210 Karten in vier Kategorien, alles nur in `work/`, nichts übernommen.
 
 ### Korrektur an den Kartenwerkzeugen: Antworten als Datenstrom
 
