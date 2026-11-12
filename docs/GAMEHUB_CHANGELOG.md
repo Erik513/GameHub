@@ -4,6 +4,10 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### ADR-021 – Feste Ansichten und Oberflächenregeln
+
+- Der Auftraggeber hat die Ansichten und Oberflächenregeln für alle Spiele vorgegeben (Hauptmenü, Spielansichten, Infofenster, einheitliche Bedienelemente, Knopfregeln). Festgehalten in `docs/GAMEHUB_UI_RULES.md` und `ADR-021`; Umsetzung als Aufgabe `PH-17-05` geplant (noch nicht gebaut).
+
 ### PH-17-02 – Gemeinsame Team- und Spieleransicht umgesetzt
 
 - Neue reine Logik `src/business/shared/teamSetup.ts`: `buildTeams` (Namen auffüllen, Reihenfolge zufällig oder wie eingegeben, Spieler den Teams zuordnen), `TeamRules`, `validateTeamSetup`, `initialTeamSetup`, `clampTeamCount`. Tests mit festem Zufall.
