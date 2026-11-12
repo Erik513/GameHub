@@ -4,6 +4,11 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-15-05 – Erste Etappe: Essen und Trinken (in Arbeit)
+
+- Neues Werkzeug `scripts/import-card-batch.mjs`: schickt eine Stapeldatei mit Karten durch dieselben Regeln wie die erzeugten Karten und legt die angenommenen im Arbeitspaket in `work/` ab (Ablehnungen mit Grund in der Liste, mit `--score` zusätzlich ein Urteil, `--dry-run` zur Vorschau).
+- Erste Etappe: je Sprache 51 Karten der Kategorie „Essen und Trinken“ (je 17 leicht, mittel, schwer), von Claude geschrieben. Das lokale 27-Mrd.-Modell wurde nach dem Zeitlimit-Fehler nicht weiter benutzt. Die Regeln lehnten je Sprache zwei Karten ab, deren Begriffe es schon gab („Apfel“, „Brot“), sie wurden ersetzt. Die Karten liegen nur in `work/` (nicht versioniert) und sind noch nicht in den Pool übernommen. Wichtig: Es gab keinen unabhängigen zweiten Prüfdurchgang, die Urteile (5) setzte der Import; die Stichprobe per Prüfseite ist die Kontrolle.
+
 ### Korrektur an den Kartenwerkzeugen: Antworten als Datenstrom
 
 - Der erste echte Probelauf mit `qwen/qwen3.6-27b` (LM Studio) brach nach etwa fünf Minuten mit „fetch failed“ ab. Ursache: Node bricht eine Anfrage ab, wenn fünf Minuten lang gar keine Daten kommen (Kopfzeilen-Zeitlimit), und ein Modell, das vor der Antwort lange nachdenkt, sendet bei nicht gestreamten Antworten erst nach dem Ende etwas.
