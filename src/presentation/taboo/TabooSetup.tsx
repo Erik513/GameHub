@@ -54,6 +54,7 @@ export function TabooSetup({
   categoryInfos = builtInCategories,
   children,
   generators,
+  onCardLanguageChange,
   roundChoices = defaultRoundChoices,
 }: {
   cardLanguage: SupportedLanguage;
@@ -62,6 +63,8 @@ export function TabooSetup({
   categoryInfos?: readonly TabooCategoryInfo[];
   children?: ReactNode;
   generators?: TabooGenerators | undefined;
+  /** Changes the card language; without it the language is not offered in the settings. */
+  onCardLanguageChange?: ((language: SupportedLanguage) => void) | undefined;
   /** Selectable rounds per team; tests use short games, the app offers short/medium/long/unlimited. */
   roundChoices?: readonly RoundChoice[];
 }) {
@@ -456,12 +459,14 @@ export function TabooSetup({
         key={formVersion}
       >
         <TabooSetupForm
+          cardLanguage={cardLanguage}
           categoryIds={categoryIds}
           categoryInfos={categoryInfos}
           deckEmpty={deckEmpty}
           generating={generating}
           hasGenerators={Boolean(generators)}
           issues={issues}
+          onCardLanguageChange={onCardLanguageChange}
           onChange={handleFormChange}
           onSubmit={(event) => void submit(event)}
           roundChoices={roundChoices}

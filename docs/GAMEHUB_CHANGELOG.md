@@ -4,6 +4,24 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### Kartensprache ist eine Einstellung von Tabu
+
+- Das Einstellungsfenster des GameHub enthält nur noch die Oberflächensprache. Die Kartensprache steht als erste Knopfgruppe (Englisch links) in den Spieleinstellungen von Tabu.
+- Der Spielmodul-Vertrag (`GameScreenProps`) bekommt `onCardLanguageChange`; `App` reicht es durch, `AppShell` und `SettingsDialog` kennen die Kartensprache nicht mehr. Die Speicherung bleibt zentral in `AppRoot` (Annahme: ein eigener Speicher je Spiel ist erst nötig, wenn ein zweites Spiel eine eigene Inhaltssprache braucht).
+- Texte der Einstellungen angepasst, Tests (Unit und e2e) auf den neuen Ort umgestellt, neue Tests für die Gruppe in beiden Sprachen.
+- Geprüft: 443 Unit-Tests, 25 e2e-Tests (5 übersprungen), Typen, ESLint, Prettier.
+
+### PH-00-08 – Aufgaben nach Spielen
+
+- Das Entwicklungs-Dashboard zeigt allgemeine und spielspezifische Aufgaben in eigenen Tabs.
+
+### Einstellungen: Knopfgruppen statt Comboboxen
+
+- Oberflächensprache und Kartensprache im Einstellungsfenster sind jetzt je eine Gruppe nebeneinanderstehender Knöpfe (`ChoiceGroup`, gesteuert) statt Comboboxen; passt zum übrigen Setup. Die Gruppen haben dieselben Namen wie die Comboboxen (Gruppe „Oberflächensprache“ mit Knöpfen „Deutsch“ und „Englisch“).
+- `ChoiceGroup` ist jetzt im Kit grundsätzlich ohne Rahmen und Innenabstand (die Tabu-Sonderregel entfällt); alte Stilregeln für die Comboboxen entfernt.
+- Englisch steht links (Standardsprache der App), Deutsch rechts.
+- Tests (Unit und e2e) auf die Knöpfe umgestellt. Regel ergänzt: Auswahl aus wenigen festen Möglichkeiten ist eine Knopfgruppe. Noch Comboboxen: Kategorie und Schwierigkeit in den Karten und die Teamzuordnung je Spieler.
+
 ### GameHub-Ansicht auf dem Handy kompakt
 
 - Der Knopf „Spieler“ des GameHub steht jetzt in der Kopfleiste (neben den Einstellungen) statt im Inhalt der Spielauswahl, mit Symbol und Text, weil das Symbol allein nicht selbsterklärend ist.

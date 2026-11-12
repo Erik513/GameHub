@@ -153,7 +153,10 @@ for (const language of ["en", "de"] as const) {
       await page.goto("/");
       if (language === "de") {
         await press(labels.en.settings);
-        await page.getByRole("combobox", { name: labels.en.interfaceLanguage }).selectOption("de");
+        await page
+          .getByRole("group", { name: labels.en.interfaceLanguage })
+          .getByRole("radio", { name: "German" })
+          .check({ force: true });
         await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
       }
       await check("game selection");
@@ -204,7 +207,10 @@ test("the tiebreak screens fit a small phone in both languages", async ({ page }
     await page.goto("/");
     if (language === "de") {
       await page.getByRole("button", { name: labels.en.settings }).click();
-      await page.getByRole("combobox", { name: labels.en.interfaceLanguage }).selectOption("de");
+      await page
+        .getByRole("group", { name: labels.en.interfaceLanguage })
+        .getByRole("radio", { name: "German" })
+        .check({ force: true });
       await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
     }
     const check = async (screen: string) =>

@@ -2,7 +2,7 @@
 
 ## 1. Ziel und Umfang
 
-GameHub wird eine kostenlose, international ausgerichtete, mobile-first Spiele-PWA für Partyspiele, Quiz-, Karten- und weitere Gesellschaftsspiele. Die erste lieferbare Spielfunktion ist Tabu im lokalen Modus. Die Anwendung bleibt ohne Internet und ohne KI-Anbieter vollständig spielbar. Architekturgrenzen bereiten weitere Spielarten und späteren Online-Multiplayer vor, ohne diese Funktionen im ersten Produktumfang zu implementieren.
+GameHub wird eine kostenlose, international ausgerichtete, mobile-first Spiele-PWA für Partyspiele, Kartenspiele und weitere Gesellschaftsspiele. Die erste lieferbare Spielfunktion ist Tabu im lokalen Modus. Die Anwendung bleibt ohne Internet und ohne KI-Anbieter vollständig spielbar. Architekturgrenzen bereiten weitere Spielarten und späteren Online-Multiplayer vor, ohne diese Funktionen im ersten Produktumfang zu implementieren.
 
 ## 2. Produktanforderungen
 
@@ -681,22 +681,6 @@ Vorschlag für den Aufbau:
 - **Umfang:** Erfahrungen aus Tabu und den Spezifikationen weiterer Spiele auswerten und den bestehenden Vertrag nur bei nachgewiesenem Bedarf um Start- oder Persistenzschnittstellen ergänzen.
 - **Akzeptanzkriterien:** Der erweiterte Vertrag bleibt genreunabhängig, rückwärtskompatibel und ist durch Tabu sowie ein zweites Testmodul belegt.
 - **Tests:** Contract-Tests und Architekturprüfung.
-- **Status:** planned
-
-#### PH-09-03 – Scharade
-
-- **Ziel:** Zweites Spiel nach eigener Spezifikation ergänzen.
-- **Umfang:** Anforderungen, Business-Logik, UI, Karten und Tests als separates Modul.
-- **Akzeptanzkriterien:** Werden vor Implementierungsstart mit dem Auftraggeber konkretisiert.
-- **Tests:** Unit-, Komponenten- und E2E-Tests gemäß genehmigter Spezifikation.
-- **Status:** planned
-
-#### PH-09-04 – Wer bin ich und Quiz
-
-- **Ziel:** Weitere geplante Spiele schrittweise ergänzen.
-- **Umfang:** Je Spiel separate Spezifikation, Logik, UI, Daten und Qualitätssicherung.
-- **Akzeptanzkriterien:** Jeweils vor Implementierungsstart zu genehmigen.
-- **Tests:** Je Spiel anhand der genehmigten Regeln.
 - **Status:** planned
 
 ## 6. Abhängigkeiten und Reihenfolge

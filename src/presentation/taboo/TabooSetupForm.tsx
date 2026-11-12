@@ -2,6 +2,7 @@ import type { FormEvent, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { ValidationIssue } from "../../business/games/taboo/model";
+import type { SupportedLanguage } from "../../i18n";
 import type { TeamSetupValue } from "../../business/shared/teamSetup";
 import { StatusMessage } from "../components";
 import { ChoiceGroup, SetupScreen, SetupSection, TeamsSetup } from "../game-kit";
@@ -16,6 +17,7 @@ import {
 } from "./tabooSetupModel";
 
 interface TabooSetupFormProps {
+  cardLanguage: SupportedLanguage;
   categoryIds: readonly string[];
   categoryInfos: readonly TabooCategoryInfo[];
   children?: ReactNode;
@@ -23,6 +25,8 @@ interface TabooSetupFormProps {
   generating: boolean;
   hasGenerators: boolean;
   issues: readonly ValidationIssue[];
+  /** Changes the card language; without it the language is not offered. */
+  onCardLanguageChange?: ((language: SupportedLanguage) => void) | undefined;
   onChange: (event: FormEvent<HTMLFormElement>) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   roundChoices: readonly RoundChoice[];
@@ -34,6 +38,7 @@ interface TabooSetupFormProps {
 
 /** The setup form of a Taboo game with its error messages and the start button. */
 export function TabooSetupForm({
+  cardLanguage,
   categoryIds,
   categoryInfos,
   children,
@@ -41,6 +46,7 @@ export function TabooSetupForm({
   generating,
   hasGenerators,
   issues,
+  onCardLanguageChange,
   onChange,
   onSubmit,
   onTeamSetupChange,
@@ -101,6 +107,19 @@ export function TabooSetupForm({
         <TeamsSetup onChange={onTeamSetupChange} value={teamSetup} />
       </SetupSection>
       <SetupSection title={t("kitSetup.settingsSection")}>
+        {onCardLanguageChange && (
+          <ChoiceGroup
+            initial={cardLanguage}
+            legend={t("language.cardLabel")}
+            name="cardLanguage"
+            onChange={(language) => onCardLanguageChange(language === "de" ? "de" : "en")}
+            options={[
+              { value: "en", label: t("language.options.en") },
+              { value: "de", label: t("language.options.de") },
+            ]}
+            value={cardLanguage}
+          />
+        )}
         <ChoiceGroup
           info={info("rounds", t("tabooSetup.rounds"))}
           legend={t("tabooSetup.rounds")}

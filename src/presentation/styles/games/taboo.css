@@ -153,11 +153,6 @@
   margin: 0;
 }
 
-.taboo-setup .kit-choice-group {
-  padding: 0;
-  border: 0;
-}
-
 .taboo-setup__screen {
   display: flex;
   flex: 1;

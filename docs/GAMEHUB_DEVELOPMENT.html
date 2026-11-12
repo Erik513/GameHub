@@ -24,6 +24,7 @@
       }
 
       * { box-sizing: border-box; }
+      .shell [hidden] { display: none; }
       body {
         margin: 0;
         min-width: 320px;
@@ -46,7 +47,7 @@
         mask-image: linear-gradient(to bottom, black, transparent 75%);
       }
 
-      .shell { width: min(1180px, calc(100% - 28px)); margin: 0 auto; padding: 32px 0 56px; }
+      .shell { padding: 24px 16px 56px; }
       header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
       .eyebrow { margin: 0 0 10px; color: var(--secondary); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; }
       h1 { margin: 0; font-size: clamp(2rem, 7vw, 4.6rem); line-height: 0.95; letter-spacing: -0.055em; }
@@ -54,26 +55,32 @@
       .live { display: flex; align-items: center; gap: 8px; flex: none; margin-top: 8px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(9, 11, 22, 0.6); font-size: 0.83rem; }
       .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--secondary); box-shadow: 0 0 0 5px rgba(40, 215, 192, 0.11); }
 
-      .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+      .dashboard-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 16px; align-items: start; }
+      .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
       .card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18); backdrop-filter: blur(18px); }
-      .hero { grid-column: span 8; padding: clamp(22px, 4vw, 36px); }
-      .summary { grid-column: span 4; padding: 24px; }
+      .project-panel { padding: 16px; border-radius: 14px; }
       .full { grid-column: 1 / -1; padding: 24px; }
       .half { grid-column: span 6; padding: 24px; }
-      .label { color: var(--muted); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-      .progress-number { margin: 10px 0 18px; font-size: clamp(3rem, 8vw, 6.7rem); font-weight: 800; line-height: 0.9; letter-spacing: -0.07em; }
-      .progress-number span { color: var(--muted); font-size: 0.34em; letter-spacing: -0.02em; }
-      .progress-track { height: 12px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, 0.07); }
+      .progress-sidebar { display: grid; gap: 8px; margin-top: 16px; }
+      .panel-card { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: rgba(9, 11, 22, 0.38); }
+      .project-panel h2 { margin-bottom: 10px; font-size: 0.88rem; }
+      .progress-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 0.88rem; }
+      .progress-heading strong { font-variant-numeric: tabular-nums; }
+      .progress-track { height: 6px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, 0.07); }
       .progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 450ms ease; }
-      .progress-note { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; color: var(--muted); font-size: 0.88rem; }
-      .metric-list { display: grid; gap: 12px; margin-top: 18px; }
-      .metric { display: flex; justify-content: space-between; gap: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+      .progress-note { margin: 6px 0 0; color: var(--muted); font-size: 0.76rem; }
+      .metric-list { display: grid; gap: 8px; font-size: 0.82rem; }
+      .metric { display: flex; justify-content: space-between; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
       .metric:last-child { padding-bottom: 0; border: 0; }
-      .metric strong { text-align: right; }
+      .metric strong { min-width: 0; text-align: right; overflow-wrap: anywhere; }
       h2 { margin: 0 0 18px; font-size: 1.15rem; letter-spacing: -0.02em; }
       h3 { margin: 0; font-size: 0.98rem; }
 
       .phase-list { display: grid; gap: 12px; }
+      .dashboard-tabs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+      .dashboard-tabs button { min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--text); background: var(--surface); font: inherit; cursor: pointer; }
+      .dashboard-tabs button[aria-pressed="true"] { border-color: var(--primary); background: var(--surface-strong); font-weight: 700; }
+      .dashboard-tabs button:focus-visible { outline: 2px solid var(--secondary); outline-offset: 2px; }
       details { border: 1px solid var(--line); border-radius: 15px; background: rgba(9, 11, 22, 0.38); }
       summary { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 16px; cursor: pointer; list-style: none; }
       summary::-webkit-details-marker { display: none; }
@@ -104,12 +111,14 @@
       @media (max-width: 820px) {
         header { display: block; }
         .live { width: fit-content; margin-top: 20px; }
-        .hero, .summary, .half { grid-column: 1 / -1; }
+        .dashboard-layout { grid-template-columns: minmax(0, 1fr); }
+        .progress-sidebar { grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)); }
+        .half { grid-column: 1 / -1; }
       }
 
       @media (max-width: 540px) {
-        .shell { width: min(100% - 18px, 1180px); padding-top: 22px; }
-        .card, .hero, .summary, .full, .half { padding: 18px; border-radius: 16px; }
+        .shell { padding: 18px 10px 40px; }
+        .full, .half { padding: 18px; border-radius: 16px; }
         .status-grid { grid-template-columns: 1fr; }
         summary { grid-template-columns: 1fr auto; }
         .phase-id { grid-column: 1 / -1; }
@@ -124,61 +133,58 @@
         <div>
           <p class="eyebrow">Produktentwicklung</p>
           <h1>GameHub</h1>
-          <p class="subtitle">Live-Überblick über Aufgaben, Qualität, Änderungen und die nächsten freigegebenen Schritte.</p>
+          <p class="subtitle" data-general-only>Live-Überblick über Aufgaben, Qualität, Änderungen und die nächsten freigegebenen Schritte.</p>
         </div>
-        <div class="live"><span class="live-dot" aria-hidden="true"></span><span>Aktualisierung alle 20 Sekunden</span></div>
+        <div class="live" data-general-only><span class="live-dot" aria-hidden="true"></span><span>Aktualisierung alle 20 Sekunden</span></div>
       </header>
 
       <div id="error" class="error" role="alert"></div>
-
-      <section class="grid" aria-label="Projektübersicht">
-        <article class="card hero">
-          <div class="label">Gesamtfortschritt</div>
-          <div id="progress-number" class="progress-number">—<span>%</span></div>
-          <div class="progress-track" role="progressbar" aria-label="Gesamtfortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div id="progress-fill" class="progress-fill"></div>
+      <div class="dashboard-layout">
+        <aside class="card project-panel" aria-labelledby="project-status-heading">
+          <div class="panel-card">
+            <h2 id="project-status-heading">Projektstatus</h2>
+            <div class="metric-list">
+              <div class="metric"><span>Entwicklungsstand</span><strong id="stage">—</strong></div>
+              <div class="metric"><span>Phasen</span><strong id="phase-count">—</strong></div>
+              <div class="metric"><span>Aktive Aufgaben</span><strong id="active-count">—</strong></div>
+              <div class="metric"><span>Blockiert</span><strong id="blocked-count">—</strong></div>
+              <div class="metric"><span>Stand</span><strong id="refresh-time">—</strong></div>
+              <div class="metric"><span>Datenstand</span><strong id="updated-at">—</strong></div>
+            </div>
           </div>
-          <div class="progress-note"><span id="progress-tasks">Status wird geladen</span><span id="stage">—</span></div>
-        </article>
+          <div id="progress-sidebar" class="progress-sidebar" aria-label="Fortschritt"></div>
+        </aside>
+        <section class="grid" aria-label="Projektübersicht">
+          <nav id="dashboard-tabs" class="dashboard-tabs" aria-label="Aufgabenbereiche"></nav>
 
-        <article class="card summary">
-          <h2>Projektstatus</h2>
-          <div class="metric-list">
-            <div class="metric"><span>Phasen</span><strong id="phase-count">—</strong></div>
-            <div class="metric"><span>Aktive Aufgaben</span><strong id="active-count">—</strong></div>
-            <div class="metric"><span>Blockiert</span><strong id="blocked-count">—</strong></div>
-            <div class="metric"><span>Stand</span><strong id="refresh-time">—</strong></div>
-            <div class="metric"><span>Datenstand</span><strong id="updated-at">—</strong></div>
-          </div>
-        </article>
+          <article class="card full">
+            <h2 id="tasks-heading">Allgemeine Aufgaben</h2>
+            <div id="phases" class="phase-list"><p class="empty">Status wird geladen …</p></div>
+          </article>
 
-        <article class="card full">
-          <h2>Entwicklungsphasen und Aufgaben</h2>
-          <div id="phases" class="phase-list"><p class="empty">Status wird geladen …</p></div>
-        </article>
+          <article class="card half" data-general-only>
+            <h2>Produktions-Build, Tests und Testabdeckung</h2>
+            <div id="quality" class="status-grid"></div>
+          </article>
 
-        <article class="card half">
-          <h2>Produktions-Build, Tests und Testabdeckung</h2>
-          <div id="quality" class="status-grid"></div>
-        </article>
+          <article class="card half" data-general-only>
+            <h2>Aktuelle Probleme</h2>
+            <ul id="issues" class="list issues"></ul>
+          </article>
 
-        <article class="card half">
-          <h2>Aktuelle Probleme</h2>
-          <ul id="issues" class="list issues"></ul>
-        </article>
+          <article class="card half" data-general-only>
+            <h2>Letzte Änderungen</h2>
+            <ul id="changes" class="list"></ul>
+          </article>
 
-        <article class="card half">
-          <h2>Letzte Änderungen</h2>
-          <ul id="changes" class="list"></ul>
-        </article>
+          <article class="card half" data-general-only>
+            <h2>Nächste empfohlene Schritte</h2>
+            <ul id="next-tasks" class="list"></ul>
+          </article>
+        </section>
+      </div>
 
-        <article class="card half">
-          <h2>Nächste empfohlene Schritte</h2>
-          <ul id="next-tasks" class="list"></ul>
-        </article>
-      </section>
-
-      <footer>
+      <footer data-general-only>
         <span>Quelle: GAMEHUB_STATUS.json</span>
         <span id="last-refresh">Noch nicht geladen</span>
       </footer>
@@ -193,7 +199,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-12T21:15:00+01:00",
+    "updatedAt": "2026-11-12T21:06:11.040Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -202,9 +208,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 51,
-      "totalTasks": 62,
-      "percent": 82.3
+      "completedTasks": 74,
+      "totalTasks": 84,
+      "percent": 88.1
     }
   },
   "environment": {
@@ -365,6 +371,11 @@
           "id": "PH-00-07",
           "title": "Dokumente auf Konsistenz prüfen",
           "status": "done"
+        },
+        {
+          "id": "PH-00-08",
+          "title": "Entwicklungs-Dashboard nach Spielen gliedern",
+          "status": "done"
         }
       ]
     },
@@ -484,6 +495,9 @@
           "title": "Kartenfilter und Deckbildung",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -511,6 +525,9 @@
           "title": "Spielende und Neustart",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -521,17 +538,26 @@
         {
           "id": "PH-06-01",
           "title": "IndexedDB-Schema und Repository-Adapter",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "taboo"
+          ]
         },
         {
           "id": "PH-06-02",
           "title": "Lokale deutsche und englische Kartensätze",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "taboo"
+          ]
         },
         {
           "id": "PH-06-03",
           "title": "Import und Aktualisierung lokaler Karten",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "taboo"
+          ]
         },
         {
           "id": "PH-06-04",
@@ -570,6 +596,9 @@
           "title": "Generierungsoberfläche und lokale Speicherung",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -580,7 +609,10 @@
         {
           "id": "PH-08-01",
           "title": "Kritische E2E-Spielabläufe",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "taboo"
+          ]
         },
         {
           "id": "PH-08-02",
@@ -619,6 +651,9 @@
           "title": "Feinschliff nach Rückmeldung (Menü, Karte, Stechen, Rundenzahl)",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -649,13 +684,19 @@
         {
           "id": "PH-11-05",
           "title": "Struktur prüfen und wiederverwendbare Spielbausteine dokumentieren",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "general"
+          ]
         },
         {
           "id": "PH-11-06",
           "title": "Tabu-Zustandslogik als Hooks und CSS je Spiel",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -698,6 +739,9 @@
           "title": "Spielmodi: Klassisch, Auf Zeit, Gegen die Zeit",
           "status": "planned"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -730,6 +774,9 @@
           "title": "Kartenseite verfeinern: Symbolknöpfe, Export je Kategorie, Import-Knopf",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -742,6 +789,9 @@
           "title": "Qualitätstest: kleines Browser-Modell für verbotene Wörter (Ergebnis: nicht brauchbar)",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -779,6 +829,9 @@
           "title": "Optional: gespielte Karten merken",
           "status": "planned"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -794,7 +847,10 @@
         {
           "id": "PH-16-02",
           "title": "PC-Layout für Tabu (Setup, Runde, Ergebnis, Kartenseite) mit Prüfung im Desktop-Format",
-          "status": "planned"
+          "status": "planned",
+          "gameIds": [
+            "taboo"
+          ]
         }
       ]
     },
@@ -849,21 +905,40 @@
           "id": "PH-09-02",
           "title": "Spielmodulvertrag überprüfen und erweitern",
           "status": "planned"
-        },
+        }
+      ]
+    },
+    {
+      "id": "PH-18",
+      "name": "Wortbombe",
+      "status": "planned",
+      "gameIds": [
+        "word-bomb"
+      ],
+      "tasks": [
         {
-          "id": "PH-09-03",
-          "title": "Scharade",
+          "id": "PH-18-01",
+          "title": "Spiellogik für Weitergabe, Einspruch und Ausscheiden",
           "status": "planned"
         },
         {
-          "id": "PH-09-04",
-          "title": "Wer bin ich und Quiz",
+          "id": "PH-18-02",
+          "title": "Deutsche und englische Aufgaben für neun Varianten erstellen",
+          "status": "planned"
+        },
+        {
+          "id": "PH-18-03",
+          "title": "Mobile Spielansichten und Einbindung ins Spielmenü",
           "status": "planned"
         }
       ]
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-12",
+      "summary": "Das Entwicklungs-Dashboard zeigt allgemeine und spielspezifische Aufgaben in eigenen Tabs."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-12-01 abgeschlossen: Info-Buttons mit Erklärfenster für Runden, Kartenquelle, Stechen, Überspringen und Schwierigkeit."
@@ -1164,6 +1239,16 @@
       "reason": "Letzte Tabu-Erweiterung: Spielmodi. Die Regeln der Modi werden vorher mit dem Auftraggeber abgestimmt.",
       "prerequisite": "Keine."
     }
+  ],
+  "games": [
+    {
+      "id": "taboo",
+      "name": "Tabu"
+    },
+    {
+      "id": "word-bomb",
+      "name": "Wortbombe"
+    }
   ]
 };
       const REFRESH_INTERVAL_MS = 20_000;
@@ -1172,6 +1257,11 @@
       let renderedDataFingerprint = null;
       let storedUiState = readStoredUiState();
       let persistUiStateTimer = null;
+      let activeView = storedUiState?.activeView ?? "general";
+      const viewScroll = new Map(Object.entries(storedUiState?.viewScroll ?? {}));
+      const openPhaseIds = new Set(storedUiState?.openPhaseIds ?? []);
+      const knownPhases = new Set(storedUiState?.knownPhases ?? []);
+      let currentData;
 
       const escapeHtml = (value) => String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -1181,6 +1271,8 @@
         .replaceAll("'", "&#039;");
 
       const flattenTasks = (data) => data.phases.flatMap((phase) => phase.tasks);
+      const taskMatchesView = (task, phase, viewId) =>
+        (task.gameIds ?? phase.gameIds ?? ["general"]).includes(viewId);
 
       function readStoredUiState() {
         try {
@@ -1197,11 +1289,14 @@
           localStorage.setItem(UI_STATE_KEY, JSON.stringify({
             scrollX: state.scrollX,
             scrollY: state.scrollY,
-            openPhaseIds: state.openPhaseIds === null ? null : [...state.openPhaseIds],
-            focusedKey: state.focusedKey
+            openPhaseIds: [...openPhaseIds],
+            focusedKey: state.focusedKey,
+            activeView,
+            viewScroll: Object.fromEntries(viewScroll),
+            knownPhases: [...knownPhases]
           }));
         } catch {
-          // Der Status bleibt auch ohne verfügbaren Session-Speicher nutzbar.
+          // The dashboard remains usable when local storage is unavailable.
         }
       }
 
@@ -1213,6 +1308,28 @@
       function calculateProgress(tasks) {
         const completed = tasks.filter((task) => task.status === "done").length;
         return { completed, total: tasks.length, percent: tasks.length ? (completed / tasks.length) * 100 : 0 };
+      }
+
+      function progressCard(name, tasks) {
+        const { completed, total, percent } = calculateProgress(tasks);
+        const rounded = Math.round(percent * 10) / 10;
+        const label = escapeHtml(name);
+        return `<div class="panel-card">
+          <div class="progress-heading"><span>${label}</span><strong>${rounded.toLocaleString("de-DE")} %</strong></div>
+          <div class="progress-track" role="progressbar" aria-label="${label}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${rounded}">
+            <div class="progress-fill" style="width: ${percent}%"></div>
+          </div>
+          <p class="progress-note">${completed} von ${total} erledigt</p>
+        </div>`;
+      }
+
+      function renderProgress(data, tasks) {
+        const games = [...(data.games ?? [])].sort((first, second) => first.name.localeCompare(second.name, "de"));
+        document.querySelector("#progress-sidebar").innerHTML = [
+          progressCard("Gesamtfortschritt", tasks),
+          ...games.map((game) => progressCard(game.name, data.phases.flatMap((phase) =>
+            phase.tasks.filter((task) => taskMatchesView(task, phase, game.id)))))
+        ].join("");
       }
 
       function formatDate(value) {
@@ -1229,13 +1346,18 @@
       function captureUiState() {
         const phaseControls = [...document.querySelectorAll("#phases details[data-phase-id]")];
         const focusedKey = document.activeElement?.dataset?.uiKey ?? null;
-        const restoredPhaseIds = storedUiState?.openPhaseIds;
+        for (const control of phaseControls) {
+          const id = control.dataset.phaseId;
+          knownPhases.add(id);
+          if (control.open) openPhaseIds.add(id);
+          else openPhaseIds.delete(id);
+        }
+        const scrollX = storedUiState?.scrollX ?? window.scrollX;
+        const scrollY = storedUiState?.scrollY ?? window.scrollY;
+        viewScroll.set(activeView, { scrollX, scrollY });
         return {
-          scrollX: phaseControls.length ? window.scrollX : (storedUiState?.scrollX ?? window.scrollX),
-          scrollY: phaseControls.length ? window.scrollY : (storedUiState?.scrollY ?? window.scrollY),
-          openPhaseIds: phaseControls.length
-            ? new Set(phaseControls.filter((control) => control.open).map((control) => control.dataset.phaseId))
-            : (Array.isArray(restoredPhaseIds) ? new Set(restoredPhaseIds) : null),
+          scrollX,
+          scrollY,
           focusedKey: focusedKey ?? storedUiState?.focusedKey ?? null
         };
       }
@@ -1252,10 +1374,12 @@
         });
       }
 
-      function renderPhases(phases, openPhaseIds) {
+      function renderPhases(phases) {
         document.querySelector("#phases").innerHTML = phases.map((phase, index) => {
           const done = phase.tasks.filter((task) => task.status === "done").length;
-          const isOpen = openPhaseIds === null ? index === 0 : openPhaseIds.has(phase.id);
+          const id = `${activeView}/${phase.id}`;
+          const hasLegacyState = openPhaseIds.has(phase.id) && !knownPhases.has(id);
+          const isOpen = hasLegacyState ? openPhaseIds.has(phase.id) : knownPhases.has(id) ? openPhaseIds.has(id) : index === 0;
           const tasks = phase.tasks.map((task) => `
             <li class="task">
               <span class="task-id">${escapeHtml(task.id)}</span>
@@ -1263,7 +1387,7 @@
               <span class="badge ${escapeHtml(task.status)}">${escapeHtml(labels[task.status] ?? task.status)}</span>
             </li>`).join("");
           return `
-            <details data-phase-id="${escapeHtml(phase.id)}" ${isOpen ? "open" : ""}>
+            <details data-phase-id="${escapeHtml(id)}" ${isOpen ? "open" : ""}>
               <summary data-ui-key="phase-${escapeHtml(phase.id)}">
                 <span class="phase-id">${escapeHtml(phase.id)}</span>
                 <h3>${escapeHtml(phase.name)}</h3>
@@ -1271,7 +1395,7 @@
               </summary>
               <ul class="tasks">${tasks}</ul>
             </details>`;
-        }).join("");
+        }).join("") || '<p class="empty">Keine Aufgaben erfasst.</p>';
       }
 
       function qualityCard(label, status, detail = "") {
@@ -1302,6 +1426,28 @@
         document.querySelector(selector).innerHTML = items.length ? items.map(template).join("") : `<li class="empty">${escapeHtml(emptyText)}</li>`;
       }
 
+      function renderTaskView(data) {
+        const views = [{ id: "general", name: "Allgemein" }, ...(data.games ?? [])];
+        const view = views.find(({ id }) => id === activeView) ?? views[0];
+        activeView = view.id;
+        const isGeneral = activeView === "general";
+        for (const element of document.querySelectorAll("[data-general-only]")) {
+          element.hidden = !isGeneral;
+        }
+        document.querySelector("#dashboard-tabs").innerHTML = views.map(({ id, name }) =>
+          `<button type="button" data-view="${escapeHtml(id)}" data-ui-key="view-${escapeHtml(id)}" aria-controls="phases" aria-pressed="${id === activeView}">${escapeHtml(name)}</button>`
+        ).join("");
+        document.querySelector("#tasks-heading").textContent = isGeneral ? "Allgemeine Aufgaben" : `Aufgaben für ${view.name}`;
+        const phases = data.phases.map((phase) => ({
+          ...phase,
+          tasks: phase.tasks.filter((task) => taskMatchesView(task, phase, activeView))
+        })).filter((phase) => phase.tasks.length);
+        renderPhases(phases);
+        if (!isGeneral) return;
+        const taskIds = new Set(phases.flatMap((phase) => phase.tasks.map((task) => task.id)));
+        renderList("#next-tasks", data.nextRecommendedTasks.filter((task) => taskIds.has(task.id)), (task) => `<li><strong>${escapeHtml(task.id)}</strong><br>${escapeHtml(task.reason)}<br><small>${escapeHtml(task.prerequisite)}</small></li>`, "Keine Aufgabe empfohlen");
+      }
+
       function render(data) {
         const dataFingerprint = JSON.stringify(data);
         if (dataFingerprint === renderedDataFingerprint) {
@@ -1310,26 +1456,19 @@
         }
 
         const uiState = captureUiState();
+        currentData = data;
         const tasks = flattenTasks(data);
-        const progress = calculateProgress(tasks);
-        const rounded = Math.round(progress.percent * 100) / 100;
-
-        document.querySelector("#progress-number").innerHTML = `${rounded.toLocaleString("de-DE", { maximumFractionDigits: 2 })}<span>%</span>`;
-        document.querySelector("#progress-fill").style.width = `${progress.percent}%`;
-        const progressbar = document.querySelector("[role='progressbar']");
-        progressbar.setAttribute("aria-valuenow", rounded);
-        document.querySelector("#progress-tasks").textContent = `${progress.completed} von ${progress.total} Aufgaben erledigt`;
+        renderProgress(data, tasks);
         document.querySelector("#stage").textContent = data.project.stage.replaceAll("_", " ");
         document.querySelector("#phase-count").textContent = data.phases.length;
         document.querySelector("#active-count").textContent = tasks.filter((task) => task.status === "in_progress").length;
         document.querySelector("#blocked-count").textContent = tasks.filter((task) => task.status === "blocked").length;
         document.querySelector("#updated-at").textContent = formatDate(data.project.updatedAt);
 
-        renderPhases(data.phases, uiState.openPhaseIds);
+        renderTaskView(data);
         renderQuality(data.quality);
         renderList("#issues", data.issues.filter((issue) => issue.status === "open"), (issue) => `<li><strong>${escapeHtml(issue.id)}</strong><br>${escapeHtml(issue.summary)}<br><small>${escapeHtml(issue.impact)}</small></li>`, "Keine offenen Probleme");
         renderList("#changes", data.recentChanges, (change) => `<li><strong>${escapeHtml(change.date)}</strong><br>${escapeHtml(change.summary)}</li>`, "Keine Änderungen dokumentiert");
-        renderList("#next-tasks", data.nextRecommendedTasks, (task) => `<li><strong>${escapeHtml(task.id)}</strong><br>${escapeHtml(task.reason)}<br><small>${escapeHtml(task.prerequisite)}</small></li>`, "Keine Aufgabe empfohlen");
         markRefreshTime();
         renderedDataFingerprint = dataFingerprint;
         restoreUiState(uiState);
@@ -1345,18 +1484,30 @@
           error.classList.remove("visible");
           error.textContent = "";
         } catch (reason) {
-          render(EMBEDDED_STATUS);
+          const hadLoadedData = currentData && currentData !== EMBEDDED_STATUS;
+          render(currentData ?? EMBEDDED_STATUS);
           if (location.protocol === "file:") {
             error.textContent = "";
             error.classList.remove("visible");
           } else {
-            error.textContent = `Aktueller Status konnte nicht geladen werden. Der eingebettete Statusstand wird angezeigt. Technisches Detail: ${reason.message}`;
+            const fallback = hadLoadedData ? "Der zuletzt geladene Statusstand" : "Der eingebettete Statusstand";
+            error.textContent = `Aktueller Status konnte nicht geladen werden. ${fallback} wird angezeigt. Technisches Detail: ${reason.message}`;
             error.classList.add("visible");
           }
         }
       }
 
       refresh();
+      document.querySelector("#dashboard-tabs").addEventListener("click", (event) => {
+        const view = event.target.closest("button[data-view]")?.dataset.view;
+        if (!view || view === activeView || !currentData) return;
+        captureUiState();
+        activeView = view;
+        renderTaskView(currentData);
+        const { scrollX, scrollY } = viewScroll.get(view) ?? { scrollX: 0, scrollY: window.scrollY };
+        restoreUiState({ scrollX, scrollY, focusedKey: `view-${view}` });
+        scheduleUiStatePersistence();
+      });
       document.querySelector("#phases").addEventListener("toggle", scheduleUiStatePersistence, true);
       window.addEventListener("scroll", scheduleUiStatePersistence, { passive: true });
       window.addEventListener("pagehide", persistUiState);

@@ -1,24 +1,24 @@
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
 import { Dialog } from "./components";
+import { ChoiceGroup } from "./game-kit";
 
 interface SettingsDialogProps {
-  cardLanguage: SupportedLanguage;
-  onCardLanguageChange: (language: SupportedLanguage) => void;
   onClose: () => void;
   onLanguageChange: (language: SupportedLanguage) => void;
   open: boolean;
 }
 
-export function SettingsDialog({
-  cardLanguage,
-  onCardLanguageChange,
-  onClose,
-  onLanguageChange,
-  open,
-}: SettingsDialogProps) {
+const toLanguage = (value: string): SupportedLanguage => (value === "de" ? "de" : "en");
+
+export function SettingsDialog({ onClose, onLanguageChange, open }: SettingsDialogProps) {
   const { t, i18n } = useTranslation();
   const selectedLanguage: SupportedLanguage = i18n.resolvedLanguage === "de" ? "de" : "en";
+  // English is the default language of the app, so it comes first.
+  const languageOptions = [
+    { value: "en", label: t("language.options.en") },
+    { value: "de", label: t("language.options.de") },
+  ];
 
   async function handleLanguageChange(language: SupportedLanguage) {
     await i18n.changeLanguage(language);
@@ -34,30 +34,14 @@ export function SettingsDialog({
       title={t("settings.title")}
     >
       <div className="settings-fields">
-        <label className="language-control">
-          <span>{t("language.uiLabel")}</span>
-          <select
-            value={selectedLanguage}
-            onChange={(event) =>
-              void handleLanguageChange(event.currentTarget.value as SupportedLanguage)
-            }
-          >
-            <option value="de">{t("language.options.de")}</option>
-            <option value="en">{t("language.options.en")}</option>
-          </select>
-        </label>
-        <label className="language-control">
-          <span>{t("language.cardLabel")}</span>
-          <select
-            value={cardLanguage}
-            onChange={(event) =>
-              onCardLanguageChange(event.currentTarget.value as SupportedLanguage)
-            }
-          >
-            <option value="de">{t("language.options.de")}</option>
-            <option value="en">{t("language.options.en")}</option>
-          </select>
-        </label>
+        <ChoiceGroup
+          initial={selectedLanguage}
+          legend={t("language.uiLabel")}
+          name="uiLanguage"
+          onChange={(language) => void handleLanguageChange(toLanguage(language))}
+          options={languageOptions}
+          value={selectedLanguage}
+        />
       </div>
     </Dialog>
   );

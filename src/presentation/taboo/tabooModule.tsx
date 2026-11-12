@@ -26,9 +26,10 @@ export function createTabooModule({
 }: TabooModuleOptions = {}): GameModule {
   return {
     id: "taboo",
-    Screen: ({ cardLanguage }) => (
+    Screen: ({ cardLanguage, onCardLanguageChange }) => (
       <TabooLibrary
         cardLanguage={cardLanguage}
+        onCardLanguageChange={onCardLanguageChange}
         cards={cards}
         generators={generators}
         loadCardPack={loadCardPack}

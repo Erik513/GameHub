@@ -280,3 +280,42 @@ it("remembers the group for the next game when a game starts, but not an empty s
   expect(written).toHaveLength(1);
   expect(written[0]).toMatchObject({ count: 2, names: ["Foxes", ""], order: "random" });
 });
+
+it.each([
+  ["en", "Card language", "German"],
+  ["de", "Kartensprache", "Deutsch"],
+] as const)(
+  "offers the card language in the game settings and reports a change in %s",
+  async (language, legend, german) => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n(language);
+    const onCardLanguageChange = vi.fn();
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup
+          cardLanguage="en"
+          cards={tabooStandardCards}
+          onCardLanguageChange={onCardLanguageChange}
+          roundChoices={[1, 3]}
+        />
+      </I18nextProvider>,
+    );
+    const group = screen.getByRole("group", { name: legend });
+    // English is the left option and the chosen one here.
+    const radios = within(group).getAllByRole("radio");
+    expect(radios).toHaveLength(2);
+    expect(radios[0]).toBeChecked();
+    await user.click(within(group).getByRole("radio", { name: german }));
+    expect(onCardLanguageChange).toHaveBeenCalledWith("de");
+  },
+);
+
+it("does not offer the card language without a way to change it", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup cardLanguage="en" cards={tabooStandardCards} roundChoices={[1, 3]} />
+    </I18nextProvider>,
+  );
+  expect(screen.queryByRole("group", { name: "Card language" })).not.toBeInTheDocument();
+});

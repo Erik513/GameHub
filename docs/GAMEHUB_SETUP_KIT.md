@@ -22,8 +22,8 @@ Das Spiel bekommt heute nur `teams: { id, name }[]` (`GameConfiguration` in `bus
 
 ## 3. Was Spiele brauchen (angenommen, noch nicht abgestimmt)
 
-- **Mit Teams** (Tabu, Scharade, Kartenspiel in Teams): Teamanzahl in Grenzen, Namen, Reihenfolge, optional Spieler je Team.
-- **Nur Spieler** (Quiz, „Wer bin ich?“): eine Liste von Namen ohne Teams.
+- **Mit Teams** (Tabu, Kartenspiel in Teams): Teamanzahl in Grenzen, Namen, Reihenfolge, optional Spieler je Team.
+- **Nur Spieler** (Wortbombe): eine Liste von Namen ohne Teams.
 - **Einstellungen:** je Spiel eigene Gruppen (Runden, Dauer, Kartenquelle, Schwierigkeit …) mit Info-Knöpfen.
 - **Regeln und weitere Knöpfe** oben rechts (bei Tabu „Spielregeln“ und „Karten“).
 - **Start** unten, mit Fehlermeldungen oben.

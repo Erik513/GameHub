@@ -129,10 +129,8 @@ it("shows the card tools on their own page with the back button in the app heade
   render(
     <I18nextProvider i18n={i18n}>
       <AppShell
-        cardLanguage="en"
         currentRoute="/games/taboo"
         gameTitle="Taboo"
-        onCardLanguageChange={vi.fn()}
         onCloseGame={vi.fn()}
         onLanguageChange={vi.fn()}
       >

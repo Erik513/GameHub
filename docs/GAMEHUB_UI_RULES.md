@@ -24,6 +24,8 @@ Aufbau von oben nach unten:
    - Feld **Spieleinstellungen**.
 4. **Starten [ist]:** der Knopf steht ganz unten und ist **immer fest am unteren Rand**, bei kurzem wie bei langem Inhalt.
 
+**Sprachen:** Die Einstellungen des GameHub (Knopf in der Kopfleiste) enthalten **nur die Oberflächensprache**. Die Sprache der Inhalte (bei Tabu die Kartensprache) ist eine Einstellung des Spiels und steht als erste Knopfgruppe in dessen „Spieleinstellungen“ (Englisch links, Deutsch rechts). Ein Spiel bekommt dafür `cardLanguage` und `onCardLanguageChange` vom Spielmodul-Vertrag; die App speichert die Wahl weiterhin zentral.
+
 Die Felder des Inhalts sind Kapitel (Box mit Überschrift und Pfeil), auf- und zuklappbar, standardmäßig offen **[ist]**. Zugeklappte Eingaben bleiben im Formular und zählen beim Start.
 
 ### 2.2 Spielansichten (während eines Spiels)
@@ -64,7 +66,7 @@ Weitere Fenstertypen gibt es nicht. Ein Fenster ist kurz; was länger als ein Bi
 
 ## 4. Eingaben
 
-1. **So wenige Eingabefelder wie möglich.** Wo eine Auswahl (Gruppe von Knöpfen, Auswahlliste) oder ein Tippen genügt, wird kein Textfeld benutzt.
+1. **So wenige Eingabefelder wie möglich.** Wo eine Auswahl oder ein Tippen genügt, wird kein Textfeld benutzt. Eine Auswahl aus wenigen festen Möglichkeiten (Sprache, Teamanzahl, Schwierigkeit) ist immer eine **Gruppe nebeneinanderstehender Knöpfe** (`ChoiceGroup`), keine Combobox. Die Einstellungen (Oberflächen- und Kartensprache) folgen dem schon. **Noch Comboboxen [Umbau]:** Kategorie und Schwierigkeit beim Karteneintrag und im Karteneditor und die Teamzuordnung je Spieler in `TeamsSetup`; sie bleiben, bis dafür eine passende Knopfform abgestimmt ist (viele Kategorien passen nicht nebeneinander).
 2. Mehrzeilige Felder sind nicht in der Größe veränderbar und wachsen mit dem Inhalt **[ist]**.
 3. Schriftgröße in Feldern mindestens 16 Pixel, jedes Feld hat eine Beschriftung **[ist]**.
 

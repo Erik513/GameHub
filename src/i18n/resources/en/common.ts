@@ -31,7 +31,7 @@ export const common = {
   settings: {
     open: "Settings",
     title: "Settings",
-    description: "Choose the interface and card languages independently.",
+    description: "Choose the language of the interface.",
     close: "Close",
   },
   feedback: {

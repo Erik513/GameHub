@@ -57,12 +57,7 @@ describe("AppShell", () => {
   it("opens the settings, closes them again and keeps the page content", async () => {
     await renderWithI18n(
       "en",
-      <AppShell
-        cardLanguage="en"
-        currentRoute="/"
-        onCardLanguageChange={vi.fn()}
-        onLanguageChange={vi.fn()}
-      >
+      <AppShell currentRoute="/" onLanguageChange={vi.fn()}>
         <p>Page content</p>
       </AppShell>,
     );
@@ -79,10 +74,8 @@ describe("AppShell", () => {
     await renderWithI18n(
       "en",
       <AppShell
-        cardLanguage="en"
         currentRoute="/games/taboo"
         gameTitle="Taboo"
-        onCardLanguageChange={vi.fn()}
         onCloseGame={onCloseGame}
         onLanguageChange={vi.fn()}
       >

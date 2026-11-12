@@ -315,39 +315,52 @@ describe("App", () => {
     );
 
     await user.click(screen.getByRole("button", { name: "Settings" }));
-    await user.selectOptions(screen.getByRole("combobox", { name: "Interface language" }), "de");
+    await user.click(
+      within(screen.getByRole("group", { name: "Interface language" })).getByRole("radio", {
+        name: "German",
+      }),
+    );
 
-    expect(await screen.findByRole("combobox", { name: "Oberflächensprache" })).toHaveValue("de");
+    expect(
+      within(await screen.findByRole("group", { name: "Oberflächensprache" })).getByRole("radio", {
+        name: "Deutsch",
+      }),
+    ).toBeChecked();
     expect(screen.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
     expect(onLanguageChange).toHaveBeenCalledWith("de");
   });
 
-  it("reports card language changes without changing the UI language", async () => {
+  it("gives a game its card language and lets it change it, apart from the UI language", async () => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n("en");
     const onCardLanguageChange = vi.fn();
+    const example: GameModule = {
+      id: "taboo",
+      Screen: ({ cardLanguage, onCardLanguageChange: change }) => (
+        <button onClick={() => change("en")} type="button">
+          Cards in {cardLanguage}
+        </button>
+      ),
+    };
+    window.location.hash = "#/games/taboo";
 
     render(
       <I18nextProvider i18n={i18n}>
-        <App cardLanguage="de" onCardLanguageChange={onCardLanguageChange} />
+        <App cardLanguage="de" modules={[example]} onCardLanguageChange={onCardLanguageChange} />
       </I18nextProvider>,
     );
 
-    await user.click(screen.getByRole("button", { name: "Settings" }));
-    await user.selectOptions(screen.getByRole("combobox", { name: "Card language" }), "en");
-
-    expect(screen.getByRole("combobox", { name: "Interface language" })).toHaveValue("en");
+    await user.click(screen.getByRole("button", { name: "Cards in de" }));
     expect(onCardLanguageChange).toHaveBeenCalledWith("en");
+    // The settings only hold the interface language.
+    await user.click(screen.getByRole("button", { name: "Settings" }));
+    expect(screen.queryByRole("group", { name: "Card language" })).not.toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Interface language" })).toBeVisible();
   });
 
   it.each([
-    ["en", "Settings", "Settings", "Choose the interface and card languages independently."],
-    [
-      "de",
-      "Einstellungen",
-      "Einstellungen",
-      "Wähle Oberflächen- und Kartensprache unabhängig voneinander.",
-    ],
+    ["en", "Settings", "Settings", "Choose the language of the interface."],
+    ["de", "Einstellungen", "Einstellungen", "Wähle die Sprache der Oberfläche."],
   ] as const)("opens localized settings in %s", async (language, openLabel, title, description) => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n(language);

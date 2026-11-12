@@ -45,7 +45,10 @@ for (const labels of cases) {
     await page.goto("/");
     if (labels.language === "de") {
       await page.getByRole("button", { name: "Settings" }).click();
-      await page.getByRole("combobox", { name: "Interface language" }).selectOption("de");
+      await page
+        .getByRole("group", { name: "Interface language" })
+        .getByRole("radio", { name: "German" })
+        .check({ force: true });
       await page.getByRole("dialog").getByRole("button", { name: "Schließen" }).click();
     }
     await page.getByRole("button", { name: labels.open }).click();

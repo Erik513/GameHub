@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-12T21:15:00+01:00",
+    "updatedAt": "2026-11-12T21:06:11.040Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 51,
-      "totalTasks": 62,
-      "percent": 82.3
+      "completedTasks": 74,
+      "totalTasks": 84,
+      "percent": 88.1
     }
   },
   "environment": {
@@ -176,6 +176,11 @@
           "id": "PH-00-07",
           "title": "Dokumente auf Konsistenz prüfen",
           "status": "done"
+        },
+        {
+          "id": "PH-00-08",
+          "title": "Entwicklungs-Dashboard nach Spielen gliedern",
+          "status": "done"
         }
       ]
     },
@@ -295,6 +300,9 @@
           "title": "Kartenfilter und Deckbildung",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -322,6 +330,9 @@
           "title": "Spielende und Neustart",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -332,17 +343,26 @@
         {
           "id": "PH-06-01",
           "title": "IndexedDB-Schema und Repository-Adapter",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "taboo"
+          ]
         },
         {
           "id": "PH-06-02",
           "title": "Lokale deutsche und englische Kartensätze",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "taboo"
+          ]
         },
         {
           "id": "PH-06-03",
           "title": "Import und Aktualisierung lokaler Karten",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "taboo"
+          ]
         },
         {
           "id": "PH-06-04",
@@ -381,6 +401,9 @@
           "title": "Generierungsoberfläche und lokale Speicherung",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -391,7 +414,10 @@
         {
           "id": "PH-08-01",
           "title": "Kritische E2E-Spielabläufe",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "taboo"
+          ]
         },
         {
           "id": "PH-08-02",
@@ -430,6 +456,9 @@
           "title": "Feinschliff nach Rückmeldung (Menü, Karte, Stechen, Rundenzahl)",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -460,13 +489,19 @@
         {
           "id": "PH-11-05",
           "title": "Struktur prüfen und wiederverwendbare Spielbausteine dokumentieren",
-          "status": "done"
+          "status": "done",
+          "gameIds": [
+            "general"
+          ]
         },
         {
           "id": "PH-11-06",
           "title": "Tabu-Zustandslogik als Hooks und CSS je Spiel",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -509,6 +544,9 @@
           "title": "Spielmodi: Klassisch, Auf Zeit, Gegen die Zeit",
           "status": "planned"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -541,6 +579,9 @@
           "title": "Kartenseite verfeinern: Symbolknöpfe, Export je Kategorie, Import-Knopf",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -553,6 +594,9 @@
           "title": "Qualitätstest: kleines Browser-Modell für verbotene Wörter (Ergebnis: nicht brauchbar)",
           "status": "done"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -590,6 +634,9 @@
           "title": "Optional: gespielte Karten merken",
           "status": "planned"
         }
+      ],
+      "gameIds": [
+        "taboo"
       ]
     },
     {
@@ -605,7 +652,10 @@
         {
           "id": "PH-16-02",
           "title": "PC-Layout für Tabu (Setup, Runde, Ergebnis, Kartenseite) mit Prüfung im Desktop-Format",
-          "status": "planned"
+          "status": "planned",
+          "gameIds": [
+            "taboo"
+          ]
         }
       ]
     },
@@ -660,21 +710,40 @@
           "id": "PH-09-02",
           "title": "Spielmodulvertrag überprüfen und erweitern",
           "status": "planned"
-        },
+        }
+      ]
+    },
+    {
+      "id": "PH-18",
+      "name": "Wortbombe",
+      "status": "planned",
+      "gameIds": [
+        "word-bomb"
+      ],
+      "tasks": [
         {
-          "id": "PH-09-03",
-          "title": "Scharade",
+          "id": "PH-18-01",
+          "title": "Spiellogik für Weitergabe, Einspruch und Ausscheiden",
           "status": "planned"
         },
         {
-          "id": "PH-09-04",
-          "title": "Wer bin ich und Quiz",
+          "id": "PH-18-02",
+          "title": "Deutsche und englische Aufgaben für neun Varianten erstellen",
+          "status": "planned"
+        },
+        {
+          "id": "PH-18-03",
+          "title": "Mobile Spielansichten und Einbindung ins Spielmenü",
           "status": "planned"
         }
       ]
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-12",
+      "summary": "Das Entwicklungs-Dashboard zeigt allgemeine und spielspezifische Aufgaben in eigenen Tabs."
+    },
     {
       "date": "2026-11-11",
       "summary": "PH-12-01 abgeschlossen: Info-Buttons mit Erklärfenster für Runden, Kartenquelle, Stechen, Überspringen und Schwierigkeit."
@@ -974,6 +1043,16 @@
       "id": "PH-12-07",
       "reason": "Letzte Tabu-Erweiterung: Spielmodi. Die Regeln der Modi werden vorher mit dem Auftraggeber abgestimmt.",
       "prerequisite": "Keine."
+    }
+  ],
+  "games": [
+    {
+      "id": "taboo",
+      "name": "Tabu"
+    },
+    {
+      "id": "word-bomb",
+      "name": "Wortbombe"
     }
   ]
 }

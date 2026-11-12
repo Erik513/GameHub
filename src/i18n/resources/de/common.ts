@@ -31,7 +31,7 @@ export const common = {
   settings: {
     open: "Einstellungen",
     title: "Einstellungen",
-    description: "Wähle Oberflächen- und Kartensprache unabhängig voneinander.",
+    description: "Wähle die Sprache der Oberfläche.",
     close: "Schließen",
   },
   feedback: {

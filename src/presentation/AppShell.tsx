@@ -7,20 +7,16 @@ import { PlayerRosterButton } from "./game-kit";
 import { SettingsDialog } from "./SettingsDialog";
 
 interface AppShellProps {
-  cardLanguage: SupportedLanguage;
   children: ReactNode;
   currentRoute: string;
-  onCardLanguageChange: (language: SupportedLanguage) => void;
   gameTitle?: string | undefined;
   onCloseGame?: (() => void) | undefined;
   onLanguageChange: (language: SupportedLanguage) => void;
 }
 
 export function AppShell({
-  cardLanguage,
   children,
   currentRoute,
-  onCardLanguageChange,
   gameTitle,
   onCloseGame,
   onLanguageChange,
@@ -218,8 +214,6 @@ export function AppShell({
         <main className="main-content">{children}</main>
       </GameChromeContext.Provider>
       <SettingsDialog
-        cardLanguage={cardLanguage}
-        onCardLanguageChange={onCardLanguageChange}
         onClose={() => setSettingsOpen(false)}
         onLanguageChange={onLanguageChange}
         open={settingsOpen}

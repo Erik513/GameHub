@@ -49,9 +49,7 @@ export function App({
 
   return (
     <AppShell
-      cardLanguage={cardLanguage}
       currentRoute={selectedGame ? currentRoute : homeRoute}
-      onCardLanguageChange={onCardLanguageChange}
       gameTitle={
         selectedGame && selectedGame.availability !== "planned"
           ? t(`games.${selectedGame.translationKey}.title`)
@@ -66,7 +64,9 @@ export function App({
     >
       {selectedGame && selectedGame.availability !== "planned" ? (
         <GamePreviewPage game={selectedGame}>
-          {GameScreen && <GameScreen cardLanguage={cardLanguage} />}
+          {GameScreen && (
+            <GameScreen cardLanguage={cardLanguage} onCardLanguageChange={onCardLanguageChange} />
+          )}
         </GamePreviewPage>
       ) : (
         <GameSelectionPage games={gameCatalog} onSelect={handleGameSelection} />

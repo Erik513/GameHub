@@ -25,6 +25,8 @@ interface TabooLibraryProps {
   generators?: TabooGenerators | undefined;
   cardLanguage: SupportedLanguage;
   cards: readonly TabooCard[];
+  /** Changes the card language from the game settings. */
+  onCardLanguageChange?: ((language: SupportedLanguage) => void) | undefined;
   repository: TabooCardRepository | undefined;
 }
 
@@ -33,6 +35,7 @@ type Feedback = { type: "invalid" | "storage" } | { type: "imported"; count: num
 export function TabooLibrary({
   cardLanguage,
   cards,
+  onCardLanguageChange,
   repository,
   generators,
   loadCardPack,
@@ -152,6 +155,7 @@ export function TabooLibrary({
           cards={allCards}
           categoryInfos={categoryInfos}
           generators={generators}
+          onCardLanguageChange={onCardLanguageChange}
         >
           {repository && (
             <Button variant="secondary" onClick={() => setPage("cards")}>

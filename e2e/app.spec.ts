@@ -43,14 +43,19 @@ test("persists the selected UI language", async ({ page }) => {
   await page.goto("/");
 
   await page.getByRole("button", { name: "Settings" }).click();
-  await page.getByRole("combobox", { name: "Interface language" }).selectOption("de");
+  await page
+    .getByRole("group", { name: "Interface language" })
+    .getByRole("radio", { name: "German" })
+    .check({ force: true });
   await expect(page.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "de");
 
   await page.reload();
 
   await page.getByRole("button", { name: "Einstellungen" }).click();
-  await expect(page.getByRole("combobox", { name: "Oberflächensprache" })).toHaveValue("de");
+  await expect(
+    page.getByRole("group", { name: "Oberflächensprache" }).getByRole("radio", { name: "Deutsch" }),
+  ).toBeChecked();
   await expect(page.getByRole("heading", { name: "Wähle ein Spiel" })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "de");
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
@@ -71,22 +76,37 @@ test("navigates between the game library and preview", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Choose a game" })).toBeVisible();
 });
 
-test("persists UI and card languages independently", async ({ page }) => {
+test("persists the UI language and the card language of Taboo independently", async ({ page }) => {
   await page.goto("/");
 
+  // The settings only hold the interface language.
   await page.getByRole("button", { name: "Settings" }).click();
-  await page.getByRole("combobox", { name: "Card language" }).selectOption("de");
-  await page.getByRole("combobox", { name: "Interface language" }).selectOption("de");
-  await page.getByRole("combobox", { name: "Oberflächensprache" }).selectOption("en");
+  await expect(page.getByRole("group", { name: "Card language" })).toHaveCount(0);
+  await page
+    .getByRole("group", { name: "Interface language" })
+    .getByRole("radio", { name: "German" })
+    .check({ force: true });
+  await page.getByRole("button", { name: "Schließen" }).click();
 
-  await expect(page.getByRole("combobox", { name: "Interface language" })).toHaveValue("en");
-  await expect(page.getByRole("combobox", { name: "Card language" })).toHaveValue("de");
+  // The card language is a setting of Taboo.
+  await page.getByRole("button", { name: "Fortschritt ansehen" }).click();
+  const cardLanguage = page.getByRole("group", { name: "Kartensprache" });
+  await expect(cardLanguage.getByRole("radio", { name: "Englisch" })).toBeChecked();
+  // Bring the group to the middle so the start bar at the bottom does not cover it.
+  await cardLanguage.evaluate((element) => element.scrollIntoView({ block: "center" }));
+  await cardLanguage.getByRole("radio", { name: "Deutsch" }).check({ force: true });
+  await expect(cardLanguage.getByRole("radio", { name: "Deutsch" })).toBeChecked();
 
   await page.reload();
 
-  await page.getByRole("button", { name: "Settings" }).click();
-  await expect(page.getByRole("combobox", { name: "Interface language" })).toHaveValue("en");
-  await expect(page.getByRole("combobox", { name: "Card language" })).toHaveValue("de");
+  await expect(
+    page.getByRole("group", { name: "Kartensprache" }).getByRole("radio", { name: "Deutsch" }),
+  ).toBeChecked();
+  await page.getByRole("button", { name: "Spiel schließen" }).click();
+  await page.getByRole("button", { name: "Einstellungen" }).click();
+  await expect(
+    page.getByRole("group", { name: "Oberflächensprache" }).getByRole("radio", { name: "Deutsch" }),
+  ).toBeChecked();
 });
 
 test("opens and closes the settings dialog", async ({ page }) => {

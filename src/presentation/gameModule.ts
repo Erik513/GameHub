@@ -3,7 +3,10 @@ import type { SupportedLanguage } from "../i18n";
 
 /** What the app gives to the main window of every game. */
 export interface GameScreenProps {
+  /** The language of the game's content (cards, questions); a setting of each game. */
   readonly cardLanguage: SupportedLanguage;
+  /** Lets the game change the content language, for example from its own settings. */
+  readonly onCardLanguageChange: (language: SupportedLanguage) => void;
 }
 
 /**
