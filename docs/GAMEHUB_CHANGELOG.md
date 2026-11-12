@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Kopfleiste umgebaut
+
+- Neue Regel: Links steht der Spielname (der blaue Punkt davor ist entfernt), rechts die Knöpfe **Spieler**, **Einstellungen** und ganz rechts **Home**. Home steht immer ganz rechts. (Zwischenstände mit Home links und mittigem Namen wurden am selben Tag wieder verworfen.)
+- Der Knopf „Spieler“ steht nun im Hauptmenü jedes Spiels ebenfalls in der Kopfleiste (wie in der Spielauswahl) und nicht mehr in der Werkzeugleiste darunter; die Werkzeugleiste hat nur noch Editor (falls vorhanden) und Spielregeln, `SetupScreen` bringt den Spielerknopf nicht mehr mit.
+- Unteransichten (Spiel, Editor) behalten ihre Kopfleiste: nur Zurück, Pause oder „Spiel beenden“ oben rechts, kein Home und keine Einstellungen.
+- Tests: Reihenfolge der Knöpfe in der Spielauswahl und im Hauptmenü eines Spiels sowie kein Farbpunkt mehr. Im Browser auf 375 Pixel Breite geprüft.
+
 ### Spielerverwaltung überarbeitet
 
 - Das Fenster hat immer dieselbe Größe: Die Listenfläche hat eine feste Höhe, bei mehr Spielern erscheint ein Scrollbalken (ebenso in der Auswahl aus der Spielerliste). Die Fehlermeldung hat eine feste Zeile, damit sich nichts verschiebt.

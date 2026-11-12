@@ -14,9 +14,8 @@ Jedes Spiel besteht aus denselben wenigen Ansichten. Ein neues Spiel füllt sie 
 
 Aufbau von oben nach unten:
 
-1. **Kopfleiste [ist]:** links der Name des Spiels, rechts die zwei Knöpfe **Einstellungen** und **Home**.
+1. **Kopfleiste [ist]** (geändert am 2026-11-13): links der Name des Spiels (ohne Farbpunkt davor; bei zu langem Namen mit Auslassungspunkten); rechts die Knöpfe **Spieler** (Symbol und Text), **Einstellungen** und ganz rechts **Home**. **Home steht immer ganz rechts.**
 2. **Werkzeugleiste [ist]**, eine Reihe unter der Kopfleiste, die Knöpfe teilen sich die Breite:
-   - immer ein Knopf **Spieler** (öffnet die Spielerverwaltung, `ADR-022`; das Hauptmenü bekommt ihn automatisch);
    - immer ein Knopf **Spielregeln** (öffnet das Infofenster mit den Regeln);
    - optional ein Knopf zur **Datenansicht oder zum Editor**, wo man eigene Inhalte hinzufügen, ändern, importieren und exportieren kann (bei Tabu „Karten“). Spiele ohne eigene Inhalte haben ihn nicht.
 3. **Inhalt [ist]**, immer in genau dieser Reihenfolge (das Feld „Teams und Spieler“ gehört **nicht** mehr ins Hauptmenü, siehe 2.1a):
@@ -54,7 +53,7 @@ Spielspezifische Zusatzansichten (bei Tabu Auswertung und Stechen) sind Variante
 
 ### 2.3 GameHub (Spielauswahl)
 
-Die Spielauswahl ist auf dem Handy kompakt: Kopfleiste mit „GameHub“ links und rechts dem Textknopf **Spieler** (Symbol und Text, weil das Symbol allein nicht selbsterklärend ist) und dem Symbolknopf **Einstellungen**; darunter sofort die Spiele als Karten. Überschrift und Einleitung sind nur für Screenreader da (ab Tabletbreite sichtbar). Der Spielerknopf der Spielauswahl steht in der Kopfleiste, nicht im Inhalt.
+Die Spielauswahl ist auf dem Handy kompakt: Kopfleiste mit „GameHub“ links (ohne Farbpunkt; die Spielauswahl ist das Zuhause, dort gibt es keinen Home-Knopf) und rechts dem Textknopf **Spieler** (Symbol und Text, weil das Symbol allein nicht selbsterklärend ist) und dem Symbolknopf **Einstellungen**; darunter sofort die Spiele als Karten. Überschrift und Einleitung sind nur für Screenreader da (ab Tabletbreite sichtbar). Der Spielerknopf der Spielauswahl steht in der Kopfleiste, nicht im Inhalt.
 
 ### 2.4 Unteransichten und die Kopfleiste
 
@@ -114,7 +113,7 @@ Alle Ansichten bestehen aus diesen Bausteinen im `game-kit` und in `components`;
 | Ansicht | Baustein |
 |---|---|
 | Aufstellung | `LineupScreen` (Meldungen, Teams und Spieler als `SetupSection` mit `TeamsSetup` oder `PlayersSetup`, Startknopf unten fest) |
-| Hauptmenü | `SetupScreen` (Rahmen mit Meldungen, Knopf `Spieler` (automatisch), Knopf für Spielregeln `rules`, optionaler Knopf für den Editor `editor`, Felder als `SetupSection`, Startleiste), darin `TeamsSetup` oder `PlayersSetup`, `ChoiceGroup`, `InfoButton` |
+| Hauptmenü | `SetupScreen` (Rahmen mit Meldungen, Knopf für Spielregeln `rules`, optionaler Knopf für den Editor `editor`, Felder als `SetupSection`, Startleiste), darin `TeamsSetup` oder `PlayersSetup`, `ChoiceGroup`, `InfoButton` |
 | Editor | `ManageScreen` (Titel, Hinweis, Kapitel als `SetupSection`, Aktionsreihe, Meldungen) |
 | Zwischenstand und Endstand | `ScoreScreen` (Überschrift, optional Sieger, Punktestand, weitere Inhalte, Hauptaktion unten); der Endstand ist derselbe Baustein mit `winner` |
 | Das eigentliche Spiel | `TimerHud`, `StartBar` und Inhalt des Spiels |

@@ -26,17 +26,37 @@ export function AppShell({
   const [gameExit, setGameExit] = useState<GameExit>();
   const registerGameExit = useCallback((exit: GameExit | undefined) => setGameExit(exit), []);
 
+  // The home button is the last button at the top right of the main menu of a game.
+  const homeButton = onCloseGame ? (
+    <Button
+      aria-label={t("navigation.closeGame")}
+      className="icon-button"
+      title={t("navigation.closeGame")}
+      variant="secondary"
+      onClick={onCloseGame}
+    >
+      <svg aria-hidden="true" focusable="false" height="20" viewBox="0 0 24 24" width="20">
+        <path
+          d="M3 11.5 12 4l9 7.5M5.5 10v9.5h4.5v-6h4v6h4.5V10"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+        />
+      </svg>
+    </Button>
+  ) : null;
+
   return (
     <div className="app-shell">
       <header className="site-header">
         {gameTitle ? (
           <p className="brand">
-            <span className="brand__mark" aria-hidden="true" />
             <span>{gameTitle}</span>
           </p>
         ) : (
           <a className="brand" href="#/" aria-label="GameHub">
-            <span className="brand__mark" aria-hidden="true" />
             <span>GameHub</span>
           </a>
         )}
@@ -147,7 +167,7 @@ export function AppShell({
             </>
           ) : (
             <>
-              {!gameTitle && <PlayerRosterButton />}
+              <PlayerRosterButton />
               <Button
                 aria-label={t("settings.open")}
                 className="icon-button"
@@ -180,32 +200,7 @@ export function AppShell({
                   />
                 </svg>
               </Button>
-              {onCloseGame && (
-                <Button
-                  aria-label={t("navigation.closeGame")}
-                  className="icon-button"
-                  title={t("navigation.closeGame")}
-                  variant="secondary"
-                  onClick={onCloseGame}
-                >
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    width="20"
-                  >
-                    <path
-                      d="M3 11.5 12 4l9 7.5M5.5 10v9.5h4.5v-6h4v6h4.5V10"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                    />
-                  </svg>
-                </Button>
-              )}
+              {homeButton}
             </>
           )}
         </div>

@@ -1,10 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
 import { describe, expect, it, vi } from "vitest";
 import { gameCatalog, type GameModuleDescriptor } from "../app/gameCatalog";
 import { createGameHubI18n } from "../i18n";
 import { AppShell } from "./AppShell";
 import { GamePreviewPage } from "./GamePreviewPage";
+import { PlayerRosterProvider } from "./game-kit";
 import { GameSelectionPage } from "./GameSelectionPage";
 
 async function renderWithI18n(language: "en" | "de", ui: React.ReactNode) {
@@ -86,5 +87,47 @@ describe("AppShell", () => {
     expect(screen.queryByRole("link", { name: "GameHub" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Close game" }));
     expect(onCloseGame).toHaveBeenCalledOnce();
+  });
+});
+
+describe("header of the app", () => {
+  const store = { read: () => ["Anna"], write: () => undefined };
+  const buttons = () =>
+    within(document.querySelector<HTMLElement>("header")!)
+      .getAllByRole("button")
+      .map((button) => button.getAttribute("aria-label") ?? button.textContent);
+
+  it("has the settings at the top right and the players button next to it in the hub", async () => {
+    await renderWithI18n(
+      "en",
+      <PlayerRosterProvider store={store}>
+        <AppShell currentRoute="/" onLanguageChange={vi.fn()}>
+          <p>Page</p>
+        </AppShell>
+      </PlayerRosterProvider>,
+    );
+    expect(buttons()).toEqual(["Players", "Settings"]);
+    expect(document.querySelector(".brand__mark")).toBeNull();
+  });
+
+  it("has the home button last at the top right in the main menu of a game, without a dot", async () => {
+    await renderWithI18n(
+      "en",
+      <PlayerRosterProvider store={store}>
+        <AppShell
+          currentRoute="/games/taboo"
+          gameTitle="Taboo"
+          onCloseGame={vi.fn()}
+          onLanguageChange={vi.fn()}
+        >
+          <p>Game</p>
+        </AppShell>
+      </PlayerRosterProvider>,
+    );
+    // The name is at the left; the buttons at the right end with the settings and then home.
+    expect(buttons()).toEqual(["Players", "Settings", "Close game"]);
+    const header = document.querySelector<HTMLElement>("header")!;
+    expect(within(header).getByText("Taboo").closest(".brand")).not.toBeNull();
+    expect(document.querySelector(".brand__mark")).toBeNull();
   });
 });
