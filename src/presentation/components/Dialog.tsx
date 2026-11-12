@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "./Button";
 
 interface DialogProps {
@@ -43,7 +44,9 @@ export function Dialog({ children, closeLabel, description, onClose, open, title
     return null;
   }
 
-  return (
+  // The window is attached to the page itself, so no parent (for example the sticky header with its
+  // blur) can change where it sits.
+  return createPortal(
     <div
       className="dialog-backdrop"
       role="presentation"
@@ -80,6 +83,7 @@ export function Dialog({ children, closeLabel, description, onClose, open, title
         {description ? <p id={descriptionId}>{description}</p> : null}
         <div className="dialog__content">{children}</div>
       </section>
-    </div>
+    </div>,
+    document.body,
   );
 }

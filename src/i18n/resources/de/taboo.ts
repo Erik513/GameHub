@@ -65,7 +65,6 @@ export const tabooTexts = {
     deleteCategoryAgain: "Nochmal tippen: {{count}} Karten löschen",
     deleteLabel: "Karte {{term}} löschen",
     deleteConfirm: "Nochmal tippen, um {{term}} zu löschen",
-    deleteAgain: "Nochmal tippen",
     problems: {
       invalid:
         "Die Karte braucht einen Begriff und vier verschiedene verbotene Wörter, die nicht dem Begriff entsprechen.",

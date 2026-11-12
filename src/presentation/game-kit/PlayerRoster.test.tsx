@@ -80,25 +80,31 @@ it.each(["en", "de"] as const)(
     expect(within(dialog).getByRole("list", { name: text.list })).toHaveTextContent("Ben");
 
     await user.type(within(dialog).getByRole("textbox", { name: text.name }), "anna{enter}");
-    expect(state.names).toEqual(["anna", "Ben"]);
+    expect(state.names).toEqual(["Anna", "Ben"]);
     expect(
       within(within(dialog).getByRole("list", { name: text.list }))
         .getAllByRole("listitem")
         .map((item) => item.textContent),
-    ).toEqual(["anna", "Ben"]);
+    ).toEqual(["Anna", "Ben"]);
 
     // A name that exists already is refused with a message.
     await user.type(within(dialog).getByRole("textbox", { name: text.name }), "BEN");
     await user.click(within(dialog).getByRole("button", { name: text.add }));
     expect(within(dialog).getByRole("alert")).toHaveTextContent(text.duplicate);
-    expect(state.names).toEqual(["anna", "Ben"]);
+    expect(state.names).toEqual(["Anna", "Ben"]);
 
     // Removing needs a second tap.
     await user.click(within(dialog).getByRole("button", { name: text.remove("Ben") }));
-    expect(state.names).toEqual(["anna", "Ben"]);
+    expect(state.names).toEqual(["Anna", "Ben"]);
+    // After the first tap the button only changes its color and name, it shows no extra text.
+    const armed = within(dialog).getByRole("button", { name: text.confirm("Ben") });
+    expect(armed).toHaveAttribute("data-armed", "true");
+    expect(armed.textContent).toBe("");
+    // The delete button sits next to the name, not inside its box.
+    expect(armed.closest("li")?.querySelector(".kit-roster__name")?.contains(armed)).toBe(false);
     await new Promise((resolve) => setTimeout(resolve, 450));
     await user.click(within(dialog).getByRole("button", { name: text.confirm("Ben") }));
-    expect(state.names).toEqual(["anna"]);
+    expect(state.names).toEqual(["Anna"]);
   },
 );
 

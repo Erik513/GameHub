@@ -200,3 +200,20 @@ describe("ConfirmButton armed content", () => {
     );
   });
 });
+
+describe("Dialog placement", () => {
+  it("is attached to the page, not to the element that renders it", () => {
+    const { container } = render(
+      <div style={{ transform: "translateY(10px)" }}>
+        <Dialog closeLabel="Close" onClose={() => undefined} open title="Title">
+          <p>Content</p>
+        </Dialog>
+      </div>,
+    );
+    // A parent with a transform or a blur would move a fixed window; it must not contain it.
+    expect(container.querySelector("[role='dialog']")).toBeNull();
+    expect(
+      screen.getByRole("dialog", { name: "Title" }).closest(".dialog-backdrop")?.parentElement,
+    ).toBe(document.body);
+  });
+});

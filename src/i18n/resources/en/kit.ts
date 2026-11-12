@@ -47,7 +47,6 @@ export const kitTexts = {
     empty: "No players saved yet.",
     remove: "Remove player {{name}}",
     removeConfirm: "Tap again to remove {{name}}",
-    removeAgain: "Tap again",
     problems: {
       empty: "Enter a name.",
       invalid:

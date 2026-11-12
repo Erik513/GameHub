@@ -189,7 +189,7 @@ export function TabooCardList({
               <Icon name="check" />
             </Button>
             <ConfirmButton
-              armedContent={t("tabooList.deleteAgain")}
+              armedContent={<Icon name="trash" />}
               armedLabel={t("tabooList.deleteConfirm", { term: card.term })}
               className="icon-button--small"
               idleLabel={t("tabooList.deleteLabel", { term: card.term })}

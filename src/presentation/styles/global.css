@@ -1117,3 +1117,14 @@ h1 {
     white-space: normal;
   }
 }
+
+/* A delete button with a confirmation is calm at first and strong after the first tap. */
+.confirm-button.button--danger[data-armed="false"] {
+  border-color: color-mix(in srgb, var(--color-danger-fill) 45%, transparent);
+  background: color-mix(in srgb, var(--color-danger-fill) 16%, transparent);
+  color: var(--color-danger);
+}
+
+.confirm-button.button--danger[data-armed="false"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-danger-fill) 26%, transparent);
+}

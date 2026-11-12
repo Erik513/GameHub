@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   addPlayer,
+  capitalizePlayerName,
   applyRosterSelection,
   maxPlayerNameLength,
   maxRosterPlayers,
@@ -16,12 +17,22 @@ describe("normalizePlayerName", () => {
   });
 });
 
+describe("capitalizePlayerName", () => {
+  it("makes only the first letter a capital letter", () => {
+    expect(capitalizePlayerName("anna maria")).toBe("Anna maria");
+    expect(capitalizePlayerName("eMMa")).toBe("EMMa");
+    expect(capitalizePlayerName("élodie")).toBe("Élodie");
+    expect(capitalizePlayerName("")).toBe("");
+  });
+});
+
 describe("addPlayer", () => {
   it("adds a name and keeps the list sorted", () => {
     const first = addPlayer([], " Cara ");
     expect(first).toEqual({ ok: true, roster: ["Cara"] });
     const second = addPlayer(["Cara"], "anna");
-    expect(second).toEqual({ ok: true, roster: ["anna", "Cara"] });
+    // The first letter becomes a capital letter.
+    expect(second).toEqual({ ok: true, roster: ["Anna", "Cara"] });
   });
 
   it("refuses empty, duplicate, too long and separated names and a full list", () => {

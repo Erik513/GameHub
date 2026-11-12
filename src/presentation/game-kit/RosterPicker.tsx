@@ -84,20 +84,25 @@ function PickerBody({
       >
         {t(selected.size === players.length ? "kitRoster.pickNone" : "kitRoster.pickAll")}
       </Button>
-      <ul aria-label={t("kitRoster.listLabel")} className="kit-roster__list kit-roster__list--pick">
-        {players.map((player) => (
-          <li key={player}>
-            <label>
-              <input
-                checked={selected.has(player)}
-                onChange={() => toggle(player)}
-                type="checkbox"
-              />
-              <span>{player}</span>
-            </label>
-          </li>
-        ))}
-      </ul>
+      <div className="kit-roster__scroll">
+        <ul
+          aria-label={t("kitRoster.listLabel")}
+          className="kit-roster__list kit-roster__list--pick"
+        >
+          {players.map((player) => (
+            <li key={player}>
+              <label>
+                <input
+                  checked={selected.has(player)}
+                  onChange={() => toggle(player)}
+                  type="checkbox"
+                />
+                <span>{player}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
       <ActionRow>
         <Button
           onClick={() => onApply(applyRosterSelection(value, players, selected))}

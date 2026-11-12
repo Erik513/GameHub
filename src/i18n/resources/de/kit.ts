@@ -47,7 +47,6 @@ export const kitTexts = {
     empty: "Noch keine Spieler gespeichert.",
     remove: "Spieler {{name}} entfernen",
     removeConfirm: "Nochmal tippen, um {{name}} zu entfernen",
-    removeAgain: "Nochmal tippen",
     problems: {
       empty: "Gib einen Namen ein.",
       invalid:

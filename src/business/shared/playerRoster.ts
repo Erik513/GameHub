@@ -24,16 +24,23 @@ export function normalizePlayerName(raw: string): string {
   return raw.replace(/\s+/gu, " ").trim();
 }
 
+/** Makes the first letter of a name a capital letter; the rest is left as typed. */
+export function capitalizePlayerName(name: string): string {
+  const [first = ""] = name;
+  return first.toLocaleUpperCase() + name.slice(first.length);
+}
+
 function sortNames(names: readonly string[]): string[] {
   return [...names].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 }
 
 /**
- * Adds a player to the list. Names are kept sorted; a name that exists already (ignoring case),
+ * Adds a player to the list. The first letter is made a capital letter and the names are kept
+ * sorted; a name that exists already (ignoring case),
  * is too long or contains a separator of the free text field is refused.
  */
 export function addPlayer(roster: readonly string[], raw: string): AddPlayerResult {
-  const name = normalizePlayerName(raw);
+  const name = capitalizePlayerName(normalizePlayerName(raw));
   if (name === "") return { ok: false, reason: "empty" };
   if (name.length > maxPlayerNameLength || /[,;]/u.test(name)) {
     return { ok: false, reason: "invalid" };

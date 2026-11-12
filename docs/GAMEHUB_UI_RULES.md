@@ -68,7 +68,9 @@ Es gibt **ein** Infofenster für alles (Spielregeln, Erklärungen, Auswahl, Eins
 2. Schließen-Knopf oben rechts (mit Rahmen, ohne Bestätigung),
 3. darunter der Inhalt (bei Bedarf mit einem Text direkt unter der Überschrift).
 
-Weitere Fenstertypen gibt es nicht. Ein Fenster ist kurz; was länger als ein Bildschirm ist, wird eine Unteransicht.
+Weitere Fenstertypen gibt es nicht. Das Fenster hängt an der Seite selbst (nicht an dem Element, das es auslöst), damit weder Kopfleiste noch andere Elternelemente seine Lage verändern.
+
+**Fenster mit Listen (Spielerverwaltung, Auswahl aus der Spielerliste) [ist]:** Die Listenfläche hat immer dieselbe Höhe, das Fenster ändert seine Größe nicht mit der Zahl der Einträge; sind es mehr Einträge als Platz, erscheint ein Scrollbalken. Fehlermeldungen haben eine feste Zeile, damit sich nichts verschiebt. Löschknöpfe stehen **neben** der Zeile, nicht in ihrem Rahmen; der Name steht in einer eigenen Box. Ein Fenster ist kurz; was länger als ein Bildschirm ist, wird eine Unteransicht.
 
 ## 3. Theme und Bedienelemente
 
@@ -89,11 +91,12 @@ Weitere Fenstertypen gibt es nicht. Ein Fenster ist kurz; was länger als ein Bi
    - **Rot:** löschen, entfernen, abbrechen. Das gilt immer **[Umbau]**: der Knopf „Abbrechen“ im Karteneditor ist heute grau.
    - **Grün:** hinzufügen, starten, speichern, bestätigen **[ist]**.
    - Grau umrandet: Nebenaktionen ohne Wertung (Importieren, Exportieren).
-3. **Feste Bestätigung [ist]:** Bestimmte Knöpfe verlangen eine Bestätigung. Das sind alle Aktionen, die Daten oder einen Spielstand unwiderruflich entfernen (Karte löschen, Kategorie löschen, Spiel beenden, Neustart). Sie sind `ConfirmButton`: erstes Tippen schaltet scharf und zeigt „Nochmal tippen“, zweites Tippen führt aus. Kein Bestätigungsfenster.
+3. **Feste Bestätigung [ist]:** Bestimmte Knöpfe verlangen eine Bestätigung. **Aussehen:** Vor dem ersten Tippen ist der Knopf ein **dezentes Rot** (getönter Hintergrund, rote Linie), nach dem ersten Tippen ein **kräftiges, deckendes Rot**; das ist das Signal für den zweiten Tipp. **Knöpfe nur mit Symbol (Papierkorb) zeigen dabei keinen Text**, weder davor noch danach: Der Text passt nicht in den Knopf und ist überflüssig, die Farbe sagt es; für Screenreader ändert sich der Name („Nochmal tippen, um … zu entfernen“). Breite Knöpfe mit Text (zum Beispiel „Kategorie löschen“) dürfen ihren Text behalten. Das sind alle Aktionen, die Daten oder einen Spielstand unwiderruflich entfernen (Karte löschen, Kategorie löschen, Spiel beenden, Neustart). Sie sind `ConfirmButton`: erstes Tippen schaltet scharf und zeigt „Nochmal tippen“, zweites Tippen führt aus. Kein Bestätigungsfenster.
 4. **Spielentscheidende Knöpfe stehen in der Regel unten [ist]**: starten, nächste Runde, Richtig, Überspringen, Auswerten.
 5. **Knopfreihen:** gleich breit und gleich hoch (44 Pixel), Reihenfolge von links nach rechts: bestätigen, löschen, abbrechen **[ist]**.
-6. **Platzsparend, Symbol allein wenn selbsterklärend:** Knöpfe sind so kompakt wie möglich. Ist ein Symbol ohne Text eindeutig (zum Beispiel bearbeiten, speichern, löschen, schließen, Einstellungen, Home, Info), steht nur das Symbol, mit Beschriftung für Screenreader und Tooltip. Aktionen, die ein Symbol nicht eindeutig sagt (zum Beispiel Abbrechen, Importieren, Exportieren, Starten, Spielregeln), behalten ihren Text. Im Zweifel gilt: Text, bis ein Symbol im Test von Auftraggeber und Nutzern als klar gilt **[ist]**.
-7. **Mindestgröße:** 44 mal 44 Pixel **[ist]**.
+6. **Hinzufügen-Knopf:** In kompakten Zeilen mit einem Eingabefeld (Spieler hinzufügen) genügt ein **Plus-Symbol** statt des Texts „Hinzufügen“ (Beschriftung für Screenreader und Tooltip bleiben). Namen von Spielern werden automatisch korrigiert: der erste Buchstabe ist ein Großbuchstabe.
+7. **Platzsparend, Symbol allein wenn selbsterklärend:** Knöpfe sind so kompakt wie möglich. Ist ein Symbol ohne Text eindeutig (zum Beispiel bearbeiten, speichern, löschen, schließen, Einstellungen, Home, Info), steht nur das Symbol, mit Beschriftung für Screenreader und Tooltip. Aktionen, die ein Symbol nicht eindeutig sagt (zum Beispiel Abbrechen, Importieren, Exportieren, Starten, Spielregeln), behalten ihren Text. Im Zweifel gilt: Text, bis ein Symbol im Test von Auftraggeber und Nutzern als klar gilt **[ist]**.
+8. **Mindestgröße:** 44 mal 44 Pixel **[ist]**.
 
 ## 6. Weitere feste Regeln
 

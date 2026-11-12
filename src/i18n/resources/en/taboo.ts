@@ -63,7 +63,6 @@ export const tabooTexts = {
     deleteCategoryAgain: "Tap again: delete {{count}} cards",
     deleteLabel: "Delete card {{term}}",
     deleteConfirm: "Tap again to delete {{term}}",
-    deleteAgain: "Tap again",
     problems: {
       invalid:
         "The card needs a term and four different forbidden words that differ from the term.",

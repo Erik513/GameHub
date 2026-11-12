@@ -4,6 +4,19 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Spielerverwaltung überarbeitet
+
+- Das Fenster hat immer dieselbe Größe: Die Listenfläche hat eine feste Höhe, bei mehr Spielern erscheint ein Scrollbalken (ebenso in der Auswahl aus der Spielerliste). Die Fehlermeldung hat eine feste Zeile, damit sich nichts verschiebt.
+- Namen werden automatisch korrigiert: Der erste Buchstabe wird ein Großbuchstabe (`capitalizePlayerName`, gilt auch für gespeicherte Namen).
+- „Hinzufügen“ ist ein Plus-Symbol (Beschriftung und Tooltip bleiben).
+- Der Löschknopf steht außerhalb der Namenszeile; der Name hat eine eigene Box.
+- Löschknöpfe mit Bestätigung (`ConfirmButton`, rote Variante): vor dem ersten Tippen ein dezentes Rot, danach ein kräftiges deckendes Rot. Knöpfe nur mit Symbol (Spielerliste, Karteneditor) zeigen keinen Text mehr, der nicht hineinpasst; nur der Name für Screenreader ändert sich. Die Regeln dazu stehen in `docs/GAMEHUB_UI_RULES.md`.
+- Der Plus-Knopf und die Löschknöpfe sind gleich groß (44 Pixel, quadratisch) und enden am selben Rand. Der Scrollbalken hat eine feste Breite mit reserviertem Platz und liegt rechts neben den Löschknöpfen mit Abstand (im Rand des Fensters), die Knöpfe behalten ihren Platz.
+- Das Eingabefeld für neue Spieler sieht aus wie die Namensboxen der Liste (44 Pixel hoch, gleiche Ecken, kein gefüllter Hintergrund). Die Spielerliste zeigt immer genau fünf Spieler vollständig, keiner ist angeschnitten; beim Scrollen rastet die Liste an ganzen Zeilen ein (gilt auch für die Auswahl aus der Spielerliste).
+- Fehler behoben: Das Fenster saß in der Kopfleiste (Spielerknopf des GameHub) wegen deren Unschärfe nicht am unteren Rand, sondern wurde nach oben aus dem Bild verschoben. `Dialog` hängt sich jetzt per Portal an die Seite (`document.body`), kein Elternelement kann die Lage mehr verändern. Test dafür ergänzt.
+- Notiert für später (`PH-17-08`, geplant): Spielergruppen (zum Beispiel mehrere Freundesgruppen), um Namen schneller zu finden.
+- Geprüft: 546 Unit-Tests, 26 e2e-Tests (6 übersprungen), Typen, ESLint, Prettier; im Browser auf 375 Pixel Breite.
+
 ### PH-17-07 – Aufstellung nach dem Start
 
 - Das Hauptmenü von Tabu enthält nur noch Spieleinstellungen und Karten. „Starten“ führt zur neuen Ansicht **Aufstellung**: Teams, Namen, Reihenfolge, Spielerliste (offen), Auswahl aus der gespeicherten Spielerliste und Zuweisung von Hand oder per Knopf zufällig. „Spiel starten“ steht fest unten; die Kopfleiste hat den Zurückknopf (`ADR-023`, ändert die Regel aus `ADR-021`).

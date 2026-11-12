@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { maxPlayerNameLength } from "../../business/shared/playerRoster";
-import { Button, ConfirmButton, Dialog, Icon, StatusMessage } from "../components";
+import { Button, ConfirmButton, Dialog, Icon } from "../components";
 import { usePlayerRoster } from "./PlayerRosterContext";
 
 type Problem = "empty" | "invalid" | "duplicate" | "full";
@@ -54,7 +54,9 @@ export function PlayerRosterButton() {
         <div className="kit-roster">
           <form className="kit-roster__add" noValidate onSubmit={submit}>
             <input
+              aria-invalid={problem ? true : undefined}
               aria-label={t("kitRoster.nameLabel")}
+              autoCapitalize="words"
               autoComplete="off"
               className="field__input"
               maxLength={maxPlayerNameLength}
@@ -62,36 +64,43 @@ export function PlayerRosterButton() {
               placeholder={t("kitRoster.namePlaceholder")}
               value={name}
             />
-            <Button type="submit" variant="success">
-              {t("kitRoster.add")}
+            <Button
+              aria-label={t("kitRoster.add")}
+              className="kit-roster__plus"
+              title={t("kitRoster.add")}
+              type="submit"
+              variant="success"
+            >
+              <Icon name="plus" />
             </Button>
           </form>
-          {problem && (
-            <StatusMessage title={t("kitRoster.title")} tone="error">
-              {t(`kitRoster.problems.${problem}`)}
-            </StatusMessage>
-          )}
-          {roster.players.length === 0 ? (
-            <p>{t("kitRoster.empty")}</p>
-          ) : (
-            <ul aria-label={t("kitRoster.listLabel")} className="kit-roster__list">
-              {roster.players.map((player) => (
-                <li key={player}>
-                  <span>{player}</span>
-                  <ConfirmButton
-                    armedContent={t("kitRoster.removeAgain")}
-                    armedLabel={t("kitRoster.removeConfirm", { name: player })}
-                    className="icon-button--small"
-                    idleLabel={t("kitRoster.remove", { name: player })}
-                    idleVariant="danger"
-                    onConfirm={() => roster.remove(player)}
-                  >
-                    <Icon name="trash" />
-                  </ConfirmButton>
-                </li>
-              ))}
-            </ul>
-          )}
+          {/* The line is always there, so the window keeps its size when a problem is shown. */}
+          <p className="kit-roster__problem" {...(problem ? { role: "alert" } : {})}>
+            {problem ? t(`kitRoster.problems.${problem}`) : "\u00a0"}
+          </p>
+          <div className="kit-roster__scroll">
+            {roster.players.length === 0 ? (
+              <p>{t("kitRoster.empty")}</p>
+            ) : (
+              <ul aria-label={t("kitRoster.listLabel")} className="kit-roster__list">
+                {roster.players.map((player) => (
+                  <li key={player}>
+                    <span className="kit-roster__name">{player}</span>
+                    <ConfirmButton
+                      armedContent={<Icon name="trash" />}
+                      armedLabel={t("kitRoster.removeConfirm", { name: player })}
+                      className="icon-button--small"
+                      idleLabel={t("kitRoster.remove", { name: player })}
+                      idleVariant="danger"
+                      onConfirm={() => roster.remove(player)}
+                    >
+                      <Icon name="trash" />
+                    </ConfirmButton>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </Dialog>
     </>
