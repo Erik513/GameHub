@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-12
 
+### PH-15-04 – Prüfwerkzeug für den Kartenpool
+
+- Neues Werkzeug `scripts/review-card-pool.mjs` (Entwicklerwerkzeug, nicht Teil von App und Build) mit `judge`, `sheet` und `merge`. `judge`: zweiter KI-Durchgang (1 bis 5 mit Problemtext, fortsetzbar). `sheet`: HTML-Prüfseite mit allen zweifelhaften und ungeprüften Karten und einer Stichprobe der guten je Kategorie und Schwierigkeit, Abwählen per Kästchen, Liste kopieren. `merge`: übernimmt gute, nicht abgewählte Karten in `src/data/pool/<Sprache>.json` (nur als gültiges Paket, Vorschau mit `--dry-run`, wiederholbar ohne Doppelungen).
+- Neue getestete Regeln in `src/business/games/taboo/poolReview.ts` (Auftrag an den Prüfer, Lesen der Antwort, Stichprobe, Abwahlliste, Übernahmeauswahl). Gemeinsame Skriptteile in `scripts/lib/pool-tools.mjs`; `generate-card-pool.mjs` nutzt sie jetzt auch.
+- Texte der KI in der Prüfseite werden als Text ausgegeben, nicht als HTML (geprüft mit `<b>` im Problemtext).
+- Geprüft mit nachgebildeter Ollama-Schnittstelle, nicht mit einer echten KI. Prüfungen: 351 Unit-Tests, tsc, eslint.
+
 ### PH-15-03 – Erzeugungsskript für den Kartenpool
 
 - Neues Werkzeug `pnpm pool:generate` (`scripts/generate-card-pool.mjs`): erzeugt Karten am PC mit Ollama oder LM Studio, je Kategorie und Schwierigkeit in Portionen, bis zum Ziel je Zelle (Standard 17, also etwa 500 je Sprache bei zehn Kategorien). Optionen für Sprache, Kategorie, Schwierigkeit, Ziel, Portionsgröße, Anbieter, Modell, Temperatur und Arbeitsordner; `--dry-run` zeigt nur den Auftrag an die KI.

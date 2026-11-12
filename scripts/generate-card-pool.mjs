@@ -10,10 +10,18 @@
 //   node scripts/generate-card-pool.mjs --language de --category food --difficulty easy --target 5
 //   node scripts/generate-card-pool.mjs --language en --dry-run
 
-import { appendFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { appendFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
+import {
+  chooseProvider,
+  providerDefaults,
+  providerFlags,
+  readJson,
+  validateProviderOptions,
+  writeAtomic,
+} from "./lib/pool-tools.mjs";
 
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
 const difficulties = ["easy", "medium", "hard"];
@@ -41,13 +49,10 @@ function parseArguments(argv) {
     difficulty: "all",
     target: 17,
     batch: 10,
-    provider: "auto",
-    temperature: 0.8,
     maxMisses: 4,
     work: "work",
-    ollamaUrl: "http://127.0.0.1:11434",
-    lmstudioUrl: "http://127.0.0.1:1234",
     dryRun: false,
+    ...providerDefaults,
   };
   const names = {
     "--language": ["language", String],
@@ -55,13 +60,9 @@ function parseArguments(argv) {
     "--difficulty": ["difficulty", String],
     "--target": ["target", Number],
     "--batch": ["batch", Number],
-    "--provider": ["provider", String],
-    "--model": ["model", String],
-    "--temperature": ["temperature", Number],
     "--max-misses": ["maxMisses", Number],
     "--work": ["work", String],
-    "--ollama-url": ["ollamaUrl", String],
-    "--lmstudio-url": ["lmstudioUrl", String],
+    ...providerFlags,
   };
   for (let index = 0; index < argv.length; index += 1) {
     const flag = argv[index];
@@ -87,133 +88,12 @@ function validateOptions(options) {
   if (options.language !== "de" && options.language !== "en") {
     throw new Error("--language must be de or en");
   }
-  if (!["auto", "ollama", "lmstudio"].includes(options.provider)) {
-    throw new Error("--provider must be auto, ollama or lmstudio");
-  }
+  validateProviderOptions(options);
   for (const key of ["target", "batch", "maxMisses"]) {
     if (!Number.isSafeInteger(options[key]) || options[key] < 1) {
       throw new Error(`--${key === "maxMisses" ? "max-misses" : key} must be a positive integer`);
     }
   }
-  if (!Number.isFinite(options.temperature)) throw new Error("--temperature must be a number");
-}
-
-async function readJson(path) {
-  return JSON.parse(await readFile(path, "utf8"));
-}
-
-async function fetchJson(url, init) {
-  const response = await fetch(url, { redirect: "error", ...init });
-  if (!response.ok) throw new Error(`${url} answered ${response.status}`);
-  return response.json();
-}
-
-// ---- providers -------------------------------------------------------------------------------
-
-function ollamaProvider(options, schema) {
-  return {
-    name: "ollama",
-    async chooseModel() {
-      const tags = await fetchJson(`${options.ollamaUrl}/api/tags`, {
-        signal: AbortSignal.timeout(3000),
-      });
-      const names = (tags.models ?? [])
-        .map((item) => item?.name)
-        .filter((name) => typeof name === "string" && !/embed|[-:]cloud(?:$|:)/iu.test(name));
-      const model = options.model ?? names[0];
-      if (!model) throw new Error("Ollama has no text model. Run `ollama pull <model>` first.");
-      return model;
-    },
-    async chat(model, prompt) {
-      const reply = await fetchJson(`${options.ollamaUrl}/api/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: AbortSignal.timeout(600_000),
-        body: JSON.stringify({
-          model,
-          stream: false,
-          format: schema,
-          options: { temperature: options.temperature },
-          messages: [
-            { role: "system", content: prompt.system },
-            { role: "user", content: prompt.user },
-          ],
-        }),
-      });
-      return String(reply?.message?.content ?? "");
-    },
-  };
-}
-
-function lmStudioProvider(options, schema) {
-  return {
-    name: "lmstudio",
-    async chooseModel() {
-      const listed = await fetchJson(`${options.lmstudioUrl}/api/v0/models`, {
-        signal: AbortSignal.timeout(3000),
-      });
-      const chat = (listed.data ?? []).filter(
-        (item) =>
-          typeof item?.id === "string" &&
-          (item.type === "llm" || item.type === "vlm") &&
-          !/coder|embed/iu.test(item.id),
-      );
-      if (options.model) return options.model;
-      // A model that is not loaded would be loaded on demand, which can take minutes and a lot of
-      // memory. So without --model only an already loaded model is used.
-      const loaded = chat.find((item) => item.state === "loaded");
-      if (loaded) return loaded.id;
-      throw new Error(
-        `LM Studio has no loaded chat model. Load one there or pass --model. Available: ${
-          chat.map((item) => item.id).join(", ") || "none"
-        }`,
-      );
-    },
-    async chat(model, prompt) {
-      const reply = await fetchJson(`${options.lmstudioUrl}/v1/chat/completions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: AbortSignal.timeout(600_000),
-        body: JSON.stringify({
-          model,
-          temperature: options.temperature,
-          // Thinking models spend many tokens on reasoning before the answer.
-          max_tokens: 8000,
-          response_format: {
-            type: "json_schema",
-            json_schema: { name: "cards", strict: true, schema },
-          },
-          messages: [
-            { role: "system", content: prompt.system },
-            { role: "user", content: prompt.user },
-          ],
-        }),
-      });
-      return String(reply?.choices?.[0]?.message?.content ?? "");
-    },
-  };
-}
-
-async function chooseProvider(options, schema) {
-  const candidates = options.provider === "auto" ? ["ollama", "lmstudio"] : [options.provider];
-  const problems = [];
-  for (const name of candidates) {
-    const provider = (name === "ollama" ? ollamaProvider : lmStudioProvider)(options, schema);
-    try {
-      return { provider, model: await provider.chooseModel() };
-    } catch (error) {
-      problems.push(`${name}: ${error.message}`);
-    }
-  }
-  throw new Error(`No AI available.\n  ${problems.join("\n  ")}`);
-}
-
-// ---- working files ---------------------------------------------------------------------------
-
-async function writeAtomic(path, text) {
-  const temporary = `${path}.tmp`;
-  await writeFile(temporary, text, "utf8");
-  await rename(temporary, path);
 }
 
 async function main() {
