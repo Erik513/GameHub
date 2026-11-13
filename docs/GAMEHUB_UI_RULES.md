@@ -60,6 +60,10 @@ Die Spielauswahl ist auf dem Handy kompakt: Kopfleiste mit „GameHub“ links (
 
 In allen Ansichten außer dem Hauptmenü, also in Spielansichten und im Editor, zeigt die Kopfleiste **nur interne Navigation oder „Spiel beenden“**. Es gibt dort **keinen Home-Knopf und keinen Knopf für Spracheinstellungen** **[ist]**. Ein Spiel verlässt man nur über das Hauptmenü.
 
+### 2.4a Ergebnisse korrigieren
+
+In **allen Spielmodi** lässt sich ein Ergebnis nachträglich korrigieren, weil ein Fehler beim Drücken passieren kann (zum Beispiel „Richtig“, obwohl ein verbotenes Wort fiel). Die Karten stehen in einer Liste (grün = richtig, rot = falsch, grau = übersprungen und nicht änderbar); ein Tipp schaltet zwischen richtig und falsch um, Wertung und Sieger werden neu berechnet. Klassisch: Liste der Runde in der Rundenübersicht. Stechen und Auf Zeit: Feld „Ergebnis korrigieren“ mit einem aufklappbaren Eintrag pro Team in der Übersicht zwischen den Durchgängen und auf der Endseite. Neue Spielmodi bieten dasselbe an (Baustein `TabooReviewList` beziehungsweise `TabooAttemptReviews`).
+
 ### 2.5 Infofenster
 
 Es gibt **ein** Infofenster für alles (Spielregeln, Erklärungen, Auswahl, Einstellungen, Spielerverwaltung, Auswahl aus der Spielerliste), den Baustein `Dialog` **[ist]**. Es besteht immer aus:

@@ -1,13 +1,21 @@
 import { useTranslation } from "react-i18next";
+import type { TabooOutcome } from "../../business/games/taboo/stateMachine";
 import { Button, StatusMessage } from "../components";
 import { ScoreScreen, TurnStrip } from "../game-kit";
+import { TabooAttemptReviews, type AttemptReview } from "./TabooAttemptReviews";
 import { TabooTiebreakResults } from "./TabooTiebreakResults";
-import { tiebreakRows, tiebreakTeamName, type TiebreakView } from "./tabooSetupModel";
+import {
+  tiebreakRows,
+  tiebreakTeamName,
+  tiebreakReviews,
+  type TiebreakView,
+} from "./tabooSetupModel";
 
 interface TabooTiebreakOverviewProps {
   noCards: boolean;
   onBegin: () => void;
   onNewSetup: () => void;
+  onRevise: (teamIndex: number, cardId: string, outcome: TabooOutcome) => void;
   state: TiebreakView;
 }
 
@@ -16,9 +24,11 @@ export function TabooTiebreakOverview({
   noCards,
   onBegin,
   onNewSetup,
+  onRevise,
   state,
 }: TabooTiebreakOverviewProps) {
   const { t } = useTranslation();
+  const reviews: readonly AttemptReview[] = tiebreakReviews(state.attempts, state.configuration);
 
   return (
     <ScoreScreen
@@ -36,6 +46,7 @@ export function TabooTiebreakOverview({
     >
       <h2>{t("tabooTiebreak.results")}</h2>
       <TabooTiebreakResults rows={tiebreakRows(state)} />
+      <TabooAttemptReviews attempts={reviews} onRevise={onRevise} />
       {noCards && (
         <>
           <StatusMessage title={t("tabooRound.empty")} tone="error">

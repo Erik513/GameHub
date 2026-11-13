@@ -12,6 +12,7 @@ import { pickRaceCards, pickRaceReplacement } from "../../business/games/taboo/r
 import { Button, StatusMessage } from "../components";
 import { useGameExit } from "../GameChrome";
 import { ScoreScreen, TurnStrip } from "../game-kit";
+import { TabooAttemptReviews } from "./TabooAttemptReviews";
 import { TabooRaceResults, type RaceRow } from "./TabooRaceResults";
 import { TabooRaceRun } from "./TabooRaceRun";
 
@@ -119,6 +120,22 @@ export function TabooRaceGame({
     );
   }
 
+  // A wrong result can be fixed after every run and on the final screen.
+  const reviews = (
+    <TabooAttemptReviews
+      attempts={state.attempts.map((attempt) => ({
+        id: String(attempt.teamIndex),
+        maxCorrect: configuration.target,
+        results: attempt.results,
+        teamIndex: attempt.teamIndex,
+        teamName: teamName(attempt.teamIndex),
+      }))}
+      onRevise={(teamIndex, cardId, outcome) =>
+        dispatch({ type: "reviseRunResult", teamIndex, cardId, outcome })
+      }
+    />
+  );
+
   if (state.status === "finished") {
     const winners = state.winnerIds;
     const rows: RaceRow[] = rankRaceAttempts(state.attempts).map((attempt) => {
@@ -127,6 +144,8 @@ export function TabooRaceGame({
         id: team?.id ?? String(attempt.teamIndex),
         name: team?.name ?? "",
         timeMs: attempt.timeMs,
+        solved: attempt.solved,
+        total: configuration.target,
         winner: team ? winners.includes(team.id) : false,
       };
     });
@@ -155,6 +174,7 @@ export function TabooRaceGame({
       >
         <h2>{t("tabooRace.finalTimes")}</h2>
         <TabooRaceResults label={t("tabooRace.finalTimes")} rows={rows} />
+        {reviews}
       </ScoreScreen>
     );
   }
@@ -165,7 +185,9 @@ export function TabooRaceGame({
     return {
       id: team.id,
       name: team.name,
-      ...(attempt ? { timeMs: attempt.timeMs } : {}),
+      ...(attempt
+        ? { timeMs: attempt.timeMs, solved: attempt.solved, total: configuration.target }
+        : {}),
     };
   });
 
@@ -188,6 +210,7 @@ export function TabooRaceGame({
     >
       <h2>{t("tabooRace.times")}</h2>
       <TabooRaceResults label={t("tabooRace.times")} rows={rows} />
+      {reviews}
       {noCards && (
         <StatusMessage title={t("tabooRound.empty")} tone="error">
           {t("tabooRace.noCards")}

@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Ergebnisse korrigieren in allen Spielmodi (PH-12-07-F)
+
+- Stechen und „Auf Zeit“: Jeder Versuch speichert alle Karten mit Ergebnis. Nach dem Durchgang und auf der Endseite kann man jede Karte zwischen richtig und falsch umschalten (Feld „Ergebnis korrigieren“, ein aufklappbarer Eintrag pro Team). Wertung und Sieger werden neu berechnet (neue Ereignisse `reviseTiebreakResult` und `reviseRunResult`). Übersprungene Karten bleiben unverändert; mehr richtige Karten als erlaubt gehen nicht.
+- Entscheidung: Beim Stechen und bei „Auf Zeit“ gibt es **keine Zeitstrafe**. Eine falsch gewertete Karte zählt nicht; weniger Karten stehen hinter mehr Karten, bei gleich vielen entscheidet die Zeit. In „Auf Zeit“ zeigt die Liste dann „x/y Karten · Zeit“.
+- Die Klassisch-Runde hatte die Korrektur schon; die Kartenliste ist jetzt ein gemeinsamer Baustein (`TabooReviewList`).
+- Tests: Logik (`revise.test.ts`: Rangfolge, Gleichstand, Grenzen, Zwischenstand, Spielende) und Oberfläche (Stechen, „Auf Zeit“ in Deutsch und Englisch).
+
 ### Stechen-Ansicht mit Verweis aus den Regeln
 
 - Neuer letzter Stichpunkt in den Regeln „Klassisch“: „Bei Unentschieden gibt es ein **Stechen**.“ Das Wort „Stechen“ ist ein Link: Ein Klick schließt das Fenster des Modus und öffnet das eigene Fenster „Stechen“ (Deutsch und Englisch, Text `tabooSetup.info.tiebreak`, Titel `tabooTiebreakInfo.title`). Derselbe Infoknopf sitzt jetzt in der Option „An“ unter „Stechen bei Gleichstand“ statt an der Überschrift. Kein größerer Abstand mehr beim letzten Punkt.

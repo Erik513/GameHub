@@ -7,7 +7,7 @@ import {
   type ValidationIssue,
   type ValidationResult,
 } from "./model";
-import type { TabooOutcome } from "./stateMachine";
+import type { TabooOutcome, TabooResult } from "./stateMachine";
 
 /** Mode "Auf Zeit" (race): every team solves the same number of cards, the shortest time wins. */
 
@@ -32,6 +32,10 @@ export interface RaceAttempt {
   readonly skipUsed: boolean;
   /** Time from the start of the run to the last solved card, in milliseconds. */
   readonly timeMs: number;
+  /** Cards that counted as solved; fewer than the target after a correction. */
+  readonly solved: number;
+  /** Every card of the run with its outcome, so a mistake can be corrected afterwards. */
+  readonly results: readonly TabooResult[];
 }
 
 /** The run that is going on right now. */
@@ -43,6 +47,8 @@ export interface RaceActive {
   readonly skipUsed: boolean;
   readonly teamIndex: number;
   readonly wrong: number;
+  /** The cards that are done so far with their outcome. */
+  readonly results: readonly TabooResult[];
 }
 
 interface RaceBase {
@@ -71,7 +77,17 @@ export type RaceEvent =
       readonly replacement?: TabooCard;
     }
   /** Throws the running run away; the team starts again with new cards. */
-  | { readonly type: "restartRun" };
+  | { readonly type: "restartRun" }
+  /**
+   * Corrects the outcome of one card of a finished run, for example "correct" that had a forbidden
+   * word. The team then has fewer solved cards; the ranking and the winners are calculated again.
+   */
+  | {
+      readonly type: "reviseRunResult";
+      readonly teamIndex: number;
+      readonly cardId: string;
+      readonly outcome: TabooOutcome;
+    };
 
 export function createRaceGame(input: RaceConfiguration): ValidationResult<RaceState> {
   const { teams, issues: teamIssues } = validateTeams(input.teams);
@@ -106,11 +122,32 @@ export function raceTimeTenths(timeMs: number): number {
   return Math.round(timeMs / 100);
 }
 
-/** The finished runs, fastest first; equal times keep the playing order. */
+/** The finished runs: most solved cards first, then the fastest; equal ones keep the playing order. */
 export function rankRaceAttempts(attempts: readonly RaceAttempt[]): readonly RaceAttempt[] {
   return [...attempts].sort(
-    (a, b) => raceTimeTenths(a.timeMs) - raceTimeTenths(b.timeMs) || a.teamIndex - b.teamIndex,
+    (a, b) =>
+      b.solved - a.solved ||
+      raceTimeTenths(a.timeMs) - raceTimeTenths(b.timeMs) ||
+      a.teamIndex - b.teamIndex,
   );
+}
+
+/** The most solved cards win, then the shortest time; the same result shares the win. */
+function raceWinnerIds(
+  configuration: RaceConfiguration,
+  attempts: readonly RaceAttempt[],
+): string[] {
+  const best = rankRaceAttempts(attempts)[0];
+  return attempts
+    .filter(
+      (attempt) =>
+        attempt.solved === best?.solved &&
+        raceTimeTenths(attempt.timeMs) === raceTimeTenths(best.timeMs),
+    )
+    .flatMap((attempt) => {
+      const team = configuration.teams[attempt.teamIndex];
+      return team ? [team.id] : [];
+    });
 }
 
 function validRaceCard(
@@ -136,25 +173,41 @@ function finishRun(state: Extract<RaceState, { status: "running" }>, elapsedMs: 
     {
       teamIndex: active.teamIndex,
       timeMs: Math.max(0, elapsedMs),
+      solved: active.solved,
+      results: active.results,
       skipUsed: active.skipUsed,
       wrong: active.wrong,
     },
   ];
   const base = { configuration, attempts, usedCardIds: state.usedCardIds };
   if (attempts.length < configuration.teams.length) return { ...base, status: "overview" };
-  // The shortest time wins; the same time shares the win.
-  const best = Math.min(...attempts.map((attempt) => raceTimeTenths(attempt.timeMs)));
-  const winnerIds = attempts
-    .filter((attempt) => raceTimeTenths(attempt.timeMs) === best)
-    .flatMap((attempt) => {
-      const team = configuration.teams[attempt.teamIndex];
-      return team ? [team.id] : [];
-    });
-  return { ...base, status: "finished", winnerIds };
+  return { ...base, status: "finished", winnerIds: raceWinnerIds(configuration, attempts) };
 }
 
 export function transitionRace(state: RaceState, event: RaceEvent): RaceState {
   const { configuration } = state;
+
+  if (event.type === "reviseRunResult") {
+    if (state.status === "running") return state;
+    const attempt = state.attempts.find((candidate) => candidate.teamIndex === event.teamIndex);
+    const previous = attempt?.results.find((result) => result.card.id === event.cardId);
+    // Skipped cards are not part of the scoring and cannot be revised.
+    if (!attempt || !previous || previous.outcome === "skipped" || event.outcome === "skipped")
+      return state;
+    if (previous.outcome === event.outcome) return state;
+    const results = attempt.results.map((result) =>
+      result === previous ? { ...result, outcome: event.outcome } : result,
+    );
+    const solved = results.filter((result) => result.outcome === "correct").length;
+    // A forbidden card was replaced, so it can only count when the run has room for it.
+    if (solved > configuration.target) return state;
+    const attempts = state.attempts.map((candidate) =>
+      candidate === attempt ? { ...candidate, results, solved } : candidate,
+    );
+    return state.status === "finished"
+      ? { ...state, attempts, winnerIds: raceWinnerIds(configuration, attempts) }
+      : { ...state, attempts };
+  }
 
   if (event.type === "beginRun") {
     const teamIndex = getRaceNextTeam(state);
@@ -172,7 +225,7 @@ export function transitionRace(state: RaceState, event: RaceEvent): RaceState {
       ...state,
       status: "running",
       usedCardIds: [...state.usedCardIds, ...cards.map((card) => card.id)],
-      active: { cards, solved: 0, skipUsed: false, teamIndex, wrong: 0 },
+      active: { cards, solved: 0, skipUsed: false, teamIndex, wrong: 0, results: [] },
     };
   }
 
@@ -192,12 +245,16 @@ export function transitionRace(state: RaceState, event: RaceEvent): RaceState {
   // A broken clock value must never reach the ranking.
   if (!Number.isFinite(event.elapsedMs)) return state;
 
+  const shown = active.cards[active.solved];
   if (event.outcome === "correct") {
     const solved = active.solved + 1;
+    const results = shown
+      ? [...active.results, { card: shown, outcome: "correct" as const }]
+      : active.results;
     if (solved >= configuration.target) {
-      return finishRun({ ...state, active: { ...active, solved } }, event.elapsedMs);
+      return finishRun({ ...state, active: { ...active, solved, results } }, event.elapsedMs);
     }
-    return { ...state, active: { ...active, solved } };
+    return { ...state, active: { ...active, solved, results } };
   }
 
   // A skip is allowed once per team; a forbidden word is simply wrong. Both get a new card.
@@ -211,6 +268,9 @@ export function transitionRace(state: RaceState, event: RaceEvent): RaceState {
     active: {
       ...active,
       skipUsed: active.skipUsed || skipping,
+      results: shown
+        ? [...active.results, { card: shown, outcome: event.outcome }]
+        : active.results,
       wrong: active.wrong + (skipping ? 0 : 1),
       cards: active.cards.map((card, index) => (index === active.solved ? replacement : card)),
     },

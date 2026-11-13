@@ -94,6 +94,47 @@ describe("Taboo tiebreak", () => {
     expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
   });
 
+  it("lets the players correct a tiebreak attempt before and after the game ended", async () => {
+    await renderGame();
+    reachTiebreak();
+    press("Start tiebreak");
+    // Team 1 solves all three cards in 6 seconds.
+    for (let card = 0; card < 3; card += 1) {
+      advance(2000);
+      fireEvent.click(screen.getByRole("button", { name: "Correct" }));
+    }
+    expect(resultRows()[0]).toBe("Team 1: 3/3 cards · 6.0 s");
+
+    // Between the attempts: one card had a forbidden word after all.
+    const review = screen.getByRole("region", { name: "Correct a result" });
+    fireEvent.click(within(review).getByText("Team 1: check the cards"));
+    const cards = within(review).getAllByRole("button");
+    expect(cards).toHaveLength(3);
+    fireEvent.click(cards[0]!);
+    expect(resultRows()[0]).toBe("Team 1: 2/3 cards · 6.0 s");
+    // Taking the correction back is possible.
+    fireEvent.click(cards[0]!);
+    expect(resultRows()[0]).toBe("Team 1: 3/3 cards · 6.0 s");
+
+    // Team 2 is faster with the same number of cards and wins.
+    press("Start tiebreak");
+    for (let card = 0; card < 3; card += 1) {
+      advance(1000);
+      fireEvent.click(screen.getByRole("button", { name: "Correct" }));
+    }
+    expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 2");
+
+    // On the final screen the winner's mistake is fixed: Team 1 wins with more cards.
+    const finalReview = screen.getByRole("region", { name: "Correct a result" });
+    fireEvent.click(within(finalReview).getByText("Team 2: check the cards"));
+    const team2 = within(finalReview.querySelectorAll("details")[1] as HTMLElement).getAllByRole(
+      "button",
+    );
+    fireEvent.click(team2[0]!);
+    expect(resultRows()).toEqual(["Team 1: 3/3 cards · 6.0 s", "Team 2: 2/3 cards · 3.0 s"]);
+    expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 1");
+  });
+
   it("shows the difficulty and allows a single skip with a card of the same difficulty", async () => {
     await renderGame();
     reachTiebreak();

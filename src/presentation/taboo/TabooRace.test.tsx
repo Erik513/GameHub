@@ -336,3 +336,45 @@ it.each([
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   },
 );
+
+it.each([
+  ["en", /check the cards/, "Wrong", /Winner: /],
+  ["de", /Karten prüfen/, "Falsch", /Gewinner: /],
+] as const)(
+  "lets the players correct a run on the final screen of the race in %s",
+  async (language, summary, wrongLabel, winner) => {
+    let now = 1_000_000;
+    vi.spyOn(Date, "now").mockImplementation(() => now);
+    const { text, user } = await startRace(language);
+    await user.click(screen.getByRole("button", { name: text.start }));
+    await user.click(screen.getByRole("button", { name: text.startGame }));
+    // The first team needs 5 seconds, the second one 3 seconds and wins.
+    for (const seconds of [5, 3]) {
+      await user.click(screen.getByRole("button", { name: text.startRun }));
+      for (let card = 0; card < 5; card += 1) {
+        now += (seconds * 1000) / 5;
+        await user.click(screen.getByRole("button", { name: new RegExp(`^${text.correct}`) }));
+      }
+    }
+    const result = await screen.findByRole("region", { name: text.result });
+    const before = within(result).getByRole("status").textContent;
+    expect(before).toMatch(winner);
+
+    // The winner of the run said a forbidden word on one card: it must not count.
+    const reviews = within(result).getAllByText(summary);
+    expect(reviews).toHaveLength(2);
+    await user.click(reviews[1]!);
+    const card = within(reviews[1]!.closest("details")!).getAllByRole("button")[0]!;
+    expect(card).toHaveAttribute("aria-pressed", "true");
+    await user.click(card);
+    expect(card).toHaveAttribute("aria-pressed", "false");
+    expect(card).toHaveTextContent(wrongLabel);
+    // Four of five cards now rank behind the slower team with all cards.
+    expect(within(result).getByRole("status").textContent).not.toBe(before);
+    expect(within(result).getByRole("list", { name: text.times })).toHaveTextContent("4/5");
+
+    // The correction can be taken back.
+    await user.click(card);
+    expect(within(result).getByRole("status").textContent).toBe(before);
+  },
+);

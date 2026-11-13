@@ -32,6 +32,8 @@ Kurz: Wer die Zielzahl Karten am schnellsten löst, gewinnt.
 
 **Sieg:** Die kürzeste Zeit gewinnt. Zeiten werden auf Zehntelsekunden verglichen (Annahme); gleiche Zeit ergibt einen gemeinsamen Sieg.
 
+**Ergebnis korrigieren (2026-11-13, vom Auftraggeber gewünscht):** Nach jedem Lauf und auf der Endseite kann man jede Karte zwischen richtig und falsch umschalten (zum Beispiel wurde „Richtig“ gedrückt, obwohl ein verbotenes Wort fiel). Eine auf falsch korrigierte Karte zählt nicht: Das Team hat dann weniger Karten geschafft und steht hinter Teams mit mehr Karten; bei gleich vielen entscheidet die Zeit. **Annahme:** Es gibt keine Zeitstrafe (wie beim Stechen, wo die Kartenzahl überwiegt). Übersprungene Karten bleiben unverändert. Dasselbe gilt für das Stechen der klassischen Runde.
+
 **Pause:** Die Uhr lässt sich anhalten und fortsetzen wie in der klassischen Runde. Ein Lauf lässt sich neu starten; das verwirft Zeit und Karten dieses Laufs (wie der Neustart eines Zuges).
 
 ## 3. Modus „Gegen die Zeit“

@@ -6,6 +6,9 @@ export interface RaceRow {
   readonly name: string;
   /** Undefined while the team has not played its run yet. */
   readonly timeMs?: number;
+  /** Cards that counted; fewer than `total` after a correction. */
+  readonly solved?: number;
+  readonly total?: number;
   readonly winner?: boolean;
 }
 
@@ -21,14 +24,20 @@ export function TabooRaceResults({
 
   return (
     <ol className="kit-scoreboard taboo-tiebreak-results" aria-label={label}>
-      {rows.map(({ id, name, timeMs, winner }) => (
+      {rows.map(({ id, name, solved, timeMs, total, winner }) => (
         <li data-winner={winner ? true : undefined} key={id}>
           <span className="kit-scoreboard__name">{name}</span>
           <span className="visually-hidden">: </span>
           <span className="kit-scoreboard__score">
             {timeMs === undefined
               ? t("tabooRace.pending")
-              : t("tabooRace.time", { time: formatSeconds(timeMs, i18n.language) })}
+              : solved !== undefined && total !== undefined && solved < total
+                ? t("tabooRace.partial", {
+                    solved,
+                    total,
+                    time: formatSeconds(timeMs, i18n.language),
+                  })
+                : t("tabooRace.time", { time: formatSeconds(timeMs, i18n.language) })}
           </span>
         </li>
       ))}

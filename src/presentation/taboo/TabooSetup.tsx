@@ -17,6 +17,7 @@ import {
   getNextTabooTurn,
   transitionTaboo,
   type TabooEvent,
+  type TabooOutcome,
   type TabooState,
 } from "../../business/games/taboo/stateMachine";
 import type { SupportedLanguage } from "../../i18n";
@@ -210,6 +211,10 @@ export function TabooSetup({
     }
     return [...unique.values()];
   }, [round?.state.configuration.cardLanguage, cardLanguage, cards, session]);
+
+  function reviseTiebreak(teamIndex: number, cardId: string, outcome: TabooOutcome) {
+    dispatch({ type: "reviseTiebreakResult", teamIndex, cardId, outcome });
+  }
 
   function beginTiebreak() {
     if (round?.state.status !== "tiebreak") return;
@@ -505,6 +510,7 @@ export function TabooSetup({
           noCards={tiebreakNoCards}
           onBegin={beginTiebreak}
           onNewSetup={() => restart(false)}
+          onRevise={reviseTiebreak}
           state={tiebreakState}
         />
       )}
@@ -564,6 +570,7 @@ export function TabooSetup({
         <TabooResultView
           finished={finished}
           onNewSetup={() => restart(false)}
+          onRevise={reviseTiebreak}
           onSameSetup={() => restart(true)}
         />
       )}

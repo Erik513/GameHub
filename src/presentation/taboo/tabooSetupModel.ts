@@ -1,7 +1,17 @@
 import type { useTranslation } from "react-i18next";
-import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
-import type { createTabooGame, TabooState } from "../../business/games/taboo/stateMachine";
+import type {
+  Difficulty,
+  GameConfiguration,
+  ValidationIssue,
+} from "../../business/games/taboo/model";
+import {
+  TIEBREAK_CARD_COUNT,
+  type createTabooGame,
+  type TabooState,
+  type TiebreakAttempt,
+} from "../../business/games/taboo/stateMachine";
 import type { ChoiceOption } from "../game-kit";
+import type { AttemptReview } from "./TabooAttemptReviews";
 import type { TiebreakRow } from "./TabooTiebreakResults";
 
 export const difficulties = ["easy", "medium", "hard"] as const;
@@ -48,6 +58,20 @@ export function teamNameFrom(value: FormDataEntryValue | null) {
 export function tiebreakTeamName(state: TiebreakView) {
   const teamIndex = state.contenders[state.attempts.length];
   return teamIndex === undefined ? "" : (state.configuration.teams[teamIndex]?.name ?? "");
+}
+
+/** The cards of every finished tiebreak attempt, ready for corrections. */
+export function tiebreakReviews(
+  attempts: readonly TiebreakAttempt[],
+  configuration: GameConfiguration,
+): readonly AttemptReview[] {
+  return attempts.map((attempt) => ({
+    id: String(attempt.teamIndex),
+    maxCorrect: TIEBREAK_CARD_COUNT,
+    results: attempt.results,
+    teamIndex: attempt.teamIndex,
+    teamName: configuration.teams[attempt.teamIndex]?.name ?? "",
+  }));
 }
 
 export function tiebreakRows(state: TiebreakView): readonly TiebreakRow[] {

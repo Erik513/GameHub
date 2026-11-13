@@ -103,6 +103,7 @@ export const tabooTexts = {
     times: "Zeiten",
     pending: "noch nicht gespielt",
     time: "{{time}} s",
+    partial: "{{solved}}/{{total}} Karten · {{time}} s",
     start: "Lauf starten",
     cardOf: "Karte {{current}}/{{total}}",
     timer: "{{time}} Sekunden",
@@ -111,6 +112,10 @@ export const tabooTexts = {
     restartRunConfirm: "Nochmal tippen zum Neustart",
     noCards: "Für den nächsten Lauf sind nicht genug Karten da.",
     finalTimes: "Endzeiten",
+  },
+  tabooReview: {
+    title: "Ergebnis korrigieren",
+    attempt: "{{team}}: Karten prüfen",
   },
   tabooTiebreak: {
     title: "Stechen",

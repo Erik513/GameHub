@@ -43,6 +43,8 @@ export interface TiebreakAttempt {
   readonly solved: number;
   /** Elapsed time including penalties, in milliseconds. */
   readonly timeMs: number;
+  /** Every card of the attempt with its outcome, so a mistake can be corrected afterwards. */
+  readonly results: readonly TabooResult[];
 }
 
 export interface TiebreakActive {
@@ -53,6 +55,8 @@ export interface TiebreakActive {
   readonly skipUsed: boolean;
   /** Cards that were replaced because a forbidden word was said; they only cost time. */
   readonly wrong: number;
+  /** The cards that are done so far with their outcome. */
+  readonly results: readonly TabooResult[];
 }
 
 export type TabooState =
@@ -115,6 +119,16 @@ export type TabooEvent =
       readonly replacement?: TabooCard;
     }
   | { readonly type: "endTiebreakAttempt"; readonly elapsedMs: number }
+  /**
+   * Corrects the outcome of one card of a finished tiebreak attempt, for example "correct" that
+   * had a forbidden word. The ranking and the winners are calculated again.
+   */
+  | {
+      readonly type: "reviseTiebreakResult";
+      readonly teamIndex: number;
+      readonly cardId: string;
+      readonly outcome: TabooOutcome;
+    }
   | { readonly type: "finishGame" };
 
 export function createTabooGame(input: GameConfiguration): ValidationResult<Setup> {
@@ -279,7 +293,8 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
   if (
     event.type === "beginTiebreakAttempt" ||
     event.type === "answerTiebreak" ||
-    event.type === "endTiebreakAttempt"
+    event.type === "endTiebreakAttempt" ||
+    event.type === "reviseTiebreakResult"
   )
     return transitionTiebreak(state, event);
 
@@ -371,6 +386,7 @@ function finishTiebreakAttempt(
       teamIndex: active.teamIndex,
       solved: active.solved,
       timeMs: Math.max(0, elapsedMs),
+      results: active.results,
     },
   ];
   const base = {
@@ -390,30 +406,78 @@ function finishTiebreakAttempt(
       usedCardIds: state.usedCardIds,
     };
   }
-  // Most cards first, then the shortest time; equal results share the win.
-  const ranked = [...attempts].sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs);
-  const best = ranked[0];
-  const winners = ranked.filter(
-    (attempt) => attempt.solved === best?.solved && attempt.timeMs === best.timeMs,
-  );
   return {
     ...base,
     status: "gameEnded",
-    winnerIds: winners.flatMap((attempt) => {
-      const team = state.configuration.teams[attempt.teamIndex];
-      return team ? [team.id] : [];
-    }),
+    winnerIds: tiebreakWinnerIds(state.configuration, attempts),
     tiebreak: attempts,
   };
+}
+
+/** Most cards first, then the shortest time; equal results share the win. */
+function tiebreakWinnerIds(
+  configuration: GameConfiguration,
+  attempts: readonly TiebreakAttempt[],
+): string[] {
+  const ranked = [...attempts].sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs);
+  const best = ranked[0];
+  return ranked
+    .filter((attempt) => attempt.solved === best?.solved && attempt.timeMs === best.timeMs)
+    .flatMap((attempt) => {
+      const team = configuration.teams[attempt.teamIndex];
+      return team ? [team.id] : [];
+    });
+}
+
+/** Applies a correction to the attempts; nothing changes for a card that cannot be corrected. */
+function reviseAttempts(
+  attempts: readonly TiebreakAttempt[],
+  event: Extract<TabooEvent, { type: "reviseTiebreakResult" }>,
+): readonly TiebreakAttempt[] | undefined {
+  const attempt = attempts.find((candidate) => candidate.teamIndex === event.teamIndex);
+  const previous = attempt?.results.find((result) => result.card.id === event.cardId);
+  // Skipped cards are not part of the scoring and cannot be revised.
+  if (!attempt || !previous || previous.outcome === "skipped" || event.outcome === "skipped")
+    return undefined;
+  if (previous.outcome === event.outcome) return undefined;
+  const results = attempt.results.map((result) =>
+    result === previous ? { ...result, outcome: event.outcome } : result,
+  );
+  const solved = results.filter((result) => result.outcome === "correct").length;
+  // A forbidden card was replaced, so it can only count when the attempt has room for it.
+  if (solved > TIEBREAK_CARD_COUNT) return undefined;
+  return attempts.map((candidate) =>
+    candidate === attempt ? { ...candidate, results, solved } : candidate,
+  );
 }
 
 function transitionTiebreak(
   state: TabooState,
   event: Extract<
     TabooEvent,
-    { type: "beginTiebreakAttempt" | "answerTiebreak" | "endTiebreakAttempt" }
+    {
+      type:
+        "beginTiebreakAttempt" | "answerTiebreak" | "endTiebreakAttempt" | "reviseTiebreakResult";
+    }
   >,
 ): TabooState {
+  if (event.type === "reviseTiebreakResult") {
+    if (state.status === "tiebreak" && !state.active) {
+      const attempts = reviseAttempts(state.attempts, event);
+      return attempts ? { ...state, attempts } : state;
+    }
+    if (state.status === "gameEnded" && state.tiebreak) {
+      const attempts = reviseAttempts(state.tiebreak, event);
+      return attempts
+        ? {
+            ...state,
+            tiebreak: attempts,
+            winnerIds: tiebreakWinnerIds(state.configuration, attempts),
+          }
+        : state;
+    }
+    return state;
+  }
   if (state.status !== "tiebreak") return state;
   const { active } = state;
   if (event.type === "beginTiebreakAttempt") {
@@ -435,7 +499,7 @@ function transitionTiebreak(
         ...state.resolvedCardIds,
         ...cards.map((card) => card.id).filter((id) => !state.resolvedCardIds.includes(id)),
       ],
-      active: { teamIndex, cards, index: 0, solved: 0, skipUsed: false, wrong: 0 },
+      active: { teamIndex, cards, index: 0, solved: 0, skipUsed: false, wrong: 0, results: [] },
     };
   }
   if (!active) return state;
@@ -450,11 +514,15 @@ function transitionTiebreak(
     if ((skipping && active.skipUsed) || !event.replacement) return state;
     const replacement = validTiebreakCard(state, event.replacement, new Set(state.usedCardIds));
     if (!replacement) return state;
+    const shown = active.cards[active.index];
     return {
       ...state,
       usedCardIds: [...state.usedCardIds, replacement.id],
       active: {
         ...active,
+        results: shown
+          ? [...active.results, { card: shown, outcome: event.outcome }]
+          : active.results,
         skipUsed: active.skipUsed || skipping,
         wrong: active.wrong + (skipping ? 0 : 1),
         cards: active.cards.map((card, index) => (index === active.index ? replacement : card)),
@@ -462,10 +530,14 @@ function transitionTiebreak(
     };
   }
   const solved = active.solved + 1;
+  const shown = active.cards[active.index];
+  const results = shown
+    ? [...active.results, { card: shown, outcome: "correct" as const }]
+    : active.results;
   if (solved >= TIEBREAK_CARD_COUNT) {
-    return finishTiebreakAttempt(state, { ...active, solved }, event.elapsedMs);
+    return finishTiebreakAttempt(state, { ...active, solved, results }, event.elapsedMs);
   }
-  return { ...state, active: { ...active, solved, index: active.index + 1 } };
+  return { ...state, active: { ...active, solved, results, index: active.index + 1 } };
 }
 
 export function countSkips(results: readonly TabooResult[]): number {
