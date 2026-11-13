@@ -2,7 +2,7 @@
 
 Diese Regeln hat der Auftraggeber am 2026-11-12 vorgegeben (`ADR-021`). Sie gelten für jedes Spiel und nehmen Vorrang vor spielspezifischen Wünschen. Aufgebaut wird auf `ADR-017` (Spielbausteine), `ADR-020` (Setup-Bausteine) und `docs/GAMEHUB_SETUP_KIT.md`.
 
-Kennzeichnung: **[ist]** gilt heute schon in Tabu und im `game-kit`, **[Umbau]** weicht heute ab und wird in `PH-17-05` angepasst.
+Kennzeichnung: **[ist]** gilt heute schon in Tabu und im `game-kit`, **[Umbau]** weicht heute ab und wird in `Al-09-05` angepasst.
 
 ## 1. Ziel
 
@@ -108,7 +108,7 @@ Weitere Fenstertypen gibt es nicht. Das Fenster hängt an der Seite selbst (nich
 2. **Leere Zustände** mit `EmptyState` und einer Handlung **[ist]**.
 3. **Sortierung:** Standard-Einträge vor eigenen, alphabetisch; Karten nach Schwierigkeit, leicht zuerst; eigene bearbeitbar, mitgelieferte nur lesbar **[ist]**.
 4. **Texte:** alle sichtbaren Texte in Deutsch und Englisch in den Übersetzungsressourcen, gemeinsame im Namensraum `kit`; UI-Sprache und Kartensprache getrennt **[ist]**.
-5. **Handy [ist]:** eine Spalte, 16 Pixel Seitenrand. **PC [Phase 16]:** dieselben Ansichten, nur das Raster ändert sich und liegt allein in den Kit-Bausteinen.
+5. **Handy [ist]:** eine Spalte, 16 Pixel Seitenrand. **PC [Phase Al-08]:** dieselben Ansichten, nur das Raster ändert sich und liegt allein in den Kit-Bausteinen.
 6. **Layoutprüfung:** Jede Ansicht jedes Spiels wird im e2e-Test auf kleinen und großen Handys geprüft **[ist für Tabu]**.
 
 ## 7. Bausteine
@@ -129,7 +129,7 @@ Alle Ansichten bestehen aus diesen Bausteinen im `game-kit` und in `components`;
 
 Entscheidung: Es gibt bewusst **keinen** zusätzlichen `GameMenu`- und keinen `FinalScreen`-Baustein. `SetupScreen` ist das Hauptmenü, `ScoreScreen` deckt Zwischen- und Endstand ab (so wenige Bausteine wie möglich).
 
-## 8. Umbau von Tabu (`PH-17-05`, erledigt)
+## 8. Umbau von Tabu (`Al-09-05`, erledigt)
 
 1. Der Knopf „Abbrechen“ im Karteneditor ist rot.
 2. `ActionRow` ersetzt die eigenen Knopfreihen im Karteneditor und die Reihe Importieren/Exportieren.

@@ -1,6 +1,6 @@
 # Leitfaden: Ein neues Spiel anlegen
 
-Dieser Leitfaden beschreibt, was ein neues Spiel mitbringen muss und was es von GameHub geschenkt bekommt. Er gehört zu `PH-11-05` und stützt sich auf `docs/GAMEHUB_GAME_MODULES.md`.
+Dieser Leitfaden beschreibt, was ein neues Spiel mitbringen muss und was es von GameHub geschenkt bekommt. Er gehört zu `Ta-05-05` und stützt sich auf `docs/GAMEHUB_GAME_MODULES.md`.
 
 ## Was ein Spiel liefert
 

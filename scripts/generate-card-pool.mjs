@@ -4,7 +4,7 @@
 // to `work/pool-<language>.json` (same format as the shipped packs in `src/data/pool`) and a log of
 // rejected cards to `work/pool-<language>.rejected.jsonl`. The run can be stopped and started again;
 // it continues where it stopped. The cards are reviewed and merged into `src/data/pool` in a
-// separate step (PH-15-04), nothing here changes the app.
+// separate step (Ta-09-04), nothing here changes the app.
 //
 // Example:
 //   node scripts/generate-card-pool.mjs --language de --category food --difficulty easy --target 5

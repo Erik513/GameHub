@@ -1,6 +1,6 @@
 # Spielbausteine und Struktur für neue Spiele (Vorschlag)
 
-**Status:** Freigegeben (Option B) und umgesetzt, bis auf die in `PH-11-06` geplanten Punkte (Hooks für die Tabu-Zustandslogik, CSS je Spiel). Der Leitfaden steht in `docs/GAMEHUB_NEW_GAME_GUIDE.md`.
+**Status:** Freigegeben (Option B) und umgesetzt, bis auf die in `Ta-05-06` geplanten Punkte (Hooks für die Tabu-Zustandslogik, CSS je Spiel). Der Leitfaden steht in `docs/GAMEHUB_NEW_GAME_GUIDE.md`.
 
 Ziel: Ein neues Spiel soll möglichst nur seine **Regeln** (Business), seine **Inhalte** (Texte, Karten, Fragen) und seinen **spielspezifischen Ablauf** mitbringen. Kopfzeile, Navigation, Auswahlgruppen, Aktionsleiste, Zeitanzeige, Pause, Bestätigungen, Punkteliste und Layout auf dem Handy kommen aus gemeinsamen Bausteinen.
 
@@ -46,7 +46,7 @@ src/
 | `OutcomeButtons` | Daumenfreundliche Anordnung (groß rechts, zwei kleine links) | CSS und `TabooRound` |
 | `ReviewList` | Liste gespielter Elemente, tippbar, neutral oder farbig | `TabooRoundReview` |
 | `ConfirmButton` | Zweifach-Bestätigung | bereits allgemein |
-| `InfoButton` | Info-Symbol mit Erklärfenster (kommt mit `PH-12-01`) | neu |
+| `InfoButton` | Info-Symbol mit Erklärfenster (kommt mit `Ta-06-01`) | neu |
 | Hooks | `usePause`, `useCountdown`, `useStopwatch` | Teil von `TabooSetup` |
 
 ### Spielmodul-Vertrag (Erweiterung von ADR-013)
@@ -71,7 +71,7 @@ interface GameModule {
 | **B – Moderater Umbau** | Bausteine nach `game-kit` und `business/shared` verschieben, `TabooSetup` in Hooks und Ansichten zerlegen, Modul-Vertrag mit eigenem Namensraum und CSS je Spiel, `App` ohne Tabu-Wissen | mittel, in sechs kleinen Schritten mit grünen Tests | **Empfohlen** |
 | **C – Allgemeine Spiel-Engine** | Generische Zustandsmaschine für rundenbasierte Teamspiele | groß | Nicht empfohlen: zu früh, ohne zweites Spiel als Beleg |
 
-Begründung für B: Die Spielmodi aus `PH-12-07` (Klassisch, Auf Zeit, Gegen die Zeit) brauchen dieselben Bausteine (Zeitanzeige, Pause, Aktionsleiste, Punkteliste). Sie wären der erste Praxistest. Eine Verallgemeinerung wie in C wird erst gebaut, wenn zwei Spiele sie wirklich brauchen („Regel der zwei“).
+Begründung für B: Die Spielmodi aus `Ta-06-07` (Klassisch, Auf Zeit, Gegen die Zeit) brauchen dieselben Bausteine (Zeitanzeige, Pause, Aktionsleiste, Punkteliste). Sie wären der erste Praxistest. Eine Verallgemeinerung wie in C wird erst gebaut, wenn zwei Spiele sie wirklich brauchen („Regel der zwei“).
 
 ## 4. Schritte für Option B
 
@@ -95,4 +95,4 @@ Jeder Schritt hält das Verhalten gleich und ist durch die bestehenden Tests abg
 1. Option A, B oder C?
 2. Vertrag mit `Screen`-Komponente und eigenem Namensraum je Spiel einführen (bei B)?
 3. Ordnername `game-kit` und Spielordner unter `presentation/games/<spiel>` in Ordnung?
-4. Soll `PH-12-07` (Spielmodi) erst nach dem Umbau beginnen?
+4. Soll `Ta-06-07` (Spielmodi) erst nach dem Umbau beginnen?

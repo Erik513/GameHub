@@ -106,7 +106,7 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Datum:** 2026-11-10
 - **Entscheidung:** GameHub startet immer mit einer Spielauswahl. Ein zentraler Spielkatalog registriert jedes Spiel über einen minimalen, genreunabhängigen Vertrag für Kennung, Übersetzungsschlüssel, Route und Verfügbarkeitsstatus. App-Shell, Startseite und Navigation beziehen Spiele ausschließlich aus diesem Katalog und enthalten keine fest eingebauten Verweise auf einzelne Spiele.
 - **Begründung:** Weitere Spiele wie Karten-, Quiz- oder Brettspielvarianten sollen ohne Umbau der gemeinsamen Oberfläche ergänzt werden können. Die Erweiterbarkeit muss deshalb vor der ersten Tabu-Oberfläche feststehen.
-- **Konsequenzen:** `PH-03-02` führt Spielauswahl, Katalog und Minimalvertrag ein. Jedes Spiel kapselt seine Business-Logik und UI. `PH-09-02` überprüft und erweitert den Vertrag später nur bei nachgewiesenem Bedarf.
+- **Konsequenzen:** `Al-04-02` führt Spielauswahl, Katalog und Minimalvertrag ein. Jedes Spiel kapselt seine Business-Logik und UI. `Al-06-02` überprüft und erweitert den Vertrag später nur bei nachgewiesenem Bedarf.
 
 ## ADR-014: Zurückhaltende eigenständige Designsprache
 
@@ -137,8 +137,8 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Status:** accepted
 - **Datum:** 2026-11-11
 - **Entscheidung:** Gemeinsame Spielbausteine liegen in `src/presentation/game-kit/`, genreunabhängige Logik in `src/business/shared/`. Jedes Spiel wird über ein `GameModule` (Kennung und Hauptfenster-Komponente) angeschlossen, das zum Katalogeintrag mit derselben Kennung gehört. Die App kennt Spiele nur über diesen Vertrag, spielspezifische Dienste werden im Kompositionspunkt `main.tsx` eingebaut. Die Texte jedes Spiels liegen in einer eigenen Datei je Sprache.
-- **Begründung:** Neue Spiele und die Spielmodi aus `PH-12-07` sollen sich um Kopfzeile, Navigation, Aktionsleiste, Zeitanzeige und Handy-Layout nicht kümmern müssen. Der Auftraggeber hat Option B (moderater Umbau) freigegeben.
-- **Konsequenzen:** Erweitert ADR-013. Eine allgemeine Spiel-Engine wird bewusst nicht gebaut, bevor ein zweites Spiel sie braucht. Offen: eigene CSS-Datei je Spiel und Hooks für die Tabu-Zustandslogik (`PH-11-06`).
+- **Begründung:** Neue Spiele und die Spielmodi aus `Ta-06-07` sollen sich um Kopfzeile, Navigation, Aktionsleiste, Zeitanzeige und Handy-Layout nicht kümmern müssen. Der Auftraggeber hat Option B (moderater Umbau) freigegeben.
+- **Konsequenzen:** Erweitert ADR-013. Eine allgemeine Spiel-Engine wird bewusst nicht gebaut, bevor ein zweites Spiel sie braucht. Offen: eigene CSS-Datei je Spiel und Hooks für die Tabu-Zustandslogik (`Ta-05-06`).
 
 ## ADR-018: KI nur am Rechner (Ollama), nicht im Browser
 
@@ -153,16 +153,16 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Status:** accepted
 - **Datum:** 2026-11-12
 - **Entscheidung:** Der große Kartenpool wird als Paket je Sprache (`gamehub-taboo-pack`, Version 1) mit Kategorien und Karten ausgeliefert und als eigener Teil der App per dynamischem Import geladen. Die 45 Karten im Code bleiben als Rückfall. Kategorienamen (Deutsch und Englisch) stehen in den Daten statt in den Übersetzungsressourcen; die drei Kategorien der Rückfallkarten bleiben immer sichtbar, weitere erst mit Karten.
-- **Begründung:** Neue Kategorien und Karten sollen ohne Codeänderung dazukommen (`docs/GAMEHUB_CARD_POOL.md`); die KI am Handy ist nicht möglich (`ADR-018`). Der Auftraggeber hat die Planung und `PH-15-02` freigegeben.
+- **Begründung:** Neue Kategorien und Karten sollen ohne Codeänderung dazukommen (`docs/GAMEHUB_CARD_POOL.md`); die KI am Handy ist nicht möglich (`ADR-018`). Der Auftraggeber hat die Planung und `Ta-09-02` freigegeben.
 - **Konsequenzen:** Der Offline-Speicher lädt die Pakete beim Installieren mit; bei sehr großen Paketen (ab etwa 20.000 Karten je Sprache) wäre ein Nachladen je Kategorie zu prüfen. Ein beschädigtes Paket wird ganz abgelehnt. Die Kategorienamen sind an die Pakete gebunden, nicht an die Oberflächensprache; Namen eigener Kategorien bleiben die vom Spieler getippten Texte.
 
 ## ADR-020: Gemeinsame Bausteine für Teams, Spieler und Einstellungen
 
 - **Status:** accepted
 - **Datum:** 2026-11-12
-- **Entscheidung:** Teams, Spieler und der Rahmen des Setups (Abschnitte, Werkzeugleiste oben rechts, Startleiste) werden als wiederverwendbare Bausteine im `game-kit` gebaut: `SetupScreen`, `SetupSection`, `TeamsSetup` (gesteuert, liefert Teams mit Spielern) und `PlayersSetup` (nur Spielerliste). Die reine Logik (`buildTeams`, `TeamRules`, Validierung) liegt in `src/business/shared/`, Texte in einer gemeinsamen Datei `kit.ts` je Sprache, Stile im `game-kit`. Spieleinstellungen bleiben Formularfelder des Spiels (`ChoiceGroup`, `InfoButton`), es gibt kein Einstellungs-Schema. Das Merken von Teams und Spielern zwischen Spielen folgt später (`PH-17-03`).
+- **Entscheidung:** Teams, Spieler und der Rahmen des Setups (Abschnitte, Werkzeugleiste oben rechts, Startleiste) werden als wiederverwendbare Bausteine im `game-kit` gebaut: `SetupScreen`, `SetupSection`, `TeamsSetup` (gesteuert, liefert Teams mit Spielern) und `PlayersSetup` (nur Spielerliste). Die reine Logik (`buildTeams`, `TeamRules`, Validierung) liegt in `src/business/shared/`, Texte in einer gemeinsamen Datei `kit.ts` je Sprache, Stile im `game-kit`. Spieleinstellungen bleiben Formularfelder des Spiels (`ChoiceGroup`, `InfoButton`), es gibt kein Einstellungs-Schema. Das Merken von Teams und Spielern zwischen Spielen folgt später (`Al-09-03`).
 - **Begründung:** Teams, Spieler und Einstellungen werden in jedem Spiel gebraucht; der Auftraggeber will dieselbe Ansicht für alle Spiele. Spielerzuordnungen sollen ins Spiel gelangen können.
-- **Konsequenzen:** Erweitert ADR-017. Tabu wird verhaltensgleich umgestellt; die zugänglichen Namen bleiben gleich, damit Tests stabil bleiben. Das PC-Layout (Phase 16) wird in `SetupScreen` gebündelt.
+- **Konsequenzen:** Erweitert ADR-017. Tabu wird verhaltensgleich umgestellt; die zugänglichen Namen bleiben gleich, damit Tests stabil bleiben. Das PC-Layout (Phase Al-08) wird in `SetupScreen` gebündelt.
 
 ## ADR-021: Feste Ansichten und Oberflächenregeln für alle Spiele
 
@@ -170,13 +170,13 @@ Statuswerte sind `accepted`, `proposed`, `superseded` oder `rejected`. Änderung
 - **Datum:** 2026-11-12
 - **Entscheidung:** Jedes Spiel besteht aus einem Hauptmenü (Kopfleiste mit dem Spielnamen links (ohne Farbpunkt) und rechts den Knöpfen Spieler, Einstellungen und ganz rechts Home (geändert am 2026-11-13); Spielregeln als Knopf im Feld Spieleinstellungen und optional der Editor als Knopf im Feld der Inhalte (geändert am 2026-11-13, keine Werkzeugleiste mehr), jeder Spielmodus mit eigenen Regeln hinter einem Infoknopf; Felder „Teams und Spieler“ und „Spieleinstellungen“; Starten fest unten), den Spielansichten Zwischenstand, eigentliches Spiel und Endstand sowie einem einzigen Infofenster (Überschrift links, Schließen rechts, Inhalt darunter). In Unteransichten zeigt die Kopfleiste nur interne Navigation oder „Spiel beenden“, nie Home oder Spracheinstellungen. Alle Bedienelemente sehen in jedem Spiel gleich aus und folgen einem Theme; eine spielbezogene Sekundärfarbe ist später möglich. Wenige Eingabefelder. Knöpfe: einheitlich bis auf eingetragene Ausnahmen; Löschen, Entfernen und Abbrechen rot; Hinzufügen und Starten grün; unwiderrufliche Aktionen mit fester Bestätigung (`ConfirmButton`); spielentscheidende Knöpfe unten; Knöpfe sind platzsparend und zeigen nur ein Symbol, wenn es selbsterklärend ist. Details in `docs/GAMEHUB_UI_RULES.md`.
 - **Begründung:** Der Auftraggeber will, dass alle Spiele gleich aussehen und gleich bedient werden und dass neue Spiele keine eigenen Oberflächenmuster erfinden.
-- **Konsequenzen:** Erweitert ADR-017 und ADR-020. Neue Bausteine `ActionRow`, `ScoreScreen` (Zwischen- und Endstand) und `ManageScreen` im `game-kit`; `SetupScreen` ist das Hauptmenü und hat die Plätze `rules` und `editor` (Aufgabe `PH-17-05`, erledigt); Tabu wurde verhaltensgleich umgestellt, nur „Abbrechen“ ist jetzt rot. Weitere Ansichtstypen oder Ausnahmen brauchen die Zustimmung des Auftraggebers und einen Eintrag in den Regeln.
+- **Konsequenzen:** Erweitert ADR-017 und ADR-020. Neue Bausteine `ActionRow`, `ScoreScreen` (Zwischen- und Endstand) und `ManageScreen` im `game-kit`; `SetupScreen` ist das Hauptmenü und hat die Plätze `rules` und `editor` (Aufgabe `Al-09-05`, erledigt); Tabu wurde verhaltensgleich umgestellt, nur „Abbrechen“ ist jetzt rot. Weitere Ansichtstypen oder Ausnahmen brauchen die Zustimmung des Auftraggebers und einen Eintrag in den Regeln.
 
 ## ADR-022: Spielerverwaltung für alle Spiele
 
 - **Status:** accepted
 - **Datum:** 2026-11-12
-- **Entscheidung:** Es gibt eine gemeinsame, dauerhaft gespeicherte Spielerliste. Sie wird in einem Fenster „Spieler“ gepflegt (hinzufügen, löschen), das aus der Kopfleiste des GameHub (Knopf mit Symbol und Text) und aus dem Hauptmenü jedes Spiels geöffnet wird. Der Knopf „Spieler“ steht in der Werkzeugleiste des Hauptmenüs neben Spielregeln und Editor; die Kopfleiste bleibt bei Einstellungen und Home. In einem Spiel wählt der Spieler im Feld „Teams und Spieler“ über „Aus Spielerliste wählen“, wer mitspielt; danach folgt die Verteilung auf Teams wie bisher. „Letzte Gruppe laden“ (`PH-17-03`) bleibt. Speicherung: lokaler Browserspeicher hinter dem Port `PlayerRosterStore`.
+- **Entscheidung:** Es gibt eine gemeinsame, dauerhaft gespeicherte Spielerliste. Sie wird in einem Fenster „Spieler“ gepflegt (hinzufügen, löschen), das aus der Kopfleiste des GameHub (Knopf mit Symbol und Text) und aus dem Hauptmenü jedes Spiels geöffnet wird. Der Knopf „Spieler“ steht in der Werkzeugleiste des Hauptmenüs neben Spielregeln und Editor; die Kopfleiste bleibt bei Einstellungen und Home. In einem Spiel wählt der Spieler im Feld „Teams und Spieler“ über „Aus Spielerliste wählen“, wer mitspielt; danach folgt die Verteilung auf Teams wie bisher. „Letzte Gruppe laden“ (`Al-09-03`) bleibt. Speicherung: lokaler Browserspeicher hinter dem Port `PlayerRosterStore`.
 - **Begründung:** Spieler sollen nicht in jedem Spiel neu getippt werden müssen; die Pflege soll an einem Ort für alle Spiele geschehen.
 - **Konsequenzen:** Erweitert ADR-020 und ADR-021: Die Werkzeugleiste des Hauptmenüs bekommt einen festen Platz „Spieler“ (jedes Spiel hat ihn automatisch); `docs/GAMEHUB_UI_RULES.md` wird ergänzt. Neue Bausteine im `game-kit`: Fenster und Knopf der Spielerverwaltung und die Auswahl aus der Liste.
 

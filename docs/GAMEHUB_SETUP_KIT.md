@@ -2,7 +2,7 @@
 
 > **Stand 2026-11-13 (`ADR-023`):** Teams und Spieler stehen nicht mehr im Hauptmenü, sondern in der Ansicht **Aufstellung** nach „Starten“ (`LineupScreen`). Dieses Dokument beschreibt die ursprüngliche Aufteilung; die Bausteine `TeamsSetup` und `PlayersSetup` sind unverändert, nur ihr Ort ist ein anderer.
 
-Dieses Dokument gehört zu Phase 17 (`PH-17-01`). Die Entscheidungen in Abschnitt 6 sind getroffen (siehe `ADR-020`); gebaut wird in `PH-17-02`. Es baut auf `ADR-017` (Spielbausteine und Spielmodul-Vertrag) und `docs/GAMEHUB_NEW_GAME_GUIDE.md` auf.
+Dieses Dokument gehört zu Phase Al-09 (`Al-09-01`). Die Entscheidungen in Abschnitt 6 sind getroffen (siehe `ADR-020`); gebaut wird in `Al-09-02`. Es baut auf `ADR-017` (Spielbausteine und Spielmodul-Vertrag) und `docs/GAMEHUB_NEW_GAME_GUIDE.md` auf.
 
 ## 1. Ziel
 
@@ -54,21 +54,21 @@ Das Spiel bekommt heute nur `teams: { id, name }[]` (`GameConfiguration` in `bus
 - Stile wandern aus `taboo.css` in eine Kit-Datei (`styles/game-kit.css`) mit Präfix `kit-`. Tabu behält nur Tabu-Stile.
 - Zugängliche Namen bleiben gleich (Gruppe „Teams“, „Name von Team 1“ …), damit Tests und e2e stabil bleiben.
 
-### 4.4 Handy- und PC-Layout (Phase 16)
+### 4.4 Handy- und PC-Layout (Phase Al-08)
 
-Der Baustein erscheint in jedem Spiel, deshalb wird das PC-Layout hier **mitgedacht, aber nicht in `PH-17-02` gebaut**:
+Der Baustein erscheint in jedem Spiel, deshalb wird das PC-Layout hier **mitgedacht, aber nicht in `Al-09-02` gebaut**:
 
 - Handy: eine Spalte wie heute (Teams und Spieler, darunter Einstellungen, Startleiste unten).
 - PC: zwei Spalten (links Teams und Spieler, rechts Einstellungen), Startknopf rechts unten statt Leiste über die ganze Breite.
 - `SetupScreen` ist der einzige Ort, der das Raster festlegt; Spiele ändern nichts.
 
-### 4.5 Merken zwischen Spielen (`PH-17-03`, umgesetzt)
+### 4.5 Merken zwischen Spielen (`Al-09-03`, umgesetzt)
 
 **Umgesetzt anders als zuerst entworfen:** Die Gruppe ist ein kleiner Datensatz (Teamnamen, Reihenfolge, Spielerliste, Verteilung) und liegt im lokalen Speicher des Browsers (`localStorage`, Schlüssel `gamehub.teamSetup`), nicht in IndexedDB. Das vermeidet eine Schemaänderung der Kartendatenbank und passt zu den Spracheinstellungen. Der Port `TeamSetupMemory` (`src/business/shared/savedTeamSetup.ts`) kapselt den Speicher; ein Wechsel auf IndexedDB ändert nur den Adapter `src/infrastructure/localStorageTeamSetupMemory.ts`.
 
 Ursprünglicher Entwurf:
 
-Ein Port `PlayerRosterRepository` in `business/shared` und eine IndexedDB-Ablage (Schemaversion 2 mit Migration) für die zuletzt benutzten Teams und Spieler. `TeamsSetup` bietet dann „Letzte Gruppe laden“ an, in jedem Spiel. Nicht Teil von `PH-17-02`.
+Ein Port `PlayerRosterRepository` in `business/shared` und eine IndexedDB-Ablage (Schemaversion 2 mit Migration) für die zuletzt benutzten Teams und Spieler. `TeamsSetup` bietet dann „Letzte Gruppe laden“ an, in jedem Spiel. Nicht Teil von `Al-09-02`.
 
 ## 5. Umbau von Tabu (verhaltensgleich)
 
@@ -85,7 +85,7 @@ Nach jedem Schritt laufen alle Tests, Prettier, tsc und eslint.
 
 1. **Teams und Spieler gesteuert:** `TeamsSetup` ist gesteuert (`value` und `onChange`) und liefert dem Spiel Teams **mit ihren Spielern**. Die übrigen Einstellungen bleiben normale Formularfelder.
 2. **Spiele ohne Teams jetzt vorsehen:** Der zweite Baustein `PlayersSetup` (nur Spielerliste, ohne Verteilung) wird gleich mit gebaut.
-3. **Merken zwischen Spielen später:** `PH-17-03` bleibt eine eigene Aufgabe nach `PH-17-02`.
+3. **Merken zwischen Spielen später:** `Al-09-03` bleibt eine eigene Aufgabe nach `Al-09-02`.
 
 **Vorläufig angenommen (nicht ausdrücklich beantwortet, jederzeit änderbar):**
 

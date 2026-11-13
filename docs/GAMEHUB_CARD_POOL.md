@@ -1,10 +1,10 @@
 # Planung: Großer Kartenpool für Tabu
 
-Dieses Dokument gehört zu Phase 15 im Projektplan. Es ist ein **Vorschlag**. Entscheidungen, die den Aufbau betreffen (Abschnitt 6), brauchen die Zustimmung des Auftraggebers, bevor gebaut wird.
+Dieses Dokument gehört zu Phase Ta-09 im Projektplan. Es ist ein **Vorschlag**. Entscheidungen, die den Aufbau betreffen (Abschnitt 6), brauchen die Zustimmung des Auftraggebers, bevor gebaut wird.
 
 ## 1. Ziel
 
-Tabu soll am Handy praktisch nie dieselben Karten zeigen. Eine KI am Handy ist dafür nicht möglich (Messung `PH-14-01`, `ADR-018`). Stattdessen erzeugt der Auftraggeber die Karten **einmal am PC** mit einer guten KI, prüft sie und liefert sie mit der App aus. Am Handy läuft alles offline, ohne Installation und ohne KI.
+Tabu soll am Handy praktisch nie dieselben Karten zeigen. Eine KI am Handy ist dafür nicht möglich (Messung `Ta-08-01`, `ADR-018`). Stattdessen erzeugt der Auftraggeber die Karten **einmal am PC** mit einer guten KI, prüft sie und liefert sie mit der App aus. Am Handy läuft alles offline, ohne Installation und ohne KI.
 
 ## 2. Ist-Zustand
 
@@ -14,7 +14,7 @@ Tabu soll am Handy praktisch nie dieselben Karten zeigen. Eine KI am Handy ist d
 - Der Dienst-Worker legt **jede** gebaute Datei beim Installieren in den Cache. Wird der Pool als eigener Teil der App gebaut, ist er automatisch offline verfügbar und wird mit jedem Update neu geladen.
 - Es gibt einen Prüfpfad für erzeugte Karten (`reviewGeneratedCards`: Aufbau, Sprache, Dubletten) und einen Kartengenerator hinter einem Port (Ollama). Beides lässt sich für den Pool wiederverwenden.
 
-**Stand (2026-11-12):** `PH-15-02` bis `PH-15-05` sind erledigt. Die Pakete `src/data/pool/de.json` und `en.json` enthalten die zehn Kategorien und 523 beziehungsweise 521 Karten. Die Karten wurden von Claude geschrieben (siehe Changelog) und liefen durch die Regeln der Skripte `import-card-batch`, `review-card-pool` und `generate-card-pool`. Siehe `ADR-019`.
+**Stand (2026-11-12):** `Ta-09-02` bis `Ta-09-05` sind erledigt. Die Pakete `src/data/pool/de.json` und `en.json` enthalten die zehn Kategorien und 523 beziehungsweise 521 Karten. Die Karten wurden von Claude geschrieben (siehe Changelog) und liefen durch die Regeln der Skripte `import-card-batch`, `review-card-pool` und `generate-card-pool`. Siehe `ADR-019`.
 
 ## 3. Größe und Aufwand (Schätzung, nicht gemessen)
 
@@ -43,7 +43,7 @@ Die größte Gefahr ist nicht die Menge, sondern schlechte Karten (siehe Test mi
 
 - **Automatisch:** harte Regeln (oben), außerdem Warnung bei Wörtern, die den Begriff enthalten oder darin enthalten sind, und bei sehr kurzen oder sehr langen Wörtern.
 - **Zweiter KI-Durchgang:** dasselbe oder ein anderes Modell bewertet jede Karte („passen die vier Wörter, ist der Begriff bekannt, ist die Schwierigkeit plausibel“). Das spart Handarbeit, ersetzt sie aber nicht.
-- **Durchsicht durch den Auftraggeber:** Stichproben je Kategorie, oder bei kleinen Mengen alles. Ein einfaches Prüfformat (zum Beispiel eine Tabelle zum Streichen) macht das schnell. Das Werkzeug dafür ist Teil von Aufgabe PH-15-04.
+- **Durchsicht durch den Auftraggeber:** Stichproben je Kategorie, oder bei kleinen Mengen alles. Ein einfaches Prüfformat (zum Beispiel eine Tabelle zum Streichen) macht das schnell. Das Werkzeug dafür ist Teil von Aufgabe Ta-09-04.
 - **Altersgrenze und Inhalt:** familienfreundlich, keine Politik, Religion nur sachlich, keine Marken, die nur Werbung sind. Eine kurze Regelliste für die KI und die Prüfung gehört in die Aufgabe.
 - **Schwierigkeit:** einfach = fast jeder kennt den Begriff und kann ihn beschreiben, mittel = bekannt, aber schwerer zu erklären, schwer = Fachwort oder abstrakt. Diese Beschreibung geht in den Auftrag an die KI.
 
@@ -74,18 +74,18 @@ Die größte Gefahr ist nicht die Menge, sondern schlechte Karten (siehe Test mi
 
 **Noch offen (nicht blockierend):**
 
-5. **Gespielte Karten merken** (Punkt 7 im Aufbau): später entscheiden. `PH-15-06` bleibt eine optionale Aufgabe.
+5. **Gespielte Karten merken** (Punkt 7 im Aufbau): später entscheiden. `Ta-09-06` bleibt eine optionale Aufgabe.
 
 ## 7. Aufgaben (Vorschlag)
 
 | ID | Inhalt |
 |---|---|
-| PH-15-01 | Entscheidungen aus Abschnitt 6 klären und die Anforderungen für Kategorien, Schwierigkeit und Inhaltsregeln festlegen. |
-| PH-15-02 | Paketformat, Laden als eigener Teil mit Rückfall, Kategorien aus den Daten, Tests. |
-| PH-15-03 | Erzeugungsskript am PC (Ollama oder LM Studio, fortsetzbar, Prüfregeln, Ablehnungsliste). |
-| PH-15-04 | Prüfwerkzeug (zweiter KI-Durchgang und Durchsicht), Regelliste. |
-| PH-15-05 | Pool in Etappen erzeugen, prüfen und einbauen (zuerst eine Kategorie als Probelauf). |
-| PH-15-06 | Optional: gespielte Karten merken. |
+| Ta-09-01 | Entscheidungen aus Abschnitt 6 klären und die Anforderungen für Kategorien, Schwierigkeit und Inhaltsregeln festlegen. |
+| Ta-09-02 | Paketformat, Laden als eigener Teil mit Rückfall, Kategorien aus den Daten, Tests. |
+| Ta-09-03 | Erzeugungsskript am PC (Ollama oder LM Studio, fortsetzbar, Prüfregeln, Ablehnungsliste). |
+| Ta-09-04 | Prüfwerkzeug (zweiter KI-Durchgang und Durchsicht), Regelliste. |
+| Ta-09-05 | Pool in Etappen erzeugen, prüfen und einbauen (zuerst eine Kategorie als Probelauf). |
+| Ta-09-06 | Optional: gespielte Karten merken. |
 
 Reihenfolge: 01, dann 02 und 03 unabhängig, dann 04, 05 zum Schluss, 06 nur auf Wunsch.
 
@@ -95,4 +95,4 @@ Reihenfolge: 01, dann 02 und 03 unabhängig, dann 04, 05 zum Schluss, 06 nur auf
 - **Die Wörter in beiden Sprachen:** bei unabhängiger Erzeugung unterscheiden sich die Begriffe, was für die Prüfung mehr Arbeit ist.
 - **Lizenz und Herkunft der Modelle:** Die Nutzungsbedingungen des gewählten Modells müssen die Weitergabe der erzeugten Texte erlauben. Das ist vor der Veröffentlichung zu prüfen (nicht geprüft).
 - **Größe wächst:** bei sehr großen Paketen auf nachladbare Pakete je Kategorie umstellen.
-- **Eine Änderung der Kategorien berührt Tests und Übersetzungen:** darum als eigene, kleine Aufgabe zuerst (PH-15-02).
+- **Eine Änderung der Kategorien berührt Tests und Übersetzungen:** darum als eigene, kleine Aufgabe zuerst (Ta-09-02).

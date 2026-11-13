@@ -138,165 +138,165 @@
   },
   "phases": [
     {
-      "id": "PH-00",
+      "id": "Al-01",
       "name": "Projektvorbereitung",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-00-01",
+          "id": "Al-01-01",
           "title": "Umgebung prüfen",
           "status": "done"
         },
         {
-          "id": "PH-00-02",
+          "id": "Al-01-02",
           "title": "Dokumentationsstruktur anlegen",
           "status": "done"
         },
         {
-          "id": "PH-00-03",
+          "id": "Al-01-03",
           "title": "Projektplan erstellen",
           "status": "done"
         },
         {
-          "id": "PH-00-04",
+          "id": "Al-01-04",
           "title": "Statusverwaltung erstellen",
           "status": "done"
         },
         {
-          "id": "PH-00-05",
+          "id": "Al-01-05",
           "title": "Entwicklungs-Dashboard erstellen",
           "status": "done"
         },
         {
-          "id": "PH-00-06",
+          "id": "Al-01-06",
           "title": "Arbeitsregeln und Entscheidungen dokumentieren",
           "status": "done"
         },
         {
-          "id": "PH-00-07",
+          "id": "Al-01-07",
           "title": "Dokumente auf Konsistenz prüfen",
           "status": "done"
         },
         {
-          "id": "PH-00-08",
+          "id": "Al-01-08",
           "title": "Entwicklungs-Dashboard nach Spielen gliedern",
           "status": "done"
         }
       ]
     },
     {
-      "id": "PH-01",
+      "id": "Al-02",
       "name": "Projektfundament, Entwicklungswerkzeuge und Testinfrastruktur",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-01-01",
+          "id": "Al-02-01",
           "title": "Vite-Grundprojekt und Schichtenstruktur",
           "status": "done"
         },
         {
-          "id": "PH-01-02",
+          "id": "Al-02-02",
           "title": "Linting und Formatierung",
           "status": "done"
         },
         {
-          "id": "PH-01-03",
+          "id": "Al-02-03",
           "title": "Vitest und Testing Library",
           "status": "done"
         },
         {
-          "id": "PH-01-04",
+          "id": "Al-02-04",
           "title": "Coverage und Bereichsgrenzen",
           "status": "done"
         },
         {
-          "id": "PH-01-05",
+          "id": "Al-02-05",
           "title": "Playwright-Grundkonfiguration",
           "status": "done"
         },
         {
-          "id": "PH-01-06",
+          "id": "Al-02-06",
           "title": "GitHub-Actions-Qualitätsworkflow",
           "status": "done"
         }
       ]
     },
     {
-      "id": "PH-02",
+      "id": "Al-03",
       "name": "Internationalisierung Deutsch/Englisch",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-02-01",
+          "id": "Al-03-01",
           "title": "i18n-Grundkonfiguration",
           "status": "done"
         },
         {
-          "id": "PH-02-02",
+          "id": "Al-03-02",
           "title": "Erkennung, Auswahl und Persistenz der UI-Sprache",
           "status": "done"
         },
         {
-          "id": "PH-02-03",
+          "id": "Al-03-03",
           "title": "Unabhängige Kartensprache",
           "status": "done"
         },
         {
-          "id": "PH-02-04",
+          "id": "Al-03-04",
           "title": "Übersetzungsparität prüfen",
           "status": "done"
         }
       ]
     },
     {
-      "id": "PH-03",
+      "id": "Al-04",
       "name": "Gemeinsame App-Oberfläche und Designsystem",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-03-01",
+          "id": "Al-04-01",
           "title": "Design-Tokens und Basiskomponenten",
           "status": "done"
         },
         {
-          "id": "PH-03-02",
+          "id": "Al-04-02",
           "title": "App-Shell, Spielkatalog und Navigation",
           "status": "done"
         },
         {
-          "id": "PH-03-03",
+          "id": "Al-04-03",
           "title": "Einstellungen und Statusmeldungen",
           "status": "done"
         }
       ]
     },
     {
-      "id": "PH-04",
+      "id": "Ta-01",
       "name": "Tabu-Kernlogik",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-04-01",
+          "id": "Ta-01-01",
           "title": "Tabu-Domänenmodell und Validierung",
           "status": "done"
         },
         {
-          "id": "PH-04-02",
+          "id": "Ta-01-02",
           "title": "Zustandsmaschine und Übergänge",
           "status": "done"
         },
         {
-          "id": "PH-04-03",
+          "id": "Ta-01-03",
           "title": "Kartenaktionen und Punkte",
           "status": "done"
         },
         {
-          "id": "PH-04-04",
+          "id": "Ta-01-04",
           "title": "Rundenfolge und Siegerermittlung",
           "status": "done"
         },
         {
-          "id": "PH-04-05",
+          "id": "Ta-01-05",
           "title": "Kartenfilter und Deckbildung",
           "status": "done"
         }
@@ -306,27 +306,27 @@
       ]
     },
     {
-      "id": "PH-05",
+      "id": "Ta-02",
       "name": "Tabu-Benutzeroberfläche",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-05-01",
+          "id": "Ta-02-01",
           "title": "Spielkonfiguration",
           "status": "done"
         },
         {
-          "id": "PH-05-02",
+          "id": "Ta-02-02",
           "title": "Laufende Runde und Timer",
           "status": "done"
         },
         {
-          "id": "PH-05-03",
+          "id": "Ta-02-03",
           "title": "Rundenende",
           "status": "done"
         },
         {
-          "id": "PH-05-04",
+          "id": "Ta-02-04",
           "title": "Spielende und Neustart",
           "status": "done"
         }
@@ -336,12 +336,12 @@
       ]
     },
     {
-      "id": "PH-06",
+      "id": "Ta-03",
       "name": "Speicherung, Kartensätze und Offlinebetrieb",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-06-01",
+          "id": "Ta-03-01",
           "title": "IndexedDB-Schema und Repository-Adapter",
           "status": "done",
           "gameIds": [
@@ -349,7 +349,7 @@
           ]
         },
         {
-          "id": "PH-06-02",
+          "id": "Ta-03-02",
           "title": "Lokale deutsche und englische Kartensätze",
           "status": "done",
           "gameIds": [
@@ -357,7 +357,7 @@
           ]
         },
         {
-          "id": "PH-06-03",
+          "id": "Ta-03-03",
           "title": "Import und Aktualisierung lokaler Karten",
           "status": "done",
           "gameIds": [
@@ -365,39 +365,39 @@
           ]
         },
         {
-          "id": "PH-06-04",
+          "id": "Ta-03-04",
           "title": "Manifest und Service Worker",
           "status": "done"
         }
       ]
     },
     {
-      "id": "PH-07",
+      "id": "Ta-04",
       "name": "KI-Kartengenerierung",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-07-01",
+          "id": "Ta-04-01",
           "title": "Generierungsport und neutrales Datenmodell",
           "status": "done"
         },
         {
-          "id": "PH-07-02",
+          "id": "Ta-04-02",
           "title": "Validierungs-, Normalisierungs- und Duplikatpipeline",
           "status": "done"
         },
         {
-          "id": "PH-07-03",
+          "id": "Ta-04-03",
           "title": "Lokaler Generatoradapter",
           "status": "done"
         },
         {
-          "id": "PH-07-04",
+          "id": "Ta-04-04",
           "title": "Ollama-Adapter",
           "status": "done"
         },
         {
-          "id": "PH-07-05",
+          "id": "Ta-04-05",
           "title": "Generierungsoberfläche und lokale Speicherung",
           "status": "done"
         }
@@ -407,12 +407,12 @@
       ]
     },
     {
-      "id": "PH-08",
+      "id": "Al-05",
       "name": "Veröffentlichung, E2E-Tests und Qualitätssicherung",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-08-01",
+          "id": "Al-05-01",
           "title": "Kritische E2E-Spielabläufe",
           "status": "done",
           "gameIds": [
@@ -420,39 +420,39 @@
           ]
         },
         {
-          "id": "PH-08-02",
+          "id": "Al-05-02",
           "title": "Offline- und PWA-E2E",
           "status": "done"
         },
         {
-          "id": "PH-08-03",
+          "id": "Al-05-03",
           "title": "GitHub-Pages-Build und Deployment",
           "status": "done"
         },
         {
-          "id": "PH-08-04",
+          "id": "Al-05-04",
           "title": "Qualitäts- und Barrierefreiheitsabnahme",
           "status": "done"
         }
       ]
     },
     {
-      "id": "PH-10",
+      "id": "Al-07",
       "name": "Mobile-Optimierung der Oberfläche",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-10-01",
+          "id": "Al-07-01",
           "title": "Mobile-first Oberfläche mit Daumenzone",
           "status": "done"
         },
         {
-          "id": "PH-10-02",
+          "id": "Al-07-02",
           "title": "Spielablauf: Rundenübersicht, Pause, Überspringlimit und Stechen",
           "status": "done"
         },
         {
-          "id": "PH-10-03",
+          "id": "Al-07-03",
           "title": "Feinschliff nach Rückmeldung (Menü, Karte, Stechen, Rundenzahl)",
           "status": "done"
         }
@@ -462,32 +462,32 @@
       ]
     },
     {
-      "id": "PH-11",
+      "id": "Ta-05",
       "name": "Tabu-Qualitätsprüfung",
       "status": "planned",
       "tasks": [
         {
-          "id": "PH-11-01",
+          "id": "Ta-05-01",
           "title": "Spiellogik prüfen, auch Randfälle",
           "status": "done"
         },
         {
-          "id": "PH-11-02",
+          "id": "Ta-05-02",
           "title": "Testabdeckung prüfen und erhöhen",
           "status": "done"
         },
         {
-          "id": "PH-11-03",
+          "id": "Ta-05-03",
           "title": "Sprachabdeckung Deutsch/Englisch inklusive Oberfläche prüfen",
           "status": "done"
         },
         {
-          "id": "PH-11-04",
+          "id": "Ta-05-04",
           "title": "Oberflächentests ergänzen",
           "status": "done"
         },
         {
-          "id": "PH-11-05",
+          "id": "Ta-05-05",
           "title": "Struktur prüfen und wiederverwendbare Spielbausteine dokumentieren",
           "status": "done",
           "gameIds": [
@@ -495,7 +495,7 @@
           ]
         },
         {
-          "id": "PH-11-06",
+          "id": "Ta-05-06",
           "title": "Tabu-Zustandslogik als Hooks und CSS je Spiel",
           "status": "done"
         }
@@ -505,72 +505,72 @@
       ]
     },
     {
-      "id": "PH-12",
+      "id": "Ta-06",
       "name": "Tabu-Erweiterungen",
       "status": "planned",
       "tasks": [
         {
-          "id": "PH-12-01",
+          "id": "Ta-06-01",
           "title": "Info-Buttons mit Erklärfenster für Einstellungen",
           "status": "done"
         },
         {
-          "id": "PH-12-02",
+          "id": "Ta-06-02",
           "title": "Spielregeln erklären",
           "status": "done"
         },
         {
-          "id": "PH-12-03",
+          "id": "Ta-06-03",
           "title": "Teamreihenfolge manuell oder zufällig festlegen",
           "status": "done"
         },
         {
-          "id": "PH-12-04",
+          "id": "Ta-06-04",
           "title": "Spieler hinzufügen und manuell oder zufällig auf Teams verteilen",
           "status": "done"
         },
         {
-          "id": "PH-12-05",
+          "id": "Ta-06-05",
           "title": "Mehrere Karten und Kategorien hinzufügen",
           "status": "done"
         },
         {
-          "id": "PH-12-06",
+          "id": "Ta-06-06",
           "title": "Kartenimport und -export mit einfachem Editor",
           "status": "done"
         },
         {
-          "id": "PH-12-07",
+          "id": "Ta-06-07",
           "title": "Spielmodi: Klassisch, Auf Zeit, Gegen die Zeit",
           "status": "in_progress"
         },
         {
-          "id": "PH-12-07-A",
+          "id": "Ta-06-07-A",
           "title": "Spielmodi A: Auf Zeit, Spiellogik (Zustandsmaschine, Karten, Tests)",
           "status": "done"
         },
         {
-          "id": "PH-12-07-B",
+          "id": "Ta-06-07-B",
           "title": "Spielmodi B: Auf Zeit, Oberfläche (Spielmodus im Setup, Lauf, Übersicht, Endstand, Regeln, e2e)",
           "status": "done"
         },
         {
-          "id": "PH-12-07-F",
+          "id": "Ta-06-07-F",
           "title": "Spielmodi F: Ergebnisse von Stechen und Auf Zeit nachträglich korrigieren (Logik, Oberfläche, Tests)",
           "status": "done"
         },
         {
-          "id": "PH-12-07-C",
+          "id": "Ta-06-07-C",
           "title": "Spielmodi C: Gegen die Zeit, Spiellogik",
           "status": "planned"
         },
         {
-          "id": "PH-12-07-D",
+          "id": "Ta-06-07-D",
           "title": "Spielmodi D: Gegen die Zeit, Oberfläche",
           "status": "planned"
         },
         {
-          "id": "PH-12-07-E",
+          "id": "Ta-06-07-E",
           "title": "Spielmodi E: Dokumentation und Abschlussprüfung",
           "status": "planned"
         }
@@ -580,32 +580,32 @@
       ]
     },
     {
-      "id": "PH-13",
+      "id": "Ta-07",
       "name": "Karten und Kategorien neu gestalten",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-13-01",
+          "id": "Ta-07-01",
           "title": "Karten einfach hinzufügen (Kategorie, Schwierigkeit, Begriff, vier verbotene Wörter)",
           "status": "done"
         },
         {
-          "id": "PH-13-02",
+          "id": "Ta-07-02",
           "title": "Kategorien-Ansicht mit ausklappbaren Kategorien und kompakter Kartentabelle zum Bearbeiten",
           "status": "done"
         },
         {
-          "id": "PH-13-03",
+          "id": "Ta-07-03",
           "title": "Hauptmenü: Kategorien nach Standard und Eigene trennen",
           "status": "done"
         },
         {
-          "id": "PH-13-04",
+          "id": "Ta-07-04",
           "title": "KI-Vorschlag für verbotene Wörter anhand des Begriffs (umgesetzt, später auf Wunsch wieder entfernt)",
           "status": "done"
         },
         {
-          "id": "PH-13-05",
+          "id": "Ta-07-05",
           "title": "Kartenseite verfeinern: Symbolknöpfe, Export je Kategorie, Import-Knopf",
           "status": "done"
         }
@@ -615,12 +615,12 @@
       ]
     },
     {
-      "id": "PH-14",
+      "id": "Ta-08",
       "name": "Lokale KI am Rechner",
       "status": "done",
       "tasks": [
         {
-          "id": "PH-14-01",
+          "id": "Ta-08-01",
           "title": "Qualitätstest: kleines Browser-Modell für verbotene Wörter (Ergebnis: nicht brauchbar)",
           "status": "done"
         }
@@ -630,47 +630,47 @@
       ]
     },
     {
-      "id": "PH-15",
+      "id": "Ta-09",
       "name": "Großer Kartenpool für Tabu",
       "status": "in_progress",
       "tasks": [
         {
-          "id": "PH-15-01",
+          "id": "Ta-09-01",
           "title": "Planung und Entscheidungen zu Größe, Kategorien, Prüfaufwand und Sprachen",
           "status": "done"
         },
         {
-          "id": "PH-15-02",
+          "id": "Ta-09-02",
           "title": "Paketformat, Laden mit Rückfall und Kategorien aus den Daten",
           "status": "done"
         },
         {
-          "id": "PH-15-03",
+          "id": "Ta-09-03",
           "title": "Erzeugungsskript am PC (Ollama oder LM Studio, fortsetzbar, Prüfregeln)",
           "status": "done"
         },
         {
-          "id": "PH-15-04",
+          "id": "Ta-09-04",
           "title": "Prüfwerkzeug mit zweitem KI-Durchgang und Durchsicht",
           "status": "done"
         },
         {
-          "id": "PH-15-05",
+          "id": "Ta-09-05",
           "title": "Pool in Etappen erzeugen, prüfen und einbauen",
           "status": "done"
         },
         {
-          "id": "PH-15-06",
+          "id": "Ta-09-06",
           "title": "Optional: gespielte Karten merken",
           "status": "planned"
         },
         {
-          "id": "PH-15-07",
+          "id": "Ta-09-07",
           "title": "Karten erneut prüfen: Kein verbotenes Wort darf ein Teil des Begriffs sein (bei „Fußball“ darf „Ball“ nicht verboten sein, das ist ohnehin verboten); Prüfregel und Bestandskarten",
           "status": "planned"
         },
         {
-          "id": "PH-15-08",
+          "id": "Ta-09-08",
           "title": "Noch mehr Karten erzeugen (Pool je Sprache weiter vergrößern)",
           "status": "planned"
         }
@@ -680,17 +680,17 @@
       ]
     },
     {
-      "id": "PH-16",
+      "id": "Al-08",
       "name": "PC-Layout für alle Spiele",
       "status": "planned",
       "tasks": [
         {
-          "id": "PH-16-01",
+          "id": "Al-08-01",
           "title": "Anforderungen und Entwurf: Handy- und PC-Layout je Spiel, Bausteine im game-kit",
           "status": "planned"
         },
         {
-          "id": "PH-16-02",
+          "id": "Al-08-02",
           "title": "PC-Layout für Tabu (Setup, Runde, Ergebnis, Kartenseite) mit Prüfung im Desktop-Format",
           "status": "planned",
           "gameIds": [
@@ -700,71 +700,71 @@
       ]
     },
     {
-      "id": "PH-17",
+      "id": "Al-09",
       "name": "Gemeinsame Bausteine für Teams, Spieler und Spieleinstellungen",
       "status": "planned",
       "tasks": [
         {
-          "id": "PH-17-01",
+          "id": "Al-09-01",
           "title": "Entwurf: gemeinsame Ansicht für Teams, Spieler und Einstellungen (freigegeben)",
           "status": "done"
         },
         {
-          "id": "PH-17-02",
+          "id": "Al-09-02",
           "title": "Umsetzung im game-kit und Umstellung von Tabu darauf",
           "status": "done"
         },
         {
-          "id": "PH-17-03",
+          "id": "Al-09-03",
           "title": "Optional: Spieler und Teams merken und in allen Spielen anbieten",
           "status": "done"
         },
         {
-          "id": "PH-17-04",
+          "id": "Al-09-04",
           "title": "Optional: eigene Adressen für Unterseiten eines Spiels (zum Beispiel Kartenseite)",
           "status": "planned"
         },
         {
-          "id": "PH-17-05",
+          "id": "Al-09-05",
           "title": "Feste Ansichten und Oberflächenregeln (ADR-021) im game-kit umsetzen",
           "status": "done"
         },
         {
-          "id": "PH-17-06",
+          "id": "Al-09-06",
           "title": "Spielerverwaltung: gespeicherte Spieler anlegen und löschen, im Spiel wählen",
           "status": "done"
         },
         {
-          "id": "PH-17-07",
+          "id": "Al-09-07",
           "title": "Aufstellung nach dem Start: Teams, Spieler und Zuweisung in einer eigenen Ansicht",
           "status": "done"
         },
         {
-          "id": "PH-17-08",
+          "id": "Al-09-08",
           "title": "Spielergruppen in der Spielerverwaltung (zum Beispiel Freundesgruppen)",
           "status": "planned"
         }
       ]
     },
     {
-      "id": "PH-09",
+      "id": "Al-06",
       "name": "Spätere Erweiterungen: Multiplayer und weitere Spiele",
       "status": "planned",
       "tasks": [
         {
-          "id": "PH-09-01",
+          "id": "Al-06-01",
           "title": "Multiplayer-Discovery und ADR",
           "status": "planned"
         },
         {
-          "id": "PH-09-02",
+          "id": "Al-06-02",
           "title": "Spielmodulvertrag überprüfen und erweitern",
           "status": "planned"
         }
       ]
     },
     {
-      "id": "PH-18",
+      "id": "Wb-01",
       "name": "Wortbombe",
       "status": "planned",
       "gameIds": [
@@ -772,24 +772,24 @@
       ],
       "tasks": [
         {
-          "id": "PH-18-01",
+          "id": "Wb-01-01",
           "title": "Spiellogik für Weitergabe, Einspruch und Ausscheiden",
           "status": "planned"
         },
         {
-          "id": "PH-18-02",
+          "id": "Wb-01-02",
           "title": "Deutsche und englische Aufgaben für neun Varianten erstellen",
           "status": "planned"
         },
         {
-          "id": "PH-18-03",
+          "id": "Wb-01-03",
           "title": "Mobile Spielansichten und Einbindung ins Spielmenü",
           "status": "planned"
         }
       ]
     },
     {
-      "id": "PH-19",
+      "id": "Im-01",
       "name": "Imposter",
       "status": "planned",
       "gameIds": [
@@ -797,27 +797,27 @@
       ],
       "tasks": [
         {
-          "id": "PH-19-01",
+          "id": "Im-01-01",
           "title": "Spielzustände, zufällige Rollen und Hinweisrunden mit optionaler dritter Runde",
           "status": "planned"
         },
         {
-          "id": "PH-19-02",
+          "id": "Im-01-02",
           "title": "Verdeckte Rollenanzeige mit Hochziehen, Loslassen und Weiterreichen",
           "status": "planned"
         },
         {
-          "id": "PH-19-03",
+          "id": "Im-01-03",
           "title": "Offene und geheime Abstimmung, Stichwahl und Auflösung",
           "status": "planned"
         },
         {
-          "id": "PH-19-04",
+          "id": "Im-01-04",
           "title": "Begriffe mit optionalem Hilfswort für Deutsch und Englisch",
           "status": "planned"
         },
         {
-          "id": "PH-19-05",
+          "id": "Im-01-05",
           "title": "Mobile Einrichtung, Spielmenü und Prüfung der vollständigen Spielabläufe",
           "status": "planned"
         }
@@ -835,31 +835,31 @@
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-12-01 abgeschlossen: Info-Buttons mit Erklärfenster für Runden, Kartenquelle, Stechen, Überspringen und Schwierigkeit."
+      "summary": "Ta-06-01 abgeschlossen: Info-Buttons mit Erklärfenster für Runden, Kartenquelle, Stechen, Überspringen und Schwierigkeit."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-11-05 abgeschlossen: Struktur für wiederverwendbare Spielbausteine umgesetzt (game-kit, business/shared, Spielmodul-Vertrag, eigene Textdatei je Spiel) und Leitfaden für neue Spiele geschrieben. Zustandsmaschine-Hooks und CSS je Spiel sind als PH-11-06 geplant."
+      "summary": "Ta-05-05 abgeschlossen: Struktur für wiederverwendbare Spielbausteine umgesetzt (game-kit, business/shared, Spielmodul-Vertrag, eigene Textdatei je Spiel) und Leitfaden für neue Spiele geschrieben. Zustandsmaschine-Hooks und CSS je Spiel sind als Ta-05-06 geplant."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-11-05 begonnen: Strukturvorschlag für wiederverwendbare Spielbausteine in docs/GAMEHUB_GAME_MODULES.md erstellt. Es wurde nichts umgebaut, der Vorschlag wartet auf die Freigabe des Auftraggebers."
+      "summary": "Ta-05-05 begonnen: Strukturvorschlag für wiederverwendbare Spielbausteine in docs/GAMEHUB_GAME_MODULES.md erstellt. Es wurde nichts umgebaut, der Vorschlag wartet auf die Freigabe des Auftraggebers."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-11-04 abgeschlossen: Mobile Layout-Prüfung für alle Tabu-Ansichten (kein horizontales Scrollen, Touch-Ziele mindestens 44 Pixel, kein abgeschnittener Text, Aktionsleiste erreichbar, Bedienelemente benannt). Dabei drei zu kleine Touch-Ziele gefunden und behoben."
+      "summary": "Ta-05-04 abgeschlossen: Mobile Layout-Prüfung für alle Tabu-Ansichten (kein horizontales Scrollen, Touch-Ziele mindestens 44 Pixel, kein abgeschnittener Text, Aktionsleiste erreichbar, Bedienelemente benannt). Dabei drei zu kleine Touch-Ziele gefunden und behoben."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-11-03 abgeschlossen: Sprachabdeckung geprüft. Seitensprache und Beschreibung folgen jetzt der Oberflächensprache, ungenutzte Texte entfernt, veraltete Hinweistexte korrigiert und automatische Prüfungen für Platzhalter, versehentlich gleiche Texte, ungenutzte Schlüssel und fremdsprachige Texte in allen Ansichten ergänzt."
+      "summary": "Ta-05-03 abgeschlossen: Sprachabdeckung geprüft. Seitensprache und Beschreibung folgen jetzt der Oberflächensprache, ungenutzte Texte entfernt, veraltete Hinweistexte korrigiert und automatische Prüfungen für Platzhalter, versehentlich gleiche Texte, ungenutzte Schlüssel und fremdsprachige Texte in allen Ansichten ergänzt."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-11-02 abgeschlossen: Testabdeckung deutlich erhöht (Zeilen 99,15 %, Verzweigungen 94,05 %). Beim Prüfen fiel auf, dass der Hinweis „keine Zusatzkarten verfügbar“ nach dem Spielstart nie sichtbar war. Er erscheint jetzt in der ersten Rundenübersicht."
+      "summary": "Ta-05-02 abgeschlossen: Testabdeckung deutlich erhöht (Zeilen 99,15 %, Verzweigungen 94,05 %). Beim Prüfen fiel auf, dass der Hinweis „keine Zusatzkarten verfügbar“ nach dem Spielstart nie sichtbar war. Er erscheint jetzt in der ersten Rundenübersicht."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-11-01 abgeschlossen: Spiellogik und Randfälle geprüft. Eine Zufallsprüfung mit 400 Partien fand einen Fehler (ungültige Zeitwerte im Stechen), der behoben wurde. Regeln und Randfälle stehen in docs/GAMEHUB_TABOO_LOGIC.md."
+      "summary": "Ta-05-01 abgeschlossen: Spiellogik und Randfälle geprüft. Eine Zufallsprüfung mit 400 Partien fand einen Fehler (ungültige Zeitwerte im Stechen), der behoben wurde. Regeln und Randfälle stehen in docs/GAMEHUB_TABOO_LOGIC.md."
     },
     {
       "date": "2026-11-11",
@@ -867,7 +867,7 @@
     },
     {
       "date": "2026-11-11",
-      "summary": "Weitere Aufgaben für Tabu (Qualitätsprüfung und Erweiterungen) als geplante Phasen PH-11 und PH-12 erfasst."
+      "summary": "Weitere Aufgaben für Tabu (Qualitätsprüfung und Erweiterungen) als geplante Phasen Ta-05 und Ta-06 erfasst."
     },
     {
       "date": "2026-11-11",
@@ -891,7 +891,7 @@
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-10-01: Oberfläche mobile-first überarbeitet, blaues Akzentfarbschema, Grün und Rot für Aktionen."
+      "summary": "Al-07-01: Oberfläche mobile-first überarbeitet, blaues Akzentfarbschema, Grün und Rot für Aktionen."
     },
     {
       "date": "2026-11-11",
@@ -899,99 +899,99 @@
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-08-04 abgeschlossen: erster Release abgenommen. Versehentlich vergebene Tabu-Punkte können vor dem Teamwechsel zurückgenommen werden."
+      "summary": "Al-05-04 abgeschlossen: erster Release abgenommen. Versehentlich vergebene Tabu-Punkte können vor dem Teamwechsel zurückgenommen werden."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-08-03 abgeschlossen: GameHub auf GitHub Pages veröffentlicht. Öffentlicher Tabu-Link, Assets und Offline-Neuladen geprüft."
+      "summary": "Al-05-03 abgeschlossen: GameHub auf GitHub Pages veröffentlicht. Öffentlicher Tabu-Link, Assets und Offline-Neuladen geprüft."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-08-02 abgeschlossen: Fehlerhafte Updates erhalten den bisherigen Offline-Cache. Vollständige Updates lösen ihn nach dem Schließen der App ab."
+      "summary": "Al-05-02 abgeschlossen: Fehlerhafte Updates erhalten den bisherigen Offline-Cache. Vollständige Updates lösen ihn nach dem Schließen der App ab."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-08-01 abgeschlossen: Tabu-Partie, Kartenaktionen, Einzelsieg, Gleichstand, Neustart und Neuladen im Browser geprüft."
+      "summary": "Al-05-01 abgeschlossen: Tabu-Partie, Kartenaktionen, Einzelsieg, Gleichstand, Neustart und Neuladen im Browser geprüft."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-07-05 abgeschlossen: Tabu-Kartenvorschläge mit Anbieterwahl, Vorschau und bestätigter lokaler Speicherung."
+      "summary": "Ta-04-05 abgeschlossen: Tabu-Kartenvorschläge mit Anbieterwahl, Vorschau und bestätigter lokaler Speicherung."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-07-04 abgeschlossen: optionaler Ollama-Adapter für die lokale API mit Fehlerbehandlung, Zeitüberschreitung und Abbruch."
+      "summary": "Ta-04-04 abgeschlossen: optionaler Ollama-Adapter für die lokale API mit Fehlerbehandlung, Zeitüberschreitung und Abbruch."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-07-03 abgeschlossen: lokaler Anbieter mit 36 zusätzlichen Kartenkandidaten und ohne Netzwerkzugriff."
+      "summary": "Ta-04-03 abgeschlossen: lokaler Anbieter mit 36 zusätzlichen Kartenkandidaten und ohne Netzwerkzugriff."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-07-02 abgeschlossen: Generierte Tabu-Karten werden geprüft, normalisiert und vor atomarer Speicherung erneut auf Duplikate geprüft."
+      "summary": "Ta-04-02 abgeschlossen: Generierte Tabu-Karten werden geprüft, normalisiert und vor atomarer Speicherung erneut auf Duplikate geprüft."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-07-01 abgeschlossen: anbieterunabhängiger Vertrag für Tabu-Kartengenerierung mit Ergebnissen, Fehlern und Abbruch."
+      "summary": "Ta-04-01 abgeschlossen: anbieterunabhängiger Vertrag für Tabu-Kartengenerierung mit Ergebnissen, Fehlern und Abbruch."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-06-04 abgeschlossen: Web-App-Manifest, App-Symbol und versionierter Offline-Cache. Tabu startet nach dem ersten Online-Aufruf offline."
+      "summary": "Ta-03-04 abgeschlossen: Web-App-Manifest, App-Symbol und versionierter Offline-Cache. Tabu startet nach dem ersten Online-Aufruf offline."
     },
     {
       "date": "2026-11-11",
-      "summary": "PH-06-03 abgeschlossen: Eigene Tabu-Karten lassen sich per JSON importieren, dauerhaft speichern und als Sicherung exportieren."
+      "summary": "Ta-03-03 abgeschlossen: Eigene Tabu-Karten lassen sich per JSON importieren, dauerhaft speichern und als Sicherung exportieren."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-06-02 abgeschlossen: 45 Tabu-Standardkarten je Sprache, Bestandsprüfung und vom Anwendungseinstieg bereitgestellte Karten."
+      "summary": "Ta-03-02 abgeschlossen: 45 Tabu-Standardkarten je Sprache, Bestandsprüfung und vom Anwendungseinstieg bereitgestellte Karten."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-06-01 abgeschlossen: versionierter IndexedDB-Speicher für eigene Tabu-Karten. Laufende Partien bleiben im Arbeitsspeicher."
+      "summary": "Ta-03-01 abgeschlossen: versionierter IndexedDB-Speicher für eigene Tabu-Karten. Laufende Partien bleiben im Arbeitsspeicher."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-05-04 abgeschlossen: Tabu-Endergebnis, Siegeranzeige und Neustart mit gleicher oder neuer Konfiguration ergänzt."
+      "summary": "Ta-02-04 abgeschlossen: Tabu-Endergebnis, Siegeranzeige und Neustart mit gleicher oder neuer Konfiguration ergänzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-05-03 abgeschlossen: Rundenergebnis, Gesamtpunktestand und manuellen Wechsel zum nächsten Team ergänzt."
+      "summary": "Ta-02-03 abgeschlossen: Rundenergebnis, Gesamtpunktestand und manuellen Wechsel zum nächsten Team ergänzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-05-02 abgeschlossen: laufende Tabu-Runde mit Countdown, Kartenaktionen und einem zweisprachigen Beispielsatz."
+      "summary": "Ta-02-02 abgeschlossen: laufende Tabu-Runde mit Countdown, Kartenaktionen und einem zweisprachigen Beispielsatz."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-05-01 abgeschlossen: zweisprachige Tabu-Spielkonfiguration mit lokalisierter Validierung und Vorbereitung der Partie ergänzt."
+      "summary": "Ta-02-01 abgeschlossen: zweisprachige Tabu-Spielkonfiguration mit lokalisierter Validierung und Vorbereitung der Partie ergänzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-04-05 abgeschlossen: Tabu-Kartenfilter und Deckbildung mit reproduzierbarer Mischreihenfolge ergänzt."
+      "summary": "Ta-01-05 abgeschlossen: Tabu-Kartenfilter und Deckbildung mit reproduzierbarer Mischreihenfolge ergänzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-04-04 abgeschlossen: Rundenfolge mit zwei und drei Teams geprüft und Siegerermittlung einschließlich Gleichstand ergänzt."
+      "summary": "Ta-01-04 abgeschlossen: Rundenfolge mit zwei und drei Teams geprüft und Siegerermittlung einschließlich Gleichstand ergänzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-04-03 abgeschlossen: Kartenaktionen, Teampunkte, Kartenvorschub und automatisches Rundenende bei Kartenmangel ergänzt."
+      "summary": "Ta-01-03 abgeschlossen: Kartenaktionen, Teampunkte, Kartenvorschub und automatisches Rundenende bei Kartenmangel ergänzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-04-02 abgeschlossen: deterministische Tabu-Zustandsmaschine mit gültigen Rundenübergängen und Schutz vor verspäteten Rundenende-Ereignissen."
+      "summary": "Ta-01-02 abgeschlossen: deterministische Tabu-Zustandsmaschine mit gültigen Rundenübergängen und Schutz vor verspäteten Rundenende-Ereignissen."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-04-01 abgeschlossen: Tabu-Teams, Kategorien, Karten, Schwierigkeit und Spielkonfiguration mit Normalisierung und fachlicher Validierung umgesetzt."
+      "summary": "Ta-01-01 abgeschlossen: Tabu-Teams, Kategorien, Karten, Schwierigkeit und Spielkonfiguration mit Normalisierung und fachlicher Validierung umgesetzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-03-03 abgeschlossen: lokalisierter Einstellungsdialog sowie zugängliche Lade-, Fehler-, Erfolgs- und Leerzustände mit Datenverlustschutz umgesetzt."
+      "summary": "Al-04-03 abgeschlossen: lokalisierter Einstellungsdialog sowie zugängliche Lade-, Fehler-, Erfolgs- und Leerzustände mit Datenverlustschutz umgesetzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-03-02 abgeschlossen: responsive App-Shell, verpflichtende Spielauswahl, zentraler Spielkatalog, Hash-Navigation und genreunabhängiger Modulvertrag umgesetzt."
+      "summary": "Al-04-02 abgeschlossen: responsive App-Shell, verpflichtende Spielauswahl, zentraler Spielkatalog, Hash-Navigation und genreunabhängiger Modulvertrag umgesetzt."
     },
     {
       "date": "2026-11-10",
@@ -999,19 +999,19 @@
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-03-01 abgeschlossen: eigenständiges, zurückhaltendes GameHub-Designsystem mit Tokens, responsiver Startansicht sowie zugänglichen Buttons, Eingaben, Karten und Dialogen umgesetzt."
+      "summary": "Al-04-01 abgeschlossen: eigenständiges, zurückhaltendes GameHub-Designsystem mit Tokens, responsiver Startansicht sowie zugänglichen Buttons, Eingaben, Karten und Dialogen umgesetzt."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-02-04 abgeschlossen: rekursive Paritätsprüfung erzwingt identische und nichtleere deutsche sowie englische Übersetzungsressourcen in der CI-Pipeline."
+      "summary": "Al-03-04 abgeschlossen: rekursive Paritätsprüfung erzwingt identische und nichtleere deutsche sowie englische Übersetzungsressourcen in der CI-Pipeline."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-02-03 abgeschlossen: UI- und Kartensprache werden unabhängig modelliert, ausgewählt und unter getrennten lokalen Schlüsseln dauerhaft gespeichert."
+      "summary": "Al-03-03 abgeschlossen: UI- und Kartensprache werden unabhängig modelliert, ausgewählt und unter getrennten lokalen Schlüsseln dauerhaft gespeichert."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-02-02 abgeschlossen: gespeicherte UI-Sprache und Browsersprache werden ausgewertet; Deutsch und Englisch lassen sich umschalten und dauerhaft lokal speichern."
+      "summary": "Al-03-02 abgeschlossen: gespeicherte UI-Sprache und Browsersprache werden ausgewertet; Deutsch und Englisch lassen sich umschalten und dauerhaft lokal speichern."
     },
     {
       "date": "2026-11-10",
@@ -1019,11 +1019,11 @@
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-02-01 abgeschlossen: i18next und react-i18next mit deutschen und englischen Ressourcen, englischem Fallback, getypten Schlüsseln und Sprachtests eingerichtet."
+      "summary": "Al-03-01 abgeschlossen: i18next und react-i18next mit deutschen und englischen Ressourcen, englischem Fallback, getypten Schlüsseln und Sprachtests eingerichtet."
     },
     {
       "date": "2026-11-10",
-      "summary": "PH-01-06 abgeschlossen: GitHub-Remote verbunden, initialen Projektstand gepusht und ersten gehosteten Qualitätsablauf mit beiden Aufträgen erfolgreich ausgeführt."
+      "summary": "Al-02-06 abgeschlossen: GitHub-Remote verbunden, initialen Projektstand gepusht und ersten gehosteten Qualitätsablauf mit beiden Aufträgen erfolgreich ausgeführt."
     },
     {
       "date": "2026-11-10",
@@ -1035,11 +1035,11 @@
     },
     {
       "date": "2026-11-09",
-      "summary": "PH-01-05 abgeschlossen: Playwright mit Desktop-/Mobilprofilen, lokalem Webserver und Screenshot-/Video-/Trace-Artefakten eingerichtet."
+      "summary": "Al-02-05 abgeschlossen: Playwright mit Desktop-/Mobilprofilen, lokalem Webserver und Screenshot-/Video-/Trace-Artefakten eingerichtet."
     },
     {
       "date": "2026-11-09",
-      "summary": "PH-01-04 abgeschlossen: V8-Coverage, Text/JSON/HTML/LCOV-Berichte und bereichsspezifische Line-/Branch-Grenzen eingerichtet."
+      "summary": "Al-02-04 abgeschlossen: V8-Coverage, Text/JSON/HTML/LCOV-Berichte und bereichsspezifische Line-/Branch-Grenzen eingerichtet."
     },
     {
       "date": "2026-11-09",
@@ -1047,7 +1047,7 @@
     },
     {
       "date": "2026-11-09",
-      "summary": "PH-01-03 abgeschlossen: Vitest, jsdom, Testing Library, DOM-Setup sowie Business- und Komponenten-Beispieltests eingerichtet."
+      "summary": "Al-02-03 abgeschlossen: Vitest, jsdom, Testing Library, DOM-Setup sowie Business- und Komponenten-Beispieltests eingerichtet."
     },
     {
       "date": "2026-11-09",
@@ -1055,7 +1055,7 @@
     },
     {
       "date": "2026-11-09",
-      "summary": "PH-01-02 abgeschlossen: ESLint mit TypeScript-/React-Regeln, Prettier, Skripte und positive sowie negative Prüfungen eingerichtet."
+      "summary": "Al-02-02 abgeschlossen: ESLint mit TypeScript-/React-Regeln, Prettier, Skripte und positive sowie negative Prüfungen eingerichtet."
     },
     {
       "date": "2026-11-09",
@@ -1063,11 +1063,11 @@
     },
     {
       "date": "2026-11-09",
-      "summary": "PH-01-01 abgeschlossen: React-TypeScript-Vite-Grundprojekt, strikte TypeScript-Konfiguration, Schichtenstruktur, Architekturprüfung und neutraler Startbildschirm erstellt."
+      "summary": "Al-02-01 abgeschlossen: React-TypeScript-Vite-Grundprojekt, strikte TypeScript-Konfiguration, Schichtenstruktur, Architekturprüfung und neutraler Startbildschirm erstellt."
     },
     {
       "date": "2026-11-09",
-      "summary": "PH-01-01 gestartet, pnpm 11.25.0 als Paketmanager erkannt und Vite-Grundstruktur angelegt."
+      "summary": "Al-02-01 gestartet, pnpm 11.25.0 als Paketmanager erkannt und Vite-Grundstruktur angelegt."
     },
     {
       "date": "2026-11-09",
@@ -1129,7 +1129,7 @@
   ],
   "nextRecommendedTasks": [
     {
-      "id": "PH-12-07",
+      "id": "Ta-06-07",
       "reason": "Letzte Tabu-Erweiterung: Spielmodi. Die Regeln der Modi werden vorher mit dem Auftraggeber abgestimmt.",
       "prerequisite": "Keine."
     }
