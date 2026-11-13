@@ -4,6 +4,15 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Großschreibung und Kategorie umbenennen
+
+- **Erster Buchstabe groß:** Beim Hinzufügen und Bearbeiten einer Karte wird der erste Buchstabe des Begriffs und jedes verbotenen Wortes automatisch groß geschrieben („football“ wird „Football“, „net“ wird „Net“); die Leerzeichen werden dabei auch bereinigt. Neue Funktion `capitalizeFirst` im Business (nach den Regeln der Sprache der Karte). Karten des mitgelieferten Pools und schon gespeicherte eigene Karten bleiben unverändert.
+- **Kategorie umbenennen:** Bei jeder eigenen Kategorie in der Kartenansicht gibt es den Knopf „Umbenennen“. Er öffnet ein Feld mit dem Namen (grünes Häkchen zum Speichern, „Abbrechen“); alle eigenen Karten dieser Kategorie in dieser Sprache bekommen den neuen Namen und der Name bleibt gespeichert. Abgelehnt werden ein leerer Name (“Gib einen Namen ein.”) und ein Name, den es schon gibt (eine andere eigene Kategorie derselben Sprache oder eine Standardkategorie; „Eine Kategorie mit diesem Namen gibt es schon.“). Erfolg: „Kategorie umbenannt.“. Die Bedienknöpfe der eigenen Kategorien nennen jetzt auch ihre Sprache, zum Beispiel „Kategorie Sport (EN) umbenennen“, weil derselbe Name in zwei Sprachen zwei Kategorien sind.
+- **Großschreibung auch bei Kategorienamen:** Beim Umbenennen und beim Anlegen einer neuen Kategorie wird der erste Buchstabe des Namens groß geschrieben („ball spiele“ wird „Ball spiele“).
+- **Umbenennen-Zeile geprüft und angepasst:** Im Browser (375 Pixel Breite) waren die Knöpfe zu nah beieinander und das Feld, das Häkchen und „Abbrechen“ nicht gleich hoch (eine allgemeine Regel gab Knöpfen im Spiel Abstand nach oben). Jetzt haben alle dieselbe Höhe (48 Pixel) auf einer Linie und 12 Pixel Abstand; die Knöpfe „Umbenennen“ und „Kategorie löschen“ teilen sich die **ganze Breite** und sind gleich breit (je 184 Pixel bei 375 Pixel Breite, im Browser gemessen), der Text bricht nicht um.
+- **Doppelte Begriffe:** Das wurde schon geprüft: Ein Begriff, den es in der Sprache schon gibt (in jeder Kategorie, auch in den Standardkarten, ohne Beachtung der Groß- und Kleinschreibung), wird nicht hinzugefügt („Diese Karte gibt es schon.“).
+- Tests (Deutsch und Englisch): Großschreibung beim Hinzufügen und Bearbeiten, Umbenennen mit leerem, vergebenem und Standardnamen, Speicherung in der Bibliothek.
+
 ### Karte hinzufügen: Beispiele in der Kategoriesprache, genaue Fehlermeldungen
 
 - Die **Beispieltexte** in „Begriff“ und „Vier verbotene Wörter“ stehen in der **Sprache der Kategorie**: bei einer eigenen Kategorie ihre Sprache, bei „Neue Kategorie …“ die gewählte „Sprache der Kategorie“ (zuerst Englisch).

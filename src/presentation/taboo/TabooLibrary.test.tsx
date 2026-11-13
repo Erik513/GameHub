@@ -245,3 +245,46 @@ it("keeps the built-in cards when the pack is missing, fails or is for another l
   await new Promise((resolve) => setTimeout(resolve, 20));
   expect(screen.queryByRole("checkbox", { name: "Food and drink" })).not.toBeInTheDocument();
 });
+
+it("renames an own category for all its cards and keeps the new name in the storage", async () => {
+  const i18n = await createGameHubI18n("en");
+  const factory = new IDBFactory();
+  const repository = new IndexedDbTabooCardRepository(factory);
+  const sport = (id: string, term: string, language: "de" | "en"): TabooCard => ({
+    ...card,
+    id,
+    term,
+    language,
+    categoryId: "Sport",
+  });
+  // The same name in the other language is another category and stays as it is.
+  await repository.addAll([
+    sport("a", "Goal", "en"),
+    sport("b", "Net", "en"),
+    sport("c", "Tor", "de"),
+  ]);
+  const view = (
+    <I18nextProvider i18n={i18n}>
+      <TabooLibrary repository={repository} cardLanguage="en" cards={[]} />
+    </I18nextProvider>
+  );
+  render(view);
+  fireEvent.click(screen.getByRole("button", { name: "Cards" }));
+  const summary = await screen.findByText("Sport (EN)", { selector: "summary span" });
+  fireEvent.click(summary);
+  fireEvent.click(screen.getByRole("button", { name: "Rename category Sport (EN)" }));
+  const input = screen.getByLabelText("New name of the category");
+  fireEvent.change(input, { target: { value: "Ball games" } });
+  fireEvent.click(screen.getByRole("button", { name: "Save" }));
+
+  expect(await screen.findByText("Ball games (EN)", { selector: "summary span" })).toBeVisible();
+  expect(screen.queryByText("Sport (EN)", { selector: "summary span" })).not.toBeInTheDocument();
+  const saved = await repository.list();
+  expect(saved.map((item) => [item.id, item.categoryId])).toEqual(
+    expect.arrayContaining([
+      ["a", "Ball games"],
+      ["b", "Ball games"],
+      ["c", "Sport"],
+    ]),
+  );
+});

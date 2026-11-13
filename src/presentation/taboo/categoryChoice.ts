@@ -1,4 +1,4 @@
-import { normalizeText, type TabooCard } from "../../business/games/taboo/model";
+import { capitalizeFirst, type TabooCard } from "../../business/games/taboo/model";
 import type { OwnCategory } from "../../business/games/taboo/categories";
 
 /** Select value that reveals the input for a new category name. */
@@ -29,7 +29,8 @@ export function resolveCategory(
   newLanguage: TabooCard["language"],
 ): ResolvedCategory | undefined {
   if (choice === newCategoryChoice) {
-    const categoryId = normalizeText(name);
+    // The first letter of a new category name is a capital letter, too.
+    const categoryId = capitalizeFirst(name, newLanguage);
     return categoryId ? { categoryId, language: newLanguage } : undefined;
   }
   if (choice.startsWith("standard:")) return { categoryId: choice.slice(9), language: newLanguage };

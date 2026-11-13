@@ -46,6 +46,13 @@ function identity(value: string): string {
   return normalizeText(value).toLowerCase();
 }
 
+/** Cleans the text and makes its first letter a capital letter, in the rules of the language. */
+export function capitalizeFirst(value: string, language: GameHubLanguage): string {
+  const text = normalizeText(value);
+  const first = Array.from(text)[0];
+  return first === undefined ? text : first.toLocaleUpperCase(language) + text.slice(first.length);
+}
+
 export function validateCategory(input: Category): ValidationResult<Category> {
   const value = { id: normalizeText(input.id), name: normalizeText(input.name) };
   const issues: ValidationIssue[] = [];

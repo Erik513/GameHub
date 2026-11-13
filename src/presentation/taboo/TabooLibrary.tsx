@@ -7,7 +7,11 @@ import {
 } from "../../business/games/taboo/cardExchange";
 import type { TabooCardRepository } from "../../business/games/taboo/cardRepository";
 import { mergeStandardCards, type TabooCardPack } from "../../business/games/taboo/cardPack";
-import { builtInCategories, mergeCategoryInfos } from "../../business/games/taboo/categories";
+import {
+  builtInCategories,
+  mergeCategoryInfos,
+  type OwnCategory,
+} from "../../business/games/taboo/categories";
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Icon, Toast, useNotice } from "../components";
@@ -98,6 +102,18 @@ export function TabooLibrary({
     if (!repository) return;
     await repository.update(card);
     setOwnCards((current) => current?.map((item) => (item.id === card.id ? card : item)));
+  }
+
+  async function renameCategory(from: OwnCategory, to: string) {
+    if (!repository) return;
+    const saved = await repository.list();
+    const renamed = saved
+      .filter((card) => card.language === from.language && card.categoryId === from.id)
+      .map((card) => ({ ...card, categoryId: to }));
+    for (const card of renamed) await repository.update(card);
+    setOwnCards((current) =>
+      current?.map((item) => renamed.find((card) => card.id === item.id) ?? item),
+    );
   }
 
   async function removeCard(id: string) {
@@ -206,6 +222,7 @@ export function TabooLibrary({
             cardLanguage={cardLanguage}
             disabled={busy}
             onRemove={removeCard}
+            onRenameCategory={renameCategory}
             onUpdate={updateCard}
             ownCards={ownCards ?? []}
             categoryInfos={categoryInfos}

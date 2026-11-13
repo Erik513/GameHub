@@ -43,6 +43,7 @@ async function renderList(
   const i18n = await createGameHubI18n(language);
   const onUpdate = vi.fn(() => Promise.resolve());
   const onRemove = vi.fn(() => Promise.resolve());
+  const onRenameCategory = vi.fn(() => Promise.resolve());
   render(
     <I18nextProvider i18n={i18n}>
       <TabooCardList
@@ -50,6 +51,7 @@ async function renderList(
         cardLanguage="en"
         disabled={false}
         onRemove={onRemove}
+        onRenameCategory={onRenameCategory}
         onUpdate={onUpdate}
         ownCards={[moon, goal]}
         standardCards={[sun, mond]}
@@ -57,7 +59,7 @@ async function renderList(
       />
     </I18nextProvider>,
   );
-  return { user, onUpdate, onRemove };
+  return { user, onUpdate, onRemove, onRenameCategory };
 }
 
 function category(name: string) {
@@ -125,6 +127,7 @@ it("edits a card, validates the input and saves a new category", async () => {
   expect(onUpdate).toHaveBeenCalledWith({
     ...moon,
     term: "Full moon",
+    forbiddenWords: ["Night", "Sky", "Orbit", "Space"],
     categoryId: "Space",
     difficulty: "hard",
   });
@@ -171,11 +174,11 @@ it("shows the editor buttons as save symbol, red delete symbol and a text cancel
 });
 
 it.each([
-  ["en", "Delete category Sport with 1 cards", "Tap again to delete Sport with 1 cards"],
+  ["en", "Delete category Sport (EN) with 1 cards", "Tap again to delete Sport (EN) with 1 cards"],
   [
     "de",
-    "Kategorie Sport mit 1 Karten löschen",
-    "Nochmal tippen, um Sport mit 1 Karten zu löschen",
+    "Kategorie Sport (EN) mit 1 Karten löschen",
+    "Nochmal tippen, um Sport (EN) mit 1 Karten zu löschen",
   ],
 ] as const)(
   "deletes a custom category with all its own cards after a second tap in %s",
@@ -296,4 +299,85 @@ it("shows own categories of both languages with their language and only the coun
   );
   // Own categories are listed after the standard ones; no "own" in the count.
   expect(rows.slice(-2)).toEqual(["Sport (DE)1", "Sport (EN)2"]);
+});
+
+it.each([
+  ["en", "Rename category Sport (EN)", "New name of the category"],
+  ["de", "Kategorie Sport (EN) umbenennen", "Neuer Name der Kategorie"],
+] as const)(
+  "renames an own category and refuses empty or taken names in %s",
+  async (language, buttonName, inputName) => {
+    const mk = (id: string, categoryId: string): TabooCard => ({
+      id,
+      language: "en",
+      term: `Term ${id}`,
+      forbiddenWords: ["a", "b", "c", "d"],
+      categoryId,
+      difficulty: "easy",
+    });
+    const own = [mk("1", "Sport"), mk("2", "Autos")];
+    const { user, onRenameCategory } = await renderList(
+      { allCards: own, ownCards: own, standardCards: [] },
+      language,
+    );
+    const summaries = [...document.querySelectorAll(".taboo-card-list__category > summary")];
+    const sport = summaries.find((summary) => (summary.textContent ?? "").startsWith("Sport"))!;
+    await user.click(sport);
+    await user.click(
+      within(sport.closest("details")!).getByRole("button", {
+        name: buttonName,
+      }),
+    );
+    const input = screen.getByLabelText(inputName);
+    expect(input).toHaveValue("Sport");
+    const alertText = () => screen.getByRole("alert").textContent;
+    const save = language === "en" ? "Save" : "Speichern";
+
+    // An empty name and a name of another own category (in any case) are refused.
+    await user.clear(input);
+    await user.click(screen.getByRole("button", { name: save }));
+    expect(alertText()).toBe(language === "en" ? "Enter a name." : "Gib einen Namen ein.");
+    await user.type(input, "autos");
+    await user.click(screen.getByRole("button", { name: save }));
+    expect(alertText()).toBe(
+      language === "en"
+        ? "A category with this name already exists."
+        : "Eine Kategorie mit diesem Namen gibt es schon.",
+    );
+    expect(onRenameCategory).not.toHaveBeenCalled();
+
+    // A standard category name is taken as well.
+    await user.clear(input);
+    await user.type(input, "nature");
+    await user.click(screen.getByRole("button", { name: save }));
+    expect(onRenameCategory).not.toHaveBeenCalled();
+
+    await user.clear(input);
+    await user.type(input, "ball games");
+    await user.click(screen.getByRole("button", { name: save }));
+    expect(onRenameCategory).toHaveBeenCalledWith({ id: "Sport", language: "en" }, "Ball games");
+    expect(
+      screen.getByText(language === "en" ? "Category renamed." : "Kategorie umbenannt."),
+    ).toBeVisible();
+    // The form is closed again.
+    expect(screen.queryByLabelText(inputName)).not.toBeInTheDocument();
+  },
+);
+
+it("makes the first letter of a term and of the forbidden words a capital letter when editing", async () => {
+  const { user, onUpdate } = await renderList();
+  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
+  await user.clear(screen.getByLabelText("Term"));
+  await user.type(screen.getByLabelText("Term"), "full moon");
+  const words = screen.getByLabelText("Four forbidden words, separated by commas");
+  await user.clear(words);
+  await user.type(words, "night, sky , orbit,space");
+  await user.click(screen.getByRole("button", { name: "Save" }));
+  expect(onUpdate).toHaveBeenCalledWith(
+    expect.objectContaining({
+      term: "Full moon",
+      forbiddenWords: ["Night", "Sky", "Orbit", "Space"],
+    }),
+  );
 });

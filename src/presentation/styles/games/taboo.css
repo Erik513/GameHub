@@ -534,6 +534,9 @@
 }
 
 .taboo-card-list__category-actions {
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
   display: flex;
   justify-content: flex-end;
   padding: 0 var(--space-4) var(--space-4);
@@ -686,4 +689,45 @@
 
 .taboo-rules-panels > [role="tabpanel"] {
   grid-area: 1 / 1;
+}
+
+/* The field and both buttons have the same height and a clear gap between them. */
+.taboo-card-list__rename {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.taboo-card-list__rename .field__input {
+  flex: 1;
+  min-width: 0;
+  height: 3rem;
+  min-height: 3rem;
+}
+
+/* The general rule for buttons in a game adds space above; here the buttons sit in a row. */
+.taboo-card-list__category-actions .button,
+.taboo-card-list__rename .button {
+  margin-top: 0;
+}
+
+/* "Rename" and "Delete category" share the whole width, so both are equally wide. */
+.taboo-card-list__category-actions > .button {
+  flex: 1 1 0;
+  width: auto;
+  padding-inline: var(--space-2);
+  white-space: nowrap;
+}
+
+.taboo-card-list__rename .button {
+  flex: none;
+  width: auto;
+  height: 3rem;
+  min-height: 3rem;
+}
+
+.taboo-card-list__rename .icon-button {
+  width: 3rem;
+  padding: 0;
 }

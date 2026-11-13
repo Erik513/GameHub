@@ -46,6 +46,10 @@ export const tabooTexts = {
     storage: "Die Karte konnte nicht gespeichert werden.",
   },
   tabooList: {
+    renameCategory: "Umbenennen",
+    renameCategoryLabel: "Kategorie {{category}} umbenennen",
+    renameName: "Neuer Name der Kategorie",
+    categoryRenamed: "Kategorie umbenannt.",
     groups: {
       ownCategories: "Eigene Kategorien",
       standardCategories: "Standard-Kategorien (Deutsch und Englisch)",
@@ -67,6 +71,8 @@ export const tabooTexts = {
     deleteLabel: "Karte {{term}} löschen",
     deleteConfirm: "Nochmal tippen, um {{term}} zu löschen",
     problems: {
+      categoryExists: "Eine Kategorie mit diesem Namen gibt es schon.",
+      noName: "Gib einen Namen ein.",
       invalid:
         "Die Karte braucht einen Begriff und vier verschiedene verbotene Wörter, die nicht dem Begriff entsprechen.",
       duplicate: "Eine Karte mit diesem Begriff gibt es schon.",

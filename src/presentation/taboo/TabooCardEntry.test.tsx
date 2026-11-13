@@ -72,7 +72,8 @@ it.each(["en", "de"] as const)(
     expect(onAdd.mock.calls[0]?.[0]).toMatchObject([
       {
         term: "Goal",
-        forbiddenWords: ["a", "b", "c", "d"],
+        // The first letters are capital letters automatically.
+        forbiddenWords: ["A", "B", "C", "D"],
         categoryId: "Sport",
         difficulty: "hard",
         // English is the primary language, so a new category starts with English.
@@ -274,4 +275,38 @@ it("shows the examples in the fields in the language of the category", async () 
     "placeholder",
     "Ball, Netz, Treffer, Keeper",
   );
+});
+
+it("makes the first letter of the term and of the forbidden words a capital letter", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  const onAdd = vi.fn((cards: readonly TabooCard[]) => Promise.resolve(cards.length));
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooCardEntry cards={[]} disabled={false} onAdd={onAdd} />
+    </I18nextProvider>,
+  );
+  await user.type(screen.getByLabelText("Name of the new category"), "Sport");
+  await user.type(screen.getByLabelText("Term"), "football");
+  await user.type(screen.getByLabelText(/Four forbidden/), "goal, net,keeper , referee");
+  await user.click(screen.getByRole("button", { name: "Add card" }));
+  expect(onAdd.mock.calls[0]?.[0]).toMatchObject([
+    { term: "Football", forbiddenWords: ["Goal", "Net", "Keeper", "Referee"] },
+  ]);
+});
+
+it("makes the first letter of a new category name a capital letter", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  const onAdd = vi.fn((cards: readonly TabooCard[]) => Promise.resolve(cards.length));
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooCardEntry cards={[]} disabled={false} onAdd={onAdd} />
+    </I18nextProvider>,
+  );
+  await user.type(screen.getByLabelText("Name of the new category"), "ball games");
+  await user.type(screen.getByLabelText("Term"), "Goal");
+  await user.type(screen.getByLabelText(/Four forbidden/), "a, b, c, d");
+  await user.click(screen.getByRole("button", { name: "Add card" }));
+  expect(onAdd.mock.calls[0]?.[0]).toMatchObject([{ categoryId: "Ball games" }]);
 });

@@ -5,7 +5,7 @@ import {
   ownCategories,
   type TabooCategoryInfo,
 } from "../../business/games/taboo/categories";
-import { validateCard, type TabooCard } from "../../business/games/taboo/model";
+import { capitalizeFirst, validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Toast, useNotice } from "../components";
 import { SetupSection } from "../game-kit";
@@ -78,8 +78,10 @@ export function TabooCardEntry({
     const checked = validateCard({
       id: `own-${crypto.randomUUID()}`,
       language: category.language,
-      term: term.replace(/[:\r\n]/gu, " "),
-      forbiddenWords: splitWords(words.replace(/[\r\n]/gu, " ")),
+      term: capitalizeFirst(term.replace(/[:\r\n]/gu, " "), category.language),
+      forbiddenWords: splitWords(words.replace(/[\r\n]/gu, " ")).map((word) =>
+        capitalizeFirst(word, category.language),
+      ),
       categoryId: category.categoryId,
       difficulty,
     });

@@ -46,6 +46,10 @@ export const tabooTexts = {
     storage: "The card could not be saved.",
   },
   tabooList: {
+    renameCategory: "Rename",
+    renameCategoryLabel: "Rename category {{category}}",
+    renameName: "New name of the category",
+    categoryRenamed: "Category renamed.",
     groups: {
       ownCategories: "Own categories",
       standardCategories: "Standard categories (German and English)",
@@ -67,6 +71,8 @@ export const tabooTexts = {
     deleteLabel: "Delete card {{term}}",
     deleteConfirm: "Tap again to delete {{term}}",
     problems: {
+      categoryExists: "A category with this name already exists.",
+      noName: "Enter a name.",
       invalid:
         "The card needs a term and four different forbidden words that differ from the term.",
       duplicate: "A card with this term already exists.",
