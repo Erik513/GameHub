@@ -22,6 +22,10 @@ interface TabooSetupFormProps {
   categoryIds: readonly string[];
   categoryInfos: readonly TabooCategoryInfo[];
   children?: ReactNode;
+  /** Counts the start attempts; see `TabooSetupMessages`. */
+  attempt: number;
+  /** False while another screen covers the form, so its messages are not shown twice. */
+  messagesVisible: boolean;
   deckEmpty: boolean;
   generating: boolean;
   hasGenerators: boolean;
@@ -44,6 +48,8 @@ export function TabooSetupForm({
   categoryIds,
   categoryInfos,
   children,
+  attempt,
+  messagesVisible,
   deckEmpty,
   generating,
   hasGenerators,
@@ -85,7 +91,14 @@ export function TabooSetupForm({
     title: t("tabooTiebreakInfo.title"),
   };
 
-  const messages = <TabooSetupMessages deckEmpty={deckEmpty} issues={issues} shortage={shortage} />;
+  const messages = messagesVisible && (
+    <TabooSetupMessages
+      attempt={attempt}
+      deckEmpty={deckEmpty}
+      issues={issues}
+      shortage={shortage}
+    />
+  );
 
   return (
     <SetupScreen
@@ -237,7 +250,10 @@ export function TabooSetupForm({
                   {ids.map((category) => (
                     <label className="kit-choice" key={category}>
                       <input type="checkbox" name="category" value={category} defaultChecked />
-                      <span>{categoryLabel(category)}</span>
+                      <span>
+                        {categoryLabel(category)}
+                        {!isStandard(category) && ` (${cardLanguage.toUpperCase()})`}
+                      </span>
                     </label>
                   ))}
                 </div>

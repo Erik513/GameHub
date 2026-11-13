@@ -9,7 +9,7 @@ import {
   type RaceState,
 } from "../../business/games/taboo/race";
 import { pickRaceCards, pickRaceReplacement } from "../../business/games/taboo/raceCards";
-import { Button, StatusMessage } from "../components";
+import { Button, Toast, useNotice } from "../components";
 import { useGameExit } from "../GameChrome";
 import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooAttemptReviews } from "./TabooAttemptReviews";
@@ -50,7 +50,7 @@ export function TabooRaceGame({
   const { t } = useTranslation();
   const [state, setState] = useState<RaceState>(initial);
   const [clock, setClock] = useState<Clock>();
-  const [noCards, setNoCards] = useState(false);
+  const [noCards, notifyNoCards] = useNotice<true>();
   const { configuration } = state;
   const running = state.status === "running" ? state : undefined;
 
@@ -86,10 +86,9 @@ export function TabooRaceGame({
     );
     const next = cards ? transitionRace(state, { type: "beginRun", cards }) : state;
     if (next === state) {
-      setNoCards(true);
+      notifyNoCards(true);
       return;
     }
-    setNoCards(false);
     setClock({ pausedMs: 0, startedAt: Date.now() });
     setState(next);
   }
@@ -212,9 +211,9 @@ export function TabooRaceGame({
       <TabooRaceResults label={t("tabooRace.times")} rows={rows} />
       {reviews}
       {noCards && (
-        <StatusMessage title={t("tabooRound.empty")} tone="error">
+        <Toast key={noCards.id} title={t("tabooRound.empty")} tone="error">
           {t("tabooRace.noCards")}
-        </StatusMessage>
+        </Toast>
       )}
     </ScoreScreen>
   );

@@ -10,7 +10,7 @@ import { TabooSetup } from "./TabooSetup";
 
 const labels = {
   en: {
-    title: "Add card (English)",
+    title: "Add card",
     add: "Add card",
     category: "Category",
     newCategory: "New category …",
@@ -23,7 +23,7 @@ const labels = {
     exists: "This card already exists.",
   },
   de: {
-    title: "Karte hinzufügen (Deutsch)",
+    title: "Karte hinzufügen",
     add: "Karte hinzufügen",
     category: "Kategorie",
     newCategory: "Neue Kategorie …",
@@ -50,21 +50,22 @@ it.each(["en", "de"] as const)(
     });
     render(
       <I18nextProvider i18n={i18n}>
-        <TabooCardEntry cardLanguage={language} cards={[]} disabled={false} onAdd={onAdd} />
+        <TabooCardEntry cards={[]} disabled={false} onAdd={onAdd} />
       </I18nextProvider>,
     );
     expect(screen.getByRole("heading", { name: text.title })).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: text.add }));
-    expect(screen.getByRole("alert")).toHaveTextContent(text.invalid);
-
-    await user.selectOptions(screen.getByLabelText(text.category), text.newCategory);
-    await user.type(screen.getByLabelText(text.term), "Goal");
-    await user.type(screen.getByLabelText(text.words), "a, b, c, d");
+    // Without an own category the form starts with a new one, which needs a name first.
+    expect(screen.getByLabelText(text.category)).toHaveDisplayValue(text.newCategory);
     await user.click(screen.getByRole("button", { name: text.add }));
     expect(screen.getByRole("alert")).toHaveTextContent(text.noCategory);
 
     await user.type(screen.getByLabelText(text.newName), "  Sport ");
+    await user.click(screen.getByRole("button", { name: text.add }));
+    expect(screen.getByRole("alert")).toHaveTextContent(text.invalid);
+
+    await user.type(screen.getByLabelText(text.term), "Goal");
+    await user.type(screen.getByLabelText(text.words), "a, b, c, d");
     await user.selectOptions(screen.getByLabelText(/Difficulty|Schwierigkeit/), "hard");
     await user.click(screen.getByRole("button", { name: text.add }));
     expect(onAdd).toHaveBeenCalledOnce();
@@ -74,13 +75,16 @@ it.each(["en", "de"] as const)(
         forbiddenWords: ["a", "b", "c", "d"],
         categoryId: "Sport",
         difficulty: "hard",
-        language,
+        // English is the primary language, so a new category starts with English.
+        language: "en",
       },
     ]);
     expect(screen.getByRole("status")).toHaveTextContent(text.added);
     expect(screen.getByLabelText(text.term)).toHaveValue("");
     expect(screen.getByLabelText(text.term)).toHaveFocus();
 
+    // The cards of this test do not change, so the new category is typed again.
+    await user.type(screen.getByLabelText(text.newName), "Sport");
     await user.type(screen.getByLabelText(text.term), "Goal");
     await user.type(screen.getByLabelText(text.words), "a, b, c, d");
     await user.click(screen.getByRole("button", { name: text.add }));
@@ -95,9 +99,10 @@ it("rejects too few or repeated forbidden words and a term with a colon", async 
   const onAdd = vi.fn((cards: readonly TabooCard[]) => Promise.resolve(cards.length));
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooCardEntry cardLanguage="en" cards={[]} disabled={false} onAdd={onAdd} />
+      <TabooCardEntry cards={[]} disabled={false} onAdd={onAdd} />
     </I18nextProvider>,
   );
+  await user.type(screen.getByLabelText("Name of the new category"), "Sport");
   await user.type(screen.getByLabelText("Term"), "Goal");
   await user.type(screen.getByLabelText(/Four forbidden/), "a, b, c");
   await user.click(screen.getByRole("button", { name: "Add card" }));
@@ -121,14 +126,10 @@ it("reports a storage failure", async () => {
   const i18n = await createGameHubI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
-      <TabooCardEntry
-        cardLanguage="en"
-        cards={[]}
-        disabled={false}
-        onAdd={() => Promise.reject(new Error("disk"))}
-      />
+      <TabooCardEntry cards={[]} disabled={false} onAdd={() => Promise.reject(new Error("disk"))} />
     </I18nextProvider>,
   );
+  await user.type(screen.getByLabelText("Name of the new category"), "Sport");
   await user.type(screen.getByLabelText("Term"), "Goal");
   await user.type(screen.getByLabelText(/Four forbidden/), "a, b, c, d");
   await user.click(screen.getByRole("button", { name: "Add card" }));
@@ -156,11 +157,11 @@ it("offers a custom category as a filter in the setup", async () => {
     "Standard",
     "Own",
   ]);
-  expect(groups[1]).toContainElement(screen.getByRole("checkbox", { name: "Sport" }));
+  expect(groups[1]).toContainElement(screen.getByRole("checkbox", { name: "Sport (EN)" }));
   expect(groups[0]).toContainElement(screen.getByRole("checkbox", { name: "Nature" }));
-  expect(screen.getByRole("checkbox", { name: "Sport" })).toBeChecked();
-  await user.click(screen.getByRole("checkbox", { name: "Sport" }));
-  expect(screen.getByRole("checkbox", { name: "Sport" })).not.toBeChecked();
+  expect(screen.getByRole("checkbox", { name: "Sport (EN)" })).toBeChecked();
+  await user.click(screen.getByRole("checkbox", { name: "Sport (EN)" }));
+  expect(screen.getByRole("checkbox", { name: "Sport (EN)" })).not.toBeChecked();
 });
 
 it("shows no group labels while there are only standard categories", async () => {
@@ -172,4 +173,56 @@ it("shows no group labels while there are only standard categories", async () =>
   );
   expect(document.querySelectorAll(".taboo-category-group")).toHaveLength(1);
   expect(document.querySelector(".taboo-category-group small")).toBeNull();
+});
+
+it("offers only own categories with their language and gives a card the language of its category", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  const own = (id: string, categoryId: string, language: "de" | "en"): TabooCard => ({
+    id,
+    language,
+    term: `Term ${id}`,
+    forbiddenWords: ["a", "b", "c", "d"],
+    categoryId,
+    difficulty: "easy",
+  });
+  const onAdd = vi.fn((cards: readonly TabooCard[]) => Promise.resolve(cards.length));
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooCardEntry
+        cards={[own("1", "Sport", "de"), own("2", "Sport", "en"), ...tabooStandardCards]}
+        disabled={false}
+        onAdd={onAdd}
+      />
+    </I18nextProvider>,
+  );
+  // Standard categories cannot be chosen; the same name in two languages is two categories.
+  const select = screen.getByLabelText("Category");
+  const options = [...select.querySelectorAll("option")].map((option) => option.textContent);
+  expect(options).toEqual(["Sport (DE)", "Sport (EN)", "New category …"]);
+
+  // A card of an own category has the language of that category.
+  await user.selectOptions(select, "Sport (DE)");
+  await user.type(screen.getByLabelText("Term"), "Tor");
+  await user.type(screen.getByLabelText(/Four forbidden/), "a, b, c, d");
+  await user.click(screen.getByRole("button", { name: "Add card" }));
+  expect(onAdd.mock.calls[0]?.[0]).toMatchObject([
+    { term: "Tor", categoryId: "Sport", language: "de" },
+  ]);
+
+  // A new category gets its own language.
+  await user.selectOptions(select, "New category …");
+  await user.type(screen.getByLabelText("Name of the new category"), "Food");
+  const languageSelect = screen.getByLabelText("Category language");
+  expect(
+    [...languageSelect.querySelectorAll("option")].map((option) => option.textContent),
+  ).toEqual(["English", "German"]);
+  expect(languageSelect).toHaveDisplayValue("English");
+  await user.selectOptions(languageSelect, "German");
+  await user.type(screen.getByLabelText("Term"), "Brot");
+  await user.type(screen.getByLabelText(/Four forbidden/), "a, b, c, d");
+  await user.click(screen.getByRole("button", { name: "Add card" }));
+  expect(onAdd.mock.calls[1]?.[0]).toMatchObject([
+    { term: "Brot", categoryId: "Food", language: "de" },
+  ]);
 });

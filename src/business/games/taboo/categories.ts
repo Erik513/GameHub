@@ -66,3 +66,31 @@ export function customCategoryIds(
   }
   return [...names.values()].sort((left, right) => left.localeCompare(right, language));
 }
+
+/** An own category belongs to one language: the same name in two languages is two categories. */
+export interface OwnCategory {
+  readonly id: string;
+  readonly language: TabooCard["language"];
+}
+
+/**
+ * The player's own categories of all languages, sorted by name and then by language. Ids of the
+ * standard categories are not own categories.
+ */
+export function ownCategories(
+  cards: readonly TabooCard[],
+  standardIds: readonly string[] = builtInCategoryIds,
+  locale = "en",
+): OwnCategory[] {
+  const standard = new Set<string>(standardIds);
+  const found = new Map<string, OwnCategory>();
+  for (const card of cards) {
+    if (standard.has(card.categoryId)) continue;
+    const key = `${card.language}:${normalizeText(card.categoryId).toLowerCase()}`;
+    if (!found.has(key)) found.set(key, { id: card.categoryId, language: card.language });
+  }
+  return [...found.values()].sort(
+    (left, right) =>
+      left.id.localeCompare(right.id, locale) || left.language.localeCompare(right.language),
+  );
+}

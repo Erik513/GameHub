@@ -507,27 +507,49 @@ h1 {
   padding: 0;
 }
 
-.status-message {
+/* Notifications: they always appear at the bottom, take no space in the page and disappear by themselves. */
+.toast-stack {
+  position: fixed;
+  z-index: 30;
+  bottom: calc(var(--safe-bottom, 0px) + var(--space-4));
+  right: var(--space-4);
+  left: var(--space-4);
   display: grid;
+  justify-items: center;
   gap: var(--space-2);
-  padding: var(--space-4);
+  pointer-events: none;
+}
+
+.toast {
+  display: grid;
+  gap: var(--space-1);
+  width: min(100%, 26rem);
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-line);
   border-left: 0.3rem solid var(--color-accent);
   border-radius: var(--radius-md);
   color: var(--color-ink-muted);
   background: var(--color-surface);
+  animation: toast-in 0.2s ease-out;
 }
 
-.status-message strong {
+.toast strong {
   color: var(--color-ink);
 }
 
-.status-message[data-tone="error"] {
+.toast[data-tone="error"] {
   border-left-color: var(--color-danger);
 }
 
-.status-message[data-tone="success"] {
+.toast[data-tone="success"] {
   border-left-color: #68cbb4;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
 }
 
 .empty-state {
@@ -685,10 +707,6 @@ h1 {
 
 .kit-hud [role="timer"][data-low="true"] {
   color: var(--color-accent);
-}
-
-.status-message .button {
-  margin-top: var(--space-3);
 }
 
 .kit-choice-group legend {

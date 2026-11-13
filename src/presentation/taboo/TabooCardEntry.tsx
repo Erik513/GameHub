@@ -3,22 +3,22 @@ import { useTranslation } from "react-i18next";
 import { parseCardEntries } from "../../business/games/taboo/cardEntry";
 import {
   builtInCategories,
-  customCategoryIds,
+  ownCategories,
   type TabooCategoryInfo,
 } from "../../business/games/taboo/categories";
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
-import { Button, StatusMessage } from "../components";
+import { Button, Toast, useNotice } from "../components";
 import { SetupSection } from "../game-kit";
 import { TabooCategoryField } from "./TabooCategoryField";
-import { newCategoryChoice, resolveCategory } from "./categoryChoice";
+import { newCategoryChoice, ownChoice, resolveCategory } from "./categoryChoice";
+import { useInterfaceLanguage } from "./categoryLabel";
 import { difficulties } from "./tabooSetupModel";
 
 interface TabooCardEntryProps {
-  cardLanguage: SupportedLanguage;
-  /** All cards that are known, used to offer the player's own category names. */
+  /** All cards that are known, used to offer the player's own categories. */
   cards: readonly TabooCard[];
-  /** The standard categories a card can be added to. */
+  /** The standard categories; their ids are not own categories. */
   categoryInfos?: readonly TabooCategoryInfo[];
   disabled: boolean;
   /** Saves the cards and resolves with the number of cards that were really new. */
@@ -27,55 +27,72 @@ interface TabooCardEntryProps {
 
 type Feedback = "added" | "exists" | "invalid" | "noCategory" | "storage";
 
-/** Short form for one card: category, difficulty, term and the four forbidden words. */
+/**
+ * Short form for one card: category, difficulty, term and the four forbidden words. A card goes
+ * into one of the player's own categories; a new category gets a name and a language, and the
+ * cards of a category always have its language.
+ */
 export function TabooCardEntry({
-  cardLanguage,
   cards,
   categoryInfos = builtInCategories,
   disabled,
   onAdd,
 }: TabooCardEntryProps) {
   const { t } = useTranslation();
+  const locale = useInterfaceLanguage();
   const [term, setTerm] = useState("");
   const [words, setWords] = useState("");
-  const [feedback, setFeedback] = useState<Feedback>();
-  const [choice, setChoice] = useState<string>(categoryInfos[0]?.id ?? "everyday");
+  const [notice, notify] = useNotice<Feedback>();
+  const [picked, setPicked] = useState<string>();
   const [name, setName] = useState("");
+  const [newLanguage, setNewLanguage] = useState<SupportedLanguage>("en");
   const [difficulty, setDifficulty] = useState<(typeof difficulties)[number]>("easy");
   const termInput = useRef<HTMLInputElement>(null);
-  const title = t("tabooEntry.title", { language: t(`tabooEntry.languages.${cardLanguage}`) });
+  const title = t("tabooEntry.title");
+
+  const own = ownCategories(
+    cards,
+    categoryInfos.map((info) => info.id),
+    locale,
+  );
+  // Without a choice of the player the first own category is used, or a new one if there is none.
+  const firstChoice = own[0] ? ownChoice(own[0]) : newCategoryChoice;
+  const choice =
+    picked === newCategoryChoice || own.some((category) => ownChoice(category) === picked)
+      ? picked!
+      : firstChoice;
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const categoryId = resolveCategory(choice, name);
-    if (!categoryId) {
-      setFeedback("noCategory");
+    const category = resolveCategory(choice, name, newLanguage);
+    if (!category) {
+      notify("noCategory");
       return;
     }
     // The line format uses a colon after the term, so a colon inside the term is not allowed.
     const { cards: entered } = parseCardEntries(
       `${term.replace(/[:\r\n]/gu, " ")}: ${words.replace(/[\r\n]/gu, " ")}`,
-      { categoryId, difficulty, language: cardLanguage },
+      { categoryId: category.categoryId, difficulty, language: category.language },
       () => `own-${crypto.randomUUID()}`,
     );
     if (entered.length !== 1) {
-      setFeedback("invalid");
+      notify("invalid");
       return;
     }
     try {
       const added = await onAdd(entered);
-      setFeedback(added > 0 ? "added" : "exists");
+      notify(added > 0 ? "added" : "exists");
       if (added > 0) {
         setTerm("");
         setWords("");
         if (choice === newCategoryChoice) {
-          setChoice(categoryId);
+          setPicked(ownChoice({ id: category.categoryId, language: category.language }));
           setName("");
         }
         termInput.current?.focus();
       }
     } catch {
-      setFeedback("storage");
+      notify("storage");
     }
   }
 
@@ -85,15 +102,13 @@ export function TabooCardEntry({
         <div className="taboo-card-entry__pair">
           <TabooCategoryField
             choice={choice}
-            custom={customCategoryIds(
-              cards,
-              cardLanguage,
-              categoryInfos.map((info) => info.id),
-            )}
-            standardCategories={categoryInfos}
             name={name}
-            onChoice={setChoice}
+            newLanguage={newLanguage}
+            onChoice={setPicked}
+            onLanguage={setNewLanguage}
             onName={setName}
+            own={own}
+            standardCategories={categoryInfos}
           />
           <label className="field">
             <span>{t("tabooEntry.difficulty")}</span>
@@ -133,15 +148,15 @@ export function TabooCardEntry({
             value={words}
           />
         </label>
-        <Button disabled={disabled} type="submit" variant="secondary">
+        <Button disabled={disabled} type="submit" variant="success">
           {t("tabooEntry.add")}
         </Button>
-        {feedback && (
-          <StatusMessage title={title} tone={feedback === "added" ? "success" : "error"}>
-            {t(`tabooEntry.${feedback}`)}
-          </StatusMessage>
-        )}
       </form>
+      {notice && (
+        <Toast key={notice.id} tone={notice.value === "added" ? "success" : "error"}>
+          {t(`tabooEntry.${notice.value}`)}
+        </Toast>
+      )}
     </SetupSection>
   );
 }

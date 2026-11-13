@@ -4,17 +4,17 @@ import { selectNewTabooCards } from "../../business/games/taboo/cardExchange";
 import {
   availableCategories,
   builtInCategories,
-  customCategoryIds,
+  ownCategories,
   type TabooCategoryInfo,
 } from "../../business/games/taboo/categories";
 import { validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
-import { Button, ConfirmButton, Icon, StatusMessage } from "../components";
+import { Button, ConfirmButton, Icon, Toast, useNotice } from "../components";
 import { ActionRow, SetupSection } from "../game-kit";
-import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
+import { useCategoryLabel, useCategorySorter, useInterfaceLanguage } from "./categoryLabel";
 import { sortCardsForList } from "../../business/games/taboo/ordering";
 import { TabooCategoryField } from "./TabooCategoryField";
-import { resolveCategory } from "./categoryChoice";
+import { ownChoice, resolveCategory, standardChoice } from "./categoryChoice";
 import { difficulties, teamNameFrom } from "./tabooSetupModel";
 
 interface TabooCardListProps {
@@ -50,40 +50,50 @@ export function TabooCardList({
 }: TabooCardListProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState<TabooCard>();
-  const [problem, setProblem] = useState<Problem>();
+  const [notice, notify] = useNotice<Problem>();
   const [choice, setChoice] = useState("");
   const [name, setName] = useState("");
+  const [newLanguage, setNewLanguage] = useState<SupportedLanguage>(cardLanguage);
 
+  const locale = useInterfaceLanguage();
   const categoryName = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);
   const standardIds = categoryInfos.map((info) => info.id);
-  // The same order as in the category choice of the menu: standard categories, then the own ones.
-  const ownCategoryIds = sortCategories(customCategoryIds(allCards, cardLanguage, standardIds));
+  // Own categories of both languages, each with its language; the standard categories are shown
+  // with the cards of the card language.
+  const ownCategoryList = ownCategories(allCards, standardIds, locale);
   const standardCategoryIds = sortCategories(
     availableCategories(categoryInfos, allCards, cardLanguage).map((info) => info.id),
   );
   const groups = [
-    { key: "standard", ids: standardCategoryIds },
-    { key: "own", ids: ownCategoryIds },
+    {
+      key: "standard",
+      entries: standardCategoryIds.map((id) => ({ id, language: cardLanguage })),
+    },
+    { key: "own", entries: ownCategoryList },
   ] as const;
-  const inLanguage = (card: TabooCard) => card.language === cardLanguage;
 
   function startEditing(card: TabooCard) {
     setEditing(card);
-    setChoice(card.categoryId);
+    setChoice(
+      standardIds.includes(card.categoryId)
+        ? standardChoice(card.categoryId)
+        : ownChoice({ id: card.categoryId, language: card.language }),
+    );
     setName("");
-    setProblem(undefined);
+    setNewLanguage(card.language);
   }
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!editing) return;
     const data = new FormData(event.currentTarget);
-    const categoryId = resolveCategory(choice, name);
-    if (!categoryId) {
-      setProblem("noCategory");
+    const category = resolveCategory(choice, name, editing.language);
+    if (!category) {
+      notify("noCategory");
       return;
     }
+    const { categoryId } = category;
     const difficulty = difficulties.find((value) => value === data.get("difficulty"));
     const result = validateCard({
       ...editing,
@@ -93,30 +103,28 @@ export function TabooCardList({
       term: teamNameFrom(data.get("term")),
     });
     if (!result.valid) {
-      setProblem("invalid");
+      notify("invalid");
       return;
     }
     const others = allCards.filter((card) => card.id !== editing.id);
     if (selectNewTabooCards([result.value], others).length === 0) {
-      setProblem("duplicate");
+      notify("duplicate");
       return;
     }
     try {
       await onUpdate(result.value);
       setEditing(undefined);
-      setProblem(undefined);
     } catch {
-      setProblem("storage");
+      notify("storage");
     }
   }
 
-  async function removeCategory(categoryId: string, cards: readonly TabooCard[]) {
+  async function removeCategory(cards: readonly TabooCard[]) {
     try {
       for (const card of cards) await onRemove(card.id);
-      if (editing?.categoryId === categoryId) setEditing(undefined);
-      setProblem(undefined);
+      if (editing && cards.some((card) => card.id === editing.id)) setEditing(undefined);
     } catch {
-      setProblem("storage");
+      notify("storage");
     }
   }
 
@@ -124,9 +132,8 @@ export function TabooCardList({
     try {
       await onRemove(id);
       if (editing?.id === id) setEditing(undefined);
-      setProblem(undefined);
     } catch {
-      setProblem("storage");
+      notify("storage");
     }
   }
 
@@ -155,11 +162,15 @@ export function TabooCardList({
           <div className="taboo-card-entry__pair">
             <TabooCategoryField
               choice={choice}
-              custom={customCategoryIds(allCards, card.language, standardIds)}
-              standardCategories={categoryInfos}
+              currentStandard={standardIds.includes(card.categoryId) ? card.categoryId : undefined}
+              lockLanguage
               name={name}
+              newLanguage={newLanguage}
               onChoice={setChoice}
+              onLanguage={setNewLanguage}
               onName={setName}
+              own={ownCategoryList.filter((category) => category.language === card.language)}
+              standardCategories={categoryInfos}
             />
             <label className="field">
               <span>{t("tabooEntry.difficulty")}</span>
@@ -172,11 +183,6 @@ export function TabooCardList({
               </select>
             </label>
           </div>
-          {problem && (
-            <StatusMessage title={t("tabooList.edit")} tone="error">
-              {t(`tabooList.problems.${problem}`)}
-            </StatusMessage>
-          )}
           <ActionRow>
             <Button
               aria-label={t("tabooList.save")}
@@ -231,38 +237,39 @@ export function TabooCardList({
   return (
     <SetupSection title={t("tabooList.title")}>
       <div className="taboo-card-list">
-        {problem && !editing && (
-          <StatusMessage title={t("tabooList.title")} tone="error">
-            {t(`tabooList.problems.${problem}`)}
-          </StatusMessage>
+        {notice && (
+          <Toast key={notice.id} tone="error">
+            {t(`tabooList.problems.${notice.value}`)}
+          </Toast>
         )}
         {groups.map((group) =>
-          group.ids.length === 0 ? null : (
+          group.entries.length === 0 ? null : (
             <div className="taboo-card-list__group" key={group.key}>
-              {ownCategoryIds.length > 0 && (
+              {(ownCategoryList.length > 0 || group.key === "standard") && (
                 <small>
                   {t(
                     `tabooList.groups.${group.key === "own" ? "ownCategories" : "standardCategories"}`,
                   )}
                 </small>
               )}
-              {group.ids.map((categoryId) => {
+              {group.entries.map(({ id: categoryId, language }) => {
                 const own = ownCards.filter(
-                  (card) => inLanguage(card) && card.categoryId === categoryId,
+                  (card) => card.language === language && card.categoryId === categoryId,
                 );
                 const standard = standardCards.filter(
-                  (card) => inLanguage(card) && card.categoryId === categoryId,
+                  (card) => card.language === language && card.categoryId === categoryId,
                 );
                 return (
-                  <details className="kit-disclosure taboo-card-list__category" key={categoryId}>
+                  <details
+                    className="kit-disclosure taboo-card-list__category"
+                    key={`${language}:${categoryId}`}
+                  >
                     <summary>
-                      <span>{categoryName(categoryId)}</span>
-                      <small>
-                        {t("tabooList.count", {
-                          count: own.length + standard.length,
-                          own: own.length,
-                        })}
-                      </small>
+                      <span>
+                        {categoryName(categoryId)}
+                        {group.key === "own" && ` (${language.toUpperCase()})`}
+                      </span>
+                      <small>{t("tabooList.count", { count: own.length + standard.length })}</small>
                     </summary>
                     {own.length > 0 && (
                       <>
@@ -272,7 +279,7 @@ export function TabooCardList({
                           </small>
                         )}
                         <ul>
-                          {sortCardsForList(own, cardLanguage).map((card) => (
+                          {sortCardsForList(own, language).map((card) => (
                             <li key={card.id}>{renderRow(card, true)}</li>
                           ))}
                         </ul>
@@ -291,7 +298,7 @@ export function TabooCardList({
                                 count: own.length,
                               })}
                               idleVariant="danger"
-                              onConfirm={() => void removeCategory(categoryId, own)}
+                              onConfirm={() => void removeCategory(own)}
                             >
                               <Icon name="trash" />
                               {t("tabooList.deleteCategory")}
@@ -308,7 +315,7 @@ export function TabooCardList({
                           </small>
                         )}
                         <ul>
-                          {sortCardsForList(standard, cardLanguage).map((card) => (
+                          {sortCardsForList(standard, language).map((card) => (
                             <li key={card.id}>{renderRow(card, false)}</li>
                           ))}
                         </ul>

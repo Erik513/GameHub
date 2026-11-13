@@ -4,6 +4,30 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Benachrichtigungen statt Meldungsboxen
+
+- Die Meldungsboxen (`StatusMessage`, Feld mit farbigem Rand in der Seite) gibt es im ganzen Projekt nicht mehr. Stattdessen zeigt der neue Baustein `Toast` die Meldung als **Benachrichtigung unten**, die nach 5 Sekunden von allein verschwindet, keinen Platz in der Seite braucht und Eingaben nicht blockiert. Fehler melden sich als `alert`, Erfolg und Hinweise als `status`. `useNotice` zeigt dieselbe Meldung bei jedem Aufruf erneut.
+- Umgestellt: Karte hinzufügen (Erfolg, Fehler), Kartenliste (Bearbeiten, Löschen), Import, die Meldungen des Hauptmenüs und der Aufstellung (zu wenige Karten, Eingaben ungültig), „Auf Zeit“ (zu wenige Karten), Stechen und Runde (keine Karten mehr; der Knopf „Neue Partie“ bleibt sichtbar). Das Hauptmenü zeigt seine Meldungen nur, solange es sichtbar ist (nicht doppelt hinter der Aufstellung).
+- Kurze Meldungen stehen **ohne Überschrift** in einer Zeile (Karte hinzufügen, Kartenliste, Import: zum Beispiel „Karte hinzugefügt.“). Eine Überschrift bleibt nur bei „Keine Karten mehr“ und „Eingaben ungültig“, wo mehrere Zeilen folgen. Die Benachrichtigungen stehen immer **unten**.
+- Tests: `Toast` (verschwindet, Alert und Status, neuer `key`) und `useNotice`; die bestehenden Tests liefen unverändert weiter.
+
+### Englisch als primäre Sprache bei Sprachauswahlen
+
+- Regel: Englisch ist bei jeder Sprachauswahl voreingestellt und das erste Element (dann Deutsch). Die Auswahl „Sprache der Kategorie“ beim Anlegen einer eigenen Kategorie steht auf Englisch und listet English vor German; die Kartensprache der Spieleinstellungen bestimmt sie nicht mehr. Die Regel steht in `docs/GAMEHUB_UI_RULES.md`. Offen: Beim ersten Start wird weiter die Sprache des Browsers gewählt, nicht Englisch.
+- Ordner der Kategorieauswahl: Name der neuen Kategorie und ihre Sprache stehen über der Schwierigkeit (alles untereinander).
+
+### Eigene Kategorien mit Sprache, Standardkategorien nicht wählbar
+
+- **Karte hinzufügen:** Die Kategorieauswahl bietet nur noch **eigene Kategorien** (mit „(DE)“ oder „(EN)“) und „Neue Kategorie …“. Standardkategorien sind nicht mehr wählbar. Bei einer neuen Kategorie legt man **Name und Sprache** fest (neue Auswahl „Sprache der Kategorie“); jede Karte einer Kategorie hat deren Sprache. Der Titel heißt nur noch „Karte hinzufügen“ (ohne Sprache). Der Knopf „Karte hinzufügen“ ist grün (`success`) wie die anderen Hauptaktionen.
+- **Kartenansicht:** Die Liste zeigt die eigenen Kategorien **beider Sprachen** mit Sprache hinter dem Namen und nur der Kartenanzahl. Beim Bearbeiten einer Karte sind nur eigene Kategorien derselben Sprache wählbar (eine alte eigene Karte in einer Standardkategorie bleibt dort wählbar).
+- Neu im Business: `ownCategories` (eigene Kategorien aller Sprachen; gleicher Name in zwei Sprachen sind zwei Kategorien). Tests (Deutsch und Englisch) angepasst und ergänzt. Offen: Der Export bietet weiter nur die eigenen Kategorien der Kartensprache aus den Spieleinstellungen an.
+
+### Kartenansicht: Kategorien, Sprache und leichtere schwere Karten
+
+- Kartenansicht: Bei jeder Kategorie steht nur noch die **Kartenanzahl** (vorher „105 (15 eigene)“). Bei den Standardkategorien steht die Überschrift „Standard-Kategorien (Deutsch und Englisch)“ (nur in der Kartenansicht, nicht im Hauptmenü). **Eigene Kategorien** zeigen ihre Sprache hinter dem Namen, zum Beispiel „Sport (DE)“, in der Kartenansicht, im Hauptmenü (Kapitel Karten) und in der Kategorieauswahl beim Hinzufügen und Bearbeiten.
+- Die **schweren Karten** waren teils zu schwer (Wörter, die die meisten nicht kennen, zum Beispiel „Aquifer“, „Fuge“, „Oszilloskop“, „Gregorianik“, „Nacktmull“). 42 Karten je Sprache sind ersetzt durch bekanntere, aber schwerer zu erklärende Begriffe (zum Beispiel „Klimawandel“, „Mona Lisa“, „Walross“, „Bürgermeister“, „Big Ben“). Der Pool hat weiter 900 Karten je Sprache, 30 je Schwierigkeit und Kategorie.
+- Tests angepasst (Anzahl ohne „eigene“, „(EN)“ hinter eigenen Kategorien).
+
 ### Ein Regelfenster mit allen Spielmodi als Reiter
 
 - Das Fenster „Spielregeln“ ist **ein** Fenster für alle Spielmodi: oben stehen die beiden Regeln, die für jeden Modus gelten (Karte mit 4 verbotenen Wörtern, wie man erklärt), darunter die Spielmodi nebeneinander als Reiter und darunter die Regeln des gewählten Reiters. Der Reiter „Klassisch“ hat den Link zum Fenster „Stechen“ (schließt das Regelfenster, öffnet das Stechen-Fenster). Bedienung auch mit den Pfeiltasten.

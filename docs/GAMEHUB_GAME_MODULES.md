@@ -14,7 +14,7 @@ Ziel: Ein neues Spiel soll möglichst nur seine **Regeln** (Business), seine **I
 | Alle Texte liegen in einem Namensraum `common` | Tabu und App-Rahmen vermischt |
 | Allgemeine Logik liegt im Tabu-Ordner (`shuffle`, `teamOrder`) | genreunabhängig, aber nicht auffindbar |
 
-**Schon gut wiederverwendbar:** `Button`, `Dialog`, `ConfirmButton`, `StatusMessage`, `useGameExit` (Spiel beenden und Pause in der Kopfzeile), `formatSeconds`, die angeheftete Aktionsleiste (CSS), die Punkteliste `TabooScoreboard` und die Auswahlgruppe `SetupChoices` (liegen aber noch in Tabu-Dateien).
+**Schon gut wiederverwendbar:** `Button`, `Dialog`, `ConfirmButton`, `Toast`, `useGameExit` (Spiel beenden und Pause in der Kopfzeile), `formatSeconds`, die angeheftete Aktionsleiste (CSS), die Punkteliste `TabooScoreboard` und die Auswahlgruppe `SetupChoices` (liegen aber noch in Tabu-Dateien).
 
 **Zu eng an Tabu gebunden:** Der Ablauf Setup → Rundenübersicht → Runde → Auswertung → Ergebnis ist in `TabooSetup.tsx` verdrahtet. Ein zweites rundenbasiertes Teamspiel müsste ihn kopieren.
 

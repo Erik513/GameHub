@@ -3,6 +3,7 @@ export { Card } from "./Card";
 export { Dialog } from "./Dialog";
 export { EmptyState } from "./EmptyState";
 export { Icon } from "./Icon";
-export { StatusMessage } from "./StatusMessage";
+export { Toast } from "./Toast";
+export { useNotice } from "./useNotice";
 export { TextField } from "./TextField";
 export { ConfirmButton } from "./ConfirmButton";

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { TabooOutcome } from "../../business/games/taboo/stateMachine";
-import { Button, StatusMessage } from "../components";
+import { Button, Toast } from "../components";
 import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooAttemptReviews, type AttemptReview } from "./TabooAttemptReviews";
 import { TabooTiebreakResults } from "./TabooTiebreakResults";
@@ -49,9 +49,9 @@ export function TabooTiebreakOverview({
       <TabooAttemptReviews attempts={reviews} onRevise={onRevise} />
       {noCards && (
         <>
-          <StatusMessage title={t("tabooRound.empty")} tone="error">
+          <Toast title={t("tabooRound.empty")} tone="error">
             {t("tabooTiebreak.noCards")}
-          </StatusMessage>
+          </Toast>
           <Button variant="secondary" onClick={() => onNewSetup()}>
             {t("tabooResult.newSetup")}
           </Button>

@@ -21,7 +21,6 @@
 
 .taboo-setup__actions > .button,
 .taboo-round > .button,
-.taboo-setup .status-message .button,
 .taboo-setup form > .button {
   justify-self: stretch;
   width: 100%;
@@ -540,16 +539,10 @@
   padding: 0 var(--space-4) var(--space-4);
 }
 
+/* Category (with the name and language of a new one) above the difficulty. */
 .taboo-card-entry__pair {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-3);
-  align-items: start;
-}
-
-.taboo-card-entry__pair > input {
-  grid-column: 1 / -1;
-  order: 3;
 }
 
 /* Standard and own categories are shown as two lightly separated groups. */

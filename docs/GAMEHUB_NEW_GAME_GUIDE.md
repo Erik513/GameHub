@@ -25,7 +25,7 @@ Bausteine in `src/presentation/game-kit/`, die ein neues Spiel einfach benutzt:
 - `Scoreboard`: sortierte Punkteliste mit Gewinnermarkierung.
 - `TimerHud`, `useCountdown`, `useStopwatch`: Rundenkopf mit Zeitbalken, Farbwechsel am Ende, Zeitmessung mit Pausen.
 - `useGameExit` (`src/presentation/GameChrome.ts`): meldet der Kopfzeile, dass ein Spiel läuft, und optional eine Pause-Steuerung. Die Kopfzeile zeigt dann das X „Spiel beenden“ oder Pause.
-- Aus `src/presentation/components/`: `Button` (Varianten `success`, `danger`), `ConfirmButton`, `Dialog`, `StatusMessage`.
+- Aus `src/presentation/components/`: `Button` (Varianten `success`, `danger`), `ConfirmButton`, `Dialog`, `Toast`.
 - Die Kopfzeile, Einstellungen, Sprachwahl, Seitensprache und das Layout für das Handy.
 
 ## Schritt für Schritt

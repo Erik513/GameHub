@@ -68,9 +68,9 @@ it("groups cards by category in alphabetical order with counts and shows cards f
   const { user } = await renderList();
   expect(screen.getByRole("heading", { name: "Cards by category" })).toBeVisible();
   const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
-  expect(names).toEqual(["Culture", "Everyday life", "Nature", "Sport"]);
-  expect(within(category("Nature")).getByText("2 (1 own)")).toBeInTheDocument();
-  expect(within(category("Sport")).getByText("1 (1 own)")).toBeInTheDocument();
+  expect(names).toEqual(["Culture", "Everyday life", "Nature", "Sport (EN)"]);
+  expect(within(category("Nature")).getByText("2")).toBeInTheDocument();
+  expect(within(category("Sport (EN)")).getByText("1")).toBeInTheDocument();
 
   await user.click(screen.getByText("Nature", { selector: "summary span" }));
   const rows = within(category("Nature")).getAllByRole("listitem");
@@ -85,7 +85,7 @@ it("groups cards by category in alphabetical order with counts and shows cards f
     [...document.querySelectorAll(".taboo-card-list__group > small")].map(
       (item) => item.textContent,
     ),
-  ).toEqual(["Standard categories", "Own categories"]);
+  ).toEqual(["Standard categories (German and English)", "Own categories"]);
   expect(rows[0]).toHaveTextContent("night · sky · orbit · space");
   expect(rows[1]).toHaveTextContent("Hard");
   // Only own cards can be edited, and cards of the other language are not shown.
@@ -133,7 +133,7 @@ it("edits a card, validates the input and saves a new category", async () => {
 
 it("cancels editing and reports a storage failure", async () => {
   const { user } = await renderList({ onUpdate: () => Promise.reject(new Error("disk")) });
-  await user.click(screen.getByText("Sport", { selector: "summary span" }));
+  await user.click(screen.getByText("Sport (EN)", { selector: "summary span" }));
   await user.click(screen.getByRole("button", { name: "Edit card Goal" }));
   await user.click(screen.getByRole("button", { name: "Cancel" }));
   expect(screen.queryByLabelText("Term")).not.toBeInTheDocument();
@@ -188,7 +188,7 @@ it.each([
     expect(
       screen.queryByRole("button", { name: /(Delete category|Kategorie) Nat/ }),
     ).not.toBeInTheDocument();
-    await user.click(screen.getByText("Sport", { selector: "summary span" }));
+    await user.click(screen.getByText("Sport (EN)", { selector: "summary span" }));
     await user.click(screen.getByRole("button", { name: idle }));
     expect(onRemove).not.toHaveBeenCalled();
     await new Promise((resolve) => setTimeout(resolve, 450));
@@ -263,11 +263,11 @@ it("sorts custom categories among the others and the cards of a category by diff
     standardCards: standard,
   });
   const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
-  expect(names).toEqual(["Culture", "Everyday life", "Nature", "aardvarks", "Zebras"]);
+  expect(names).toEqual(["Culture", "Everyday life", "Nature", "aardvarks (EN)", "Zebras (EN)"]);
 
-  await user.click(screen.getByText("Zebras", { selector: "summary span" }));
+  await user.click(screen.getByText("Zebras (EN)", { selector: "summary span" }));
   expect(
-    within(category("Zebras"))
+    within(category("Zebras (EN)"))
       .getAllByRole("listitem")
       .map((row) => row.querySelector("strong")?.textContent),
   ).toEqual(["apple pie", "Bagel", "Zeppelin"]);
@@ -278,4 +278,22 @@ it("sorts custom categories among the others and the cards of a category by diff
       .getAllByRole("listitem")
       .map((row) => row.querySelector("strong")?.textContent),
   ).toEqual(["Moss", "Anchor"]);
+});
+
+it("shows own categories of both languages with their language and only the count", async () => {
+  const mk = (id: string, language: "de" | "en"): TabooCard => ({
+    id,
+    language,
+    term: `Term ${id}`,
+    forbiddenWords: ["a", "b", "c", "d"],
+    categoryId: "Sport",
+    difficulty: "easy",
+  });
+  const own = [mk("1", "de"), mk("2", "en"), mk("3", "en")];
+  await renderList({ allCards: own, ownCards: own, standardCards: [] });
+  const rows = [...document.querySelectorAll(".taboo-card-list__category > summary")].map((row) =>
+    row.textContent?.replace(/\s+/g, " ").trim(),
+  );
+  // Own categories are listed after the standard ones; no "own" in the count.
+  expect(rows.slice(-2)).toEqual(["Sport (DE)1", "Sport (EN)2"]);
 });

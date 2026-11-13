@@ -880,18 +880,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-everyday-immersion-heater",
-      "term": "Immersion heater",
-      "forbiddenWords": [
-        "water",
-        "hot",
-        "electricity",
-        "cup"
-      ],
-      "categoryId": "everyday",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-everyday-ironing-board",
       "term": "Ironing board",
       "forbiddenWords": [
@@ -959,6 +947,18 @@
         "fasten",
         "wire",
         "office"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-everyday-pocket-knife",
+      "term": "Pocket knife",
+      "forbiddenWords": [
+        "blade",
+        "Swiss",
+        "camping",
+        "folding"
       ],
       "categoryId": "everyday",
       "difficulty": "hard"
@@ -1876,18 +1876,6 @@
       "difficulty": "medium"
     },
     {
-      "id": "pool-en-nature-aquifer",
-      "term": "Aquifer",
-      "forbiddenWords": [
-        "groundwater",
-        "rock",
-        "well",
-        "layer"
-      ],
-      "categoryId": "nature",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-nature-archipelago",
       "term": "Archipelago",
       "forbiddenWords": [
@@ -1912,18 +1900,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-nature-basalt",
-      "term": "Basalt",
-      "forbiddenWords": [
-        "volcano",
-        "rock",
-        "black",
-        "lava"
-      ],
-      "categoryId": "nature",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-nature-biotope",
       "term": "Biotope",
       "forbiddenWords": [
@@ -1936,13 +1912,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-nature-brackish-water",
-      "term": "Brackish water",
+      "id": "pool-en-nature-climate-change",
+      "term": "Climate change",
       "forbiddenWords": [
-        "salt",
-        "estuary",
-        "sea",
-        "river"
+        "warming",
+        "temperature",
+        "exhaust",
+        "Earth"
       ],
       "categoryId": "nature",
       "difficulty": "hard"
@@ -2020,6 +1996,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-nature-equator",
+      "term": "Equator",
+      "forbiddenWords": [
+        "line",
+        "Earth",
+        "middle",
+        "hot"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-nature-erosion",
       "term": "Erosion",
       "forbiddenWords": [
@@ -2027,6 +2015,18 @@
         "water",
         "rock",
         "wear"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-nature-food-chain",
+      "term": "Food chain",
+      "forbiddenWords": [
+        "eat",
+        "animals",
+        "predator",
+        "prey"
       ],
       "categoryId": "nature",
       "difficulty": "hard"
@@ -2212,18 +2212,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-nature-sediment",
-      "term": "Sediment",
-      "forbiddenWords": [
-        "deposit",
-        "layer",
-        "river",
-        "sea"
-      ],
-      "categoryId": "nature",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-nature-tundra",
       "term": "Tundra",
       "forbiddenWords": [
@@ -2231,6 +2219,18 @@
         "cold",
         "moss",
         "reindeer"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-nature-water-cycle",
+      "term": "Water cycle",
+      "forbiddenWords": [
+        "evaporate",
+        "rain",
+        "clouds",
+        "sea"
       ],
       "categoryId": "nature",
       "difficulty": "hard"
@@ -2956,18 +2956,6 @@
       "difficulty": "medium"
     },
     {
-      "id": "pool-en-culture-allegory",
-      "term": "Allegory",
-      "forbiddenWords": [
-        "symbol",
-        "image",
-        "meaning",
-        "art"
-      ],
-      "categoryId": "culture",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-culture-ballad",
       "term": "Ballad",
       "forbiddenWords": [
@@ -2987,6 +2975,18 @@
         "ornate",
         "church",
         "art"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-culture-beethoven",
+      "term": "Beethoven",
+      "forbiddenWords": [
+        "composer",
+        "symphony",
+        "deaf",
+        "piano"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -3040,6 +3040,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-culture-culture-shock",
+      "term": "Culture shock",
+      "forbiddenWords": [
+        "abroad",
+        "foreign",
+        "travel",
+        "habits"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-culture-epic",
       "term": "Epic",
       "forbiddenWords": [
@@ -3076,13 +3088,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-culture-fugue",
-      "term": "Fugue",
+      "id": "pool-en-culture-folklore",
+      "term": "Folklore",
       "forbiddenWords": [
-        "music",
-        "voices",
-        "theme",
-        "composition"
+        "tradition",
+        "people",
+        "dance",
+        "costume"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -3095,18 +3107,6 @@
         "era",
         "pointed arch",
         "medieval"
-      ],
-      "categoryId": "culture",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-culture-gregorian-chant",
-      "term": "Gregorian chant",
-      "forbiddenWords": [
-        "monks",
-        "singing",
-        "monastery",
-        "church"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -3136,30 +3136,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-culture-libretto",
-      "term": "Libretto",
-      "forbiddenWords": [
-        "opera",
-        "text",
-        "composer",
-        "plot"
-      ],
-      "categoryId": "culture",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-culture-lithography",
-      "term": "Lithography",
-      "forbiddenWords": [
-        "stone",
-        "print",
-        "art",
-        "reproduction"
-      ],
-      "categoryId": "culture",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-culture-metaphor",
       "term": "Metaphor",
       "forbiddenWords": [
@@ -3167,6 +3143,30 @@
         "language",
         "figurative",
         "comparison"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-culture-mona-lisa",
+      "term": "Mona Lisa",
+      "forbiddenWords": [
+        "painting",
+        "Da Vinci",
+        "smile",
+        "Louvre"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-culture-mozart",
+      "term": "Mozart",
+      "forbiddenWords": [
+        "composer",
+        "Vienna",
+        "prodigy",
+        "Magic Flute"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -3184,13 +3184,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-culture-oratorio",
-      "term": "Oratorio",
+      "id": "pool-en-culture-national-anthem",
+      "term": "National anthem",
       "forbiddenWords": [
-        "church",
-        "choir",
-        "soloists",
-        "Handel"
+        "song",
+        "country",
+        "football",
+        "sing"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -3208,13 +3208,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-culture-pointillism",
-      "term": "Pointillism",
+      "id": "pool-en-culture-poetry",
+      "term": "Poetry",
       "forbiddenWords": [
-        "dots",
-        "painting",
-        "Seurat",
-        "color"
+        "poems",
+        "rhymes",
+        "verses",
+        "writer"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -3256,13 +3256,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-culture-sonnet",
-      "term": "Sonnet",
+      "id": "pool-en-culture-shakespeare",
+      "term": "Shakespeare",
       "forbiddenWords": [
-        "poem",
-        "fourteen",
-        "lines",
-        "rhyme"
+        "playwright",
+        "Hamlet",
+        "England",
+        "theater"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -3304,13 +3304,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-culture-woodcut",
-      "term": "Woodcut",
+      "id": "pool-en-culture-zeitgeist",
+      "term": "Zeitgeist",
       "forbiddenWords": [
-        "print",
-        "art",
-        "knife",
-        "block"
+        "era",
+        "mood",
+        "fashion",
+        "society"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -4132,18 +4132,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-food-fondant",
-      "term": "Fondant",
-      "forbiddenWords": [
-        "icing",
-        "sugar",
-        "cake",
-        "roll"
-      ],
-      "categoryId": "food",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-food-fondue",
       "term": "Fondue",
       "forbiddenWords": [
@@ -4271,6 +4259,18 @@
         "pastry",
         "bacon",
         "tart"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-food-raclette",
+      "term": "Raclette",
+      "forbiddenWords": [
+        "cheese",
+        "pan",
+        "potatoes",
+        "winter"
       ],
       "categoryId": "food",
       "difficulty": "hard"
@@ -5116,6 +5116,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-en-animals-alligator",
+      "term": "Alligator",
+      "forbiddenWords": [
+        "reptile",
+        "swamp",
+        "teeth",
+        "America"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-animals-anaconda",
+      "term": "Anaconda",
+      "forbiddenWords": [
+        "snake",
+        "South America",
+        "constrictor",
+        "huge"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-animals-armadillo",
       "term": "Armadillo",
       "forbiddenWords": [
@@ -5183,6 +5207,18 @@
         "savanna",
         "spots",
         "cat"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-animals-chimpanzee",
+      "term": "Chimpanzee",
+      "forbiddenWords": [
+        "ape",
+        "Africa",
+        "clever",
+        "banana"
       ],
       "categoryId": "animals",
       "difficulty": "hard"
@@ -5260,18 +5296,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-animals-manta-ray",
-      "term": "Manta ray",
-      "forbiddenWords": [
-        "ocean",
-        "huge",
-        "glide",
-        "wings"
-      ],
-      "categoryId": "animals",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-animals-marmot",
       "term": "Marmot",
       "forbiddenWords": [
@@ -5291,18 +5315,6 @@
         "desert",
         "lookout",
         "upright"
-      ],
-      "categoryId": "animals",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-animals-mole-rat",
-      "term": "Mole rat",
-      "forbiddenWords": [
-        "burrow",
-        "Africa",
-        "colony",
-        "rodent"
       ],
       "categoryId": "animals",
       "difficulty": "hard"
@@ -5332,13 +5344,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-animals-okapi",
-      "term": "Okapi",
+      "id": "pool-en-animals-ostrich",
+      "term": "Ostrich",
       "forbiddenWords": [
+        "bird",
+        "large",
         "Africa",
-        "zebra",
-        "giraffe",
-        "stripes"
+        "run"
       ],
       "categoryId": "animals",
       "difficulty": "hard"
@@ -5375,18 +5387,6 @@
         "rodent",
         "Africa",
         "defend"
-      ],
-      "categoryId": "animals",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-animals-quokka",
-      "term": "Quokka",
-      "forbiddenWords": [
-        "Australia",
-        "smile",
-        "marsupial",
-        "island"
       ],
       "categoryId": "animals",
       "difficulty": "hard"
@@ -5440,13 +5440,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-animals-tapir",
-      "term": "Tapir",
+      "id": "pool-en-animals-walrus",
+      "term": "Walrus",
       "forbiddenWords": [
-        "snout",
-        "South America",
-        "nose",
-        "jungle"
+        "tusks",
+        "Arctic",
+        "seal",
+        "mustache"
       ],
       "categoryId": "animals",
       "difficulty": "hard"
@@ -6196,6 +6196,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-en-sport-artistic-gymnastics",
+      "term": "Artistic gymnastics",
+      "forbiddenWords": [
+        "bars",
+        "rings",
+        "floor",
+        "somersault"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-sport-baseball",
       "term": "Baseball",
       "forbiddenWords": [
@@ -6227,18 +6239,6 @@
         "sleigh",
         "push",
         "winter"
-      ],
-      "categoryId": "sport",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-sport-capoeira",
-      "term": "Capoeira",
-      "forbiddenWords": [
-        "Brazil",
-        "dance fight",
-        "music",
-        "roda"
       ],
       "categoryId": "sport",
       "difficulty": "hard"
@@ -6323,6 +6323,18 @@
         "jump",
         "routine",
         "judges"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-sport-formula-1",
+      "term": "Formula 1",
+      "forbiddenWords": [
+        "race car",
+        "race",
+        "driver",
+        "track"
       ],
       "categoryId": "sport",
       "difficulty": "hard"
@@ -6448,13 +6460,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-sport-skeleton",
-      "term": "Skeleton",
+      "id": "pool-en-sport-show-jumping",
+      "term": "Show jumping",
       "forbiddenWords": [
-        "ice track",
-        "head first",
-        "sled",
-        "run"
+        "horse",
+        "obstacles",
+        "course",
+        "rails"
       ],
       "categoryId": "sport",
       "difficulty": "hard"
@@ -6539,18 +6551,6 @@
         "cycling",
         "running",
         "endurance"
-      ],
-      "categoryId": "sport",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-sport-ultramarathon",
-      "term": "Ultramarathon",
-      "forbiddenWords": [
-        "endurance",
-        "kilometers",
-        "running",
-        "extreme"
       ],
       "categoryId": "sport",
       "difficulty": "hard"
@@ -7288,6 +7288,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-jobs-ambassador",
+      "term": "Ambassador",
+      "forbiddenWords": [
+        "country",
+        "representative",
+        "abroad",
+        "reception"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-jobs-archaeologist",
       "term": "Archaeologist",
       "forbiddenWords": [
@@ -7295,18 +7307,6 @@
         "past",
         "finds",
         "brush"
-      ],
-      "categoryId": "jobs",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-jobs-archivist",
-      "term": "Archivist",
-      "forbiddenWords": [
-        "records",
-        "documents",
-        "basement",
-        "file"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -7348,6 +7348,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-jobs-banker",
+      "term": "Banker",
+      "forbiddenWords": [
+        "money",
+        "stock market",
+        "suit",
+        "loan"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-jobs-beekeeper",
       "term": "Beekeeper",
       "forbiddenWords": [
@@ -7372,37 +7384,25 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-jobs-cartographer",
-      "term": "Cartographer",
+      "id": "pool-en-jobs-diplomat",
+      "term": "Diplomat",
       "forbiddenWords": [
-        "maps",
-        "atlas",
-        "draw",
-        "survey"
+        "embassy",
+        "negotiation",
+        "abroad",
+        "suit"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-jobs-curator",
-      "term": "Curator",
+      "id": "pool-en-jobs-entrepreneur",
+      "term": "Entrepreneur",
       "forbiddenWords": [
-        "museum",
-        "exhibition",
-        "art",
-        "collection"
-      ],
-      "categoryId": "jobs",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-jobs-falconer",
-      "term": "Falconer",
-      "forbiddenWords": [
-        "bird of prey",
-        "glove",
-        "hunting",
-        "train"
+        "company",
+        "found",
+        "boss",
+        "business"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -7468,6 +7468,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-jobs-mayor",
+      "term": "Mayor",
+      "forbiddenWords": [
+        "city",
+        "town hall",
+        "election",
+        "chain"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-jobs-meteorologist",
       "term": "Meteorologist",
       "forbiddenWords": [
@@ -7516,6 +7528,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-jobs-politician",
+      "term": "Politician",
+      "forbiddenWords": [
+        "election",
+        "party",
+        "government",
+        "speech"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-jobs-potter",
       "term": "Potter",
       "forbiddenWords": [
@@ -7528,6 +7552,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-jobs-real-estate-agent",
+      "term": "Real estate agent",
+      "forbiddenWords": [
+        "house",
+        "apartment",
+        "sell",
+        "commission"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-jobs-sommelier",
       "term": "Sommelier",
       "forbiddenWords": [
@@ -7535,18 +7571,6 @@
         "restaurant",
         "cellar",
         "grapes"
-      ],
-      "categoryId": "jobs",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-jobs-sound-engineer",
-      "term": "Sound engineer",
-      "forbiddenWords": [
-        "studio",
-        "microphone",
-        "mixer",
-        "music"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -7571,18 +7595,6 @@
         "scalpel",
         "hospital",
         "doctor"
-      ],
-      "categoryId": "jobs",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-jobs-surveyor",
-      "term": "Surveyor",
-      "forbiddenWords": [
-        "land",
-        "measure",
-        "boundary",
-        "map"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -7619,18 +7631,6 @@
         "vineyard",
         "harvest",
         "bottle"
-      ],
-      "categoryId": "jobs",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-jobs-wood-turner",
-      "term": "Wood turner",
-      "forbiddenWords": [
-        "lathe",
-        "bowl",
-        "shape",
-        "chisel"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -8368,25 +8368,25 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-places-amphitheater",
-      "term": "Amphitheater",
+      "id": "pool-en-places-big-ben",
+      "term": "Big Ben",
       "forbiddenWords": [
-        "Rome",
-        "arena",
-        "gladiators",
-        "ancient"
+        "London",
+        "clock",
+        "tower",
+        "England"
       ],
       "categoryId": "places",
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-places-atoll",
-      "term": "Atoll",
+      "id": "pool-en-places-brandenburg-gate",
+      "term": "Brandenburg Gate",
       "forbiddenWords": [
-        "island",
-        "coral",
-        "Pacific",
-        "ring"
+        "Berlin",
+        "landmark",
+        "columns",
+        "Germany"
       ],
       "categoryId": "places",
       "difficulty": "hard"
@@ -8512,18 +8512,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-places-mausoleum",
-      "term": "Mausoleum",
-      "forbiddenWords": [
-        "tomb",
-        "building",
-        "ruler",
-        "monument"
-      ],
-      "categoryId": "places",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-places-monastery",
       "term": "Monastery",
       "forbiddenWords": [
@@ -8543,6 +8531,18 @@
         "minaret",
         "prayer",
         "dome"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-places-neuschwanstein",
+      "term": "Neuschwanstein",
+      "forbiddenWords": [
+        "fairytale castle",
+        "Bavaria",
+        "King Ludwig",
+        "Disney"
       ],
       "categoryId": "places",
       "difficulty": "hard"
@@ -8704,13 +8704,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-places-uluru",
-      "term": "Uluru",
+      "id": "pool-en-places-vatican",
+      "term": "Vatican",
       "forbiddenWords": [
-        "Australia",
-        "red rock",
-        "sacred",
-        "Aboriginal"
+        "Pope",
+        "Rome",
+        "church",
+        "St. Peter's"
       ],
       "categoryId": "places",
       "difficulty": "hard"
@@ -9580,18 +9580,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-media-editorial",
-      "term": "Editorial",
-      "forbiddenWords": [
-        "newspaper",
-        "opinion",
-        "column",
-        "comment"
-      ],
-      "categoryId": "media",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-media-film-editor",
       "term": "Film editor",
       "forbiddenWords": [
@@ -9628,6 +9616,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-media-hollywood",
+      "term": "Hollywood",
+      "forbiddenWords": [
+        "film city",
+        "stars",
+        "Los Angeles",
+        "sign"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-media-leading-actor",
+      "term": "Leading actor",
+      "forbiddenWords": [
+        "movie",
+        "role",
+        "star",
+        "protagonist"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-media-makeup-artist",
       "term": "Makeup artist",
       "forbiddenWords": [
@@ -9635,30 +9647,6 @@
         "wig",
         "face",
         "cosmetics"
-      ],
-      "categoryId": "media",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-media-metronome",
-      "term": "Metronome",
-      "forbiddenWords": [
-        "beat",
-        "tempo",
-        "piano",
-        "tick"
-      ],
-      "categoryId": "media",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-media-octave",
-      "term": "Octave",
-      "forbiddenWords": [
-        "notes",
-        "scale",
-        "piano",
-        "eight"
       ],
       "categoryId": "media",
       "difficulty": "hard"
@@ -9676,13 +9664,13 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-media-overture",
-      "term": "Overture",
+      "id": "pool-en-media-oscar",
+      "term": "Oscar",
       "forbiddenWords": [
-        "opera",
-        "opening",
-        "orchestra",
-        "beginning"
+        "prize",
+        "Hollywood",
+        "statue",
+        "film"
       ],
       "categoryId": "media",
       "difficulty": "hard"
@@ -9767,6 +9755,18 @@
         "double",
         "jumps",
         "chase"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-media-subtitles",
+      "term": "Subtitles",
+      "forbiddenWords": [
+        "movie",
+        "text",
+        "translate",
+        "read"
       ],
       "categoryId": "media",
       "difficulty": "hard"
@@ -10540,6 +10540,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-tech-artificial-intelligence",
+      "term": "Artificial intelligence",
+      "forbiddenWords": [
+        "computer",
+        "learning",
+        "robot",
+        "future"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-tech-bandwidth",
       "term": "Bandwidth",
       "forbiddenWords": [
@@ -10583,6 +10595,18 @@
         "north",
         "orientation",
         "magnet"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-tech-data-protection",
+      "term": "Data protection",
+      "forbiddenWords": [
+        "private",
+        "law",
+        "internet",
+        "consent"
       ],
       "categoryId": "tech",
       "difficulty": "hard"
@@ -10648,18 +10672,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-tech-gyroscope",
-      "term": "Gyroscope",
-      "forbiddenWords": [
-        "rotation",
-        "spinning",
-        "orientation",
-        "sensor"
-      ],
-      "categoryId": "tech",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-tech-hacker",
       "term": "Hacker",
       "forbiddenWords": [
@@ -10708,6 +10720,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-en-tech-mobile-network",
+      "term": "Mobile network",
+      "forbiddenWords": [
+        "phone",
+        "antenna",
+        "reception",
+        "signal"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-en-tech-nuclear-reactor",
       "term": "Nuclear reactor",
       "forbiddenWords": [
@@ -10727,18 +10751,6 @@
         "program",
         "boot",
         "foundation"
-      ],
-      "categoryId": "tech",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-tech-oscilloscope",
-      "term": "Oscilloscope",
-      "forbiddenWords": [
-        "measurement",
-        "waves",
-        "electronics",
-        "screen"
       ],
       "categoryId": "tech",
       "difficulty": "hard"
@@ -10780,18 +10792,6 @@
       "difficulty": "hard"
     },
     {
-      "id": "pool-en-tech-seismograph",
-      "term": "Seismograph",
-      "forbiddenWords": [
-        "earthquake",
-        "waves",
-        "measure",
-        "ground"
-      ],
-      "categoryId": "tech",
-      "difficulty": "hard"
-    },
-    {
       "id": "pool-en-tech-sensor",
       "term": "Sensor",
       "forbiddenWords": [
@@ -10799,6 +10799,18 @@
         "signal",
         "technology",
         "temperature"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-en-tech-smart-home",
+      "term": "Smart home",
+      "forbiddenWords": [
+        "house",
+        "voice assistant",
+        "connected",
+        "lights"
       ],
       "categoryId": "tech",
       "difficulty": "hard"
@@ -10835,18 +10847,6 @@
         "temperature",
         "picture",
         "heat"
-      ],
-      "categoryId": "tech",
-      "difficulty": "hard"
-    },
-    {
-      "id": "pool-en-tech-transistor",
-      "term": "Transistor",
-      "forbiddenWords": [
-        "electronics",
-        "chip",
-        "switch",
-        "current"
       ],
       "categoryId": "tech",
       "difficulty": "hard"

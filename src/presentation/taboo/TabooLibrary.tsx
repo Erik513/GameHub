@@ -10,7 +10,7 @@ import { mergeStandardCards, type TabooCardPack } from "../../business/games/tab
 import { builtInCategories, mergeCategoryInfos } from "../../business/games/taboo/categories";
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
-import { Button, Icon, StatusMessage } from "../components";
+import { Button, Icon, Toast, useNotice } from "../components";
 import { ManageScreen } from "../game-kit";
 import { useGameBack } from "../GameChrome";
 import { TabooCardEntry } from "./TabooCardEntry";
@@ -42,7 +42,7 @@ export function TabooLibrary({
 }: TabooLibraryProps) {
   const { t } = useTranslation();
   const [ownCards, setOwnCards] = useState<readonly TabooCard[]>();
-  const [feedback, setFeedback] = useState<Feedback>();
+  const [notice, notify] = useNotice<Feedback>();
   const [busy, setBusy] = useState(false);
   const [page, setPage] = useState<"setup" | "cards">("setup");
   const [loadedPack, setLoadedPack] = useState<TabooCardPack>();
@@ -76,13 +76,13 @@ export function TabooLibrary({
         if (active) setOwnCards(saved);
       },
       () => {
-        if (active) setFeedback({ type: "storage" });
+        if (active) notify({ type: "storage" });
       },
     );
     return () => {
       active = false;
     };
-  }, [repository]);
+  }, [notify, repository]);
 
   /** Saves cards that are new (by id and term) and returns how many were added. */
   async function saveCards(incoming: readonly TabooCard[]): Promise<number> {
@@ -109,18 +109,17 @@ export function TabooLibrary({
   async function importCards(file: File) {
     if (!repository) return;
     setBusy(true);
-    setFeedback(undefined);
     try {
       let incoming: readonly TabooCard[];
       try {
         incoming = parseTabooCardFile(await file.text());
       } catch {
-        setFeedback({ type: "invalid" });
+        notify({ type: "invalid" });
         return;
       }
-      setFeedback({ type: "imported", count: await saveCards(incoming) });
+      notify({ type: "imported", count: await saveCards(incoming) });
     } catch {
-      setFeedback({ type: "storage" });
+      notify({ type: "storage" });
     } finally {
       setBusy(false);
     }
@@ -187,22 +186,16 @@ export function TabooLibrary({
             </>
           }
           hint={t("tabooLibrary.hint")}
-          messages={
-            feedback && (
-              <StatusMessage
-                title={t("tabooLibrary.title")}
-                tone={feedback.type === "imported" ? "success" : "error"}
-              >
-                {feedback.type === "imported"
-                  ? t("tabooLibrary.imported", { count: feedback.count })
-                  : t(`tabooLibrary.${feedback.type}`)}
-              </StatusMessage>
-            )
-          }
           title={t("tabooLibrary.title")}
         >
+          {notice && (
+            <Toast key={notice.id} tone={notice.value.type === "imported" ? "success" : "error"}>
+              {notice.value.type === "imported"
+                ? t("tabooLibrary.imported", { count: notice.value.count })
+                : t(`tabooLibrary.${notice.value.type}`)}
+            </Toast>
+          )}
           <TabooCardEntry
-            cardLanguage={cardLanguage}
             cards={allCards}
             categoryInfos={categoryInfos}
             disabled={busy}

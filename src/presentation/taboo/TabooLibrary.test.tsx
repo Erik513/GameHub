@@ -48,7 +48,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   render(view(reopened, [{ ...card, id: "standard-sun", term: "Sun" }]));
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
   // The saved cards load after the page opens; the export only offers them once they are shown.
-  expect(await screen.findByText("1 (1 own)")).toBeVisible();
+  expect(await screen.findByText("Space (EN)", { selector: "summary span" })).toBeVisible();
   fireEvent.click(screen.getByRole("button", { name: "Export" }));
   const exportButton = within(screen.getByRole("dialog")).getByRole("button", {
     name: "Space (1)",
@@ -221,10 +221,10 @@ it.each([
     expect(screen.queryByRole("checkbox", { name: animals })).not.toBeInTheDocument();
     expect(loadCardPack).toHaveBeenCalledWith(language);
 
-    // On the card page every pack category can be chosen for a new card.
+    // On the card page the standard categories are listed but cannot be chosen for a new card.
     fireEvent.click(screen.getByRole("button", { name: language === "de" ? "Karten" : "Cards" }));
     const select = screen.getAllByRole("combobox")[0]!;
-    expect(within(select).getByRole("option", { name: animals })).toBeInTheDocument();
+    expect(within(select).queryByRole("option", { name: animals })).not.toBeInTheDocument();
     expect(screen.getByText(food, { selector: "summary span" })).toBeInTheDocument();
     expect(screen.queryByText(animals, { selector: "summary span" })).not.toBeInTheDocument();
   },

@@ -129,6 +129,8 @@ export function TabooSetup({
     running: runningRound,
   });
   const [deckEmpty, setDeckEmpty] = useState(false);
+  // Counts the start attempts, so a message that is still true is shown again as a notification.
+  const [attempt, setAttempt] = useState(0);
   const [generating, setGenerating] = useState(false);
   const [generationEmpty, setGenerationEmpty] = useState(false);
   const activeGeneration = useRef<AbortController | undefined>(undefined);
@@ -347,6 +349,7 @@ export function TabooSetup({
   /** The main menu: the settings are read once, then the line-up of the teams follows. */
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setAttempt((count) => count + 1);
     if (activeGeneration.current) return;
     const read = readTabooSettings(new FormData(event.currentTarget), {
       categoryIds,
@@ -367,6 +370,7 @@ export function TabooSetup({
 
   /** The line-up: the teams are known now, so the game and its cards are prepared and it starts. */
   async function startGame(event: FormEvent<HTMLFormElement>) {
+    setAttempt((count) => count + 1);
     event.preventDefault();
     if (activeGeneration.current || !settings) return;
     setGenerationEmpty(false);
@@ -531,7 +535,12 @@ export function TabooSetup({
           ariaLabel={t("tabooLineup.label")}
           formId="taboo-lineup-form"
           messages={
-            <TabooSetupMessages deckEmpty={deckEmpty} issues={issues} shortage={shortage} />
+            <TabooSetupMessages
+              attempt={attempt}
+              deckEmpty={deckEmpty}
+              issues={issues}
+              shortage={shortage}
+            />
           }
           onSubmit={(event) => void startGame(event)}
           startDisabled={generating}
@@ -606,6 +615,8 @@ export function TabooSetup({
         key={`form-${formVersion}`}
       >
         <TabooSetupForm
+          attempt={attempt}
+          messagesVisible={!(round ?? session ?? raceSession ?? lineupVisible)}
           cardLanguage={cardLanguage}
           categoryIds={categoryIds}
           categoryInfos={categoryInfos}

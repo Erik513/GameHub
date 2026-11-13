@@ -64,6 +64,14 @@ In allen Ansichten außer dem Hauptmenü, also in Spielansichten und im Editor, 
 
 In **allen Spielmodi** lässt sich ein Ergebnis nachträglich korrigieren, weil ein Fehler beim Drücken passieren kann (zum Beispiel „Richtig“, obwohl ein verbotenes Wort fiel). Die Karten stehen in einer Liste (grün = richtig, rot = falsch, grau = übersprungen und nicht änderbar); ein Tipp schaltet zwischen richtig und falsch um, Wertung und Sieger werden neu berechnet. Klassisch: Liste der Runde in der Rundenübersicht. Stechen und Auf Zeit: Feld „Ergebnis korrigieren“ mit einem aufklappbaren Eintrag pro Team in der Übersicht zwischen den Durchgängen und auf der Endseite. Neue Spielmodi bieten dasselbe an (Baustein `TabooReviewList` beziehungsweise `TabooAttemptReviews`).
 
+### 2.4b Kategorien in der Kartenansicht
+
+Bei jeder Kategorie steht nur die **Kartenanzahl**. Die **Standardkategorien** gibt es in Deutsch und Englisch; das steht als Hinweis in der Kartenansicht (Überschrift der Gruppe), nicht im Hauptmenü. **Eigene Kategorien** gehören zu einer Sprache; sie zeigen sie hinter dem Namen, zum Beispiel „(DE)“, überall, wo sie vorkommen.
+
+**Eigene Karten und Kategorien:** Beim Hinzufügen und Bearbeiten sind nur **eigene Kategorien** wählbar, nicht die Standardkategorien. Eine eigene Kategorie hat **Name und Sprache**, die Sprache wird beim Anlegen festgelegt und gilt für alle Karten darin. Hauptaktionen wie „Karte hinzufügen“ sind grün.
+
+**Englisch ist die primäre Sprache (Auftraggeber, 2026-11-13):** Bei jeder Auswahl einer Sprache ist Englisch die Voreinstellung und steht als **erstes Element** in der Liste, danach Deutsch. Bei der Sprache einer neuen eigenen Kategorie ist Englisch voreingestellt, nicht die Kartensprache der Spieleinstellungen.
+
 ### 2.5 Infofenster
 
 **Lage und Größe:** Jedes Fenster steht **mittig** mit Rand, auf dem Handy wie am PC (höchstens 34 rem breit). Ein Fenster mit Reitern behält für alle Reiter **dieselbe Größe**, damit sich Reiter und Knöpfe beim Wechseln nicht verschieben.
@@ -106,7 +114,7 @@ Weitere Fenstertypen gibt es nicht. Das Fenster hängt an der Seite selbst (nich
 
 ## 6. Weitere feste Regeln
 
-1. **Meldungen** (Fehler, Rückmeldungen) als `StatusMessage` am Anfang des Inhalts, nie als Fenster **[ist]**.
+1. **Meldungen** (Fehler, Rückmeldungen, Bestätigungen) sind **Benachrichtigungen** (`Toast`): ein kleines Feld **immer unten**, das **nach einigen Sekunden von allein verschwindet**, keinen Platz in der Seite braucht und keine Eingaben abfängt. Es gibt **keine Meldungsboxen mehr in der Seite** und keine Fenster für Meldungen. Kurze Meldungen haben **keine Überschrift** (nur den Satz, zum Beispiel „Karte hinzugefügt.“). Fehler melden sich als `alert`, alles andere als `status`. Eine Meldung, die noch gilt, erscheint bei jedem neuen Versuch erneut (neuer `key`, Hilfsmittel `useNotice`) **[ist]**.
 2. **Leere Zustände** mit `EmptyState` und einer Handlung **[ist]**.
 3. **Sortierung:** Standard-Einträge vor eigenen, alphabetisch; Karten nach Schwierigkeit, leicht zuerst; eigene bearbeitbar, mitgelieferte nur lesbar **[ist]**.
 4. **Texte:** alle sichtbaren Texte in Deutsch und Englisch in den Übersetzungsressourcen, gemeinsame im Namensraum `kit`; UI-Sprache und Kartensprache getrennt **[ist]**.
@@ -127,7 +135,7 @@ Alle Ansichten bestehen aus diesen Bausteinen im `game-kit` und in `components`;
 | Infofenster | `Dialog` |
 | Knopfreihe | `ActionRow` (gleich breit, gleich hoch, Reihenfolge wie übergeben) |
 | Spielerverwaltung | `PlayerRosterButton` (Knopf und Fenster: hinzufügen, löschen) und `RosterPicker` (Auswahl aus der Liste im Feld „Teams und Spieler“) |
-| Weiteres | `ConfirmButton`, `Button`, `StatusMessage`, `EmptyState`, `Scoreboard`, `TurnStrip` |
+| Weiteres | `ConfirmButton`, `Button`, `Toast`, `EmptyState`, `Scoreboard`, `TurnStrip` |
 
 Entscheidung: Es gibt bewusst **keinen** zusätzlichen `GameMenu`- und keinen `FinalScreen`-Baustein. `SetupScreen` ist das Hauptmenü, `ScoreScreen` deckt Zwischen- und Endstand ab (so wenige Bausteine wie möglich).
 

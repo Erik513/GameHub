@@ -15,6 +15,7 @@ const allowedIdenticalValues = [
   "kitTeams.defaultName",
   "kitTeams.legend",
   "navigation.pause",
+  "tabooList.count",
   "tabooRace.time",
   "tabooRound.teamTotal",
   "tabooSetup.categoryGroups.standard",

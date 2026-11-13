@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { TabooOutcome } from "../../business/games/taboo/stateMachine";
-import { Button, StatusMessage } from "../components";
+import { Button, Toast } from "../components";
 import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooRoundReview } from "./TabooRoundReview";
 import type { EndedState, OverviewData } from "./tabooSetupModel";
@@ -95,9 +95,9 @@ export function TabooTurnOverview({
       )}
       {deckEmpty && (
         <>
-          <StatusMessage title={t("tabooRound.empty")} tone="error">
+          <Toast title={t("tabooRound.empty")} tone="error">
             {t("tabooRound.exhausted")}
-          </StatusMessage>
+          </Toast>
           <Button variant="secondary" onClick={() => onNewSetup()}>
             {t("tabooResult.newSetup")}
           </Button>

@@ -6,7 +6,8 @@ import { Card } from "./Card";
 import { ConfirmButton } from "./ConfirmButton";
 import { Dialog } from "./Dialog";
 import { EmptyState } from "./EmptyState";
-import { StatusMessage } from "./StatusMessage";
+import { Toast } from "./Toast";
+import { useNotice } from "./useNotice";
 import { TextField } from "./TextField";
 
 describe("presentation components", () => {
@@ -104,32 +105,47 @@ describe("presentation components", () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
-  it("announces loading and success feedback without interrupting the user", () => {
-    const { rerender } = render(
-      <StatusMessage busy title="Loading games">
-        The library is being refreshed.
-      </StatusMessage>,
-    );
+  it("shows a notification that disappears by itself", () => {
+    vi.useFakeTimers();
+    try {
+      const onClose = vi.fn();
+      const { rerender } = render(
+        <Toast onClose={onClose} title="Games loaded" tone="success">
+          The library is ready.
+        </Toast>,
+      );
 
-    expect(screen.getByRole("status")).toHaveAttribute("aria-busy", "true");
+      // It is announced politely and takes no place in the page.
+      expect(screen.getByRole("status")).toHaveTextContent("Games loadedThe library is ready.");
+      expect(document.body.querySelector("#gamehub-toasts")).toContainElement(
+        screen.getByRole("status"),
+      );
+      act(() => void vi.advanceTimersByTime(4900));
+      expect(screen.getByRole("status")).toBeInTheDocument();
+      act(() => void vi.advanceTimersByTime(200));
+      expect(screen.queryByRole("status")).not.toBeInTheDocument();
+      expect(onClose).toHaveBeenCalledOnce();
 
-    rerender(
-      <StatusMessage title="Games loaded" tone="success">
-        The library is ready.
-      </StatusMessage>,
-    );
-
-    expect(screen.getByRole("status")).toHaveTextContent("Games loadedThe library is ready.");
+      // A new key shows the same message again.
+      rerender(
+        <Toast key="again" title="Games loaded" tone="success">
+          The library is ready.
+        </Toast>,
+      );
+      expect(screen.getByRole("status")).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
-  it("announces errors while preserving entered data", async () => {
+  it("announces errors as alerts while preserving entered data", async () => {
     const user = userEvent.setup();
     render(
       <>
         <TextField label="Team name" />
-        <StatusMessage title="Could not save" tone="error">
+        <Toast title="Could not save" tone="error">
           Try again.
-        </StatusMessage>
+        </Toast>
       </>,
     );
 
@@ -138,6 +154,28 @@ describe("presentation components", () => {
 
     expect(screen.getByRole("alert")).toHaveTextContent("Could not saveTry again.");
     expect(input).toHaveValue("Night Owls");
+  });
+
+  it("shows the same notice again for every call of notify", async () => {
+    const user = userEvent.setup();
+    function Demo() {
+      const [notice, notify] = useNotice<string>();
+      return (
+        <>
+          <button onClick={() => notify("Saved")}>Save</button>
+          {notice && (
+            <Toast key={notice.id} title="Card">
+              {notice.value}
+            </Toast>
+          )}
+        </>
+      );
+    }
+    render(<Demo />);
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    // The second call replaces the first one, so there is still exactly one notification.
+    expect(screen.getAllByRole("status")).toHaveLength(1);
   });
 
   it("renders an empty state with an optional recovery action", async () => {
