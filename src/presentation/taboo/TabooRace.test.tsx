@@ -242,97 +242,117 @@ it.each([
   },
 );
 
-it.each([
-  [
-    "en",
-    "Game mode",
-    "Info about Classic",
-    "Classic",
-    "Every card shows a term",
-    "Info about Race",
-    "Race",
-    "guesses all cards the fastest wins",
-  ],
-  [
-    "de",
-    "Spielmodus",
-    "Info zu Klassisch",
-    "Klassisch",
-    "Auf jeder Karte steht ein Begriff",
-    "Info zu Auf Zeit",
-    "Auf Zeit",
-    "am schnellsten errät, gewinnt",
-  ],
-] as const)(
-  "has the rules of every game mode behind its own info button in %s",
-  async (
-    language,
-    legend,
-    classicLabel,
-    classicTitle,
-    classicText,
-    raceLabel,
-    raceTitle,
-    raceText,
-  ) => {
-    const user = userEvent.setup();
-    const i18n = await createGameHubI18n(language);
-    render(
-      <I18nextProvider i18n={i18n}>
-        <TabooSetup cardLanguage={language} cards={tabooStandardCards} />
-      </I18nextProvider>,
-    );
-    const group = screen.getByRole("group", { name: legend });
-    // One info button per mode, inside the mode group.
-    expect(within(group).getAllByRole("button")).toHaveLength(2);
-    const modes: readonly (readonly [string, string, string])[] = [
-      [classicLabel, classicTitle, classicText],
-      [raceLabel, raceTitle, raceText],
-    ];
-    for (const [label, title, text] of modes) {
-      await user.click(within(group).getByRole("button", { name: label }));
-      const dialog = screen.getByRole("dialog", { name: title });
-      expect(dialog).toHaveTextContent(text);
-      // The rules are explained in bullet points.
-      expect(within(dialog).getAllByRole("listitem").length).toBeGreaterThanOrEqual(2);
-      await user.click(
-        within(dialog).getByRole("button", { name: language === "en" ? "Close" : "Schließen" }),
-      );
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    }
-    // Reading the rules does not change the chosen mode.
+const rulesTexts = {
+  en: {
+    legend: "Game mode",
+    open: "Rules",
+    title: "Taboo rules",
+    close: "Close",
+    classic: { label: "Info about Classic", tab: "Classic", text: "Every card shows a term" },
+    race: { label: "Info about Race", tab: "Race", text: "guesses all cards the fastest wins" },
+    tiebreak: { title: "Tiebreak", text: "Every team gets 3 cards" },
+  },
+  de: {
+    legend: "Spielmodus",
+    open: "Spielregeln",
+    title: "Spielregeln Tabu",
+    close: "Schließen",
+    classic: {
+      label: "Info zu Klassisch",
+      tab: "Klassisch",
+      text: "Auf jeder Karte steht ein Begriff",
+    },
+    race: { label: "Info zu Auf Zeit", tab: "Auf Zeit", text: "am schnellsten errät, gewinnt" },
+    tiebreak: { title: "Stechen", text: "Jedes Team bekommt 3 Karten" },
+  },
+} as const;
+
+async function renderSetup(language: "en" | "de") {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n(language);
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup cardLanguage={language} cards={tabooStandardCards} />
+    </I18nextProvider>,
+  );
+  return { text: rulesTexts[language], user };
+}
+
+it.each(["en", "de"] as const)(
+  "shows all game modes as tabs in one rules window in %s",
+  async (language) => {
+    const { text, user } = await renderSetup(language);
+    // The button at the top of the settings opens the window at the chosen game mode.
+    await user.click(screen.getByRole("button", { name: text.open }));
+    const dialog = screen.getByRole("dialog", { name: text.title });
+    const tabs = within(within(dialog).getByRole("tablist")).getAllByRole("tab");
+    expect(tabs.map((tab) => tab.textContent)).toEqual([text.classic.tab, text.race.tab]);
+    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+    // What is the same in every game mode stands above the tabs.
+    expect(within(dialog).getAllByRole("listitem").length).toBeGreaterThanOrEqual(2);
+    expect(within(dialog).getByRole("tabpanel")).toHaveTextContent(text.classic.text);
+
+    // Another tab shows the other rules below; the chosen game mode stays as it is.
+    await user.click(tabs[1]!);
+    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
+    const panel = within(dialog).getByRole("tabpanel");
+    expect(panel).toHaveTextContent(text.race.text);
+    expect(panel).not.toHaveTextContent(text.classic.text);
+    await user.click(within(dialog).getByRole("button", { name: text.close }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    const group = screen.getByRole("group", { name: text.legend });
     expect(
-      within(group).getByRole("radio", { name: new RegExp(`^${classicTitle}`) }),
+      within(group).getByRole("radio", { name: new RegExp(`^${text.classic.tab}`) }),
     ).toBeChecked();
   },
 );
 
-it.each([
-  ["en", "Tiebreak", "Every team gets 3 cards"],
-  ["de", "Stechen", "Jedes Team bekommt 3 Karten"],
-] as const)(
+it.each(["en", "de"] as const)(
+  "opens the rules window at the game mode of the info button and chooses it in %s",
+  async (language) => {
+    const { text, user } = await renderSetup(language);
+    const group = screen.getByRole("group", { name: text.legend });
+    // One info button per game mode, inside the mode group.
+    expect(within(group).getAllByRole("button")).toHaveLength(2);
+
+    await user.click(within(group).getByRole("button", { name: text.race.label }));
+    const dialog = screen.getByRole("dialog", { name: text.title });
+    const tabs = within(dialog).getAllByRole("tab");
+    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
+    expect(within(dialog).getByRole("tabpanel")).toHaveTextContent(text.race.text);
+    await user.click(within(dialog).getByRole("button", { name: text.close }));
+    // The game mode of the info button is chosen now.
+    expect(
+      within(group).getByRole("radio", { name: new RegExp(`^${text.race.tab}`) }),
+    ).toBeChecked();
+
+    await user.click(within(group).getByRole("button", { name: text.classic.label }));
+    const again = screen.getByRole("dialog", { name: text.title });
+    expect(within(again).getByRole("tabpanel")).toHaveTextContent(text.classic.text);
+    await user.click(within(again).getByRole("button", { name: text.close }));
+    expect(
+      within(group).getByRole("radio", { name: new RegExp(`^${text.classic.tab}`) }),
+    ).toBeChecked();
+  },
+);
+
+it.each(["en", "de"] as const)(
   "refers from the classic rules to the tiebreak window in %s",
-  async (language, title, text) => {
-    const user = userEvent.setup();
-    const i18n = await createGameHubI18n(language);
-    render(
-      <I18nextProvider i18n={i18n}>
-        <TabooSetup cardLanguage={language} cards={tabooStandardCards} />
-      </I18nextProvider>,
-    );
-    const closeName = language === "en" ? "Close" : "Schließen";
-    // Open the rules of the classic mode, then the tiebreak from the link in the last bullet.
-    await user.click(screen.getAllByRole("button", { name: /^(Info about|Info zu)/ })[0]!);
-    const rules = screen.getByRole("dialog");
-    const items = within(rules).getAllByRole("listitem");
+  async (language) => {
+    const { text, user } = await renderSetup(language);
+    // Open the rules at the classic tab, then the tiebreak from the link in the last bullet.
+    await user.click(screen.getByRole("button", { name: text.classic.label }));
+    const items = within(screen.getByRole("tabpanel")).getAllByRole("listitem");
     await user.click(
-      within(items[items.length - 1]!).getByRole("button", { name: new RegExp(`^${title}$`, "i") }),
+      within(items[items.length - 1]!).getByRole("button", {
+        name: new RegExp(`^${text.tiebreak.title}$`, "i"),
+      }),
     );
     // The rules window closes and the tiebreak window takes its place.
     const tiebreak = screen.getByRole("dialog");
-    expect(tiebreak).toHaveAccessibleName(title);
-    expect(tiebreak).toHaveTextContent(text);
-    await user.click(within(tiebreak).getByRole("button", { name: closeName }));
+    expect(tiebreak).toHaveAccessibleName(text.tiebreak.title);
+    expect(tiebreak).toHaveTextContent(text.tiebreak.text);
+    await user.click(within(tiebreak).getByRole("button", { name: text.close }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   },
 );

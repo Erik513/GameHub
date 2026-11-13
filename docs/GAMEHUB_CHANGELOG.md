@@ -4,6 +4,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Ein Regelfenster mit allen Spielmodi als Reiter
+
+- Das Fenster „Spielregeln“ ist **ein** Fenster für alle Spielmodi: oben stehen die beiden Regeln, die für jeden Modus gelten (Karte mit 4 verbotenen Wörtern, wie man erklärt), darunter die Spielmodi nebeneinander als Reiter und darunter die Regeln des gewählten Reiters. Der Reiter „Klassisch“ hat den Link zum Fenster „Stechen“ (schließt das Regelfenster, öffnet das Stechen-Fenster). Bedienung auch mit den Pfeiltasten.
+- Der Infoknopf in einem Spielmodus öffnet **dasselbe Fenster** beim Reiter dieses Modus und **wählt den Modus aus**. Das bloße Umschalten der Reiter ändert die Auswahl nicht. Der Knopf „Spielregeln“ öffnet beim gewählten Modus. Dafür gibt es `InfoAction` (Infoknopf ohne eigenes Fenster, `onOpen`) im Baustein `InfoButton` und in `ChoiceOption.info`.
+- Alle Fenster (`Dialog`) stehen jetzt auch auf dem Handy **mittig** mit Rand (vorher auf dem Handy ein Blatt von unten, erst ab 48 rem mittig). Das Regelfenster hat für alle Spielmodi **dieselbe Größe**: die Regeln aller Modi liegen übereinander im Layout und nur die des gewählten Reiters ist sichtbar, so verschieben sich die Reiter und Knöpfe nicht.
+- Tests: Reiter und allgemeine Regeln, Infoknopf wählt den Modus aus, Link zum Stechen, Pfeiltasten (Deutsch und Englisch). Im Browser auf 375 Pixel Breite geprüft.
+
 ### Mehr Karten: alle Kategorien auf 30 je Schwierigkeit (Ta-09-08 abgeschlossen)
 
 - Alle zehn Kategorien haben jetzt je Schwierigkeit 30 Karten: **900 Karten je Sprache** (vorher 523 und 521). Claude hat die Karten geschrieben; ein Vorfilter (nur lokal im Arbeitsordner) entfernte vorhandene Begriffe und begrenzte jede Zelle auf 30, danach liefen `import-card-batch` und `review-card-pool merge` mit den Prüfregeln (zum Beispiel kein verbotenes Wort als Teil des Begriffs).

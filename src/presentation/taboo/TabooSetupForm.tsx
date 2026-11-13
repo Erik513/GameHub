@@ -1,12 +1,12 @@
 import { useState, type FormEvent, type ReactNode } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
 import { defaultRaceTarget, raceTargetChoices } from "../../business/games/taboo/race";
 import type { SupportedLanguage } from "../../i18n";
 import { ChoiceGroup, SetupScreen, SetupSection } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
-import { TabooRules } from "./TabooRules";
+import { TabooRulesButton, TabooRulesDialog } from "./TabooRules";
 import { TabooSetupMessages } from "./TabooSetupMessages";
 import {
   cardSources,
@@ -57,8 +57,10 @@ export function TabooSetupForm({
   shortage,
 }: TabooSetupFormProps) {
   const { t } = useTranslation();
-  // Which of the two linked info windows is open; the rules link to the tiebreak window.
-  const [openInfo, setOpenInfo] = useState<"classic" | "tiebreak" | undefined>(undefined);
+  // The rules window shows the game modes as tabs; the tiebreak has its own window that the rules
+  // of the classic mode link to.
+  const [rules, setRules] = useState<{ open: boolean; tab: TabooMode }>({ open: false, tab: mode });
+  const [tiebreakOpen, setTiebreakOpen] = useState(false);
   const categoryLabel = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);
   const isStandard = (id: string) => categoryInfos.some((info) => info.id === id);
@@ -77,36 +79,11 @@ export function TabooSetupForm({
   const tiebreakInfo = {
     closeLabel: t("settings.close"),
     label: t("tabooSetup.infoLabel", { setting: t("tabooSetup.tiebreak") }),
-    onOpenChange: (open: boolean) => setOpenInfo(open ? "tiebreak" : undefined),
-    open: openInfo === "tiebreak",
+    onOpenChange: setTiebreakOpen,
+    open: tiebreakOpen,
     text: t("tabooSetup.info.tiebreak"),
     title: t("tabooTiebreakInfo.title"),
   };
-  const classicRules = (
-    <ul className="kit-info-list">
-      {t("tabooMode.classicRules")
-        .split("\n")
-        .map((line) => (
-          <li key={line}>{line}</li>
-        ))}
-      <li>
-        <Trans
-          components={{
-            ref: (
-              <button
-                className="kit-link-button"
-                type="button"
-                onClick={() => setOpenInfo("tiebreak")}
-              >
-                {t("tabooTiebreakInfo.title")}
-              </button>
-            ),
-          }}
-          i18nKey="tabooMode.tiebreakRule"
-        />
-      </li>
-    </ul>
-  );
 
   const messages = <TabooSetupMessages deckEmpty={deckEmpty} issues={issues} shortage={shortage} />;
 
@@ -120,7 +97,17 @@ export function TabooSetupForm({
       startLabel={t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
     >
       <SetupSection title={t("kitSetup.settingsSection")}>
-        <TabooRules />
+        <TabooRulesButton onClick={() => setRules({ open: true, tab: mode })} />
+        <TabooRulesDialog
+          open={rules.open}
+          tab={rules.tab}
+          onClose={() => setRules((current) => ({ ...current, open: false }))}
+          onOpenTiebreak={() => {
+            setRules((current) => ({ ...current, open: false }));
+            setTiebreakOpen(true);
+          }}
+          onTabChange={(tab) => setRules({ open: true, tab })}
+        />
         <ChoiceGroup
           initial={mode}
           legend={t("tabooMode.legend")}
@@ -129,18 +116,14 @@ export function TabooSetupForm({
           options={tabooModes.map((value) => ({
             value,
             label: t(`tabooMode.${value}`),
-            // Every game mode has its own rules behind an info button.
+            // The info button opens the shared rules window at the tab of this game mode and
+            // chooses the game mode.
             info: {
-              closeLabel: t("settings.close"),
               label: t("tabooSetup.infoLabel", { setting: t(`tabooMode.${value}`) }),
-              text: value === "classic" ? classicRules : t("tabooMode.raceRules"),
-              title: t(`tabooMode.${value}`),
-              ...(value === "classic"
-                ? {
-                    onOpenChange: (open: boolean) => setOpenInfo(open ? "classic" : undefined),
-                    open: openInfo === "classic",
-                  }
-                : {}),
+              onOpen: () => {
+                onModeChange(value);
+                setRules({ open: true, tab: value });
+              },
             },
           }))}
           value={mode}

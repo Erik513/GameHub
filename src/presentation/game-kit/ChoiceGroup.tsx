@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { InfoButton, type InfoContent } from "./InfoButton";
+import { InfoButton, type InfoAction, type InfoContent } from "./InfoButton";
 
 export interface ChoiceOption {
   readonly value: string;
@@ -11,7 +11,7 @@ export interface ChoiceOption {
   /** Colors the option, for example by difficulty. */
   readonly tone?: "easy" | "medium" | "hard";
   /** An info button inside the option, for example the rules of a game mode. */
-  readonly info?: InfoContent;
+  readonly info?: InfoContent | InfoAction;
 }
 
 interface ChoiceGroupProps {
