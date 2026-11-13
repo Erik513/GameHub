@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Dialog } from "../components";
 
-const sections = ["goal", "turn", "scoring", "skips", "end", "race"] as const;
+const sections = ["goal", "turn", "scoring", "end", "race"] as const;
 
 /** A button that opens the rules of Taboo in a dialog. */
 export function TabooRules() {

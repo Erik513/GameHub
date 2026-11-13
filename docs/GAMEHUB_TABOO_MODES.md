@@ -43,7 +43,7 @@ Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. W
 **Ablauf:**
 
 1. Alle Teams starten mit demselben Konto. Die Teams sind reihum dran.
-2. Das aktive Team bekommt **einen Begriff**. Die Uhr **seines** Kontos läuft herunter. Ein Mitglied erklärt, das eigene Team rät; das Gegnerteam achtet auf verbotene Wörter.
+2. Das aktive Team bekommt **einen Begriff**. Die Uhr **seines** Kontos läuft herunter. Ein Mitglied erklärt, das eigene Team rät. (Ein Aufpassen der Gegner auf verbotene Wörter gibt es in der App nicht; „Verbotenes Wort“ wird vom Team selbst gedrückt.)
 3. **Richtig:** Die Uhr stoppt, die Karte zählt (nur als Information), das **nächste Team** ist dran und bekommt seinen Begriff.
 4. **Verbotenes Wort:** Die Karte wird durch eine neue ersetzt, die Uhr läuft weiter (Annahme). Das kostet Zeit und ist die Strafe.
 5. **Überspringen:** Einmal pro Team (Annahme). Die Karte wird ersetzt, die Uhr läuft weiter. Das Überspringen kostet damit Zeit und kann nicht zum Trödeln benutzt werden.

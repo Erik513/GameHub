@@ -16,14 +16,11 @@ export const tabooTexts = {
   tabooRules: {
     open: "Spielregeln",
     title: "Spielregeln Tabu",
-    goal: "Ziel: Dein Team soll möglichst viele Begriffe erraten, ohne dass du die verbotenen Wörter der Karte sagst.",
-    turn: "Ablauf: Die Teams sind reihum dran. Ein Mitglied erklärt, die anderen im Team raten. Alle Gegner passen auf die verbotenen Wörter auf.",
-    scoring:
-      "Wertung: Ein erratener Begriff gibt einen Punkt. Überspringen und verbotene Wörter geben keinen Punkt. Nach der Runde kannst du Wertungen noch ändern.",
-    skips:
-      "Überspringen: Pro Runde darf ein Team nur so oft überspringen, wie in den Optionen eingestellt ist.",
-    end: "Spielende: Wenn alle Runden gespielt sind, gewinnt das Team mit den meisten Punkten. Bei Gleichstand folgt auf Wunsch das Stechen: Jedes Team erklärt drei Begriffe auf Zeit.",
-    race: "Auf Zeit: Jedes Team spielt einen eigenen Lauf und löst die gewählte Zahl Karten so schnell wie möglich. Einmal überspringen ist erlaubt, ein verbotenes Wort bringt eine neue Karte und kostet nur Zeit. Die kürzeste Zeit gewinnt, gleiche Zeiten gewinnen gemeinsam.",
+    goal: "Ziel: Auf jeder Karte steht ein Begriff und 4 verbotene Wörter. Du erklärst den Begriff, dein Team rät.",
+    turn: "Verboten: Du darfst die 4 verbotenen Wörter nicht sagen, auch nicht den Begriff selbst oder Teile davon. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.",
+    scoring: "Punkte: Jeder erratene Begriff gibt 1 Punkt.",
+    end: "Spielende: Die Teams sind reihum dran. Die meisten Punkte nach allen Runden gewinnen.",
+    race: "Auf Zeit: Jedes Team spielt allein, die kürzeste Zeit gewinnt.",
   },
   tabooEntry: {
     title: "Karte hinzufügen ({{language}})",
@@ -85,7 +82,15 @@ export const tabooTexts = {
     label: "Aufstellung",
     start: "Spiel starten",
   },
+  tabooTiebreakInfo: {
+    title: "Stechen",
+  },
   tabooMode: {
+    tiebreakRule: "Bei Unentschieden gibt es ein <ref>Stechen</ref>.",
+    classicRules:
+      "Auf jeder Karte steht ein Begriff mit 4 verbotenen Wörtern.\nEin Spieler erklärt den Begriff seinem Team, ohne die 4 verbotenen Wörter, den Begriff selbst oder Teile davon zu sagen. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.\nFür jeden erratenen Begriff gibt es 1 Punkt. Das Team mit den meisten Punkten gewinnt.",
+    raceRules:
+      "Jedes Team erklärt allein die gewählte Zahl Karten, so schnell es kann.\nDie kürzeste Zeit gewinnt.",
     legend: "Spielmodus",
     classic: "Klassisch",
     race: "Auf Zeit",
@@ -161,19 +166,18 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info zu {{setting}}",
     info: {
-      mode: "Klassisch spielt Runden um Punkte. Auf Zeit: Jedes Team löst nacheinander dieselbe Zahl Karten, die kürzeste Zeit gewinnt.",
       raceTarget:
-        "Wie viele Karten jedes Team lösen muss. Jedes Team bekommt dieselbe Mischung aus leichten, mittleren und schweren Karten. Jedes Team darf einmal überspringen.",
+        "Wie viele Karten jedes Team erklärt.\nAlle Teams bekommen gleich schwere Karten.\nJedes Team darf einmal überspringen.",
       rounds:
-        "Eine Runde ist vorbei, wenn jedes Team einmal an der Reihe war. Kurz sind 3 Runden, Mittel 5 und Lang 10. Bei ∞ spielt ihr, bis ihr nach einer vollständig gespielten Runde das Ergebnis anzeigen lasst.",
+        "Eine Runde ist vorbei, wenn jedes Team einmal dran war. Kurz sind 3 Runden, Mittel 5, Lang 10.\nBei ∞ könnt ihr nach jeder Runde aufhören.",
       cardSource:
-        "Nur lokal nutzt die mitgelieferten Karten, auch ohne Internet. Nur KI erstellt die Karten mit dem lokalen KI-Generator und lädt während der Runde nach. Beides mischt lokale und KI-Karten. Ohne KI bleibt das Spiel mit den lokalen Karten spielbar.",
+        "Nur lokal: Karten aus der App, auch ohne Internet.\nNur KI: Die lokale KI macht die Karten und lädt in der Runde nach.\nBeides: gemischt. Ohne KI klappt das Spiel mit den lokalen Karten.",
       tiebreak:
-        "Liegen nach der letzten Runde zwei oder drei Teams gleichauf, erklärt jedes davon drei Begriffe auf Zeit. Ein verbotenes Wort zählt als falsch und bringt eine neue Karte, einmal überspringen ist erlaubt. Wer die meisten Begriffe in der kürzesten Zeit schafft, gewinnt. Ist das Stechen aus, gewinnen gleichauf liegende Teams gemeinsam.",
+        "Liegen nach der letzten Runde 2 bis 3 Teams an der Spitze gleichauf, spielen sie ein Stechen.\nJedes Team bekommt 3 Karten (leicht, mittel, schwer) und 90 Sekunden.\nWer mehr Karten schafft, gewinnt; bei gleich vielen die schnellere Zeit.\nEin verbotenes Wort zählt als falsch, einmal überspringen ist erlaubt.\nAus: Teams mit gleichen Punkten gewinnen gemeinsam.",
       skips:
-        "Wie oft ein Team pro Runde einen Begriff überspringen darf, ohne Punkt und ohne Strafe. Bei „Nie“ ist Überspringen gesperrt, bei ∞ darf beliebig oft übersprungen werden.",
+        "So oft darf ein Team pro Runde eine Karte überspringen, ohne Punkt und ohne Strafe.\nNie: gesperrt. ∞: so oft ihr wollt.",
       difficulty:
-        "Die Schwierigkeit zeigt, wie schwer ein Begriff zu erklären ist. „Alle“ mischt einfache, mittlere und schwere Karten. Beim Stechen kommt immer je eine Karte jeder Schwierigkeit dran.",
+        "Die Schwierigkeit zeigt, wie schwer eine Karte zu erklären ist. Alle mischt leichte, mittlere und schwere Karten.\nDu kannst mehrere wählen.",
     },
     raceCardShortage:
       "Zu wenige Karten der Schwierigkeit {{difficulty}}: {{available}} vorhanden, {{required}} nötig, damit jedes Team dieselbe Mischung bekommt.",

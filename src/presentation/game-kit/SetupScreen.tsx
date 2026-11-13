@@ -13,16 +13,12 @@ interface SetupScreenProps {
   readonly onSubmit: FormEventHandler<HTMLFormElement>;
   readonly startDisabled?: boolean;
   readonly startLabel: string;
-  /** The button that explains the rules of the game; every game has one. */
-  readonly rules: ReactNode;
-  /** The button to the editor of the game's own content; only games with own content have one. */
-  readonly editor?: ReactNode;
 }
 
 /**
- * The main menu frame of every game: messages, the buttons for the rules and the optional editor
- * at the top right, the form with its sections and the start button pinned to the bottom. The
- * game fills in its own sections.
+ * The main menu frame of every game: messages, the form with its sections and the start button
+ * pinned to the bottom. The rules button belongs in the game settings section, the button to the
+ * editor in the section of the game's own content; the game puts them there.
  */
 export function SetupScreen({
   children,
@@ -32,16 +28,10 @@ export function SetupScreen({
   onSubmit,
   startDisabled = false,
   startLabel,
-  editor,
-  rules,
 }: SetupScreenProps) {
   return (
     <>
       {messages}
-      <div className="kit-setup-toolbar">
-        {editor}
-        {rules}
-      </div>
       <form id={formId} noValidate onChange={onChange} onSubmit={onSubmit}>
         {children}
       </form>

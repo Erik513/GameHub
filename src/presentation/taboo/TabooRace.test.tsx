@@ -241,3 +241,98 @@ it.each([
     expect(screen.queryByRole("region", { name: text.overview })).not.toBeInTheDocument();
   },
 );
+
+it.each([
+  [
+    "en",
+    "Game mode",
+    "Info about Classic",
+    "Classic",
+    "Every card shows a term",
+    "Info about Race",
+    "Race",
+    "shortest time wins",
+  ],
+  [
+    "de",
+    "Spielmodus",
+    "Info zu Klassisch",
+    "Klassisch",
+    "Auf jeder Karte steht ein Begriff",
+    "Info zu Auf Zeit",
+    "Auf Zeit",
+    "kürzeste Zeit gewinnt",
+  ],
+] as const)(
+  "has the rules of every game mode behind its own info button in %s",
+  async (
+    language,
+    legend,
+    classicLabel,
+    classicTitle,
+    classicText,
+    raceLabel,
+    raceTitle,
+    raceText,
+  ) => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n(language);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup cardLanguage={language} cards={tabooStandardCards} />
+      </I18nextProvider>,
+    );
+    const group = screen.getByRole("group", { name: legend });
+    // One info button per mode, inside the mode group.
+    expect(within(group).getAllByRole("button")).toHaveLength(2);
+    const modes: readonly (readonly [string, string, string])[] = [
+      [classicLabel, classicTitle, classicText],
+      [raceLabel, raceTitle, raceText],
+    ];
+    for (const [label, title, text] of modes) {
+      await user.click(within(group).getByRole("button", { name: label }));
+      const dialog = screen.getByRole("dialog", { name: title });
+      expect(dialog).toHaveTextContent(text);
+      // The rules are explained in bullet points.
+      expect(within(dialog).getAllByRole("listitem").length).toBeGreaterThanOrEqual(2);
+      await user.click(
+        within(dialog).getByRole("button", { name: language === "en" ? "Close" : "Schließen" }),
+      );
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    }
+    // Reading the rules does not change the chosen mode.
+    expect(
+      within(group).getByRole("radio", { name: new RegExp(`^${classicTitle}`) }),
+    ).toBeChecked();
+  },
+);
+
+it.each([
+  ["en", "Tiebreak", "Every team gets 3 cards"],
+  ["de", "Stechen", "Jedes Team bekommt 3 Karten"],
+] as const)(
+  "refers from the classic rules to the tiebreak window in %s",
+  async (language, title, text) => {
+    const user = userEvent.setup();
+    const i18n = await createGameHubI18n(language);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <TabooSetup cardLanguage={language} cards={tabooStandardCards} />
+      </I18nextProvider>,
+    );
+    const closeName = language === "en" ? "Close" : "Schließen";
+    // Open the rules of the classic mode, then the tiebreak from the link in the last bullet.
+    await user.click(screen.getAllByRole("button", { name: /^(Info about|Info zu)/ })[0]!);
+    const rules = screen.getByRole("dialog");
+    const items = within(rules).getAllByRole("listitem");
+    await user.click(
+      within(items[items.length - 1]!).getByRole("button", { name: new RegExp(`^${title}$`, "i") }),
+    );
+    // The rules window closes and the tiebreak window takes its place.
+    const tiebreak = screen.getByRole("dialog");
+    expect(tiebreak).toHaveAccessibleName(title);
+    expect(tiebreak).toHaveTextContent(text);
+    await user.click(within(tiebreak).getByRole("button", { name: closeName }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  },
+);

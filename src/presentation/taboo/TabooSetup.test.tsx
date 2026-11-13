@@ -250,12 +250,13 @@ it("lets the group finish an unlimited game after every completed round", async 
 });
 
 it.each([
-  ["Rounds per team", "A round is over when every team has had one turn."],
-  ["Card source", "Local only uses the cards that ship with the app"],
-  ["Tiebreak on a tie", "each of them explains three cards against the clock"],
-  ["Skips per round", "without a point and without a penalty"],
-  ["Difficulty", "The difficulty shows how hard a card is to explain."],
-])("explains the setting %s in an info dialog", async (setting, excerpt) => {
+  ["Rounds per team", "A round is over when every team has had one turn.", "Rounds per team"],
+  ["Card source", "Local only: the cards that come with the app", "Card source"],
+  // The tiebreak has its own window with its own title.
+  ["Tiebreak on a tie", "Every team gets 3 cards", "Tiebreak"],
+  ["Skips per round", "no point and no penalty", "Skips per round"],
+  ["Difficulty", "The difficulty shows how hard a card is to explain.", "Difficulty"],
+])("explains the setting %s in an info dialog", async (setting, excerpt, title) => {
   const i18n = await createGameHubI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
@@ -272,7 +273,7 @@ it.each([
     </I18nextProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: `Info about ${setting}` }));
-  const dialog = screen.getByRole("dialog", { name: setting });
+  const dialog = screen.getByRole("dialog", { name: title });
   expect(dialog.textContent).toContain(excerpt);
   fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
   // Reading the explanation neither starts nor changes the game.

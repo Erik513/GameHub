@@ -687,6 +687,16 @@ Vorschlag für den Aufbau:
 - **Tests:** Contract-Tests und Architekturprüfung.
 - **Status:** planned
 
+### Phase 19 – Imposter
+
+Eigenständiges lokales Spiel für mindestens drei Personen. Die vereinbarten Regeln stehen in [GAMEHUB_IMPOSTER.md](GAMEHUB_IMPOSTER.md).
+
+- `PH-19-01` – Spielzustände, zufällige Rollen und Hinweisrunden mit optionaler dritter Runde (geplant)
+- `PH-19-02` – Verdeckte Rollenanzeige mit Hochziehen, Loslassen und Weiterreichen (geplant)
+- `PH-19-03` – Offene und geheime Abstimmung, Stichwahl und Auflösung (geplant)
+- `PH-19-04` – Begriffe mit optionalem Hilfswort für Deutsch und Englisch (geplant)
+- `PH-19-05` – Mobile Einrichtung, Spielmenü und Prüfung der vollständigen Spielabläufe (geplant)
+
 ## 6. Abhängigkeiten und Reihenfolge
 
 - Phase 1 ist Voraussetzung für alle Implementierungsphasen.

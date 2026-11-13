@@ -10,6 +10,8 @@ export interface ChoiceOption {
   readonly hint?: string;
   /** Colors the option, for example by difficulty. */
   readonly tone?: "easy" | "medium" | "hard";
+  /** An info button inside the option, for example the rules of a game mode. */
+  readonly info?: InfoContent;
 }
 
 interface ChoiceGroupProps {
@@ -67,33 +69,43 @@ export function ChoiceGroup({
         className="kit-choice-grid kit-choice-grid--equal"
         style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
       >
-        {options.map(({ value, label, ariaLabel, hint, tone }) => (
-          <label className="kit-choice" data-tone={tone} key={value}>
-            {multiple ? (
-              <input
-                checked={selected.includes(value)}
-                name={value === "" ? undefined : name}
-                onChange={() => toggle(value)}
-                type="checkbox"
-                value={value}
-              />
-            ) : (
-              <input
-                {...(controlled === undefined
-                  ? { defaultChecked: value === initial }
-                  : { checked: controlled === value })}
-                name={name}
-                onChange={() => onChange?.(value)}
-                type="radio"
-                value={value}
-              />
-            )}
-            <span aria-label={ariaLabel}>
-              {label}
-              {hint && <small>{hint}</small>}
-            </span>
-          </label>
-        ))}
+        {options.map(({ value, label, ariaLabel, hint, tone, info: optionInfo }) => {
+          const choice = (
+            <label className="kit-choice" data-tone={tone} key={value}>
+              {multiple ? (
+                <input
+                  checked={selected.includes(value)}
+                  name={value === "" ? undefined : name}
+                  onChange={() => toggle(value)}
+                  type="checkbox"
+                  value={value}
+                />
+              ) : (
+                <input
+                  {...(controlled === undefined
+                    ? { defaultChecked: value === initial }
+                    : { checked: controlled === value })}
+                  name={name}
+                  onChange={() => onChange?.(value)}
+                  type="radio"
+                  value={value}
+                />
+              )}
+              <span aria-label={ariaLabel}>
+                {label}
+                {hint && <small>{hint}</small>}
+              </span>
+            </label>
+          );
+          return optionInfo ? (
+            <div className="kit-choice-wrap" key={value}>
+              {choice}
+              <InfoButton {...optionInfo} className="kit-info-button--option" />
+            </div>
+          ) : (
+            choice
+          );
+        })}
       </div>
     </fieldset>
   );

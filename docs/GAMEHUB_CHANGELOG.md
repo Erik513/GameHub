@@ -4,6 +4,27 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Stechen-Ansicht mit Verweis aus den Regeln
+
+- Neuer letzter Stichpunkt in den Regeln „Klassisch“: „Bei Unentschieden gibt es ein **Stechen**.“ Das Wort „Stechen“ ist ein Link: Ein Klick schließt das Fenster des Modus und öffnet das eigene Fenster „Stechen“ (Deutsch und Englisch, Text `tabooSetup.info.tiebreak`, Titel `tabooTiebreakInfo.title`). Derselbe Infoknopf sitzt jetzt in der Option „An“ unter „Stechen bei Gleichstand“ statt an der Überschrift. Kein größerer Abstand mehr beim letzten Punkt.
+- `InfoButton` kann von außen gesteuert werden (`open`, `onOpenChange`) und zeigt Inhalte, die kein Text sind, in einem `div`; neue Klasse `kit-link-button` für Links im Text. Regel in `docs/GAMEHUB_UI_RULES.md`.
+- Tests: Link aus den Regeln öffnet das Fenster „Stechen“ und schließt das Regelfenster (beide Sprachen), Fenstertitel der Einstellung angepasst.
+
+### Spielregeln und Karten in ihren Kapiteln, Regeln pro Spielmodus
+
+- Die Werkzeugleiste unter der Kopfleiste ist weg. Der Knopf „Spielregeln“ steht ganz oben im Feld „Spieleinstellungen“, der Knopf „Karten“ (Editor) ganz oben im Feld „Karten“ (`ADR-021`, `docs/GAMEHUB_UI_RULES.md`). `SetupScreen` hat dafür keine Plätze `rules` und `editor` mehr.
+- Regel ergänzt: Jeder Spielmodus hat einen aufklärenden Infoknopf, der beim Klick die Auswahl nicht ändert und den Modus in einem eigenen Fenster erklärt.
+- Jeder Spielmodus hat seine eigenen Regeln hinter einem Infoknopf in seiner Auswahlkarte (neu: `ChoiceOption.info` und `InfoButton` mit `className`). Das Fenster erklärt nur diesen Modus (neue Texte `tabooMode.classicRules` und `tabooMode.raceRules`, Deutsch und Englisch). Der einzelne Infoknopf an der Überschrift der Gruppe ist ersetzt; das allgemeine Fenster „Spielregeln“ bleibt.
+- Regeln „Klassisch“ korrigiert: Der Satz „Die Gegner achten auf verbotene Wörter“ ist gestrichen (das kann die App nicht; auch im Fenster „Spielregeln“). Das **Stechen** wird nicht beim Spielmodus erklärt, sondern beim Infoknopf der Einstellung „Stechen bei Gleichstand“ (wer mitspielt, 3 Karten leicht, mittel, schwer, 90 Sekunden, Wertung, gemeinsamer Sieg bei „Aus“).
+- Klassisch: Punkte und Sieg in einem Stichpunkt zusammengefasst („Für jeden erratenen Begriff gibt es 1 Punkt. Das Team mit den meisten Punkten gewinnt.“), jetzt 3 Punkte.
+- Die Regeln der Modi sagen nur noch kurz, **was man tun muss und wie man gewinnt** (Klassisch 3 Punkte, Auf Zeit 2). Überspringen, verbotene Wörter als Knopf und die Namen der Knöpfe stehen nicht mehr dort, weil Einstellungen und Knöpfe in der Runde selbsterklärend sind. Im Fenster „Spielregeln“ entfällt die Zeile zum Überspringen, die Wertung nennt nur noch den Punkt für jeden erratenen Begriff.
+- Alle Erklärungen noch kürzer: zusammengehörige Aussagen stehen in **einem** Stichpunkt statt in mehreren (Klassisch jetzt 5 Punkte, Auf Zeit 3, Stechen 5). Zum Beispiel: „Ein Spieler erklärt den Begriff seinem Team, ohne die 4 verbotenen Wörter, den Begriff selbst oder Teile davon zu sagen.“ und „Jeder erratene Begriff gibt 1 Punkt.“ Regel dazu in `docs/GAMEHUB_UI_RULES.md`.
+- Regeln „Klassisch“ von Grund auf verständlich neu geschrieben, für jemanden, der Tabu nicht kennt: Auf jeder Karte steht ein Begriff und 4 verbotene Wörter; man darf sie nicht sagen, auch nicht den Begriff selbst oder Teile davon (Beispiel „Fußball“ und „Ball“); die Knöpfe „Richtig“, „Verbotenes Wort“ und „Überspringen“ sind mit ihren echten Namen erklärt; die Zeit läuft, danach ist das nächste Team dran. Dasselbe im Fenster „Spielregeln“ (Deutsch und Englisch).
+- Alle Regeln und Erklärungen (Fenster „Spielregeln“, Infoknöpfe der Einstellungen und der Modi) einfacher und kürzer formuliert und als Stichpunkte geschrieben (Deutsch und Englisch). Regel dafür in `docs/GAMEHUB_UI_RULES.md`.
+- Die Erklärungen der Spielmodi und „Karten pro Team“ stehen jetzt in **Stichpunkten** (eine kurze Aussage pro Punkt, Deutsch und Englisch). `InfoButton` zeigt einen Text mit mehreren Zeilen als Liste; die Regel steht in `docs/GAMEHUB_UI_RULES.md`. Das allgemeine Fenster „Spielregeln“ hat für „Auf Zeit“ einen kurzen Satz.
+- Infoknopf in der Auswahlkarte: Die Animation beim Klicken ist behoben (die senkrechte Zentrierung per `transform` sprang, weil Knöpfe beim Drücken per `transform` kleiner werden; jetzt ohne `transform` zentriert). Die Regeln „Auf Zeit“ (Infoknopf, Fenster „Spielregeln“) und die Erklärung „Karten pro Team“ sind in einfachen kurzen Sätzen neu formuliert (Deutsch und Englisch).
+- Tests: Infoknöpfe pro Modus in beiden Sprachen, Kapitel mit Regeln und Editor im `SetupScreen`-Test. Im Browser auf 375 Pixel Breite geprüft, die Layoutprüfung bleibt grün (Infoknöpfe 44 Pixel).
+
 ### Kopfleiste umgebaut
 
 - Neue Regel: Links steht der Spielname (der blaue Punkt davor ist entfernt), rechts die Knöpfe **Spieler**, **Einstellungen** und ganz rechts **Home**. Home steht immer ganz rechts. (Zwischenstände mit Home links und mittigem Namen wurden am selben Tag wieder verworfen.)

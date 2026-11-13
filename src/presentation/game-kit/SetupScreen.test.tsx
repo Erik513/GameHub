@@ -8,7 +8,7 @@ import { PlayersSetup } from "./PlayersSetup";
 import { SetupScreen } from "./SetupScreen";
 import { SetupSection } from "./SetupSection";
 
-it("frames the sections with messages, the rules and editor buttons and a start button that submits the form", async () => {
+it("frames the sections with messages and a start button that submits the form, with the rules and editor buttons in their chapters", async () => {
   const onSubmit = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
   const onChange = vi.fn();
   render(
@@ -18,20 +18,28 @@ it("frames the sections with messages, the rules and editor buttons and a start 
       onChange={onChange}
       onSubmit={onSubmit}
       startLabel="Start"
-      editor={<button type="button">Editor</button>}
-      rules={<button type="button">Rules</button>}
     >
       <SetupSection title="Teams and players">
         <input aria-label="Team name" />
       </SetupSection>
       <SetupSection title="Game settings">
-        <p>Settings</p>
+        <button type="button">Rules</button>
+      </SetupSection>
+      <SetupSection title="Cards">
+        <button type="button">Editor</button>
       </SetupSection>
     </SetupScreen>,
   );
   expect(screen.getByRole("alert")).toHaveTextContent("Something is wrong");
-  expect(screen.getByRole("button", { name: "Rules" })).toBeVisible();
-  expect(screen.getByRole("button", { name: "Editor" })).toBeVisible();
+  // The rules belong to the game settings, the editor to the chapter of the cards.
+  expect(
+    within(screen.getByRole("region", { name: "Game settings" })).getByRole("button", {
+      name: "Rules",
+    }),
+  ).toBeVisible();
+  expect(
+    within(screen.getByRole("region", { name: "Cards" })).getByRole("button", { name: "Editor" }),
+  ).toBeVisible();
   const teams = screen.getByRole("region", { name: "Teams and players" });
   expect(within(teams).getByRole("textbox", { name: "Team name" })).toBeVisible();
   expect(screen.getByRole("region", { name: "Game settings" })).toBeVisible();
@@ -44,12 +52,7 @@ it("frames the sections with messages, the rules and editor buttons and a start 
 
 it("lets every chapter be collapsed and expanded", async () => {
   render(
-    <SetupScreen
-      formId="demo"
-      onSubmit={vi.fn()}
-      rules={<button type="button">Rules</button>}
-      startLabel="Start"
-    >
+    <SetupScreen formId="demo" onSubmit={vi.fn()} startLabel="Start">
       <SetupSection title="Teams">
         <input aria-label="Team name" />
       </SetupSection>
@@ -66,20 +69,13 @@ it("lets every chapter be collapsed and expanded", async () => {
   expect(screen.getByRole("textbox", { name: "Setting" })).toBeVisible();
 });
 
-it("can lock the start button and works without messages or editor", () => {
+it("can lock the start button and works without messages", () => {
   render(
-    <SetupScreen
-      formId="demo"
-      onSubmit={vi.fn()}
-      rules={<button type="button">Rules</button>}
-      startDisabled
-      startLabel="Preparing"
-    >
+    <SetupScreen formId="demo" onSubmit={vi.fn()} startDisabled startLabel="Preparing">
       <p>Body</p>
     </SetupScreen>,
   );
   expect(screen.getByRole("button", { name: "Preparing" })).toBeDisabled();
-  expect(screen.queryByRole("button", { name: "Editor" })).not.toBeInTheDocument();
 });
 
 it.each([

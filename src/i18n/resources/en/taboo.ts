@@ -16,13 +16,11 @@ export const tabooTexts = {
   tabooRules: {
     open: "Rules",
     title: "Taboo rules",
-    goal: "Goal: Your team tries to guess as many words as possible, without you saying the forbidden words on the card.",
-    turn: "Turns: Teams take turns. One member explains while the rest of the team guesses. The opponents watch for forbidden words.",
-    scoring:
-      "Scoring: A guessed word scores one point. Skipping and forbidden words score nothing. After the turn you can still change the results.",
-    skips: "Skipping: A team may only skip as often per round as set in the options.",
-    end: "End of game: When all rounds are played, the team with the most points wins. If tied, the tiebreak follows if enabled: each team explains three words against the clock.",
-    race: "Race: Every team plays one run on its own and solves the chosen number of cards as fast as possible. One skip is allowed, a forbidden word brings a new card and only costs time. The shortest time wins, equal times win together.",
+    goal: "Goal: Every card shows a term and 4 forbidden words. You explain the term, your team guesses.",
+    turn: "Forbidden: You must not say the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.",
+    scoring: "Points: Every guessed term gives 1 point.",
+    end: "End: The teams take turns. The most points after all rounds win.",
+    race: "Race: Every team plays alone, the shortest time wins.",
   },
   tabooEntry: {
     title: "Add card ({{language}})",
@@ -83,7 +81,15 @@ export const tabooTexts = {
     label: "Line-up",
     start: "Start game",
   },
+  tabooTiebreakInfo: {
+    title: "Tiebreak",
+  },
   tabooMode: {
+    tiebreakRule: "On a tie there is a <ref>tiebreak</ref>.",
+    classicRules:
+      "Every card shows a term with 4 forbidden words.\nOne player explains the term to their team without saying the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.\nEvery guessed term scores 1 point. The team with the most points wins.",
+    raceRules:
+      "Every team plays alone and explains the chosen number of cards as fast as it can.\nThe shortest time wins.",
     legend: "Game mode",
     classic: "Classic",
     race: "Race",
@@ -159,19 +165,18 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info about {{setting}}",
     info: {
-      mode: "Classic plays rounds for points. Race: every team solves the same number of cards one after another, the shortest time wins.",
       raceTarget:
-        "How many cards every team has to solve. Every team gets the same mix of easy, medium and hard cards. Each team may skip once.",
+        "How many cards every team explains.\nAll teams get cards of the same difficulty.\nEvery team may skip once.",
       rounds:
-        "A round is over when every team has had one turn. Short is 3 rounds, Medium 5 and Long 10. With ∞ you play until you show the result after a completed round.",
+        "A round is over when every team has had one turn. Short is 3 rounds, Medium 5, Long 10.\nWith ∞ you can stop after any round.",
       cardSource:
-        "Local only uses the cards that ship with the app, even offline. AI only creates the cards with the local AI generator and reloads during the round. Both mixes local and AI cards. Without AI the game stays playable with the local cards.",
+        "Local only: the cards that come with the app, also offline.\nAI only: the local AI makes the cards and adds more during the round.\nBoth: mixed. Without AI the game works with the local cards.",
       tiebreak:
-        "If two or three teams are tied after the last round, each of them explains three cards against the clock. A forbidden word counts as wrong and brings a new card, one skip is allowed. The most cards in the shortest time wins. With the tiebreak off, tied teams win together.",
+        "If 2 to 3 teams are tied at the top after the last round, they play a tiebreak.\nEvery team gets 3 cards (easy, medium, hard) and 90 seconds.\nThe team with more correct cards wins; with the same number the faster team.\nA forbidden word counts as wrong, one skip is allowed.\nOff: teams with the same points win together.",
       skips:
-        "How often a team may skip a card per round, without a point and without a penalty. With None skipping is blocked, with ∞ you may skip as often as you like.",
+        "A team may skip a card this often per round, with no point and no penalty.\nNone: blocked. ∞: as often as you like.",
       difficulty:
-        "The difficulty shows how hard a card is to explain. All mixes easy, medium and hard cards. The tiebreak always uses one card of each difficulty.",
+        "The difficulty shows how hard a card is to explain. All mixes easy, medium and hard cards.\nYou can choose more than one.",
     },
     raceCardShortage:
       "Not enough {{difficulty}} cards: {{available}} available, {{required}} needed so that every team gets the same mix.",
