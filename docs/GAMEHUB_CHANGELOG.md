@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Mehr Karten: alle Kategorien auf 30 je Schwierigkeit (Ta-09-08 abgeschlossen)
+
+- Alle zehn Kategorien haben jetzt je Schwierigkeit 30 Karten: **900 Karten je Sprache** (vorher 523 und 521). Claude hat die Karten geschrieben; ein Vorfilter (nur lokal im Arbeitsordner) entfernte vorhandene Begriffe und begrenzte jede Zelle auf 30, danach liefen `import-card-batch` und `review-card-pool merge` mit den Prüfregeln (zum Beispiel kein verbotenes Wort als Teil des Begriffs).
+- Nach dem Einbau stichprobenartig auf Wortstämme geprüft: neun neue Karten mit abgeleiteten Wörtern („aufpumpen“ bei „Fahrradpumpe“, „wenden“ bei „Pfannenwender“, „Zauberstab“ bei „Zauberer“ und weitere) bekamen andere verbotene Wörter; ebenso zwei englische Karten.
+- Tests: alle 574 grün, Pool-Tests prüfen jede Karte mit der Kartenprüfung.
+
 ### Mehr Karten: Probelauf Essen und Trinken (Ta-09-08)
 
 - Ziel festgelegt: 30 Karten je Schwierigkeit und Kategorie (900 je Sprache). Die Karten schreibt Claude, kein lokales Modell; die Skripte `import-card-batch` und `review-card-pool merge` prüfen sie mit den Prüfregeln und bauen sie ein.

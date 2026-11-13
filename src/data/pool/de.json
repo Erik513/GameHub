@@ -88,6 +88,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-everyday-brille",
+      "term": "Brille",
+      "forbiddenWords": [
+        "Gläser",
+        "sehen",
+        "Nase",
+        "Bügel"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-everyday-decke",
       "term": "Decke",
       "forbiddenWords": [
@@ -136,6 +148,42 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-everyday-hose",
+      "term": "Hose",
+      "forbiddenWords": [
+        "Beine",
+        "Jeans",
+        "Gürtel",
+        "anziehen"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-everyday-jacke",
+      "term": "Jacke",
+      "forbiddenWords": [
+        "Reißverschluss",
+        "Ärmel",
+        "warm",
+        "anziehen"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-everyday-kamm",
+      "term": "Kamm",
+      "forbiddenWords": [
+        "Haare",
+        "kämmen",
+        "Zinken",
+        "Frisur"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-everyday-kerze",
       "term": "Kerze",
       "forbiddenWords": [
@@ -172,6 +220,54 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-everyday-muetze",
+      "term": "Mütze",
+      "forbiddenWords": [
+        "Kopf",
+        "Winter",
+        "warm",
+        "Bommel"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-everyday-regal",
+      "term": "Regal",
+      "forbiddenWords": [
+        "Bücher",
+        "Brett",
+        "Wand",
+        "Ablage"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-everyday-rucksack",
+      "term": "Rucksack",
+      "forbiddenWords": [
+        "Schule",
+        "tragen",
+        "Rücken",
+        "wandern"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-everyday-schal",
+      "term": "Schal",
+      "forbiddenWords": [
+        "Hals",
+        "Wolle",
+        "kalt",
+        "Winter"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-everyday-schrank",
       "term": "Schrank",
       "forbiddenWords": [
@@ -203,6 +299,18 @@
         "Hände",
         "Schaum",
         "Bad"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-everyday-socken",
+      "term": "Socken",
+      "forbiddenWords": [
+        "Füße",
+        "Schuhe",
+        "Wolle",
+        "Paar"
       ],
       "categoryId": "everyday",
       "difficulty": "easy"
@@ -256,6 +364,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-everyday-teppich",
+      "term": "Teppich",
+      "forbiddenWords": [
+        "Boden",
+        "Wohnzimmer",
+        "Staubsauger",
+        "weich"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-everyday-tisch",
       "term": "Tisch",
       "forbiddenWords": [
@@ -292,6 +412,42 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-everyday-wasserhahn",
+      "term": "Wasserhahn",
+      "forbiddenWords": [
+        "Spüle",
+        "Waschbecken",
+        "drehen",
+        "tropfen"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-everyday-zahnpasta",
+      "term": "Zahnpasta",
+      "forbiddenWords": [
+        "Zähne",
+        "putzen",
+        "Tube",
+        "Minze"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-everyday-bohrmaschine",
+      "term": "Bohrmaschine",
+      "forbiddenWords": [
+        "Loch",
+        "Wand",
+        "Dübel",
+        "Bohrer"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-everyday-buegeleisen",
       "term": "Bügeleisen",
       "forbiddenWords": [
@@ -311,6 +467,42 @@
         "Borsten",
         "kämmen",
         "Griff"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-fahrradpumpe",
+      "term": "Fahrradpumpe",
+      "forbiddenWords": [
+        "Reifen",
+        "Luft",
+        "Luftdruck",
+        "Ventil"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-foehn",
+      "term": "Föhn",
+      "forbiddenWords": [
+        "Haare",
+        "trocknen",
+        "Luft",
+        "heiß"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-geschirrspueler",
+      "term": "Geschirrspüler",
+      "forbiddenWords": [
+        "Teller",
+        "Tabs",
+        "sauber",
+        "Küche"
       ],
       "categoryId": "everyday",
       "difficulty": "medium"
@@ -352,6 +544,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-everyday-kaffeemaschine",
+      "term": "Kaffeemaschine",
+      "forbiddenWords": [
+        "Filter",
+        "Tasse",
+        "Bohnen",
+        "brühen"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-everyday-kleiderbuegel",
       "term": "Kleiderbügel",
       "forbiddenWords": [
@@ -359,6 +563,30 @@
         "Jacke",
         "Haken",
         "Garderobe"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-kochloeffel",
+      "term": "Kochlöffel",
+      "forbiddenWords": [
+        "Holz",
+        "rühren",
+        "Topf",
+        "Küche"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-mixer",
+      "term": "Mixer",
+      "forbiddenWords": [
+        "pürieren",
+        "Küche",
+        "Messer",
+        "Smoothie"
       ],
       "categoryId": "everyday",
       "difficulty": "medium"
@@ -376,6 +604,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-everyday-nagelschere",
+      "term": "Nagelschere",
+      "forbiddenWords": [
+        "Fingernägel",
+        "schneiden",
+        "klein",
+        "Maniküre"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-everyday-pfanne",
       "term": "Pfanne",
       "forbiddenWords": [
@@ -388,6 +628,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-everyday-pfannenwender",
+      "term": "Pfannenwender",
+      "forbiddenWords": [
+        "braten",
+        "Bratgut",
+        "Küche",
+        "Spiegelei"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-rasierer",
+      "term": "Rasierer",
+      "forbiddenWords": [
+        "Bart",
+        "Klinge",
+        "Haut",
+        "Schaum"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-everyday-schere",
       "term": "Schere",
       "forbiddenWords": [
@@ -395,6 +659,18 @@
         "Papier",
         "Klinge",
         "Griff"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-schlafsack",
+      "term": "Schlafsack",
+      "forbiddenWords": [
+        "Zelt",
+        "Camping",
+        "Reißverschluss",
+        "warm"
       ],
       "categoryId": "everyday",
       "difficulty": "medium"
@@ -419,6 +695,18 @@
         "Geld",
         "rosa",
         "Schlitz"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-steckdose",
+      "term": "Steckdose",
+      "forbiddenWords": [
+        "Strom",
+        "Adapter",
+        "Wand",
+        "Kabel"
       ],
       "categoryId": "everyday",
       "difficulty": "medium"
@@ -472,6 +760,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-everyday-waeschestaender",
+      "term": "Wäscheständer",
+      "forbiddenWords": [
+        "trocknen",
+        "Kleidung",
+        "aufhängen",
+        "Balkon"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-everyday-wecker",
       "term": "Wecker",
       "forbiddenWords": [
@@ -494,6 +794,18 @@
       ],
       "categoryId": "everyday",
       "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-everyday-buegelbrett",
+      "term": "Bügelbrett",
+      "forbiddenWords": [
+        "Wäsche",
+        "glätten",
+        "Eisen",
+        "klappbar"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
     },
     {
       "id": "pool-de-everyday-bueroklammer",
@@ -527,6 +839,30 @@
         "Schlüssel",
         "abschließen",
         "Diebstahl"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-everyday-fingerhut",
+      "term": "Fingerhut",
+      "forbiddenWords": [
+        "nähen",
+        "Nadel",
+        "schützen",
+        "Metall"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-everyday-fliegenklatsche",
+      "term": "Fliegenklatsche",
+      "forbiddenWords": [
+        "Insekt",
+        "erschlagen",
+        "Sommer",
+        "Plastik"
       ],
       "categoryId": "everyday",
       "difficulty": "hard"
@@ -616,6 +952,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-everyday-nudelholz",
+      "term": "Nudelholz",
+      "forbiddenWords": [
+        "Teig",
+        "ausrollen",
+        "Kuchen",
+        "Walze"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-everyday-nussknacker",
       "term": "Nussknacker",
       "forbiddenWords": [
@@ -623,6 +971,18 @@
         "Weihnachten",
         "Zange",
         "Holzfigur"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-everyday-pinzette",
+      "term": "Pinzette",
+      "forbiddenWords": [
+        "zupfen",
+        "Augenbrauen",
+        "klein",
+        "greifen"
       ],
       "categoryId": "everyday",
       "difficulty": "hard"
@@ -640,6 +1000,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-everyday-salzstreuer",
+      "term": "Salzstreuer",
+      "forbiddenWords": [
+        "Tisch",
+        "würzen",
+        "Löcher",
+        "Pfeffer"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-everyday-schluesselbund",
       "term": "Schlüsselbund",
       "forbiddenWords": [
@@ -652,6 +1024,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-everyday-schneebesen",
+      "term": "Schneebesen",
+      "forbiddenWords": [
+        "schlagen",
+        "Sahne",
+        "rühren",
+        "Drähte"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-everyday-sicherheitsnadel",
       "term": "Sicherheitsnadel",
       "forbiddenWords": [
@@ -659,6 +1043,18 @@
         "Spitze",
         "Verschluss",
         "Baby"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-everyday-stecknadel",
+      "term": "Stecknadel",
+      "forbiddenWords": [
+        "nähen",
+        "Spitze",
+        "Kissen",
+        "spitz"
       ],
       "categoryId": "everyday",
       "difficulty": "hard"
@@ -688,6 +1084,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-everyday-teesieb",
+      "term": "Teesieb",
+      "forbiddenWords": [
+        "Teeblätter",
+        "Tasse",
+        "Filter",
+        "aufgießen"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-everyday-trichter",
+      "term": "Trichter",
+      "forbiddenWords": [
+        "einfüllen",
+        "Flüssigkeit",
+        "Flasche",
+        "Öl"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-everyday-waermflasche",
       "term": "Wärmflasche",
       "forbiddenWords": [
@@ -695,6 +1115,18 @@
         "Gummi",
         "Kälte",
         "warm"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-everyday-wasserwaage",
+      "term": "Wasserwaage",
+      "forbiddenWords": [
+        "gerade",
+        "Blase",
+        "Handwerker",
+        "Wand"
       ],
       "categoryId": "everyday",
       "difficulty": "hard"
@@ -710,6 +1142,42 @@
       ],
       "categoryId": "everyday",
       "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-everyday-zollstock",
+      "term": "Zollstock",
+      "forbiddenWords": [
+        "messen",
+        "Meter",
+        "Handwerker",
+        "klappbar"
+      ],
+      "categoryId": "everyday",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-ast",
+      "term": "Ast",
+      "forbiddenWords": [
+        "Baum",
+        "Zweig",
+        "Holz",
+        "abbrechen"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-bach",
+      "term": "Bach",
+      "forbiddenWords": [
+        "Wasser",
+        "klein",
+        "Fluss",
+        "plätschern"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
     },
     {
       "id": "pool-de-nature-berg",
@@ -736,6 +1204,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-nature-blitz",
+      "term": "Blitz",
+      "forbiddenWords": [
+        "Gewitter",
+        "Donner",
+        "Himmel",
+        "hell"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-nature-blume",
       "term": "Blume",
       "forbiddenWords": [
@@ -743,6 +1223,30 @@
         "duften",
         "Garten",
         "Wiese"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-felsen",
+      "term": "Felsen",
+      "forbiddenWords": [
+        "Stein",
+        "Berg",
+        "groß",
+        "klettern"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-feuer",
+      "term": "Feuer",
+      "forbiddenWords": [
+        "Flammen",
+        "heiß",
+        "Holz",
+        "brennen"
       ],
       "categoryId": "nature",
       "difficulty": "easy"
@@ -784,6 +1288,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-nature-himmel",
+      "term": "Himmel",
+      "forbiddenWords": [
+        "blau",
+        "Wolken",
+        "oben",
+        "Sterne"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-huegel",
+      "term": "Hügel",
+      "forbiddenWords": [
+        "Berg",
+        "klein",
+        "Anhöhe",
+        "Wiese"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-nature-meer",
       "term": "Meer",
       "forbiddenWords": [
@@ -803,6 +1331,18 @@
         "Himmel",
         "Sterne",
         "leuchten"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-pfuetze",
+      "term": "Pfütze",
+      "forbiddenWords": [
+        "Regen",
+        "nass",
+        "Wasser",
+        "springen"
       ],
       "categoryId": "nature",
       "difficulty": "easy"
@@ -880,6 +1420,42 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-nature-tal",
+      "term": "Tal",
+      "forbiddenWords": [
+        "Berge",
+        "Fluss",
+        "Tiefe",
+        "zwischen"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-teich",
+      "term": "Teich",
+      "forbiddenWords": [
+        "Frösche",
+        "klein",
+        "See",
+        "Enten"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-ufer",
+      "term": "Ufer",
+      "forbiddenWords": [
+        "Fluss",
+        "Wasser",
+        "Rand",
+        "See"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-nature-wald",
       "term": "Wald",
       "forbiddenWords": [
@@ -887,6 +1463,30 @@
         "Pilze",
         "Förster",
         "Laub"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-wasser",
+      "term": "Wasser",
+      "forbiddenWords": [
+        "trinken",
+        "nass",
+        "Fluss",
+        "Regen"
+      ],
+      "categoryId": "nature",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-nature-wiese",
+      "term": "Wiese",
+      "forbiddenWords": [
+        "Gras",
+        "Blumen",
+        "grün",
+        "Kühe"
       ],
       "categoryId": "nature",
       "difficulty": "easy"
@@ -916,6 +1516,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-nature-brandung",
+      "term": "Brandung",
+      "forbiddenWords": [
+        "Wellen",
+        "Meer",
+        "Küste",
+        "Gischt"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-nature-daemmerung",
+      "term": "Dämmerung",
+      "forbiddenWords": [
+        "Abend",
+        "Sonne",
+        "dunkel",
+        "Übergang"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-nature-duerre",
       "term": "Dürre",
       "forbiddenWords": [
@@ -923,6 +1547,30 @@
         "Hitze",
         "Regen",
         "Ernte"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-nature-ebbe",
+      "term": "Ebbe",
+      "forbiddenWords": [
+        "Flut",
+        "Meer",
+        "Wasser",
+        "Gezeiten"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-nature-eiszapfen",
+      "term": "Eiszapfen",
+      "forbiddenWords": [
+        "Dach",
+        "gefroren",
+        "Winter",
+        "tropfen"
       ],
       "categoryId": "nature",
       "difficulty": "medium"
@@ -988,6 +1636,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-nature-klippe",
+      "term": "Klippe",
+      "forbiddenWords": [
+        "Küste",
+        "Meer",
+        "Felsen",
+        "steil"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-nature-korallenriff",
+      "term": "Korallenriff",
+      "forbiddenWords": [
+        "Meer",
+        "Fische",
+        "tauchen",
+        "bunt"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-nature-lawine",
       "term": "Lawine",
       "forbiddenWords": [
@@ -1036,6 +1708,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-nature-nordsee",
+      "term": "Nordsee",
+      "forbiddenWords": [
+        "Meer",
+        "Küste",
+        "Deutschland",
+        "Wattenmeer"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-nature-pilz",
       "term": "Pilz",
       "forbiddenWords": [
@@ -1060,6 +1744,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-nature-regenwald",
+      "term": "Regenwald",
+      "forbiddenWords": [
+        "Urwald",
+        "Tropen",
+        "feucht",
+        "Amazonas"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-nature-rose",
       "term": "Rose",
       "forbiddenWords": [
@@ -1067,6 +1763,30 @@
         "rot",
         "Blume",
         "Duft"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-nature-sandsturm",
+      "term": "Sandsturm",
+      "forbiddenWords": [
+        "Wüste",
+        "Wind",
+        "Staub",
+        "Sicht"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-nature-schlucht",
+      "term": "Schlucht",
+      "forbiddenWords": [
+        "Felsen",
+        "tief",
+        "eng",
+        "Fluss"
       ],
       "categoryId": "nature",
       "difficulty": "medium"
@@ -1096,6 +1816,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-nature-sturm",
+      "term": "Sturm",
+      "forbiddenWords": [
+        "Wind",
+        "Orkan",
+        "Regen",
+        "Äste"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-nature-sumpf",
+      "term": "Sumpf",
+      "forbiddenWords": [
+        "Moor",
+        "nass",
+        "matschig",
+        "Frosch"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-nature-tornado",
       "term": "Tornado",
       "forbiddenWords": [
@@ -1120,6 +1864,42 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-nature-waldbrand",
+      "term": "Waldbrand",
+      "forbiddenWords": [
+        "Feuer",
+        "Flammen",
+        "Rauch",
+        "Trockenheit"
+      ],
+      "categoryId": "nature",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-nature-aquifer",
+      "term": "Aquifer",
+      "forbiddenWords": [
+        "Grundwasser",
+        "Gestein",
+        "Brunnen",
+        "Schicht"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-archipel",
+      "term": "Archipel",
+      "forbiddenWords": [
+        "Inseln",
+        "Gruppe",
+        "Meer",
+        "Pazifik"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-nature-atmosphaere",
       "term": "Atmosphäre",
       "forbiddenWords": [
@@ -1127,6 +1907,42 @@
         "Erde",
         "Schicht",
         "Sauerstoff"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-basalt",
+      "term": "Basalt",
+      "forbiddenWords": [
+        "Vulkan",
+        "Gestein",
+        "schwarz",
+        "Lava"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-biotop",
+      "term": "Biotop",
+      "forbiddenWords": [
+        "Lebensraum",
+        "Tiere",
+        "Pflanzen",
+        "Teich"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-brackwasser",
+      "term": "Brackwasser",
+      "forbiddenWords": [
+        "Salz",
+        "Mündung",
+        "Meer",
+        "Fluss"
       ],
       "categoryId": "nature",
       "difficulty": "hard"
@@ -1151,6 +1967,30 @@
         "Wüste",
         "Wind",
         "Hügel"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-eiszeit",
+      "term": "Eiszeit",
+      "forbiddenWords": [
+        "Gletscher",
+        "kalt",
+        "Mammut",
+        "Jahrtausende"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-erdkruste",
+      "term": "Erdkruste",
+      "forbiddenWords": [
+        "Platten",
+        "Gestein",
+        "Mantel",
+        "dünn"
       ],
       "categoryId": "nature",
       "difficulty": "hard"
@@ -1192,6 +2032,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-nature-granit",
+      "term": "Granit",
+      "forbiddenWords": [
+        "Gestein",
+        "hart",
+        "Berge",
+        "grau"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-nature-heide",
       "term": "Heide",
       "forbiddenWords": [
@@ -1199,6 +2051,30 @@
         "lila",
         "Lüneburg",
         "Landschaft"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-humus",
+      "term": "Humus",
+      "forbiddenWords": [
+        "Erde",
+        "Boden",
+        "Laub",
+        "fruchtbar"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-kontinent",
+      "term": "Kontinent",
+      "forbiddenWords": [
+        "Erdteil",
+        "Afrika",
+        "Land",
+        "Ozean"
       ],
       "categoryId": "nature",
       "difficulty": "hard"
@@ -1252,6 +2128,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-nature-monsun",
+      "term": "Monsun",
+      "forbiddenWords": [
+        "Regen",
+        "Asien",
+        "Wind",
+        "Regenzeit"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-nature-moor",
       "term": "Moor",
       "forbiddenWords": [
@@ -1259,6 +2147,18 @@
         "feucht",
         "Sumpf",
         "Heide"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-nature-oekosystem",
+      "term": "Ökosystem",
+      "forbiddenWords": [
+        "Lebensraum",
+        "Gleichgewicht",
+        "Natur",
+        "Umwelt"
       ],
       "categoryId": "nature",
       "difficulty": "hard"
@@ -1300,6 +2200,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-nature-sediment",
+      "term": "Sediment",
+      "forbiddenWords": [
+        "Ablagerung",
+        "Schicht",
+        "Fluss",
+        "Meer"
+      ],
+      "categoryId": "nature",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-nature-treibhauseffekt",
       "term": "Treibhauseffekt",
       "forbiddenWords": [
@@ -1336,6 +2248,42 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-culture-bild",
+      "term": "Bild",
+      "forbiddenWords": [
+        "Rahmen",
+        "malen",
+        "Wand",
+        "Foto"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-culture-buehne",
+      "term": "Bühne",
+      "forbiddenWords": [
+        "Theater",
+        "Schauspieler",
+        "Licht",
+        "Vorhang"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-culture-clown",
+      "term": "Clown",
+      "forbiddenWords": [
+        "Zirkus",
+        "rote Nase",
+        "lustig",
+        "schminken"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-culture-fahne",
       "term": "Fahne",
       "forbiddenWords": [
@@ -1343,6 +2291,18 @@
         "Land",
         "Stange",
         "wehen"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-culture-fest",
+      "term": "Fest",
+      "forbiddenWords": [
+        "feiern",
+        "Party",
+        "Musik",
+        "Gäste"
       ],
       "categoryId": "culture",
       "difficulty": "easy"
@@ -1396,6 +2356,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-culture-laterne",
+      "term": "Laterne",
+      "forbiddenWords": [
+        "Licht",
+        "Kinder",
+        "Martinstag",
+        "Umzug"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-culture-maibaum",
+      "term": "Maibaum",
+      "forbiddenWords": [
+        "Dorf",
+        "Kranz",
+        "Bänder",
+        "Fest"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-culture-maske",
       "term": "Maske",
       "forbiddenWords": [
@@ -1420,6 +2404,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-culture-orgel",
+      "term": "Orgel",
+      "forbiddenWords": [
+        "Kirche",
+        "Pfeifen",
+        "Tasten",
+        "Musik"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-culture-osterei",
+      "term": "Osterei",
+      "forbiddenWords": [
+        "bunt",
+        "Hase",
+        "Frühling",
+        "suchen"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-culture-ostern",
       "term": "Ostern",
       "forbiddenWords": [
@@ -1427,6 +2435,18 @@
         "Eier",
         "Frühling",
         "Kirche"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-culture-puppentheater",
+      "term": "Puppentheater",
+      "forbiddenWords": [
+        "Figuren",
+        "Kasper",
+        "Kinder",
+        "Bühne"
       ],
       "categoryId": "culture",
       "difficulty": "easy"
@@ -1468,6 +2488,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-culture-tanz",
+      "term": "Tanz",
+      "forbiddenWords": [
+        "Musik",
+        "bewegen",
+        "Paar",
+        "Disco"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-culture-universitaet",
       "term": "Universität",
       "forbiddenWords": [
@@ -1504,6 +2536,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-culture-weihnachtslied",
+      "term": "Weihnachtslied",
+      "forbiddenWords": [
+        "singen",
+        "Stille Nacht",
+        "Heiligabend",
+        "Melodie"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-culture-weihnachtsmarkt",
       "term": "Weihnachtsmarkt",
       "forbiddenWords": [
@@ -1511,6 +2555,30 @@
         "Buden",
         "Advent",
         "Lichter"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-culture-zeichentrick",
+      "term": "Zeichentrick",
+      "forbiddenWords": [
+        "Cartoon",
+        "Figuren",
+        "Fernsehen",
+        "Kinder"
+      ],
+      "categoryId": "culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-culture-zeichnung",
+      "term": "Zeichnung",
+      "forbiddenWords": [
+        "Bleistift",
+        "Papier",
+        "Skizze",
+        "malen"
       ],
       "categoryId": "culture",
       "difficulty": "easy"
@@ -1540,6 +2608,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-culture-bibliothek",
+      "term": "Bibliothek",
+      "forbiddenWords": [
+        "Bücher",
+        "ausleihen",
+        "lesen",
+        "leise"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-bildhauer",
+      "term": "Bildhauer",
+      "forbiddenWords": [
+        "Stein",
+        "Skulptur",
+        "Meißel",
+        "Kunst"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-culture-brauchtum",
       "term": "Brauchtum",
       "forbiddenWords": [
@@ -1547,6 +2639,30 @@
         "Dorf",
         "Fest",
         "überliefert"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-denkmal",
+      "term": "Denkmal",
+      "forbiddenWords": [
+        "Statue",
+        "erinnern",
+        "Platz",
+        "Stein"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-dichter",
+      "term": "Dichter",
+      "forbiddenWords": [
+        "Verse",
+        "Reime",
+        "Goethe",
+        "schreiben"
       ],
       "categoryId": "culture",
       "difficulty": "medium"
@@ -1588,6 +2704,42 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-culture-festumzug",
+      "term": "Festumzug",
+      "forbiddenWords": [
+        "Wagen",
+        "Straße",
+        "Musik",
+        "Zuschauer"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-feuerwerk",
+      "term": "Feuerwerk",
+      "forbiddenWords": [
+        "Raketen",
+        "Silvester",
+        "Knall",
+        "Himmel"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-fotografie",
+      "term": "Fotografie",
+      "forbiddenWords": [
+        "Kamera",
+        "Bild",
+        "Blitz",
+        "Linse"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-culture-gedicht",
       "term": "Gedicht",
       "forbiddenWords": [
@@ -1595,6 +2747,18 @@
         "Strophe",
         "Dichter",
         "Verse"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-graffiti",
+      "term": "Graffiti",
+      "forbiddenWords": [
+        "Wand",
+        "Spray",
+        "Farbe",
+        "Straße"
       ],
       "categoryId": "culture",
       "difficulty": "medium"
@@ -1612,6 +2776,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-culture-jahrmarkt",
+      "term": "Jahrmarkt",
+      "forbiddenWords": [
+        "Karussell",
+        "Zuckerwatte",
+        "Buden",
+        "Fest"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-culture-karikatur",
       "term": "Karikatur",
       "forbiddenWords": [
@@ -1624,6 +2800,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-culture-komponist",
+      "term": "Komponist",
+      "forbiddenWords": [
+        "Noten",
+        "Musik",
+        "Beethoven",
+        "schreiben"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-marionette",
+      "term": "Marionette",
+      "forbiddenWords": [
+        "Fäden",
+        "Puppe",
+        "Theater",
+        "Holz"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-culture-martinsumzug",
       "term": "Martinsumzug",
       "forbiddenWords": [
@@ -1631,6 +2831,30 @@
         "Kinder",
         "Lied",
         "Mantel"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-maskenball",
+      "term": "Maskenball",
+      "forbiddenWords": [
+        "Kostüme",
+        "Tanz",
+        "Gäste",
+        "Nacht"
+      ],
+      "categoryId": "culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-culture-musical",
+      "term": "Musical",
+      "forbiddenWords": [
+        "Bühne",
+        "Lieder",
+        "Tanz",
+        "Broadway"
       ],
       "categoryId": "culture",
       "difficulty": "medium"
@@ -1756,6 +2980,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-culture-ballade",
+      "term": "Ballade",
+      "forbiddenWords": [
+        "Gedicht",
+        "Erzählung",
+        "Schiller",
+        "Strophen"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-culture-barock",
       "term": "Barock",
       "forbiddenWords": [
@@ -1763,6 +2999,30 @@
         "Prunk",
         "Kirche",
         "Kunst"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-culture-choreografie",
+      "term": "Choreografie",
+      "forbiddenWords": [
+        "Tanz",
+        "Schritte",
+        "Ballett",
+        "einstudieren"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-culture-epos",
+      "term": "Epos",
+      "forbiddenWords": [
+        "Heldengedicht",
+        "Odyssee",
+        "lang",
+        "Dichtung"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -1799,6 +3059,18 @@
         "Stimmen",
         "Thema",
         "Komposition"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-culture-gotik",
+      "term": "Gotik",
+      "forbiddenWords": [
+        "Kathedrale",
+        "Epoche",
+        "Spitzbogen",
+        "Mittelalter"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -1864,6 +3136,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-culture-kubismus",
+      "term": "Kubismus",
+      "forbiddenWords": [
+        "Picasso",
+        "Würfel",
+        "Kunst",
+        "geometrisch"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-culture-kulturerbe",
       "term": "Kulturerbe",
       "forbiddenWords": [
@@ -1871,6 +3155,18 @@
         "Denkmal",
         "Erhalt",
         "UNESCO"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-culture-libretto",
+      "term": "Libretto",
+      "forbiddenWords": [
+        "Oper",
+        "Text",
+        "Komponist",
+        "Handlung"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -1912,6 +3208,42 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-culture-oratorium",
+      "term": "Oratorium",
+      "forbiddenWords": [
+        "Kirche",
+        "Chor",
+        "Solisten",
+        "Händel"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-culture-parabel",
+      "term": "Parabel",
+      "forbiddenWords": [
+        "Gleichnis",
+        "Lehre",
+        "Geschichte",
+        "Bibel"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-culture-pointillismus",
+      "term": "Pointillismus",
+      "forbiddenWords": [
+        "Punkte",
+        "Malerei",
+        "Seurat",
+        "Farbe"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-culture-renaissance",
       "term": "Renaissance",
       "forbiddenWords": [
@@ -1924,6 +3256,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-culture-rokoko",
+      "term": "Rokoko",
+      "forbiddenWords": [
+        "Epoche",
+        "Verzierung",
+        "Frankreich",
+        "verspielt"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-culture-satire",
+      "term": "Satire",
+      "forbiddenWords": [
+        "Spott",
+        "Humor",
+        "Kritik",
+        "übertreiben"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-culture-sonett",
       "term": "Sonett",
       "forbiddenWords": [
@@ -1931,6 +3287,18 @@
         "vierzehn",
         "Zeilen",
         "Reim"
+      ],
+      "categoryId": "culture",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-culture-surrealismus",
+      "term": "Surrealismus",
+      "forbiddenWords": [
+        "Dalí",
+        "Traum",
+        "Kunst",
+        "Epoche"
       ],
       "categoryId": "culture",
       "difficulty": "hard"
@@ -3040,6 +4408,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-animals-ameise",
+      "term": "Ameise",
+      "forbiddenWords": [
+        "Haufen",
+        "klein",
+        "krabbeln",
+        "Königin"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-animals-baer",
       "term": "Bär",
       "forbiddenWords": [
@@ -3076,6 +4456,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-animals-esel",
+      "term": "Esel",
+      "forbiddenWords": [
+        "grau",
+        "Ohren",
+        "Last",
+        "Bauernhof"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-animals-fisch",
       "term": "Fisch",
       "forbiddenWords": [
@@ -3100,6 +4492,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-animals-gans",
+      "term": "Gans",
+      "forbiddenWords": [
+        "Federn",
+        "schnattern",
+        "Weihnachten",
+        "Vogel"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-animals-giraffe",
       "term": "Giraffe",
       "forbiddenWords": [
@@ -3107,6 +4511,18 @@
         "Afrika",
         "Flecken",
         "Zoo"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-animals-hamster",
+      "term": "Hamster",
+      "forbiddenWords": [
+        "Käfig",
+        "Rad",
+        "Nager",
+        "Backen"
       ],
       "categoryId": "animals",
       "difficulty": "easy"
@@ -3131,6 +4547,18 @@
         "Hahn",
         "gackern",
         "Bauernhof"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-animals-kaninchen",
+      "term": "Kaninchen",
+      "forbiddenWords": [
+        "Ohren",
+        "Möhre",
+        "hoppeln",
+        "Stall"
       ],
       "categoryId": "animals",
       "difficulty": "easy"
@@ -3172,6 +4600,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-animals-marienkaefer",
+      "term": "Marienkäfer",
+      "forbiddenWords": [
+        "Punkte",
+        "rot",
+        "Glück",
+        "Insekt"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-animals-maus",
       "term": "Maus",
       "forbiddenWords": [
@@ -3179,6 +4619,30 @@
         "Katze",
         "klein",
         "Nagetier"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-animals-moewe",
+      "term": "Möwe",
+      "forbiddenWords": [
+        "Meer",
+        "Küste",
+        "Vogel",
+        "kreischen"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-animals-nashorn",
+      "term": "Nashorn",
+      "forbiddenWords": [
+        "Afrika",
+        "dick",
+        "Panzer",
+        "Savanne"
       ],
       "categoryId": "animals",
       "difficulty": "easy"
@@ -3196,6 +4660,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-animals-pony",
+      "term": "Pony",
+      "forbiddenWords": [
+        "klein",
+        "Pferd",
+        "reiten",
+        "Mähne"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-animals-schaf",
       "term": "Schaf",
       "forbiddenWords": [
@@ -3203,6 +4679,18 @@
         "Lamm",
         "Herde",
         "blöken"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-animals-schwan",
+      "term": "Schwan",
+      "forbiddenWords": [
+        "weiß",
+        "See",
+        "Hals",
+        "Vogel"
       ],
       "categoryId": "animals",
       "difficulty": "easy"
@@ -3220,6 +4708,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-animals-taube",
+      "term": "Taube",
+      "forbiddenWords": [
+        "Stadt",
+        "gurren",
+        "Frieden",
+        "Vogel"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-animals-tiger",
+      "term": "Tiger",
+      "forbiddenWords": [
+        "Streifen",
+        "Katze",
+        "Dschungel",
+        "gefährlich"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-animals-vogel",
       "term": "Vogel",
       "forbiddenWords": [
@@ -3232,6 +4744,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-animals-ziege",
+      "term": "Ziege",
+      "forbiddenWords": [
+        "Hörner",
+        "Milch",
+        "meckern",
+        "Bart"
+      ],
+      "categoryId": "animals",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-animals-adler",
+      "term": "Adler",
+      "forbiddenWords": [
+        "Greifvogel",
+        "Flügel",
+        "Berge",
+        "Krallen"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-animals-delfin",
       "term": "Delfin",
       "forbiddenWords": [
@@ -3239,6 +4775,18 @@
         "Säugetier",
         "springen",
         "intelligent"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-animals-eisbaer",
+      "term": "Eisbär",
+      "forbiddenWords": [
+        "Arktis",
+        "weiß",
+        "Pol",
+        "Robbe"
       ],
       "categoryId": "animals",
       "difficulty": "medium"
@@ -3268,6 +4816,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-animals-gorilla",
+      "term": "Gorilla",
+      "forbiddenWords": [
+        "Affe",
+        "Brust",
+        "stark",
+        "Dschungel"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-animals-hai",
+      "term": "Hai",
+      "forbiddenWords": [
+        "Zähne",
+        "Meer",
+        "Flosse",
+        "gefährlich"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-animals-hirsch",
       "term": "Hirsch",
       "forbiddenWords": [
@@ -3287,6 +4859,18 @@
         "Garten",
         "Winterschlaf",
         "Laub"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-animals-kamel",
+      "term": "Kamel",
+      "forbiddenWords": [
+        "Wüste",
+        "Höcker",
+        "Durst",
+        "reiten"
       ],
       "categoryId": "animals",
       "difficulty": "medium"
@@ -3328,6 +4912,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-animals-leopard",
+      "term": "Leopard",
+      "forbiddenWords": [
+        "Flecken",
+        "Katze",
+        "schnell",
+        "Afrika"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-animals-libelle",
+      "term": "Libelle",
+      "forbiddenWords": [
+        "Flügel",
+        "Teich",
+        "fliegen",
+        "Insekt"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-animals-maulwurf",
       "term": "Maulwurf",
       "forbiddenWords": [
@@ -3340,6 +4948,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-animals-nilpferd",
+      "term": "Nilpferd",
+      "forbiddenWords": [
+        "Afrika",
+        "Wasser",
+        "Fluss",
+        "dick"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-animals-panda",
+      "term": "Panda",
+      "forbiddenWords": [
+        "China",
+        "Bambus",
+        "schwarz",
+        "weiß"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-animals-papagei",
       "term": "Papagei",
       "forbiddenWords": [
@@ -3347,6 +4979,18 @@
         "sprechen",
         "Käfig",
         "Schnabel"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-animals-pelikan",
+      "term": "Pelikan",
+      "forbiddenWords": [
+        "Schnabel",
+        "Beutel",
+        "Fisch",
+        "Vogel"
       ],
       "categoryId": "animals",
       "difficulty": "medium"
@@ -3388,6 +5032,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-animals-seehund",
+      "term": "Seehund",
+      "forbiddenWords": [
+        "Robbe",
+        "Meer",
+        "Fell",
+        "schwimmen"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-animals-skorpion",
+      "term": "Skorpion",
+      "forbiddenWords": [
+        "Stachel",
+        "Wüste",
+        "Schere",
+        "giftig"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-animals-spinne",
       "term": "Spinne",
       "forbiddenWords": [
@@ -3395,6 +5063,18 @@
         "Beine",
         "acht",
         "krabbeln"
+      ],
+      "categoryId": "animals",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-animals-storch",
+      "term": "Storch",
+      "forbiddenWords": [
+        "Baby",
+        "Nest",
+        "Frösche",
+        "Schnabel"
       ],
       "categoryId": "animals",
       "difficulty": "medium"
@@ -3520,6 +5200,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-animals-gepard",
+      "term": "Gepard",
+      "forbiddenWords": [
+        "schnell",
+        "Savanne",
+        "Flecken",
+        "Katze"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-animals-guerteltier",
       "term": "Gürteltier",
       "forbiddenWords": [
@@ -3527,6 +5219,42 @@
         "Südamerika",
         "einrollen",
         "Höhle"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-animals-kolibri",
+      "term": "Kolibri",
+      "forbiddenWords": [
+        "klein",
+        "Nektar",
+        "schwirren",
+        "Flügel"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-animals-leguan",
+      "term": "Leguan",
+      "forbiddenWords": [
+        "Echse",
+        "grün",
+        "Reptil",
+        "Mittelamerika"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-animals-lemur",
+      "term": "Lemur",
+      "forbiddenWords": [
+        "Madagaskar",
+        "Ringelschwanz",
+        "Affe",
+        "Insel"
       ],
       "categoryId": "animals",
       "difficulty": "hard"
@@ -3544,6 +5272,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-animals-manta",
+      "term": "Manta",
+      "forbiddenWords": [
+        "Rochen",
+        "Meer",
+        "riesig",
+        "gleiten"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-animals-murmeltier",
+      "term": "Murmeltier",
+      "forbiddenWords": [
+        "Winterschlaf",
+        "Alpen",
+        "pfeifen",
+        "Nager"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-animals-nacktmull",
       "term": "Nacktmull",
       "forbiddenWords": [
@@ -3551,6 +5303,18 @@
         "Nagetier",
         "unterirdisch",
         "Kolonie"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-animals-narwal",
+      "term": "Narwal",
+      "forbiddenWords": [
+        "Stoßzahn",
+        "Arktis",
+        "Einhorn",
+        "Meer"
       ],
       "categoryId": "animals",
       "difficulty": "hard"
@@ -3592,6 +5356,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-animals-quokka",
+      "term": "Quokka",
+      "forbiddenWords": [
+        "Australien",
+        "lächeln",
+        "Beuteltier",
+        "Insel"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-animals-rentier",
       "term": "Rentier",
       "forbiddenWords": [
@@ -3616,6 +5392,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-animals-seeigel",
+      "term": "Seeigel",
+      "forbiddenWords": [
+        "Stacheln",
+        "Meer",
+        "rund",
+        "Strand"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-animals-seepferdchen",
       "term": "Seepferdchen",
       "forbiddenWords": [
@@ -3623,6 +5411,30 @@
         "Männchen",
         "Fisch",
         "Kopf"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-animals-stachelschwein",
+      "term": "Stachelschwein",
+      "forbiddenWords": [
+        "Stacheln",
+        "Nager",
+        "Afrika",
+        "verteidigen"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-animals-tapir",
+      "term": "Tapir",
+      "forbiddenWords": [
+        "Rüssel",
+        "Südamerika",
+        "Nase",
+        "Dschungel"
       ],
       "categoryId": "animals",
       "difficulty": "hard"
@@ -3640,6 +5452,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-animals-wiesel",
+      "term": "Wiesel",
+      "forbiddenWords": [
+        "flink",
+        "Marder",
+        "klein",
+        "Fell"
+      ],
+      "categoryId": "animals",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-animals-wombat",
       "term": "Wombat",
       "forbiddenWords": [
@@ -3650,6 +5474,18 @@
       ],
       "categoryId": "animals",
       "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-sport-aerobic",
+      "term": "Aerobic",
+      "forbiddenWords": [
+        "Fitness",
+        "Musik",
+        "Kurs",
+        "Tanz"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
     },
     {
       "id": "pool-de-sport-angeln",
@@ -3700,6 +5536,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-sport-federball",
+      "term": "Federball",
+      "forbiddenWords": [
+        "Schläger",
+        "Netz",
+        "Garten",
+        "Sommer"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-sport-fussball",
       "term": "Fußball",
       "forbiddenWords": [
@@ -3707,6 +5555,54 @@
         "Elfmeter",
         "Rasen",
         "Stadion"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-sport-gymnastik",
+      "term": "Gymnastik",
+      "forbiddenWords": [
+        "Übungen",
+        "Turnen",
+        "Matte",
+        "dehnen"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-sport-hockey",
+      "term": "Hockey",
+      "forbiddenWords": [
+        "Schläger",
+        "Stock",
+        "Tor",
+        "Rasen"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-sport-joggen",
+      "term": "Joggen",
+      "forbiddenWords": [
+        "laufen",
+        "Park",
+        "Schuhe",
+        "Ausdauer"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-sport-kegeln",
+      "term": "Kegeln",
+      "forbiddenWords": [
+        "Kugel",
+        "Bahn",
+        "Gaststätte",
+        "werfen"
       ],
       "categoryId": "sport",
       "difficulty": "easy"
@@ -3736,6 +5632,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-sport-paddeln",
+      "term": "Paddeln",
+      "forbiddenWords": [
+        "Boot",
+        "Wasser",
+        "Kanu",
+        "Fluss"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-sport-radfahren",
       "term": "Radfahren",
       "forbiddenWords": [
@@ -3755,6 +5663,18 @@
         "Sattel",
         "Stall",
         "Turnier"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-sport-rodeln",
+      "term": "Rodeln",
+      "forbiddenWords": [
+        "Schlitten",
+        "Schnee",
+        "Berg",
+        "Hang"
       ],
       "categoryId": "sport",
       "difficulty": "easy"
@@ -3796,6 +5716,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-sport-seilspringen",
+      "term": "Seilspringen",
+      "forbiddenWords": [
+        "hüpfen",
+        "Boxer",
+        "Kinder",
+        "Schwung"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-sport-skifahren",
       "term": "Skifahren",
       "forbiddenWords": [
@@ -3832,6 +5764,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-sport-trampolin",
+      "term": "Trampolin",
+      "forbiddenWords": [
+        "springen",
+        "Netz",
+        "hüpfen",
+        "Garten"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-sport-turnen",
       "term": "Turnen",
       "forbiddenWords": [
@@ -3839,6 +5783,18 @@
         "Matte",
         "Halle",
         "Barren"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-sport-voelkerball",
+      "term": "Völkerball",
+      "forbiddenWords": [
+        "werfen",
+        "Treffer",
+        "Schule",
+        "Halle"
       ],
       "categoryId": "sport",
       "difficulty": "easy"
@@ -3863,6 +5819,18 @@
         "Rucksack",
         "Wald",
         "Schuhe"
+      ],
+      "categoryId": "sport",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-sport-wasserball",
+      "term": "Wasserball",
+      "forbiddenWords": [
+        "Schwimmbad",
+        "Tor",
+        "Team",
+        "werfen"
       ],
       "categoryId": "sport",
       "difficulty": "easy"
@@ -3940,6 +5908,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-sport-gewichtheben",
+      "term": "Gewichtheben",
+      "forbiddenWords": [
+        "Hantel",
+        "Stange",
+        "stark",
+        "Kraft"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-sport-golf",
       "term": "Golf",
       "forbiddenWords": [
@@ -3964,6 +5944,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-sport-hochsprung",
+      "term": "Hochsprung",
+      "forbiddenWords": [
+        "Latte",
+        "Matte",
+        "Anlauf",
+        "Höhe"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-inlineskaten",
+      "term": "Inlineskaten",
+      "forbiddenWords": [
+        "Rollen",
+        "Helm",
+        "Asphalt",
+        "Schlittschuhe"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-sport-judo",
       "term": "Judo",
       "forbiddenWords": [
@@ -3971,6 +5975,90 @@
         "Matte",
         "Japan",
         "Gürtel"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-kickboxen",
+      "term": "Kickboxen",
+      "forbiddenWords": [
+        "Tritte",
+        "Schläge",
+        "Handschuhe",
+        "Ring"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-kitesurfen",
+      "term": "Kitesurfen",
+      "forbiddenWords": [
+        "Drache",
+        "Wind",
+        "Brett",
+        "Meer"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-kugelstossen",
+      "term": "Kugelstoßen",
+      "forbiddenWords": [
+        "Metall",
+        "Ring",
+        "Leichtathletik",
+        "werfen"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-paragliding",
+      "term": "Paragliding",
+      "forbiddenWords": [
+        "Gleitschirm",
+        "Berg",
+        "fliegen",
+        "Wind"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-pilates",
+      "term": "Pilates",
+      "forbiddenWords": [
+        "Matte",
+        "Körpermitte",
+        "Übungen",
+        "Kurs"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-rafting",
+      "term": "Rafting",
+      "forbiddenWords": [
+        "Schlauchboot",
+        "Wildwasser",
+        "Fluss",
+        "Paddel"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-ringen",
+      "term": "Ringen",
+      "forbiddenWords": [
+        "Matte",
+        "Griff",
+        "Gegner",
+        "Schultern"
       ],
       "categoryId": "sport",
       "difficulty": "medium"
@@ -4036,6 +6124,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-sport-squash",
+      "term": "Squash",
+      "forbiddenWords": [
+        "Schläger",
+        "Halle",
+        "Gummiball",
+        "Wand"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-sport-surfen",
       "term": "Surfen",
       "forbiddenWords": [
@@ -4055,6 +6155,30 @@
         "Schläger",
         "Netz",
         "Aufschlag"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-wasserski",
+      "term": "Wasserski",
+      "forbiddenWords": [
+        "Boot",
+        "Seil",
+        "See",
+        "gleiten"
+      ],
+      "categoryId": "sport",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-sport-weitsprung",
+      "term": "Weitsprung",
+      "forbiddenWords": [
+        "Sandgrube",
+        "Anlauf",
+        "Leichtathletik",
+        "Balken"
       ],
       "categoryId": "sport",
       "difficulty": "medium"
@@ -4108,6 +6232,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-sport-capoeira",
+      "term": "Capoeira",
+      "forbiddenWords": [
+        "Brasilien",
+        "Kampftanz",
+        "Musik",
+        "Roda"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-sport-cricket",
       "term": "Cricket",
       "forbiddenWords": [
@@ -4144,6 +6280,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-sport-dressurreiten",
+      "term": "Dressurreiten",
+      "forbiddenWords": [
+        "Pferd",
+        "Lektionen",
+        "Viereck",
+        "Eleganz"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-sport-eiskunstlauf",
       "term": "Eiskunstlauf",
       "forbiddenWords": [
@@ -4151,6 +6299,30 @@
         "Kür",
         "Sprung",
         "Preisrichter"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-sport-eisschnelllauf",
+      "term": "Eisschnelllauf",
+      "forbiddenWords": [
+        "Kufen",
+        "Oval",
+        "Zeit",
+        "Olympia"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-sport-hammerwurf",
+      "term": "Hammerwurf",
+      "forbiddenWords": [
+        "Kugel",
+        "Draht",
+        "Leichtathletik",
+        "schleudern"
       ],
       "categoryId": "sport",
       "difficulty": "hard"
@@ -4168,6 +6340,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-sport-karate",
+      "term": "Karate",
+      "forbiddenWords": [
+        "Kampfkunst",
+        "Japan",
+        "Gürtel",
+        "schlagen"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-sport-marathon",
       "term": "Marathon",
       "forbiddenWords": [
@@ -4180,6 +6364,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-sport-paintball",
+      "term": "Paintball",
+      "forbiddenWords": [
+        "Farbkugeln",
+        "Markierer",
+        "Team",
+        "Maske"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-sport-parkour",
+      "term": "Parkour",
+      "forbiddenWords": [
+        "Hindernisse",
+        "Stadt",
+        "Sprünge",
+        "Traceur"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-sport-polo",
       "term": "Polo",
       "forbiddenWords": [
@@ -4187,6 +6395,18 @@
         "Schläger",
         "Reiter",
         "Feld"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-sport-skeleton",
+      "term": "Skeleton",
+      "forbiddenWords": [
+        "Eiskanal",
+        "Kopf",
+        "Schlitten",
+        "Bahn"
       ],
       "categoryId": "sport",
       "difficulty": "hard"
@@ -4264,6 +6484,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-sport-taekwondo",
+      "term": "Taekwondo",
+      "forbiddenWords": [
+        "Korea",
+        "Tritte",
+        "Kampfsport",
+        "Gürtel"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-sport-tauchen",
       "term": "Tauchen",
       "forbiddenWords": [
@@ -4288,6 +6520,42 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-sport-ultramarathon",
+      "term": "Ultramarathon",
+      "forbiddenWords": [
+        "Ausdauer",
+        "Kilometer",
+        "Laufen",
+        "extrem"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-sport-wasserspringen",
+      "term": "Wasserspringen",
+      "forbiddenWords": [
+        "Turm",
+        "Brett",
+        "Schwimmbad",
+        "Salto"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-sport-zehnkampf",
+      "term": "Zehnkampf",
+      "forbiddenWords": [
+        "Leichtathletik",
+        "Disziplinen",
+        "Olympia",
+        "Athlet"
+      ],
+      "categoryId": "sport",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-jobs-arzt",
       "term": "Arzt",
       "forbiddenWords": [
@@ -4295,6 +6563,18 @@
         "Praxis",
         "Medizin",
         "Patient"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-jobs-babysitter",
+      "term": "Babysitter",
+      "forbiddenWords": [
+        "Kinder",
+        "aufpassen",
+        "Abend",
+        "Eltern"
       ],
       "categoryId": "jobs",
       "difficulty": "easy"
@@ -4312,6 +6592,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-jobs-bademeister",
+      "term": "Bademeister",
+      "forbiddenWords": [
+        "Schwimmbad",
+        "Pfeife",
+        "retten",
+        "Becken"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-jobs-busfahrer",
       "term": "Busfahrer",
       "forbiddenWords": [
@@ -4324,6 +6616,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-jobs-fahrlehrer",
+      "term": "Fahrlehrer",
+      "forbiddenWords": [
+        "Auto",
+        "Führerschein",
+        "Prüfung",
+        "Pedale"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-jobs-feuerwehrmann",
       "term": "Feuerwehrmann",
       "forbiddenWords": [
@@ -4331,6 +6635,18 @@
         "löschen",
         "Schlauch",
         "Rettung"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-jobs-fischer",
+      "term": "Fischer",
+      "forbiddenWords": [
+        "Netz",
+        "Boot",
+        "Angel",
+        "Meer"
       ],
       "categoryId": "jobs",
       "difficulty": "easy"
@@ -4355,6 +6671,42 @@
         "Beet",
         "Garten",
         "Schaufel"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-jobs-hausmeister",
+      "term": "Hausmeister",
+      "forbiddenWords": [
+        "Schule",
+        "Schlüssel",
+        "reparieren",
+        "Keller"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-jobs-kapitaen",
+      "term": "Kapitän",
+      "forbiddenWords": [
+        "Schiff",
+        "Meer",
+        "Mütze",
+        "Brücke"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-jobs-kassierer",
+      "term": "Kassierer",
+      "forbiddenWords": [
+        "Supermarkt",
+        "Geld",
+        "Kasse",
+        "bezahlen"
       ],
       "categoryId": "jobs",
       "difficulty": "easy"
@@ -4432,6 +6784,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-jobs-maurer",
+      "term": "Maurer",
+      "forbiddenWords": [
+        "Ziegel",
+        "Wand",
+        "Haus",
+        "Mörtel"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-jobs-muellmann",
       "term": "Müllmann",
       "forbiddenWords": [
@@ -4475,6 +6839,42 @@
         "Paket",
         "Fahrrad",
         "austragen"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-jobs-schaefer",
+      "term": "Schäfer",
+      "forbiddenWords": [
+        "Herde",
+        "Hund",
+        "Wiese",
+        "Stab"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-jobs-schneider",
+      "term": "Schneider",
+      "forbiddenWords": [
+        "Stoff",
+        "Nadel",
+        "nähen",
+        "Kleidung"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-jobs-soldat",
+      "term": "Soldat",
+      "forbiddenWords": [
+        "Armee",
+        "Uniform",
+        "Waffe",
+        "kämpfen"
       ],
       "categoryId": "jobs",
       "difficulty": "easy"
@@ -4552,6 +6952,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-jobs-bergfuehrer",
+      "term": "Bergführer",
+      "forbiddenWords": [
+        "Gipfel",
+        "Seil",
+        "Alpen",
+        "Touristen"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-jobs-bibliothekar",
       "term": "Bibliothekar",
       "forbiddenWords": [
@@ -4571,6 +6983,18 @@
         "Leiter",
         "Haus",
         "Regen"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-detektiv",
+      "term": "Detektiv",
+      "forbiddenWords": [
+        "Spur",
+        "Verbrecher",
+        "Lupe",
+        "ermitteln"
       ],
       "categoryId": "jobs",
       "difficulty": "medium"
@@ -4612,6 +7036,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-jobs-ingenieur",
+      "term": "Ingenieur",
+      "forbiddenWords": [
+        "Technik",
+        "Maschinen",
+        "Plan",
+        "Studium"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-jobs-journalist",
       "term": "Journalist",
       "forbiddenWords": [
@@ -4619,6 +7055,42 @@
         "Bericht",
         "Reporter",
         "schreiben"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-kameramann",
+      "term": "Kameramann",
+      "forbiddenWords": [
+        "Film",
+        "Dreh",
+        "Linse",
+        "Aufnahme"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-lokfuehrer",
+      "term": "Lokführer",
+      "forbiddenWords": [
+        "Zug",
+        "Schienen",
+        "Bahnhof",
+        "Fahrplan"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-matrose",
+      "term": "Matrose",
+      "forbiddenWords": [
+        "Schiff",
+        "Meer",
+        "Anker",
+        "Uniform"
       ],
       "categoryId": "jobs",
       "difficulty": "medium"
@@ -4648,6 +7120,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-jobs-pfarrer",
+      "term": "Pfarrer",
+      "forbiddenWords": [
+        "Kirche",
+        "Predigt",
+        "Gott",
+        "Gemeinde"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-jobs-physiotherapeut",
       "term": "Physiotherapeut",
       "forbiddenWords": [
@@ -4655,6 +7139,42 @@
         "Übungen",
         "Rücken",
         "Patient"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-programmierer",
+      "term": "Programmierer",
+      "forbiddenWords": [
+        "Computer",
+        "Code",
+        "Software",
+        "tippen"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-psychologe",
+      "term": "Psychologe",
+      "forbiddenWords": [
+        "Seele",
+        "Gespräch",
+        "Therapie",
+        "Couch"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-reiseleiter",
+      "term": "Reiseleiter",
+      "forbiddenWords": [
+        "Gruppe",
+        "Tour",
+        "Urlaub",
+        "Hotel"
       ],
       "categoryId": "jobs",
       "difficulty": "medium"
@@ -4679,6 +7199,18 @@
         "Bühne",
         "Rolle",
         "Theater"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-schiedsrichter",
+      "term": "Schiedsrichter",
+      "forbiddenWords": [
+        "Pfeife",
+        "Fußball",
+        "Karte",
+        "Regeln"
       ],
       "categoryId": "jobs",
       "difficulty": "medium"
@@ -4720,6 +7252,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-jobs-trainer",
+      "term": "Trainer",
+      "forbiddenWords": [
+        "Mannschaft",
+        "Sport",
+        "Pfeife",
+        "Spiel"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-jobs-zauberer",
+      "term": "Zauberer",
+      "forbiddenWords": [
+        "Magie",
+        "Trick",
+        "Hut",
+        "Kaninchen"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-jobs-archaeologe",
       "term": "Archäologe",
       "forbiddenWords": [
@@ -4732,6 +7288,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-jobs-archivar",
+      "term": "Archivar",
+      "forbiddenWords": [
+        "Akten",
+        "Dokumente",
+        "Keller",
+        "ordnen"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-jobs-astronaut",
       "term": "Astronaut",
       "forbiddenWords": [
@@ -4739,6 +7307,18 @@
         "Rakete",
         "Schwerelosigkeit",
         "Mond"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-bestatter",
+      "term": "Bestatter",
+      "forbiddenWords": [
+        "Beerdigung",
+        "Sarg",
+        "Friedhof",
+        "Trauer"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -4768,6 +7348,42 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-jobs-dompteur",
+      "term": "Dompteur",
+      "forbiddenWords": [
+        "Löwe",
+        "Zirkus",
+        "Peitsche",
+        "Raubtiere"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-drechsler",
+      "term": "Drechsler",
+      "forbiddenWords": [
+        "Holz",
+        "Drehbank",
+        "Schale",
+        "formen"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-falkner",
+      "term": "Falkner",
+      "forbiddenWords": [
+        "Greifvogel",
+        "Handschuh",
+        "Jagd",
+        "abrichten"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-jobs-foerster",
       "term": "Förster",
       "forbiddenWords": [
@@ -4775,6 +7391,30 @@
         "Bäume",
         "Jagd",
         "Revier"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-gerichtsvollzieher",
+      "term": "Gerichtsvollzieher",
+      "forbiddenWords": [
+        "Schulden",
+        "Pfändung",
+        "Siegel",
+        "Behörde"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-glasblaeser",
+      "term": "Glasbläser",
+      "forbiddenWords": [
+        "Schmelzofen",
+        "Vase",
+        "pusten",
+        "Hitze"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -4792,6 +7432,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-jobs-hufschmied",
+      "term": "Hufschmied",
+      "forbiddenWords": [
+        "Pferd",
+        "Eisen",
+        "Amboss",
+        "Feuer"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-jobs-imker",
       "term": "Imker",
       "forbiddenWords": [
@@ -4799,6 +7451,18 @@
         "Honig",
         "Stöcke",
         "Schutzanzug"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-kartograf",
+      "term": "Kartograf",
+      "forbiddenWords": [
+        "Atlas",
+        "zeichnen",
+        "Gelände",
+        "Vermessung"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -4835,6 +7499,18 @@
         "Urkunde",
         "Vertrag",
         "Stempel"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-pathologe",
+      "term": "Pathologe",
+      "forbiddenWords": [
+        "Leiche",
+        "Obduktion",
+        "Todesursache",
+        "Medizin"
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
@@ -4912,6 +7588,42 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-jobs-toepfer",
+      "term": "Töpfer",
+      "forbiddenWords": [
+        "Ton",
+        "Scheibe",
+        "Brennofen",
+        "Vase"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-uhrmacher",
+      "term": "Uhrmacher",
+      "forbiddenWords": [
+        "Zahnräder",
+        "Zeit",
+        "Werkstatt",
+        "reparieren"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-jobs-winzer",
+      "term": "Winzer",
+      "forbiddenWords": [
+        "Wein",
+        "Trauben",
+        "Reben",
+        "Ernte"
+      ],
+      "categoryId": "jobs",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-jobs-zimmerer",
       "term": "Zimmerer",
       "forbiddenWords": [
@@ -4922,6 +7634,18 @@
       ],
       "categoryId": "jobs",
       "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-places-apotheke",
+      "term": "Apotheke",
+      "forbiddenWords": [
+        "Medikamente",
+        "Rezept",
+        "Tabletten",
+        "Kreuz"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
     },
     {
       "id": "pool-de-places-baeckerei",
@@ -4948,6 +7672,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-places-balkon",
+      "term": "Balkon",
+      "forbiddenWords": [
+        "Blumen",
+        "draußen",
+        "Geländer",
+        "Wohnung"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-places-bushaltestelle",
+      "term": "Bushaltestelle",
+      "forbiddenWords": [
+        "warten",
+        "Fahrplan",
+        "Schild",
+        "Linie"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-places-campingplatz",
       "term": "Campingplatz",
       "forbiddenWords": [
@@ -4955,6 +7703,18 @@
         "Wohnwagen",
         "Natur",
         "Urlaub"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-places-dorf",
+      "term": "Dorf",
+      "forbiddenWords": [
+        "klein",
+        "Land",
+        "Kirche",
+        "Bauern"
       ],
       "categoryId": "places",
       "difficulty": "easy"
@@ -4984,6 +7744,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-places-friedhof",
+      "term": "Friedhof",
+      "forbiddenWords": [
+        "Gräber",
+        "Beerdigung",
+        "Kerzen",
+        "Tod"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-places-garage",
+      "term": "Garage",
+      "forbiddenWords": [
+        "Auto",
+        "Tor",
+        "parken",
+        "Werkstatt"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-places-garten",
       "term": "Garten",
       "forbiddenWords": [
@@ -5008,6 +7792,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-places-keller",
+      "term": "Keller",
+      "forbiddenWords": [
+        "unten",
+        "dunkel",
+        "Vorrat",
+        "Treppe"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-places-kindergarten",
+      "term": "Kindergarten",
+      "forbiddenWords": [
+        "spielen",
+        "Erzieherin",
+        "Basteln",
+        "klein"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-places-kirche",
       "term": "Kirche",
       "forbiddenWords": [
@@ -5027,6 +7835,18 @@
         "Patient",
         "Zimmer",
         "Operation"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-places-kueche",
+      "term": "Küche",
+      "forbiddenWords": [
+        "kochen",
+        "Herd",
+        "Kühlschrank",
+        "Essen"
       ],
       "categoryId": "places",
       "difficulty": "easy"
@@ -5092,6 +7912,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-places-stadion",
+      "term": "Stadion",
+      "forbiddenWords": [
+        "Fußball",
+        "Fans",
+        "Tribüne",
+        "Rasen"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-places-stadt",
+      "term": "Stadt",
+      "forbiddenWords": [
+        "groß",
+        "Straßen",
+        "Häuser",
+        "Einwohner"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-places-strand",
       "term": "Strand",
       "forbiddenWords": [
@@ -5128,6 +7972,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-places-wohnung",
+      "term": "Wohnung",
+      "forbiddenWords": [
+        "Miete",
+        "Zimmer",
+        "Küche",
+        "Haus"
+      ],
+      "categoryId": "places",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-places-zoo",
       "term": "Zoo",
       "forbiddenWords": [
@@ -5138,6 +7994,30 @@
       ],
       "categoryId": "places",
       "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-places-altstadt",
+      "term": "Altstadt",
+      "forbiddenWords": [
+        "Gassen",
+        "historisch",
+        "Fachwerk",
+        "Touristen"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-aquarium",
+      "term": "Aquarium",
+      "forbiddenWords": [
+        "Fische",
+        "Glas",
+        "Becken",
+        "Zoo"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
     },
     {
       "id": "pool-de-places-autobahn",
@@ -5200,6 +8080,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-places-burgruine",
+      "term": "Burgruine",
+      "forbiddenWords": [
+        "verfallen",
+        "Mauern",
+        "Ritter",
+        "Hügel"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-places-dschungel",
       "term": "Dschungel",
       "forbiddenWords": [
@@ -5207,6 +8099,30 @@
         "Urwald",
         "Affen",
         "tropisch"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-eisbahn",
+      "term": "Eisbahn",
+      "forbiddenWords": [
+        "Schlittschuhe",
+        "glatt",
+        "Winter",
+        "Kufen"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-fabrik",
+      "term": "Fabrik",
+      "forbiddenWords": [
+        "Produktion",
+        "Maschinen",
+        "Arbeiter",
+        "Schornstein"
       ],
       "categoryId": "places",
       "difficulty": "medium"
@@ -5236,6 +8152,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-places-gewaechshaus",
+      "term": "Gewächshaus",
+      "forbiddenWords": [
+        "Pflanzen",
+        "Glas",
+        "warm",
+        "Tomaten"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-places-hafen",
       "term": "Hafen",
       "forbiddenWords": [
@@ -5260,6 +8188,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-places-kaufhaus",
+      "term": "Kaufhaus",
+      "forbiddenWords": [
+        "Etagen",
+        "shoppen",
+        "Rolltreppe",
+        "Abteilung"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-places-leuchtturm",
       "term": "Leuchtturm",
       "forbiddenWords": [
@@ -5279,6 +8219,18 @@
         "Obst",
         "Händler",
         "Stadt"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-parkhaus",
+      "term": "Parkhaus",
+      "forbiddenWords": [
+        "Autos",
+        "Ebenen",
+        "Schranke",
+        "Ticket"
       ],
       "categoryId": "places",
       "difficulty": "medium"
@@ -5320,6 +8272,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-places-tierheim",
+      "term": "Tierheim",
+      "forbiddenWords": [
+        "Hunde",
+        "Katzen",
+        "adoptieren",
+        "Käfige"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-places-tunnel",
       "term": "Tunnel",
       "forbiddenWords": [
@@ -5327,6 +8291,54 @@
         "Auto",
         "dunkel",
         "Röhre"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-wasserturm",
+      "term": "Wasserturm",
+      "forbiddenWords": [
+        "Behälter",
+        "hoch",
+        "Druck",
+        "Stadt"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-weinberg",
+      "term": "Weinberg",
+      "forbiddenWords": [
+        "Trauben",
+        "Reben",
+        "Hang",
+        "Ernte"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-windmuehle",
+      "term": "Windmühle",
+      "forbiddenWords": [
+        "Flügel",
+        "Mehl",
+        "Holland",
+        "Korn"
+      ],
+      "categoryId": "places",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-wolkenkratzer",
+      "term": "Wolkenkratzer",
+      "forbiddenWords": [
+        "hoch",
+        "Stadt",
+        "Hochhaus",
+        "New York"
       ],
       "categoryId": "places",
       "difficulty": "medium"
@@ -5342,6 +8354,18 @@
       ],
       "categoryId": "places",
       "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-places-akropolis",
+      "term": "Akropolis",
+      "forbiddenWords": [
+        "Athen",
+        "Griechenland",
+        "Tempel",
+        "Hügel"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
     },
     {
       "id": "pool-de-places-amphitheater",
@@ -5380,6 +8404,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-places-chinesische-mauer",
+      "term": "Chinesische Mauer",
+      "forbiddenWords": [
+        "China",
+        "lang",
+        "Wehranlage",
+        "Touristen"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-places-eiffelturm",
+      "term": "Eiffelturm",
+      "forbiddenWords": [
+        "Paris",
+        "Frankreich",
+        "Stahl",
+        "Wahrzeichen"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-places-fjord",
       "term": "Fjord",
       "forbiddenWords": [
@@ -5387,6 +8435,18 @@
         "Meer",
         "Fels",
         "Bucht"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-places-freiheitsstatue",
+      "term": "Freiheitsstatue",
+      "forbiddenWords": [
+        "New York",
+        "Fackel",
+        "USA",
+        "Krone"
       ],
       "categoryId": "places",
       "difficulty": "hard"
@@ -5452,6 +8512,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-places-kolosseum",
+      "term": "Kolosseum",
+      "forbiddenWords": [
+        "Rom",
+        "Gladiatoren",
+        "Arena",
+        "Ruine"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-places-lagune",
       "term": "Lagune",
       "forbiddenWords": [
@@ -5464,6 +8536,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-places-mausoleum",
+      "term": "Mausoleum",
+      "forbiddenWords": [
+        "Grab",
+        "Gebäude",
+        "Herrscher",
+        "Denkmal"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-places-moschee",
       "term": "Moschee",
       "forbiddenWords": [
@@ -5471,6 +8555,18 @@
         "Minarett",
         "Gebet",
         "Kuppel"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-places-niagarafaelle",
+      "term": "Niagarafälle",
+      "forbiddenWords": [
+        "Wasserfall",
+        "Kanada",
+        "USA",
+        "Gischt"
       ],
       "categoryId": "places",
       "difficulty": "hard"
@@ -5495,6 +8591,18 @@
         "Teleskop",
         "Astronomie",
         "Kuppel"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-places-panamakanal",
+      "term": "Panamakanal",
+      "forbiddenWords": [
+        "Schiffe",
+        "Schleusen",
+        "Atlantik",
+        "Pazifik"
       ],
       "categoryId": "places",
       "difficulty": "hard"
@@ -5536,6 +8644,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-places-sphinx",
+      "term": "Sphinx",
+      "forbiddenWords": [
+        "Ägypten",
+        "Löwe",
+        "Pyramide",
+        "Rätsel"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-places-steppe",
       "term": "Steppe",
       "forbiddenWords": [
@@ -5543,6 +8663,30 @@
         "Weite",
         "Asien",
         "Pferde"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-places-stonehenge",
+      "term": "Stonehenge",
+      "forbiddenWords": [
+        "England",
+        "Steine",
+        "Kreis",
+        "Rätsel"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-places-taj-mahal",
+      "term": "Taj Mahal",
+      "forbiddenWords": [
+        "Indien",
+        "Grabmal",
+        "weiß",
+        "Liebe"
       ],
       "categoryId": "places",
       "difficulty": "hard"
@@ -5558,6 +8702,30 @@
       ],
       "categoryId": "places",
       "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-places-uluru",
+      "term": "Uluru",
+      "forbiddenWords": [
+        "Australien",
+        "roter Fels",
+        "heilig",
+        "Aborigines"
+      ],
+      "categoryId": "places",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-media-bilderbuch",
+      "term": "Bilderbuch",
+      "forbiddenWords": [
+        "Kinder",
+        "vorlesen",
+        "Geschichte",
+        "Seiten"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
     },
     {
       "id": "pool-de-media-comic",
@@ -5584,6 +8752,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-media-disco",
+      "term": "Disco",
+      "forbiddenWords": [
+        "Tanzen",
+        "Musik",
+        "Lichter",
+        "Nacht"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-media-fernseher",
       "term": "Fernseher",
       "forbiddenWords": [
@@ -5591,6 +8771,18 @@
         "Programm",
         "Fernbedienung",
         "Bildschirm"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-media-fernsehprogramm",
+      "term": "Fernsehprogramm",
+      "forbiddenWords": [
+        "Sender",
+        "Sendung",
+        "Zeitplan",
+        "Zeitschrift"
       ],
       "categoryId": "media",
       "difficulty": "easy"
@@ -5644,6 +8836,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-media-hoerspiel",
+      "term": "Hörspiel",
+      "forbiddenWords": [
+        "Radio",
+        "Stimmen",
+        "Geräusche",
+        "CD"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-media-kindersendung",
+      "term": "Kindersendung",
+      "forbiddenWords": [
+        "Fernsehen",
+        "Zeichentrick",
+        "Maus",
+        "Vormittag"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-media-klavier",
       "term": "Klavier",
       "forbiddenWords": [
@@ -5692,6 +8908,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-media-mikrofon",
+      "term": "Mikrofon",
+      "forbiddenWords": [
+        "Stimme",
+        "Bühne",
+        "sprechen",
+        "Verstärker"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-media-musik",
       "term": "Musik",
       "forbiddenWords": [
@@ -5704,12 +8932,36 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-media-plakat",
+      "term": "Plakat",
+      "forbiddenWords": [
+        "Werbung",
+        "Wand",
+        "groß",
+        "aufhängen"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-media-radio",
       "term": "Radio",
       "forbiddenWords": [
         "Sender",
         "Musik",
         "Nachrichten",
+        "hören"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-media-radiosender",
+      "term": "Radiosender",
+      "forbiddenWords": [
+        "Frequenz",
+        "Moderator",
+        "Musik",
         "hören"
       ],
       "categoryId": "media",
@@ -5728,6 +8980,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-media-schallplatte",
+      "term": "Schallplatte",
+      "forbiddenWords": [
+        "Vinyl",
+        "Nadel",
+        "Musik",
+        "drehen"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-media-schlagzeug",
       "term": "Schlagzeug",
       "forbiddenWords": [
@@ -5740,6 +9004,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-media-serie",
+      "term": "Serie",
+      "forbiddenWords": [
+        "Staffel",
+        "Folge",
+        "Fernsehen",
+        "Streaming"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-media-trompete",
       "term": "Trompete",
       "forbiddenWords": [
@@ -5747,6 +9023,30 @@
         "blasen",
         "Ventile",
         "Jazz"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-media-videospiel",
+      "term": "Videospiel",
+      "forbiddenWords": [
+        "Konsole",
+        "Controller",
+        "Bildschirm",
+        "zocken"
+      ],
+      "categoryId": "media",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-media-zeitschrift",
+      "term": "Zeitschrift",
+      "forbiddenWords": [
+        "Magazin",
+        "Artikel",
+        "Kiosk",
+        "lesen"
       ],
       "categoryId": "media",
       "difficulty": "easy"
@@ -5774,6 +9074,18 @@
       ],
       "categoryId": "media",
       "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-media-actionfilm",
+      "term": "Actionfilm",
+      "forbiddenWords": [
+        "Verfolgungsjagd",
+        "Explosionen",
+        "Held",
+        "Kino"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
     },
     {
       "id": "pool-de-media-chor",
@@ -5812,6 +9124,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-media-gameshow",
+      "term": "Gameshow",
+      "forbiddenWords": [
+        "Kandidaten",
+        "Preise",
+        "Moderator",
+        "Fragen"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-media-hitparade",
+      "term": "Hitparade",
+      "forbiddenWords": [
+        "Charts",
+        "Platz",
+        "Lied",
+        "Radio"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-media-hoerbuch",
       "term": "Hörbuch",
       "forbiddenWords": [
@@ -5843,6 +9179,42 @@
         "Mikrofon",
         "Bildschirm",
         "Text"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-media-liebesfilm",
+      "term": "Liebesfilm",
+      "forbiddenWords": [
+        "Romantik",
+        "Kuss",
+        "Kino",
+        "Paar"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-media-livestream",
+      "term": "Livestream",
+      "forbiddenWords": [
+        "direkt",
+        "Internet",
+        "Übertragung",
+        "Zuschauer"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-media-musikvideo",
+      "term": "Musikvideo",
+      "forbiddenWords": [
+        "Clip",
+        "Sänger",
+        "YouTube",
+        "tanzen"
       ],
       "categoryId": "media",
       "difficulty": "medium"
@@ -5932,6 +9304,42 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-media-science-fiction",
+      "term": "Science-Fiction",
+      "forbiddenWords": [
+        "Zukunft",
+        "Weltraum",
+        "Aliens",
+        "Roboter"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-media-seifenoper",
+      "term": "Seifenoper",
+      "forbiddenWords": [
+        "Drama",
+        "Liebe",
+        "täglich",
+        "Serie"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-media-sitcom",
+      "term": "Sitcom",
+      "forbiddenWords": [
+        "Comedy",
+        "Lachen",
+        "Serie",
+        "Gelächter"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-media-synchronsprecher",
       "term": "Synchronsprecher",
       "forbiddenWords": [
@@ -5939,6 +9347,18 @@
         "Film",
         "Studio",
         "übersetzen"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-media-talkshow",
+      "term": "Talkshow",
+      "forbiddenWords": [
+        "Gast",
+        "Moderator",
+        "Sofa",
+        "Gespräch"
       ],
       "categoryId": "media",
       "difficulty": "medium"
@@ -5980,6 +9400,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-media-western",
+      "term": "Western",
+      "forbiddenWords": [
+        "Cowboy",
+        "Pferd",
+        "Revolver",
+        "Prärie"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-media-wetterbericht",
+      "term": "Wetterbericht",
+      "forbiddenWords": [
+        "Vorhersage",
+        "Regen",
+        "Sonne",
+        "Temperatur"
+      ],
+      "categoryId": "media",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-media-zeichentrickserie",
       "term": "Zeichentrickserie",
       "forbiddenWords": [
@@ -6016,6 +9460,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-media-blockbuster",
+      "term": "Blockbuster",
+      "forbiddenWords": [
+        "Kassenschlager",
+        "Kino",
+        "Millionen",
+        "Hollywood"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-media-casting",
+      "term": "Casting",
+      "forbiddenWords": [
+        "Schauspieler",
+        "Rolle",
+        "vorsprechen",
+        "Auswahl"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-media-cello",
       "term": "Cello",
       "forbiddenWords": [
@@ -6028,6 +9496,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-media-cliffhanger",
+      "term": "Cliffhanger",
+      "forbiddenWords": [
+        "Spannung",
+        "Ende",
+        "Fortsetzung",
+        "Serie"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-media-cutter",
+      "term": "Cutter",
+      "forbiddenWords": [
+        "Schnitt",
+        "Film",
+        "Szenen",
+        "montieren"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-media-drehbuch",
       "term": "Drehbuch",
       "forbiddenWords": [
@@ -6035,6 +9527,18 @@
         "Film",
         "Szenen",
         "Dialoge"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-media-drehbuchautor",
+      "term": "Drehbuchautor",
+      "forbiddenWords": [
+        "Skript",
+        "Dialoge",
+        "Handlung",
+        "schreiben"
       ],
       "categoryId": "media",
       "difficulty": "hard"
@@ -6064,6 +9568,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-media-filmfestival",
+      "term": "Filmfestival",
+      "forbiddenWords": [
+        "Cannes",
+        "Preise",
+        "Premiere",
+        "Stars"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-media-filmkritik",
+      "term": "Filmkritik",
+      "forbiddenWords": [
+        "Rezension",
+        "Sterne",
+        "Meinung",
+        "Zeitung"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-media-kabarett",
       "term": "Kabarett",
       "forbiddenWords": [
@@ -6088,6 +9616,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-media-kostuembildner",
+      "term": "Kostümbildner",
+      "forbiddenWords": [
+        "Kleidung",
+        "Film",
+        "Theater",
+        "entwerfen"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-media-kulisse",
       "term": "Kulisse",
       "forbiddenWords": [
@@ -6095,6 +9635,18 @@
         "Bühne",
         "Dekoration",
         "Film"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-media-maskenbildner",
+      "term": "Maskenbildner",
+      "forbiddenWords": [
+        "schminken",
+        "Perücke",
+        "Gesicht",
+        "Make-up"
       ],
       "categoryId": "media",
       "difficulty": "hard"
@@ -6160,6 +9712,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-media-stuntman",
+      "term": "Stuntman",
+      "forbiddenWords": [
+        "gefährlich",
+        "Double",
+        "Sprünge",
+        "Verfolgungsjagd"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-media-synchronisation",
+      "term": "Synchronisation",
+      "forbiddenWords": [
+        "Stimme",
+        "Sprecher",
+        "Übersetzung",
+        "Studio"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-media-synthesizer",
       "term": "Synthesizer",
       "forbiddenWords": [
@@ -6184,6 +9760,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-media-tonmeister",
+      "term": "Tonmeister",
+      "forbiddenWords": [
+        "Mischpult",
+        "Aufnahme",
+        "Klang",
+        "Studio"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-media-trailer",
+      "term": "Trailer",
+      "forbiddenWords": [
+        "Vorschau",
+        "Film",
+        "Kino",
+        "kurz"
+      ],
+      "categoryId": "media",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-media-zensur",
       "term": "Zensur",
       "forbiddenWords": [
@@ -6196,6 +9796,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-tech-akku",
+      "term": "Akku",
+      "forbiddenWords": [
+        "Strom",
+        "laden",
+        "Handy",
+        "Batterie"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-tech-batterie",
       "term": "Batterie",
       "forbiddenWords": [
@@ -6203,6 +9815,18 @@
         "Plus",
         "Minus",
         "leer"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-bildschirm",
+      "term": "Bildschirm",
+      "forbiddenWords": [
+        "Computer",
+        "Fernseher",
+        "Anzeige",
+        "Monitor"
       ],
       "categoryId": "tech",
       "difficulty": "easy"
@@ -6292,6 +9916,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-tech-kabel",
+      "term": "Kabel",
+      "forbiddenWords": [
+        "Strom",
+        "Stecker",
+        "lang",
+        "verbinden"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-tech-kamera",
       "term": "Kamera",
       "forbiddenWords": [
@@ -6316,6 +9952,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-tech-ladegeraet",
+      "term": "Ladegerät",
+      "forbiddenWords": [
+        "Akku",
+        "Strom",
+        "Handy",
+        "Kabel"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-tech-lampe",
       "term": "Lampe",
       "forbiddenWords": [
@@ -6323,6 +9971,18 @@
         "Birne",
         "Schalter",
         "Strom"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-laptop",
+      "term": "Laptop",
+      "forbiddenWords": [
+        "Computer",
+        "tragbar",
+        "Tastatur",
+        "Akku"
       ],
       "categoryId": "tech",
       "difficulty": "easy"
@@ -6340,6 +10000,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-tech-monitor",
+      "term": "Monitor",
+      "forbiddenWords": [
+        "Bildschirm",
+        "Computer",
+        "Anzeige",
+        "Schreibtisch"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-tech-roboter",
       "term": "Roboter",
       "forbiddenWords": [
@@ -6347,6 +10019,54 @@
         "Metall",
         "programmiert",
         "Zukunft"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-scanner",
+      "term": "Scanner",
+      "forbiddenWords": [
+        "einlesen",
+        "Dokument",
+        "Barcode",
+        "Papier"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-smartphone",
+      "term": "Smartphone",
+      "forbiddenWords": [
+        "Handy",
+        "Apps",
+        "Touchscreen",
+        "Telefon"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-spielkonsole",
+      "term": "Spielkonsole",
+      "forbiddenWords": [
+        "Controller",
+        "Fernseher",
+        "zocken",
+        "Wohnzimmer"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-stecker",
+      "term": "Stecker",
+      "forbiddenWords": [
+        "Steckdose",
+        "Kabel",
+        "Strom",
+        "Stifte"
       ],
       "categoryId": "tech",
       "difficulty": "easy"
@@ -6376,6 +10096,30 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-tech-tastatur",
+      "term": "Tastatur",
+      "forbiddenWords": [
+        "Tasten",
+        "Computer",
+        "tippen",
+        "Buchstaben"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-telefon",
+      "term": "Telefon",
+      "forbiddenWords": [
+        "anrufen",
+        "Hörer",
+        "Nummer",
+        "klingeln"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-tech-toaster",
       "term": "Toaster",
       "forbiddenWords": [
@@ -6393,11 +10137,35 @@
       "forbiddenWords": [
         "Wäsche",
         "Trommel",
-        "Waschpulver",
+        "Seife",
         "schleudern"
       ],
       "categoryId": "tech",
       "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-webcam",
+      "term": "Webcam",
+      "forbiddenWords": [
+        "Kamera",
+        "Videochat",
+        "Computer",
+        "Bild"
+      ],
+      "categoryId": "tech",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-tech-app",
+      "term": "App",
+      "forbiddenWords": [
+        "Handy",
+        "installieren",
+        "Programm",
+        "Store"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
     },
     {
       "id": "pool-de-tech-barcode",
@@ -6412,6 +10180,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-tech-bluetooth",
+      "term": "Bluetooth",
+      "forbiddenWords": [
+        "drahtlos",
+        "Kopfhörer",
+        "Verbindung",
+        "koppeln"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-tech-chatbot",
+      "term": "Chatbot",
+      "forbiddenWords": [
+        "Roboter",
+        "Nachrichten",
+        "antworten",
+        "künstliche Intelligenz"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-tech-drohne",
       "term": "Drohne",
       "forbiddenWords": [
@@ -6419,6 +10211,18 @@
         "Propeller",
         "Fernsteuerung",
         "Kamera"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-tech-e-mail",
+      "term": "E-Mail",
+      "forbiddenWords": [
+        "Nachricht",
+        "Postfach",
+        "senden",
+        "Anhang"
       ],
       "categoryId": "tech",
       "difficulty": "medium"
@@ -6443,6 +10247,18 @@
         "weit",
         "Vogel",
         "beobachten"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-tech-festplatte",
+      "term": "Festplatte",
+      "forbiddenWords": [
+        "Speicher",
+        "Daten",
+        "Computer",
+        "Gigabyte"
       ],
       "categoryId": "tech",
       "difficulty": "medium"
@@ -6508,6 +10324,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-tech-passwort",
+      "term": "Passwort",
+      "forbiddenWords": [
+        "Zugang",
+        "geheim",
+        "Konto",
+        "eingeben"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-tech-rauchmelder",
       "term": "Rauchmelder",
       "forbiddenWords": [
@@ -6544,6 +10372,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-tech-smartwatch",
+      "term": "Smartwatch",
+      "forbiddenWords": [
+        "Armband",
+        "Schritte",
+        "Display",
+        "Uhr"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-tech-software",
+      "term": "Software",
+      "forbiddenWords": [
+        "Programm",
+        "Computer",
+        "Hardware",
+        "installieren"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-tech-solaranlage",
       "term": "Solaranlage",
       "forbiddenWords": [
@@ -6551,6 +10403,18 @@
         "Dach",
         "Strom",
         "Panele"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-tech-suchmaschine",
+      "term": "Suchmaschine",
+      "forbiddenWords": [
+        "Internet",
+        "suchen",
+        "Ergebnisse",
+        "Anfrage"
       ],
       "categoryId": "tech",
       "difficulty": "medium"
@@ -6580,6 +10444,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-tech-usb-stick",
+      "term": "USB-Stick",
+      "forbiddenWords": [
+        "Daten",
+        "speichern",
+        "Computer",
+        "klein"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-tech-videokonferenz",
       "term": "Videokonferenz",
       "forbiddenWords": [
@@ -6587,6 +10463,30 @@
         "Meeting",
         "Kamera",
         "online"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-tech-virus",
+      "term": "Virus",
+      "forbiddenWords": [
+        "Computer",
+        "Schadsoftware",
+        "infizieren",
+        "löschen"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-tech-webseite",
+      "term": "Webseite",
+      "forbiddenWords": [
+        "Internet",
+        "Browser",
+        "Adresse",
+        "klicken"
       ],
       "categoryId": "tech",
       "difficulty": "medium"
@@ -6604,6 +10504,30 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-tech-wlan",
+      "term": "WLAN",
+      "forbiddenWords": [
+        "Internet",
+        "Router",
+        "drahtlos",
+        "Passwort"
+      ],
+      "categoryId": "tech",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-tech-3d-drucker",
+      "term": "3D-Drucker",
+      "forbiddenWords": [
+        "Kunststoff",
+        "Schicht",
+        "Modell",
+        "Düse"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-tech-algorithmus",
       "term": "Algorithmus",
       "forbiddenWords": [
@@ -6611,6 +10535,42 @@
         "Rechenvorschrift",
         "Schritte",
         "Computer"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-tech-bandbreite",
+      "term": "Bandbreite",
+      "forbiddenWords": [
+        "Internet",
+        "Datenmenge",
+        "Geschwindigkeit",
+        "Leitung"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-tech-betriebssystem",
+      "term": "Betriebssystem",
+      "forbiddenWords": [
+        "Computer",
+        "Programm",
+        "starten",
+        "Grundlage"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-tech-binaercode",
+      "term": "Binärcode",
+      "forbiddenWords": [
+        "Nullen",
+        "Einsen",
+        "Computer",
+        "Zahlen"
       ],
       "categoryId": "tech",
       "difficulty": "hard"
@@ -6652,6 +10612,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-tech-firewall",
+      "term": "Firewall",
+      "forbiddenWords": [
+        "Netzwerk",
+        "Schutz",
+        "Hacker",
+        "blockieren"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-tech-glasfaser",
       "term": "Glasfaser",
       "forbiddenWords": [
@@ -6671,6 +10643,18 @@
         "Kreisel",
         "Lage",
         "Sensor"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-tech-hacker",
+      "term": "Hacker",
+      "forbiddenWords": [
+        "Computer",
+        "einbrechen",
+        "Daten",
+        "Netzwerk"
       ],
       "categoryId": "tech",
       "difficulty": "hard"
@@ -6712,6 +10696,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-tech-laser",
+      "term": "Laser",
+      "forbiddenWords": [
+        "Strahl",
+        "rot",
+        "schneiden",
+        "Pointer"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-tech-mikrochip",
+      "term": "Mikrochip",
+      "forbiddenWords": [
+        "Computer",
+        "winzig",
+        "Silizium",
+        "Schaltung"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-tech-oszilloskop",
       "term": "Oszilloskop",
       "forbiddenWords": [
@@ -6719,6 +10727,18 @@
         "Kurven",
         "Elektronik",
         "Bildschirm"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-tech-pixel",
+      "term": "Pixel",
+      "forbiddenWords": [
+        "Bild",
+        "Punkt",
+        "Bildschirm",
+        "klein"
       ],
       "categoryId": "tech",
       "difficulty": "hard"
@@ -6772,6 +10792,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-tech-sensor",
+      "term": "Sensor",
+      "forbiddenWords": [
+        "messen",
+        "Signal",
+        "Technik",
+        "Temperatur"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-tech-tachometer",
       "term": "Tachometer",
       "forbiddenWords": [
@@ -6803,6 +10835,30 @@
         "Chip",
         "Schalter",
         "Strom"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-tech-verschluesselung",
+      "term": "Verschlüsselung",
+      "forbiddenWords": [
+        "Daten",
+        "geheim",
+        "Code",
+        "sicher"
+      ],
+      "categoryId": "tech",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-tech-virtual-reality",
+      "term": "Virtual Reality",
+      "forbiddenWords": [
+        "Brille",
+        "Welt",
+        "Spiel",
+        "eintauchen"
       ],
       "categoryId": "tech",
       "difficulty": "hard"

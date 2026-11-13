@@ -671,8 +671,8 @@
         },
         {
           "id": "Ta-09-08",
-          "title": "Noch mehr Karten erzeugen: Ziel 30 Karten je Schwierigkeit und Kategorie (900 je Sprache, bisher 17 bis 19; es fehlen etwa 380 je Sprache); Claude schreibt die Karten, die Skripte prüfen sie, dann werden sie eingebaut. Probelauf: Kategorie Essen und Trinken fertig (je Schwierigkeit 30, Deutsch und Englisch)",
-          "status": "in_progress"
+          "title": "Noch mehr Karten erzeugen: Ziel 30 Karten je Schwierigkeit und Kategorie (900 je Sprache, bisher 17 bis 19; es fehlen etwa 380 je Sprache); Claude schreibt die Karten, die Skripte prüfen sie, dann werden sie eingebaut. Fertig: alle zehn Kategorien je Schwierigkeit 30 Karten, 900 je Sprache (Deutsch und Englisch)",
+          "status": "done"
         }
       ],
       "gameIds": [
