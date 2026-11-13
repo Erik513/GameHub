@@ -33,7 +33,7 @@ export const tabooTexts = {
     added: "Karte hinzugefügt.",
     exists: "Diese Karte gibt es schon.",
     invalid:
-      "Es braucht einen Begriff und vier verschiedene verbotene Wörter, die nicht dem Begriff entsprechen.",
+      "Es braucht einen Begriff und vier verschiedene verbotene Wörter. Ein verbotenes Wort darf nicht der Begriff oder ein Teil davon sein.",
     noCategory: "Gib einen Namen für die neue Kategorie ein.",
     storage: "Die Karte konnte nicht gespeichert werden.",
     languages: { de: "Deutsch", en: "Englisch" },

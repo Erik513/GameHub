@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Karten: kein verbotenes Wort als Teil des Begriffs (Ta-09-07)
+
+- Neue Prüfregel in der Kartenprüfung (`validateCard`, Fehlercode `part_of_term`): Ein verbotenes Wort ab 3 Buchstaben darf nicht in dem Begriff stecken. Bei „Fußball“ ist „Ball“ nicht erlaubt, weil Teile des Begriffs ohnehin verboten sind. Die Regel gilt beim Eingeben und Importieren von Karten, bei der Erzeugung und beim Spielstart (eine Karte, die dagegen verstößt, wird nicht gespielt). Die Fehlermeldung beim Hinzufügen nennt die Regel (Deutsch und Englisch).
+- Bestand geprüft: Der große Pool (523 deutsche, 521 englische Karten) hat keinen Treffer, weil das Erzeugungsskript die Regel schon prüft. Die von Hand geschriebenen Standardkarten hatten 9 Treffer, zum Beispiel „Regenschirm“ mit „Regen“ oder „Toothbrush“ mit „brush“; sie haben jetzt andere verbotene Wörter. Die lokalen Kandidaten haben keinen Treffer.
+- Tests: Regel mit Beispielen (Groß- und Kleinschreibung, mehrere Wörter, kurze Wörter bleiben erlaubt).
+
 ### IDs der Aufgaben umbenannt: Al, Ta, Wb, Im
 
 - Alle Phasen- und Aufgaben-IDs tragen jetzt ein Kürzel, damit allgemeine Aufgaben und Aufgaben der einzelnen Spiele leicht zu unterscheiden sind: `Al-01-01` (allgemein), `Ta-01-01` (Tabu), `Wb-01` (Wortbombe), `Im-01` (Imposter). Beispiele: `PH-12-07-B` ist jetzt `Ta-06-07-B`, `PH-17-08` ist `Al-09-08`, `PH-15-07` ist `Ta-09-07`. Die Phasen zählen je Kürzel ab 01, die Aufgabennummern innerhalb einer Phase blieben gleich.

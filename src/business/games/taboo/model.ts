@@ -130,6 +130,10 @@ export function validateCard(
     issues.push({ field: "forbiddenWords", code: "duplicate" });
   if (words.some((word) => identity(word) === identity(term)))
     issues.push({ field: "forbiddenWords", code: "matches_term" });
+  // A part of the term is forbidden anyway, so it must not take one of the four places
+  // (for "Fußball" the word "Ball" is no forbidden word). Very short words are not checked.
+  if (words.some((word) => identity(word).length >= 3 && identity(term).includes(identity(word))))
+    issues.push({ field: "forbiddenWords", code: "part_of_term" });
   return issues.length
     ? { valid: false, issues }
     : {

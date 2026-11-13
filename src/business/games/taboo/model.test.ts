@@ -110,6 +110,37 @@ describe("Taboo domain validation", () => {
   ])("rejects invalid forbidden words %j", (forbiddenWords) => {
     expect(validateCard({ ...card, forbiddenWords }).valid).toBe(false);
   });
+  it.each([
+    ["Fußball", ["Ball", "Tor", "Rasen", "Stadion"]],
+    ["Fußball", ["Tor", "FUSS", "Rasen", "Fußball"]],
+    ["Ice cream", ["cold", "ICE", "sweet", "cone"]],
+    ["Regenbogen", ["Farben", "Sonne", "Regen", "Himmel"]],
+  ] as const)("rejects the part of the term %s in %j", (term, forbiddenWords) => {
+    const result = validateCard({ ...card, term, forbiddenWords: [...forbiddenWords] });
+    expect(result.valid).toBe(false);
+  });
+  it("names the problem when a forbidden word is a part of the term", () => {
+    const result = validateCard({
+      ...card,
+      term: "Fußball",
+      forbiddenWords: ["Ball", "Tor", "Rasen", "Stadion"],
+    });
+    expect(result).toEqual({
+      valid: false,
+      issues: [{ field: "forbiddenWords", code: "part_of_term" }],
+    });
+  });
+  it("accepts short words and words that only look alike", () => {
+    // Words under three letters are not checked, and "Fuß" is no part of the word "Ball".
+    expect(
+      validateCard({ ...card, term: "Tor", forbiddenWords: ["Ball", "Fuß", "Netz", "Pfosten"] })
+        .valid,
+    ).toBe(true);
+    expect(
+      validateCard({ ...card, term: "Reis", forbiddenWords: ["Wald", "Tier", "Honig", "Es"] })
+        .valid,
+    ).toBe(true);
+  });
   it.each(["id", "term", "categoryId"] as const)("rejects empty card %s", (field) => {
     expect(validateCard({ ...card, [field]: " " }).valid).toBe(false);
   });

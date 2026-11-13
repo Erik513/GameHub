@@ -44,6 +44,7 @@ Eigene Zustandsmaschine neben der klassischen (Regeln: `docs/GAMEHUB_TABOO_MODES
 ## Geprüfte Randfälle
 
 - Ereignisse für den falschen Zug, die falsche Karte oder den falschen Zustand ändern nichts.
+- Ein verbotenes Wort (ab 3 Buchstaben) darf nicht Teil des Begriffs sein (Fehlercode `part_of_term`); bei „Fußball“ ist „Ball“ als verbotenes Wort unzulässig, weil Teile des Begriffs ohnehin verboten sind. Gilt für eigene Karten, Import, Erzeugung und beim Spielstart; eine Karte, die dagegen verstößt, kommt nicht ins Spiel.
 - Karten mit falscher Sprache, ungültigem Inhalt oder doppelter Kennung werden abgelehnt (Start, Nachladen, Neustart, Stechen).
 - Zeitwerte im Stechen müssen endlich sein; `NaN` und unendliche Werte werden ignoriert (Fehler, der durch die Zufallsprüfung gefunden wurde). Negative Werte werden auf 0 begrenzt.
 - Wertung bleibt nach Korrekturen und Neustarts nie negativ und passt zu den Ergebnissen.

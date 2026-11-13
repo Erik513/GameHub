@@ -18,8 +18,8 @@ const entries: readonly (readonly [string, TabooCard["difficulty"], Words, Words
   [
     "everyday",
     "hard",
-    ["Pfandautomat", "Flasche", "Supermarkt", "Bon", "Automat"],
-    ["Bottle return machine", "deposit", "supermarket", "receipt", "machine"],
+    ["Pfandautomat", "Flasche", "Supermarkt", "Bon", "Rückgabe"],
+    ["Bottle return machine", "deposit", "supermarket", "receipt", "recycling"],
   ],
   [
     "nature",
@@ -72,7 +72,7 @@ const entries: readonly (readonly [string, TabooCard["difficulty"], Words, Words
   [
     "everyday",
     "easy",
-    ["Regenschirm", "Regen", "nass", "aufspannen", "Zubehör"],
+    ["Regenschirm", "Wetter", "nass", "aufspannen", "Zubehör"],
     ["Umbrella", "rain", "wet", "open", "accessory"],
   ],
   [
@@ -91,7 +91,7 @@ const entries: readonly (readonly [string, TabooCard["difficulty"], Words, Words
     "everyday",
     "medium",
     ["Zahnbürste", "Zahncreme", "Mund", "putzen", "Hygiene"],
-    ["Toothbrush", "toothpaste", "mouth", "brush", "hygiene"],
+    ["Toothbrush", "toothpaste", "mouth", "clean", "hygiene"],
   ],
   [
     "everyday",
@@ -121,7 +121,7 @@ const entries: readonly (readonly [string, TabooCard["difficulty"], Words, Words
     "everyday",
     "hard",
     ["Einkaufswagenchip", "Münze", "Pfand", "Supermarkt", "Einkaufen"],
-    ["Shopping cart token", "coin", "deposit", "supermarket", "shopping"],
+    ["Shopping cart token", "coin", "deposit", "supermarket", "trolley"],
   ],
   [
     "everyday",
@@ -168,8 +168,8 @@ const entries: readonly (readonly [string, TabooCard["difficulty"], Words, Words
   [
     "nature",
     "medium",
-    ["Regenbogen", "Farben", "Sonne", "Regen", "Himmel"],
-    ["Rainbow", "colors", "sun", "rain", "sky"],
+    ["Regenbogen", "Farben", "Sonne", "Wolken", "Himmel"],
+    ["Rainbow", "colors", "sun", "storm", "sky"],
   ],
   [
     "nature",
@@ -265,7 +265,7 @@ const entries: readonly (readonly [string, TabooCard["difficulty"], Words, Words
     "culture",
     "hard",
     ["Dodekaphonie", "zwölf", "Töne", "Komposition", "Musik"],
-    ["Twelve-tone music", "twelve", "notes", "composition", "music"],
+    ["Twelve-tone music", "atonal", "notes", "composition", "Schoenberg"],
   ],
   [
     "culture",

@@ -32,7 +32,8 @@ export const tabooTexts = {
     add: "Add card",
     added: "Card added.",
     exists: "This card already exists.",
-    invalid: "A card needs a term and four different forbidden words that differ from the term.",
+    invalid:
+      "A card needs a term and four different forbidden words. A forbidden word must not be the term or a part of it.",
     noCategory: "Enter a name for the new category.",
     storage: "The card could not be saved.",
     languages: { de: "German", en: "English" },
