@@ -14,6 +14,7 @@ import { ActionRow, SetupSection } from "../game-kit";
 import { useCategoryLabel, useCategorySorter, useInterfaceLanguage } from "./categoryLabel";
 import { sortCardsForList } from "../../business/games/taboo/ordering";
 import { TabooCategoryField } from "./TabooCategoryField";
+import { cardProblem, isCardProblem, splitWords, type CardProblem } from "./cardProblem";
 import { ownChoice, resolveCategory, standardChoice } from "./categoryChoice";
 import { difficulties, teamNameFrom } from "./tabooSetupModel";
 
@@ -32,7 +33,7 @@ interface TabooCardListProps {
   standardCards: readonly TabooCard[];
 }
 
-type Problem = "invalid" | "duplicate" | "noCategory" | "storage";
+type Problem = "invalid" | "duplicate" | "noCategory" | "storage" | CardProblem;
 
 /**
  * All cards of the card language grouped by category. Every category can be opened to show its
@@ -99,11 +100,11 @@ export function TabooCardList({
       ...editing,
       categoryId,
       difficulty: difficulty ?? editing.difficulty,
-      forbiddenWords: teamNameFrom(data.get("words")).split(/[,;]/u),
+      forbiddenWords: splitWords(teamNameFrom(data.get("words"))),
       term: teamNameFrom(data.get("term")),
     });
     if (!result.valid) {
-      notify("invalid");
+      notify(cardProblem(result.issues) ?? "invalid");
       return;
     }
     const others = allCards.filter((card) => card.id !== editing.id);
@@ -239,7 +240,9 @@ export function TabooCardList({
       <div className="taboo-card-list">
         {notice && (
           <Toast key={notice.id} tone="error">
-            {t(`tabooList.problems.${notice.value}`)}
+            {isCardProblem(notice.value)
+              ? t(`tabooCardProblems.${notice.value}`)
+              : t(`tabooList.problems.${notice.value}`)}
           </Toast>
         )}
         {groups.map((group) =>

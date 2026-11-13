@@ -19,6 +19,13 @@ export const tabooTexts = {
     goal: "Every card shows a term with 4 forbidden words.",
     turn: "One player explains the term to their team without saying the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.",
   },
+  tabooCardProblems: {
+    noTerm: "Enter a term.",
+    wordCount: "Enter exactly four forbidden words, separated by commas.",
+    duplicateWord: "A forbidden word appears twice. All four must be different.",
+    sameAsTerm: "A forbidden word is the term itself.",
+    partOfTerm: "A forbidden word is part of the term. That is forbidden anyway.",
+  },
   tabooEntry: {
     title: "Add card",
     categoryLanguage: "Category language",

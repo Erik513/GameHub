@@ -138,6 +138,23 @@ describe("presentation components", () => {
     }
   });
 
+  it("keeps a longer message visible longer because it takes longer to read", () => {
+    vi.useFakeTimers();
+    try {
+      const longText = "x".repeat(130);
+      render(<Toast tone="error">{longText}</Toast>);
+      // A short message would be gone after 5 seconds; 130 characters stay 10.8 seconds.
+      act(() => void vi.advanceTimersByTime(6000));
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      act(() => void vi.advanceTimersByTime(4700));
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      act(() => void vi.advanceTimersByTime(200));
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("announces errors as alerts while preserving entered data", async () => {
     const user = userEvent.setup();
     render(

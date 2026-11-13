@@ -1,18 +1,18 @@
 import { useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { parseCardEntries } from "../../business/games/taboo/cardEntry";
 import {
   builtInCategories,
   ownCategories,
   type TabooCategoryInfo,
 } from "../../business/games/taboo/categories";
-import type { TabooCard } from "../../business/games/taboo/model";
+import { validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Toast, useNotice } from "../components";
 import { SetupSection } from "../game-kit";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { newCategoryChoice, ownChoice, resolveCategory } from "./categoryChoice";
 import { useInterfaceLanguage } from "./categoryLabel";
+import { cardProblem, isCardProblem, splitWords, type CardProblem } from "./cardProblem";
 import { difficulties } from "./tabooSetupModel";
 
 interface TabooCardEntryProps {
@@ -25,7 +25,7 @@ interface TabooCardEntryProps {
   onAdd: (cards: readonly TabooCard[]) => Promise<number>;
 }
 
-type Feedback = "added" | "exists" | "invalid" | "noCategory" | "storage";
+type Feedback = "added" | "exists" | "invalid" | "noCategory" | "storage" | CardProblem;
 
 /**
  * Short form for one card: category, difficulty, term and the four forbidden words. A card goes
@@ -38,7 +38,7 @@ export function TabooCardEntry({
   disabled,
   onAdd,
 }: TabooCardEntryProps) {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const locale = useInterfaceLanguage();
   const [term, setTerm] = useState("");
   const [words, setWords] = useState("");
@@ -62,6 +62,11 @@ export function TabooCardEntry({
       ? picked!
       : firstChoice;
 
+  // The examples in the fields are in the language of the category: the language of the chosen
+  // own category, or the language chosen for the new one.
+  const exampleLanguage = resolveCategory(choice, "-", newLanguage)?.language ?? newLanguage;
+  const example = i18n.getFixedT(exampleLanguage);
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const category = resolveCategory(choice, name, newLanguage);
@@ -69,16 +74,20 @@ export function TabooCardEntry({
       notify("noCategory");
       return;
     }
-    // The line format uses a colon after the term, so a colon inside the term is not allowed.
-    const { cards: entered } = parseCardEntries(
-      `${term.replace(/[:\r\n]/gu, " ")}: ${words.replace(/[\r\n]/gu, " ")}`,
-      { categoryId: category.categoryId, difficulty, language: category.language },
-      () => `own-${crypto.randomUUID()}`,
-    );
-    if (entered.length !== 1) {
-      notify("invalid");
+    // A colon or a line break inside the term is not allowed.
+    const checked = validateCard({
+      id: `own-${crypto.randomUUID()}`,
+      language: category.language,
+      term: term.replace(/[:\r\n]/gu, " "),
+      forbiddenWords: splitWords(words.replace(/[\r\n]/gu, " ")),
+      categoryId: category.categoryId,
+      difficulty,
+    });
+    if (!checked.valid) {
+      notify(cardProblem(checked.issues) ?? "invalid");
       return;
     }
+    const entered = [checked.value];
     try {
       const added = await onAdd(entered);
       notify(added > 0 ? "added" : "exists");
@@ -133,7 +142,7 @@ export function TabooCardEntry({
             autoComplete="off"
             className="field__input"
             onChange={(event) => setTerm(event.target.value)}
-            placeholder={t("tabooEntry.termPlaceholder")}
+            placeholder={example("tabooEntry.termPlaceholder")}
             ref={termInput}
             value={term}
           />
@@ -144,7 +153,7 @@ export function TabooCardEntry({
             autoComplete="off"
             className="field__input"
             onChange={(event) => setWords(event.target.value)}
-            placeholder={t("tabooEntry.wordsPlaceholder")}
+            placeholder={example("tabooEntry.wordsPlaceholder")}
             value={words}
           />
         </label>
@@ -154,7 +163,9 @@ export function TabooCardEntry({
       </form>
       {notice && (
         <Toast key={notice.id} tone={notice.value === "added" ? "success" : "error"}>
-          {t(`tabooEntry.${notice.value}`)}
+          {isCardProblem(notice.value)
+            ? t(`tabooCardProblems.${notice.value}`)
+            : t(`tabooEntry.${notice.value}`)}
         </Toast>
       )}
     </SetupSection>

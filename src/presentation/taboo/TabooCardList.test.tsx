@@ -103,7 +103,7 @@ it("edits a card, validates the input and saves a new category", async () => {
   await user.clear(words());
   await user.type(words(), "night, sky, orbit");
   await user.click(screen.getByRole("button", { name: "Save" }));
-  expect(screen.getByRole("alert")).toHaveTextContent("four different forbidden words");
+  expect(screen.getByRole("alert")).toHaveTextContent("Enter exactly four forbidden words");
 
   await user.clear(screen.getByLabelText("Term"));
   await user.type(screen.getByLabelText("Term"), "Sun");

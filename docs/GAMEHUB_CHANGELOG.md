@@ -4,6 +4,16 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Karte hinzufügen: Beispiele in der Kategoriesprache, genaue Fehlermeldungen
+
+- Die **Beispieltexte** in „Begriff“ und „Vier verbotene Wörter“ stehen in der **Sprache der Kategorie**: bei einer eigenen Kategorie ihre Sprache, bei „Neue Kategorie …“ die gewählte „Sprache der Kategorie“ (zuerst Englisch).
+- Die Meldung beim Hinzufügen und beim Bearbeiten **sagt jetzt, was nicht stimmt** (vorher bei jedem Fehler derselbe Satz): „Gib einen Begriff ein.“, „Gib genau vier verbotene Wörter ein, mit Komma getrennt.“, „Ein verbotenes Wort steht doppelt. Alle vier müssen verschieden sein.“, „Ein verbotenes Wort ist der Begriff selbst.“, „Ein verbotenes Wort ist Teil des Begriffs. Das ist ohnehin verboten.“ (Deutsch und Englisch; bei mehreren Fehlern der erste in dieser Reihenfolge). Leere Einträge (zum Beispiel ein Komma am Ende) werden ignoriert.
+- Die Prüfung auf doppelte Wörter gab es schon (auch bei anderer Groß- und Kleinschreibung oder mit Leerzeichen); nur die Meldung war falsch. Neue Texte in `tabooCardProblems`, Hilfsfunktionen in `cardProblem.ts`, Tests dafür.
+
+### Benachrichtigungen auffälliger
+
+- Die Benachrichtigung (`Toast`) sieht nicht wie ein Knopf aus: dunkler Grund wie die Seite, **dicker Rand** und ein **rundes Symbol** in der Farbe der Meldung (Fehler rot mit „!“, Erfolg grün mit „✓“, Hinweis blau mit „i“), fette Schrift, ohne Schatten. Knöpfe sind gefüllt, Benachrichtigungen nicht. **Längere Meldungen bleiben länger sichtbar**, weil man länger zum Lesen braucht: 3 Sekunden plus etwa 60 Millisekunden je Zeichen, mindestens 5 und höchstens 15 Sekunden (`readingTime`, zum Beispiel 130 Zeichen = 10,8 Sekunden). Der Text steht **in der Höhe mittig** (Symbol und Text auf einer Linie) und die Benachrichtigung **wächst mit mehrzeiligem Text** mit (gleicher Abstand oben und unten, gemessen bei einer und bei vier Zeilen). Regel dazu in `docs/GAMEHUB_UI_RULES.md`.
+
 ### Benachrichtigungen statt Meldungsboxen
 
 - Die Meldungsboxen (`StatusMessage`, Feld mit farbigem Rand in der Seite) gibt es im ganzen Projekt nicht mehr. Stattdessen zeigt der neue Baustein `Toast` die Meldung als **Benachrichtigung unten**, die nach 5 Sekunden von allein verschwindet, keinen Platz in der Seite braucht und Eingaben nicht blockiert. Fehler melden sich als `alert`, Erfolg und Hinweise als `status`. `useNotice` zeigt dieselbe Meldung bei jedem Aufruf erneut.

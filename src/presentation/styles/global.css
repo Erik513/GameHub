@@ -520,29 +520,66 @@ h1 {
   pointer-events: none;
 }
 
+/*
+ * Dark like the page but with a thick border and a round symbol in the color of the message, so
+ * it stands out without looking like a button (buttons are filled).
+ */
 .toast {
-  display: grid;
-  gap: var(--space-1);
+  --toast-color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   width: min(100%, 26rem);
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-line);
-  border-left: 0.3rem solid var(--color-accent);
-  border-radius: var(--radius-md);
-  color: var(--color-ink-muted);
+  border: 2px solid var(--toast-color);
+  border-radius: var(--radius-lg);
+  color: var(--color-ink);
   background: var(--color-surface);
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  line-height: 1.35;
   animation: toast-in 0.2s ease-out;
 }
 
+.toast::before {
+  content: "i";
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  color: var(--color-accent-contrast);
+  background: var(--toast-color);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+}
+
+/* The text is centered in the height of the notification and the notification grows with it. */
+.toast__text {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
 .toast strong {
-  color: var(--color-ink);
+  color: var(--toast-color);
 }
 
 .toast[data-tone="error"] {
-  border-left-color: var(--color-danger);
+  --toast-color: var(--color-danger-fill);
+}
+
+.toast[data-tone="error"]::before {
+  content: "!";
 }
 
 .toast[data-tone="success"] {
-  border-left-color: #68cbb4;
+  --toast-color: var(--color-success);
+}
+
+.toast[data-tone="success"]::before {
+  content: "✓";
 }
 
 @keyframes toast-in {

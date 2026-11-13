@@ -18,7 +18,7 @@ const labels = {
     term: "Term",
     words: "Four forbidden words, separated by commas",
     added: "Card added.",
-    invalid: "A card needs a term",
+    invalid: "Enter a term.",
     noCategory: "Enter a name for the new category.",
     exists: "This card already exists.",
   },
@@ -31,7 +31,7 @@ const labels = {
     term: "Begriff",
     words: "Vier verbotene Wörter, mit Komma getrennt",
     added: "Karte hinzugefügt.",
-    invalid: "Es braucht einen Begriff",
+    invalid: "Gib einen Begriff ein.",
     noCategory: "Gib einen Namen für die neue Kategorie ein.",
     exists: "Diese Karte gibt es schon.",
   },
@@ -106,12 +106,26 @@ it("rejects too few or repeated forbidden words and a term with a colon", async 
   await user.type(screen.getByLabelText("Term"), "Goal");
   await user.type(screen.getByLabelText(/Four forbidden/), "a, b, c");
   await user.click(screen.getByRole("button", { name: "Add card" }));
-  expect(screen.getByRole("alert")).toHaveTextContent("four different forbidden words");
+  expect(screen.getByRole("alert")).toHaveTextContent("Enter exactly four forbidden words");
+  // The same word twice (also in another case or with spaces) is explained.
   await user.clear(screen.getByLabelText(/Four forbidden/));
-  await user.type(screen.getByLabelText(/Four forbidden/), "a, a, b, c");
+  await user.type(screen.getByLabelText(/Four forbidden/), "a, A , b, c");
   await user.click(screen.getByRole("button", { name: "Add card" }));
-  expect(screen.getByRole("alert")).toHaveTextContent("four different forbidden words");
+  expect(screen.getByRole("alert")).toHaveTextContent("A forbidden word appears twice");
+  // The term itself and a part of it are explained, too.
+  await user.clear(screen.getByLabelText(/Four forbidden/));
+  await user.type(screen.getByLabelText(/Four forbidden/), "goal, b, c, d");
+  await user.click(screen.getByRole("button", { name: "Add card" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("A forbidden word is the term itself");
+  await user.clear(screen.getByLabelText("Term"));
+  await user.type(screen.getByLabelText("Term"), "Football");
+  await user.clear(screen.getByLabelText(/Four forbidden/));
+  await user.type(screen.getByLabelText(/Four forbidden/), "ball, b, c, d");
+  await user.click(screen.getByRole("button", { name: "Add card" }));
+  expect(screen.getByRole("alert")).toHaveTextContent("A forbidden word is part of the term");
   expect(onAdd).not.toHaveBeenCalled();
+  await user.clear(screen.getByLabelText("Term"));
+  await user.type(screen.getByLabelText("Term"), "Goal");
 
   await user.clear(screen.getByLabelText("Term"));
   await user.type(screen.getByLabelText("Term"), "Re: Goal");
@@ -225,4 +239,39 @@ it("offers only own categories with their language and gives a card the language
   expect(onAdd.mock.calls[1]?.[0]).toMatchObject([
     { term: "Brot", categoryId: "Food", language: "de" },
   ]);
+});
+
+it("shows the examples in the fields in the language of the category", async () => {
+  const user = userEvent.setup();
+  // The interface is German, the examples follow the language of the category.
+  const i18n = await createGameHubI18n("de");
+  const own: TabooCard = {
+    id: "1",
+    language: "en",
+    term: "Goal",
+    forbiddenWords: ["a", "b", "c", "d"],
+    categoryId: "Sport",
+    difficulty: "easy",
+  };
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooCardEntry cards={[own]} disabled={false} onAdd={() => Promise.resolve(1)} />
+    </I18nextProvider>,
+  );
+  // The first own category is English.
+  expect(screen.getByLabelText("Begriff")).toHaveAttribute("placeholder", "Goal");
+  expect(screen.getByLabelText(/Vier verbotene/)).toHaveAttribute(
+    "placeholder",
+    "ball, net, score, keeper",
+  );
+
+  // A new category: the examples follow the language that is chosen for it.
+  await user.selectOptions(screen.getByLabelText("Kategorie"), "Neue Kategorie …");
+  expect(screen.getByLabelText("Begriff")).toHaveAttribute("placeholder", "Goal");
+  await user.selectOptions(screen.getByLabelText("Sprache der Kategorie"), "Deutsch");
+  expect(screen.getByLabelText("Begriff")).toHaveAttribute("placeholder", "Tor");
+  expect(screen.getByLabelText(/Vier verbotene/)).toHaveAttribute(
+    "placeholder",
+    "Ball, Netz, Treffer, Keeper",
+  );
 });

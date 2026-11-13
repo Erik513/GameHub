@@ -19,6 +19,13 @@ export const tabooTexts = {
     goal: "Auf jeder Karte steht ein Begriff mit 4 verbotenen Wörtern.",
     turn: "Ein Spieler erklärt den Begriff seinem Team, ohne die 4 verbotenen Wörter, den Begriff selbst oder Teile davon zu sagen. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.",
   },
+  tabooCardProblems: {
+    noTerm: "Gib einen Begriff ein.",
+    wordCount: "Gib genau vier verbotene Wörter ein, mit Komma getrennt.",
+    duplicateWord: "Ein verbotenes Wort steht doppelt. Alle vier müssen verschieden sein.",
+    sameAsTerm: "Ein verbotenes Wort ist der Begriff selbst.",
+    partOfTerm: "Ein verbotenes Wort ist Teil des Begriffs. Das ist ohnehin verboten.",
+  },
   tabooEntry: {
     title: "Karte hinzufügen",
     categoryLanguage: "Sprache der Kategorie",
