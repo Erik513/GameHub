@@ -21,11 +21,13 @@ Bausteine in `src/presentation/game-kit/`, die ein neues Spiel einfach benutzt:
 
 - `SetupScreen` und `SetupSection`: der Rahmen jedes Setups (Meldungen oben, Leiste oben rechts, Abschnitte, Startleiste unten). `TeamsSetup` (Teamanzahl, Namen, Reihenfolge, optional Spieler mit Verteilung, gesteuert über `value` und `onChange`) und `PlayersSetup` (nur Spielerliste für Spiele ohne Teams). Die Teams für das Spiel entstehen mit `buildTeams` aus `src/business/shared/teamSetup.ts`; die Grenzen setzt das Spiel über `TeamRules`. Texte dafür liegen in `kit.ts`, Stile in `styles/kit-setup.css`.
 - `StartBar` und `TurnStrip`: untere Aktionsleiste mit dem Namen des nächsten Teams.
-- `ChoiceGroup`: Auswahlgruppe aus gleich breiten Buttons (mit Symbol, Farbton, Zusatztext).
+- `ChoiceGroup`: Auswahlgruppe aus gleich breiten Buttons (mit Symbol, Farbton, Zusatztext). `InfoButton`: Infoknopf mit eigenem Fenster oder, mit `InfoAction`, nur als Auslöser für ein gemeinsames Fenster.
+- `RulesDialog` und `RulesButton`: **ein** Regelfenster für das ganze Spiel: oben die Regeln für alle Spielmodi, darunter die Modi als Reiter (gleiche Größe für alle, Pfeiltasten). Das Spiel liefert nur Texte und Inhalte der Reiter (`TabooRulesDialog` ist das Vorbild); der Infoknopf eines Spielmodus öffnet dasselbe Fenster und wählt den Modus.
+- `useScreenScroll`: Jede neue Ansicht beginnt oben, das Hauptmenü steht beim Zurückkommen wieder an der alten Stelle. Das Spiel meldet seine aktuelle Ansicht nach außen (`onScreenChange`), der Aufrufer ruft den Hook einmal auf.
 - `Scoreboard`: sortierte Punkteliste mit Gewinnermarkierung.
 - `TimerHud`, `useCountdown`, `useStopwatch`: Rundenkopf mit Zeitbalken, Farbwechsel am Ende, Zeitmessung mit Pausen.
 - `useGameExit` (`src/presentation/GameChrome.ts`): meldet der Kopfzeile, dass ein Spiel läuft, und optional eine Pause-Steuerung. Die Kopfzeile zeigt dann das X „Spiel beenden“ oder Pause.
-- Aus `src/presentation/components/`: `Button` (Varianten `success`, `danger`), `ConfirmButton`, `Dialog`, `Toast`.
+- Aus `src/presentation/components/`: `Button` (Varianten `success`, `danger`), `ConfirmButton`, `Dialog` (mittig, auch auf dem Handy) und `Toast` mit `useNotice` (Meldungen als Benachrichtigung unten, die von allein verschwindet; es gibt keine Meldungsboxen in der Seite mehr).
 - Die Kopfzeile, Einstellungen, Sprachwahl, Seitensprache und das Layout für das Handy.
 
 ## Schritt für Schritt
@@ -61,6 +63,9 @@ Bausteine in `src/presentation/game-kit/`, die ein neues Spiel einfach benutzt:
 
 ## Noch nicht umgesetzt
 
-- Pause, Neustart und Stechen von Tabu liegen noch im Container `TabooSetup.tsx`; Hooks dafür folgen, wenn das zweite Spiel sie braucht. Das Nachladen der KI-Karten ist bereits `useTabooRefill`.
+- Pause, Neustart und die Aufbereitung der Karten beim Start liegen noch im Container `TabooSetup.tsx` (`Al-10-02`); Hooks dafür folgen, wenn das zweite Spiel sie braucht. Schon ausgelagert: das Stechen (`useTabooTiebreak`), das Nachladen der KI-Karten (`useTabooRefill`) und die Rechenregeln für Kartenbedarf und Erzeugung (`business/games/taboo/cardPlan.ts`).
+- Ergebnisse nachträglich korrigieren (`TabooReviewList`, `TabooAttemptReviews`) und die Kartenverwaltung sind Tabu-spezifisch, bis ein zweites Spiel sie braucht.
+
+Den Zustand der Schichten, entfernten toten Code und offene Punkte beschreibt `docs/GAMEHUB_QUALITY_CHECK.md`.
 
 Stile je Spiel: `src/presentation/styles/games/<spiel>.css`, in `main.tsx` nach `global.css` importiert.

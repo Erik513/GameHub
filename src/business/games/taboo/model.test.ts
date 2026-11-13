@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   normalizeText,
   validateCard,
-  validateCategory,
   validateConfiguration,
   type GameConfiguration,
   type TabooCard,
@@ -29,11 +28,6 @@ const card: TabooCard = {
 describe("Taboo domain validation", () => {
   it("normalizes whitespace and Unicode without altering meaningful letters", () => {
     expect(normalizeText("  Ba\u0308r\n  groß ")).toBe("Bär groß");
-    expect(validateCategory({ id: " nature ", name: " Nature " })).toEqual({
-      valid: true,
-      value: { id: "nature", name: "Nature" },
-    });
-    expect(validateCategory({ id: " ", name: " " }).valid).toBe(false);
   });
   it("accepts minimal configuration and copies teams", () => {
     const result = validateConfiguration({

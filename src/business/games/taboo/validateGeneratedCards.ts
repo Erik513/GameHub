@@ -1,6 +1,5 @@
 import { selectNewTabooCards } from "./cardExchange";
 import type { TabooCardCandidate, TabooGenerationRequest } from "./cardGenerator";
-import type { TabooCardRepository } from "./cardRepository";
 import { normalizeText, validateCard, type TabooCard, type ValidationIssue } from "./model";
 
 interface RejectedCandidate {
@@ -66,16 +65,4 @@ export function reviewGeneratedCards(
       rejected.push({ index, issues: [{ field: "card", code: "duplicate" }] });
   }
   return { accepted, rejected: rejected.sort((left, right) => left.index - right.index) };
-}
-
-/** Call with the reviewed cards the user selected. The repository commits the batch atomically. */
-export async function saveGeneratedCards(
-  repository: TabooCardRepository,
-  selected: readonly TabooCard[],
-  standardCards: readonly TabooCard[],
-): Promise<readonly TabooCard[]> {
-  const stored = await repository.list();
-  const additions = selectNewTabooCards(selected, [...standardCards, ...stored]);
-  if (additions.length > 0) await repository.addAll(additions);
-  return additions;
 }

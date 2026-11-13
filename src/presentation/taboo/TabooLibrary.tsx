@@ -15,12 +15,13 @@ import {
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Icon, Toast, useNotice } from "../components";
-import { ManageScreen } from "../game-kit";
+import { ManageScreen, useScreenScroll } from "../game-kit";
 import { useGameBack } from "../GameChrome";
 import { TabooCardEntry } from "./TabooCardEntry";
 import { TabooCardExport } from "./TabooCardExport";
 import { TabooCardList } from "./TabooCardList";
 import { TabooSetup } from "./TabooSetup";
+import type { TabooScreen } from "./tabooSetupModel";
 import type { TabooGenerators } from "./TabooGeneration";
 
 interface TabooLibraryProps {
@@ -33,6 +34,8 @@ interface TabooLibraryProps {
   onCardLanguageChange?: ((language: SupportedLanguage) => void) | undefined;
   repository: TabooCardRepository | undefined;
 }
+
+const rememberedScreens: readonly TabooScreen[] = ["menu"];
 
 type Feedback = { type: "invalid" | "storage" } | { type: "imported"; count: number };
 
@@ -49,6 +52,10 @@ export function TabooLibrary({
   const [notice, notify] = useNotice<Feedback>();
   const [busy, setBusy] = useState(false);
   const [page, setPage] = useState<"setup" | "cards">("setup");
+  const [setupScreen, setSetupScreen] = useState<TabooScreen>("menu");
+  // Opening the card page or a game screen starts at the top; coming back to the menu returns to
+  // the place where the player left it.
+  useScreenScroll(page === "cards" ? "cards" : setupScreen, rememberedScreens);
   const [loadedPack, setLoadedPack] = useState<TabooCardPack>();
   // A pack of another language than the current card language is not used.
   const pack = loadedPack?.language === cardLanguage ? loadedPack : undefined;
@@ -171,6 +178,7 @@ export function TabooLibrary({
           categoryInfos={categoryInfos}
           generators={generators}
           onCardLanguageChange={onCardLanguageChange}
+          onScreenChange={setSetupScreen}
         >
           {repository && (
             <Button variant="secondary" onClick={() => setPage("cards")}>

@@ -82,7 +82,7 @@ Die Umsetzung ist groß (der Container `TabooSetup.tsx` hat rund 470 Zeilen). Na
 2. **Ta-06-07-B (erledigt):** Oberfläche „Auf Zeit“: Knopfgruppe „Spielmodus“ (Klassisch, Auf Zeit) und „Karten pro Team“ im Setup (die Gruppen des klassischen Modus sind im Rennen ausgeblendet, ihre Werte bleiben erhalten); die Einstellungen, die nicht vom Modus abhängen, stehen im eigenen Feld „Karten“, `TabooRaceGame` (Übersicht vor jedem Lauf, Endstand mit `ScoreScreen`), `TabooRaceRun` (Stoppuhr mit `TimerHud`, Richtig, Überspringen einmal, Verbotenes Wort, Pause mit Neustart des Laufs), `TabooRaceResults`, Regeln im Fenster „Spielregeln“, Texte in Deutsch und Englisch. Für das Rennen sind je Team Zielzahl plus zwei Ersatzkarten nötig (die Kartenprüfung im Setup meldet es). Tests: Komponentenläufe in beiden Sprachen und eine Handy-Layoutprüfung aller Ansichten.
 3. **Ta-06-07-C:** Business „Gegen die Zeit“.
 4. **Ta-06-07-D:** Oberfläche „Gegen die Zeit“.
-5. **Ta-06-07-E:** Dokumentation (Logik, Regeln, Leitfaden), Abschlussprüfung.
+5. **Ta-06-07-E:** Regeln und Leitfaden aktualisieren, beide Zeitmodi abschließend testen.
 
 Nach jedem Schritt gilt: alle Tests, Typen, ESLint, Prettier, Schichtprüfung und e2e grün, Commit nur auf Zuruf.
 

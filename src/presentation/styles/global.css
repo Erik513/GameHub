@@ -355,25 +355,6 @@ h1 {
   line-height: 1.55;
 }
 
-.layer-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.layer-list li {
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  color: var(--color-ink-muted);
-  background: var(--color-surface-muted);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-}
-
 .button {
   display: inline-flex;
   align-items: center;

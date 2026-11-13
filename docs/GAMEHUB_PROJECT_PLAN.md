@@ -575,7 +575,7 @@ Tabu-Feinschliff: Versehentlich vergebene Punkte lassen sich während der Runde 
 - **Ziel:** Neben dem klassischen Modus gibt es „Auf Zeit“ (feste Kartenzahl, das Team mit der kürzesten Zeit gewinnt) und „Gegen die Zeit“ (jedes Team hat ein Zeitkonto, das beim Raten herunterläuft und bei richtiger Antwort stoppt; es gewinnt das Team mit Restzeit).
 - **Akzeptanzkriterien:** Regeln werden vor Umsetzung mit dem Auftraggeber abgestimmt; neue Modi sind ein Teil der Business-Schicht und nutzen die gemeinsamen Oberflächenbausteine.
 - **Stand 2026-11-12:** Abläufe vom Auftraggeber festgelegt (Auf Zeit: jedes Team am Stück, Überspringen einmal und ersetzt, Gleichstand gemeinsamer Sieg; Gegen die Zeit: Zeitkonto 2, 3 oder 5 Minuten, das aktive Team erklärt und rät selbst, damit niemand Zeit durch Trödeln stehlen kann). Regelentwurf mit Annahmen und Teilaufgaben A bis E: `docs/GAMEHUB_TABOO_MODES.md`. Umsetzung nach Bestätigung der offenen Punkte.
-- **Teilaufgaben (Dashboard):** `Ta-06-07-A` Spiellogik „Auf Zeit“ (**done**: `race.ts`, `raceCards.ts`, 100 % Zeilen- und 95 % Zweigabdeckung), `Ta-06-07-B` Oberfläche „Auf Zeit“ (**done**: Spielmodus im Setup, `TabooRaceGame`, `TabooRaceRun`, `TabooRaceResults`), `Ta-06-07-C` Spiellogik „Gegen die Zeit“, `Ta-06-07-D` Oberfläche „Gegen die Zeit“, `Ta-06-07-E` Dokumentation und Abschlussprüfung (je planned).
+- **Teilaufgaben (Dashboard):** `Ta-06-07-A` Spiellogik „Auf Zeit“ (**done**: `race.ts`, `raceCards.ts`, 100 % Zeilen- und 95 % Zweigabdeckung), `Ta-06-07-B` Oberfläche „Auf Zeit“ (**done**: Spielmodus im Setup, `TabooRaceGame`, `TabooRaceRun`, `TabooRaceResults`), `Ta-06-07-C` Spiellogik „Gegen die Zeit“, `Ta-06-07-D` Oberfläche „Gegen die Zeit“, `Ta-06-07-E` Regeln und Leitfaden aktualisieren, beide Zeitmodi abschließend testen (je planned).
 - **Status:** in_progress
 
 ### Phase Ta-07 – Karten und Kategorien neu gestalten
@@ -667,6 +667,14 @@ Vorschlag für den Aufbau:
 - **Al-09-07:** Aufstellung nach dem Start (Entscheidung des Auftraggebers vom 2026-11-13, `ADR-023`). **Ergebnis:** Das Hauptmenü hat kein Feld „Teams und Spieler“ mehr. „Starten“ liest die Einstellungen einmal (`readTabooSettings`) und öffnet die neue Ansicht **Aufstellung** (`LineupScreen` im `game-kit`, mit `TeamsSetup` und offener Spielerliste, Auswahl aus der Spielerliste, Zuweisung von Hand oder zufällig). „Spiel starten“ (fest unten) bereitet die Karten vor, prüft die Kartenmenge mit der nun bekannten Teamzahl und startet das Spiel; Meldungen erscheinen in der Aufstellung, ein Teamwechsel während der Kartenvorbereitung bricht sie ab. Kopfleiste: Zurück ins Hauptmenü. „Mit gleicher Konfiguration neu spielen“ führt zurück in die Aufstellung (Teams vorbelegt, die Karten des vorigen Spiels werden wiederverwendet, wenn sie reichen); im Endstand wird nichts gelost. Status: done
 - **Al-09-06:** Spielerverwaltung (Entscheidung des Auftraggebers vom 2026-11-12, `ADR-022`): ein Fenster „Spieler“, aufrufbar aus dem GameHub (Spielauswahl) und aus dem Hauptmenü jedes Spiels (Knopf neben Spielregeln und Editor). Dort lassen sich Spieler hinzufügen und löschen; sie bleiben dauerhaft gespeichert (lokaler Browserspeicher). In jedem Spiel wählt ein Knopf „Aus Spielerliste wählen“ in „Teams und Spieler“, wer heute mitspielt; danach wird wie bisher zufällig oder von Hand auf Teams verteilt. „Letzte Gruppe laden“ aus `Al-09-03` bleibt zusätzlich. **Ergebnis:** Reine Logik `src/business/shared/playerRoster.ts` (`addPlayer`, `removePlayer`, `parseSavedRoster`, `applyRosterSelection`, `rosterPlayersIn`; Namen bis 24 Zeichen, höchstens 100 Spieler, keine doppelten Namen, ohne Komma und Semikolon), Port `PlayerRosterStore` mit Adapter `localStoragePlayerRosterStore.ts` (Schlüssel `gamehub.players`), `PlayerRosterProvider` und `usePlayerRoster` im `game-kit`, `PlayerRosterButton` (Knopf „Spieler“ mit Fenster) in der Werkzeugleiste jedes Hauptmenüs (automatisch über `SetupScreen`) und auf der Spielauswahl, `RosterPicker` („Aus Spielerliste wählen“) in `TeamsSetup` und `PlayersSetup`. Die Werkzeugleiste ist jetzt eine Reihe mit gleich breiten Knöpfen. Zusätzlich behoben: `Dialog` setzte den Fokus bei jedem Rendern zurück auf den Schließen-Knopf, Tippen in einem Fenster war dadurch unmöglich. Status: done
 
+### Phase Al-10 – Gesamtprüfung nach den Tabu-Erweiterungen
+
+Ziel: Vor der Ansicht für Teams und Spieler und vor dem nächsten Spielmodus prüfen, ob die Schichten sauber getrennt sind, ob Logik und Oberfläche für andere Spiele wiederverwendbar liegen, ob die Bedienung ruhig bleibt (nichts springt, die Scrollposition wird gemerkt) und ob toter Code übrig ist. Ergebnis: `docs/GAMEHUB_QUALITY_CHECK.md`.
+
+- **Al-10-01:** Gesamtcheck. **Ergebnis:** Schichten sauber; toter Code entfernt; Kartenbedarf und Generator-Anfragen in der Business-Schicht (`cardPlan.ts`); `RulesDialog`, `RulesButton` und `useScreenScroll` im `game-kit`; Stechen in `useTabooTiebreak`; Leitfaden für neue Spiele aktualisiert. Status: done
+- **Al-10-02:** Den Container `TabooSetup.tsx` weiter aufteilen (`startGame`, Pause und Neustart als Hooks). Status: planned
+- **Al-10-03:** KI-Kartenquelle später wieder anschließen. Der Auftraggeber hat sie am 2026-11-13 vorerst abgeschaltet (`ADR-024`): Es gibt keine Auswahl „Kartenquelle“ mehr, gespielt werden nur mitgelieferte und eigene Karten. Der Code bleibt ungenutzt; zu entscheiden ist später der Anbieter (Ollama oder LM Studio). Status: planned
+
 ### Phase Al-06: Spätere Erweiterungen
 
 #### Tabu-Spielmodi für später
@@ -691,17 +699,130 @@ Vorschlag für den Aufbau:
 - **Tests:** Contract-Tests und Architekturprüfung.
 - **Status:** planned
 
+### Phase Wb-01 – Wortbombe
+
+[Spielregeln](GAMEHUB_WORTBOMBE.md)
+
+| Aufgabe | Prüffälle zur Abnahme |
+| --- | --- |
+| `Wb-01-01` – Weitergabe und Rücknahme im Spielerkreis | Nach A folgt B.<br>Ist B ausgeschieden, folgt auf A die Person C.<br>Nach C folgt A.<br>Zurück nimmt genau eine Übergabe zurück. Die Ablaufzeit bleibt gleich. |
+| `Wb-01-04` – Bombentimer und Explosion | Die injizierte Zufallsquelle liefert einmal je Runde einen Wert im geplanten Bereich.<br>Bei exakt erreichter Frist explodiert die Bombe bei der bisherigen Person.<br>Ein Ereignis aus der vorherigen Runde verändert die aktuelle Runde nicht.<br>Bei Rückkehr nach Fristablauf wird genau eine Explosion angezeigt. |
+| `Wb-01-06` – Einspruch, Ausscheiden und Rundenende | Ohne Einspruch scheidet die Person aus, die bei Ablauf dran war.<br>Nach A → B scheidet bei bestätigtem Einspruch A aus.<br>Bei Explosion vor dem ersten Weiter ist kein Einspruch möglich.<br>Nach Ausscheiden von B beginnt die nächste aktive Person nach B.<br>Bei zwei verbliebenen Personen führt bestätigtes Ausscheiden direkt zum Sieg der anderen. |
+| `Wb-01-02` – Zweisprachige Aufgaben und Kartenziehung | Alle neun Aufgabentypen haben deutsche Karten.<br>Alle neun Aufgabentypen haben eigenständig formulierte englische Karten.<br>Bei ausschließlich aktivem Reimtyp wird eine Reimkarte gezogen.<br>Mit englischer Kartensprache werden nur englische Karten gezogen.<br>Bei zwei Karten desselben Typs werden beide vor einer Wiederholung gezogen. |
+| `Wb-01-09` – Spielmenü und mobile Abnahme | Das Spiel lässt sich aus der Spielauswahl öffnen und verlassen.<br>Eine mobile Partie endet mit dem Namen der letzten aktiven Person.<br>Ein bestätigter Einspruch kann den Gewinner wechseln. |
+
 ### Phase Im-01 – Imposter
 
-Eigenständiges lokales Spiel für mindestens drei Personen. Die vereinbarten Regeln stehen in [GAMEHUB_IMPOSTER.md](GAMEHUB_IMPOSTER.md).
+[Spielregeln](GAMEHUB_IMPOSTER.md)
 
-- `Im-01-01` – Spielzustände, zufällige Rollen und Hinweisrunden mit optionaler dritter Runde (geplant)
-- `Im-01-02` – Verdeckte Rollenanzeige mit Hochziehen, Loslassen und Weiterreichen (geplant)
-- `Im-01-03` – Offene und geheime Abstimmung, Stichwahl und Auflösung (geplant)
-- `Im-01-04` – Begriffe mit optionalem Hilfswort für Deutsch und Englisch (geplant)
-- `Im-01-05` – Mobile Einrichtung, Spielmenü und Prüfung der vollständigen Spielabläufe (geplant)
+| Aufgabe | Prüffälle zur Abnahme |
+| --- | --- |
+| `Im-01-01` – Rollen und Geheimwort zuteilen | Bei vorgegebener Zufallsquelle gibt es genau einen Imposter.<br>Alle übrigen Rollen erhalten denselben Begriff. |
+| `Im-01-04` – Zweisprachige Begriffe und optionales Hilfswort | Jeder deutsche Begriff hat ein separates Hilfswort.<br>Jeder englische Begriff hat ein separates Hilfswort.<br>Bei deaktiviertem Hilfswort erhält der Imposter nur seine Rollenbezeichnung. |
+| `Im-01-06` – Ablauf der Hinweisrunden | Die Gruppe kann früh abstimmen oder direkt weiterspielen.<br>Die Gruppe kann final abstimmen oder Runde drei wählen.<br>Nach Runde drei ist keine weitere Hinweisrunde möglich. |
+| `Im-01-08` – Abstimmung, Stichwahl und Rateversuch auswerten | Bei gleich vielen Höchststimmen beginnt die zweite Hinweisrunde.<br>Alle und nur die Gleichplatzierten mit Höchststimmen stehen zur Wahl.<br>Bei Gleichstand in der Stichwahl gewinnt der Imposter.<br>Ein falsch Verdächtigter führt zum Imposter-Sieg, ein enttarnter Imposter zum Rateversuch.<br>Bei Enttarnung gibt es genau einen mündlichen Tipp. Der Begriff erscheint erst nach der Bewertung. |
+| `Im-01-11` – Spielmenü und mobile Abnahme | Das Spiel lässt sich aus der Spielauswahl öffnen und verlassen.<br>Eine offene Abstimmung nach Runde eins kann direkt zur Auflösung führen.<br>Nach gewählter dritter Runde folgt die geheime finale Abstimmung.<br>Die Ergebnisansicht zeigt den Imposter als Sieger. |
+
+### Phase We-01 – Werwolf
+
+[Spielregeln](GAMEHUB_WERWOLF.md)
+
+| Aufgabe | Prüffälle zur Abnahme |
+| --- | --- |
+| `We-01-01` – Grundregeln und Rollenverteilung für 6 bis 15 Spieler festhalten | Die Spielnotiz beschreibt Besetzung, Nacht, Tag und Siegbedingungen. |
+| `We-01-06` – Rollen auslosen und verdeckt zuteilen | Für 6–8, 9–11 und 12–15 Spieler entstehen jeweils 1, 2 oder 3 Wölfe und genau eine Seherin. Der Erzähler erhält keine Rolle.<br>Jede Person kann vor Spielbeginn nur ihre eigene Rolle aufdecken. |
+| `We-01-02` – Nachtlogik für Seherin und Werwölfe | Nach dem Erkennen der Wölfe gibt es in Nacht eins keine Opferauswahl.<br>Ein Wolfsziel liefert Werwolf, ein Dorfziel Kein Werwolf.<br>In einer späteren Nacht gibt es ohne lebende Seherin keine Prüfung.<br>Nur lebende Personen der Dorfseite sind wählbar.<br>Ohne bestätigtes Opfer bleibt die Zahl der Lebenden gleich.<br>Die bestätigte Person scheidet beim Morgenwechsel genau einmal aus. |
+| `We-01-08` – Nominierung und Tagesabstimmung | Ohne Unterstützung startet keine Abstimmung.<br>Drei von sechs reichen nicht, vier von sechs führen zum Ausscheiden.<br>Nach Ablauf der Diskussion kann der Erzähler die nächste Nacht starten. |
+| `We-01-09` – Siegbedingungen für Dorf und Werwölfe | Nach Ausscheiden des letzten Wolfs gewinnt das Dorf.<br>Zwei Wölfe gegen einen Dorfbewohner und eine Seherin gewinnen. |
+| `We-01-05` – Spielmenü, Übersetzungen und mobile Abnahme | Werwolf lässt sich über die Spielauswahl öffnen und verlassen.<br>Jeder Regiehinweis ist in beiden Sprachen vorhanden.<br>Am Morgen sind alle Spieler weiterhin aktiv.<br>Nach Tagesende beginnt ohne Ausscheiden die nächste Nacht.<br>Beim erreichten Gleichstand erscheint das Spielergebnis. |
+
+### Phase Lb-01 – Liar’s Bar
+
+[Spielregeln](GAMEHUB_LIARS_BAR.md)
+
+| Aufgabe | Prüffälle zur Abnahme |
+| --- | --- |
+| `Lb-01-01` – Kartenmodus und Grenzfälle am Tisch erproben | Der Ablauf mit leeren Händen ist erprobt und festgehalten.<br>Die Startregel nach einer verlorenen Herausforderung ist festgehalten.<br>Die Ausscheidensregel und die beobachtete Partielänge sind festgehalten. |
+| `Lb-01-02` – Kartenstapel, Austeilen und Tischwert | Der Stapel enthält sechs Karten je Rang und zwei Joker.<br>Vier aktive Personen erhalten zusammen zwanzig eindeutige Karten.<br>Joker kommen als Tischwert nicht vor. |
+| `Lb-01-06` – Verdecktes Ablegen und Zugfolge | Eine bis drei eigene Karten sind zulässig. Vier Karten werden abgelehnt.<br>Die bestätigte Regel bestimmt den nächsten gültigen Zug oder das erzwungene Anzweifeln. |
+| `Lb-01-03` – Anzweifeln und letzte Ablage auswerten | Frühere Ablagen bleiben verdeckt.<br>Ein Joker zählt auch an einem Ass-Tisch als korrekt.<br>Bei falscher Ablage verliert der Ablegende, bei korrekter Ablage die anzweifelnde Person. |
+| `Lb-01-07` – Risikoauflösung, Folgerunde und Sieg | Doppelte Verarbeitung erhöht den Zähler nur einmal.<br>Die betroffene Person scheidet genau beim Erreichen der Schwelle aus.<br>Die nächste Runde erhält neue Hände und einen Tischwert.<br>Mit nur einer aktiven Person startet keine Folgerunde. |
+| `Lb-01-05` – Spielmenü, Übersetzungen und mobile Abnahme | Das Spiel ist aus der Spielauswahl erreichbar.<br>Alle Ansichten sind in beiden Sprachen bedienbar.<br>In beiden Fällen wird die richtige Person belastet.<br>Eine Runde kann bei leeren Händen nicht hängen bleiben.<br>Die letzte aktive Person wird als Gewinner angezeigt. |
 
 ## 6. Abhängigkeiten und Reihenfolge
+
+### Reihenfolge innerhalb eines Spiels
+
+Die Spieltabs zeigen zuerst die Regeln und danach die Spiellogik mit ihren Prüffällen. Die Ansichten folgen in Spielreihenfolge. Menüeinbindung und mobile Abnahme schließen den Ablauf ab.
+
+### Abnahme der einzelnen Spielansichten
+
+#### Tabu
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Ta-06-07-D` – Einrichtung für Gegen die Zeit | Der Modus lässt sich auswählen und mit seinen gültigen Einstellungen starten. |
+| `Ta-06-07-D-01` – Laufende Runde für Gegen die Zeit | Aktives Team und verbleibende Zeit sind sichtbar. Die erlaubten Aktionen funktionieren. |
+| `Ta-06-07-D-02` – Rundenübersicht für Gegen die Zeit | Nach der Runde zeigt die Übersicht den Zwischenstand und ermöglicht den nächsten Lauf. |
+| `Ta-06-07-D-03` – Ergebnis für Gegen die Zeit | Nach dem letzten Lauf zeigt die Ansicht das Ergebnis des Modus. |
+| `Al-08-02` – Tabu-Einrichtung im Desktop-Layout | Die Spieleinstellungen bleiben bei typischer Desktopbreite erreichbar. |
+| `Al-08-02-01` – Laufende Tabu-Runde im Desktop-Layout | Karte, Zeit und Spielaktionen bleiben gemeinsam sichtbar. |
+| `Al-08-02-02` – Tabu-Ergebnis im Desktop-Layout | Teamstände und Abschlussaktionen sind am Desktop lesbar und erreichbar. |
+| `Al-08-02-03` – Tabu-Kartenverwaltung im Desktop-Layout | Kategorien und Karten lassen sich am Desktop ansehen und bearbeiten. |
+
+#### Wortbombe
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Wb-01-08` – Einrichtung für Wortbombe | Spieler, Handymodus, Kartensprache und Varianten sind wählbar. Der letzte aktive Aufgabentyp bleibt ausgewählt. |
+| `Wb-01-03` – Laufende Wortbombe-Runde | Aufgabe und aktive Person bleiben sichtbar. Weiter und Zurück sind entsprechend dem Spielzustand bedienbar. |
+| `Wb-01-31` – Explosionsansicht mit Einspruch | Die Gruppe kann den vorgeschlagenen Ausschluss bestätigen oder bei gültiger Übergabe Einspruch erheben. |
+| `Wb-01-32` – Ergebnisansicht für Wortbombe | Nach dem finalen Ausschluss wird der Gewinner angezeigt, auch wenn ein Einspruch das Ergebnis geändert hat. |
+
+#### Imposter
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Im-01-05` – Einrichtung für Imposter | Ab drei Personen kann die Gruppe mit gewählter Abstimmungsart und Hilfswort-Einstellung starten. |
+| `Im-01-02` – Verdeckte Rollenanzeige | Halten und Hochziehen zeigt die Rolle. Loslassen, Abbruch und Hintergrund verdecken sie wieder. Weiter öffnet die nächste Rolle verdeckt. |
+| `Im-01-10` – Ansicht für Hinweisrunden | Die Ansicht zeigt die Hinweisrunde und bietet an ihrem Ende die passenden Optionen bis zur finalen Abstimmung. |
+| `Im-01-07` – Offene Abstimmungsansicht | Nach dem Zeigen am Tisch trägt die Gruppe die Person mit den meisten Stimmen oder die Gleichplatzierten ein. |
+| `Im-01-28` – Geheime Abstimmungsansicht | Jede berechtigte Person gibt ihre Stimme am Handy ab. Das Ergebnis erscheint erst nach der letzten Stimme. |
+| `Im-01-29` – Stichwahlansicht | Bei finalem Gleichstand stehen nur die Personen mit der höchsten Stimmenzahl zur Wahl. Die gewählte Abstimmungsart bleibt aktiv. |
+| `Im-01-30` – Ansicht für den letzten Rateversuch | Der enttarnte Imposter kann einmal mündlich raten. Die Gruppe bewertet den Tipp, bevor das Geheimwort öffentlich erscheint. |
+| `Im-01-31` – Ergebnisansicht für Imposter | Die Ansicht nennt die siegreiche Seite und löst Imposter und Geheimwort auf. |
+
+#### Werwolf
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `We-01-26` – Einrichtung für Werwolf | Der Erzähler und 6 bis 15 Mitspielende sind auswählbar. Die Rollenverteilung entspricht der Gruppengröße. |
+| `We-01-27` – Verdeckte Rollenanzeige für Werwolf | Jede Person sieht beim Aufdecken nur ihre eigene Rolle. Beim Weiterreichen ist sie wieder verdeckt. |
+| `We-01-04` – Nachtansicht für den Erzähler | Regiehinweise führen durch Werwölfe und Seherin. Das Aufdeckpanel zeigt die Namen zur aktiven Rolle. In der ersten Nacht ist kein Wolfsopfer auswählbar. |
+| `We-01-10` – Morgenansicht für Werwolf | Der Erzähler sieht das bestätigte Opfer samt Rolle oder den Hinweis, dass niemand ausgeschieden ist. |
+| `We-01-28` – Tagesansicht für Diskussion und Nominierung | Der Erzähler kann eine unterstützte Nominierung erfassen oder den Tag ohne Ausscheiden beenden. |
+| `We-01-29` – Abstimmungsansicht für Werwolf | Der Erzähler erfasst die Zustimmung. Nur eine strikte Mehrheit lässt die nominierte Person ausscheiden. |
+| `We-01-30` – Ergebnisansicht für Werwolf | Die Ansicht nennt die siegreiche Seite, einschließlich eines Wolfssiegs bei Gleichstand mit dem Dorf. |
+
+#### Liar’s Bar
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Lb-01-26` – Einrichtung für Liar’s Bar | Zwei bis vier Personen können eine lokale Kartenpartie starten. |
+| `Lb-01-27` – Geräteübergabe für Liar’s Bar | Die Übergabe nennt die nächste Person und verdeckt alle Kartenhände bis zur Bestätigung. |
+| `Lb-01-04` – Private Kartenhand für Liar’s Bar | Nur die aktive Person sieht ihre Hand und kann ein bis drei eigene Karten markieren. |
+| `Lb-01-08` – Öffentliche Tischansicht | Tischwert und Anzahl der zuletzt abgelegten Karten sind sichtbar. Anzweifeln ist gemäß Zugregeln verfügbar. |
+| `Lb-01-28` – Ansicht für die aufgedeckte Herausforderung | Nur die letzte Ablage und die Person, die die Herausforderung verloren hat, werden aufgedeckt. |
+| `Lb-01-29` – Ansicht für die Risikoauflösung | Das Ergebnis zeigt, ob die betroffene Person ausscheidet oder im Spiel bleibt. |
+| `Lb-01-30` – Ergebnisansicht für Liar’s Bar | Die letzte aktive Person wird als Gewinner angezeigt. |
+
+### Empfohlene Reihenfolge für weitere Spiele
+
+1. **Wortbombe** – zuerst die reine Spiellogik mit Zeitgrenzen testen, danach die Kartenstapel und mobilen Ansichten integrieren. [Spielregeln](GAMEHUB_WORTBOMBE.md)
+2. **Imposter** – zuerst Hinweisrunden und Abstimmungen modellieren. Das verdeckte Aufdecken als wiederverwendbaren Oberflächenbaustein umsetzen und bei Geräteübergabe testen.
+3. **Werwolf** – die Spielregeln getrennt modellieren und den Aufdeckbaustein aus Imposter in der Erzähleransicht verwenden. Danach vollständige Partien mit Rollenwechseln zwischen Tag und Nacht testen.
+4. **Liar’s Bar** – Kartenmodus zuerst am Tisch ausprobieren. Anschließend Kartenlogik und private Handansicht getrennt umsetzen und Geräteübergaben testen.
+
 
 - Phase Al-02 ist Voraussetzung für alle Implementierungsphasen.
 - Phase Al-03 beginnt vor sichtbaren Benutzerfunktionen, damit keine fest codierten Texte entstehen.

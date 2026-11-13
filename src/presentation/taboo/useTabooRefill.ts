@@ -4,7 +4,7 @@ import type { TabooEvent, TabooState } from "../../business/games/taboo/stateMac
 import { shuffle } from "../../business/shared/shuffle";
 import type { SupportedLanguage } from "../../i18n";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
-import { maxCardsPerRequest, refillThreshold } from "./tabooSetupModel";
+import { maxCardsPerRequest, refillThreshold } from "../../business/games/taboo/cardPlan";
 
 export interface RefillPlan {
   readonly categories: readonly string[];

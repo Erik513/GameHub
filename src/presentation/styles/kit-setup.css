@@ -394,3 +394,53 @@
   flex-direction: column;
   gap: var(--space-4);
 }
+
+.kit-rules-button {
+  gap: var(--space-2);
+  width: auto;
+  min-height: 2.75rem;
+  padding-inline: var(--space-4);
+}
+
+.kit-rules-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  line-height: 1.5;
+}
+
+/* The rules window: the game modes side by side as tabs, the rules of the chosen one below. */
+.kit-rules-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+  margin: var(--space-4) 0 var(--space-3);
+}
+
+.kit-rules-tab {
+  min-height: var(--touch-target);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+  font: inherit;
+  font-weight: var(--weight-bold);
+  cursor: pointer;
+}
+
+.kit-rules-tab[aria-selected="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.kit-rules-panels {
+  display: grid;
+}
+
+.kit-rules-panels > [role="tabpanel"] {
+  grid-area: 1 / 1;
+}

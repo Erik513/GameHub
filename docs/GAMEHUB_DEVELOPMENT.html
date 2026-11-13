@@ -77,6 +77,8 @@
       h3 { margin: 0; font-size: 0.98rem; }
 
       .phase-list { display: grid; gap: 12px; }
+      .stage-note { margin: 0 16px 16px; color: var(--muted); }
+      .stage-note a { color: var(--secondary); }
       .dashboard-tabs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
       .dashboard-tabs button { min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--text); background: var(--surface); font: inherit; cursor: pointer; }
       .dashboard-tabs button[aria-pressed="true"] { border-color: var(--primary); background: var(--surface-strong); font-weight: 700; }
@@ -199,7 +201,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-12T23:59:08.960Z",
+    "updatedAt": "2026-11-13T18:55:04.815Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -208,9 +210,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 77,
-      "totalTasks": 96,
-      "percent": 80.2
+      "completedTasks": 82,
+      "totalTasks": 148,
+      "percent": 55.4
     }
   },
   "environment": {
@@ -736,38 +738,62 @@
         },
         {
           "id": "Ta-06-07",
-          "title": "Spielmodi: Klassisch, Auf Zeit, Gegen die Zeit",
+          "title": "Regeln für Klassisch, Auf Zeit und Gegen die Zeit",
           "status": "in_progress"
         },
         {
           "id": "Ta-06-07-A",
-          "title": "Spielmodi A: Auf Zeit, Spiellogik (Zustandsmaschine, Karten, Tests)",
+          "title": "Spiellogik für Auf Zeit",
           "status": "done"
         },
         {
           "id": "Ta-06-07-B",
-          "title": "Spielmodi B: Auf Zeit, Oberfläche (Spielmodus im Setup, Lauf, Übersicht, Endstand, Regeln, e2e)",
+          "title": "Spielansichten für Auf Zeit",
           "status": "done"
         },
         {
           "id": "Ta-06-07-F",
-          "title": "Spielmodi F: Ergebnisse von Stechen und Auf Zeit nachträglich korrigieren (Logik, Oberfläche, Tests)",
+          "title": "Ergebnisse bei Auf Zeit und im Stechen korrigieren",
           "status": "done"
         },
         {
           "id": "Ta-06-07-C",
-          "title": "Spielmodi C: Gegen die Zeit, Spiellogik",
+          "title": "Spiellogik für Gegen die Zeit",
           "status": "planned"
         },
         {
           "id": "Ta-06-07-D",
-          "title": "Spielmodi D: Gegen die Zeit, Oberfläche",
+          "title": "Einrichtung für Gegen die Zeit",
           "status": "planned"
         },
         {
           "id": "Ta-06-07-E",
-          "title": "Spielmodi E: Dokumentation und Abschlussprüfung",
+          "title": "Regeln und Leitfaden aktualisieren, beide Zeitmodi abschließend testen",
           "status": "planned"
+        },
+        {
+          "id": "Ta-06-07-D-01",
+          "title": "Laufende Runde für Gegen die Zeit",
+          "status": "planned",
+          "gameIds": [
+            "taboo"
+          ]
+        },
+        {
+          "id": "Ta-06-07-D-02",
+          "title": "Rundenübersicht für Gegen die Zeit",
+          "status": "planned",
+          "gameIds": [
+            "taboo"
+          ]
+        },
+        {
+          "id": "Ta-06-07-D-03",
+          "title": "Ergebnis für Gegen die Zeit",
+          "status": "planned",
+          "gameIds": [
+            "taboo"
+          ]
         }
       ],
       "gameIds": [
@@ -886,7 +912,31 @@
         },
         {
           "id": "Al-08-02",
-          "title": "PC-Layout für Tabu (Setup, Runde, Ergebnis, Kartenseite) mit Prüfung im Desktop-Format",
+          "title": "Tabu-Einrichtung im Desktop-Layout",
+          "status": "planned",
+          "gameIds": [
+            "taboo"
+          ]
+        },
+        {
+          "id": "Al-08-02-01",
+          "title": "Laufende Tabu-Runde im Desktop-Layout",
+          "status": "planned",
+          "gameIds": [
+            "taboo"
+          ]
+        },
+        {
+          "id": "Al-08-02-02",
+          "title": "Tabu-Ergebnis im Desktop-Layout",
+          "status": "planned",
+          "gameIds": [
+            "taboo"
+          ]
+        },
+        {
+          "id": "Al-08-02-03",
+          "title": "Tabu-Kartenverwaltung im Desktop-Layout",
           "status": "planned",
           "gameIds": [
             "taboo"
@@ -942,6 +992,28 @@
       ]
     },
     {
+      "id": "Al-10",
+      "name": "Gesamtprüfung nach den Tabu-Erweiterungen",
+      "status": "in_progress",
+      "tasks": [
+        {
+          "id": "Al-10-01",
+          "title": "Gesamtcheck: Schichten, toter Code, Wiederverwendbarkeit, Bedienung (Scrollposition), Dokumentation (docs/GAMEHUB_QUALITY_CHECK.md)",
+          "status": "done"
+        },
+        {
+          "id": "Al-10-02",
+          "title": "Container TabooSetup weiter aufteilen (startGame, Pause und Neustart als Hooks)",
+          "status": "planned"
+        },
+        {
+          "id": "Al-10-03",
+          "title": "KI-Kartenquelle später wieder anschließen (vorerst abgeschaltet, ADR-024; Anbieter Ollama oder LM Studio klären)",
+          "status": "planned"
+        }
+      ]
+    },
+    {
       "id": "Al-06",
       "name": "Spätere Erweiterungen: Multiplayer und weitere Spiele",
       "status": "planned",
@@ -968,17 +1040,47 @@
       "tasks": [
         {
           "id": "Wb-01-01",
-          "title": "Spiellogik für Weitergabe, Einspruch und Ausscheiden",
+          "title": "Weitergabe und Rücknahme im Spielerkreis",
+          "status": "planned"
+        },
+        {
+          "id": "Wb-01-04",
+          "title": "Bombentimer und Explosion",
+          "status": "planned"
+        },
+        {
+          "id": "Wb-01-06",
+          "title": "Einspruch, Ausscheiden und Rundenende",
           "status": "planned"
         },
         {
           "id": "Wb-01-02",
-          "title": "Deutsche und englische Aufgaben für neun Varianten erstellen",
+          "title": "Zweisprachige Aufgaben und Kartenziehung",
+          "status": "planned"
+        },
+        {
+          "id": "Wb-01-08",
+          "title": "Einrichtung für Wortbombe",
           "status": "planned"
         },
         {
           "id": "Wb-01-03",
-          "title": "Mobile Spielansichten und Einbindung ins Spielmenü",
+          "title": "Laufende Wortbombe-Runde",
+          "status": "planned"
+        },
+        {
+          "id": "Wb-01-09",
+          "title": "Spielmenü und mobile Abnahme",
+          "status": "planned"
+        },
+        {
+          "id": "Wb-01-31",
+          "title": "Explosionsansicht mit Einspruch",
+          "status": "planned"
+        },
+        {
+          "id": "Wb-01-32",
+          "title": "Ergebnisansicht für Wortbombe",
           "status": "planned"
         }
       ]
@@ -993,33 +1095,251 @@
       "tasks": [
         {
           "id": "Im-01-01",
-          "title": "Spielzustände, zufällige Rollen und Hinweisrunden mit optionaler dritter Runde",
-          "status": "planned"
-        },
-        {
-          "id": "Im-01-02",
-          "title": "Verdeckte Rollenanzeige mit Hochziehen, Loslassen und Weiterreichen",
-          "status": "planned"
-        },
-        {
-          "id": "Im-01-03",
-          "title": "Offene und geheime Abstimmung, Stichwahl und Auflösung",
+          "title": "Rollen und Geheimwort zuteilen",
           "status": "planned"
         },
         {
           "id": "Im-01-04",
-          "title": "Begriffe mit optionalem Hilfswort für Deutsch und Englisch",
+          "title": "Zweisprachige Begriffe und optionales Hilfswort",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-06",
+          "title": "Ablauf der Hinweisrunden",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-07",
+          "title": "Offene Abstimmungsansicht",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-08",
+          "title": "Abstimmung, Stichwahl und Rateversuch auswerten",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-02",
+          "title": "Verdeckte Rollenanzeige",
           "status": "planned"
         },
         {
           "id": "Im-01-05",
-          "title": "Mobile Einrichtung, Spielmenü und Prüfung der vollständigen Spielabläufe",
+          "title": "Einrichtung für Imposter",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-10",
+          "title": "Ansicht für Hinweisrunden",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-11",
+          "title": "Spielmenü und mobile Abnahme",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-28",
+          "title": "Geheime Abstimmungsansicht",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-29",
+          "title": "Stichwahlansicht",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-30",
+          "title": "Ansicht für den letzten Rateversuch",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-31",
+          "title": "Ergebnisansicht für Imposter",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "We-01",
+      "name": "Werwolf",
+      "status": "in_progress",
+      "gameIds": [
+        "werewolf"
+      ],
+      "tasks": [
+        {
+          "id": "We-01-01",
+          "title": "Grundregeln und Rollenverteilung für 6 bis 15 Spieler festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-01-06",
+          "title": "Rollen auslosen und verdeckt zuteilen",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-02",
+          "title": "Nachtlogik für Seherin und Werwölfe",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-08",
+          "title": "Nominierung und Tagesabstimmung",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-09",
+          "title": "Siegbedingungen für Dorf und Werwölfe",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-04",
+          "title": "Nachtansicht für den Erzähler",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-10",
+          "title": "Morgenansicht für Werwolf",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-05",
+          "title": "Spielmenü, Übersetzungen und mobile Abnahme",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-26",
+          "title": "Einrichtung für Werwolf",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-27",
+          "title": "Verdeckte Rollenanzeige für Werwolf",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-28",
+          "title": "Tagesansicht für Diskussion und Nominierung",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-29",
+          "title": "Abstimmungsansicht für Werwolf",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-30",
+          "title": "Ergebnisansicht für Werwolf",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "Lb-01",
+      "name": "Liar’s Bar",
+      "status": "planned",
+      "gameIds": [
+        "liars-bar"
+      ],
+      "tasks": [
+        {
+          "id": "Lb-01-01",
+          "title": "Kartenmodus und Grenzfälle am Tisch erproben",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-02",
+          "title": "Kartenstapel, Austeilen und Tischwert",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-06",
+          "title": "Verdecktes Ablegen und Zugfolge",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-03",
+          "title": "Anzweifeln und letzte Ablage auswerten",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-07",
+          "title": "Risikoauflösung, Folgerunde und Sieg",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-04",
+          "title": "Private Kartenhand für Liar’s Bar",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-08",
+          "title": "Öffentliche Tischansicht",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-05",
+          "title": "Spielmenü, Übersetzungen und mobile Abnahme",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-26",
+          "title": "Einrichtung für Liar’s Bar",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-27",
+          "title": "Geräteübergabe für Liar’s Bar",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-28",
+          "title": "Ansicht für die aufgedeckte Herausforderung",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-29",
+          "title": "Ansicht für die Risikoauflösung",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-30",
+          "title": "Ergebnisansicht für Liar’s Bar",
           "status": "planned"
         }
       ]
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-13",
+      "summary": "Tabu-Aufgaben nach Spielmodus und Funktion geordnet. Die Abschlussaufgabe für die Zeitmodi trägt einen eindeutigen Titel."
+    },
+    {
+      "date": "2026-11-13",
+      "summary": "Wichtige Spielansichten im Entwicklungs-Dashboard als eigene Aufgaben mit Abnahmekriterien geplant."
+    },
+    {
+      "date": "2026-11-13",
+      "summary": "Alle Spieltabs zeigen zuerst Regeln und Spiellogik, dann die Ansichten in Spielreihenfolge und zuletzt die Abnahme."
+    },
+    {
+      "date": "2026-11-13",
+      "summary": "Zusammengehörige Spielaufgaben zu 32 Funktionspaketen gebündelt. Die Prüffälle stehen bei der jeweiligen Aufgabe im Projektplan."
+    },
+    {
+      "date": "2026-11-13",
+      "summary": "Mehrteilige Spielaufgaben in einzelne Regeln, Bedienaktionen und konkrete Prüffälle aufgeteilt."
+    },
+    {
+      "date": "2026-11-13",
+      "summary": "Die Umsetzung von Wortbombe, Imposter, Werwolf und Liar’s Bar ist in kleinere Aufgaben mit überprüfbaren Abnahmekriterien aufgeteilt."
+    },
+    {
+      "date": "2026-11-13",
+      "summary": "Werwolf und Liar’s Bar als eigene Spielbereiche geplant und im Entwicklungs-Dashboard ergänzt."
+    },
     {
       "date": "2026-11-13",
       "summary": "Imposter mit fünf geplanten Aufgaben in das Entwicklungs-Dashboard aufgenommen."
@@ -1332,15 +1652,311 @@
   "games": [
     {
       "id": "taboo",
-      "name": "Tabu"
+      "name": "Tabu",
+      "roadmap": [
+        {
+          "id": "rules",
+          "taskIds": [
+            "Ta-06-07"
+          ],
+          "document": "GAMEHUB_TABOO_LOGIC.md",
+          "name": "Regeln und Spielmodi"
+        },
+        {
+          "id": "logic",
+          "taskIds": [
+            "Ta-01-01",
+            "Ta-01-02",
+            "Ta-01-03",
+            "Ta-01-04",
+            "Ta-01-05",
+            "Ta-05-01"
+          ],
+          "name": "Klassische Runde und Wertung"
+        },
+        {
+          "id": "cards",
+          "name": "Kartensätze, Kartenprüfung und Speicherung",
+          "taskIds": [
+            "Ta-03-01",
+            "Ta-03-02",
+            "Ta-03-03",
+            "Ta-09-01",
+            "Ta-09-02",
+            "Ta-09-03",
+            "Ta-09-04",
+            "Ta-09-05",
+            "Ta-09-06",
+            "Ta-09-07",
+            "Ta-09-08"
+          ]
+        },
+        {
+          "id": "views",
+          "taskIds": [
+            "Ta-02-01",
+            "Ta-06-01",
+            "Ta-06-02",
+            "Ta-06-03",
+            "Ta-06-04",
+            "Ta-02-02",
+            "Ta-02-03",
+            "Ta-02-04",
+            "Al-07-02",
+            "Ta-05-06",
+            "Al-07-01",
+            "Al-07-03"
+          ],
+          "description": "Einrichtung → Runde → Rundenauswertung → Spielende. Danach folgen Kartenverwaltung und Feinschliff.",
+          "name": "Einrichtung, Kartenansicht und Rundenergebnis"
+        },
+        {
+          "id": "race",
+          "name": "Auf Zeit",
+          "taskIds": [
+            "Ta-06-07-A",
+            "Ta-06-07-B",
+            "Ta-06-07-F"
+          ]
+        },
+        {
+          "id": "countdown",
+          "name": "Gegen die Zeit",
+          "taskIds": [
+            "Ta-06-07-C",
+            "Ta-06-07-D",
+            "Ta-06-07-D-01",
+            "Ta-06-07-D-02",
+            "Ta-06-07-D-03"
+          ]
+        },
+        {
+          "id": "generation",
+          "name": "Kartengenerierung und Prüfung",
+          "taskIds": [
+            "Ta-04-01",
+            "Ta-04-02",
+            "Ta-04-03",
+            "Ta-04-04",
+            "Ta-04-05",
+            "Ta-07-04",
+            "Ta-08-01"
+          ]
+        },
+        {
+          "id": "library",
+          "name": "Kartenverwaltung",
+          "taskIds": [
+            "Ta-07-03",
+            "Ta-07-02",
+            "Ta-07-01",
+            "Ta-06-05",
+            "Ta-06-06",
+            "Ta-07-05"
+          ]
+        },
+        {
+          "id": "desktop",
+          "name": "Desktop-Ansichten",
+          "taskIds": [
+            "Al-08-02",
+            "Al-08-02-01",
+            "Al-08-02-02",
+            "Al-08-02-03"
+          ]
+        },
+        {
+          "id": "check",
+          "taskIds": [
+            "Ta-05-02",
+            "Ta-05-03",
+            "Ta-05-04",
+            "Al-05-01"
+          ],
+          "name": "Sprachprüfung und Spieltests"
+        },
+        {
+          "id": "mode-review",
+          "name": "Dokumentation und Abnahme der Zeitmodi",
+          "taskIds": [
+            "Ta-06-07-E"
+          ]
+        }
+      ]
     },
     {
       "id": "word-bomb",
-      "name": "Wortbombe"
+      "name": "Wortbombe",
+      "roadmap": [
+        {
+          "id": "rules",
+          "taskIds": [],
+          "document": "GAMEHUB_WORTBOMBE.md",
+          "name": "Regeln der Wortbombe"
+        },
+        {
+          "id": "logic",
+          "taskIds": [
+            "Wb-01-01",
+            "Wb-01-04",
+            "Wb-01-06",
+            "Wb-01-02"
+          ],
+          "name": "Weitergabe, Timer und Ausscheiden"
+        },
+        {
+          "id": "views",
+          "taskIds": [
+            "Wb-01-08",
+            "Wb-01-03",
+            "Wb-01-31",
+            "Wb-01-32"
+          ],
+          "description": "Einrichtung → laufende Runde → Explosion und Einspruch → Ergebnis.",
+          "name": "Einrichtung, Runde, Explosion und Ergebnis"
+        },
+        {
+          "id": "check",
+          "taskIds": [
+            "Wb-01-09"
+          ],
+          "name": "Spielmenü und mobile Testpartie"
+        }
+      ]
     },
     {
       "id": "imposter",
-      "name": "Imposter"
+      "name": "Imposter",
+      "roadmap": [
+        {
+          "id": "rules",
+          "taskIds": [],
+          "document": "GAMEHUB_IMPOSTER.md",
+          "name": "Regeln für Hinweise und Abstimmung"
+        },
+        {
+          "id": "logic",
+          "taskIds": [
+            "Im-01-01",
+            "Im-01-04",
+            "Im-01-06",
+            "Im-01-08"
+          ],
+          "name": "Rollen, Hinweisrunden und Abstimmungsauswertung"
+        },
+        {
+          "id": "views",
+          "taskIds": [
+            "Im-01-05",
+            "Im-01-02",
+            "Im-01-10",
+            "Im-01-07",
+            "Im-01-28",
+            "Im-01-29",
+            "Im-01-30",
+            "Im-01-31"
+          ],
+          "description": "Einrichtung → Rollen aufdecken → Hinweise → offene oder geheime Abstimmung → bei Bedarf Stichwahl oder Rateversuch → Ergebnis.",
+          "name": "Rollenanzeige, Hinweise, Abstimmung und Auflösung"
+        },
+        {
+          "id": "check",
+          "taskIds": [
+            "Im-01-11"
+          ],
+          "name": "Spielmenü und mobile Testpartie"
+        }
+      ]
+    },
+    {
+      "id": "werewolf",
+      "name": "Werwolf",
+      "roadmap": [
+        {
+          "id": "rules",
+          "taskIds": [
+            "We-01-01"
+          ],
+          "document": "GAMEHUB_WERWOLF.md",
+          "name": "Rollen und Regeln nach Ultimate Werewolf"
+        },
+        {
+          "id": "logic",
+          "taskIds": [
+            "We-01-06",
+            "We-01-02",
+            "We-01-08",
+            "We-01-09"
+          ],
+          "name": "Rollenzuteilung, Nacht, Tag und Siegbedingungen"
+        },
+        {
+          "id": "views",
+          "taskIds": [
+            "We-01-26",
+            "We-01-27",
+            "We-01-04",
+            "We-01-10",
+            "We-01-28",
+            "We-01-29",
+            "We-01-30"
+          ],
+          "description": "Einrichtung und geheime Rollenanzeige → Nacht → Morgen und Tag → Ergebnis.",
+          "name": "Rollenanzeige und Erzähleransichten für Nacht und Tag"
+        },
+        {
+          "id": "check",
+          "taskIds": [
+            "We-01-05"
+          ],
+          "name": "Spielmenü und mobile Testpartie"
+        }
+      ]
+    },
+    {
+      "id": "liars-bar",
+      "name": "Liar’s Bar",
+      "roadmap": [
+        {
+          "id": "rules",
+          "taskIds": [
+            "Lb-01-01"
+          ],
+          "document": "GAMEHUB_LIARS_BAR.md",
+          "name": "Kartenmodus und Regeln am Tisch"
+        },
+        {
+          "id": "logic",
+          "taskIds": [
+            "Lb-01-02",
+            "Lb-01-06",
+            "Lb-01-03",
+            "Lb-01-07"
+          ],
+          "name": "Kartenstapel, Ablegen, Anzweifeln und Ausscheiden"
+        },
+        {
+          "id": "views",
+          "taskIds": [
+            "Lb-01-26",
+            "Lb-01-27",
+            "Lb-01-04",
+            "Lb-01-08",
+            "Lb-01-28",
+            "Lb-01-29",
+            "Lb-01-30"
+          ],
+          "description": "Einrichtung → private Hand und Geräteübergabe → Tisch und Herausforderung → Ergebnis.",
+          "name": "Kartenhand, Tisch, Herausforderung und Ergebnis"
+        },
+        {
+          "id": "check",
+          "taskIds": [
+            "Lb-01-05"
+          ],
+          "name": "Spielmenü und mobile Testpartie"
+        }
+      ]
     }
   ]
 };
@@ -1482,13 +2098,41 @@
           return `
             <details data-phase-id="${escapeHtml(id)}" ${isOpen ? "open" : ""}>
               <summary data-ui-key="phase-${escapeHtml(phase.id)}">
-                <span class="phase-id">${escapeHtml(phase.id)}</span>
+                <span class="phase-id">${escapeHtml(phase.number ?? phase.id)}</span>
                 <h3>${escapeHtml(phase.name)}</h3>
-                <span class="phase-meta">${done} / ${phase.tasks.length}</span>
+                <span class="phase-meta">${phase.tasks.length ? `${done} / ${phase.tasks.length}` : ""}</span>
               </summary>
-              <ul class="tasks">${tasks}</ul>
+              ${phase.document ? `<p class="stage-note"><a href="./${escapeHtml(phase.document)}">Regeldokument öffnen</a></p>` : ""}
+              ${phase.description ? `<p class="stage-note">${escapeHtml(phase.description)}</p>` : ""}
+              ${tasks ? `<ul class="tasks">${tasks}</ul>` : ""}
             </details>`;
         }).join("") || '<p class="empty">Keine Aufgaben erfasst.</p>';
+      }
+
+      function buildGameRoadmap(view, phases) {
+        const names = {
+          rules: "Spielregeln",
+          logic: "Spiellogik und Prüffälle",
+          views: "Spielansichten in Spielreihenfolge",
+          check: "Menüeinbindung und Abnahme"
+        };
+        const tasks = new Map(phases.flatMap((phase) => phase.tasks.map((task) => [task.id, task])));
+        const roadmap = view.roadmap.map((stage, index) => ({
+          ...stage,
+          id: `roadmap-${stage.id}`,
+          number: index + 1,
+          name: stage.name ?? names[stage.id],
+          tasks: stage.taskIds.flatMap((id) => {
+            const task = tasks.get(id);
+            tasks.delete(id);
+            return task ? [task] : [];
+          })
+        }));
+        const remaining = phases.map((phase) => ({
+          ...phase,
+          tasks: phase.tasks.filter((task) => tasks.has(task.id))
+        })).filter((phase) => phase.tasks.length);
+        return [...roadmap, ...remaining];
       }
 
       function qualityCard(label, status, detail = "") {
@@ -1535,7 +2179,7 @@
           ...phase,
           tasks: phase.tasks.filter((task) => taskMatchesView(task, phase, activeView))
         })).filter((phase) => phase.tasks.length);
-        renderPhases(phases);
+        renderPhases(view.roadmap ? buildGameRoadmap(view, phases) : phases);
         if (!isGeneral) return;
         const taskIds = new Set(phases.flatMap((phase) => phase.tasks.map((task) => task.id)));
         renderList("#next-tasks", data.nextRecommendedTasks.filter((task) => taskIds.has(task.id)), (task) => `<li><strong>${escapeHtml(task.id)}</strong><br>${escapeHtml(task.reason)}<br><small>${escapeHtml(task.prerequisite)}</small></li>`, "Keine Aufgabe empfohlen");

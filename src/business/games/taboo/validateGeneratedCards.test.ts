@@ -1,7 +1,7 @@
-import { expect, it, vi } from "vitest";
+import { expect, it } from "vitest";
 import type { TabooGenerationRequest } from "./cardGenerator";
 import type { TabooCard } from "./model";
-import { reviewGeneratedCards, saveGeneratedCards } from "./validateGeneratedCards";
+import { reviewGeneratedCards } from "./validateGeneratedCards";
 
 const request: TabooGenerationRequest = {
   language: "de",
@@ -59,20 +59,4 @@ it("reports malformed cards, wrong metadata, and invalid forbidden words", () =>
   expect(result.rejected[7]?.issues).toEqual(
     ["language", "categoryId", "difficulty"].map((field) => ({ field, code: "request_mismatch" })),
   );
-});
-
-it("checks fresh storage before submitting one atomic batch and propagates storage failures", async () => {
-  const card: TabooCard = { ...moon, id: "bear", term: "Bär" };
-  const repository = {
-    list: vi.fn().mockResolvedValue([moon]),
-    addAll: vi.fn().mockResolvedValue(undefined),
-    update: vi.fn().mockResolvedValue(undefined),
-    remove: vi.fn().mockResolvedValue(undefined),
-  };
-  expect(await saveGeneratedCards(repository, [moon], [])).toEqual([]);
-  expect(repository.addAll).not.toHaveBeenCalled();
-  expect(await saveGeneratedCards(repository, [moon, card], [])).toEqual([card]);
-  expect(repository.addAll).toHaveBeenCalledExactlyOnceWith([card]);
-  repository.addAll.mockRejectedValueOnce(new Error("Transaction aborted"));
-  await expect(saveGeneratedCards(repository, [card], [])).rejects.toThrow("Transaction aborted");
 });

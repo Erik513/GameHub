@@ -14,6 +14,9 @@ import type { ChoiceOption } from "../game-kit";
 import type { AttemptReview } from "./TabooAttemptReviews";
 import type { TiebreakRow } from "./TabooTiebreakResults";
 
+/** The screens of a Taboo game that the host cares about: the menu is the one to come back to. */
+export type TabooScreen = "menu" | "lineup" | "preparing" | "game" | "race";
+
 export const difficulties = ["easy", "medium", "hard"] as const;
 export const cardSources = ["both", "local", "ai"] as const;
 /** The game modes the player can choose in the setup. */
@@ -21,9 +24,6 @@ export const tabooModes = ["classic", "race"] as const;
 export type TabooMode = (typeof tabooModes)[number];
 export type RoundChoice = number | "unlimited";
 export const defaultRoundChoices: readonly RoundChoice[] = [3, 5, 10, "unlimited"];
-export const maxCardsPerRequest = 10;
-export const aiCardsPerTurn = 8;
-export const refillThreshold = 8;
 export type SetupState = Extract<ReturnType<typeof createTabooGame>, { valid: true }>["value"];
 export type EndedState = Extract<TabooState, { status: "roundEnded" }>;
 export type FinishedState = Extract<TabooState, { status: "gameEnded" }>;

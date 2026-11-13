@@ -1,13 +1,6 @@
-import {
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-  useState,
-  type FormEvent,
-  type ReactNode,
-} from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { planGenerationRequests, requiredCards } from "../../business/games/taboo/cardPlan";
 import { buildDeck, type DeckCriteria } from "../../business/games/taboo/deck";
 import { createRaceGame, type RaceState } from "../../business/games/taboo/race";
 import { raceCardShortage } from "../../business/games/taboo/raceCards";
@@ -17,7 +10,6 @@ import {
   getNextTabooTurn,
   transitionTaboo,
   type TabooEvent,
-  type TabooOutcome,
   type TabooState,
 } from "../../business/games/taboo/stateMachine";
 import type { SupportedLanguage } from "../../i18n";
@@ -29,7 +21,6 @@ import {
   type TabooCategoryInfo,
 } from "../../business/games/taboo/categories";
 import { buildTeams, initialTeamSetup, type TeamSetupValue } from "../../business/shared/teamSetup";
-import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import { hasTeamSetupContent } from "../../business/shared/savedTeamSetup";
 import { useGameBack, useGameExit } from "../GameChrome";
 import { LineupScreen, SetupSection, TeamsSetup, useTeamSetupMemory } from "../game-kit";
@@ -39,13 +30,12 @@ import { useTabooRefill } from "./useTabooRefill";
 import { TabooResultView } from "./TabooResultView";
 import { TabooSetupForm } from "./TabooSetupForm";
 import { TabooSetupMessages } from "./TabooSetupMessages";
+import type { TabooScreen } from "./tabooSetupModel";
 import { TabooTiebreakOverview } from "./TabooTiebreakOverview";
 import { TabooTurnOverview } from "./TabooTurnOverview";
 import {
-  aiCardsPerTurn,
   defaultRoundChoices,
   difficulties,
-  maxCardsPerRequest,
   type RoundChoice,
   readTabooSettings,
   type SetupState,
@@ -53,6 +43,7 @@ import {
   type TabooSettings,
 } from "./tabooSetupModel";
 import { TabooTiebreakRound } from "./TabooTiebreakRound";
+import { useTabooTiebreak, type ActiveGame } from "./useTabooTiebreak";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 
 export function TabooSetup({
@@ -62,6 +53,7 @@ export function TabooSetup({
   children,
   generators,
   onCardLanguageChange,
+  onScreenChange,
   roundChoices = defaultRoundChoices,
 }: {
   cardLanguage: SupportedLanguage;
@@ -72,6 +64,8 @@ export function TabooSetup({
   generators?: TabooGenerators | undefined;
   /** Changes the card language; without it the language is not offered in the settings. */
   onCardLanguageChange?: ((language: SupportedLanguage) => void) | undefined;
+  /** Tells the host which screen is shown, so it can keep the scroll position of the menu. */
+  onScreenChange?: ((screen: TabooScreen) => void) | undefined;
   /** Selectable rounds per team; tests use short games, the app offers short/medium/long/unlimited. */
   roundChoices?: readonly RoundChoice[];
 }) {
@@ -105,14 +99,7 @@ export function TabooSetup({
     pool: readonly TabooCard[];
     state: RaceState;
   }>();
-  const [round, setRound] = useState<{
-    state: TabooState;
-    deadline: number;
-    pausedAt?: number | undefined;
-    /** Tiebreak stopwatch: start of the attempt and total time spent paused. */
-    startedAt?: number;
-    pausedMs?: number;
-  }>();
+  const [round, setRound] = useState<ActiveGame>();
   const dispatch = useCallback((event: TabooEvent) => {
     setRound((current) => {
       if (!current) return current;
@@ -139,7 +126,6 @@ export function TabooSetup({
   const [teamSetup, setTeamSetup] = useState<TeamSetupValue>(initialTeamSetup);
   const memory = useTeamSetupMemory();
   const [restartUnavailable, setRestartUnavailable] = useState(false);
-  const [tiebreakNoCards, setTiebreakNoCards] = useState(false);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
   const nextTurn = ended ? getNextTabooTurn(ended) : null;
@@ -204,47 +190,14 @@ export function TabooSetup({
   const tiebreakState = round?.state.status === "tiebreak" ? round.state : undefined;
   const tiebreakActive = tiebreakState?.active !== undefined;
 
-  // All cards of the card language are available for the tiebreak, independent of the filters.
-  const tiebreakPool = useMemo(() => {
-    const language = round?.state.configuration.cardLanguage ?? cardLanguage;
-    const unique = new Map<string, TabooCard>();
-    for (const card of [...(session?.deck ?? []), ...cards]) {
-      if (card.language === language) unique.set(card.id, card);
-    }
-    return [...unique.values()];
-  }, [round?.state.configuration.cardLanguage, cardLanguage, cards, session]);
-
-  function reviseTiebreak(teamIndex: number, cardId: string, outcome: TabooOutcome) {
-    dispatch({ type: "reviseTiebreakResult", teamIndex, cardId, outcome });
-  }
-
-  function beginTiebreak() {
-    if (round?.state.status !== "tiebreak") return;
-    const picked = pickTiebreakCards(
-      tiebreakPool,
-      new Set(round.state.usedCardIds),
-      new Set(round.state.resolvedCardIds),
-    );
-    const state = picked
-      ? transitionTaboo(round.state, { type: "beginTiebreakAttempt", cards: picked })
-      : round.state;
-    if (state === round.state) {
-      setTiebreakNoCards(true);
-      return;
-    }
-    setTiebreakNoCards(false);
-    setRound({ state, deadline: 0, startedAt: Date.now(), pausedMs: 0 });
-  }
-
-  function pickTiebreakReplacement(card: TabooCard) {
-    if (round?.state.status !== "tiebreak") return undefined;
-    return pickTiebreakCard(
-      tiebreakPool,
-      card.difficulty,
-      new Set(round.state.usedCardIds),
-      new Set(round.state.resolvedCardIds),
-    );
-  }
+  const tiebreak = useTabooTiebreak({
+    cards,
+    cardLanguage,
+    deck: session?.deck,
+    dispatch,
+    round,
+    setRound,
+  });
 
   // A restarted turn gets new cards: nothing shown in this turn may reappear (no peeking).
   const restartTurn = useCallback(() => {
@@ -306,6 +259,16 @@ export function TabooSetup({
   );
 
   const lineupVisible = lineupOpen && !session && !round && !raceSession && Boolean(settings);
+  const screen: TabooScreen = lineupVisible
+    ? "lineup"
+    : raceSession
+      ? "race"
+      : round
+        ? "game"
+        : session
+          ? "preparing"
+          : "menu";
+  useEffect(() => onScreenChange?.(screen), [onScreenChange, screen]);
   // On the line-up the header offers a way back to the main menu.
   useGameBack(lineupVisible, () => {
     activeGeneration.current?.abort();
@@ -410,10 +373,12 @@ export function TabooSetup({
     const teamCount = checked.value.configuration.teams.length;
     // With unlimited rounds one card per team is enough to start; cards are reused later. A race
     // never uses a card twice, so it needs the cards of all runs and two spare ones per team.
-    const roundsPerTeam = classic?.valid ? classic.value.configuration.roundsPerTeam : 1;
-    const required = race?.valid
-      ? teamCount * (raceTarget + 2)
-      : teamCount * (roundsPerTeam === "unlimited" ? 1 : roundsPerTeam);
+    const required = requiredCards({
+      mode: race?.valid ? "race" : "classic",
+      raceTarget,
+      roundsPerTeam: classic?.valid ? classic.value.configuration.roundsPerTeam : 1,
+      teamCount,
+    });
     const filters: DeckCriteria = {
       language: checked.value.configuration.cardLanguage,
       minimumCards: 1,
@@ -447,25 +412,14 @@ export function TabooSetup({
         const controller = new AbortController();
         activeGeneration.current = controller;
         setGenerating(true);
-        // Mixed decks only add a few extras. AI-only decks must last a full timed round per turn,
-        // so they are generated generously instead of one card per turn.
-        const perCategory =
-          cardSource === "ai"
-            ? Math.max(
-                2,
-                Math.ceil(
-                  (required * (race?.valid ? 2 : aiCardsPerTurn)) / selectedCategories.length,
-                ),
-              )
-            : 2;
-        const requests = selectedCategories.flatMap((categoryId) =>
-          Array.from({ length: Math.ceil(perCategory / maxCardsPerRequest) }, (_, index) => ({
-            language: filters.language,
-            categoryId,
-            difficulty: chosenDifficulties[index % chosenDifficulties.length] ?? "easy",
-            count: Math.min(maxCardsPerRequest, perCategory - index * maxCardsPerRequest),
-          })),
-        );
+        const requests = planGenerationRequests({
+          categories: selectedCategories,
+          difficulties: chosenDifficulties,
+          language: filters.language,
+          mode: race?.valid ? "race" : "classic",
+          required,
+          source: cardSource,
+        });
         try {
           additions = await generateHiddenCards(generators, requests, cards, controller.signal);
         } catch {
@@ -511,10 +465,10 @@ export function TabooSetup({
     <div className="taboo-setup">
       {tiebreakState && !tiebreakState.active && (
         <TabooTiebreakOverview
-          noCards={tiebreakNoCards}
-          onBegin={beginTiebreak}
+          noCards={tiebreak.noCards}
+          onBegin={tiebreak.begin}
           onNewSetup={() => restart(false)}
-          onRevise={reviseTiebreak}
+          onRevise={tiebreak.revise}
           state={tiebreakState}
         />
       )}
@@ -525,7 +479,7 @@ export function TabooSetup({
           onResume={togglePause}
           pausedAt={round.pausedAt}
           pausedMs={round.pausedMs ?? 0}
-          pickReplacement={pickTiebreakReplacement}
+          pickReplacement={tiebreak.pickReplacement}
           startedAt={round.startedAt}
           teamName={tiebreakState.configuration.teams[tiebreakState.active.teamIndex]?.name ?? ""}
         />
@@ -579,7 +533,7 @@ export function TabooSetup({
         <TabooResultView
           finished={finished}
           onNewSetup={() => restart(false)}
-          onRevise={reviseTiebreak}
+          onRevise={tiebreak.revise}
           onSameSetup={() => restart(true)}
         />
       )}

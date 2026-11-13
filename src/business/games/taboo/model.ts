@@ -7,10 +7,6 @@ export interface Team {
   /** The players of the team when the player entered them; the game does not need them. */
   readonly players?: readonly string[];
 }
-export interface Category {
-  readonly id: string;
-  readonly name: string;
-}
 export interface TabooCard {
   readonly id: string;
   readonly language: GameHubLanguage;
@@ -51,14 +47,6 @@ export function capitalizeFirst(value: string, language: GameHubLanguage): strin
   const text = normalizeText(value);
   const first = Array.from(text)[0];
   return first === undefined ? text : first.toLocaleUpperCase(language) + text.slice(first.length);
-}
-
-export function validateCategory(input: Category): ValidationResult<Category> {
-  const value = { id: normalizeText(input.id), name: normalizeText(input.name) };
-  const issues: ValidationIssue[] = [];
-  if (!value.id) issues.push({ field: "id", code: "required" });
-  if (!value.name) issues.push({ field: "name", code: "required" });
-  return issues.length ? { valid: false, issues } : { valid: true, value };
 }
 
 /**

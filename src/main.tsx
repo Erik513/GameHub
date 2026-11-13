@@ -3,10 +3,7 @@ import { createRoot } from "react-dom/client";
 import { AppRoot } from "./app/AppRoot";
 import { IndexedDbTabooCardRepository } from "./data/indexedDbTabooCardRepository";
 import { tabooStandardCards } from "./data/tabooStandardCards";
-import { tabooLocalCandidates } from "./data/tabooLocalCandidates";
-import { createLocalTabooCardGenerator } from "./infrastructure/localTabooCardGenerator";
 import { loadTabooCardPack } from "./data/tabooCardPool";
-import { discoverOllamaTabooCardGenerator } from "./infrastructure/ollamaTabooCardGenerator";
 import { gameHubI18n } from "./i18n";
 import { parseSupportedLanguage, resolveInitialLanguage } from "./i18n/languagePreference";
 import {
@@ -49,10 +46,8 @@ createRoot(rootElement).render(
         createTabooModule({
           cards: tabooStandardCards,
           loadCardPack: loadTabooCardPack,
-          generators: {
-            local: createLocalTabooCardGenerator(tabooLocalCandidates),
-            discover: discoverOllamaTabooCardGenerator,
-          },
+          // The card generators (Ollama, fixed list) are switched off for now: only the cards that
+          // come with the app and the player's own cards can be played (docs ADR-024).
           repository: new IndexedDbTabooCardRepository(),
         }),
       ]}

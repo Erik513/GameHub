@@ -4,6 +4,36 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Tabu-Kapitel nach Spielmodus und Funktion geordnet
+
+- Tabu-Aufgaben nach Spielmodus und Funktion geordnet. Die Abschlussaufgabe für die Zeitmodi trägt einen eindeutigen Titel.
+
+### Einzelne Spielansichten geplant
+
+- Wichtige Spielansichten im Entwicklungs-Dashboard als eigene Aufgaben mit Abnahmekriterien geplant.
+
+### Entwicklungsreihenfolge in den Spieltabs
+
+- Alle Spieltabs zeigen zuerst Regeln und Spiellogik, dann die Ansichten in Spielreihenfolge und zuletzt die Abnahme.
+
+### Spielaufgaben nach Funktionen gebündelt
+
+- Zusammengehörige Spielaufgaben zu 32 Funktionspaketen gebündelt. Die Prüffälle stehen bei der jeweiligen Aufgabe im Projektplan.
+
+### Einzelne Regeln und Bedienaktionen als Aufgaben
+
+- Mehrteilige Spielaufgaben in einzelne Regeln, Bedienaktionen und konkrete Prüffälle aufgeteilt.
+
+### Umsetzungsschritte für vier Spiele präzisiert
+
+- Die Umsetzung von Wortbombe, Imposter, Werwolf und Liar’s Bar ist in kleinere Aufgaben mit überprüfbaren Abnahmekriterien aufgeteilt.
+
+### Planung für Werwolf und Liar’s Bar
+
+- Werwolf und Liar’s Bar als eigene Spielbereiche geplant und im Entwicklungs-Dashboard ergänzt.
+
+## 2026-11-13
+
 ### Großschreibung und Kategorie umbenennen
 
 - **Erster Buchstabe groß:** Beim Hinzufügen und Bearbeiten einer Karte wird der erste Buchstabe des Begriffs und jedes verbotenen Wortes automatisch groß geschrieben („football“ wird „Football“, „net“ wird „Net“); die Leerzeichen werden dabei auch bereinigt. Neue Funktion `capitalizeFirst` im Business (nach den Regeln der Sprache der Karte). Karten des mitgelieferten Pools und schon gespeicherte eigene Karten bleiben unverändert.
@@ -46,6 +76,19 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Kartenansicht: Bei jeder Kategorie steht nur noch die **Kartenanzahl** (vorher „105 (15 eigene)“). Bei den Standardkategorien steht die Überschrift „Standard-Kategorien (Deutsch und Englisch)“ (nur in der Kartenansicht, nicht im Hauptmenü). **Eigene Kategorien** zeigen ihre Sprache hinter dem Namen, zum Beispiel „Sport (DE)“, in der Kartenansicht, im Hauptmenü (Kapitel Karten) und in der Kategorieauswahl beim Hinzufügen und Bearbeiten.
 - Die **schweren Karten** waren teils zu schwer (Wörter, die die meisten nicht kennen, zum Beispiel „Aquifer“, „Fuge“, „Oszilloskop“, „Gregorianik“, „Nacktmull“). 42 Karten je Sprache sind ersetzt durch bekanntere, aber schwerer zu erklärende Begriffe (zum Beispiel „Klimawandel“, „Mona Lisa“, „Walross“, „Bürgermeister“, „Big Ben“). Der Pool hat weiter 900 Karten je Sprache, 30 je Schwierigkeit und Kategorie.
 - Tests angepasst (Anzahl ohne „eigene“, „(EN)“ hinter eigenen Kategorien).
+
+### KI-Kartenquelle abgeschaltet (ADR-024)
+
+- Auf Wunsch des Auftraggebers ist die Einstellung „Kartenquelle“ weg: Es gibt keine KI-Auswahl mehr, gespielt werden nur die mitgelieferten Karten und die eigenen. `main.tsx` verdrahtet keinen Kartengenerator mehr. Der Code (Ollama-Adapter, feste Liste, Prüfung, Planung, Nachladen) bleibt ungenutzt im Projekt; `Al-10-03` beschreibt, was beim Wiederanschließen zu entscheiden ist (Anbieter Ollama oder LM Studio). Die App bleibt ohne Internet und ohne KI voll spielbar.
+
+### Gesamtcheck: toter Code, Scrollposition, Wiederverwendung (Al-10-01)
+
+- Neues Dokument `docs/GAMEHUB_QUALITY_CHECK.md` mit dem Ergebnis des Gesamtchecks (Schichten, toter Code, Wiederverwendbarkeit, Bedienung, Kartenquelle KI, offene Punkte). Neue Phase `Al-10` in Plan und Status: `Al-10-01` erledigt, `Al-10-02` (Container weiter aufteilen) und `Al-10-03` (Kartenquelle klären) geplant.
+- **Schichten:** sauber (Prüfskript und Suche). Entscheidungen zum Kartenbedarf und zu den Anfragen an die Generatoren sind aus dem Container in die Business-Schicht gewandert (`cardPlan.ts`, mit Tests); das Stechen steckt in `useTabooTiebreak`.
+- **Toter Code entfernt:** `GameHubFoundation`, die Funktionen und Typen der Sprachwahl in `languageSettings.ts`, `parseCardEntries`, `Category` und `validateCategory`, `saveGeneratedCards`, die leeren Platzhalter `data/index.ts` und `infrastructure/index.ts`, vier CSS-Klassen (Tests dazu entfernt).
+- **Wiederverwendbar im game-kit:** `RulesDialog` und `RulesButton` (das Regelfenster mit Reitern, vorher Tabu-eigen) und `useScreenScroll`.
+- **Bedienung:** Eine neue Ansicht (Kartenseite, Aufstellung, Spiel) beginnt oben statt an der Scrollposition der alten; das Hauptmenü steht beim Zurückkommen wieder an der alten Stelle (`useScreenScroll`, Test vorhanden; im Browser mit gesendeten Scroll-Ereignissen geprüft).
+- **Prüfungen:** 589 Unit-Tests, Abdeckung 98,0 % Zeilen und 93,6 % Zweige (alle Grenzwerte erfüllt), `tsc`, `eslint`, Prettier ohne Befund; die e2e-Tests laufen (26 bestanden, 6 übersprungen wie bisher; Server von Hand gestartet, weil `pnpm` in der Shell fehlt).
 
 ### Ein Regelfenster mit allen Spielmodi als Reiter
 
