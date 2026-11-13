@@ -89,7 +89,7 @@ export const tabooTexts = {
     classicRules:
       "Every card shows a term with 4 forbidden words.\nOne player explains the term to their team without saying the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.\nEvery guessed term scores 1 point. The team with the most points wins.",
     raceRules:
-      "Every team plays alone and explains the chosen number of cards as fast as it can.\nThe shortest time wins.",
+      "The teams play one after another. Every team explains its cards without saying the 4 forbidden words.\nThe team that guesses all cards the fastest wins.",
     legend: "Game mode",
     classic: "Classic",
     race: "Race",
@@ -177,7 +177,7 @@ export const tabooTexts = {
       cardSource:
         "Local only: the cards that come with the app, also offline.\nAI only: the local AI makes the cards and adds more during the round.\nBoth: mixed. Without AI the game works with the local cards.",
       tiebreak:
-        "If 2 to 3 teams are tied at the top after the last round, they play a tiebreak.\nEvery team gets 3 cards (easy, medium, hard) and 90 seconds.\nThe team with more correct cards wins; with the same number the faster team.\nA forbidden word counts as wrong, one skip is allowed.\nOff: teams with the same points win together.",
+        "If the points are tied, there is a tiebreak.\nEvery team gets 3 cards (easy, medium, hard) and 90 seconds.\nThe team with the most guessed cards wins. With the same number, the faster team wins.",
       skips:
         "A team may skip a card this often per round, with no point and no penalty.\nNone: blocked. ∞: as often as you like.",
       difficulty:

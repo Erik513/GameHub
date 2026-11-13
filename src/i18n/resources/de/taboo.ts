@@ -90,7 +90,7 @@ export const tabooTexts = {
     classicRules:
       "Auf jeder Karte steht ein Begriff mit 4 verbotenen Wörtern.\nEin Spieler erklärt den Begriff seinem Team, ohne die 4 verbotenen Wörter, den Begriff selbst oder Teile davon zu sagen. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.\nFür jeden erratenen Begriff gibt es 1 Punkt. Das Team mit den meisten Punkten gewinnt.",
     raceRules:
-      "Jedes Team erklärt allein die gewählte Zahl Karten, so schnell es kann.\nDie kürzeste Zeit gewinnt.",
+      "Die Teams spielen nacheinander. Jedes Team erklärt seine Karten, ohne die 4 verbotenen Wörter zu sagen.\nDas Team, das alle Karten am schnellsten errät, gewinnt.",
     legend: "Spielmodus",
     classic: "Klassisch",
     race: "Auf Zeit",
@@ -178,7 +178,7 @@ export const tabooTexts = {
       cardSource:
         "Nur lokal: Karten aus der App, auch ohne Internet.\nNur KI: Die lokale KI macht die Karten und lädt in der Runde nach.\nBeides: gemischt. Ohne KI klappt das Spiel mit den lokalen Karten.",
       tiebreak:
-        "Liegen nach der letzten Runde 2 bis 3 Teams an der Spitze gleichauf, spielen sie ein Stechen.\nJedes Team bekommt 3 Karten (leicht, mittel, schwer) und 90 Sekunden.\nWer mehr Karten schafft, gewinnt; bei gleich vielen die schnellere Zeit.\nEin verbotenes Wort zählt als falsch, einmal überspringen ist erlaubt.\nAus: Teams mit gleichen Punkten gewinnen gemeinsam.",
+        "Bei einem Punktgleichstand kommt es zum Stechen.\nJedes Team bekommt 3 Karten (leicht, mittel, schwer) und 90 Sekunden Zeit.\nDas Team mit den meisten erratenen Karten gewinnt. Bei gleich vielen gewinnt das schnellere Team.",
       skips:
         "So oft darf ein Team pro Runde eine Karte überspringen, ohne Punkt und ohne Strafe.\nNie: gesperrt. ∞: so oft ihr wollt.",
       difficulty:

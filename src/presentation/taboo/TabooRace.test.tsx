@@ -251,7 +251,7 @@ it.each([
     "Every card shows a term",
     "Info about Race",
     "Race",
-    "shortest time wins",
+    "guesses all cards the fastest wins",
   ],
   [
     "de",
@@ -261,7 +261,7 @@ it.each([
     "Auf jeder Karte steht ein Begriff",
     "Info zu Auf Zeit",
     "Auf Zeit",
-    "kürzeste Zeit gewinnt",
+    "am schnellsten errät, gewinnt",
   ],
 ] as const)(
   "has the rules of every game mode behind its own info button in %s",

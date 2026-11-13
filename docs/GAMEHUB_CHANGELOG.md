@@ -4,6 +4,10 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Infofenster ohne Schatten
+
+- Der Schatten um die Infofenster (`.dialog`) ist entfernt; das Fenster steht nur noch vor dem abgedunkelten Hintergrund.
+
 ### Ergebnisse korrigieren in allen Spielmodi (PH-12-07-F)
 
 - Stechen und „Auf Zeit“: Jeder Versuch speichert alle Karten mit Ergebnis. Nach dem Durchgang und auf der Endseite kann man jede Karte zwischen richtig und falsch umschalten (Feld „Ergebnis korrigieren“, ein aufklappbarer Eintrag pro Team). Wertung und Sieger werden neu berechnet (neue Ereignisse `reviseTiebreakResult` und `reviseRunResult`). Übersprungene Karten bleiben unverändert; mehr richtige Karten als erlaubt gehen nicht.
