@@ -16,11 +16,8 @@ export const tabooTexts = {
   tabooRules: {
     open: "Rules",
     title: "Taboo rules",
-    goal: "Goal: Every card shows a term and 4 forbidden words. You explain the term, your team guesses.",
-    turn: "Forbidden: You must not say the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.",
-    scoring: "Points: Every guessed term gives 1 point.",
-    end: "End: The teams take turns. The most points after all rounds win.",
-    race: "Race: Every team plays alone, the shortest time wins.",
+    goal: "Every card shows a term with 4 forbidden words.",
+    turn: "One player explains the term to their team without saying the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.",
   },
   tabooEntry: {
     title: "Add card ({{language}})",

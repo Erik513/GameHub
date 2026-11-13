@@ -16,11 +16,8 @@ export const tabooTexts = {
   tabooRules: {
     open: "Spielregeln",
     title: "Spielregeln Tabu",
-    goal: "Ziel: Auf jeder Karte steht ein Begriff und 4 verbotene Wörter. Du erklärst den Begriff, dein Team rät.",
-    turn: "Verboten: Du darfst die 4 verbotenen Wörter nicht sagen, auch nicht den Begriff selbst oder Teile davon. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.",
-    scoring: "Punkte: Jeder erratene Begriff gibt 1 Punkt.",
-    end: "Spielende: Die Teams sind reihum dran. Die meisten Punkte nach allen Runden gewinnen.",
-    race: "Auf Zeit: Jedes Team spielt allein, die kürzeste Zeit gewinnt.",
+    goal: "Auf jeder Karte steht ein Begriff mit 4 verbotenen Wörtern.",
+    turn: "Ein Spieler erklärt den Begriff seinem Team, ohne die 4 verbotenen Wörter, den Begriff selbst oder Teile davon zu sagen. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.",
   },
   tabooEntry: {
     title: "Karte hinzufügen ({{language}})",

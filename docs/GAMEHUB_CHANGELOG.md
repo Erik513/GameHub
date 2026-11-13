@@ -4,6 +4,14 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Neue Aufgaben im Plan
+
+- `PH-15-07`: Karten erneut prüfen, kein verbotenes Wort darf ein Teil des Begriffs sein (bei „Fußball“ nicht „Ball“). `PH-15-08`: noch mehr Karten erzeugen. Beide geplant, noch nicht begonnen.
+
+### Fenster „Spielregeln“ gekürzt
+
+- Das Fenster „Spielregeln“ enthält nur noch, was für alle Modi gilt (Karte mit Begriff und 4 verbotenen Wörtern, wie man erklärt). Punkte, Spielende und „Auf Zeit“ stehen nur noch bei den Infoknöpfen der Spielmodi, damit nichts doppelt erklärt wird.
+
 ### Infofenster ohne Schatten
 
 - Der Schatten um die Infofenster (`.dialog`) ist entfernt; das Fenster steht nur noch vor dem abgedunkelten Hintergrund.

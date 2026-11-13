@@ -5,8 +5,8 @@ import { createGameHubI18n } from "../../i18n";
 import { TabooRules } from "./TabooRules";
 
 it.each([
-  ["de", "Spielregeln", "Spielregeln Tabu", "Ziel:", "Schließen"],
-  ["en", "Rules", "Taboo rules", "Goal:", "Close"],
+  ["de", "Spielregeln", "Spielregeln Tabu", "Auf jeder Karte", "Schließen"],
+  ["en", "Rules", "Taboo rules", "Every card shows", "Close"],
 ] as const)(
   "opens and closes the rules dialog in %s",
   async (language, open, title, goal, close) => {
@@ -20,7 +20,7 @@ it.each([
     expect(screen.queryByRole("dialog")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: open }));
     const dialog = screen.getByRole("dialog", { name: title });
-    expect(within(dialog).getAllByRole("listitem")).toHaveLength(5);
+    expect(within(dialog).getAllByRole("listitem")).toHaveLength(2);
     expect(within(dialog).getByText(new RegExp(`^${goal}`))).toBeTruthy();
     fireEvent.click(within(dialog).getByRole("button", { name: close }));
     expect(screen.queryByRole("dialog")).toBeNull();

@@ -663,6 +663,16 @@
           "id": "PH-15-06",
           "title": "Optional: gespielte Karten merken",
           "status": "planned"
+        },
+        {
+          "id": "PH-15-07",
+          "title": "Karten erneut prüfen: Kein verbotenes Wort darf ein Teil des Begriffs sein (bei „Fußball“ darf „Ball“ nicht verboten sein, das ist ohnehin verboten); Prüfregel und Bestandskarten",
+          "status": "planned"
+        },
+        {
+          "id": "PH-15-08",
+          "title": "Noch mehr Karten erzeugen (Pool je Sprache weiter vergrößern)",
+          "status": "planned"
         }
       ],
       "gameIds": [
