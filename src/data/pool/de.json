@@ -1960,6 +1960,42 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-food-birne",
+      "term": "Birne",
+      "forbiddenWords": [
+        "Obst",
+        "Baum",
+        "saftig",
+        "Stiel"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-broetchen",
+      "term": "Brötchen",
+      "forbiddenWords": [
+        "Bäcker",
+        "Frühstück",
+        "knusprig",
+        "Marmelade"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-butter",
+      "term": "Butter",
+      "forbiddenWords": [
+        "Milch",
+        "streichen",
+        "Brot",
+        "gelb"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-food-ei",
       "term": "Ei",
       "forbiddenWords": [
@@ -1979,6 +2015,18 @@
         "Sommer",
         "kalt",
         "Waffel"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-erdbeere",
+      "term": "Erdbeere",
+      "forbiddenWords": [
+        "rot",
+        "Frucht",
+        "Sahne",
+        "Sommer"
       ],
       "categoryId": "food",
       "difficulty": "easy"
@@ -2032,6 +2080,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-food-keks",
+      "term": "Keks",
+      "forbiddenWords": [
+        "Teig",
+        "backen",
+        "Weihnachten",
+        "knusprig"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-food-kuchen",
       "term": "Kuchen",
       "forbiddenWords": [
@@ -2051,6 +2111,30 @@
         "Glas",
         "weiß",
         "trinken"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-moehre",
+      "term": "Möhre",
+      "forbiddenWords": [
+        "orange",
+        "Gemüse",
+        "Hase",
+        "Wurzel"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-nudeln",
+      "term": "Nudeln",
+      "forbiddenWords": [
+        "Spaghetti",
+        "Soße",
+        "kochen",
+        "Wasser"
       ],
       "categoryId": "food",
       "difficulty": "easy"
@@ -2080,6 +2164,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-food-pommes",
+      "term": "Pommes",
+      "forbiddenWords": [
+        "Kartoffel",
+        "frittieren",
+        "Ketchup",
+        "Imbiss"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-food-reis",
       "term": "Reis",
       "forbiddenWords": [
@@ -2087,6 +2183,42 @@
         "Asien",
         "Beilage",
         "kochen"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-saft",
+      "term": "Saft",
+      "forbiddenWords": [
+        "Glas",
+        "Orange",
+        "trinken",
+        "Frucht"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-sahne",
+      "term": "Sahne",
+      "forbiddenWords": [
+        "Milch",
+        "schlagen",
+        "Torte",
+        "weiß"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-salat",
+      "term": "Salat",
+      "forbiddenWords": [
+        "Gemüse",
+        "grün",
+        "Dressing",
+        "Blätter"
       ],
       "categoryId": "food",
       "difficulty": "easy"
@@ -2128,6 +2260,18 @@
       "difficulty": "easy"
     },
     {
+      "id": "pool-de-food-tee",
+      "term": "Tee",
+      "forbiddenWords": [
+        "Tasse",
+        "heiß",
+        "Kräuter",
+        "Beutel"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
       "id": "pool-de-food-tomate",
       "term": "Tomate",
       "forbiddenWords": [
@@ -2150,6 +2294,42 @@
       ],
       "categoryId": "food",
       "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-zucker",
+      "term": "Zucker",
+      "forbiddenWords": [
+        "süß",
+        "Würfel",
+        "Kaffee",
+        "weiß"
+      ],
+      "categoryId": "food",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pool-de-food-bagel",
+      "term": "Bagel",
+      "forbiddenWords": [
+        "Loch",
+        "Frischkäse",
+        "Brötchen",
+        "rund"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-food-bratwurst",
+      "term": "Bratwurst",
+      "forbiddenWords": [
+        "Grill",
+        "Fleisch",
+        "Senf",
+        "Brötchen"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
     },
     {
       "id": "pool-de-food-brezel",
@@ -2248,6 +2428,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-food-knoedel",
+      "term": "Knödel",
+      "forbiddenWords": [
+        "Kartoffel",
+        "Kloß",
+        "Soße",
+        "Beilage"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-food-lasagne",
       "term": "Lasagne",
       "forbiddenWords": [
@@ -2255,6 +2447,18 @@
         "Schichten",
         "Béchamel",
         "Italien"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-food-lebkuchen",
+      "term": "Lebkuchen",
+      "forbiddenWords": [
+        "Weihnachten",
+        "Gewürze",
+        "Glasur",
+        "Herz"
       ],
       "categoryId": "food",
       "difficulty": "medium"
@@ -2272,6 +2476,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-food-maultaschen",
+      "term": "Maultaschen",
+      "forbiddenWords": [
+        "Schwaben",
+        "Nudelteig",
+        "Brühe",
+        "gefüllt"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-food-muesli",
       "term": "Müsli",
       "forbiddenWords": [
@@ -2279,6 +2495,30 @@
         "Frühstück",
         "Milch",
         "Nüsse"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-food-nachos",
+      "term": "Nachos",
+      "forbiddenWords": [
+        "Mexiko",
+        "Chips",
+        "Käse",
+        "Salsa"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-food-omelett",
+      "term": "Omelett",
+      "forbiddenWords": [
+        "Eier",
+        "Pfanne",
+        "Füllung",
+        "braten"
       ],
       "categoryId": "food",
       "difficulty": "medium"
@@ -2308,6 +2548,42 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-food-pudding",
+      "term": "Pudding",
+      "forbiddenWords": [
+        "Vanille",
+        "Schokolade",
+        "Dessert",
+        "Löffel"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-food-quark",
+      "term": "Quark",
+      "forbiddenWords": [
+        "Milch",
+        "cremig",
+        "Frühstück",
+        "Erdbeere"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-food-rosinen",
+      "term": "Rosinen",
+      "forbiddenWords": [
+        "getrocknet",
+        "Traube",
+        "Kuchen",
+        "Stollen"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-food-ruehrei",
       "term": "Rührei",
       "forbiddenWords": [
@@ -2315,6 +2591,18 @@
         "Frühstück",
         "Butter",
         "Huhn"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-food-schnitzel",
+      "term": "Schnitzel",
+      "forbiddenWords": [
+        "paniert",
+        "Fleisch",
+        "Pfanne",
+        "Zitrone"
       ],
       "categoryId": "food",
       "difficulty": "medium"
@@ -2332,6 +2620,18 @@
       "difficulty": "medium"
     },
     {
+      "id": "pool-de-food-spaetzle",
+      "term": "Spätzle",
+      "forbiddenWords": [
+        "Schwaben",
+        "Nudeln",
+        "Käse",
+        "Teig"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
       "id": "pool-de-food-sushi",
       "term": "Sushi",
       "forbiddenWords": [
@@ -2339,6 +2639,18 @@
         "Fisch",
         "Japan",
         "Stäbchen"
+      ],
+      "categoryId": "food",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pool-de-food-waffel",
+      "term": "Waffel",
+      "forbiddenWords": [
+        "Eisen",
+        "Puderzucker",
+        "Teig",
+        "Kirmes"
       ],
       "categoryId": "food",
       "difficulty": "medium"
@@ -2368,6 +2680,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-food-baklava",
+      "term": "Baklava",
+      "forbiddenWords": [
+        "Türkei",
+        "Honig",
+        "Nüsse",
+        "Blätterteig"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-food-bruschetta",
       "term": "Bruschetta",
       "forbiddenWords": [
@@ -2380,6 +2704,30 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-food-carpaccio",
+      "term": "Carpaccio",
+      "forbiddenWords": [
+        "Rind",
+        "roh",
+        "Parmesan",
+        "Italien"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-food-chutney",
+      "term": "Chutney",
+      "forbiddenWords": [
+        "Indien",
+        "Soße",
+        "Mango",
+        "süßsauer"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-food-couscous",
       "term": "Couscous",
       "forbiddenWords": [
@@ -2387,6 +2735,30 @@
         "Nordafrika",
         "Beilage",
         "dämpfen"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-food-croissant",
+      "term": "Croissant",
+      "forbiddenWords": [
+        "Hörnchen",
+        "Frankreich",
+        "Butter",
+        "Frühstück"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-food-fondant",
+      "term": "Fondant",
+      "forbiddenWords": [
+        "Zuckermasse",
+        "Torte",
+        "ausrollen",
+        "Dekoration"
       ],
       "categoryId": "food",
       "difficulty": "hard"
@@ -2452,6 +2824,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-food-kimchi",
+      "term": "Kimchi",
+      "forbiddenWords": [
+        "Korea",
+        "Kohl",
+        "scharf",
+        "fermentiert"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-food-marzipan",
       "term": "Marzipan",
       "forbiddenWords": [
@@ -2459,6 +2843,18 @@
         "Zucker",
         "Lübeck",
         "süß"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-food-mozzarella",
+      "term": "Mozzarella",
+      "forbiddenWords": [
+        "Büffel",
+        "Pizza",
+        "Tomaten",
+        "Kugel"
       ],
       "categoryId": "food",
       "difficulty": "hard"
@@ -2476,6 +2872,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-food-parmesan",
+      "term": "Parmesan",
+      "forbiddenWords": [
+        "Reibe",
+        "hart",
+        "Italien",
+        "Nudeln"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-food-pesto",
       "term": "Pesto",
       "forbiddenWords": [
@@ -2488,6 +2896,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-food-quiche",
+      "term": "Quiche",
+      "forbiddenWords": [
+        "Frankreich",
+        "Mürbeteig",
+        "Speck",
+        "Tarte"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-food-ratatouille",
       "term": "Ratatouille",
       "forbiddenWords": [
@@ -2495,6 +2915,30 @@
         "Auberginen",
         "Zucchini",
         "Frankreich"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-food-ravioli",
+      "term": "Ravioli",
+      "forbiddenWords": [
+        "Nudeln",
+        "gefüllt",
+        "Teigtasche",
+        "Italien"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-food-rhabarber",
+      "term": "Rhabarber",
+      "forbiddenWords": [
+        "Stangen",
+        "sauer",
+        "Kompott",
+        "Garten"
       ],
       "categoryId": "food",
       "difficulty": "hard"
@@ -2524,6 +2968,18 @@
       "difficulty": "hard"
     },
     {
+      "id": "pool-de-food-tapas",
+      "term": "Tapas",
+      "forbiddenWords": [
+        "Spanien",
+        "Häppchen",
+        "Bar",
+        "klein"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
       "id": "pool-de-food-tiramisu",
       "term": "Tiramisu",
       "forbiddenWords": [
@@ -2531,6 +2987,18 @@
         "Kaffee",
         "Löffelbiskuit",
         "Dessert"
+      ],
+      "categoryId": "food",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pool-de-food-tofu",
+      "term": "Tofu",
+      "forbiddenWords": [
+        "Soja",
+        "vegan",
+        "Bohne",
+        "Fleischersatz"
       ],
       "categoryId": "food",
       "difficulty": "hard"

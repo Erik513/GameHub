@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-13
 
+### Mehr Karten: Probelauf Essen und Trinken (Ta-09-08)
+
+- Ziel festgelegt: 30 Karten je Schwierigkeit und Kategorie (900 je Sprache). Die Karten schreibt Claude, kein lokales Modell; die Skripte `import-card-batch` und `review-card-pool merge` prüfen sie mit den Prüfregeln und bauen sie ein.
+- Probelauf mit der Kategorie Essen und Trinken: je 13 neue Karten je Schwierigkeit, Deutsch und Englisch, jetzt je 30. Der Pool hat 562 deutsche und 560 englische Karten. Die Prüfregeln lehnten 5 Karten ab (zweimal Begriff schon in einer anderen Kategorie, einmal „Topf“ als Teil von „Eintopf“); sie wurden ersetzt.
+- Aus den Dokumenten entfernt: die Angabe, dass ein lokales Modell (Ollama, LM Studio) die Karten erzeugt.
+
 ### Karten: kein verbotenes Wort als Teil des Begriffs (Ta-09-07)
 
 - Neue Prüfregel in der Kartenprüfung (`validateCard`, Fehlercode `part_of_term`): Ein verbotenes Wort ab 3 Buchstaben darf nicht in dem Begriff stecken. Bei „Fußball“ ist „Ball“ nicht erlaubt, weil Teile des Begriffs ohnehin verboten sind. Die Regel gilt beim Eingeben und Importieren von Karten, bei der Erzeugung und beim Spielstart (eine Karte, die dagegen verstößt, wird nicht gespielt). Die Fehlermeldung beim Hinzufügen nennt die Regel (Deutsch und Englisch).

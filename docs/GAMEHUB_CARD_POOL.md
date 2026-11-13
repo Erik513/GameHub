@@ -82,7 +82,7 @@ Die größte Gefahr ist nicht die Menge, sondern schlechte Karten (siehe Test mi
 |---|---|
 | Ta-09-01 | Entscheidungen aus Abschnitt 6 klären und die Anforderungen für Kategorien, Schwierigkeit und Inhaltsregeln festlegen. |
 | Ta-09-02 | Paketformat, Laden als eigener Teil mit Rückfall, Kategorien aus den Daten, Tests. |
-| Ta-09-03 | Erzeugungsskript am PC (Ollama oder LM Studio, fortsetzbar, Prüfregeln, Ablehnungsliste). |
+| Ta-09-03 | Skripte am PC zum Prüfen und Einbauen (fortsetzbar, Prüfregeln, Ablehnungsliste). |
 | Ta-09-04 | Prüfwerkzeug (zweiter KI-Durchgang und Durchsicht), Regelliste. |
 | Ta-09-05 | Pool in Etappen erzeugen, prüfen und einbauen (zuerst eine Kategorie als Probelauf). |
 | Ta-09-06 | Optional: gespielte Karten merken. |

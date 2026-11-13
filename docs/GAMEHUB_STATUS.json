@@ -646,7 +646,7 @@
         },
         {
           "id": "Ta-09-03",
-          "title": "Erzeugungsskript am PC (Ollama oder LM Studio, fortsetzbar, Prüfregeln)",
+          "title": "Skripte am PC zum Prüfen und Einbauen der Karten (fortsetzbar, Prüfregeln)",
           "status": "done"
         },
         {
@@ -671,8 +671,8 @@
         },
         {
           "id": "Ta-09-08",
-          "title": "Noch mehr Karten erzeugen (Pool je Sprache weiter vergrößern)",
-          "status": "planned"
+          "title": "Noch mehr Karten erzeugen: Ziel 30 Karten je Schwierigkeit und Kategorie (900 je Sprache, bisher 17 bis 19; es fehlen etwa 380 je Sprache); Claude schreibt die Karten, die Skripte prüfen sie, dann werden sie eingebaut. Probelauf: Kategorie Essen und Trinken fertig (je Schwierigkeit 30, Deutsch und Englisch)",
+          "status": "in_progress"
         }
       ],
       "gameIds": [
