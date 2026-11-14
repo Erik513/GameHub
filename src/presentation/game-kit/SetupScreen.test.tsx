@@ -79,11 +79,11 @@ it("can lock the start button and works without messages", () => {
 });
 
 it.each([
-  ["en", "Players", "Player names", "Players: 2", "Players: 1"],
-  ["de", "Spieler", "Spielernamen", "Spieler: 2", "Spieler: 1"],
+  ["en", "Add player", "Add", "Remove Ben", "Players: 2", "Players: 1"],
+  ["de", "Spieler hinzufügen", "Hinzufügen", "Ben entfernen", "Spieler: 2", "Spieler: 1"],
 ] as const)(
   "lists the players of a game without teams in %s",
-  async (language, heading, label, two, one) => {
+  async (language, label, add, remove, two, one) => {
     const i18n = await createGameHubI18n(language);
     function Host() {
       const [text, setText] = useState("");
@@ -94,13 +94,14 @@ it.each([
         <Host />
       </I18nextProvider>,
     );
-    expect(screen.getByRole("heading", { name: heading })).toBeVisible();
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
     const user = userEvent.setup();
-    await user.type(screen.getByLabelText(label), "Anna, Ben, anna");
+    // The same name twice (in another case) counts once.
+    await user.type(screen.getByLabelText(label), "anna, Ben, ANNA");
+    await user.click(screen.getByRole("button", { name: add }));
     expect(screen.getByRole("status")).toHaveTextContent(two);
-    await user.clear(screen.getByLabelText(label));
-    await user.type(screen.getByLabelText(label), "Anna");
+    // A player can be removed again.
+    await user.click(screen.getByRole("button", { name: remove }));
     expect(screen.getByRole("status")).toHaveTextContent(one);
   },
 );

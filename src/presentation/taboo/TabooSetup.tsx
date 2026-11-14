@@ -509,7 +509,6 @@ export function TabooSetup({
                 setIssues([]);
                 setTeamSetup(next);
               }}
-              playersOpen
               value={teamSetup}
             />
           </SetupSection>

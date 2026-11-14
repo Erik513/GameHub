@@ -49,7 +49,6 @@ const texts = {
     cancel: "Cancel",
     all: "Choose all",
     none: "Choose none",
-    field: "Player names",
   },
   de: {
     open: "Spieler",
@@ -64,7 +63,6 @@ const texts = {
     cancel: "Abbrechen",
     all: "Alle wählen",
     none: "Keinen wählen",
-    field: "Spielernamen",
   },
 } as const;
 
@@ -134,7 +132,10 @@ it.each(["en", "de"] as const)(
     await user.click(within(dialog).getByRole("button", { name: text.apply }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     // Hand-typed Dora stays, deselected Ben goes, ticked Anna is added.
-    expect(screen.getByRole("textbox", { name: text.field })).toHaveValue("Dora, Anna");
+    const names = within(screen.getByRole("list", { name: /: 2$/ }))
+      .getAllByRole("listitem")
+      .map((item) => item.textContent?.replace("×", "").trim());
+    expect(names).toEqual(["Dora", "Anna"]);
   },
 );
 

@@ -240,5 +240,6 @@ describe("Taboo state machine invariants", () => {
     expect(coverage.tiebreakFinished).toBeGreaterThan(5);
     expect(coverage.restarts).toBeGreaterThan(20);
     expect(coverage.revisions).toBeGreaterThan(20);
-  });
+    // 400 full games can take longer than the default 5 s when the whole suite runs in parallel.
+  }, 30000);
 });

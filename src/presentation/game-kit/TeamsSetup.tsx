@@ -1,5 +1,9 @@
-import { useId } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  addPlayersToText,
+  removePlayerFromText,
+  smallestTeamIndex,
+} from "../../business/shared/playerList";
 import { parsePlayers, splitIntoTeams } from "../../business/shared/players";
 import { sameTeamSetup } from "../../business/shared/savedTeamSetup";
 import {
@@ -11,28 +15,28 @@ import {
 } from "../../business/shared/teamSetup";
 import { Button } from "../components";
 import { ChoiceGroup } from "./ChoiceGroup";
-import { PlayerListField } from "./PlayerListField";
+import { PlayerAdder, PlayerChip, PlayerChips } from "./PlayerChips";
 import { RosterPicker } from "./RosterPicker";
 import { useTeamSetupMemory } from "./TeamSetupMemoryContext";
+import { dropAttribute, usePlayerDrag, type DropTarget } from "./usePlayerDrag";
 
 interface TeamsSetupProps {
   readonly onChange: (value: TeamSetupValue) => void;
-  /** Off hides the player list, optional shows it, required also asks for a player in every team. */
+  /** Off shows only the teams; otherwise the players are added and moved into the teams. */
   readonly players?: "off" | "optional" | "required";
-  /** Opens the player list from the start, for example on the line-up screen. */
-  readonly playersOpen?: boolean;
   readonly rules?: TeamRules;
   readonly value: TeamSetupValue;
 }
 
 /**
- * Teams of a game: how many, their names and order, and optionally the players with their
- * assignment to the teams. The value is controlled, the game reads the result with `buildTeams`.
+ * Teams of a game: how many, one card per team with its name and a field for its players, the
+ * players who have no team yet, and the order of the teams. Players are dragged into a team (mouse
+ * or finger); a tap on a player in a team takes him out again, a tap on a player without a team puts
+ * him into the smallest team. The value is controlled, the game reads the result with `buildTeams`.
  */
 export function TeamsSetup({
   onChange,
   players = "optional",
-  playersOpen = false,
   rules = defaultTeamRules,
   value,
 }: TeamsSetupProps) {
@@ -49,6 +53,70 @@ export function TeamsSetup({
   const saved = remembered && { ...remembered, count: clampTeamCount(remembered.count, rules) };
   const showLoad = saved !== undefined && !sameTeamSetup(saved, value);
 
+  const everyone = parsePlayers(value.playersText);
+  const teamOf = (player: string) => {
+    const index = value.assignment[player];
+    return index !== undefined && index < count ? index : undefined;
+  };
+  const teamName = (index: number) => {
+    const typed = value.names[index]?.trim();
+    return typed !== undefined && typed !== ""
+      ? typed
+      : t("kitTeams.defaultName", { number: index + 1 });
+  };
+
+  function changeText(text: string) {
+    // Assignments of names that are no longer in the list are dropped.
+    const names = new Set(parsePlayers(text));
+    const assignment = Object.fromEntries(
+      Object.entries(value.assignment).filter(([player]) => names.has(player)),
+    );
+    update({ assignment, playersText: text });
+  }
+
+  function place(player: string, target: DropTarget | undefined) {
+    const assignment = { ...value.assignment };
+    if (target === undefined || target === "none") delete assignment[player];
+    else assignment[player] = target;
+    update({ assignment });
+  }
+
+  const dragging = usePlayerDrag({
+    onDrop: place,
+    onTap: (player) =>
+      place(
+        player,
+        teamOf(player) === undefined ? smallestTeamIndex(value.assignment, count) : "none",
+      ),
+  });
+
+  function draw() {
+    const assignment: Record<string, number> = {};
+    splitIntoTeams(everyone, count).forEach((team, index) => {
+      for (const player of team) assignment[player] = index;
+    });
+    update({ assignment });
+  }
+
+  const chip = (player: string) => {
+    const team = teamOf(player);
+    return (
+      <PlayerChip
+        key={player}
+        name={player}
+        onPointerDown={dragging.startDrag(player)}
+        onRemove={() => changeText(removePlayerFromText(value.playersText, player))}
+        onTap={dragging.tap(player)}
+        tapLabel={t("kitPlayers.chipLabel", {
+          player,
+          team: team === undefined ? t("kitPlayers.noTeam") : teamName(team),
+        })}
+      />
+    );
+  };
+  const withoutTeam = everyone.filter((player) => teamOf(player) === undefined);
+  const showNoTeam = withoutTeam.length > 0 || dragging.drag !== undefined;
+
   return (
     <>
       {showLoad && (
@@ -64,24 +132,64 @@ export function TeamsSetup({
         options={counts.map((number) => ({ value: String(number), label: String(number) }))}
         value={String(count)}
       />
-      <div className="kit-team-names">
-        {Array.from({ length: count }, (_, index) => (
-          <input
-            aria-label={t("kitTeams.nameLabel", { number: index + 1 })}
-            autoComplete="off"
-            className="field__input"
-            key={index}
-            maxLength={rules.maxNameLength}
-            onChange={(event) => {
-              const names = Array.from({ length: count }, (_, at) => value.names[at] ?? "");
-              names[index] = event.target.value;
-              update({ names });
-            }}
-            placeholder={t("kitTeams.defaultName", { number: index + 1 })}
-            value={value.names[index] ?? ""}
-          />
-        ))}
+      <div className="kit-teams">
+        {Array.from({ length: count }, (_, index) => {
+          const members = everyone.filter((player) => teamOf(player) === index);
+          return (
+            <section className="kit-team" key={index}>
+              <input
+                aria-label={t("kitTeams.nameLabel", { number: index + 1 })}
+                autoComplete="off"
+                className="field__input"
+                maxLength={rules.maxNameLength}
+                onChange={(event) => {
+                  const names = Array.from({ length: count }, (_, at) => value.names[at] ?? "");
+                  names[index] = event.target.value;
+                  update({ names });
+                }}
+                placeholder={t("kitTeams.defaultName", { number: index + 1 })}
+                value={value.names[index] ?? ""}
+              />
+              {players !== "off" && (
+                <div
+                  {...{ [dropAttribute]: String(index) }}
+                  className="kit-drop"
+                  data-over={dragging.over === index || undefined}
+                >
+                  {members.length > 0 ? (
+                    <PlayerChips label={teamName(index)}>{members.map(chip)}</PlayerChips>
+                  ) : (
+                    <span className="kit-drop__hint">{t("kitPlayers.dropHint")}</span>
+                  )}
+                </div>
+              )}
+            </section>
+          );
+        })}
       </div>
+      {players !== "off" && (
+        <>
+          {showNoTeam && (
+            <section className="kit-team kit-team--none">
+              <h3>{t("kitPlayers.noTeam")}</h3>
+              <div
+                {...{ [dropAttribute]: "none" }}
+                className="kit-drop kit-drop--none"
+                data-over={dragging.over === "none" || undefined}
+              >
+                <PlayerChips label={t("kitPlayers.noTeam")}>{withoutTeam.map(chip)}</PlayerChips>
+              </div>
+            </section>
+          )}
+          <PlayerAdder onAdd={(input) => changeText(addPlayersToText(value.playersText, input))} />
+          <div className="kit-players__actions">
+            <RosterPicker onChange={changeText} value={value.playersText} />
+            <Button disabled={everyone.length < 2} onClick={draw} variant="secondary">
+              {t("kitPlayers.draw")}
+            </Button>
+          </div>
+        </>
+      )}
       <ChoiceGroup
         info={{
           closeLabel: t("settings.close"),
@@ -101,119 +209,15 @@ export function TeamsSetup({
         )}
         value={value.order}
       />
-      {players !== "off" && (
-        <TeamPlayers
-          count={count}
-          onChange={update}
-          open={playersOpen}
-          required={players === "required"}
-          value={value}
-        />
+      {dragging.drag && (
+        <div
+          aria-hidden="true"
+          className="kit-chip kit-chip--ghost"
+          style={{ left: dragging.drag.x, top: dragging.drag.y }}
+        >
+          <span className="kit-chip__name">{dragging.drag.player}</span>
+        </div>
       )}
     </>
-  );
-}
-
-interface TeamPlayersProps {
-  readonly count: number;
-  readonly onChange: (patch: Partial<TeamSetupValue>) => void;
-  readonly open: boolean;
-  readonly required: boolean;
-  readonly value: TeamSetupValue;
-}
-
-/** The player list with its assignment to the teams: draw at random or choose by hand. */
-function TeamPlayers({ count, onChange, open, required, value }: TeamPlayersProps) {
-  const { t } = useTranslation();
-  const headingId = useId();
-  const players = parsePlayers(value.playersText);
-  const teamOf = (player: string) => {
-    const index = value.assignment[player];
-    return index !== undefined && index < count ? index : undefined;
-  };
-  const teamName = (index: number) => {
-    const typed = value.names[index]?.trim();
-    return typed !== undefined && typed !== ""
-      ? typed
-      : t("kitTeams.defaultName", { number: index + 1 });
-  };
-
-  function changeText(text: string) {
-    // Assignments of names that are no longer in the list are dropped.
-    const names = new Set(parsePlayers(text));
-    const assignment = Object.fromEntries(
-      Object.entries(value.assignment).filter(([player]) => names.has(player)),
-    );
-    onChange({ assignment, playersText: text });
-  }
-
-  function draw() {
-    const assignment: Record<string, number> = {};
-    splitIntoTeams(players, count).forEach((team, index) => {
-      for (const player of team) assignment[player] = index;
-    });
-    onChange({ assignment });
-  }
-
-  function assign(player: string, choice: string) {
-    const assignment = { ...value.assignment };
-    if (choice === "") delete assignment[player];
-    else assignment[player] = Number(choice);
-    onChange({ assignment });
-  }
-
-  return (
-    <section aria-labelledby={headingId} className="kit-players">
-      <h3 id={headingId}>{t(required ? "kitPlayers.titleRequired" : "kitPlayers.title")}</h3>
-      <details className="kit-disclosure" open={required || open || undefined}>
-        <summary>{t("kitPlayers.summary")}</summary>
-        <div className="kit-disclosure__body">
-          <RosterPicker onChange={changeText} value={value.playersText} />
-          <PlayerListField
-            hint={t(required ? "kitPlayers.hintRequired" : "kitPlayers.hint")}
-            onChange={changeText}
-            value={value.playersText}
-          />
-          {players.length > 0 && (
-            <>
-              <Button disabled={players.length < 2} onClick={draw} variant="secondary">
-                {t("kitPlayers.draw")}
-              </Button>
-              <ul aria-label={t("kitPlayers.assignment")} className="kit-players__list">
-                {players.map((player) => (
-                  <li key={player}>
-                    <span>{player}</span>
-                    <select
-                      aria-label={t("kitPlayers.teamOf", { player })}
-                      className="field__input"
-                      onChange={(event) => assign(player, event.target.value)}
-                      value={teamOf(player)?.toString() ?? ""}
-                    >
-                      <option value="">{t("kitPlayers.unassigned")}</option>
-                      {Array.from({ length: count }, (_, index) => (
-                        <option key={index} value={index}>
-                          {teamName(index)}
-                        </option>
-                      ))}
-                    </select>
-                  </li>
-                ))}
-              </ul>
-              <ul aria-label={t("kitPlayers.teams")} className="kit-players__teams">
-                {Array.from({ length: count }, (_, index) => {
-                  const members = players.filter((player) => teamOf(player) === index);
-                  return (
-                    <li key={index}>
-                      <strong>{teamName(index)}:</strong>{" "}
-                      {members.length > 0 ? members.join(", ") : t("kitPlayers.nobody")}
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
-          )}
-        </div>
-      </details>
-    </section>
   );
 }

@@ -18,7 +18,7 @@ export { TeamsSetup } from "./TeamsSetup";
 export { TeamSetupMemoryProvider } from "./TeamSetupMemoryProvider";
 export { useTeamSetupMemory } from "./TeamSetupMemoryContext";
 export { TimerHud } from "./TimerHud";
-export { useAutoGrow } from "./useAutoGrow";
 export { useCountdown } from "./useCountdown";
+export { usePlayerDrag } from "./usePlayerDrag";
 export { useScreenScroll } from "./useScreenScroll";
 export { useStopwatch } from "./useStopwatch";

@@ -53,8 +53,9 @@ it("opens the line-up after Start and only starts the game from there", async ()
   await user.click(screen.getByRole("button", { name: "Start" }));
   const lineup = screen.getByRole("region", { name: "Line-up" });
   expect(within(lineup).getByRole("group", { name: "Teams" })).toBeVisible();
-  // The player list is open and offers the random split.
-  expect(within(lineup).getByLabelText("Player names")).toBeVisible();
+  // Players are added right there and split with one button.
+  expect(within(lineup).getByLabelText("Add player")).toBeVisible();
+  expect(within(lineup).getByRole("button", { name: "Split randomly into teams" })).toBeVisible();
   expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
   await user.click(within(lineup).getByRole("button", { name: "Start game" }));
   expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();

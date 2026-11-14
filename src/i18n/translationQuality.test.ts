@@ -10,8 +10,7 @@ import { findIdenticalValues, findPlaceholderMismatches } from "./translationPar
 const allowedIdenticalValues = [
   "app.title",
   "games.quiz.title",
-  "kitPlayers.placeholder",
-  "kitPlayers.teams",
+  "kitPlayers.chipLabel",
   "kitTeams.defaultName",
   "kitTeams.legend",
   "navigation.pause",

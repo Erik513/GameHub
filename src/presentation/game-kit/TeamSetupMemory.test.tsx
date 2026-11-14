@@ -93,6 +93,10 @@ it.each([
     </I18nextProvider>,
   );
   await userEvent.click(screen.getByRole("button", { name: label }));
-  expect(screen.getByRole("textbox")).toHaveValue("Anna, Ben");
+  // The remembered players are in the list now (each one has a button to remove him).
+  const remove = (player: string) =>
+    language === "en" ? `Remove ${player}` : `${player} entfernen`;
+  expect(screen.getByRole("button", { name: remove("Anna") })).toBeVisible();
+  expect(screen.getByRole("button", { name: remove("Ben") })).toBeVisible();
   expect(screen.queryByRole("button", { name: label })).not.toBeInTheDocument();
 });

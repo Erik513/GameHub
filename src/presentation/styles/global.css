@@ -1118,6 +1118,17 @@ h1 {
   color: var(--color-ink-muted);
 }
 
+/*
+ * The info button of a group sits at the right end of the legend line. The legend is above the
+ * content box of a fieldset, so the button is moved up by the legend (one line of small text and
+ * its gap) and centered on that line. The general rule for buttons in a game adds space above,
+ * which is cancelled here.
+ */
+.kit-choice-group > .kit-info-button {
+  top: calc(-1 * (var(--text-sm) * 1.3 + var(--space-2)) + var(--text-sm) * 0.65 - 1.375rem);
+  margin: 0;
+}
+
 .kit-info-text {
   margin: 0;
   color: var(--color-ink);

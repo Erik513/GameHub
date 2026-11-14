@@ -37,7 +37,6 @@ test("is installable and starts a Taboo round after an offline reload", async ({
   await context.setOffline(true);
   await page.reload();
   await page.getByRole("button", { name: "View progress" }).click();
-  await page.getByRole("radio", { name: "Both" }).check();
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await page.getByRole("button", { name: "Start game", exact: true }).click();
   await page.getByRole("button", { name: "Start round" }).click();
