@@ -9,7 +9,7 @@ const value: TeamSetupValue = {
   assignment: { Anna: 0 },
   count: 3,
   names: ["Red", "", "Blue"],
-  order: "random",
+  order: [],
   playersText: "Anna",
 };
 

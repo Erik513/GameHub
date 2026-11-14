@@ -15,12 +15,12 @@ const value = (overrides: Partial<TeamSetupValue> = {}): TeamSetupValue => ({
 });
 
 describe("initialTeamSetup and clampTeamCount", () => {
-  it("starts with the default team count, random order and nobody entered", () => {
+  it("starts with the default team count, the normal order and nobody entered", () => {
     expect(initialTeamSetup()).toEqual({
       assignment: {},
       count: 2,
       names: [],
-      order: "random",
+      order: [],
       playersText: "",
     });
     expect(initialTeamSetup({ ...defaultTeamRules, defaultTeams: 3 }).count).toBe(3);
@@ -37,7 +37,7 @@ describe("initialTeamSetup and clampTeamCount", () => {
 
 describe("buildTeams", () => {
   it("fills blank names, trims typed ones and keeps the entered order", () => {
-    const teams = buildTeams(value({ count: 3, names: [" Red ", "", "Blue"], order: "entered" }), {
+    const teams = buildTeams(value({ count: 3, names: [" Red ", "", "Blue"] }), {
       defaultName: name,
     });
     expect(teams).toEqual([
@@ -51,7 +51,6 @@ describe("buildTeams", () => {
     const teams = buildTeams(
       value({
         assignment: { Anna: 0, Ben: 1, Cara: 0, Dora: 5, Ghost: 1 },
-        order: "entered",
         playersText: "Anna, Ben\nCara; Dora\nEmil",
       }),
       { defaultName: name },
@@ -59,26 +58,36 @@ describe("buildTeams", () => {
     expect(teams.map((team) => team.players)).toEqual([["Anna", "Cara"], ["Ben"]]);
   });
 
-  it("draws the order with the injected random source and keeps each team with its players", () => {
+  it("puts the teams in the order that was set and keeps each team with its players", () => {
     const teams = buildTeams(
-      value({ assignment: { Anna: 0, Ben: 1 }, playersText: "Anna, Ben", count: 3 }),
-      { defaultName: name, random: () => 0 },
+      value({
+        assignment: { Anna: 0, Ben: 1 },
+        count: 3,
+        order: [1, 2, 0],
+        playersText: "Anna, Ben",
+      }),
+      { defaultName: name },
     );
     expect(teams.map((team) => team.id)).toEqual(["2", "3", "1"]);
     expect(teams.find((team) => team.id === "1")?.players).toEqual(["Anna"]);
     expect(teams.find((team) => team.id === "2")?.players).toEqual(["Ben"]);
   });
 
-  it("clamps the count to the rules of the game", () => {
-    expect(buildTeams(value({ count: 99, order: "entered" }), { defaultName: name })).toHaveLength(
-      6,
-    );
+  it("completes an order that does not fit the number of teams", () => {
     expect(
-      buildTeams(
-        value({ count: 1, order: "entered" }),
-        { defaultName: name },
-        { ...defaultTeamRules, minTeams: 3 },
+      buildTeams(value({ count: 3, order: [2] }), { defaultName: name }).map((team) => team.id),
+    ).toEqual(["3", "1", "2"]);
+    expect(
+      buildTeams(value({ count: 2, order: [5, 1, 1] }), { defaultName: name }).map(
+        (team) => team.id,
       ),
+    ).toEqual(["2", "1"]);
+  });
+
+  it("clamps the count to the rules of the game", () => {
+    expect(buildTeams(value({ count: 99 }), { defaultName: name })).toHaveLength(6);
+    expect(
+      buildTeams(value({ count: 1 }), { defaultName: name }, { ...defaultTeamRules, minTeams: 3 }),
     ).toHaveLength(3);
   });
 });

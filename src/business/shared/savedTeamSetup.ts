@@ -1,4 +1,5 @@
 import { parsePlayers } from "./players";
+import { normalizeOrder } from "./teamOrder";
 import type { TeamSetupValue } from "./teamSetup";
 
 /**
@@ -21,7 +22,8 @@ export function hasTeamSetupContent(value: TeamSetupValue): boolean {
 export function sameTeamSetup(a: TeamSetupValue, b: TeamSetupValue): boolean {
   return (
     a.count === b.count &&
-    a.order === b.order &&
+    JSON.stringify(normalizeOrder(a.order, a.count)) ===
+      JSON.stringify(normalizeOrder(b.order, b.count)) &&
     a.playersText === b.playersText &&
     a.names.length === b.names.length &&
     a.names.every((name, index) => name === b.names[index]) &&
@@ -44,7 +46,7 @@ export function parseSavedTeamSetup(raw: unknown): TeamSetupValue | undefined {
     count > 100 ||
     !Array.isArray(names) ||
     !names.every((name): name is string => typeof name === "string") ||
-    (order !== "random" && order !== "entered") ||
+    !isOrder(order) ||
     typeof playersText !== "string" ||
     typeof assignment !== "object" ||
     assignment === null ||
@@ -62,7 +64,17 @@ export function parseSavedTeamSetup(raw: unknown): TeamSetupValue | undefined {
     assignment: Object.fromEntries(entries),
     count,
     names,
-    order,
+    // Groups that were saved before the order was a list used the words "random" and "entered".
+    order: Array.isArray(order) ? order : [],
     playersText,
   };
+}
+
+/** A list of team indexes, or one of the two words an older version saved. */
+function isOrder(order: unknown): boolean {
+  if (order === "random" || order === "entered") return true;
+  return (
+    Array.isArray(order) &&
+    order.every((team) => typeof team === "number" && Number.isInteger(team) && team >= 0)
+  );
 }

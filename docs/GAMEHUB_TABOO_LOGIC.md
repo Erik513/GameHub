@@ -15,7 +15,7 @@ Dieses Dokument beschreibt die Regeln der Zustandsmaschine (`src/business/games/
 
 | Bereich | Regel |
 |---|---|
-| Teamreihenfolge | Wird einmal pro Partie zufällig bestimmt (`shuffleTeams`) und bleibt gleich. |
+| Teamreihenfolge | Wird in der Aufstellung festgelegt (Standard Team 1, 2, 3 …; Teams am Griff ziehen, „Zufällig“ mischt) und bleibt die ganze Partie gleich. Es gibt keine versteckte Auslosung beim Start mehr. |
 | Karten im Zug | Eine Karte erscheint nie zweimal im selben Zug. Ein Zug endet nur durch die Zeit oder wenn alle Karten aufgebraucht sind. |
 | Karten über Züge | Ungespielte Karten kommen zuerst, danach früher gespielte in neuer Reihenfolge. |
 | Wertung | Nur „richtig“ gibt einen Punkt. „Überspringen“ und „Verbotenes Wort“ geben keinen. |

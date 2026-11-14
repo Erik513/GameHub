@@ -141,8 +141,7 @@ it("rejects duplicate custom team names", async () => {
   expect(screen.getByRole("alert")).toHaveTextContent("Use a different name for each team.");
 });
 
-it("randomizes the team order once and keeps it for the whole game", async () => {
-  const random = vi.spyOn(Math, "random").mockReturnValue(0);
+it("plays the teams in the order that was set for the whole game", async () => {
   const user = userEvent.setup();
   const i18n = await createGameHubI18n("en");
   render(
@@ -152,15 +151,17 @@ it("randomizes the team order once and keeps it for the whole game", async () =>
   );
   await user.click(screen.getByRole("button", { name: "Start" }));
   await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
+  // Team 3 is moved to the top place with the keyboard, the others move down.
+  screen.getByRole("button", { name: "Move Team 3, place 3" }).focus();
+  await user.keyboard("{ArrowUp}{ArrowUp}");
   await user.click(screen.getByRole("button", { name: "Start game" }));
   expect(screen.getByText("Round 1/3")).toBeVisible();
-  expect(document.querySelector(".kit-turn-strip strong")).toHaveTextContent("Team 2");
+  expect(document.querySelector(".kit-turn-strip strong")).toHaveTextContent("Team 3");
   expect(
     within(screen.getByRole("list", { name: "Total scores" }))
       .getAllByRole("listitem")
       .map((row) => row.textContent),
-  ).toEqual(["Team 2: 0", "Team 3: 0", "Team 1: 0"]);
-  random.mockRestore();
+  ).toEqual(["Team 3: 0", "Team 1: 0", "Team 2: 0"]);
 });
 
 it("lets a turn use more than its fair share of cards and reuses cards in later turns", async () => {
@@ -304,12 +305,11 @@ it.each([
 });
 
 it.each([
-  ["en", "As entered", "Start", "Start game"],
-  ["de", "Wie eingegeben", "Starten", "Spiel starten"],
+  ["en", "Start", "Start game"],
+  ["de", "Starten", "Spiel starten"],
 ] as const)(
-  "keeps the entered team order when chosen in %s",
-  async (language, entered, start, startGame) => {
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+  "starts with team 1 when the order was not changed in %s",
+  async (language, start, startGame) => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n(language);
     render(
@@ -321,10 +321,8 @@ it.each([
     await user.click(
       screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!,
     );
-    await user.click(screen.getByRole("radio", { name: entered }));
     await user.click(screen.getByRole("button", { name: startGame }));
     expect(document.querySelector(".kit-turn-strip strong")).toHaveTextContent("Team 1");
-    random.mockRestore();
   },
 );
 
@@ -351,7 +349,7 @@ it("remembers the group for the next game when a game starts, but not an empty s
   await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Foxes");
   await user.click(screen.getByRole("button", { name: "Start game" }));
   expect(written).toHaveLength(1);
-  expect(written[0]).toMatchObject({ count: 2, names: ["Foxes", ""], order: "random" });
+  expect(written[0]).toMatchObject({ count: 2, names: ["Foxes", ""], order: [] });
 });
 
 it.each([

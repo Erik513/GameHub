@@ -18,7 +18,7 @@ const remembered: TeamSetupValue = {
   assignment: { Anna: 1 },
   count: 9,
   names: ["Red", "Blue"],
-  order: "entered",
+  order: [1, 0],
   playersText: "Anna, Ben",
 };
 /** The second tap of a clear button counts only a moment after the first one. */
@@ -110,6 +110,22 @@ it.each([
     // The teams are cleared: no names, nobody in a team, but the players stay.
     expect(latest.value).toMatchObject({ assignment: {}, names: [], playersText: "Anna, Ben" });
     expect(screen.getByRole("button", { name: clear })).toBeDisabled();
+  },
+);
+
+it.each([
+  ["en", "Load last teams"],
+  ["de", "Letzte Teams laden"],
+] as const)(
+  "brings the players of the teams along when no players were added in %s",
+  async (language, loadTeams) => {
+    const { latest, user } = await renderTeams(language, remembered);
+    // Nobody was added above, and the button still does something: the teams come with their players.
+    expect(latest.value.playersText).toBe("");
+    await user.click(screen.getByRole("button", { name: loadTeams }));
+    expect(latest.value).toEqual({ ...remembered, count: 6, playersText: "Anna" });
+    expect(screen.getByRole("button", { name: "Anna" })).toBeVisible();
+    expect(screen.getByRole("button", { name: loadTeams })).toBeDisabled();
   },
 );
 

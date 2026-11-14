@@ -6,7 +6,7 @@ const saved: TeamSetupValue = {
   assignment: { Anna: 0, Ben: 1 },
   count: 2,
   names: ["Red", ""],
-  order: "entered",
+  order: [1, 0],
   playersText: "Anna, Ben",
 };
 
@@ -25,7 +25,9 @@ describe("sameTeamSetup", () => {
     expect(sameTeamSetup(saved, { ...saved, count: 3 })).toBe(false);
     expect(sameTeamSetup(saved, { ...saved, names: ["Red"] })).toBe(false);
     expect(sameTeamSetup(saved, { ...saved, names: ["Blue", ""] })).toBe(false);
-    expect(sameTeamSetup(saved, { ...saved, order: "random" })).toBe(false);
+    expect(sameTeamSetup(saved, { ...saved, order: [0, 1] })).toBe(false);
+    // An order that only says "normal" is the same as the written out normal order.
+    expect(sameTeamSetup({ ...saved, order: [] }, { ...saved, order: [0, 1] })).toBe(true);
     expect(sameTeamSetup(saved, { ...saved, playersText: "Anna" })).toBe(false);
     expect(sameTeamSetup(saved, { ...saved, assignment: { Anna: 1, Ben: 1 } })).toBe(false);
   });
@@ -46,6 +48,8 @@ describe("parseSavedTeamSetup", () => {
     ["names that are no text", { ...saved, names: [1] }],
     ["names that are no list", { ...saved, names: "Red" }],
     ["an unknown order", { ...saved, order: "backwards" }],
+    ["an order with something that is no team", { ...saved, order: [1, "a"] }],
+    ["an order with a negative team", { ...saved, order: [-1] }],
     ["players that are no text", { ...saved, playersText: 4 }],
     ["an assignment that is a list", { ...saved, assignment: [] }],
     ["a missing assignment", { ...saved, assignment: null }],

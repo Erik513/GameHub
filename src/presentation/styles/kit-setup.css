@@ -395,21 +395,30 @@
   gap: var(--space-3);
 }
 
+/* A team is one box: its name field and, below it, the field with its players. */
 .kit-team {
   display: grid;
-  gap: var(--space-1);
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
 }
 
 .kit-team .field__input {
   min-height: var(--control-height);
 }
 
-/* The names of a team: small bordered buttons, a tap asks for the team of that player. */
+/* The names of a team: small bordered buttons; drag one into a team, a tap takes it out of its team. */
 .kit-team__names {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  padding-left: var(--space-1);
+  align-items: center;
+  min-height: 3.5rem;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-canvas);
 }
 
 .kit-name {
@@ -423,26 +432,112 @@
   font: inherit;
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
-.kit-team--none {
-  padding: var(--space-2);
-  border: 1px dashed var(--color-line);
-  border-radius: var(--radius-md);
+/* The name that follows the pointer while a player is dragged. */
+.kit-name--ghost {
+  position: fixed;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  border-color: var(--color-accent);
+  background: var(--color-surface);
+  pointer-events: none;
+}
+
+/* The team under the pointer while a player is dragged. */
+.kit-team[data-over] {
+  border-color: var(--color-accent);
+}
+
+.kit-team[data-over] .kit-team__names {
+  background: color-mix(in srgb, var(--color-accent) 18%, var(--color-canvas));
 }
 
 .kit-team--none h3 {
   margin: 0;
+  padding-left: var(--space-1);
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
 }
 
-/* The choice of a team for one player, in a window. */
-.kit-pick {
+/* The playing order of the teams: one below the other with fixed places, the top team starts. */
+.kit-order {
   display: grid;
-  gap: var(--space-2);
+  gap: var(--space-1);
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.kit-order__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 2.25rem;
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+/* The team that is being dragged. */
+.kit-order__row[data-dragging] {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
+
+/* The first place is the team that starts. */
+.kit-order__row:first-child .kit-order__place {
+  color: var(--color-accent);
+}
+
+.kit-order__place {
+  flex: none;
+  min-width: 1.5rem;
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.kit-order__name {
+  flex: 1;
+  min-width: 0;
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+}
+
+/* The handle: a finger that starts on it drags the team and does not scroll the page. */
+.kit-order__handle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  /* The tap area is taller than the compact row; it reaches over the row edge, the row stays low. */
+  margin: -0.25rem 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-ink-muted);
+  background: none;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.kit-order__handle svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.kit-order__handle path {
+  stroke-width: 3;
 }
 
 /* A team: its name and, under it, its players. */
@@ -522,4 +617,8 @@
   line-height: 1.2;
   margin: 0;
   padding-inline: var(--space-2);
+}
+
+.kit-team--none h3 span {
+  font-weight: 400;
 }

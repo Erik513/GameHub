@@ -1,6 +1,6 @@
 # Entwurf: Gemeinsame Ansicht für Teams, Spieler und Spieleinstellungen
 
-> **Stand 2026-11-14 (`ADR-025`):** Die Aufstellung ist konfigurierbar: `LineupSetup` zeigt je nach `LineupConfig` des Spiels die aufklappbaren Boxen „Spieler“ (`PlayersSetup`) und „Teams“ (`TeamsSetup` mit `withPlayers`). `TeamsSetup` hat die Prop `players` nicht mehr; das Hinzufügen von Spielern gehört zu `PlayersSetup`. Startregeln liefert `validateLineup`. Jede Box lädt ihren Teil der gemerkten Gruppe; die Box „Teams“ hat zusätzlich „Teams leeren“ (nebeneinander mit „Letzte Teams laden“, beide immer sichtbar, bei Bedarf gesperrt). `PlayersSetup` ist die einfache Spielerliste (Hinzufügen, Entfernen), `TeamsSetup` enthält Anzahl, Auslosen, Teamkarten mit Namensknöpfen (Tipp öffnet die Teamwahl) und Reihenfolge.
+> **Stand 2026-11-14 (`ADR-025`):** Die Aufstellung ist konfigurierbar: `LineupSetup` zeigt je nach `LineupConfig` des Spiels die aufklappbaren Boxen „Spieler“ (`PlayersSetup`) und „Teams“ (`TeamsSetup` mit `withPlayers`). `TeamsSetup` hat die Prop `players` nicht mehr; das Hinzufügen von Spielern gehört zu `PlayersSetup`. Startregeln liefert `validateLineup`. Jede Box lädt ihren Teil der gemerkten Gruppe; die Box „Teams“ hat zusätzlich „Teams leeren“ (nebeneinander mit „Letzte Teams laden“, beide immer sichtbar, bei Bedarf gesperrt). `PlayersSetup` ist die einfache Spielerliste (Hinzufügen, Entfernen), `TeamsSetup` enthält Anzahl, Auslosen, Teamkarten mit Namensknöpfen (Spieler werden per Drag and Drop mit `usePlayerDrag` in ein Team gezogen, ein Tipp nimmt sie heraus) und die Reihenfolge (`TeamOrder`).
 >
 > **Stand 2026-11-13 (`ADR-023`):** Teams und Spieler stehen nicht mehr im Hauptmenü, sondern in der Ansicht **Aufstellung** nach „Starten“ (`LineupScreen`). Dieses Dokument beschreibt die ursprüngliche Aufteilung; die Bausteine `TeamsSetup` und `PlayersSetup` sind unverändert, nur ihr Ort ist ein anderer.
 
@@ -17,7 +17,7 @@ Teams, Spieler und Spieleinstellungen kommen in jedem Spiel vor. Sie sollen einm
 | Abschnitte „Teams und Spieler“ und „Spieleinstellungen“, Werkzeugleiste, Startleiste | `TabooSetupForm.tsx` | Aufbau gehört zu keinem Spiel, steckt aber im Tabu-Formular. |
 | Teamanzahl (2 bis 6), Teamnamen, Reihenfolge (zufällig oder wie eingegeben) | `TabooSetupForm.tsx`, gelesen in `TabooSetup.tsx` (`submit`) per `FormData` | Die Regeln „Name leer gibt Team N“, „Reihenfolge zufällig mischen“ stehen im Container. |
 | Spielerliste und Verteilung auf Teams | `TabooPlayers.tsx` | Eigener Zustand, **fließt nicht ins Spiel**: die Verteilung ist nur eine Übersicht. |
-| Reine Logik | `business/shared/players.ts` (`parsePlayers`, `splitIntoTeams`), `teamOrder.ts` (`shuffleTeams`) | Schon spielunabhängig und getestet. |
+| Reine Logik | `business/shared/players.ts` (`parsePlayers`, `splitIntoTeams`), `teamOrder.ts` (`normalizeOrder`, `moveTeam`, `randomOrder`, `isDefaultOrder`) | Schon spielunabhängig und getestet. |
 | Texte | `tabooSetup.teams*`, `tabooSetup.team*`, `tabooPlayers.*` in `taboo.ts` je Sprache | Gehören zum Tabu-Namensraum. |
 | Stile | `taboo.css` (`taboo-section`, `taboo-team-names`, `taboo-players`, `taboo-toolbar`) | Ebenfalls Tabu. |
 | Spieleinstellungen | `ChoiceGroup`, `InfoButton` im `game-kit` | Bausteine sind schon gemeinsam, die Zusammenstellung nicht. |
@@ -37,7 +37,7 @@ Das Spiel bekommt heute nur `teams: { id, name }[]` (`GameConfiguration` in `bus
 ### 4.1 Reine Logik in `src/business/shared/` (ohne React)
 
 - Typen `TeamSetup { id, name, players: readonly string[] }` und `TeamSetupInput { count, names, orderMode, players, assignment }`.
-- `buildTeams(input, { defaultName, random })`: gibt die Teams **in Spielreihenfolge** zurück (leere Namen werden zu „Team N“, Reihenfolge zufällig oder wie eingegeben, Spieler den Teams zugeordnet). Ersetzt den Code in `TabooSetup.submit`.
+- `buildTeams(input, { defaultName })`: gibt die Teams **in Spielreihenfolge** zurück (leere Namen werden zu „Team N“, Reihenfolge aus `input.order`, einer Liste von Teamnummern, leer = Team 1, 2, 3 …; Spieler den Teams zugeordnet; seit 2026-11-14, früher Zufall beim Start). Ersetzt den Code in `TabooSetup.submit`.
 - `TeamRules { minTeams, maxTeams, defaultTeams }` und `validateTeamSetup` (Grenzen, doppelte Namen, bei Bedarf Mindestzahl Spieler je Team).
 - `parsePlayers` und `splitIntoTeams` bleiben, wo sie sind.
 - Alles mit Tests, Zufall wird eingespeist, wie bei `shuffle`.

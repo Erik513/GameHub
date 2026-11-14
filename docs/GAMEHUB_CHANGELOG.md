@@ -4,6 +4,22 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-14
 
+### Teambox, ruhigeres Ablagefeld und Fehler bei „Letzte Teams laden“
+
+- **Ein Team ist jetzt eine Box:** Namensfeld und Spielerfeld stehen zusammen in einer umrandeten Karte; das Spielerfeld ist ein dunkleres Feld ohne gestrichelten Rahmen (auch leer da, sobald es Spieler gibt), die Karte unter dem Zeiger leuchtet beim Ziehen. „Ohne Team“ ist genauso aufgebaut.
+- **Kompaktere Teamreihenfolge:** Die Zeilen sind nur noch etwa 36 Pixel hoch (vorher 52); der Griff reicht mit seiner 44 Pixel großen Tippfläche über den Zeilenrand, die Zeile bleibt niedrig.
+- **Fehler behoben:** „Letzte Teams laden“ bewirkte nichts, wenn oben keine Spieler hinzugefügt waren, weil die gemerkte Zuordnung auf die (leere) Spielerliste zugeschnitten wurde. Jetzt kommen die Teams mit den Spielern, die in ihnen stehen; fehlende Spieler werden der Liste hinzugefügt. Test dafür (beide Sprachen); 629 Tests, Typen, eslint grün.
+
+### Spieler wieder per Drag and Drop in Teams ziehen; Standard links; Griff ohne Rahmen
+
+- Auf Wunsch des Auftraggebers: **Spieler müssen in ein Team gezogen werden** (Maus oder Finger), damit sie dort stehen; **ein Tipp auf einen Spieler in einem Team nimmt ihn heraus** und legt ihn zu „Ohne Team“. Die Karte „Ohne Team (Spieler in ein Team ziehen)“ ist wieder da (nur wenn es Spieler ohne Team gibt, sowie beim Ziehen), die Karte unter dem Zeiger leuchtet, der Name folgt dem Zeiger, am Rand scrollt die Seite mit. Das Fenster zur Teamwahl und `kitTeams.pickTitle` entfallen; `usePlayerDrag` ist zurück im `game-kit` (Zeigerereignisse, `data-drop`).
+- Bei der Teamreihenfolge steht **„Standard“ links** und „Zufällig“ rechts, der **Griff hat keinen Rahmen mehr** (bewusste Ausnahme von „jeder Knopf hat einen Rahmen“). Tests für Ziehen, Abbruch, Randscrollen und die Knopfreihenfolge; 627 Tests, Typen, eslint grün.
+
+### Teamreihenfolge: sichtbar, per Tipp und mit zwei Knöpfen
+
+- Die Auswahl „Zufällig | Wie eingegeben“ ist ersetzt. **Alle Teams stehen untereinander mit festen Plätzen** („1.“, „2.“, „3.“ …), das oberste beginnt, und lassen sich **am Griff per Drag and Drop beliebig umordnen** (Pfeiltasten auf dem Griff gehen auch). Darunter zwei Knöpfe in halber Breite: **„Zufällig“** (mischt alle, das erste beginnt) und **„Standard“** (Team 1, 2, 3 …, gesperrt wenn schon so). Neue Bausteinkomponente `TeamOrder` (Zeigerereignisse wie beim früheren Ziehen, `touch-action: none` am Griff), neues Symbol `grip`; Texte `kitTeams.orderDefault/orderMove`, `orderInfo` neu, `orderEntered` entfällt. Erster Entwurf mit „Tipp auf ein Team lässt es beginnen“ wurde verworfen.
+- **Logik:** `TeamSetupValue.order` ist jetzt eine Liste von Teamnummern (leer = Standard) statt `"random"`/`"entered"`; `buildTeams` nimmt genau diese Reihenfolge, die Zufallsauslosung beim Start (`shuffleTeams`) entfällt. Neue reine Funktionen `normalizeOrder`, `moveTeam`, `randomOrder`, `isDefaultOrder` in `teamOrder.ts` (mit Tests); die Reihenfolge passt sich einer geänderten Teamanzahl an. Gemerkte Gruppen aus älteren Versionen (`"random"`/`"entered"`) werden gelesen und als Standard übernommen. Folge: Standard ist jetzt Team 1, 2, 3 …, bei Tabu beginnt also ohne Änderung das erste Team. 624 Tests, Typen, eslint, e2e (26) grün.
+
 ### „Spieler und Teams“ ist das Vorbild für alle Ansichten
 
 - Auf Wunsch des Auftraggebers gilt die Aufstellung als Vorbild für jede Ansicht, damit die App einheitlich bleibt. Die Merkmale stehen in `docs/GAMEHUB_UI_RULES.md`, Abschnitt 2.0 (einfach und kompakt, aufklappbare Boxen mit Kurzinfo, bewährte Muster, Knöpfe mit Rahmen, immer sichtbar und bei Bedarf gesperrt, Bestätigung bei Zerstörerischem, konfigurierbare Bausteine).

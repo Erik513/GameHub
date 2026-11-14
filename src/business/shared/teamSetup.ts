@@ -1,8 +1,5 @@
 import { parsePlayers } from "./players";
-import { shuffleTeams } from "./teamOrder";
-
-/** How the teams are put in order for the game: drawn at random or as the player typed them. */
-export type TeamOrderMode = "random" | "entered";
+import { normalizeOrder } from "./teamOrder";
 
 /** The limits a game sets for its teams. */
 export interface TeamRules {
@@ -26,7 +23,11 @@ export interface TeamSetupValue {
   readonly count: number;
   /** One entry per team, empty when the player left the name blank. */
   readonly names: readonly string[];
-  readonly order: TeamOrderMode;
+  /**
+   * The playing order of the teams as team indexes (0-based), first team first. Empty means the
+   * normal order: team 1, team 2, team 3 ...; use `normalizeOrder` to read it for a team count.
+   */
+  readonly order: readonly number[];
   /** The player names as typed (one per line or separated by commas). */
   readonly playersText: string;
 }
@@ -43,7 +44,7 @@ export function initialTeamSetup(rules: TeamRules = defaultTeamRules): TeamSetup
     assignment: {},
     count: rules.defaultTeams,
     names: [],
-    order: "random",
+    order: [],
     playersText: "",
   };
 }
@@ -57,11 +58,11 @@ export function clampTeamCount(count: number, rules: TeamRules = defaultTeamRule
 /**
  * Builds the teams for the game from what was entered. Blank names become `defaultName(number)`,
  * the players are the ones assigned to each team (players without a team belong to none), and the
- * result is in playing order: drawn at random or as entered. The random source is injected.
+ * result is in the playing order that was set (`order`).
  */
 export function buildTeams(
   value: TeamSetupValue,
-  options: { readonly defaultName: (number: number) => string; readonly random?: () => number },
+  options: { readonly defaultName: (number: number) => string },
   rules: TeamRules = defaultTeamRules,
 ): SetupTeam[] {
   const count = clampTeamCount(value.count, rules);
@@ -71,7 +72,10 @@ export function buildTeams(
     name: (value.names[index] ?? "").trim() || options.defaultName(index + 1),
     players: players.filter((player) => value.assignment[player] === index),
   }));
-  return value.order === "random" ? shuffleTeams(entered, options.random) : entered;
+  return normalizeOrder(value.order, count).flatMap((team) => {
+    const setupTeam = entered[team];
+    return setupTeam ? [setupTeam] : [];
+  });
 }
 
 export interface TeamSetupIssue {

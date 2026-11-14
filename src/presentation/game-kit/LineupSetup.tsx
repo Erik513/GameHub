@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { LineupConfig } from "../../business/shared/lineup";
+import { addPlayersToText } from "../../business/shared/playerList";
 import { parsePlayers } from "../../business/shared/players";
 import { sameTeamSetup } from "../../business/shared/savedTeamSetup";
 import { clampTeamCount, type TeamSetupValue } from "../../business/shared/teamSetup";
@@ -30,7 +31,7 @@ function assignmentOf(
  * has a player list and a collapsible box "Teams" when it has teams. A game without teams (everyone
  * plays for himself) shows only the players, a game that does not need names (like Taboo) has the
  * player box collapsed. Each box can take over what was remembered from the last game (of any
- * game); the box "Teams" also has a button that clears the team names and the assignment. The
+ * game; the teams come with their players); the box "Teams" also has a button that clears the team names and the assignment. The
  * buttons are always there and cannot be used when they would change nothing.
  */
 export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
@@ -43,14 +44,24 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
   // What each box would take over; the button can only be used when it would change something.
   const savedPlayers = remembered?.playersText ?? "";
   const showLoadPlayers = savedPlayers.trim() !== "" && savedPlayers !== value.playersText;
+  // The teams come with their players: those who are not in the list yet are added to it.
+  const present = new Set(parsePlayers(value.playersText));
+  const missing = hasPlayers
+    ? Object.keys(remembered?.assignment ?? {}).filter((player) => !present.has(player))
+    : [];
+  const loadedPlayers =
+    missing.length > 0
+      ? addPlayersToText(value.playersText, missing.join(", "))
+      : value.playersText;
   const loadedTeams: TeamSetupValue | undefined =
     remembered && rules
       ? {
           ...value,
-          assignment: hasPlayers ? assignmentOf(remembered.assignment, value.playersText) : {},
+          assignment: hasPlayers ? assignmentOf(remembered.assignment, loadedPlayers) : {},
           count: clampTeamCount(remembered.count, rules),
           names: remembered.names,
           order: remembered.order,
+          playersText: loadedPlayers,
         }
       : undefined;
   const hasSavedTeams =

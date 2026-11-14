@@ -1,15 +1,15 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { parsePlayers, splitIntoTeams } from "../../business/shared/players";
 import {
   clampTeamCount,
   defaultTeamRules,
-  type TeamOrderMode,
   type TeamRules,
   type TeamSetupValue,
 } from "../../business/shared/teamSetup";
-import { Button, Dialog } from "../components";
+import { Button } from "../components";
 import { ChoiceGroup } from "./ChoiceGroup";
+import { TeamOrder } from "./TeamOrder";
+import { dropAttribute, usePlayerDrag, type DropTarget } from "./usePlayerDrag";
 
 interface TeamsSetupProps {
   readonly onChange: (value: TeamSetupValue) => void;
@@ -21,9 +21,10 @@ interface TeamsSetupProps {
 
 /**
  * Teams of a game: how many, a button that draws the players into the teams, one card per team with
- * its name and its players, and the order of the teams. A player who has no team yet waits in a card
- * "No team". A tap on a name asks for the team of that player; nothing else needs to be done by hand.
- * The value is controlled, the game reads the result with `buildTeams`.
+ * its name and its players, and the playing order of the teams. A player who has no team yet waits
+ * in a card "No team". A player is dragged into a team (mouse or finger) and moved the same way; a
+ * tap on a player in a team takes him out again, back to "No team". The value is controlled, the
+ * game reads the result with `buildTeams`.
  */
 export function TeamsSetup({
   onChange,
@@ -38,8 +39,6 @@ export function TeamsSetup({
     (_, index) => rules.minTeams + index,
   );
   const update = (patch: Partial<TeamSetupValue>) => onChange({ ...value, ...patch });
-  // The player whose team is being chosen.
-  const [picking, setPicking] = useState<string>();
 
   // The players of a team are always shown in alphabetical order of the interface language.
   const alphabetical = new Intl.Collator(i18n.language).compare;
@@ -65,18 +64,31 @@ export function TeamsSetup({
     update({ assignment });
   }
 
-  function choose(player: string, team: number | undefined) {
+  function place(player: string, target: DropTarget) {
     const assignment = { ...value.assignment };
-    if (team === undefined) delete assignment[player];
-    else assignment[player] = team;
+    if (target === "none") delete assignment[player];
+    else assignment[player] = target;
     update({ assignment });
-    setPicking(undefined);
   }
+
+  const dragging = usePlayerDrag({
+    onDrop: place,
+    // A tap on a player in a team takes him out of it; a player without a team stays where he is.
+    onTap: (player) => {
+      if (teamOf(player) !== undefined) place(player, "none");
+    },
+  });
 
   const names = (players: readonly string[]) => (
     <div className="kit-team__names">
       {players.map((player) => (
-        <button className="kit-name" key={player} onClick={() => setPicking(player)} type="button">
+        <button
+          className="kit-name"
+          key={player}
+          onClick={dragging.tap(player)}
+          onPointerDown={dragging.startDrag(player)}
+          type="button"
+        >
           {player}
         </button>
       ))}
@@ -102,7 +114,12 @@ export function TeamsSetup({
         {Array.from({ length: count }, (_, index) => {
           const members = withPlayers ? everyone.filter((player) => teamOf(player) === index) : [];
           return (
-            <div className="kit-team" key={index}>
+            <div
+              {...(withPlayers ? { [dropAttribute]: String(index) } : {})}
+              className="kit-team"
+              data-over={dragging.over === index || undefined}
+              key={index}
+            >
               <input
                 aria-label={t("kitTeams.nameLabel", { number: index + 1 })}
                 autoComplete="off"
@@ -116,64 +133,38 @@ export function TeamsSetup({
                 placeholder={t("kitTeams.defaultName", { number: index + 1 })}
                 value={value.names[index] ?? ""}
               />
-              {members.length > 0 && names(members)}
+              {withPlayers && everyone.length > 0 && names(members)}
             </div>
           );
         })}
-        {withoutTeam.length > 0 && (
-          <div className="kit-team kit-team--none">
-            <h3>{t("kitPlayers.noTeam")}</h3>
+        {withPlayers && (withoutTeam.length > 0 || dragging.drag !== undefined) && (
+          <div
+            {...{ [dropAttribute]: "none" }}
+            className="kit-team kit-team--none"
+            data-over={dragging.over === "none" || undefined}
+          >
+            <h3>
+              {t("kitPlayers.noTeam")} <span>({t("kitTeams.dragHint")})</span>
+            </h3>
             {names(withoutTeam)}
           </div>
         )}
       </div>
-      <ChoiceGroup
-        info={{
-          closeLabel: t("settings.close"),
-          label: t("kitSetup.infoLabel", { setting: t("kitTeams.orderLegend") }),
-          text: t("kitTeams.orderInfo"),
-          title: t("kitTeams.orderLegend"),
-        }}
-        initial={value.order}
-        legend={t("kitTeams.orderLegend")}
-        name="teamOrder"
-        onChange={(next) => update({ order: next === "entered" ? "entered" : "random" })}
-        options={(["random", "entered"] as const satisfies readonly TeamOrderMode[]).map(
-          (mode) => ({
-            value: mode,
-            label: t(mode === "random" ? "kitTeams.orderRandom" : "kitTeams.orderEntered"),
-          }),
-        )}
-        value={value.order}
+      <TeamOrder
+        count={count}
+        onChange={(order) => update({ order })}
+        order={value.order}
+        teamName={teamName}
       />
-      <Dialog
-        closeLabel={t("settings.close")}
-        onClose={() => setPicking(undefined)}
-        open={picking !== undefined}
-        title={t("kitTeams.pickTitle", { player: picking ?? "" })}
-      >
-        {picking !== undefined && (
-          <div className="kit-pick">
-            {Array.from({ length: count }, (_, index) => (
-              <Button
-                aria-pressed={teamOf(picking) === index}
-                key={index}
-                onClick={() => choose(picking, index)}
-                variant={teamOf(picking) === index ? "primary" : "secondary"}
-              >
-                {teamName(index)}
-              </Button>
-            ))}
-            <Button
-              aria-pressed={teamOf(picking) === undefined}
-              onClick={() => choose(picking, undefined)}
-              variant={teamOf(picking) === undefined ? "primary" : "secondary"}
-            >
-              {t("kitPlayers.noTeam")}
-            </Button>
-          </div>
-        )}
-      </Dialog>
+      {dragging.drag && (
+        <div
+          aria-hidden="true"
+          className="kit-name kit-name--ghost"
+          style={{ left: dragging.drag.x, top: dragging.drag.y }}
+        >
+          {dragging.drag.player}
+        </div>
+      )}
     </>
   );
 }
