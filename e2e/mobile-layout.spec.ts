@@ -18,6 +18,11 @@ const labels = {
     startTiebreak: "Start tiebreak",
     endAttempt: "End attempt",
     interfaceLanguage: "Interface language",
+    players: "Players",
+    addPlayer: "Add player",
+    addButton: "Add",
+    draw: "Draw teams",
+    noTeam: "No team",
   },
   de: {
     open: "Fortschritt ansehen",
@@ -36,6 +41,11 @@ const labels = {
     startTiebreak: "Stechen starten",
     endAttempt: "Versuch beenden",
     interfaceLanguage: "Oberflächensprache",
+    players: "Spieler",
+    addPlayer: "Spieler hinzufügen",
+    addButton: "Hinzufügen",
+    draw: "Teams auslosen",
+    noTeam: "Ohne Team",
   },
 } as const;
 
@@ -170,6 +180,17 @@ for (const language of ["en", "de"] as const) {
       await check("setup");
       await press(t.start);
       await check("line-up");
+      // The same screen with players in the boxes: some drawn into teams, one waiting without a team.
+      await page.getByRole("region", { name: t.players }).locator("summary").click();
+      await page
+        .getByRole("textbox", { name: t.addPlayer })
+        .fill("Anna, Benedikt, Cara, Dorothea, Emil");
+      await page.getByRole("button", { name: t.addButton, exact: true }).click();
+      await check("line-up with players");
+      await press(t.draw);
+      await page.getByRole("button", { name: "Emil", exact: true }).first().click();
+      await page.getByRole("dialog").getByRole("button", { name: t.noTeam }).click();
+      await check("line-up with teams and a player without a team");
       await press(t.startGame);
       await check("overview before the first turn");
 

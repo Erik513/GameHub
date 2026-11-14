@@ -180,3 +180,54 @@ it.each([
   expect(screen.getByRole("button", { name: remove("Ben") })).toBeVisible();
   expect(screen.getByRole("button", { name: label })).toBeDisabled();
 });
+
+it("loads the teams without players into a game that has no player list", async () => {
+  const i18n = await createGameHubI18n("en");
+  const latest = { value: initialTeamSetup() };
+  function Host() {
+    const [value, setValue] = useState(latest.value);
+    return (
+      <LineupSetup
+        config={{ ...defaultLineup, players: "off", teams: defaultTeamRules }}
+        onChange={(next) => {
+          latest.value = next;
+          setValue(next);
+        }}
+        value={value}
+      />
+    );
+  }
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TeamSetupMemoryProvider memory={memory(remembered)}>
+        <Host />
+      </TeamSetupMemoryProvider>
+    </I18nextProvider>,
+  );
+  expect(screen.queryByRole("region", { name: "Players" })).not.toBeInTheDocument();
+  await userEvent.click(screen.getByRole("button", { name: "Load last teams" }));
+  // Names, number and order come along, but nobody is put into the teams.
+  expect(latest.value).toMatchObject({
+    assignment: {},
+    count: 6,
+    names: ["Red", "Blue"],
+    order: [1, 0],
+  });
+  expect(latest.value.playersText).toBe("");
+});
+
+it.each([
+  ["only team names", { ...initialTeamSetup(), names: ["Red"] }, true],
+  [
+    "only a team of a player",
+    { ...initialTeamSetup(), assignment: { Anna: 1 }, playersText: "Anna" },
+    true,
+  ],
+  ["only a number of teams", { ...initialTeamSetup(), count: 4 }, true],
+  ["nothing worth loading", initialTeamSetup(), false],
+] as const)("offers to load the last teams for %s: %s", async (_name, stored, offered) => {
+  await renderTeams("en", stored);
+  const button = screen.getByRole("button", { name: "Load last teams" });
+  if (offered) expect(button).toBeEnabled();
+  else expect(button).toBeDisabled();
+});

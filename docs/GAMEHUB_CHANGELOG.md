@@ -4,6 +4,16 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-14
 
+### Aufstellung vollständig abgesichert: Verzweigungen und e2e
+
+- **Alle Verzweigungen der Aufstellung sind abgedeckt** (Logik und Oberfläche: `lineup`, `teamOrder`, `teamSetup`, `savedTeamSetup`, `LineupSetup`, `TeamsSetup`, `TeamOrder`, `PlayerAdder`, `usePlayerDrag`): neue Tests für leere Namen, andere Tasten am Griff, ein Ziehen auf demselben Platz, ein Ziel ohne gültiges Team, den Klick nach dem Ziehen, gespeicherte Gruppen mit nur Namen, nur Zuordnung oder nur Teamzahl, ein Spiel ohne Spielerliste und die alten Wörter der Reihenfolge. Nicht erreichbare Rückfallwerte wurden aus dem Code entfernt (`resolveLineup` und `buildTeams` zählen jetzt direkt, `TeamOrder` liest seine Liste sicher).
+- **Neu e2e** (`e2e/lineup.spec.ts`, Desktop und Mobil, Deutsch und Englisch): Spieler hinzufügen, drei Teams, Auslosen, Spieler per Tipp in ein Team, ein Spieler per Maus gezogen, Team 3 per Tastatur an den ersten Platz, Spiel starten (Team 3 beginnt). Die **Layout-Prüfung** (`mobile-layout.spec.ts`) prüft die Aufstellung jetzt auch **mit Spielern** und mit **gefüllten Teams samt einem Spieler ohne Team**. Folge: Die Namensknöpfe sind **44 Pixel hoch** (vorher 40), weil die Prüfung die Tippfläche verlangt.
+- Stand: 639 Unit-Tests, 30 e2e-Tests (6 mobile Layout-Prüfungen werden auf dem Desktop-Projekt übersprungen), Typen, eslint, Schichtgrenzen grün.
+
+### Spieler per Tipp in ein Team: beide Wege
+
+- Auf Wunsch gibt es **zwei Wege**, einen Spieler in ein Team zu bringen: Drag and Drop wie bisher oder **ein Tipp auf den Namen**, der ein Fenster „Team für …“ mit allen Teams und „Ohne Team“ öffnet (das aktuelle Team ist markiert, die Wahl gilt sofort). Der Tipp ersetzt das bisherige direkte Herausnehmen im Team; „Ohne Team“ im Fenster nimmt den Spieler heraus. Damit ist die Zuordnung auch mit der Tastatur und ohne Ziehen bedienbar (schließt die Lücke bei der Barrierefreiheit). Neuer Test für Tipp, Tastatur und Schließen; 630 Tests, Typen, eslint, e2e (26) grün.
+
 ### Teambox, ruhigeres Ablagefeld und Fehler bei „Letzte Teams laden“
 
 - **Ein Team ist jetzt eine Box:** Namensfeld und Spielerfeld stehen zusammen in einer umrandeten Karte; das Spielerfeld ist ein dunkleres Feld ohne gestrichelten Rahmen (auch leer da, sobald es Spieler gibt), die Karte unter dem Zeiger leuchtet beim Ziehen. „Ohne Team“ ist genauso aufgebaut.

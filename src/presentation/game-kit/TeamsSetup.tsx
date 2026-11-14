@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { parsePlayers, splitIntoTeams } from "../../business/shared/players";
 import {
@@ -6,7 +7,7 @@ import {
   type TeamRules,
   type TeamSetupValue,
 } from "../../business/shared/teamSetup";
-import { Button } from "../components";
+import { Button, Dialog } from "../components";
 import { ChoiceGroup } from "./ChoiceGroup";
 import { TeamOrder } from "./TeamOrder";
 import { dropAttribute, usePlayerDrag, type DropTarget } from "./usePlayerDrag";
@@ -22,9 +23,10 @@ interface TeamsSetupProps {
 /**
  * Teams of a game: how many, a button that draws the players into the teams, one card per team with
  * its name and its players, and the playing order of the teams. A player who has no team yet waits
- * in a card "No team". A player is dragged into a team (mouse or finger) and moved the same way; a
- * tap on a player in a team takes him out again, back to "No team". The value is controlled, the
- * game reads the result with `buildTeams`.
+ * in a card "No team". A player is put into a team in two ways: he is dragged into it (mouse or
+ * finger), or he is tapped, which opens the choice of his team ("No team" takes him out of his team).
+ * The tap also works with the keyboard. The value is controlled, the game reads the result with
+ * `buildTeams`.
  */
 export function TeamsSetup({
   onChange,
@@ -39,6 +41,8 @@ export function TeamsSetup({
     (_, index) => rules.minTeams + index,
   );
   const update = (patch: Partial<TeamSetupValue>) => onChange({ ...value, ...patch });
+  // The player whose team is being chosen after a tap.
+  const [picking, setPicking] = useState<string>();
 
   // The players of a team are always shown in alphabetical order of the interface language.
   const alphabetical = new Intl.Collator(i18n.language).compare;
@@ -71,13 +75,12 @@ export function TeamsSetup({
     update({ assignment });
   }
 
-  const dragging = usePlayerDrag({
-    onDrop: place,
-    // A tap on a player in a team takes him out of it; a player without a team stays where he is.
-    onTap: (player) => {
-      if (teamOf(player) !== undefined) place(player, "none");
-    },
-  });
+  const dragging = usePlayerDrag({ onDrop: place, onTap: setPicking });
+
+  function choose(player: string, target: DropTarget) {
+    place(player, target);
+    setPicking(undefined);
+  }
 
   const names = (players: readonly string[]) => (
     <div className="kit-team__names">
@@ -156,6 +159,34 @@ export function TeamsSetup({
         order={value.order}
         teamName={teamName}
       />
+      <Dialog
+        closeLabel={t("settings.close")}
+        onClose={() => setPicking(undefined)}
+        open={picking !== undefined}
+        title={t("kitTeams.pickTitle", { player: picking ?? "" })}
+      >
+        {picking !== undefined && (
+          <div className="kit-pick">
+            {Array.from({ length: count }, (_, index) => (
+              <Button
+                aria-pressed={teamOf(picking) === index}
+                key={index}
+                onClick={() => choose(picking, index)}
+                variant={teamOf(picking) === index ? "primary" : "secondary"}
+              >
+                {teamName(index)}
+              </Button>
+            ))}
+            <Button
+              aria-pressed={teamOf(picking) === undefined}
+              onClick={() => choose(picking, "none")}
+              variant={teamOf(picking) === undefined ? "primary" : "secondary"}
+            >
+              {t("kitPlayers.noTeam")}
+            </Button>
+          </div>
+        )}
+      </Dialog>
       {dragging.drag && (
         <div
           aria-hidden="true"

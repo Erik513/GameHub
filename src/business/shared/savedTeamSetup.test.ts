@@ -34,6 +34,13 @@ describe("sameTeamSetup", () => {
 });
 
 describe("parseSavedTeamSetup", () => {
+  it("reads the words that an older version saved for the order as the normal order", () => {
+    for (const old of ["random", "entered"]) {
+      expect(parseSavedTeamSetup({ ...saved, order: old })?.order).toEqual([]);
+    }
+    expect(parseSavedTeamSetup({ ...saved, order: [1, 0] })?.order).toEqual([1, 0]);
+  });
+
   it("accepts a complete value", () => {
     expect(parseSavedTeamSetup(JSON.parse(JSON.stringify(saved)))).toEqual(saved);
   });

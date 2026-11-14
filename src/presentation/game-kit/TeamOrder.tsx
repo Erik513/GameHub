@@ -38,7 +38,8 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
 
   /** The place under the pointer, from the rows as they are on the screen right now. */
   function placeAt(y: number): number {
-    const rows = [...(list.current?.children ?? [])];
+    // The list is there as long as a drag can be started on one of its rows.
+    const rows = [...list.current!.children];
     const at = rows.findIndex((row) => y < row.getBoundingClientRect().bottom);
     return at < 0 ? Math.max(0, rows.length - 1) : at;
   }

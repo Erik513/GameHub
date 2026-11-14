@@ -24,13 +24,13 @@ const texts = {
     orderDefault: "Default",
     orderRandom: "Random",
     move: (place: number, team: string) => `Move ${team}, place ${place}`,
+    pick: (player: string) => `Team of ${player}`,
     add: "Add player",
     addButton: "Add",
     remove: (player: string) => `Remove ${player}`,
     noTeam: "No team",
     draw: "Draw teams",
     redraw: "Shuffle again",
-    pick: (player: string) => `Team of ${player}`,
     chip: (player: string, team: string) => `${player}, ${team}`,
     edit: (team: string) => `Edit ${team}`,
     done: (team: string) => `Finish editing ${team}`,
@@ -43,13 +43,13 @@ const texts = {
     orderDefault: "Standard",
     orderRandom: "Zufällig",
     move: (place: number, team: string) => `${team} verschieben, Platz ${place}`,
+    pick: (player: string) => `Team für ${player}`,
     add: "Spieler hinzufügen",
     addButton: "Hinzufügen",
     remove: (player: string) => `${player} entfernen`,
     noTeam: "Ohne Team",
     draw: "Teams auslosen",
     redraw: "Neu mischen",
-    pick: (player: string) => `Team für ${player}`,
     chip: (player: string, team: string) => `${player}, ${team}`,
     edit: (team: string) => `${team} bearbeiten`,
     done: (team: string) => `Bearbeiten von ${team} beenden`,
@@ -289,16 +289,53 @@ it.each(["en", "de"] as const)(
     expect(latest.value.assignment.Ben).toBe(1 - team);
     expect(namesIn(teamBox(2 - team))).toContain("Ben");
 
-    // A tap on a player in a team takes him out again; he waits in the card "No team".
+    // A tap on a player opens the choice of his team: "No team" takes him out of his team.
     await user.click(screen.getByRole("button", { name: "Ben" }));
+    expect(screen.getByRole("dialog", { name: text.pick("Ben") })).toBeVisible();
+    // His own team is marked as chosen.
+    expect(
+      within(screen.getByRole("dialog")).getByRole("button", { name: text.defaultName(2 - team) }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: text.noTeam }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(latest.value.assignment.Ben).toBeUndefined();
     expect(namesIn(dropField("none"))).toEqual(["Ben"]);
-    // A tap on a player without a team does nothing.
-    await user.click(screen.getByRole("button", { name: "Ben" }));
-    expect(latest.value.assignment.Ben).toBeUndefined();
     random.mockRestore();
   },
 );
+
+it("puts a player into a team with a tap and the keyboard, without dragging", async () => {
+  const { latest, user, text } = await setup("en");
+  await user.type(screen.getByRole("textbox", { name: "Name of team 2" }), "Blue");
+  await user.type(screen.getByLabelText(text.add), "Anna, Ben");
+  await user.click(screen.getByRole("button", { name: text.addButton }));
+
+  // A player without a team: a tap opens the choice, a team is chosen with the keyboard.
+  await user.click(screen.getByRole("button", { name: "Anna" }));
+  const dialog = screen.getByRole("dialog", { name: text.pick("Anna") });
+  expect(within(dialog).getByRole("button", { name: text.noTeam })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  within(dialog).getByRole("button", { name: "Blue" }).focus();
+  await user.keyboard("{Enter}");
+  expect(latest.value.assignment).toEqual({ Anna: 1 });
+  expect(namesIn(teamBox(2))).toEqual(["Anna"]);
+
+  // The name can be reached with the keyboard, too, and moved to another team.
+  screen.getByRole("button", { name: "Anna" }).focus();
+  await user.keyboard("{Enter}");
+  await user.click(
+    within(screen.getByRole("dialog")).getByRole("button", { name: text.defaultName(1) }),
+  );
+  expect(latest.value.assignment).toEqual({ Anna: 0 });
+
+  // Closing the choice changes nothing.
+  await user.click(screen.getByRole("button", { name: "Ben" }));
+  await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Close" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(latest.value.assignment).toEqual({ Anna: 0 });
+});
 
 it("shows the highlight and the name under the pointer while dragging", async () => {
   const { latest, user, text } = await setup("en");
@@ -464,4 +501,48 @@ it("shows only the teams when the game has no player list", async () => {
   expect(document.querySelector(".kit-name")).toBeNull();
   expect(document.querySelector("[data-drop]")).toBeNull();
   expect(off.latest.value.playersText).toBe("");
+});
+
+it("adds nothing for an empty name, with the plus button or with Enter", async () => {
+  const { latest, user, text } = await setup("en");
+  const field = screen.getByLabelText(text.add);
+  expect(screen.getByRole("button", { name: text.addButton })).toBeDisabled();
+  await user.type(field, "   {enter}");
+  expect(latest.value.playersText).toBe("");
+  // The field keeps what was typed until a name is added.
+  expect(field).toHaveValue("   ");
+});
+
+it("ignores other keys on the handle and a drag that stays on the same place", async () => {
+  const rows = stackRows();
+  const { latest, user, text } = await setup("en");
+  screen.getByRole("button", { name: text.move(1, "Team 1") }).focus();
+  await user.keyboard("a{ArrowLeft}{Enter}");
+  expect(latest.value.order).toEqual([]);
+
+  const handle = screen.getByRole("button", { name: text.move(2, "Team 2") });
+  fireEvent.pointerDown(handle, { button: 0 });
+  // Still inside the second row: nothing moves.
+  fireEvent.pointerMove(window, { clientY: 75 });
+  fireEvent.pointerUp(window);
+  expect(latest.value.order).toEqual([]);
+  rows.mockRestore();
+});
+
+it("ignores a drop on something that is no team and the tap that follows a drag", async () => {
+  const { latest, user, text } = await setup("en");
+  await user.type(screen.getByLabelText(text.add), "Anna");
+  await user.click(screen.getByRole("button", { name: text.addButton }));
+  const broken = document.createElement("div");
+  broken.setAttribute("data-drop", "somewhere");
+  document.body.append(broken);
+  dragTo("Anna", broken);
+  expect(latest.value.assignment).toEqual({});
+  broken.remove();
+
+  // A real drop ends with a click on the name; that click does not open the choice of a team.
+  dragTo("Anna", dropField(0));
+  fireEvent.click(screen.getByRole("button", { name: "Anna" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(latest.value.assignment).toEqual({ Anna: 0 });
 });

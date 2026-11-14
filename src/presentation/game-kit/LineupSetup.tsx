@@ -66,9 +66,10 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
       : undefined;
   const hasSavedTeams =
     remembered !== undefined &&
+    rules !== undefined &&
     (remembered.names.some((name) => name.trim() !== "") ||
       Object.keys(remembered.assignment).length > 0 ||
-      remembered.count !== (rules?.defaultTeams ?? remembered.count));
+      remembered.count !== rules.defaultTeams);
   const showLoadTeams =
     hasSavedTeams && loadedTeams !== undefined && !sameTeamSetup(loadedTeams, value);
 

@@ -74,13 +74,15 @@ export function resolveLineup(config: LineupConfig, value: TeamSetupValue): Team
   if (config.teams === "off" || config.unassignedPlayers !== "assign") return value;
   const count = clampTeamCount(value.count, config.teams);
   const assignment = { ...value.assignment };
-  const sizes = Array.from({ length: count }, () => 0);
-  const waiting: string[] = [];
-  for (const player of parsePlayers(value.playersText)) {
+  const players = parsePlayers(value.playersText);
+  const sizes = Array.from(
+    { length: count },
+    (_, team) => players.filter((player) => assignment[player] === team).length,
+  );
+  const waiting = players.filter((player) => {
     const team = assignment[player];
-    if (team !== undefined && team < count) sizes[team] = (sizes[team] ?? 0) + 1;
-    else waiting.push(player);
-  }
+    return team === undefined || team >= count;
+  });
   for (const player of waiting.sort((a, b) => a.localeCompare(b))) {
     const smallest = Math.min(...sizes);
     const index = sizes.indexOf(smallest);

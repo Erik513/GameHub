@@ -67,15 +67,12 @@ export function buildTeams(
 ): SetupTeam[] {
   const count = clampTeamCount(value.count, rules);
   const players = parsePlayers(value.playersText);
-  const entered: SetupTeam[] = Array.from({ length: count }, (_, index) => ({
+  const team = (index: number): SetupTeam => ({
     id: String(index + 1),
     name: (value.names[index] ?? "").trim() || options.defaultName(index + 1),
     players: players.filter((player) => value.assignment[player] === index),
-  }));
-  return normalizeOrder(value.order, count).flatMap((team) => {
-    const setupTeam = entered[team];
-    return setupTeam ? [setupTeam] : [];
   });
+  return normalizeOrder(value.order, count).map(team);
 }
 
 export interface TeamSetupIssue {

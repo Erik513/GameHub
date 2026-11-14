@@ -15,6 +15,7 @@ export const kitTexts = {
     draw: "Draw teams",
     redraw: "Shuffle again",
     dragHint: "Drag players into a team",
+    pickTitle: "Team of {{player}}",
     legend: "Teams",
     defaultName: "Team {{number}}",
     nameLabel: "Name of team {{number}}",

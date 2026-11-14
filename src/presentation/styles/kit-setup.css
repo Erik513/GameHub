@@ -409,7 +409,7 @@
   min-height: var(--control-height);
 }
 
-/* The names of a team: small bordered buttons; drag one into a team, a tap takes it out of its team. */
+/* The names of a team: small bordered buttons; drag one into a team, or tap it to choose its team. */
 .kit-team__names {
   display: flex;
   flex-wrap: wrap;
@@ -422,7 +422,7 @@
 }
 
 .kit-name {
-  min-height: 2.5rem;
+  min-height: var(--touch-target);
   margin: 0;
   padding: 0 var(--space-3);
   border: 1px solid var(--color-line);
@@ -464,6 +464,12 @@
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
+}
+
+/* The choice of a team for one player, in a window. */
+.kit-pick {
+  display: grid;
+  gap: var(--space-2);
 }
 
 /* The playing order of the teams: one below the other with fixed places, the top team starts. */
