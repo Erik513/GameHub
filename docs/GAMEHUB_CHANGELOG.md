@@ -2,6 +2,16 @@
 
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
+## 2026-11-14
+
+### Entwicklungs-Dashboard einheitlich gegliedert
+
+- Eine Gliederung für alles: **Bereich → Phase → Aufgabe**. Jede Phase hat in `GAMEHUB_STATUS.json` das Feld `area` (`general` oder die ID eines Spiels) und erscheint nur in diesem Bereich. Die getrennte „Roadmap“ der Spiel-Tabs mit eigener Stufennummerierung ist entfernt; die Tabs zeigen dieselben Phasen wie „Allgemein“, nur gefiltert. Die Felder `gameIds` an Phasen und Aufgaben und `games[].roadmap` entfallen.
+- Phasen sind nach Bereich und logischem Ablauf geordnet (zum Beispiel `Al-06` ans Ende von „Allgemein“, `Al-07` zu Tabu). Phasen- und Aufgaben-IDs bleiben unverändert und stabil; sie tragen weiter ihr historisches Kürzel.
+- Der **Phasenstatus wird berechnet** (alle Aufgaben erledigt: erledigt; mindestens eine erledigt oder in Arbeit: in Arbeit; sonst geplant), ebenso der Projektfortschritt, und die Aufgaben einer Phase werden nach ID sortiert. `pnpm docs:sync` schreibt das in `GAMEHUB_STATUS.json`, `pnpm docs:check` schlägt bei Abweichung fehl. Das Dashboard zeigt den Phasenstatus als Marke.
+- Qualitätswerte aktualisiert: 600 Unit-Tests, 26 E2E-Tests, Abdeckung 98,11 % Zeilen / 93,58 % Verzweigungen.
+- Folge: Tabu zählt jetzt 57 statt 60 Aufgaben (die Desktop-Aufgaben von `Al-08` und Einzelaufgaben aus gemischten Phasen gehören nun zu „Allgemein“); der Gesamtfortschritt bleibt bei 82 von 148.
+
 ## 2026-11-13
 
 ### Tabu-Kapitel nach Spielmodus und Funktion geordnet

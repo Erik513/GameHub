@@ -56,6 +56,7 @@ Diese Regeln gelten für Codex, Claude Code und andere automatisierte Entwicklun
 - Aktualisiere nach jeder abgeschlossenen Aufgabe `docs/GAMEHUB_STATUS.json` und `docs/GAMEHUB_CHANGELOG.md`.
 - Aktualisiere Projektplan und Entscheidungsdokument, wenn sich Anforderungen oder genehmigte Architekturentscheidungen ändern.
 - Aktualisiere nach jeder größeren Änderung auch `docs/GAMEHUB_DEVELOPMENT.html`: Pflege `docs/GAMEHUB_STATUS.json` und führe danach `pnpm docs:sync` aus. `pnpm docs:check` prüft in der CI, dass der eingebettete Stand aktuell ist.
+- Ordne jede Phase in `docs/GAMEHUB_STATUS.json` über `area` genau einem Bereich zu (`general` oder Spiel-ID); der Phasenstatus wird von `pnpm docs:sync` berechnet und nicht von Hand gepflegt.
 - Berechne Fortschritt ausschließlich aus tatsächlichen Aufgabenstatus. `done` zählt vollständig, `in_progress` zählt nicht als abgeschlossen.
 - Halte Aufgaben-IDs über alle Dokumente hinweg stabil und eindeutig.
 - Verwende ISO-8601-Datumswerte.

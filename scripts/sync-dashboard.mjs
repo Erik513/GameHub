@@ -8,7 +8,11 @@ const dashboardPath = fileURLToPath(new URL("../docs/GAMEHUB_DEVELOPMENT.html", 
 const marker = "const EMBEDDED_STATUS =\n";
 const checkOnly = process.argv.includes("--check");
 
-const status = JSON.parse(await readFile(statusPath, "utf8"));
+const statusSource = await readFile(statusPath, "utf8");
+const status = JSON.parse(statusSource);
+normalizeStatus(status);
+const lineBreak = statusSource.includes("\r\n") ? "\r\n" : "\n";
+const normalizedSource = (JSON.stringify(status, null, 2) + "\n").replace(/\n/g, lineBreak);
 const html = await readFile(dashboardPath, "utf8");
 const start = html.indexOf(marker);
 if (start === -1) throw new Error("EMBEDDED_STATUS marker not found in the dashboard.");
@@ -18,12 +22,40 @@ if (bodyEnd < bodyStart) throw new Error("End of the embedded status not found i
 
 const next = html.slice(0, bodyStart) + JSON.stringify(status, null, 2) + html.slice(bodyEnd);
 
-if (next === html) {
+if (next === html && normalizedSource === statusSource) {
   console.log("Dashboard snapshot is up to date.");
 } else if (checkOnly) {
-  console.error("Dashboard snapshot is outdated. Run `pnpm docs:sync`.");
+  console.error("Status file or dashboard snapshot is outdated. Run `pnpm docs:sync`.");
   process.exitCode = 1;
 } else {
+  await writeFile(statusPath, normalizedSource, "utf8");
   await writeFile(dashboardPath, next, "utf8");
-  console.log("Dashboard snapshot updated.");
+  console.log("Status file and dashboard snapshot updated.");
+}
+
+/**
+ * Derives what must never be edited by hand: the status of a phase follows its tasks (all done is
+ * done, some done or in progress is in progress, otherwise planned) and the project progress is the
+ * share of done tasks. Tasks are sorted by their ID. Every phase must belong to the area "general" or to one game of `games`.
+ */
+function normalizeStatus(data) {
+  const areas = new Set(["general", ...(data.games ?? []).map((game) => game.id)]);
+  for (const phase of data.phases) {
+    if (!areas.has(phase.area))
+      throw new Error(`Phase ${phase.id} has no valid area: ${phase.area}`);
+    phase.tasks.sort((first, second) => first.id.localeCompare(second.id, "en", { numeric: true }));
+    const done = phase.tasks.filter((task) => task.status === "done").length;
+    const started = phase.tasks.some(
+      (task) => task.status === "in_progress" || task.status === "blocked",
+    );
+    phase.status =
+      done === phase.tasks.length ? "done" : done > 0 || started ? "in_progress" : "planned";
+  }
+  const tasks = data.phases.flatMap((phase) => phase.tasks);
+  const completedTasks = tasks.filter((task) => task.status === "done").length;
+  data.project.progress = {
+    completedTasks,
+    totalTasks: tasks.length,
+    percent: Math.round((completedTasks / tasks.length) * 1000) / 10,
+  };
 }

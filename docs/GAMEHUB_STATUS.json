@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-13T18:55:04.815Z",
+    "updatedAt": "2026-11-14T22:30:00+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -50,17 +50,17 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:44:09+01:00",
+      "lastRunAt": "2026-11-14T22:14:00+01:00",
       "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:44:09+01:00",
+      "lastRunAt": "2026-11-14T22:14:00+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:44:09+01:00",
+      "lastRunAt": "2026-11-14T22:14:00+01:00",
       "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich."
     },
     "githubActions": {
@@ -70,7 +70,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:44:09+01:00",
+      "lastRunAt": "2026-11-14T22:14:00+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -80,15 +80,15 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:44:09+01:00",
+      "lastRunAt": "2026-11-14T22:14:00+01:00",
       "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:44:09+01:00",
-      "passed": 252,
+      "lastRunAt": "2026-11-14T22:14:00+01:00",
+      "passed": 600,
       "failed": 0,
-      "details": "235 Unit- und Komponententests bestanden, darunter Übersetzungsqualität (Platzhalter, identische Texte, ungenutzte Schlüssel) und ein Durchlauf aller zwölf Tabu-Ansichten in Deutsch und Englisch. Lokale Ausführung mit Node 25.5."
+      "details": "600 Unit- und Komponententests bestanden (69 Dateien), darunter Übersetzungsqualität, Aufstellung mit Drag and Drop und ein Durchlauf aller Tabu-Ansichten in Deutsch und Englisch."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,10 +99,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:44:09+01:00",
-      "passed": 25,
+      "lastRunAt": "2026-11-14T22:20:00+01:00",
+      "passed": 26,
       "failed": 0,
-      "details": "25 Browserprüfungen (Chrome, Desktop und Mobil) lokal bestanden, dazu 5 mobile Layout-Prüfungen, die auf dem Desktop-Projekt bewusst übersprungen werden. Die Layout-Prüfung testet alle Tabu-Ansichten auf 360 und 412 Pixel Breite in Deutsch und Englisch."
+      "details": "26 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 6 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen."
     },
     "renameValidation": {
       "status": "passed",
@@ -117,29 +117,19 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-11T22:15:38+01:00",
-      "overallLines": 99.18,
-      "overallBranches": 93.7,
-      "overallFunctions": 98.55,
-      "overallStatements": 97.56,
-      "criticalGameLogicLines": 100,
-      "businessLines": 100,
-      "dataInfrastructureLines": 100,
-      "uiLines": 100,
-      "i18nLines": 100,
-      "branches": {
-        "criticalGameLogic": 99.07,
-        "business": 99.07,
-        "dataInfrastructure": 98.43,
-        "ui": 98.03
-      },
-      "details": "Alle Grenzwerte sind deutlich übertroffen. Spiellogik 100 % Zeilen und 99,07 % Verzweigungen, Daten 100 % Zeilen und Verzweigungen, Infrastruktur 100 % Zeilen, Oberfläche 100 % Zeilen (Tabu-Oberfläche 97,85 % Zeilen, 87,72 % Verzweigungen). Offen sind vor allem defensive Rückfallwerte."
+      "lastRunAt": "2026-11-14T22:14:00+01:00",
+      "overallLines": 98.11,
+      "overallBranches": 93.58,
+      "overallFunctions": 97.81,
+      "overallStatements": 96.92,
+      "details": "Alle Grenzwerte der Coverage-Konfiguration sind erfüllt (vitest --coverage)."
     }
   },
   "phases": [
     {
       "id": "Al-01",
       "name": "Projektvorbereitung",
+      "area": "general",
       "status": "done",
       "tasks": [
         {
@@ -187,6 +177,7 @@
     {
       "id": "Al-02",
       "name": "Projektfundament, Entwicklungswerkzeuge und Testinfrastruktur",
+      "area": "general",
       "status": "done",
       "tasks": [
         {
@@ -224,6 +215,7 @@
     {
       "id": "Al-03",
       "name": "Internationalisierung Deutsch/Englisch",
+      "area": "general",
       "status": "done",
       "tasks": [
         {
@@ -251,6 +243,7 @@
     {
       "id": "Al-04",
       "name": "Gemeinsame App-Oberfläche und Designsystem",
+      "area": "general",
       "status": "done",
       "tasks": [
         {
@@ -271,8 +264,159 @@
       ]
     },
     {
+      "id": "Al-05",
+      "name": "Veröffentlichung, E2E-Tests und Qualitätssicherung",
+      "area": "general",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "Al-05-01",
+          "title": "Kritische E2E-Spielabläufe",
+          "status": "done"
+        },
+        {
+          "id": "Al-05-02",
+          "title": "Offline- und PWA-E2E",
+          "status": "done"
+        },
+        {
+          "id": "Al-05-03",
+          "title": "GitHub-Pages-Build und Deployment",
+          "status": "done"
+        },
+        {
+          "id": "Al-05-04",
+          "title": "Qualitäts- und Barrierefreiheitsabnahme",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "Al-09",
+      "name": "Gemeinsame Bausteine für Teams, Spieler und Spieleinstellungen",
+      "area": "general",
+      "status": "in_progress",
+      "tasks": [
+        {
+          "id": "Al-09-01",
+          "title": "Entwurf: gemeinsame Ansicht für Teams, Spieler und Einstellungen (freigegeben)",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-02",
+          "title": "Umsetzung im game-kit und Umstellung von Tabu darauf",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-03",
+          "title": "Optional: Spieler und Teams merken und in allen Spielen anbieten",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-04",
+          "title": "Optional: eigene Adressen für Unterseiten eines Spiels (zum Beispiel Kartenseite)",
+          "status": "planned"
+        },
+        {
+          "id": "Al-09-05",
+          "title": "Feste Ansichten und Oberflächenregeln (ADR-021) im game-kit umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-06",
+          "title": "Spielerverwaltung: gespeicherte Spieler anlegen und löschen, im Spiel wählen",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-07",
+          "title": "Aufstellung nach dem Start: Teams, Spieler und Zuweisung in einer eigenen Ansicht",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-08",
+          "title": "Spielergruppen in der Spielerverwaltung (zum Beispiel Freundesgruppen)",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "Al-08",
+      "name": "PC-Layout für alle Spiele",
+      "area": "general",
+      "status": "planned",
+      "tasks": [
+        {
+          "id": "Al-08-01",
+          "title": "Anforderungen und Entwurf: Handy- und PC-Layout je Spiel, Bausteine im game-kit",
+          "status": "planned"
+        },
+        {
+          "id": "Al-08-02",
+          "title": "Tabu-Einrichtung im Desktop-Layout",
+          "status": "planned"
+        },
+        {
+          "id": "Al-08-02-01",
+          "title": "Laufende Tabu-Runde im Desktop-Layout",
+          "status": "planned"
+        },
+        {
+          "id": "Al-08-02-02",
+          "title": "Tabu-Ergebnis im Desktop-Layout",
+          "status": "planned"
+        },
+        {
+          "id": "Al-08-02-03",
+          "title": "Tabu-Kartenverwaltung im Desktop-Layout",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "Al-10",
+      "name": "Gesamtprüfung nach den Tabu-Erweiterungen",
+      "area": "general",
+      "status": "in_progress",
+      "tasks": [
+        {
+          "id": "Al-10-01",
+          "title": "Gesamtcheck: Schichten, toter Code, Wiederverwendbarkeit, Bedienung (Scrollposition), Dokumentation (docs/GAMEHUB_QUALITY_CHECK.md)",
+          "status": "done"
+        },
+        {
+          "id": "Al-10-02",
+          "title": "Container TabooSetup weiter aufteilen (startGame, Pause und Neustart als Hooks)",
+          "status": "planned"
+        },
+        {
+          "id": "Al-10-03",
+          "title": "KI-Kartenquelle später wieder anschließen (vorerst abgeschaltet, ADR-024; Anbieter Ollama oder LM Studio klären)",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "Al-06",
+      "name": "Spätere Erweiterungen: Multiplayer und weitere Spiele",
+      "area": "general",
+      "status": "planned",
+      "tasks": [
+        {
+          "id": "Al-06-01",
+          "title": "Multiplayer-Discovery und ADR",
+          "status": "planned"
+        },
+        {
+          "id": "Al-06-02",
+          "title": "Spielmodulvertrag überprüfen und erweitern",
+          "status": "planned"
+        }
+      ]
+    },
+    {
       "id": "Ta-01",
       "name": "Tabu-Kernlogik",
+      "area": "taboo",
       "status": "done",
       "tasks": [
         {
@@ -300,14 +444,12 @@
           "title": "Kartenfilter und Deckbildung",
           "status": "done"
         }
-      ],
-      "gameIds": [
-        "taboo"
       ]
     },
     {
       "id": "Ta-02",
       "name": "Tabu-Benutzeroberfläche",
+      "area": "taboo",
       "status": "done",
       "tasks": [
         {
@@ -330,39 +472,28 @@
           "title": "Spielende und Neustart",
           "status": "done"
         }
-      ],
-      "gameIds": [
-        "taboo"
       ]
     },
     {
       "id": "Ta-03",
       "name": "Speicherung, Kartensätze und Offlinebetrieb",
+      "area": "taboo",
       "status": "done",
       "tasks": [
         {
           "id": "Ta-03-01",
           "title": "IndexedDB-Schema und Repository-Adapter",
-          "status": "done",
-          "gameIds": [
-            "taboo"
-          ]
+          "status": "done"
         },
         {
           "id": "Ta-03-02",
           "title": "Lokale deutsche und englische Kartensätze",
-          "status": "done",
-          "gameIds": [
-            "taboo"
-          ]
+          "status": "done"
         },
         {
           "id": "Ta-03-03",
           "title": "Import und Aktualisierung lokaler Karten",
-          "status": "done",
-          "gameIds": [
-            "taboo"
-          ]
+          "status": "done"
         },
         {
           "id": "Ta-03-04",
@@ -372,8 +503,32 @@
       ]
     },
     {
+      "id": "Al-07",
+      "name": "Mobile-Optimierung der Oberfläche",
+      "area": "taboo",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "Al-07-01",
+          "title": "Mobile-first Oberfläche mit Daumenzone",
+          "status": "done"
+        },
+        {
+          "id": "Al-07-02",
+          "title": "Spielablauf: Rundenübersicht, Pause, Überspringlimit und Stechen",
+          "status": "done"
+        },
+        {
+          "id": "Al-07-03",
+          "title": "Feinschliff nach Rückmeldung (Menü, Karte, Stechen, Rundenzahl)",
+          "status": "done"
+        }
+      ]
+    },
+    {
       "id": "Ta-04",
       "name": "KI-Kartengenerierung",
+      "area": "taboo",
       "status": "done",
       "tasks": [
         {
@@ -401,70 +556,13 @@
           "title": "Generierungsoberfläche und lokale Speicherung",
           "status": "done"
         }
-      ],
-      "gameIds": [
-        "taboo"
-      ]
-    },
-    {
-      "id": "Al-05",
-      "name": "Veröffentlichung, E2E-Tests und Qualitätssicherung",
-      "status": "done",
-      "tasks": [
-        {
-          "id": "Al-05-01",
-          "title": "Kritische E2E-Spielabläufe",
-          "status": "done",
-          "gameIds": [
-            "taboo"
-          ]
-        },
-        {
-          "id": "Al-05-02",
-          "title": "Offline- und PWA-E2E",
-          "status": "done"
-        },
-        {
-          "id": "Al-05-03",
-          "title": "GitHub-Pages-Build und Deployment",
-          "status": "done"
-        },
-        {
-          "id": "Al-05-04",
-          "title": "Qualitäts- und Barrierefreiheitsabnahme",
-          "status": "done"
-        }
-      ]
-    },
-    {
-      "id": "Al-07",
-      "name": "Mobile-Optimierung der Oberfläche",
-      "status": "done",
-      "tasks": [
-        {
-          "id": "Al-07-01",
-          "title": "Mobile-first Oberfläche mit Daumenzone",
-          "status": "done"
-        },
-        {
-          "id": "Al-07-02",
-          "title": "Spielablauf: Rundenübersicht, Pause, Überspringlimit und Stechen",
-          "status": "done"
-        },
-        {
-          "id": "Al-07-03",
-          "title": "Feinschliff nach Rückmeldung (Menü, Karte, Stechen, Rundenzahl)",
-          "status": "done"
-        }
-      ],
-      "gameIds": [
-        "taboo"
       ]
     },
     {
       "id": "Ta-05",
       "name": "Tabu-Qualitätsprüfung",
-      "status": "planned",
+      "area": "taboo",
+      "status": "done",
       "tasks": [
         {
           "id": "Ta-05-01",
@@ -489,25 +587,20 @@
         {
           "id": "Ta-05-05",
           "title": "Struktur prüfen und wiederverwendbare Spielbausteine dokumentieren",
-          "status": "done",
-          "gameIds": [
-            "general"
-          ]
+          "status": "done"
         },
         {
           "id": "Ta-05-06",
           "title": "Tabu-Zustandslogik als Hooks und CSS je Spiel",
           "status": "done"
         }
-      ],
-      "gameIds": [
-        "taboo"
       ]
     },
     {
       "id": "Ta-06",
       "name": "Tabu-Erweiterungen",
-      "status": "planned",
+      "area": "taboo",
+      "status": "in_progress",
       "tasks": [
         {
           "id": "Ta-06-01",
@@ -555,11 +648,6 @@
           "status": "done"
         },
         {
-          "id": "Ta-06-07-F",
-          "title": "Ergebnisse bei Auf Zeit und im Stechen korrigieren",
-          "status": "done"
-        },
-        {
           "id": "Ta-06-07-C",
           "title": "Spiellogik für Gegen die Zeit",
           "status": "planned"
@@ -570,42 +658,36 @@
           "status": "planned"
         },
         {
+          "id": "Ta-06-07-D-01",
+          "title": "Laufende Runde für Gegen die Zeit",
+          "status": "planned"
+        },
+        {
+          "id": "Ta-06-07-D-02",
+          "title": "Rundenübersicht für Gegen die Zeit",
+          "status": "planned"
+        },
+        {
+          "id": "Ta-06-07-D-03",
+          "title": "Ergebnis für Gegen die Zeit",
+          "status": "planned"
+        },
+        {
           "id": "Ta-06-07-E",
           "title": "Regeln und Leitfaden aktualisieren, beide Zeitmodi abschließend testen",
           "status": "planned"
         },
         {
-          "id": "Ta-06-07-D-01",
-          "title": "Laufende Runde für Gegen die Zeit",
-          "status": "planned",
-          "gameIds": [
-            "taboo"
-          ]
-        },
-        {
-          "id": "Ta-06-07-D-02",
-          "title": "Rundenübersicht für Gegen die Zeit",
-          "status": "planned",
-          "gameIds": [
-            "taboo"
-          ]
-        },
-        {
-          "id": "Ta-06-07-D-03",
-          "title": "Ergebnis für Gegen die Zeit",
-          "status": "planned",
-          "gameIds": [
-            "taboo"
-          ]
+          "id": "Ta-06-07-F",
+          "title": "Ergebnisse bei Auf Zeit und im Stechen korrigieren",
+          "status": "done"
         }
-      ],
-      "gameIds": [
-        "taboo"
       ]
     },
     {
       "id": "Ta-07",
       "name": "Karten und Kategorien neu gestalten",
+      "area": "taboo",
       "status": "done",
       "tasks": [
         {
@@ -633,14 +715,12 @@
           "title": "Kartenseite verfeinern: Symbolknöpfe, Export je Kategorie, Import-Knopf",
           "status": "done"
         }
-      ],
-      "gameIds": [
-        "taboo"
       ]
     },
     {
       "id": "Ta-08",
       "name": "Lokale KI am Rechner",
+      "area": "taboo",
       "status": "done",
       "tasks": [
         {
@@ -648,14 +728,12 @@
           "title": "Qualitätstest: kleines Browser-Modell für verbotene Wörter (Ergebnis: nicht brauchbar)",
           "status": "done"
         }
-      ],
-      "gameIds": [
-        "taboo"
       ]
     },
     {
       "id": "Ta-09",
       "name": "Großer Kartenpool für Tabu",
+      "area": "taboo",
       "status": "in_progress",
       "tasks": [
         {
@@ -698,152 +776,27 @@
           "title": "Noch mehr Karten erzeugen: Ziel 30 Karten je Schwierigkeit und Kategorie (900 je Sprache, bisher 17 bis 19; es fehlen etwa 380 je Sprache); Claude schreibt die Karten, die Skripte prüfen sie, dann werden sie eingebaut. Fertig: alle zehn Kategorien je Schwierigkeit 30 Karten, 900 je Sprache (Deutsch und Englisch)",
           "status": "done"
         }
-      ],
-      "gameIds": [
-        "taboo"
-      ]
-    },
-    {
-      "id": "Al-08",
-      "name": "PC-Layout für alle Spiele",
-      "status": "planned",
-      "tasks": [
-        {
-          "id": "Al-08-01",
-          "title": "Anforderungen und Entwurf: Handy- und PC-Layout je Spiel, Bausteine im game-kit",
-          "status": "planned"
-        },
-        {
-          "id": "Al-08-02",
-          "title": "Tabu-Einrichtung im Desktop-Layout",
-          "status": "planned",
-          "gameIds": [
-            "taboo"
-          ]
-        },
-        {
-          "id": "Al-08-02-01",
-          "title": "Laufende Tabu-Runde im Desktop-Layout",
-          "status": "planned",
-          "gameIds": [
-            "taboo"
-          ]
-        },
-        {
-          "id": "Al-08-02-02",
-          "title": "Tabu-Ergebnis im Desktop-Layout",
-          "status": "planned",
-          "gameIds": [
-            "taboo"
-          ]
-        },
-        {
-          "id": "Al-08-02-03",
-          "title": "Tabu-Kartenverwaltung im Desktop-Layout",
-          "status": "planned",
-          "gameIds": [
-            "taboo"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "Al-09",
-      "name": "Gemeinsame Bausteine für Teams, Spieler und Spieleinstellungen",
-      "status": "planned",
-      "tasks": [
-        {
-          "id": "Al-09-01",
-          "title": "Entwurf: gemeinsame Ansicht für Teams, Spieler und Einstellungen (freigegeben)",
-          "status": "done"
-        },
-        {
-          "id": "Al-09-02",
-          "title": "Umsetzung im game-kit und Umstellung von Tabu darauf",
-          "status": "done"
-        },
-        {
-          "id": "Al-09-03",
-          "title": "Optional: Spieler und Teams merken und in allen Spielen anbieten",
-          "status": "done"
-        },
-        {
-          "id": "Al-09-04",
-          "title": "Optional: eigene Adressen für Unterseiten eines Spiels (zum Beispiel Kartenseite)",
-          "status": "planned"
-        },
-        {
-          "id": "Al-09-05",
-          "title": "Feste Ansichten und Oberflächenregeln (ADR-021) im game-kit umsetzen",
-          "status": "done"
-        },
-        {
-          "id": "Al-09-06",
-          "title": "Spielerverwaltung: gespeicherte Spieler anlegen und löschen, im Spiel wählen",
-          "status": "done"
-        },
-        {
-          "id": "Al-09-07",
-          "title": "Aufstellung nach dem Start: Teams, Spieler und Zuweisung in einer eigenen Ansicht",
-          "status": "done"
-        },
-        {
-          "id": "Al-09-08",
-          "title": "Spielergruppen in der Spielerverwaltung (zum Beispiel Freundesgruppen)",
-          "status": "planned"
-        }
-      ]
-    },
-    {
-      "id": "Al-10",
-      "name": "Gesamtprüfung nach den Tabu-Erweiterungen",
-      "status": "in_progress",
-      "tasks": [
-        {
-          "id": "Al-10-01",
-          "title": "Gesamtcheck: Schichten, toter Code, Wiederverwendbarkeit, Bedienung (Scrollposition), Dokumentation (docs/GAMEHUB_QUALITY_CHECK.md)",
-          "status": "done"
-        },
-        {
-          "id": "Al-10-02",
-          "title": "Container TabooSetup weiter aufteilen (startGame, Pause und Neustart als Hooks)",
-          "status": "planned"
-        },
-        {
-          "id": "Al-10-03",
-          "title": "KI-Kartenquelle später wieder anschließen (vorerst abgeschaltet, ADR-024; Anbieter Ollama oder LM Studio klären)",
-          "status": "planned"
-        }
-      ]
-    },
-    {
-      "id": "Al-06",
-      "name": "Spätere Erweiterungen: Multiplayer und weitere Spiele",
-      "status": "planned",
-      "tasks": [
-        {
-          "id": "Al-06-01",
-          "title": "Multiplayer-Discovery und ADR",
-          "status": "planned"
-        },
-        {
-          "id": "Al-06-02",
-          "title": "Spielmodulvertrag überprüfen und erweitern",
-          "status": "planned"
-        }
       ]
     },
     {
       "id": "Wb-01",
       "name": "Wortbombe",
+      "area": "word-bomb",
       "status": "planned",
-      "gameIds": [
-        "word-bomb"
-      ],
       "tasks": [
         {
           "id": "Wb-01-01",
           "title": "Weitergabe und Rücknahme im Spielerkreis",
+          "status": "planned"
+        },
+        {
+          "id": "Wb-01-02",
+          "title": "Zweisprachige Aufgaben und Kartenziehung",
+          "status": "planned"
+        },
+        {
+          "id": "Wb-01-03",
+          "title": "Laufende Wortbombe-Runde",
           "status": "planned"
         },
         {
@@ -857,18 +810,8 @@
           "status": "planned"
         },
         {
-          "id": "Wb-01-02",
-          "title": "Zweisprachige Aufgaben und Kartenziehung",
-          "status": "planned"
-        },
-        {
           "id": "Wb-01-08",
           "title": "Einrichtung für Wortbombe",
-          "status": "planned"
-        },
-        {
-          "id": "Wb-01-03",
-          "title": "Laufende Wortbombe-Runde",
           "status": "planned"
         },
         {
@@ -891,10 +834,8 @@
     {
       "id": "Im-01",
       "name": "Imposter",
+      "area": "imposter",
       "status": "planned",
-      "gameIds": [
-        "imposter"
-      ],
       "tasks": [
         {
           "id": "Im-01-01",
@@ -902,8 +843,18 @@
           "status": "planned"
         },
         {
+          "id": "Im-01-02",
+          "title": "Verdeckte Rollenanzeige",
+          "status": "planned"
+        },
+        {
           "id": "Im-01-04",
           "title": "Zweisprachige Begriffe und optionales Hilfswort",
+          "status": "planned"
+        },
+        {
+          "id": "Im-01-05",
+          "title": "Einrichtung für Imposter",
           "status": "planned"
         },
         {
@@ -919,16 +870,6 @@
         {
           "id": "Im-01-08",
           "title": "Abstimmung, Stichwahl und Rateversuch auswerten",
-          "status": "planned"
-        },
-        {
-          "id": "Im-01-02",
-          "title": "Verdeckte Rollenanzeige",
-          "status": "planned"
-        },
-        {
-          "id": "Im-01-05",
-          "title": "Einrichtung für Imposter",
           "status": "planned"
         },
         {
@@ -966,10 +907,8 @@
     {
       "id": "We-01",
       "name": "Werwolf",
+      "area": "werewolf",
       "status": "in_progress",
-      "gameIds": [
-        "werewolf"
-      ],
       "tasks": [
         {
           "id": "We-01-01",
@@ -977,13 +916,23 @@
           "status": "done"
         },
         {
-          "id": "We-01-06",
-          "title": "Rollen auslosen und verdeckt zuteilen",
+          "id": "We-01-02",
+          "title": "Nachtlogik für Seherin und Werwölfe",
           "status": "planned"
         },
         {
-          "id": "We-01-02",
-          "title": "Nachtlogik für Seherin und Werwölfe",
+          "id": "We-01-04",
+          "title": "Nachtansicht für den Erzähler",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-05",
+          "title": "Spielmenü, Übersetzungen und mobile Abnahme",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-06",
+          "title": "Rollen auslosen und verdeckt zuteilen",
           "status": "planned"
         },
         {
@@ -997,18 +946,8 @@
           "status": "planned"
         },
         {
-          "id": "We-01-04",
-          "title": "Nachtansicht für den Erzähler",
-          "status": "planned"
-        },
-        {
           "id": "We-01-10",
           "title": "Morgenansicht für Werwolf",
-          "status": "planned"
-        },
-        {
-          "id": "We-01-05",
-          "title": "Spielmenü, Übersetzungen und mobile Abnahme",
           "status": "planned"
         },
         {
@@ -1041,10 +980,8 @@
     {
       "id": "Lb-01",
       "name": "Liar’s Bar",
+      "area": "liars-bar",
       "status": "planned",
-      "gameIds": [
-        "liars-bar"
-      ],
       "tasks": [
         {
           "id": "Lb-01-01",
@@ -1057,18 +994,8 @@
           "status": "planned"
         },
         {
-          "id": "Lb-01-06",
-          "title": "Verdecktes Ablegen und Zugfolge",
-          "status": "planned"
-        },
-        {
           "id": "Lb-01-03",
           "title": "Anzweifeln und letzte Ablage auswerten",
-          "status": "planned"
-        },
-        {
-          "id": "Lb-01-07",
-          "title": "Risikoauflösung, Folgerunde und Sieg",
           "status": "planned"
         },
         {
@@ -1077,13 +1004,23 @@
           "status": "planned"
         },
         {
-          "id": "Lb-01-08",
-          "title": "Öffentliche Tischansicht",
+          "id": "Lb-01-05",
+          "title": "Spielmenü, Übersetzungen und mobile Abnahme",
           "status": "planned"
         },
         {
-          "id": "Lb-01-05",
-          "title": "Spielmenü, Übersetzungen und mobile Abnahme",
+          "id": "Lb-01-06",
+          "title": "Verdecktes Ablegen und Zugfolge",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-07",
+          "title": "Risikoauflösung, Folgerunde und Sieg",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-01-08",
+          "title": "Öffentliche Tischansicht",
           "status": "planned"
         },
         {
@@ -1115,6 +1052,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-14",
+      "summary": "Dashboard neu gegliedert: jede Phase gehört zu genau einem Bereich (Allgemein oder ein Spiel), der Phasenstatus wird aus den Aufgaben berechnet, die Spiel-Tabs zeigen dieselben Phasen wie Allgemein, Qualitätswerte aktualisiert."
+    },
     {
       "date": "2026-11-13",
       "summary": "Tabu-Aufgaben nach Spielmodus und Funktion geordnet. Die Abschlussaufgabe für die Zeitmodi trägt einen eindeutigen Titel."
@@ -1455,311 +1396,23 @@
   "games": [
     {
       "id": "taboo",
-      "name": "Tabu",
-      "roadmap": [
-        {
-          "id": "rules",
-          "taskIds": [
-            "Ta-06-07"
-          ],
-          "document": "GAMEHUB_TABOO_LOGIC.md",
-          "name": "Regeln und Spielmodi"
-        },
-        {
-          "id": "logic",
-          "taskIds": [
-            "Ta-01-01",
-            "Ta-01-02",
-            "Ta-01-03",
-            "Ta-01-04",
-            "Ta-01-05",
-            "Ta-05-01"
-          ],
-          "name": "Klassische Runde und Wertung"
-        },
-        {
-          "id": "cards",
-          "name": "Kartensätze, Kartenprüfung und Speicherung",
-          "taskIds": [
-            "Ta-03-01",
-            "Ta-03-02",
-            "Ta-03-03",
-            "Ta-09-01",
-            "Ta-09-02",
-            "Ta-09-03",
-            "Ta-09-04",
-            "Ta-09-05",
-            "Ta-09-06",
-            "Ta-09-07",
-            "Ta-09-08"
-          ]
-        },
-        {
-          "id": "views",
-          "taskIds": [
-            "Ta-02-01",
-            "Ta-06-01",
-            "Ta-06-02",
-            "Ta-06-03",
-            "Ta-06-04",
-            "Ta-02-02",
-            "Ta-02-03",
-            "Ta-02-04",
-            "Al-07-02",
-            "Ta-05-06",
-            "Al-07-01",
-            "Al-07-03"
-          ],
-          "description": "Einrichtung → Runde → Rundenauswertung → Spielende. Danach folgen Kartenverwaltung und Feinschliff.",
-          "name": "Einrichtung, Kartenansicht und Rundenergebnis"
-        },
-        {
-          "id": "race",
-          "name": "Auf Zeit",
-          "taskIds": [
-            "Ta-06-07-A",
-            "Ta-06-07-B",
-            "Ta-06-07-F"
-          ]
-        },
-        {
-          "id": "countdown",
-          "name": "Gegen die Zeit",
-          "taskIds": [
-            "Ta-06-07-C",
-            "Ta-06-07-D",
-            "Ta-06-07-D-01",
-            "Ta-06-07-D-02",
-            "Ta-06-07-D-03"
-          ]
-        },
-        {
-          "id": "generation",
-          "name": "Kartengenerierung und Prüfung",
-          "taskIds": [
-            "Ta-04-01",
-            "Ta-04-02",
-            "Ta-04-03",
-            "Ta-04-04",
-            "Ta-04-05",
-            "Ta-07-04",
-            "Ta-08-01"
-          ]
-        },
-        {
-          "id": "library",
-          "name": "Kartenverwaltung",
-          "taskIds": [
-            "Ta-07-03",
-            "Ta-07-02",
-            "Ta-07-01",
-            "Ta-06-05",
-            "Ta-06-06",
-            "Ta-07-05"
-          ]
-        },
-        {
-          "id": "desktop",
-          "name": "Desktop-Ansichten",
-          "taskIds": [
-            "Al-08-02",
-            "Al-08-02-01",
-            "Al-08-02-02",
-            "Al-08-02-03"
-          ]
-        },
-        {
-          "id": "check",
-          "taskIds": [
-            "Ta-05-02",
-            "Ta-05-03",
-            "Ta-05-04",
-            "Al-05-01"
-          ],
-          "name": "Sprachprüfung und Spieltests"
-        },
-        {
-          "id": "mode-review",
-          "name": "Dokumentation und Abnahme der Zeitmodi",
-          "taskIds": [
-            "Ta-06-07-E"
-          ]
-        }
-      ]
+      "name": "Tabu"
     },
     {
       "id": "word-bomb",
-      "name": "Wortbombe",
-      "roadmap": [
-        {
-          "id": "rules",
-          "taskIds": [],
-          "document": "GAMEHUB_WORTBOMBE.md",
-          "name": "Regeln der Wortbombe"
-        },
-        {
-          "id": "logic",
-          "taskIds": [
-            "Wb-01-01",
-            "Wb-01-04",
-            "Wb-01-06",
-            "Wb-01-02"
-          ],
-          "name": "Weitergabe, Timer und Ausscheiden"
-        },
-        {
-          "id": "views",
-          "taskIds": [
-            "Wb-01-08",
-            "Wb-01-03",
-            "Wb-01-31",
-            "Wb-01-32"
-          ],
-          "description": "Einrichtung → laufende Runde → Explosion und Einspruch → Ergebnis.",
-          "name": "Einrichtung, Runde, Explosion und Ergebnis"
-        },
-        {
-          "id": "check",
-          "taskIds": [
-            "Wb-01-09"
-          ],
-          "name": "Spielmenü und mobile Testpartie"
-        }
-      ]
+      "name": "Wortbombe"
     },
     {
       "id": "imposter",
-      "name": "Imposter",
-      "roadmap": [
-        {
-          "id": "rules",
-          "taskIds": [],
-          "document": "GAMEHUB_IMPOSTER.md",
-          "name": "Regeln für Hinweise und Abstimmung"
-        },
-        {
-          "id": "logic",
-          "taskIds": [
-            "Im-01-01",
-            "Im-01-04",
-            "Im-01-06",
-            "Im-01-08"
-          ],
-          "name": "Rollen, Hinweisrunden und Abstimmungsauswertung"
-        },
-        {
-          "id": "views",
-          "taskIds": [
-            "Im-01-05",
-            "Im-01-02",
-            "Im-01-10",
-            "Im-01-07",
-            "Im-01-28",
-            "Im-01-29",
-            "Im-01-30",
-            "Im-01-31"
-          ],
-          "description": "Einrichtung → Rollen aufdecken → Hinweise → offene oder geheime Abstimmung → bei Bedarf Stichwahl oder Rateversuch → Ergebnis.",
-          "name": "Rollenanzeige, Hinweise, Abstimmung und Auflösung"
-        },
-        {
-          "id": "check",
-          "taskIds": [
-            "Im-01-11"
-          ],
-          "name": "Spielmenü und mobile Testpartie"
-        }
-      ]
+      "name": "Imposter"
     },
     {
       "id": "werewolf",
-      "name": "Werwolf",
-      "roadmap": [
-        {
-          "id": "rules",
-          "taskIds": [
-            "We-01-01"
-          ],
-          "document": "GAMEHUB_WERWOLF.md",
-          "name": "Rollen und Regeln nach Ultimate Werewolf"
-        },
-        {
-          "id": "logic",
-          "taskIds": [
-            "We-01-06",
-            "We-01-02",
-            "We-01-08",
-            "We-01-09"
-          ],
-          "name": "Rollenzuteilung, Nacht, Tag und Siegbedingungen"
-        },
-        {
-          "id": "views",
-          "taskIds": [
-            "We-01-26",
-            "We-01-27",
-            "We-01-04",
-            "We-01-10",
-            "We-01-28",
-            "We-01-29",
-            "We-01-30"
-          ],
-          "description": "Einrichtung und geheime Rollenanzeige → Nacht → Morgen und Tag → Ergebnis.",
-          "name": "Rollenanzeige und Erzähleransichten für Nacht und Tag"
-        },
-        {
-          "id": "check",
-          "taskIds": [
-            "We-01-05"
-          ],
-          "name": "Spielmenü und mobile Testpartie"
-        }
-      ]
+      "name": "Werwolf"
     },
     {
       "id": "liars-bar",
-      "name": "Liar’s Bar",
-      "roadmap": [
-        {
-          "id": "rules",
-          "taskIds": [
-            "Lb-01-01"
-          ],
-          "document": "GAMEHUB_LIARS_BAR.md",
-          "name": "Kartenmodus und Regeln am Tisch"
-        },
-        {
-          "id": "logic",
-          "taskIds": [
-            "Lb-01-02",
-            "Lb-01-06",
-            "Lb-01-03",
-            "Lb-01-07"
-          ],
-          "name": "Kartenstapel, Ablegen, Anzweifeln und Ausscheiden"
-        },
-        {
-          "id": "views",
-          "taskIds": [
-            "Lb-01-26",
-            "Lb-01-27",
-            "Lb-01-04",
-            "Lb-01-08",
-            "Lb-01-28",
-            "Lb-01-29",
-            "Lb-01-30"
-          ],
-          "description": "Einrichtung → private Hand und Geräteübergabe → Tisch und Herausforderung → Ergebnis.",
-          "name": "Kartenhand, Tisch, Herausforderung und Ergebnis"
-        },
-        {
-          "id": "check",
-          "taskIds": [
-            "Lb-01-05"
-          ],
-          "name": "Spielmenü und mobile Testpartie"
-        }
-      ]
+      "name": "Liar’s Bar"
     }
   ]
 }
