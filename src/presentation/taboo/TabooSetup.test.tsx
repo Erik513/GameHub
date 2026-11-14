@@ -53,13 +53,34 @@ it("opens the line-up after Start and only starts the game from there", async ()
   await user.click(screen.getByRole("button", { name: "Start" }));
   const lineup = screen.getByRole("region", { name: "Line-up" });
   expect(within(lineup).getByRole("group", { name: "Teams" })).toBeVisible();
-  // Players are added right there and split with one button.
-  expect(within(lineup).getByLabelText("Add player")).toBeVisible();
-  expect(within(lineup).getByRole("button", { name: "Split randomly into teams" })).toBeVisible();
+  // Taboo does not need names: the box "Players" is collapsed, the box "Teams" is open.
+  expect(
+    within(lineup).getByRole("region", { name: "Players" }).querySelector("details"),
+  ).not.toHaveAttribute("open");
+  expect(
+    within(lineup).getByRole("region", { name: "Teams" }).querySelector("details"),
+  ).toHaveAttribute("open");
+  expect(within(lineup).getByRole("textbox", { name: "Name of team 1" })).toBeVisible();
   expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
   await user.click(within(lineup).getByRole("button", { name: "Start game" }));
   expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
   expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
+});
+
+it("starts although players that were added have no team, because Taboo does not need names", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
+    </I18nextProvider>,
+  );
+  await user.click(screen.getByRole("button", { name: "Start" }));
+  const lineup = screen.getByRole("region", { name: "Line-up" });
+  await user.type(within(lineup).getByLabelText("Add player"), "Anna, Ben{enter}");
+  await user.click(within(lineup).getByRole("button", { name: "Start game" }));
+  expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
+  expect(screen.queryByText(/Players without a team/)).not.toBeInTheDocument();
 });
 
 it.each([

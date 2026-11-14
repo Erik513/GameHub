@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addPlayersToText, removePlayerFromText, smallestTeamIndex } from "./playerList";
+import { addPlayersToText, removePlayerFromText } from "./playerList";
 
 describe("addPlayersToText", () => {
   it("adds a name with a capital first letter", () => {
@@ -27,20 +27,5 @@ describe("removePlayerFromText", () => {
     expect(removePlayerFromText("Anna\nBen\nClara", "ben")).toBe("Anna\nClara");
     expect(removePlayerFromText("Anna", "Ben")).toBe("Anna");
     expect(removePlayerFromText("Anna", "Anna")).toBe("");
-  });
-});
-
-describe("smallestTeamIndex", () => {
-  it("returns the team with the fewest players, the first one when equal", () => {
-    expect(smallestTeamIndex({}, 3)).toBe(0);
-    expect(smallestTeamIndex({ Anna: 0 }, 3)).toBe(1);
-    expect(smallestTeamIndex({ Anna: 0, Ben: 1 }, 3)).toBe(2);
-    expect(smallestTeamIndex({ Anna: 0, Ben: 1, Clara: 2 }, 3)).toBe(0);
-    expect(smallestTeamIndex({ Anna: 0, Ben: 0, Clara: 1 }, 2)).toBe(1);
-  });
-
-  it("ignores players of teams that do not exist and answers nothing without teams", () => {
-    expect(smallestTeamIndex({ Anna: 5 }, 2)).toBe(0);
-    expect(smallestTeamIndex({}, 0)).toBeUndefined();
   });
 });

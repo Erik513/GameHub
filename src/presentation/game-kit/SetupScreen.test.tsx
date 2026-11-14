@@ -4,6 +4,7 @@ import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it, vi } from "vitest";
 import { createGameHubI18n } from "../../i18n";
+import { initialTeamSetup } from "../../business/shared/teamSetup";
 import { PlayersSetup } from "./PlayersSetup";
 import { SetupScreen } from "./SetupScreen";
 import { SetupSection } from "./SetupSection";
@@ -86,22 +87,22 @@ it.each([
   async (language, label, add, remove, two, one) => {
     const i18n = await createGameHubI18n(language);
     function Host() {
-      const [text, setText] = useState("");
-      return <PlayersSetup onChange={setText} value={text} />;
+      const [value, setValue] = useState(initialTeamSetup());
+      return <PlayersSetup onChange={setValue} value={value} />;
     }
     render(
       <I18nextProvider i18n={i18n}>
         <Host />
       </I18nextProvider>,
     );
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
     const user = userEvent.setup();
     // The same name twice (in another case) counts once.
     await user.type(screen.getByLabelText(label), "anna, Ben, ANNA");
     await user.click(screen.getByRole("button", { name: add }));
-    expect(screen.getByRole("status")).toHaveTextContent(two);
+    expect(screen.getByRole("list", { name: two })).toBeVisible();
     // A player can be removed again.
     await user.click(screen.getByRole("button", { name: remove }));
-    expect(screen.getByRole("status")).toHaveTextContent(one);
+    expect(screen.getByRole("list", { name: one })).toBeVisible();
   },
 );

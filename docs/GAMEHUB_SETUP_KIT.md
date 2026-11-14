@@ -1,5 +1,7 @@
 # Entwurf: Gemeinsame Ansicht für Teams, Spieler und Spieleinstellungen
 
+> **Stand 2026-11-14 (`ADR-025`):** Die Aufstellung ist konfigurierbar: `LineupSetup` zeigt je nach `LineupConfig` des Spiels die aufklappbaren Boxen „Spieler“ (`PlayersSetup`) und „Teams“ (`TeamsSetup` mit `withPlayers`). `TeamsSetup` hat die Prop `players` nicht mehr; das Hinzufügen von Spielern gehört zu `PlayersSetup`. Startregeln liefert `validateLineup`. Jede Box lädt ihren Teil der gemerkten Gruppe; die Box „Teams“ hat zusätzlich „Teams leeren“ (nebeneinander mit „Letzte Teams laden“, beide immer sichtbar, bei Bedarf gesperrt). `PlayersSetup` ist die einfache Spielerliste (Hinzufügen, Entfernen), `TeamsSetup` enthält Anzahl, Auslosen, Teamkarten mit Namensknöpfen (Tipp öffnet die Teamwahl) und Reihenfolge.
+>
 > **Stand 2026-11-13 (`ADR-023`):** Teams und Spieler stehen nicht mehr im Hauptmenü, sondern in der Ansicht **Aufstellung** nach „Starten“ (`LineupScreen`). Dieses Dokument beschreibt die ursprüngliche Aufteilung; die Bausteine `TeamsSetup` und `PlayersSetup` sind unverändert, nur ihr Ort ist ein anderer.
 
 Dieses Dokument gehört zu Phase Al-09 (`Al-09-01`). Die Entscheidungen in Abschnitt 6 sind getroffen (siehe `ADR-020`); gebaut wird in `Al-09-02`. Es baut auf `ADR-017` (Spielbausteine und Spielmodul-Vertrag) und `docs/GAMEHUB_NEW_GAME_GUIDE.md` auf.

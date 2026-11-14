@@ -1,17 +1,19 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
-import { afterEach, expect, it, vi } from "vitest";
+import { expect, it, vi } from "vitest";
 import {
   buildTeams,
+  defaultTeamRules,
   initialTeamSetup,
   type SetupTeam,
   type TeamRules,
   type TeamSetupValue,
 } from "../../business/shared/teamSetup";
+import { defaultLineup, type PlayersMode } from "../../business/shared/lineup";
 import { createGameHubI18n } from "../../i18n";
-import { TeamsSetup } from "./TeamsSetup";
+import { LineupSetup } from "./LineupSetup";
 
 const texts = {
   en: {
@@ -24,8 +26,12 @@ const texts = {
     addButton: "Add",
     remove: (player: string) => `Remove ${player}`,
     noTeam: "No team",
-    draw: "Split randomly into teams",
+    draw: "Draw teams",
+    redraw: "Shuffle again",
+    pick: (player: string) => `Team of ${player}`,
     chip: (player: string, team: string) => `${player}, ${team}`,
+    edit: (team: string) => `Edit ${team}`,
+    done: (team: string) => `Finish editing ${team}`,
   },
   de: {
     teams: "Teams",
@@ -37,23 +43,33 @@ const texts = {
     addButton: "Hinzufügen",
     remove: (player: string) => `${player} entfernen`,
     noTeam: "Ohne Team",
-    draw: "Zufällig auf Teams verteilen",
+    draw: "Teams auslosen",
+    redraw: "Neu mischen",
+    pick: (player: string) => `Team für ${player}`,
     chip: (player: string, team: string) => `${player}, ${team}`,
+    edit: (team: string) => `${team} bearbeiten`,
+    done: (team: string) => `Bearbeiten von ${team} beenden`,
   },
 } as const;
 
 /** Holds the controlled value like a game would and reports the latest one. */
 async function setup(
   language: "en" | "de",
-  props: { players?: "off" | "optional" | "required"; rules?: TeamRules } = {},
+  props: { players?: PlayersMode; rules?: TeamRules } = {},
 ) {
   const i18n = await createGameHubI18n(language);
   const latest: { value: TeamSetupValue } = { value: initialTeamSetup(props.rules) };
   function Host() {
     const [value, setValue] = useState(latest.value);
     return (
-      <TeamsSetup
-        {...props}
+      <LineupSetup
+        config={{
+          ...defaultLineup,
+          maxPlayers: 99,
+          minPlayers: 0,
+          players: props.players ?? "required",
+          teams: props.rules ?? defaultTeamRules,
+        }}
         onChange={(next) => {
           latest.value = next;
           setValue(next);
@@ -130,59 +146,108 @@ it("respects the limits of the game", async () => {
   expect(screen.getByRole("textbox", { name: "Name of team 1" })).toHaveValue("Longe");
 });
 
+const teamBox = (number: number) => document.querySelectorAll<HTMLElement>(".kit-team")[number - 1];
+const namesIn = (box: HTMLElement | undefined) =>
+  [...(box?.querySelectorAll(".kit-name") ?? [])].map((name) => name.textContent);
+
+/** Taps a name and chooses a team in the window that opens. */
+async function assign(user: ReturnType<typeof userEvent.setup>, player: string, team: string) {
+  await user.click(screen.getByRole("button", { name: player }));
+  await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: team }));
+}
+
 it.each(["en", "de"] as const)(
-  "adds players, splits them randomly and takes them out with a tap in %s",
+  "adds players, draws them into teams and moves one by a tap on the name in %s",
   async (language) => {
     const random = vi.spyOn(Math, "random").mockReturnValue(0);
     const { latest, user, text } = await setup(language);
-    // Nobody to split yet.
-    expect(screen.getByRole("button", { name: text.draw })).toBeDisabled();
+    // Nobody to draw yet.
+    expect(screen.queryByRole("button", { name: text.draw })).not.toBeInTheDocument();
 
     // Several names at once; the first letter becomes a capital letter.
     await user.type(screen.getByLabelText(text.add), "anna, ben{enter}cara");
     await user.click(screen.getByRole("button", { name: text.addButton }));
     expect(latest.value.playersText).toBe("Anna\nBen\nCara");
-    // They wait without a team.
-    const waiting = screen.getByRole("list", { name: text.noTeam });
-    expect(within(waiting).getAllByRole("listitem")).toHaveLength(3);
+    // They wait in a card "No team" until the teams are drawn.
+    expect(
+      namesIn(
+        screen.getByRole("heading", { name: text.noTeam }).closest<HTMLElement>(".kit-team") ??
+          undefined,
+      ),
+    ).toEqual(["Anna", "Ben", "Cara"]);
 
     await user.click(screen.getByRole("button", { name: text.draw }));
     expect(Object.keys(latest.value.assignment).sort()).toEqual(["Anna", "Ben", "Cara"]);
-    expect(screen.queryByRole("list", { name: text.noTeam })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: text.noTeam })).not.toBeInTheDocument();
+    // After the draw the same button shuffles again.
+    expect(screen.getByRole("button", { name: text.redraw })).toBeEnabled();
+    const team = latest.value.assignment.Ben ?? 0;
+    expect(namesIn(teamBox(team + 1))).toContain("Ben");
 
-    // A tap takes a player out of his team; another tap puts him into the smallest team.
-    const label = (team: number | undefined) =>
-      text.chip("Ben", team === undefined ? text.noTeam : text.defaultName(team + 1));
-    const ben = latest.value.assignment.Ben ?? 0;
-    await user.click(screen.getByRole("button", { name: label(ben) }));
+    // A tap on the name opens the choice of the team of that player.
+    await user.click(screen.getByRole("button", { name: "Ben" }));
+    expect(screen.getByRole("dialog", { name: text.pick("Ben") })).toBeVisible();
+    await user.click(
+      within(screen.getByRole("dialog")).getByRole("button", { name: text.defaultName(2 - team) }),
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(latest.value.assignment.Ben).toBe(1 - team);
+
+    // "No team" takes him out again, and he waits in the card.
+    await assign(user, "Ben", text.noTeam);
     expect(latest.value.assignment.Ben).toBeUndefined();
-    await user.click(screen.getByRole("button", { name: label(undefined) }));
-    expect(latest.value.assignment.Ben).toBeDefined();
+    expect(screen.getByRole("heading", { name: text.noTeam })).toBeVisible();
     random.mockRestore();
   },
 );
 
-it("shows who is in which team and uses the typed team names", async () => {
+it("lists the players of a team in alphabetical order", async () => {
+  const { latest, user, text } = await setup("en");
+  await user.type(screen.getByLabelText(text.add), "Cara, anna, Ben");
+  await user.click(screen.getByRole("button", { name: text.addButton }));
+  // The list of the players is alphabetical, too.
+  const rows = within(screen.getByRole("list", { name: /: 3$/ })).getAllByRole("listitem");
+  expect(rows.map((row) => row.querySelector(".kit-member__name")?.textContent)).toEqual([
+    "Anna",
+    "Ben",
+    "Cara",
+  ]);
+  await assign(user, "Cara", "Team 1");
+  await assign(user, "Ben", "Team 1");
+  await assign(user, "Anna", "Team 2");
+  expect(latest.value.assignment).toEqual({ Anna: 1, Ben: 0, Cara: 0 });
+  expect(namesIn(teamBox(1))).toEqual(["Ben", "Cara"]);
+  expect(namesIn(teamBox(2))).toEqual(["Anna"]);
+});
+
+it("uses the typed team names in the team choice", async () => {
   const { latest, user, text } = await setup("en");
   await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Red");
-  await user.type(screen.getByLabelText(text.add), "Anna, Ben");
+  await user.type(screen.getByLabelText(text.add), "Anna");
   await user.click(screen.getByRole("button", { name: text.addButton }));
-  // One tap puts Anna into the first team, which is called Red now.
-  await user.click(screen.getByRole("button", { name: text.chip("Anna", text.noTeam) }));
+  await assign(user, "Anna", "Red");
   expect(latest.value.assignment).toEqual({ Anna: 0 });
-  const red = screen.getByRole("list", { name: "Red" });
-  expect(within(red).getByRole("button", { name: text.chip("Anna", "Red") })).toBeVisible();
   expect(teamsOf({ ...latest.value, order: "entered" })[0]).toMatchObject({
     name: "Red",
     players: ["Anna"],
   });
 });
 
+it("closes the team choice with the close button", async () => {
+  const { latest, user, text } = await setup("en");
+  await user.type(screen.getByLabelText(text.add), "Anna");
+  await user.click(screen.getByRole("button", { name: text.addButton }));
+  await user.click(screen.getByRole("button", { name: "Anna" }));
+  await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Close" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(latest.value.assignment).toEqual({});
+});
+
 it("drops the assignment of a player who is removed", async () => {
   const { latest, user, text } = await setup("en");
   await user.type(screen.getByLabelText(text.add), "Anna, Ben");
   await user.click(screen.getByRole("button", { name: text.addButton }));
-  await user.click(screen.getByRole("button", { name: text.chip("Anna", text.noTeam) }));
+  await assign(user, "Anna", "Team 1");
   expect(latest.value.assignment).toEqual({ Anna: 0 });
 
   await user.click(screen.getByRole("button", { name: text.remove("Anna") }));
@@ -197,7 +262,11 @@ it("does not start anything when Enter is pressed in the field", async () => {
     const [value, setValue] = useState(initialTeamSetup());
     return (
       <form onSubmit={onSubmit}>
-        <TeamsSetup onChange={setValue} value={value} />
+        <LineupSetup
+          config={{ ...defaultLineup, players: "required", teams: defaultTeamRules }}
+          onChange={setValue}
+          value={value}
+        />
       </form>
     );
   }
@@ -209,101 +278,13 @@ it("does not start anything when Enter is pressed in the field", async () => {
   const user = userEvent.setup();
   await user.type(screen.getByLabelText("Add player"), "Anna{enter}");
   expect(onSubmit).not.toHaveBeenCalled();
-  expect(screen.getByRole("button", { name: "Anna, No team" })).toBeVisible();
+  expect(screen.getByRole("button", { name: "Remove Anna" })).toBeVisible();
 });
 
-it("shows only the teams with `off`", async () => {
+it("shows only the teams when the game has no player list", async () => {
   const off = await setup("en", { players: "off" });
   expect(screen.queryByLabelText("Add player")).not.toBeInTheDocument();
-  expect(
-    screen.queryByRole("button", { name: "Split randomly into teams" }),
-  ).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Draw teams" })).not.toBeInTheDocument();
+  expect(document.querySelector(".kit-name")).toBeNull();
   expect(off.latest.value.playersText).toBe("");
-});
-
-afterEach(() => {
-  vi.restoreAllMocks();
-  Reflect.deleteProperty(document, "elementFromPoint");
-});
-
-/** Pretends that the pointer is over the element, as jsdom has no layout. */
-function pointerOver(element: Element | null) {
-  Object.defineProperty(document, "elementFromPoint", { configurable: true, value: () => element });
-}
-
-it("drags a player into a team and back out of it", async () => {
-  const { latest, user, text } = await setup("en");
-  await user.type(screen.getByLabelText(text.add), "Anna");
-  await user.click(screen.getByRole("button", { name: text.addButton }));
-  expect(screen.getAllByText("Drag players here")).toHaveLength(2);
-
-  const anna = screen.getByRole("button", { name: text.chip("Anna", text.noTeam) });
-  const secondTeam = screen.getAllByText("Drag players here")[1]?.closest("[data-drop]") ?? null;
-  fireEvent.pointerDown(anna, { button: 0, clientX: 10, clientY: 10 });
-  pointerOver(secondTeam);
-  fireEvent.pointerMove(window, { clientX: 60, clientY: 60 });
-  // The tag follows the pointer and the field under it is marked.
-  expect(secondTeam).toHaveAttribute("data-over");
-  expect(document.querySelector(".kit-chip--ghost")).toHaveTextContent("Anna");
-  fireEvent.pointerUp(window, { clientX: 60, clientY: 60 });
-  expect(latest.value.assignment).toEqual({ Anna: 1 });
-  expect(document.querySelector(".kit-chip--ghost")).toBeNull();
-
-  // Dropped outside of every field nothing changes; dropped on "No team" he leaves the team.
-  const inTeam = screen.getByRole("button", { name: text.chip("Anna", text.defaultName(2)) });
-  fireEvent.pointerDown(inTeam, { button: 0, clientX: 10, clientY: 10 });
-  pointerOver(null);
-  fireEvent.pointerMove(window, { clientX: 60, clientY: 60 });
-  const none = document.querySelector("[data-drop='none']");
-  pointerOver(none);
-  fireEvent.pointerMove(window, { clientX: 70, clientY: 70 });
-  fireEvent.pointerUp(window, { clientX: 70, clientY: 70 });
-  expect(latest.value.assignment).toEqual({});
-});
-
-it("does not change anything when a drag is cancelled or only a tiny move", async () => {
-  const { latest, user, text } = await setup("en");
-  await user.type(screen.getByLabelText(text.add), "Anna");
-  await user.click(screen.getByRole("button", { name: text.addButton }));
-  const anna = screen.getByRole("button", { name: text.chip("Anna", text.noTeam) });
-  const team = screen.getAllByText("Drag players here")[0]?.closest("[data-drop]") ?? null;
-  pointerOver(team);
-
-  fireEvent.pointerDown(anna, { button: 0, clientX: 10, clientY: 10 });
-  fireEvent.pointerMove(window, { clientX: 12, clientY: 12 });
-  expect(document.querySelector(".kit-chip--ghost")).toBeNull();
-  fireEvent.pointerUp(window, { clientX: 12, clientY: 12 });
-
-  fireEvent.pointerDown(anna, { button: 0, clientX: 10, clientY: 10 });
-  fireEvent.pointerMove(window, { clientX: 80, clientY: 80 });
-  fireEvent.pointerCancel(window, { clientX: 80, clientY: 80 });
-  fireEvent.pointerDown(anna, { button: 2, clientX: 10, clientY: 10 });
-  expect(latest.value.assignment).toEqual({});
-});
-
-it("scrolls the page while a player is held near the edge", async () => {
-  const frames: FrameRequestCallback[] = [];
-  vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => frames.push(callback));
-  vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => undefined);
-  const scrollBy = vi.spyOn(window, "scrollBy").mockImplementation(() => undefined);
-  const { user, text } = await setup("en");
-  await user.type(screen.getByLabelText(text.add), "Anna");
-  await user.click(screen.getByRole("button", { name: text.addButton }));
-  const anna = screen.getByRole("button", { name: text.chip("Anna", text.noTeam) });
-  pointerOver(null);
-
-  const run = () => frames.splice(0).forEach((frame) => frame(0));
-  fireEvent.pointerDown(anna, { button: 0, clientX: 10, clientY: 300 });
-  // In the middle of the screen the page stays where it is.
-  fireEvent.pointerMove(window, { clientX: 50, clientY: 300 });
-  run();
-  expect(scrollBy).not.toHaveBeenCalled();
-  // At the top it scrolls up, at the bottom down.
-  fireEvent.pointerMove(window, { clientX: 50, clientY: 10 });
-  run();
-  expect(scrollBy).toHaveBeenLastCalledWith(0, -14);
-  fireEvent.pointerMove(window, { clientX: 50, clientY: window.innerHeight - 10 });
-  run();
-  expect(scrollBy).toHaveBeenLastCalledWith(0, 14);
-  fireEvent.pointerUp(window, { clientX: 50, clientY: 10 });
 });

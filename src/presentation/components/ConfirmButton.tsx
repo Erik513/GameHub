@@ -8,6 +8,7 @@ interface ConfirmButtonProps {
   armedContent?: ReactNode;
   children: ReactNode;
   className?: string;
+  disabled?: boolean;
   /** Presses right after arming are ignored so a double tap cannot confirm by accident. */
   guardMs?: number;
   idleLabel: string;
@@ -26,6 +27,7 @@ export function ConfirmButton({
   armedLabel,
   children,
   className = "",
+  disabled = false,
   guardMs = 400,
   idleLabel,
   idleVariant = "secondary",
@@ -54,14 +56,15 @@ export function ConfirmButton({
   return (
     <>
       <Button
-        aria-label={armed ? armedLabel : idleLabel}
+        aria-label={armed && !disabled ? armedLabel : idleLabel}
         className={`confirm-button ${className}`.trim()}
-        data-armed={armed}
-        title={armed ? armedLabel : idleLabel}
-        variant={armed ? "danger" : idleVariant}
+        data-armed={armed && !disabled}
+        disabled={disabled}
+        title={armed && !disabled ? armedLabel : idleLabel}
+        variant={armed && !disabled ? "danger" : idleVariant}
         onClick={handleClick}
       >
-        {armed ? (armedContent ?? armedLabel) : children}
+        {armed && !disabled ? (armedContent ?? armedLabel) : children}
       </Button>
       <span className="visually-hidden" role="status">
         {armed ? armedLabel : ""}

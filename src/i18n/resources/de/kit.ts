@@ -1,12 +1,20 @@
 /** Texts of the shared game building blocks (setup screen, teams, players). */
 export const kitTexts = {
   kitSetup: {
-    teamsSection: "Teams und Spieler",
+    playersSection: "Spieler",
+    teamsSection: "Teams",
     settingsSection: "Spieleinstellungen",
     infoLabel: "Info zu {{setting}}",
+    sure: "Sicher?",
   },
   kitTeams: {
-    loadLast: "Letzte Gruppe laden",
+    loadLastTeams: "Letzte Teams laden",
+    clear: "Teams leeren",
+    clearConfirm: "Teams wirklich leeren? Nochmal tippen",
+    summary: "Teams: {{count}}",
+    draw: "Teams auslosen",
+    redraw: "Neu mischen",
+    pickTitle: "Team für {{player}}",
     legend: "Teams",
     defaultName: "Team {{number}}",
     nameLabel: "Name von Team {{number}}",
@@ -22,11 +30,13 @@ export const kitTexts = {
     addPlaceholder: "Name des Spielers",
     addButton: "Hinzufügen",
     removeLabel: "{{player}} entfernen",
-    chipLabel: "{{player}}, {{team}}",
     noTeam: "Ohne Team",
-    dropHint: "Spieler hierher ziehen",
     count: "Spieler: {{count}}",
-    draw: "Zufällig auf Teams verteilen",
+  },
+  kitLineup: {
+    too_few_players: "Es braucht mindestens {{count}} Spieler.",
+    too_many_players: "Es können höchstens {{count}} Spieler mitspielen.",
+    players_without_team: "Spieler ohne Team: {{count}}. Teams auslosen oder einen Namen antippen.",
   },
   kitRoster: {
     open: "Spieler",

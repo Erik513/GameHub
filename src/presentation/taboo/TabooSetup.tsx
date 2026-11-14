@@ -20,10 +20,13 @@ import {
   customCategoryIds,
   type TabooCategoryInfo,
 } from "../../business/games/taboo/categories";
+import { tabooLineup } from "../../business/games/taboo/lineup";
+import { resolveLineup, validateLineup, type LineupIssue } from "../../business/shared/lineup";
 import { buildTeams, initialTeamSetup, type TeamSetupValue } from "../../business/shared/teamSetup";
 import { hasTeamSetupContent } from "../../business/shared/savedTeamSetup";
+import { Toast, useNotice } from "../components";
 import { useGameBack, useGameExit } from "../GameChrome";
-import { LineupScreen, SetupSection, TeamsSetup, useTeamSetupMemory } from "../game-kit";
+import { LineupScreen, LineupSetup, useTeamSetupMemory } from "../game-kit";
 import { TabooRaceGame } from "./TabooRaceGame";
 import { TabooRound } from "./TabooRound";
 import { useTabooRefill } from "./useTabooRefill";
@@ -124,6 +127,7 @@ export function TabooSetup({
   useEffect(() => () => activeGeneration.current?.abort(), []);
   const [formVersion, setFormVersion] = useState(0);
   const [teamSetup, setTeamSetup] = useState<TeamSetupValue>(initialTeamSetup);
+  const [lineupNotice, notifyLineup] = useNotice<LineupIssue>();
   const memory = useTeamSetupMemory();
   const [restartUnavailable, setRestartUnavailable] = useState(false);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
@@ -336,13 +340,19 @@ export function TabooSetup({
     setAttempt((count) => count + 1);
     event.preventDefault();
     if (activeGeneration.current || !settings) return;
+    // The game's own rules for the line-up (Taboo leaves players without a team out).
+    const lineupIssue = validateLineup(tabooLineup, teamSetup)[0];
+    if (lineupIssue) {
+      notifyLineup(lineupIssue);
+      return;
+    }
     setGenerationEmpty(false);
     setDeckEmpty(false);
     setShortage(undefined);
     setSession(undefined);
     const reusable = replayDeck.current;
     replayDeck.current = undefined;
-    const teams = buildTeams(teamSetup, {
+    const teams = buildTeams(resolveLineup(tabooLineup, teamSetup), {
       defaultName: (number) => t("kitTeams.defaultName", { number }),
     });
     const raceTarget = settings.raceTarget;
@@ -489,29 +499,35 @@ export function TabooSetup({
           ariaLabel={t("tabooLineup.label")}
           formId="taboo-lineup-form"
           messages={
-            <TabooSetupMessages
-              attempt={attempt}
-              deckEmpty={deckEmpty}
-              issues={issues}
-              shortage={shortage}
-            />
+            <>
+              <TabooSetupMessages
+                attempt={attempt}
+                deckEmpty={deckEmpty}
+                issues={issues}
+                shortage={shortage}
+              />
+              {lineupNotice && (
+                <Toast key={lineupNotice.id} tone="error">
+                  {t(`kitLineup.${lineupNotice.value.code}`, { count: lineupNotice.value.count })}
+                </Toast>
+              )}
+            </>
           }
           onSubmit={(event) => void startGame(event)}
           startDisabled={generating}
           startLabel={t(generating ? "tabooSetup.preparingCards" : "tabooLineup.start")}
         >
-          <SetupSection title={t("kitSetup.teamsSection")}>
-            <TeamsSetup
-              onChange={(next) => {
-                // A changed line-up invalidates the cards that are being prepared.
-                activeGeneration.current?.abort();
-                setShortage(undefined);
-                setIssues([]);
-                setTeamSetup(next);
-              }}
-              value={teamSetup}
-            />
-          </SetupSection>
+          <LineupSetup
+            config={tabooLineup}
+            onChange={(next) => {
+              // A changed line-up invalidates the cards that are being prepared.
+              activeGeneration.current?.abort();
+              setShortage(undefined);
+              setIssues([]);
+              setTeamSetup(next);
+            }}
+            value={teamSetup}
+          />
         </LineupScreen>
       )}
       {raceSession && (

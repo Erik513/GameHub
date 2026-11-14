@@ -7,6 +7,7 @@ import type { PlayerRosterStore } from "../../business/shared/playerRoster";
 import { createGameHubI18n } from "../../i18n";
 import { PlayerRosterButton } from "./PlayerRosterButton";
 import { PlayerRosterProvider } from "./PlayerRosterProvider";
+import { initialTeamSetup } from "../../business/shared/teamSetup";
 import { PlayersSetup } from "./PlayersSetup";
 import { RosterPicker } from "./RosterPicker";
 
@@ -117,7 +118,7 @@ it.each(["en", "de"] as const)(
     const text = texts[language];
     const { store } = memoryStore(["Anna", "Ben", "Cara"]);
     function Host() {
-      const [value, setValue] = useState("Dora, ben");
+      const [value, setValue] = useState({ ...initialTeamSetup(), playersText: "Dora, ben" });
       return <PlayersSetup onChange={setValue} value={value} />;
     }
     const user = await renderWith(language, store, <Host />);
@@ -131,11 +132,11 @@ it.each(["en", "de"] as const)(
     await user.click(within(dialog).getByRole("checkbox", { name: "Ben" }));
     await user.click(within(dialog).getByRole("button", { name: text.apply }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    // Hand-typed Dora stays, deselected Ben goes, ticked Anna is added.
+    // Hand-typed Dora stays, deselected Ben goes, ticked Anna is added (the list is alphabetical).
     const names = within(screen.getByRole("list", { name: /: 2$/ }))
       .getAllByRole("listitem")
       .map((item) => item.textContent?.replace("×", "").trim());
-    expect(names).toEqual(["Dora", "Anna"]);
+    expect(names).toEqual(["Anna", "Dora"]);
   },
 );
 

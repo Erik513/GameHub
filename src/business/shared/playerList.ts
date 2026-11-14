@@ -26,19 +26,3 @@ export function removePlayerFromText(text: string, name: string): string {
     .filter((player) => !same(player, name))
     .join("\n");
 }
-
-/**
- * The team that has the fewest players, the first one when several are equal. A tap on a player
- * without a team puts him there, which keeps the teams even.
- */
-export function smallestTeamIndex(
-  assignment: Readonly<Record<string, number>>,
-  teamCount: number,
-): number | undefined {
-  if (teamCount < 1) return undefined;
-  const sizes = Array.from({ length: teamCount }, () => 0);
-  for (const team of Object.values(assignment)) {
-    if (team >= 0 && team < teamCount) sizes[team] = (sizes[team] ?? 0) + 1;
-  }
-  return sizes.indexOf(Math.min(...sizes));
-}

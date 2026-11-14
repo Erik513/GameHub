@@ -1,51 +1,57 @@
 import { useTranslation } from "react-i18next";
 import { addPlayersToText, removePlayerFromText } from "../../business/shared/playerList";
 import { parsePlayers } from "../../business/shared/players";
-import { Button } from "../components";
-import { PlayerAdder, PlayerChip, PlayerChips } from "./PlayerChips";
+import type { TeamSetupValue } from "../../business/shared/teamSetup";
+import { Icon } from "../components";
+import { PlayerAdder } from "./PlayerAdder";
 import { RosterPicker } from "./RosterPicker";
-import { useTeamSetupMemory } from "./TeamSetupMemoryContext";
 
 interface PlayersSetupProps {
-  readonly onChange: (text: string) => void;
-  /** The player names as typed (one per line or separated by commas). */
-  readonly value: string;
+  readonly onChange: (value: TeamSetupValue) => void;
+  readonly value: TeamSetupValue;
 }
 
-/** The player list of a game without teams: add players, remove them, see how many there are. */
+/**
+ * The player list of a game: one row per player with a button to remove him, a field to add players
+ * by name and a button to choose them from the saved players. The teams are set up in the box
+ * "Teams". The value is controlled.
+ */
 export function PlayersSetup({ onChange, value }: PlayersSetupProps) {
-  const { t } = useTranslation();
-  const players = parsePlayers(value);
-  // The players of the last game of any game can be taken over.
-  const savedText = useTeamSetupMemory()?.read()?.playersText;
-  const showLoad = savedText !== undefined && savedText.trim() !== "" && savedText !== value;
+  const { i18n, t } = useTranslation();
+  // The list is always in alphabetical order of the interface language.
+  const players = parsePlayers(value.playersText).sort(new Intl.Collator(i18n.language).compare);
+
+  function setText(playersText: string) {
+    // Assignments of names that are no longer in the list are dropped.
+    const names = new Set(parsePlayers(playersText));
+    const assignment = Object.fromEntries(
+      Object.entries(value.assignment).filter(([player]) => names.has(player)),
+    );
+    onChange({ ...value, assignment, playersText });
+  }
 
   return (
     <>
-      {showLoad && (
-        <Button onClick={() => onChange(savedText)} variant="secondary">
-          {t("kitPlayers.loadLast")}
-        </Button>
-      )}
-      {players.length > 0 && (
-        <PlayerChips label={t("kitPlayers.count", { count: players.length })}>
-          {players.map((player) => (
-            <PlayerChip
-              key={player}
-              name={player}
-              onRemove={() => onChange(removePlayerFromText(value, player))}
-            />
-          ))}
-        </PlayerChips>
-      )}
-      <PlayerAdder onAdd={(input) => onChange(addPlayersToText(value, input))} />
+      <PlayerAdder onAdd={(input) => setText(addPlayersToText(value.playersText, input))} />
       <div className="kit-players__actions">
-        <RosterPicker onChange={onChange} value={value} />
+        <RosterPicker onChange={setText} value={value.playersText} />
       </div>
       {players.length > 0 && (
-        <small className="kit-players__count" role="status">
-          {t("kitPlayers.count", { count: players.length })}
-        </small>
+        <ul aria-label={t("kitPlayers.count", { count: players.length })} className="kit-members">
+          {players.map((player) => (
+            <li className="kit-member" key={player}>
+              <span className="kit-member__name">{player}</span>
+              <button
+                aria-label={t("kitPlayers.removeLabel", { player })}
+                className="kit-member__remove"
+                onClick={() => setText(removePlayerFromText(value.playersText, player))}
+                type="button"
+              >
+                <Icon name="trash" />
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
     </>
   );
