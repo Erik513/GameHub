@@ -53,13 +53,10 @@ it("opens the line-up after Start and only starts the game from there", async ()
   await user.click(screen.getByRole("button", { name: "Start" }));
   const lineup = screen.getByRole("region", { name: "Line-up" });
   expect(within(lineup).getByRole("group", { name: "Teams" })).toBeVisible();
-  // Taboo does not need names: the box "Players" is collapsed, the box "Teams" is open.
-  expect(
-    within(lineup).getByRole("region", { name: "Players" }).querySelector("details"),
-  ).not.toHaveAttribute("open");
-  expect(
-    within(lineup).getByRole("region", { name: "Teams" }).querySelector("details"),
-  ).toHaveAttribute("open");
+  // Taboo does not need names: the tab "Teams" is open, the tab "Players" is the other one.
+  const tabs = within(lineup).getAllByRole("tab");
+  expect(tabs.map((tab) => tab.textContent)).toEqual(["Players (0)", "Teams (2)"]);
+  expect(tabs[1]).toHaveAttribute("aria-selected", "true");
   expect(within(lineup).getByRole("textbox", { name: "Name of team 1" })).toBeVisible();
   expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
   await user.click(within(lineup).getByRole("button", { name: "Start game" }));

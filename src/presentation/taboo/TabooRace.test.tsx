@@ -342,7 +342,9 @@ it.each(["en", "de"] as const)(
     const { text, user } = await renderSetup(language);
     // Open the rules at the classic tab, then the tiebreak from the link in the last bullet.
     await user.click(screen.getByRole("button", { name: text.classic.label }));
-    const items = within(screen.getByRole("tabpanel")).getAllByRole("listitem");
+    const items = within(within(screen.getByRole("dialog")).getByRole("tabpanel")).getAllByRole(
+      "listitem",
+    );
     await user.click(
       within(items[items.length - 1]!).getByRole("button", {
         name: new RegExp(`^${text.tiebreak.title}$`, "i"),

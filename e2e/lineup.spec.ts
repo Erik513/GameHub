@@ -51,15 +51,18 @@ for (const labels of cases) {
     await page.getByRole("button", { name: labels.open }).click();
     await page.getByRole("button", { name: labels.start, exact: true }).click();
 
-    // The box of the players is collapsed (Taboo does not need names); open it and add players.
-    const playersBox = page.getByRole("region", { name: labels.players });
-    await playersBox.locator("summary").click();
+    // The tab of the teams is open (Taboo does not need names); open the players and add some.
+    await page.getByRole("tab", { name: new RegExp(`^${labels.players}`) }).click();
+    const playersBox = page
+      .getByRole("tabpanel")
+      .filter({ has: page.getByRole("textbox", { name: labels.addPlayer }) });
     await playersBox.getByRole("textbox", { name: labels.addPlayer }).fill("anna, ben, cara, dora");
     await playersBox.getByRole("button", { name: labels.addButton, exact: true }).click();
     await expect(playersBox.getByRole("list").getByRole("listitem")).toHaveCount(4);
 
     // Three teams, everybody is drawn into a team.
-    const teamsBox = page.getByRole("region", { name: labels.teams });
+    await page.getByRole("tab", { name: new RegExp(`^${labels.teams}`) }).click();
+    const teamsBox = page.getByRole("tabpanel").filter({ has: page.locator(".kit-teams") });
     await teamsBox
       .getByRole("group", { name: labels.teamCount, exact: true })
       .locator("label", { hasText: "3" })

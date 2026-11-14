@@ -91,6 +91,7 @@ export function TabooSetup({
   const [mode, setMode] = useState<TabooMode>("classic");
   // The settings of the main menu, read when "Start" is pressed; the line-up follows.
   const [settings, setSettings] = useState<TabooSettings>();
+  const [menuTab, setMenuTab] = useState("settings");
   const [lineupOpen, setLineupOpen] = useState(false);
   // The cards of the game that was just played; a replay with the same settings reuses them.
   const replayDeck = useRef<readonly TabooCard[] | undefined>(undefined);
@@ -325,6 +326,8 @@ export function TabooSetup({
     });
     if (read.categories.length === 0) {
       setIssues([{ field: "categories", code: "required" }]);
+      // The categories are in the cards tab; show it so the problem can be fixed.
+      setMenuTab("cards");
       return;
     }
     setIssues([]);
@@ -593,8 +596,10 @@ export function TabooSetup({
           generating={generating}
           hasGenerators={Boolean(generators)}
           issues={issues}
+          menuTab={menuTab}
           mode={mode}
           onCardLanguageChange={onCardLanguageChange}
+          onMenuTabChange={setMenuTab}
           onChange={handleFormChange}
           onModeChange={(next) => {
             handleFormChange();

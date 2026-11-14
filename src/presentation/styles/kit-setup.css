@@ -55,6 +55,72 @@
   margin: 0;
 }
 
+/*
+ * Tabs like in a browser: the tabs sit on top, the content of the chosen tab is in a box that is
+ * joined to it. The inactive tabs stay in the page (hidden), so the form still reads their values.
+ */
+.kit-tabs {
+  display: grid;
+  margin-bottom: var(--space-4);
+}
+
+.kit-tabs__list {
+  display: flex;
+  gap: var(--space-1);
+  position: relative;
+  z-index: 1;
+}
+
+.kit-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--touch-target);
+  margin: 0;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-bottom: 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  color: var(--color-ink-muted);
+  background: var(--color-canvas);
+  font: inherit;
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+/* The chosen tab has the color of the box and covers its top edge, so both look like one piece. */
+.kit-tab[aria-selected="true"] {
+  margin-bottom: -1px;
+  padding-bottom: 1px;
+  color: var(--color-ink);
+  background: var(--color-surface);
+}
+
+.kit-tabpanel {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: var(--color-surface);
+}
+
+.kit-tabpanel[data-active="false"] {
+  display: none;
+}
+
+/* Buttons right in a tab (rules, editor) have the full width like in a chapter. */
+.kit-tabpanel > .button {
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0;
+  gap: var(--space-2);
+}
+
+.kit-tabpanel > .button svg {
+  flex: none;
+}
+
 .kit-setup-section {
   margin-bottom: var(--space-4);
   border: 1px solid var(--color-line);

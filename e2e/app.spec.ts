@@ -6,6 +6,8 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
     .getByRole("main")
     .evaluate((main) => main.getBoundingClientRect().width);
   expect(setupWidth).toBeLessThanOrEqual(480);
+  // The cards (difficulty, categories) are in their own tab of the main menu.
+  await page.getByRole("tab", { name: "Cards", exact: true }).click();
   await expect(page.getByRole("group", { name: "Difficulty" })).toBeVisible();
   const nature = page.getByRole("checkbox", { name: "Nature" });
   const choice = page.locator("label").filter({ has: nature });
@@ -91,6 +93,7 @@ test("persists the UI language and the card language of Taboo independently", as
 
   // The card language is a setting of Taboo.
   await page.getByRole("button", { name: "Fortschritt ansehen" }).click();
+  await page.getByRole("tab", { name: "Karten", exact: true }).click();
   const cardLanguage = page.getByRole("group", { name: "Kartensprache" });
   await expect(cardLanguage.getByRole("radio", { name: "Englisch" })).toBeChecked();
   // Bring the group to the middle so the start bar at the bottom does not cover it.
@@ -100,6 +103,7 @@ test("persists the UI language and the card language of Taboo independently", as
 
   await page.reload();
 
+  await page.getByRole("tab", { name: "Karten", exact: true }).click();
   await expect(
     page.getByRole("group", { name: "Kartensprache" }).getByRole("radio", { name: "Deutsch" }),
   ).toBeChecked();

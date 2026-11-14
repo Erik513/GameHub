@@ -4,6 +4,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 ## 2026-11-14
 
+### Reiter wie im Browser statt aufklappbarer Kapitel (ADR-026)
+
+- **Aufstellung:** Statt zweier aufklappbarer Boxen gibt es oben zwei Reiter **„Spieler (4)“** und **„Teams (2)“** (mit der Anzahl), darunter der Inhalt des gewählten Reiters. Vorausgewählt: „Teams“ bei Tabu, „Spieler“ bei Pflicht-Spielern. **Hauptmenü von Tabu:** die Kapitel „Spieleinstellungen“ und „Karten“ sind ebenso Reiter; die Einstellungen passen damit auf einen Bildschirm. Fehlt beim Start eine Kategorie, öffnet sich der Reiter „Karten“.
+- **Look:** Die Reiter sitzen nebeneinander in gleicher Breite (44 Pixel hoch), der gewählte hat die Farbe der Inhaltsbox und verdeckt deren obere Linie, die anderen sind dunkler; die Box ist mit ihm verbunden. **Bedienung:** Tipp, Pfeiltasten links und rechts (mit Umlauf), Pos1 und Ende. Alle Reiter bleiben im Formular und werden beim Start gelesen.
+- **Baustein `SetupTabs`** (`game-kit`, mit `selected`/`onSelect` auch von außen steuerbar), neue Texte `kitSetup.playersTab/teamsTab/lineupTabs/menuTabs`; die Kapitel-Texte `playersSection`, `teamsSection` und `kitTeams.summary` entfallen. `SetupSection` bleibt in der Datenansicht (Editor). Tests: `SetupTabs` (4), Aufstellung und Hauptmenü angepasst; e2e wählen den Reiter („Karten“, „Spieler“, „Teams“) und die Layout-Prüfung prüft die Reiter einzeln; 644 Unit-Tests, 30 e2e-Tests, Typen, eslint grün.
+
 ### Aufstellung vollständig abgesichert: Verzweigungen und e2e
 
 - **Alle Verzweigungen der Aufstellung sind abgedeckt** (Logik und Oberfläche: `lineup`, `teamOrder`, `teamSetup`, `savedTeamSetup`, `LineupSetup`, `TeamsSetup`, `TeamOrder`, `PlayerAdder`, `usePlayerDrag`): neue Tests für leere Namen, andere Tasten am Griff, ein Ziehen auf demselben Platz, ein Ziel ohne gültiges Team, den Klick nach dem Ziehen, gespeicherte Gruppen mit nur Namen, nur Zuordnung oder nur Teamzahl, ein Spiel ohne Spielerliste und die alten Wörter der Reihenfolge. Nicht erreichbare Rückfallwerte wurden aus dem Code entfernt (`resolveLineup` und `buildTeams` zählen jetzt direkt, `TeamOrder` liest seine Liste sicher).

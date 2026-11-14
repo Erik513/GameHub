@@ -6,7 +6,7 @@ import { sameTeamSetup } from "../../business/shared/savedTeamSetup";
 import { clampTeamCount, type TeamSetupValue } from "../../business/shared/teamSetup";
 import { Button, ConfirmButton } from "../components";
 import { PlayersSetup } from "./PlayersSetup";
-import { SetupSection } from "./SetupSection";
+import { SetupTabs, type SetupTab } from "./SetupTabs";
 import { TeamsSetup } from "./TeamsSetup";
 import { useTeamSetupMemory } from "./TeamSetupMemoryContext";
 
@@ -76,14 +76,11 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
   const nothingToClear =
     Object.keys(value.assignment).length === 0 && value.names.every((name) => name.trim() === "");
 
-  return (
-    <>
-      {hasPlayers && (
-        <SetupSection
-          defaultOpen={config.players === "required" || rules === undefined}
-          summary={t("kitPlayers.count", { count: playerCount })}
-          title={t("kitSetup.playersSection")}
-        >
+  const tabs: SetupTab[] = [];
+  if (hasPlayers) {
+    tabs.push({
+      content: (
+        <>
           <Button
             disabled={!showLoadPlayers}
             onClick={() =>
@@ -98,13 +95,16 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
             {t("kitPlayers.loadLast")}
           </Button>
           <PlayersSetup onChange={onChange} value={value} />
-        </SetupSection>
-      )}
-      {rules && (
-        <SetupSection
-          summary={t("kitTeams.summary", { count: clampTeamCount(value.count, rules) })}
-          title={t("kitSetup.teamsSection")}
-        >
+        </>
+      ),
+      id: "players",
+      label: t("kitSetup.playersTab", { count: playerCount }),
+    });
+  }
+  if (rules) {
+    tabs.push({
+      content: (
+        <>
           <div className="kit-players__actions">
             <Button
               disabled={!showLoadTeams}
@@ -124,8 +124,19 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
             </ConfirmButton>
           </div>
           <TeamsSetup onChange={onChange} rules={rules} value={value} withPlayers={hasPlayers} />
-        </SetupSection>
-      )}
-    </>
+        </>
+      ),
+      id: "teams",
+      label: t("kitSetup.teamsTab", { count: clampTeamCount(value.count, rules) }),
+    });
+  }
+
+  // Names are only needed when the game asks for them; otherwise the teams come first.
+  return (
+    <SetupTabs
+      ariaLabel={t("kitSetup.lineupTabs")}
+      initial={config.players === "required" || rules === undefined ? "players" : "teams"}
+      tabs={tabs}
+    />
   );
 }

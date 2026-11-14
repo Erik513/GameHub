@@ -23,6 +23,8 @@ const labels = {
     addButton: "Add",
     draw: "Draw teams",
     noTeam: "No team",
+    cards: "Cards",
+    settingsTab: "Game settings",
   },
   de: {
     open: "Fortschritt ansehen",
@@ -46,6 +48,8 @@ const labels = {
     addButton: "Hinzufügen",
     draw: "Teams auslosen",
     noTeam: "Ohne Team",
+    cards: "Karten",
+    settingsTab: "Spieleinstellungen",
   },
 } as const;
 
@@ -178,15 +182,20 @@ for (const language of ["en", "de"] as const) {
 
       await press(t.open);
       await check("setup");
+      await page.getByRole("tab", { name: t.cards, exact: true }).click();
+      await check("setup cards");
+      await page.getByRole("tab", { name: t.settingsTab, exact: true }).click();
       await press(t.start);
       await check("line-up");
       // The same screen with players in the boxes: some drawn into teams, one waiting without a team.
-      await page.getByRole("region", { name: t.players }).locator("summary").click();
+      await page.getByRole("tab", { name: new RegExp(`^${t.players}`) }).click();
       await page
         .getByRole("textbox", { name: t.addPlayer })
         .fill("Anna, Benedikt, Cara, Dorothea, Emil");
       await page.getByRole("button", { name: t.addButton, exact: true }).click();
       await check("line-up with players");
+      await page.getByRole("tab", { name: /^Teams/ }).click();
+      await check("line-up, tab teams");
       await press(t.draw);
       await page.getByRole("button", { name: "Emil", exact: true }).first().click();
       await page.getByRole("dialog").getByRole("button", { name: t.noTeam }).click();

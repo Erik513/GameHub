@@ -14,6 +14,7 @@ export { RulesButton, RulesDialog, type RulesTab } from "./RulesDialog";
 export { ScoreScreen } from "./ScoreScreen";
 export { SetupScreen } from "./SetupScreen";
 export { SetupSection } from "./SetupSection";
+export { SetupTabs, type SetupTab } from "./SetupTabs";
 export { StartBar, TurnStrip } from "./StartBar";
 export { TeamOrder } from "./TeamOrder";
 export { TeamsSetup } from "./TeamsSetup";

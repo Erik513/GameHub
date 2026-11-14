@@ -1,8 +1,10 @@
 /** Texts of the shared game building blocks (setup screen, teams, players). */
 export const kitTexts = {
   kitSetup: {
-    playersSection: "Players",
-    teamsSection: "Teams",
+    playersTab: "Players ({{count}})",
+    teamsTab: "Teams ({{count}})",
+    lineupTabs: "Players and teams",
+    menuTabs: "Settings",
     settingsSection: "Game settings",
     infoLabel: "Info about {{setting}}",
     sure: "Sure?",
@@ -11,7 +13,6 @@ export const kitTexts = {
     loadLastTeams: "Load last teams",
     clear: "Clear teams",
     clearConfirm: "Really clear the teams? Tap again",
-    summary: "Teams: {{count}}",
     draw: "Draw teams",
     redraw: "Shuffle again",
     dragHint: "Drag players into a team",
