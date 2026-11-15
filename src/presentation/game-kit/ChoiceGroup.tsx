@@ -15,6 +15,8 @@ export interface ChoiceOption {
 }
 
 interface ChoiceGroupProps {
+  /** The number of columns; by default every option has its own column, so all are in one row. */
+  readonly columns?: number;
   /** Adds an info button next to the legend that explains the setting. */
   readonly info?: InfoContent;
   readonly initial: string;
@@ -38,6 +40,7 @@ interface ChoiceGroupProps {
 
 /** Radio group (or checkbox group with `multiple`) rendered as equally wide buttons; the value is read from the surrounding form. */
 export function ChoiceGroup({
+  columns,
   info,
   initial,
   legend,
@@ -67,7 +70,7 @@ export function ChoiceGroup({
       {info && <InfoButton {...info} />}
       <div
         className="kit-choice-grid kit-choice-grid--equal"
-        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(${columns ?? options.length}, minmax(0, 1fr))` }}
       >
         {options.map(({ value, label, ariaLabel, hint, tone, info: optionInfo }) => {
           const choice = (

@@ -9,6 +9,7 @@ export const tabooTexts = {
     export: "Export",
     exportInfo: "Tap the category of your own that you want to export as a file.",
     exportEmpty: "You do not have any own categories to export yet.",
+    exported: "Cards exported.",
     imported: "Imported cards: {{count}}. Existing cards were kept.",
     invalid: "This file is not a valid GameHub Taboo card file.",
     storage: "Local cards could not be accessed.",
@@ -71,6 +72,9 @@ export const tabooTexts = {
     renameCategoryLabel: "Rename category {{category}}",
     renameName: "New name of the category",
     categoryRenamed: "Category renamed.",
+    cardSaved: "Card saved.",
+    cardDeleted: "Card deleted.",
+    categoryDeleted: "Category deleted.",
     groups: {
       ownCards: "Own cards",
       standardCards: "Built-in cards",

@@ -154,7 +154,7 @@ it("edits a card, validates the input and saves a new category", async () => {
   await user.click(screen.getByRole("button", { name: "Save" }));
   expect(screen.getByRole("alert")).toHaveTextContent("Enter a name");
   await user.type(screen.getByLabelText("Name of the new category"), "Space");
-  await user.selectOptions(screen.getByLabelText("Difficulty"), "hard");
+  await user.click(screen.getByRole("radio", { name: "Hard" }));
   await user.click(screen.getByRole("button", { name: "Save" }));
 
   expect(onUpdate).toHaveBeenCalledWith({
@@ -165,6 +165,8 @@ it("edits a card, validates the input and saves a new category", async () => {
     difficulty: "hard",
   });
   expect(screen.queryByLabelText("Term")).not.toBeInTheDocument();
+  // The change is confirmed by a message at the bottom.
+  expect(screen.getByRole("status")).toHaveTextContent("Card saved.");
 });
 
 it("shows only the card that is edited and brings the others back afterwards", async () => {
@@ -206,6 +208,7 @@ it("deletes a card from the editor only after a second tap", async () => {
   await new Promise((resolve) => setTimeout(resolve, 450));
   await user.click(screen.getByRole("button", { name: "Tap again to delete Moon" }));
   expect(onRemove).toHaveBeenCalledWith("own-moon");
+  expect(await screen.findByRole("status")).toHaveTextContent("Card deleted.");
 });
 
 it("shows the editor buttons as save symbol, red delete symbol and a text cancel button", async () => {
@@ -246,6 +249,9 @@ it.each([
     await new Promise((resolve) => setTimeout(resolve, 450));
     await user.click(screen.getByRole("button", { name: armed }));
     expect(onRemove).toHaveBeenCalledExactlyOnceWith("own-goal");
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      language === "en" ? "Category deleted." : "Kategorie gelöscht.",
+    );
   },
 );
 

@@ -706,3 +706,17 @@
 .game-preview .taboo-card-list__head-row .button {
   margin: 0;
 }
+
+/* Labels of the text fields look like the headings of the choice groups above them. */
+.taboo-card-entry .field > span,
+.taboo-card-list__edit .field > span {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+/* The main action of the tab fills the width, like the start button of the other screens. */
+.kit-pane__footer > .button {
+  width: 100%;
+  margin: 0;
+}

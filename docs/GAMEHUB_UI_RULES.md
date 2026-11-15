@@ -114,7 +114,7 @@ Weitere Fenstertypen gibt es nicht. Das Fenster hängt an der Seite selbst (nich
 
 ## 4. Eingaben
 
-1. **So wenige Eingabefelder wie möglich.** Wo eine Auswahl oder ein Tippen genügt, wird kein Textfeld benutzt. Eine Auswahl aus wenigen festen Möglichkeiten (Sprache, Teamanzahl, Schwierigkeit) ist immer eine **Gruppe nebeneinanderstehender Knöpfe** (`ChoiceGroup`), keine Combobox. Die Einstellungen (Oberflächen- und Kartensprache) folgen dem schon. **Noch Comboboxen [Umbau]:** Kategorie und Schwierigkeit beim Karteneintrag und im Karteneditor (die Teamzuordnung je Spieler ist seit 2026-11-13 ein Tipp auf das Namensschild); sie bleiben, bis dafür eine passende Knopfform abgestimmt ist (viele Kategorien passen nicht nebeneinander).
+1. **So wenige Eingabefelder wie möglich.** Wo eine Auswahl oder ein Tippen genügt, wird kein Textfeld benutzt. Eine Auswahl aus wenigen festen Möglichkeiten (Sprache, Teamanzahl, Schwierigkeit) ist immer eine **Gruppe nebeneinanderstehender Knöpfe** (`ChoiceGroup`), keine Combobox. Die Einstellungen (Oberflächen- und Kartensprache) folgen dem schon. **Comboboxen entfallen (2026-11-15):** Auch Sprache der Kategorie und Schwierigkeit beim Karteneintrag und im Karteneditor sind `ChoiceGroup`en. **Feste Einstellungen mit wenigen Werten sind nie eine Auswahlliste;** nur eine lange, wechselnde Liste (die **Kategorie** beim Karteneintrag) bleibt eine Auswahlliste (`select`).
 2. Mehrzeilige Felder sind nicht in der Größe veränderbar und wachsen mit dem Inhalt **[ist]**.
 3. Schriftgröße in Feldern mindestens 16 Pixel, jedes Feld hat eine Beschriftung **[ist]**.
 

@@ -66,6 +66,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   try {
     fireEvent.click(exportButton);
     expect(click).toHaveBeenCalledOnce();
+    expect(await screen.findByText("Cards exported.")).toBeVisible();
     const blob = createUrl.mock.calls[0]![0];
     const text = await new Promise<string>((resolve) => {
       const reader = new FileReader();

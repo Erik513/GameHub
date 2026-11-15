@@ -8,7 +8,7 @@ import {
 import { capitalizeFirst, validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Toast, useNotice } from "../components";
-import { TabPane } from "../game-kit";
+import { ChoiceGroup, TabPane } from "../game-kit";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { newCategoryChoice, ownChoice, resolveCategory } from "./categoryChoice";
 import { useInterfaceLanguage } from "./categoryLabel";
@@ -134,22 +134,20 @@ export function TabooCardEntry({
             own={own}
             standardCategories={categoryInfos}
           />
-          <label className="field">
-            <span>{t("tabooEntry.difficulty")}</span>
-            <select
-              className="field__input"
-              onChange={(event) =>
-                setDifficulty(difficulties.find((value) => value === event.target.value) ?? "easy")
-              }
-              value={difficulty}
-            >
-              {difficulties.map((value) => (
-                <option key={value} value={value}>
-                  {t(`tabooSetup.difficulties.${value}`)}
-                </option>
-              ))}
-            </select>
-          </label>
+          <ChoiceGroup
+            initial={difficulty}
+            legend={t("tabooEntry.difficulty")}
+            name="difficulty"
+            onChange={(value) =>
+              setDifficulty(difficulties.find((item) => item === value) ?? "easy")
+            }
+            value={difficulty}
+            options={difficulties.map((value) => ({
+              value,
+              label: t(`tabooSetup.difficulties.${value}`),
+              tone: value,
+            }))}
+          />
         </div>
         <label className="field">
           <span>{t("tabooEntry.term")}</span>

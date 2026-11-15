@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { OwnCategory, TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { TabooCard } from "../../business/games/taboo/model";
+import { ChoiceGroup } from "../game-kit";
 import { newCategoryChoice, ownChoice, standardChoice } from "./categoryChoice";
 import { useCategoryLabel } from "./categoryLabel";
 
@@ -80,20 +81,17 @@ export function TabooCategoryField({
             value={name}
           />
           {!lockLanguage && (
-            <label className="field">
-              <span>{t("tabooEntry.categoryLanguage")}</span>
-              <select
-                className="field__input"
-                onChange={(event) => onLanguage(event.target.value === "de" ? "de" : "en")}
-                value={newLanguage}
-              >
-                {languages.map((language) => (
-                  <option key={language} value={language}>
-                    {t(`language.options.${language}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <ChoiceGroup
+              initial={newLanguage}
+              legend={t("tabooEntry.categoryLanguage")}
+              name="categoryLanguage"
+              onChange={(value) => onLanguage(value === "de" ? "de" : "en")}
+              options={languages.map((language) => ({
+                value: language,
+                label: t(`language.options.${language}`),
+              }))}
+              value={newLanguage}
+            />
           )}
         </>
       )}

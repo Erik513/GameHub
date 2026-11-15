@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { expect, it, vi } from "vitest";
@@ -66,7 +66,7 @@ it.each(["en", "de"] as const)(
 
     await user.type(screen.getByLabelText(text.term), "Goal");
     await user.type(screen.getByLabelText(text.words), "a, b, c, d");
-    await user.selectOptions(screen.getByLabelText(/Difficulty|Schwierigkeit/), "hard");
+    await user.click(screen.getByRole("radio", { name: /^(Hard|Schwer)$/ }));
     await user.click(screen.getByRole("button", { name: text.add }));
     expect(onAdd).toHaveBeenCalledOnce();
     expect(onAdd.mock.calls[0]?.[0]).toMatchObject([
@@ -228,12 +228,14 @@ it("offers only own categories with their language and gives a card the language
   // A new category gets its own language.
   await user.selectOptions(select, "New category …");
   await user.type(screen.getByLabelText("Name of the new category"), "Food");
-  const languageSelect = screen.getByLabelText("Category language");
+  const languageGroup = screen.getByRole("group", { name: "Category language" });
   expect(
-    [...languageSelect.querySelectorAll("option")].map((option) => option.textContent),
+    within(languageGroup)
+      .getAllByRole("radio")
+      .map((radio) => radio.closest("label")?.textContent),
   ).toEqual(["English", "German"]);
-  expect(languageSelect).toHaveDisplayValue("English");
-  await user.selectOptions(languageSelect, "German");
+  expect(within(languageGroup).getByRole("radio", { name: "English" })).toBeChecked();
+  await user.click(within(languageGroup).getByRole("radio", { name: "German" }));
   await user.type(screen.getByLabelText("Term"), "Brot");
   await user.type(screen.getByLabelText(/Four forbidden/), "a, b, c, d");
   await user.click(screen.getByRole("button", { name: "Add card" }));
@@ -269,7 +271,7 @@ it("shows the examples in the fields in the language of the category", async () 
   // A new category: the examples follow the language that is chosen for it.
   await user.selectOptions(screen.getByLabelText("Kategorie"), "Neue Kategorie …");
   expect(screen.getByLabelText("Begriff")).toHaveAttribute("placeholder", "Goal");
-  await user.selectOptions(screen.getByLabelText("Sprache der Kategorie"), "Deutsch");
+  await user.click(screen.getByRole("radio", { name: "Deutsch" }));
   expect(screen.getByLabelText("Begriff")).toHaveAttribute("placeholder", "Tor");
   expect(screen.getByLabelText(/Vier verbotene/)).toHaveAttribute(
     "placeholder",

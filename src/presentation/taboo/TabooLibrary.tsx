@@ -37,7 +37,7 @@ interface TabooLibraryProps {
 
 const rememberedScreens: readonly TabooScreen[] = ["menu"];
 
-type Feedback = { type: "invalid" | "storage" } | { type: "imported"; count: number };
+type Feedback = { type: "invalid" | "storage" | "exported" } | { type: "imported"; count: number };
 
 export function TabooLibrary({
   cardLanguage,
@@ -162,6 +162,7 @@ export function TabooLibrary({
     link.download = `gamehub-taboo-${slug || "cards"}.json`;
     link.click();
     setTimeout(() => urlApi.revokeObjectURL(url), 1000);
+    notify({ type: "exported" });
   }
 
   const standardCards = mergeStandardCards(cards, pack?.cards ?? []);
@@ -195,7 +196,11 @@ export function TabooLibrary({
               {notice && (
                 <Toast
                   key={notice.id}
-                  tone={notice.value.type === "imported" ? "success" : "error"}
+                  tone={
+                    notice.value.type === "imported" || notice.value.type === "exported"
+                      ? "success"
+                      : "error"
+                  }
                 >
                   {notice.value.type === "imported"
                     ? t("tabooLibrary.imported", { count: notice.value.count })

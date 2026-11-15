@@ -101,6 +101,27 @@ async function audit(page: Page, screen: string): Promise<string[]> {
       });
     }
 
+    // The tab fills the area and ends above the pinned button: nothing sticks out of the screen.
+    for (const page of document.querySelectorAll(".kit-onepage")) {
+      if (!visible(page)) continue;
+      const rect = page.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight + 1) {
+        found.push({
+          kind: "one-page area taller than the screen",
+          detail: `${rect.bottom} > ${window.innerHeight}`,
+        });
+      }
+      const panel = page.querySelector(".kit-tabpanel[data-active=true]");
+      const bar = page.querySelector(".kit-start-bar");
+      if (
+        panel &&
+        bar &&
+        panel.getBoundingClientRect().bottom > bar.getBoundingClientRect().top + 1
+      ) {
+        found.push({ kind: "tab covered by the start button", detail: describe(panel) });
+      }
+    }
+
     const targets = document.querySelectorAll(
       "button, a[href], summary, select, input[type=text], label.kit-choice, .taboo-review__item",
     );

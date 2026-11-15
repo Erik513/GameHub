@@ -11,7 +11,7 @@ import {
 import { capitalizeFirst, validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, ConfirmButton, Icon, Toast, useNotice } from "../components";
-import { ActionRow, TabPane } from "../game-kit";
+import { ActionRow, ChoiceGroup, TabPane } from "../game-kit";
 import { useCategoryLabel, useCategorySorter, useInterfaceLanguage } from "./categoryLabel";
 import { sortCardsForList } from "../../business/games/taboo/ordering";
 import { TabooCategoryField } from "./TabooCategoryField";
@@ -38,6 +38,9 @@ interface TabooCardListProps {
   standardCards: readonly TabooCard[];
 }
 
+/** Changes that went through; they are confirmed by a message. */
+type Confirmation = "renamed" | "cardSaved" | "cardDeleted" | "categoryDeleted";
+
 type Problem =
   | "invalid"
   | "duplicate"
@@ -45,8 +48,12 @@ type Problem =
   | "storage"
   | "categoryExists"
   | "noName"
-  | "renamed"
+  | Confirmation
   | CardProblem;
+
+function isConfirmation(value: Problem): value is Confirmation {
+  return ["renamed", "cardSaved", "cardDeleted", "categoryDeleted"].includes(value);
+}
 
 /**
  * All cards of the card language grouped by category. Every category can be opened to show its
@@ -149,6 +156,7 @@ export function TabooCardList({
     try {
       await onUpdate(result.value);
       setEditing(undefined);
+      notify("cardSaved");
     } catch {
       notify("storage");
     }
@@ -158,6 +166,7 @@ export function TabooCardList({
     try {
       for (const card of cards) await onRemove(card.id);
       if (editing && cards.some((card) => card.id === editing.id)) setEditing(undefined);
+      notify("categoryDeleted");
     } catch {
       notify("storage");
     }
@@ -206,6 +215,7 @@ export function TabooCardList({
     try {
       await onRemove(id);
       if (editing?.id === id) setEditing(undefined);
+      notify("cardDeleted");
     } catch {
       notify("storage");
     }
@@ -246,16 +256,16 @@ export function TabooCardList({
               own={ownCategoryList.filter((category) => category.language === card.language)}
               standardCategories={categoryInfos}
             />
-            <label className="field">
-              <span>{t("tabooEntry.difficulty")}</span>
-              <select className="field__input" defaultValue={card.difficulty} name="difficulty">
-                {difficulties.map((value) => (
-                  <option key={value} value={value}>
-                    {t(`tabooSetup.difficulties.${value}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <ChoiceGroup
+              initial={card.difficulty}
+              legend={t("tabooEntry.difficulty")}
+              name="difficulty"
+              options={difficulties.map((value) => ({
+                value,
+                label: t(`tabooSetup.difficulties.${value}`),
+                tone: value,
+              }))}
+            />
           </div>
           <ActionRow>
             <Button
@@ -308,15 +318,26 @@ export function TabooCardList({
     );
   }
 
-  const toast = notice && (
-    <Toast key={notice.id} tone={notice.value === "renamed" ? "success" : "error"}>
-      {isCardProblem(notice.value)
-        ? t(`tabooCardProblems.${notice.value}`)
-        : notice.value === "renamed"
-          ? t("tabooList.categoryRenamed")
+  // Every change is confirmed by a short message at the bottom.
+  const confirmations = {
+    renamed: "tabooList.categoryRenamed",
+    cardSaved: "tabooList.cardSaved",
+    cardDeleted: "tabooList.cardDeleted",
+    categoryDeleted: "tabooList.categoryDeleted",
+  } as const;
+  const toast =
+    notice &&
+    (isConfirmation(notice.value) ? (
+      <Toast key={notice.id} tone="success">
+        {t(confirmations[notice.value])}
+      </Toast>
+    ) : (
+      <Toast key={notice.id} tone="error">
+        {isCardProblem(notice.value)
+          ? t(`tabooCardProblems.${notice.value}`)
           : t(`tabooList.problems.${notice.value}`)}
-    </Toast>
-  );
+      </Toast>
+    ));
 
   // The header stays: the switch between the two views, or the way back with the category.
   let header: ReactNode;
