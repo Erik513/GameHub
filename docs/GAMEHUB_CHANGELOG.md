@@ -23,6 +23,7 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - **Fokusrahmen nicht mehr abgeschnitten (2026-11-15):** Der Fokusrahmen (Tastatur) von Knöpfen und Feldern am Rand eines scrollenden Bereichs (Reiterinhalt im Karteneditor, Inhalt der Fenster) wurde vom Bereich abgeschnitten. Die Bereiche haben jetzt Platz um den Inhalt (`--focus-room`) und nehmen ihn mit negativem Rand zurück, damit nichts verrutscht.
 - **Überschrift des Karteneditors:** „Eigene Tabu-Karten“ / „Custom Taboo cards“ passte nicht (der Bildschirm zeigt Standard- und eigene Karten) und heißt jetzt **„Tabu-Karten“ / „Taboo cards“**.
 - **Einrasten beim Scrollen (2026-11-15):** Listen aus Blöcken (Kategorien, Karten einer Kategorie, Spiele der Spielauswahl) rasten beim Scrollen auf ganze Einträge ein (`scroll-snap`), sodass oben nie ein Eintrag angeschnitten stehen bleibt. Ausnahme: Ganz am Ende der Liste steht der letzte Eintrag vollständig unten, dann kann der oberste angeschnitten sein. Im Browser gemessen (Kategorieliste). Fließtext (Spielregeln) und Formulare rasten nicht.
+- **Spielregeln:** zwischen den Kapiteln steht eine dünne Trennlinie.
 - **Spielauswahl** auf dem Handy ebenfalls ein One-Pager (nur die Liste der Spiele scrollt). Eine Prüfung aller Handy-Bildschirme zeigte sonst keine scrollende Seite. Neuer e2e-Test für den Karteneditor. 657 Unit-Tests, 31 e2e-Tests grün.
 
 ### Hilfekonzept: Spielregeln erklären alles, i-Knöpfe nur Einzelnes
