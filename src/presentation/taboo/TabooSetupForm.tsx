@@ -7,6 +7,7 @@ import type { SupportedLanguage } from "../../i18n";
 import { ChoiceGroup, SetupScreen, SetupTabs } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
 import { useGameRulesButton } from "../GameChrome";
+import { Button, Dialog } from "../components";
 import { TabooRulesDialog } from "./TabooRules";
 import { TabooSetupMessages } from "./TabooSetupMessages";
 import {
@@ -69,11 +70,12 @@ export function TabooSetupForm({
   shortage,
 }: TabooSetupFormProps) {
   const { t } = useTranslation();
-  // The rules window shows the rules of one game mode; the tiebreak has its own window that the rules
-  // of the classic mode link to.
-  const [rules, setRules] = useState<{ mode: TabooMode; open: boolean }>({ mode, open: false });
-  // The button "Rules" of the header opens the rules at the chosen game mode.
-  useGameRulesButton(messagesVisible, () => setRules({ mode, open: true }));
+  // All rules are in one window; the tiebreak has its own window that the rules of the classic mode
+  // link to. A game mode has a short info window of its own that leads to all rules.
+  const [rulesOpen, setRulesOpen] = useState(false);
+  const [modeInfo, setModeInfo] = useState<TabooMode>();
+  // The button "Rules" of the header opens all the rules.
+  useGameRulesButton(messagesVisible, () => setRulesOpen(true));
   const [tiebreakOpen, setTiebreakOpen] = useState(false);
   const categoryLabel = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);
@@ -118,15 +120,30 @@ export function TabooSetupForm({
       startLabel={t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
     >
       <TabooRulesDialog
-        mode={rules.mode}
-        onClose={() => setRules((current) => ({ ...current, open: false }))}
-        onModeChange={(next) => setRules({ mode: next, open: true })}
+        onClose={() => setRulesOpen(false)}
         onOpenTiebreak={() => {
-          setRules((current) => ({ ...current, open: false }));
+          setRulesOpen(false);
           setTiebreakOpen(true);
         }}
-        open={rules.open}
+        open={rulesOpen}
       />
+      <Dialog
+        closeLabel={t("settings.close")}
+        onClose={() => setModeInfo(undefined)}
+        open={modeInfo !== undefined}
+        title={modeInfo ? t(`tabooMode.${modeInfo}`) : ""}
+      >
+        {modeInfo && <p>{t(`tabooMode.${modeInfo}Info`)}</p>}
+        <Button
+          onClick={() => {
+            setModeInfo(undefined);
+            setRulesOpen(true);
+          }}
+          variant="secondary"
+        >
+          {t("tabooRules.all")}
+        </Button>
+      </Dialog>
       <SetupTabs
         ariaLabel={t("kitSetup.menuTabs")}
         onSelect={onMenuTabChange}
@@ -145,12 +162,11 @@ export function TabooSetupForm({
                   options={tabooModes.map((value) => ({
                     value,
                     label: t(`tabooMode.${value}`),
-                    // The info button only opens the rules at this game mode; it does not choose the mode.
+                    // The info button only explains this game mode in a sentence and leads to all the rules;
+                    // it does not choose the mode.
                     info: {
                       label: t("tabooSetup.infoLabel", { setting: t(`tabooMode.${value}`) }),
-                      onOpen: () => {
-                        setRules({ mode: value, open: true });
-                      },
+                      onOpen: () => setModeInfo(value),
                     },
                   }))}
                   value={mode}

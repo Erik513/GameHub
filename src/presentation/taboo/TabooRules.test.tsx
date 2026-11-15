@@ -14,21 +14,29 @@ const texts = {
     rules: "Spielregeln",
     title: "Spielregeln Tabu",
     players: "Spieler",
-    general: "Auf jeder Karte",
     close: "Schließen",
+    headings: ["Ziel", "Die Karte", "Ein Zug", "Spielmodi", "Einstellungen"],
+    buttons: ["Richtig", "Überspringen", "Verbotenes Wort"],
+    example: "Strand",
+    tiebreak: "Stechen",
+    mode: "Klassisch",
   },
   en: {
     open: "View progress",
     rules: "Rules",
     title: "Taboo rules",
     players: "Players",
-    general: "Every card shows",
     close: "Close",
+    headings: ["Goal", "The card", "One turn", "Game modes", "Settings"],
+    buttons: ["Correct", "Skip", "Forbidden word"],
+    example: "Beach",
+    tiebreak: "tiebreak",
+    mode: "Classic",
   },
 } as const;
 
 it.each(["de", "en"] as const)(
-  "puts the rules into the header of the game, where the GameHub has the players, in %s",
+  "puts the rules into the header of the game and explains everything in short parts in %s",
   async (language) => {
     const text = texts[language];
     // Each test starts at the GameHub, whatever the last test opened.
@@ -56,10 +64,18 @@ it.each(["de", "en"] as const)(
     expect(screen.queryByRole("button", { name: text.players })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: text.rules }));
     const dialog = screen.getByRole("dialog", { name: text.title });
-    // Two rules for every game mode stand above the game modes.
-    const items = within(dialog).getAllByRole("listitem");
-    expect(items[0]).toHaveTextContent(text.general);
-    expect(items[1]).toHaveTextContent(/4/);
+
+    // Short parts with a heading each, in the order of a game.
+    const headings = within(dialog).getAllByRole("heading", { level: 3 });
+    expect(headings.map((heading) => heading.textContent)).toEqual(text.headings);
+    // The card is shown with an example, and the three buttons of a turn are explained.
+    expect(dialog.querySelector(".taboo-rules-card")).toHaveTextContent(text.example);
+    expect(dialog.querySelectorAll(".taboo-rules-card li")).toHaveLength(4);
+    const pills = [...dialog.querySelectorAll(".kit-rules-pill")].map((pill) => pill.textContent);
+    expect(pills).toEqual(text.buttons);
+    // Both game modes are explained, without any choice to make in the window.
+    expect(dialog).toHaveTextContent(text.mode);
+    expect(within(dialog).queryByRole("radio")).not.toBeInTheDocument();
     await user.click(within(dialog).getByRole("button", { name: text.close }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   },

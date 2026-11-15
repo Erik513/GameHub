@@ -15,9 +15,30 @@ export const tabooTexts = {
   },
   tabooRules: {
     title: "Spielregeln Tabu",
-    modes: "Regeln für den Spielmodus",
-    goal: "Auf jeder Karte steht ein Begriff mit 4 verbotenen Wörtern.",
-    turn: "Ein Spieler erklärt den Begriff seinem Team, ohne die 4 verbotenen Wörter, den Begriff selbst oder Teile davon zu sagen. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.",
+    all: "Alle Regeln",
+    goalTitle: "Ziel",
+    goal: "Dein Team rät Begriffe. Die meisten Punkte gewinnen.",
+    cardTitle: "Die Karte",
+    cardText: "Oben steht der Begriff, darunter 4 verbotene Wörter.",
+    cardTerm: "Strand",
+    cardWords: "Sand\nMeer\nSonne\nUrlaub",
+    cardHint: "Erkläre den Begriff, ohne diese Wörter oder Teile des Begriffs zu sagen.",
+    turnTitle: "Ein Zug",
+    turnSteps:
+      "Du liest die Karte.\nDu erklärst den Begriff deinem Team.\nDein Team rät. Dann drückst du:",
+    correctText: "Erraten: 1 Punkt.",
+    skipText: "Nächste Karte, kein Punkt.",
+    forbiddenText: "Du hast ein verbotenes Wort gesagt: kein Punkt.",
+    turnEnd: "Ist die Zeit um, ist das nächste Team dran.",
+    modesTitle: "Spielmodi",
+    classicText: "Die Teams spielen abwechselnd Runden. Die meisten Punkte gewinnen.",
+    raceText: "Jedes Team löst gleich viele Karten. Die kürzeste Zeit gewinnt.",
+    settingsTitle: "Einstellungen",
+    settingsRounds: "wie oft jedes Team dran ist.",
+    settingsDuration: "so lange dauert ein Zug.",
+    settingsSkips: "so oft darfst du ohne Punkt weiterspringen.",
+    settingsTiebreak: "entscheidet ein Unentschieden.",
+    settingsCards: "Sprache, Schwierigkeit und Kategorien der Karten.",
   },
   tabooCardProblems: {
     noTerm: "Gib einen Begriff ein.",
@@ -97,10 +118,8 @@ export const tabooTexts = {
   },
   tabooMode: {
     tiebreakRule: "Bei Unentschieden gibt es ein <ref>Stechen</ref>.",
-    classicRules:
-      "Auf jeder Karte steht ein Begriff mit 4 verbotenen Wörtern.\nEin Spieler erklärt den Begriff seinem Team, ohne die 4 verbotenen Wörter, den Begriff selbst oder Teile davon zu sagen. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.\nFür jeden erratenen Begriff gibt es 1 Punkt. Das Team mit den meisten Punkten gewinnt.",
-    raceRules:
-      "Die Teams spielen nacheinander. Jedes Team erklärt seine Karten, ohne die 4 verbotenen Wörter zu sagen.\nDas Team, das alle Karten am schnellsten errät, gewinnt.",
+    classicInfo: "Mehrere Runden mit Zeit. Die meisten Punkte gewinnen.",
+    raceInfo: "Jedes Team löst gleich viele Karten. Die kürzeste Zeit gewinnt.",
     legend: "Spielmodus",
     classic: "Klassisch",
     race: "Auf Zeit",
@@ -181,18 +200,14 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info zu {{setting}}",
     info: {
-      raceTarget:
-        "Wie viele Karten jedes Team erklärt.\nAlle Teams bekommen gleich schwere Karten.\nJedes Team darf einmal überspringen.",
-      rounds:
-        "Eine Runde ist vorbei, wenn jedes Team einmal dran war. Kurz sind 3 Runden, Mittel 5, Lang 10.\nBei ∞ könnt ihr nach jeder Runde aufhören.",
+      raceTarget: "So viele Karten löst jedes Team.\nAlle bekommen gleich schwere Karten.",
+      rounds: "In einer Runde ist jedes Team einmal dran.",
       cardSource:
-        "Nur lokal: Karten aus der App, auch ohne Internet.\nNur KI: Die lokale KI macht die Karten und lädt in der Runde nach.\nBeides: gemischt. Ohne KI klappt das Spiel mit den lokalen Karten.",
+        "Nur lokal: Karten aus der App, auch ohne Internet.\nNur KI: Die lokale KI macht die Karten.\nBeides: gemischt.",
       tiebreak:
-        "Bei einem Punktgleichstand kommt es zum Stechen.\nJedes Team bekommt 3 Karten (leicht, mittel, schwer) und 90 Sekunden Zeit.\nDas Team mit den meisten erratenen Karten gewinnt. Bei gleich vielen gewinnt das schnellere Team.",
-      skips:
-        "So oft darf ein Team pro Runde eine Karte überspringen, ohne Punkt und ohne Strafe.\nNie: gesperrt. ∞: so oft ihr wollt.",
-      difficulty:
-        "Die Schwierigkeit zeigt, wie schwer eine Karte zu erklären ist. Alle mischt leichte, mittlere und schwere Karten.\nDu kannst mehrere wählen.",
+        "Bei Gleichstand spielen die Teams 3 Karten in 90 Sekunden.\nMehr Treffer gewinnen, dann die schnellere Zeit.",
+      skips: "So oft darf ein Team pro Runde eine Karte überspringen.",
+      difficulty: "Wie schwer eine Karte zu erklären ist.\nDu kannst mehrere wählen.",
     },
     raceCardShortage:
       "Zu wenige Karten der Schwierigkeit {{difficulty}}: {{available}} vorhanden, {{required}} nötig, damit jedes Team dieselbe Mischung bekommt.",

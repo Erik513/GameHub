@@ -86,9 +86,9 @@
     "unitTests": {
       "status": "passed",
       "lastRunAt": "2026-11-14T22:14:00+01:00",
-      "passed": 646,
+      "passed": 660,
       "failed": 0,
-      "details": "646 Unit- und Komponententests bestanden (69 Dateien), darunter Übersetzungsqualität, Aufstellung mit Drag and Drop und ein Durchlauf aller Tabu-Ansichten in Deutsch und Englisch."
+      "details": "660 Unit- und Komponententests bestanden (69 Dateien), darunter Übersetzungsqualität, Aufstellung mit Drag and Drop und ein Durchlauf aller Tabu-Ansichten in Deutsch und Englisch."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,7 +99,7 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-15T02:00:00+01:00",
+      "lastRunAt": "2026-11-15T03:00:00+01:00",
       "passed": 30,
       "failed": 0,
       "details": "30 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 6 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Neu: Aufstellung mit Spielern, Teams, Ziehen und Reihenfolge (Deutsch und Englisch) und die Layout-Prüfung mit gefüllter Aufstellung."

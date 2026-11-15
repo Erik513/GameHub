@@ -414,27 +414,98 @@
   line-height: 1.5;
 }
 
-/* The rules tab: the game modes side by side as buttons, the rules of the chosen one below. */
-.kit-rules-panels {
+/* The rules window: short parts with a heading each. */
+.kit-rules-section {
   display: grid;
-}
-
-.kit-rules-panels > * {
-  grid-area: 1 / 1;
-}
-
-.kit-rules-modes {
-  display: grid;
-  margin: var(--space-3) 0;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
   gap: var(--space-2);
 }
 
-.kit-rules-modes .button {
-  width: 100%;
-  min-height: var(--touch-target);
+.kit-rules-section + .kit-rules-section {
+  margin-top: var(--space-4);
+}
+
+.kit-rules-section h3 {
   margin: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kit-rules-section p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.kit-rules-steps {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.4rem;
+  line-height: 1.5;
+}
+
+/* What the three buttons of a turn do, with the same colors as the buttons in the game. */
+.kit-rules-outcomes {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kit-rules-outcomes li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  line-height: 1.4;
+}
+
+.kit-rules-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
+.kit-rules-pill[data-tone="correct"] {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.kit-rules-pill[data-tone="forbidden"] {
+  border-color: var(--color-danger-fill);
+  color: var(--color-danger);
+}
+
+/* An example card: the term on top, the four forbidden words below it. */
+.taboo-rules-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  text-align: center;
+}
+
+.taboo-rules-card strong {
+  font-size: var(--text-lg);
+}
+
+.taboo-rules-card ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  padding: 0;
+  color: var(--color-danger);
+  list-style: none;
 }
 
 /* The teams: one field per team for its name, with its players as text under it. */

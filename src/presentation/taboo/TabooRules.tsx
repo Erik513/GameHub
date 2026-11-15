@@ -1,72 +1,22 @@
 import { Trans, useTranslation } from "react-i18next";
 import { Dialog } from "../components";
-import { RulesView } from "../game-kit";
-import { tabooModes, type TabooMode } from "./tabooSetupModel";
+import { RulesSection } from "../game-kit";
 
-interface TabooRulesPanelProps {
-  /** Shows the tiebreak window; the rules of the classic mode link to it. */
-  onOpenTiebreak: () => void;
-  /** Shows the rules of another game mode; this does not change the chosen game mode. */
-  onModeChange: (mode: TabooMode) => void;
-  /** The game mode whose rules are shown. */
-  mode: TabooMode;
-}
-
-/** The rules of Taboo for the tab "Rules": the card and the forbidden words, then the rules of a game mode. */
-export function TabooRulesPanel({ mode, onModeChange, onOpenTiebreak }: TabooRulesPanelProps) {
-  const { t } = useTranslation();
-  // The first rules are the same in every game mode and stand on top; they are not repeated below.
-  const intro: readonly string[] = [t("tabooRules.goal"), t("tabooRules.turn")];
-
-  return (
-    <RulesView
-      intro={intro}
-      items={tabooModes.map((value) => ({
-        id: value,
-        label: t(`tabooMode.${value}`),
-        content: (
-          <ul className="kit-rules-list">
-            {t(`tabooMode.${value}Rules`)
-              .split("\n")
-              .filter((line) => !intro.includes(line))
-              .map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            {value === "classic" && (
-              <li>
-                <Trans
-                  components={{
-                    ref: (
-                      <button className="kit-link-button" type="button" onClick={onOpenTiebreak}>
-                        {t("tabooTiebreakInfo.title")}
-                      </button>
-                    ),
-                  }}
-                  i18nKey="tabooMode.tiebreakRule"
-                />
-              </li>
-            )}
-          </ul>
-        ),
-      }))}
-      label={t("tabooRules.modes")}
-      onSelect={(id) => {
-        const next = tabooModes.find((value) => value === id);
-        if (next) onModeChange(next);
-      }}
-      selected={mode}
-    />
-  );
-}
-
-interface TabooRulesDialogProps extends TabooRulesPanelProps {
+interface TabooRulesDialogProps {
   onClose: () => void;
+  /** Closes the rules and shows the tiebreak window instead; the rules of the classic mode link to it. */
+  onOpenTiebreak: () => void;
   open: boolean;
 }
 
-/** The window with the rules of Taboo; the button "Rules" in the header and the info buttons of the game modes open it. */
-export function TabooRulesDialog({ onClose, open, ...panel }: TabooRulesDialogProps) {
+/**
+ * The rules of Taboo in one window, short and with pictures where a picture says more: the goal, the
+ * card (with an example), one turn with the three buttons, the game modes and what the settings mean.
+ * The info buttons of the settings explain only their own setting, in a sentence or two.
+ */
+export function TabooRulesDialog({ onClose, onOpenTiebreak, open }: TabooRulesDialogProps) {
   const { t } = useTranslation();
+
   return (
     <Dialog
       closeLabel={t("settings.close")}
@@ -74,7 +24,94 @@ export function TabooRulesDialog({ onClose, open, ...panel }: TabooRulesDialogPr
       open={open}
       title={t("tabooRules.title")}
     >
-      <TabooRulesPanel {...panel} />
+      <RulesSection title={t("tabooRules.goalTitle")}>
+        <p>{t("tabooRules.goal")}</p>
+      </RulesSection>
+
+      <RulesSection title={t("tabooRules.cardTitle")}>
+        <p>{t("tabooRules.cardText")}</p>
+        <div className="taboo-rules-card">
+          <strong>{t("tabooRules.cardTerm")}</strong>
+          <ul>
+            {t("tabooRules.cardWords")
+              .split("\n")
+              .map((word) => (
+                <li key={word}>{word}</li>
+              ))}
+          </ul>
+        </div>
+        <p>{t("tabooRules.cardHint")}</p>
+      </RulesSection>
+
+      <RulesSection title={t("tabooRules.turnTitle")}>
+        <ol className="kit-rules-steps">
+          {t("tabooRules.turnSteps")
+            .split("\n")
+            .map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+        </ol>
+        <ul className="kit-rules-outcomes">
+          <li>
+            <span className="kit-rules-pill" data-tone="correct">
+              {t("tabooRound.correct")}
+            </span>
+            {t("tabooRules.correctText")}
+          </li>
+          <li>
+            <span className="kit-rules-pill" data-tone="skip">
+              {t("tabooRound.skipped")}
+            </span>
+            {t("tabooRules.skipText")}
+          </li>
+          <li>
+            <span className="kit-rules-pill" data-tone="forbidden">
+              {t("tabooRound.forbiddenWord")}
+            </span>
+            {t("tabooRules.forbiddenText")}
+          </li>
+        </ul>
+        <p>{t("tabooRules.turnEnd")}</p>
+      </RulesSection>
+
+      <RulesSection title={t("tabooRules.modesTitle")}>
+        <ul className="kit-rules-list">
+          <li>
+            <strong>{t("tabooMode.classic")}:</strong> {t("tabooRules.classicText")}{" "}
+            <Trans
+              components={{
+                ref: (
+                  <button className="kit-link-button" type="button" onClick={onOpenTiebreak}>
+                    {t("tabooTiebreakInfo.title")}
+                  </button>
+                ),
+              }}
+              i18nKey="tabooMode.tiebreakRule"
+            />
+          </li>
+          <li>
+            <strong>{t("tabooMode.race")}:</strong> {t("tabooRules.raceText")}
+          </li>
+        </ul>
+      </RulesSection>
+
+      <RulesSection title={t("tabooRules.settingsTitle")}>
+        <ul className="kit-rules-list">
+          {(
+            [
+              ["tabooSetup.rounds", "tabooRules.settingsRounds"],
+              ["tabooSetup.duration", "tabooRules.settingsDuration"],
+              ["tabooSetup.skips", "tabooRules.settingsSkips"],
+              ["tabooSetup.tiebreak", "tabooRules.settingsTiebreak"],
+              ["tabooSetup.cardsSection", "tabooRules.settingsCards"],
+            ] as const
+          ).map(([name, text]) => (
+            <li key={name}>
+              <strong>{t(name)}:</strong> {t(text)}
+            </li>
+          ))}
+        </ul>
+      </RulesSection>
     </Dialog>
   );
 }

@@ -15,9 +15,30 @@ export const tabooTexts = {
   },
   tabooRules: {
     title: "Taboo rules",
-    modes: "Rules for the game mode",
-    goal: "Every card shows a term with 4 forbidden words.",
-    turn: "One player explains the term to their team without saying the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.",
+    all: "All rules",
+    goalTitle: "Goal",
+    goal: "Your team guesses terms. The most points win.",
+    cardTitle: "The card",
+    cardText: "The term is on top, below it are 4 forbidden words.",
+    cardTerm: "Beach",
+    cardWords: "Sand\nSea\nSun\nHoliday",
+    cardHint: "Explain the term without saying these words or parts of the term.",
+    turnTitle: "One turn",
+    turnSteps:
+      "You read the card.\nYou explain the term to your team.\nYour team guesses. Then you press:",
+    correctText: "Guessed: 1 point.",
+    skipText: "Next card, no point.",
+    forbiddenText: "You said a forbidden word: no point.",
+    turnEnd: "When the time is up, the next team is on.",
+    modesTitle: "Game modes",
+    classicText: "The teams play rounds in turn. The most points win.",
+    raceText: "Every team solves the same number of cards. The shortest time wins.",
+    settingsTitle: "Settings",
+    settingsRounds: "how often every team is on.",
+    settingsDuration: "how long a turn lasts.",
+    settingsSkips: "how often you may move on without a point.",
+    settingsTiebreak: "decides a tie.",
+    settingsCards: "language, difficulty and categories of the cards.",
   },
   tabooCardProblems: {
     noTerm: "Enter a term.",
@@ -97,10 +118,8 @@ export const tabooTexts = {
   },
   tabooMode: {
     tiebreakRule: "On a tie there is a <ref>tiebreak</ref>.",
-    classicRules:
-      "Every card shows a term with 4 forbidden words.\nOne player explains the term to their team without saying the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.\nEvery guessed term scores 1 point. The team with the most points wins.",
-    raceRules:
-      "The teams play one after another. Every team explains its cards without saying the 4 forbidden words.\nThe team that guesses all cards the fastest wins.",
+    classicInfo: "Several rounds with a timer. The most points win.",
+    raceInfo: "Every team solves the same number of cards. The shortest time wins.",
     legend: "Game mode",
     classic: "Classic",
     race: "Race",
@@ -181,18 +200,14 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info about {{setting}}",
     info: {
-      raceTarget:
-        "How many cards every team explains.\nAll teams get cards of the same difficulty.\nEvery team may skip once.",
-      rounds:
-        "A round is over when every team has had one turn. Short is 3 rounds, Medium 5, Long 10.\nWith ∞ you can stop after any round.",
+      raceTarget: "How many cards every team solves.\nAll teams get cards of the same difficulty.",
+      rounds: "In a round every team is on once.",
       cardSource:
-        "Local only: the cards that come with the app, also offline.\nAI only: the local AI makes the cards and adds more during the round.\nBoth: mixed. Without AI the game works with the local cards.",
+        "Local only: the cards that come with the app, also offline.\nAI only: the local AI makes the cards.\nBoth: mixed.",
       tiebreak:
-        "If the points are tied, there is a tiebreak.\nEvery team gets 3 cards (easy, medium, hard) and 90 seconds.\nThe team with the most guessed cards wins. With the same number, the faster team wins.",
-      skips:
-        "A team may skip a card this often per round, with no point and no penalty.\nNone: blocked. ∞: as often as you like.",
-      difficulty:
-        "The difficulty shows how hard a card is to explain. All mixes easy, medium and hard cards.\nYou can choose more than one.",
+        "On a tie the teams play 3 cards in 90 seconds.\nMore hits win, then the faster time.",
+      skips: "How often a team may skip a card per round.",
+      difficulty: "How hard a card is to explain.\nYou can choose more than one.",
     },
     raceCardShortage:
       "Not enough {{difficulty}} cards: {{available}} available, {{required}} needed so that every team gets the same mix.",
