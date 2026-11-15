@@ -692,3 +692,17 @@
 .taboo-card-list__head .taboo-card-list__category-actions {
   padding: 0;
 }
+
+.taboo-card-list__head-row > * {
+  margin: 0;
+}
+
+.taboo-card-list__head-row h3,
+.taboo-card-list__head-row small {
+  align-self: center;
+  line-height: 1.2;
+}
+
+.game-preview .taboo-card-list__head-row .button {
+  margin: 0;
+}

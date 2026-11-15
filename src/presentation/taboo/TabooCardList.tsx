@@ -194,7 +194,8 @@ export function TabooCardList({
         setEditing(undefined);
       }
       setRenaming(undefined);
-      setOpened(undefined);
+      // The renamed category stays open under its new name.
+      setOpened({ id: name, language: renaming.language });
       notify("renamed");
     } catch {
       notify("storage");
@@ -358,6 +359,8 @@ export function TabooCardList({
   } else {
     const { own, standard } = cardsOf(current);
     const title = titleOf(current);
+    // While a card is edited it is the only thing on the screen.
+    const editingHere = editing !== undefined && own.some((card) => card.id === editing.id);
     const renamingThis = renaming?.id === current.id && renaming.language === current.language;
     header = (
       <div className="taboo-card-list__head">
@@ -379,6 +382,7 @@ export function TabooCardList({
           <small>{t("tabooList.count", { count: own.length + standard.length })}</small>
         </div>
         {view === "own" &&
+          !editingHere &&
           (renamingThis ? (
             <form
               className="taboo-card-list__rename"
@@ -441,36 +445,39 @@ export function TabooCardList({
           ))}
       </div>
     );
-    body = (
-      <>
-        {own.length > 0 && (
-          <>
-            {standard.length > 0 && (
-              <small className="taboo-card-list__label">{t("tabooList.groups.ownCards")}</small>
-            )}
-            <ul className="taboo-card-list__cards">
-              {sortCardsForList(own, current.language).map((card) => (
-                <li key={card.id}>{renderRow(card, true)}</li>
-              ))}
-            </ul>
-          </>
-        )}
-        {standard.length > 0 && (
-          <>
-            {own.length > 0 && (
-              <small className="taboo-card-list__label">
-                {t("tabooList.groups.standardCards")}
-              </small>
-            )}
-            <ul className="taboo-card-list__cards">
-              {sortCardsForList(standard, current.language).map((card) => (
-                <li key={card.id}>{renderRow(card, false)}</li>
-              ))}
-            </ul>
-          </>
-        )}
-      </>
-    );
+    body =
+      editing && editingHere ? (
+        <div className="taboo-card-list__single">{renderRow(editing, true)}</div>
+      ) : (
+        <>
+          {own.length > 0 && (
+            <>
+              {standard.length > 0 && (
+                <small className="taboo-card-list__label">{t("tabooList.groups.ownCards")}</small>
+              )}
+              <ul className="taboo-card-list__cards">
+                {sortCardsForList(own, current.language).map((card) => (
+                  <li key={card.id}>{renderRow(card, true)}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {standard.length > 0 && (
+            <>
+              {own.length > 0 && (
+                <small className="taboo-card-list__label">
+                  {t("tabooList.groups.standardCards")}
+                </small>
+              )}
+              <ul className="taboo-card-list__cards">
+                {sortCardsForList(standard, current.language).map((card) => (
+                  <li key={card.id}>{renderRow(card, false)}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
+      );
   }
 
   return (

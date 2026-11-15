@@ -278,12 +278,10 @@ it("renames an own category for all its cards and keeps the new name in the stor
   fireEvent.change(input, { target: { value: "Ball games" } });
   fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
-  expect(
-    await screen.findByText("Ball games (EN)", { selector: ".kit-nav-row span" }),
-  ).toBeVisible();
-  expect(
-    screen.queryByText("Sport (EN)", { selector: ".kit-nav-row span" }),
-  ).not.toBeInTheDocument();
+  // The renamed category stays open: its cards are shown under the new name, not the list.
+  expect(await screen.findByRole("heading", { name: "Ball games (EN)" })).toBeVisible();
+  expect(screen.queryByRole("heading", { name: "Sport (EN)" })).not.toBeInTheDocument();
+  expect(screen.getByText("Goal")).toBeVisible();
   const saved = await repository.list();
   expect(saved.map((item) => [item.id, item.categoryId])).toEqual(
     expect.arrayContaining([

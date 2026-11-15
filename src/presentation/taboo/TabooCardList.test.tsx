@@ -167,6 +167,24 @@ it("edits a card, validates the input and saves a new category", async () => {
   expect(screen.queryByLabelText("Term")).not.toBeInTheDocument();
 });
 
+it("shows only the card that is edited and brings the others back afterwards", async () => {
+  const own = [moon, { ...moon, id: "own-star", term: "Star" }];
+  const { user } = await renderList({
+    allCards: [...own, sun],
+    ownCards: own,
+    standardCards: [sun],
+  });
+  await openCategory(user, "Nature");
+  expect(screen.getByText("Star")).toBeVisible();
+  await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
+  // The other cards and the actions on the category are out of sight while one card is edited.
+  expect(screen.queryByText("Star")).not.toBeInTheDocument();
+  expect(screen.queryByText("Sun")).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "Cancel" }));
+  expect(screen.getByText("Star")).toBeVisible();
+  expect(screen.getByText("Sun")).toBeVisible();
+});
+
 it("cancels editing and reports a storage failure", async () => {
   const { user } = await renderList({ onUpdate: () => Promise.reject(new Error("disk")) });
   await openCategory(user, "Sport (EN)", "Own");
