@@ -172,3 +172,27 @@ it("tells the player to add players first when the list is empty", async () => {
   expect(screen.getByRole("dialog")).toHaveTextContent("The player list is empty");
   expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
 });
+
+it.each([
+  ["en", "Choose from player list", "Manage player list", "Name of the player", "Add"],
+  ["de", "Aus Spielerliste wählen", "Spielerliste verwalten", "Name des Spielers", "Hinzufügen"],
+] as const)(
+  "manages the saved players from the window to choose them in %s",
+  async (language, pick, manage, nameLabel, addLabel) => {
+    const { store } = memoryStore([]);
+    const user = await renderWith(
+      language,
+      store,
+      <RosterPicker onChange={() => undefined} value="" />,
+    );
+    // Even an empty list can be filled right there, without leaving the line-up.
+    await user.click(screen.getByRole("button", { name: pick }));
+    await user.click(screen.getByRole("button", { name: manage }));
+    const dialogs = screen.getAllByRole("dialog");
+    expect(dialogs).toHaveLength(2);
+    await user.type(within(dialogs[1]!).getByRole("textbox", { name: nameLabel }), "Anna{enter}");
+    expect(within(dialogs[1]!).getByRole("button", { name: addLabel })).toBeVisible();
+    // The list of the window below shows the new player at once.
+    expect(within(dialogs[0]!).getByRole("checkbox", { name: "Anna" })).toBeInTheDocument();
+  },
+);

@@ -4,7 +4,7 @@ export { InfoButton, type InfoContent } from "./InfoButton";
 export { LineupScreen } from "./LineupScreen";
 export { LineupSetup } from "./LineupSetup";
 export { ManageScreen } from "./ManageScreen";
-export { PlayerRosterButton } from "./PlayerRosterButton";
+export { PlayerRosterButton, PlayerRosterDialog } from "./PlayerRosterButton";
 export { usePlayerRoster } from "./PlayerRosterContext";
 export { PlayerRosterProvider } from "./PlayerRosterProvider";
 export { PlayersSetup } from "./PlayersSetup";

@@ -66,3 +66,31 @@ export function useGameBack(active: boolean, onBack: () => void) {
     return () => register(undefined);
   }, [active, register]);
 }
+
+/** What a game offers for the "Rules" button in the header of its main menu. */
+export interface GameRulesAction {
+  readonly open: () => void;
+}
+
+type RegisterGameRules = (action: GameRulesAction | undefined) => void;
+
+export const GameRulesContext = createContext<RegisterGameRules>(() => undefined);
+
+/**
+ * Lets a game put a "Rules" button into the header of its main menu, in the place of the button
+ * "Players" of the GameHub. While `active`, the button calls `onOpen`; the game shows the rules.
+ */
+export function useGameRulesButton(active: boolean, onOpen: () => void) {
+  const register = useContext(GameRulesContext);
+  const latestOpen = useRef(onOpen);
+
+  useEffect(() => {
+    latestOpen.current = onOpen;
+  });
+
+  useEffect(() => {
+    if (!active) return;
+    register({ open: () => latestOpen.current() });
+    return () => register(undefined);
+  }, [active, register]);
+}

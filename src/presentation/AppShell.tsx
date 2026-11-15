@@ -2,7 +2,12 @@ import { useCallback, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
 import { Button, ConfirmButton, Icon } from "./components";
-import { GameChromeContext, type GameExit } from "./GameChrome";
+import {
+  GameChromeContext,
+  GameRulesContext,
+  type GameExit,
+  type GameRulesAction,
+} from "./GameChrome";
 import { PlayerRosterButton } from "./game-kit";
 import { SettingsDialog } from "./SettingsDialog";
 
@@ -25,6 +30,12 @@ export function AppShell({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [gameExit, setGameExit] = useState<GameExit>();
   const registerGameExit = useCallback((exit: GameExit | undefined) => setGameExit(exit), []);
+  // The main menu of a game puts its rules into the header, where the GameHub has the players.
+  const [rulesAction, setRulesAction] = useState<GameRulesAction>();
+  const registerGameRules = useCallback(
+    (action: GameRulesAction | undefined) => setRulesAction(action),
+    [],
+  );
 
   // The home button is the last button at the top right of the main menu of a game.
   const homeButton = onCloseGame ? (
@@ -167,7 +178,14 @@ export function AppShell({
             </>
           ) : (
             <>
-              <PlayerRosterButton />
+              {rulesAction ? (
+                <Button onClick={rulesAction.open} variant="secondary">
+                  <Icon name="book" />
+                  {t("kitSetup.rulesButton")}
+                </Button>
+              ) : (
+                <PlayerRosterButton />
+              )}
               <Button
                 aria-label={t("settings.open")}
                 className="icon-button"
@@ -206,7 +224,9 @@ export function AppShell({
         </div>
       </header>
       <GameChromeContext.Provider value={registerGameExit}>
-        <main className="main-content">{children}</main>
+        <GameRulesContext.Provider value={registerGameRules}>
+          <main className="main-content">{children}</main>
+        </GameRulesContext.Provider>
       </GameChromeContext.Provider>
       <SettingsDialog
         onClose={() => setSettingsOpen(false)}

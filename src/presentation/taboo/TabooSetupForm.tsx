@@ -6,7 +6,8 @@ import { defaultRaceTarget, raceTargetChoices } from "../../business/games/taboo
 import type { SupportedLanguage } from "../../i18n";
 import { ChoiceGroup, SetupScreen, SetupTabs } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
-import { TabooRulesPanel } from "./TabooRules";
+import { useGameRulesButton } from "../GameChrome";
+import { TabooRulesDialog } from "./TabooRules";
 import { TabooSetupMessages } from "./TabooSetupMessages";
 import {
   cardSources,
@@ -68,9 +69,11 @@ export function TabooSetupForm({
   shortage,
 }: TabooSetupFormProps) {
   const { t } = useTranslation();
-  // The tab "Rules" shows the rules of one game mode; the tiebreak has its own window that the rules
+  // The rules window shows the rules of one game mode; the tiebreak has its own window that the rules
   // of the classic mode link to.
-  const [rulesMode, setRulesMode] = useState<TabooMode>(mode);
+  const [rules, setRules] = useState<{ mode: TabooMode; open: boolean }>({ mode, open: false });
+  // The button "Rules" of the header opens the rules at the chosen game mode.
+  useGameRulesButton(messagesVisible, () => setRules({ mode, open: true }));
   const [tiebreakOpen, setTiebreakOpen] = useState(false);
   const categoryLabel = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);
@@ -86,7 +89,7 @@ export function TabooSetupForm({
   });
 
   // The tiebreak has its own window. It opens from the info button inside the option "on" of its
-  // setting and from a link in the rules of the classic mode.
+  // setting and from a link in the rules of the classic mode, which closes the rules window.
   const tiebreakInfo = {
     closeLabel: t("settings.close"),
     label: t("tabooSetup.infoLabel", { setting: t("tabooSetup.tiebreak") }),
@@ -114,6 +117,16 @@ export function TabooSetupForm({
       startDisabled={generating}
       startLabel={t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
     >
+      <TabooRulesDialog
+        mode={rules.mode}
+        onClose={() => setRules((current) => ({ ...current, open: false }))}
+        onModeChange={(next) => setRules({ mode: next, open: true })}
+        onOpenTiebreak={() => {
+          setRules((current) => ({ ...current, open: false }));
+          setTiebreakOpen(true);
+        }}
+        open={rules.open}
+      />
       <SetupTabs
         ariaLabel={t("kitSetup.menuTabs")}
         onSelect={onMenuTabChange}
@@ -132,13 +145,11 @@ export function TabooSetupForm({
                   options={tabooModes.map((value) => ({
                     value,
                     label: t(`tabooMode.${value}`),
-                    // The info button chooses the game mode and shows its rules in the tab "Rules".
+                    // The info button only opens the rules at this game mode; it does not choose the mode.
                     info: {
                       label: t("tabooSetup.infoLabel", { setting: t(`tabooMode.${value}`) }),
                       onOpen: () => {
-                        onModeChange(value);
-                        setRulesMode(value);
-                        onMenuTabChange("rules");
+                        setRules({ mode: value, open: true });
                       },
                     },
                   }))}
@@ -276,17 +287,6 @@ export function TabooSetupForm({
                   })}
                 </fieldset>
               </>
-            ),
-          },
-          {
-            id: "rules",
-            label: t("kitSetup.tabRules"),
-            content: (
-              <TabooRulesPanel
-                mode={rulesMode}
-                onModeChange={setRulesMode}
-                onOpenTiebreak={() => setTiebreakOpen(true)}
-              />
             ),
           },
         ]}

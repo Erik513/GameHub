@@ -4,6 +4,7 @@ import { applyRosterSelection, rosterPlayersIn } from "../../business/shared/pla
 import { Button, Dialog, Icon } from "../components";
 import { ActionRow } from "./ActionRow";
 import { usePlayerRoster } from "./PlayerRosterContext";
+import { PlayerRosterDialog } from "./PlayerRosterButton";
 
 interface RosterPickerProps {
   /** Receives the new text of the players field when the choice is applied. */
@@ -20,6 +21,8 @@ export function RosterPicker({ onChange, value }: RosterPickerProps) {
   const { t } = useTranslation();
   const roster = usePlayerRoster();
   const [open, setOpen] = useState(false);
+  // The saved players are managed in their own window, on top of this one.
+  const [managing, setManaging] = useState(false);
 
   if (!roster) return null;
 
@@ -45,7 +48,11 @@ export function RosterPicker({ onChange, value }: RosterPickerProps) {
           players={roster.players}
           value={value}
         />
+        <Button onClick={() => setManaging(true)} variant="secondary">
+          {t("kitRoster.manage")}
+        </Button>
       </Dialog>
+      <PlayerRosterDialog onClose={() => setManaging(false)} open={managing} />
     </>
   );
 }

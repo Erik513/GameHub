@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from "react-i18next";
+import { Dialog } from "../components";
 import { RulesView } from "../game-kit";
 import { tabooModes, type TabooMode } from "./tabooSetupModel";
 
@@ -55,5 +56,25 @@ export function TabooRulesPanel({ mode, onModeChange, onOpenTiebreak }: TabooRul
       }}
       selected={mode}
     />
+  );
+}
+
+interface TabooRulesDialogProps extends TabooRulesPanelProps {
+  onClose: () => void;
+  open: boolean;
+}
+
+/** The window with the rules of Taboo; the button "Rules" in the header and the info buttons of the game modes open it. */
+export function TabooRulesDialog({ onClose, open, ...panel }: TabooRulesDialogProps) {
+  const { t } = useTranslation();
+  return (
+    <Dialog
+      closeLabel={t("settings.close")}
+      onClose={onClose}
+      open={open}
+      title={t("tabooRules.title")}
+    >
+      <TabooRulesPanel {...panel} />
+    </Dialog>
   );
 }

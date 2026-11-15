@@ -25,7 +25,7 @@ const labels = {
     noTeam: "No team",
     cards: "Cards",
     rules: "Rules",
-    settingsTab: "Settings",
+    settingsTab: "Game settings",
   },
   de: {
     open: "Fortschritt ansehen",
@@ -50,8 +50,8 @@ const labels = {
     draw: "Teams auslosen",
     noTeam: "Ohne Team",
     cards: "Karten",
-    rules: "Regeln",
-    settingsTab: "Einstellungen",
+    rules: "Spielregeln",
+    settingsTab: "Spieleinstellungen",
   },
 } as const;
 
@@ -188,8 +188,9 @@ for (const language of ["en", "de"] as const) {
       await check("setup");
       await page.getByRole("tab", { name: t.cards, exact: true }).click();
       await check("setup cards");
-      await page.getByRole("tab", { name: t.rules, exact: true }).click();
-      await check("setup rules");
+      await press(t.rules);
+      await check("rules dialog");
+      await page.getByRole("dialog").getByRole("button", { name: t.close }).click();
       await page.getByRole("tab", { name: t.settingsTab, exact: true }).click();
       await press(t.start);
       await check("line-up");

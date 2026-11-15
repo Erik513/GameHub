@@ -20,9 +20,10 @@ interface RulesViewProps {
 }
 
 /**
- * All the rules of a game on one page, for a tab of the main menu: first what is the same in every
+ * All the rules of a game, for a window: first what is the same in every
  * game mode, then the game modes side by side as buttons (the chosen one is filled) and below them the
- * rules of the chosen game mode. Choosing here only shows other rules; it does not choose the game
+ * rules of the chosen game mode (all game modes take the same space, so the window never changes its
+ * size). Choosing here only shows other rules; it does not choose the game
  * mode of the game.
  */
 export function RulesView({ intro, items, label, onSelect, selected }: RulesViewProps) {
@@ -46,7 +47,20 @@ export function RulesView({ intro, items, label, onSelect, selected }: RulesView
           </Button>
         ))}
       </div>
-      {chosen?.content}
+      {/* All rules stay in the layout on top of each other and only the chosen one is visible, so the window keeps one size when the game mode is changed. */}
+      <div className="kit-rules-panels">
+        {items.map((item) => (
+          <div
+            aria-hidden={item.id !== chosen?.id}
+            aria-label={item.label}
+            key={item.id}
+            role="region"
+            style={item.id === chosen?.id ? undefined : { visibility: "hidden" }}
+          >
+            {item.content}
+          </div>
+        ))}
+      </div>
     </>
   );
 }

@@ -6,15 +6,10 @@ import { usePlayerRoster } from "./PlayerRosterContext";
 
 type Problem = "empty" | "invalid" | "duplicate" | "full";
 
-/**
- * The button "Players" that opens the window to manage the saved players: add a name, delete a
- * name. It is shown in the main menu of every game and in the header of the GameHub, always with
- * its text because the symbol alone is not clear. Without a player list in the app it shows nothing.
- */
-export function PlayerRosterButton() {
+/** The window to manage the saved players: add a name, delete a name. */
+export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; open: boolean }) {
   const { t } = useTranslation();
   const roster = usePlayerRoster();
-  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [problem, setProblem] = useState<Problem>();
 
@@ -33,10 +28,85 @@ export function PlayerRosterButton() {
   }
 
   function close() {
-    setOpen(false);
+    onClose();
     setProblem(undefined);
     setName("");
   }
+
+  return (
+    <Dialog
+      closeLabel={t("settings.close")}
+      description={t("kitRoster.description")}
+      onClose={close}
+      open={open}
+      title={t("kitRoster.title")}
+    >
+      <div className="kit-roster">
+        <form className="kit-roster__add" noValidate onSubmit={submit}>
+          <input
+            aria-invalid={problem ? true : undefined}
+            aria-label={t("kitRoster.nameLabel")}
+            autoCapitalize="words"
+            autoComplete="off"
+            className="field__input"
+            maxLength={maxPlayerNameLength}
+            onChange={(event) => setName(event.target.value)}
+            placeholder={t("kitRoster.namePlaceholder")}
+            value={name}
+          />
+          <Button
+            aria-label={t("kitRoster.add")}
+            className="kit-roster__plus"
+            title={t("kitRoster.add")}
+            type="submit"
+            variant="success"
+          >
+            <Icon name="plus" />
+          </Button>
+        </form>
+        {/* The line is always there, so the window keeps its size when a problem is shown. */}
+        <p className="kit-roster__problem" {...(problem ? { role: "alert" } : {})}>
+          {problem ? t(`kitRoster.problems.${problem}`) : "\u00a0"}
+        </p>
+        <div className="kit-roster__scroll">
+          {roster.players.length === 0 ? (
+            <p>{t("kitRoster.empty")}</p>
+          ) : (
+            <ul aria-label={t("kitRoster.listLabel")} className="kit-roster__list">
+              {roster.players.map((player) => (
+                <li key={player}>
+                  <span className="kit-roster__name">{player}</span>
+                  <ConfirmButton
+                    armedContent={<Icon name="trash" />}
+                    armedLabel={t("kitRoster.removeConfirm", { name: player })}
+                    className="icon-button--small"
+                    idleLabel={t("kitRoster.remove", { name: player })}
+                    idleVariant="danger"
+                    onConfirm={() => roster.remove(player)}
+                  >
+                    <Icon name="trash" />
+                  </ConfirmButton>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </Dialog>
+  );
+}
+
+/**
+ * The button "Players" that opens the window to manage the saved players: add a name, delete a
+ * name. It is shown in the main menu of every game and in the header of the GameHub, always with
+ * its text because the symbol alone is not clear. Without a player list in the app it shows nothing.
+ */
+export function PlayerRosterButton() {
+  const { t } = useTranslation();
+  const roster = usePlayerRoster();
+  const [open, setOpen] = useState(false);
+
+  if (!roster) return null;
 
   return (
     <>
@@ -44,65 +114,7 @@ export function PlayerRosterButton() {
         <Icon name="users" />
         {t("kitRoster.open")}
       </Button>
-      <Dialog
-        closeLabel={t("settings.close")}
-        description={t("kitRoster.description")}
-        onClose={close}
-        open={open}
-        title={t("kitRoster.title")}
-      >
-        <div className="kit-roster">
-          <form className="kit-roster__add" noValidate onSubmit={submit}>
-            <input
-              aria-invalid={problem ? true : undefined}
-              aria-label={t("kitRoster.nameLabel")}
-              autoCapitalize="words"
-              autoComplete="off"
-              className="field__input"
-              maxLength={maxPlayerNameLength}
-              onChange={(event) => setName(event.target.value)}
-              placeholder={t("kitRoster.namePlaceholder")}
-              value={name}
-            />
-            <Button
-              aria-label={t("kitRoster.add")}
-              className="kit-roster__plus"
-              title={t("kitRoster.add")}
-              type="submit"
-              variant="success"
-            >
-              <Icon name="plus" />
-            </Button>
-          </form>
-          {/* The line is always there, so the window keeps its size when a problem is shown. */}
-          <p className="kit-roster__problem" {...(problem ? { role: "alert" } : {})}>
-            {problem ? t(`kitRoster.problems.${problem}`) : "\u00a0"}
-          </p>
-          <div className="kit-roster__scroll">
-            {roster.players.length === 0 ? (
-              <p>{t("kitRoster.empty")}</p>
-            ) : (
-              <ul aria-label={t("kitRoster.listLabel")} className="kit-roster__list">
-                {roster.players.map((player) => (
-                  <li key={player}>
-                    <span className="kit-roster__name">{player}</span>
-                    <ConfirmButton
-                      armedContent={<Icon name="trash" />}
-                      armedLabel={t("kitRoster.removeConfirm", { name: player })}
-                      className="icon-button--small"
-                      idleLabel={t("kitRoster.remove", { name: player })}
-                      idleVariant="danger"
-                      onConfirm={() => roster.remove(player)}
-                    >
-                      <Icon name="trash" />
-                    </ConfirmButton>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-      </Dialog>
+      <PlayerRosterDialog onClose={() => setOpen(false)} open={open} />
     </>
   );
 }

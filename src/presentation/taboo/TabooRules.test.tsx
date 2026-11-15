@@ -4,42 +4,63 @@ import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { createGameHubI18n } from "../../i18n";
-import { TabooSetup } from "./TabooSetup";
+import { App } from "../App";
+import { PlayerRosterProvider } from "../game-kit";
+import { createTabooModule } from "./tabooModule";
 
-it.each([
-  ["de", "Regeln", "Regeln für den Spielmodus", "Auf jeder Karte", "Auf Zeit", "Klassisch"],
-  ["en", "Rules", "Rules for the game mode", "Every card shows", "Race", "Classic"],
-] as const)(
-  "explains the card and the forbidden words above the game modes in the rules tab in %s",
-  async (language, tabName, modes, general, raceMode, classicMode) => {
+const texts = {
+  de: {
+    open: "Fortschritt ansehen",
+    rules: "Spielregeln",
+    title: "Spielregeln Tabu",
+    players: "Spieler",
+    general: "Auf jeder Karte",
+    close: "Schließen",
+  },
+  en: {
+    open: "View progress",
+    rules: "Rules",
+    title: "Taboo rules",
+    players: "Players",
+    general: "Every card shows",
+    close: "Close",
+  },
+} as const;
+
+it.each(["de", "en"] as const)(
+  "puts the rules into the header of the game, where the GameHub has the players, in %s",
+  async (language) => {
+    const text = texts[language];
+    // Each test starts at the GameHub, whatever the last test opened.
+    window.location.hash = "#/";
     const user = userEvent.setup();
     const i18n = await createGameHubI18n(language);
     render(
       <I18nextProvider i18n={i18n}>
-        <TabooSetup cardLanguage={language} cards={tabooStandardCards} />
+        <PlayerRosterProvider store={{ read: () => [], write: () => undefined }}>
+          <App
+            cardLanguage={language}
+            modules={[createTabooModule({ cards: tabooStandardCards })]}
+            onCardLanguageChange={() => undefined}
+          />
+        </PlayerRosterProvider>
       </I18nextProvider>,
     );
 
-    // The rules are a tab of the main menu now, not a window.
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("tab", { name: tabName }));
-    const tab = screen.getByRole("tab", { name: tabName });
-    expect(tab).toHaveAttribute("aria-selected", "true");
-    const panel = document.getElementById(tab.getAttribute("aria-controls") ?? "")!;
-    expect(panel).toHaveAttribute("data-active", "true");
+    // The GameHub has the button "Players" in the header, not the rules.
+    expect(screen.getByRole("button", { name: text.players })).toBeVisible();
+    expect(screen.queryByRole("button", { name: text.rules })).not.toBeInTheDocument();
 
+    // The main menu of a game has the button "Rules" instead of "Players".
+    await user.click(screen.getByRole("button", { name: text.open }));
+    expect(screen.queryByRole("button", { name: text.players })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: text.rules }));
+    const dialog = screen.getByRole("dialog", { name: text.title });
     // Two rules for every game mode stand above the game modes.
-    const items = within(panel).getAllByRole("listitem");
-    expect(items[0]).toHaveTextContent(general);
+    const items = within(dialog).getAllByRole("listitem");
+    expect(items[0]).toHaveTextContent(text.general);
     expect(items[1]).toHaveTextContent(/4/);
-
-    // The game modes are buttons; the chosen one is filled and its rules stand below.
-    const group = within(panel).getByRole("group", { name: modes });
-    const buttons = within(group).getAllByRole("button");
-    expect(buttons.map((button) => button.textContent)).toEqual([classicMode, raceMode]);
-    expect(buttons[0]).toHaveAttribute("aria-pressed", "true");
-    await user.click(buttons[1]!);
-    expect(buttons[1]).toHaveAttribute("aria-pressed", "true");
-    expect(buttons[0]).toHaveAttribute("aria-pressed", "false");
+    await user.click(within(dialog).getByRole("button", { name: text.close }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   },
 );
