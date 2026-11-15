@@ -90,6 +90,17 @@ async function audit(page: Page, screen: string): Promise<string[]> {
       });
     }
 
+    // One page: the setup screens never scroll as a page, only the box of the chosen tab does.
+    if (
+      document.querySelector(".kit-onepage, .game-library") &&
+      document.documentElement.scrollHeight > window.innerHeight
+    ) {
+      found.push({
+        kind: "page scroll on a one-page screen",
+        detail: `${document.documentElement.scrollHeight} > ${window.innerHeight}`,
+      });
+    }
+
     const targets = document.querySelectorAll(
       "button, a[href], summary, select, input[type=text], label.kit-choice, .taboo-review__item",
     );
@@ -334,6 +345,43 @@ test("the race screens fit a small phone in both languages", async ({ page }, te
     await press(race.startRun);
     for (let card = 0; card < 5; card += 1) await press(t.correct);
     await check("race result");
+  }
+  expect(problems, problems.join("\n")).toEqual([]);
+});
+
+test("the card editor is one page with two tabs on a small phone in both languages", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+  const problems: string[] = [];
+  const addTab = { en: "Add card", de: "Karte hinzufügen" } as const;
+  for (const language of ["en", "de"] as const) {
+    const t = labels[language];
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.goto("/");
+    if (language === "de") {
+      await page.getByRole("button", { name: labels.en.settings }).click();
+      await page
+        .getByRole("group", { name: labels.en.interfaceLanguage })
+        .getByRole("radio", { name: "German" })
+        .check({ force: true });
+      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+    }
+    await page.getByRole("button", { name: t.open }).click();
+    await page.getByRole("tab", { name: t.cards, exact: true }).click();
+    await page
+      .locator('.kit-tabpanel[data-active="true"]')
+      .getByRole("button", { name: t.cards, exact: true })
+      .click();
+    // The cards are the left tab, the form to add a card the right one.
+    const tabs = page.locator(".kit-manage").getByRole("tab");
+    await expect(tabs).toHaveText([t.cards, addTab[language]]);
+    problems.push(...(await audit(page, `${language} card editor: cards`)));
+    // An opened category shows its cards; the way back stays in the header.
+    await page.locator(".kit-nav-row").first().click();
+    problems.push(...(await audit(page, `${language} card editor: category`)));
+    await tabs.nth(1).click();
+    problems.push(...(await audit(page, `${language} card editor: add`)));
   }
   expect(problems, problems.join("\n")).toEqual([]);
 });

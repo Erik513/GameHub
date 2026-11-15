@@ -15,7 +15,7 @@ import {
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Icon, Toast, useNotice } from "../components";
-import { ManageScreen, useScreenScroll } from "../game-kit";
+import { ActionRow, ManageScreen, useScreenScroll } from "../game-kit";
 import { useGameBack } from "../GameChrome";
 import { TabooCardEntry } from "./TabooCardEntry";
 import { TabooCardExport } from "./TabooCardExport";
@@ -190,67 +190,87 @@ export function TabooLibrary({
       </div>
       {repository && page === "cards" && (
         <ManageScreen
-          actions={
+          messages={
             <>
-              <Button
+              {notice && (
+                <Toast
+                  key={notice.id}
+                  tone={notice.value.type === "imported" ? "success" : "error"}
+                >
+                  {notice.value.type === "imported"
+                    ? t("tabooLibrary.imported", { count: notice.value.count })
+                    : t(`tabooLibrary.${notice.value.type}`)}
+                </Toast>
+              )}
+              <input
+                accept=".json,application/json"
+                aria-label={t("tabooLibrary.import")}
+                className="visually-hidden"
                 disabled={busy}
-                onClick={() => fileInput.current?.click()}
-                variant="secondary"
-              >
-                <Icon name="upload" />
-                {t("tabooLibrary.import")}
-              </Button>
-              <TabooCardExport
-                allCards={allCards}
-                cardLanguage={cardLanguage}
-                categoryInfos={categoryInfos}
-                disabled={busy}
-                onExport={exportCategory}
+                onChange={(event) => {
+                  const file = event.currentTarget.files?.[0];
+                  event.currentTarget.value = "";
+                  if (file) void importCards(file);
+                }}
+                ref={fileInput}
+                tabIndex={-1}
+                type="file"
               />
             </>
           }
-          hint={t("tabooLibrary.hint")}
+          tabs={[
+            {
+              content: (
+                <TabooCardList
+                  allCards={allCards}
+                  cardLanguage={cardLanguage}
+                  categoryInfos={categoryInfos}
+                  disabled={busy}
+                  footer={
+                    <ActionRow>
+                      <Button
+                        disabled={busy}
+                        onClick={() => fileInput.current?.click()}
+                        variant="secondary"
+                      >
+                        <Icon name="upload" />
+                        {t("tabooLibrary.import")}
+                      </Button>
+                      <TabooCardExport
+                        allCards={allCards}
+                        cardLanguage={cardLanguage}
+                        categoryInfos={categoryInfos}
+                        disabled={busy}
+                        onExport={exportCategory}
+                      />
+                    </ActionRow>
+                  }
+                  onRemove={removeCard}
+                  onRenameCategory={renameCategory}
+                  onUpdate={updateCard}
+                  ownCards={ownCards ?? []}
+                  standardCards={standardCards}
+                />
+              ),
+              id: "cards",
+              label: t("tabooLibrary.cardsTab"),
+            },
+            {
+              content: (
+                <TabooCardEntry
+                  cards={allCards}
+                  categoryInfos={categoryInfos}
+                  disabled={busy}
+                  onAdd={saveCards}
+                />
+              ),
+              id: "add",
+              label: t("tabooEntry.title"),
+            },
+          ]}
+          tabsLabel={t("tabooLibrary.title")}
           title={t("tabooLibrary.title")}
-        >
-          {notice && (
-            <Toast key={notice.id} tone={notice.value.type === "imported" ? "success" : "error"}>
-              {notice.value.type === "imported"
-                ? t("tabooLibrary.imported", { count: notice.value.count })
-                : t(`tabooLibrary.${notice.value.type}`)}
-            </Toast>
-          )}
-          <TabooCardEntry
-            cards={allCards}
-            categoryInfos={categoryInfos}
-            disabled={busy}
-            onAdd={saveCards}
-          />
-          <TabooCardList
-            allCards={allCards}
-            cardLanguage={cardLanguage}
-            disabled={busy}
-            onRemove={removeCard}
-            onRenameCategory={renameCategory}
-            onUpdate={updateCard}
-            ownCards={ownCards ?? []}
-            categoryInfos={categoryInfos}
-            standardCards={standardCards}
-          />
-          <input
-            accept=".json,application/json"
-            aria-label={t("tabooLibrary.import")}
-            className="visually-hidden"
-            disabled={busy}
-            onChange={(event) => {
-              const file = event.currentTarget.files?.[0];
-              event.currentTarget.value = "";
-              if (file) void importCards(file);
-            }}
-            ref={fileInput}
-            tabIndex={-1}
-            type="file"
-          />
-        </ManageScreen>
+        />
       )}
     </>
   );

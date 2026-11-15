@@ -642,3 +642,53 @@
   width: 3rem;
   padding: 0;
 }
+
+/* Category list and the opened category of the card editor. */
+.taboo-card-list__categories,
+.taboo-card-list__cards {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.taboo-card-list__cards {
+  gap: 0;
+}
+
+.taboo-card-list__cards > li {
+  padding: 0.375rem 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.taboo-card-list__cards > li:first-child {
+  border-top: 0;
+}
+
+.taboo-card-list__head {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.taboo-card-list__head-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.taboo-card-list__head-row h3 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-lg);
+  overflow-wrap: anywhere;
+}
+
+.taboo-card-list__head-row small {
+  color: var(--color-ink-muted);
+}
+
+.taboo-card-list__head .taboo-card-list__category-actions {
+  padding: 0;
+}

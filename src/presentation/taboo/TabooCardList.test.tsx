@@ -62,43 +62,76 @@ async function renderList(
   return { user, onUpdate, onRemove, onRenameCategory };
 }
 
-function category(name: string) {
-  return screen.getByText(name, { selector: "summary span" }).closest("details")!;
+/** The names of the categories in the list that is shown. */
+function categoryNames() {
+  return [...document.querySelectorAll(".kit-nav-row > span:first-child")].map(
+    (item) => item.textContent,
+  );
 }
 
-it("groups cards by category in alphabetical order with counts and shows cards from easy to hard", async () => {
-  const { user } = await renderList();
-  expect(screen.getByRole("heading", { name: "Cards by category" })).toBeVisible();
-  const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
-  expect(names).toEqual(["Culture", "Everyday life", "Nature", "Sport (EN)"]);
-  expect(within(category("Nature")).getByText("2")).toBeInTheDocument();
-  expect(within(category("Sport (EN)")).getByText("1")).toBeInTheDocument();
+/** Opens a category: goes back to the list, chooses its view (Standard or Own) and taps its row. */
+async function openCategory(
+  user: ReturnType<typeof userEvent.setup>,
+  name: string,
+  view: "Standard" | "Own" = "Standard",
+) {
+  const back = screen.queryByRole("button", {
+    name: /Back to the categories|Zurück zu den Kategorien/,
+  });
+  if (back) await user.click(back);
+  await user.click(
+    screen.getByRole("button", { name: view === "Own" ? /^(Own|Eigene)$/ : "Standard" }),
+  );
+  const row = [...document.querySelectorAll<HTMLElement>(".kit-nav-row")].find(
+    (item) => item.querySelector("span")?.textContent === name,
+  );
+  await user.click(row!);
+}
 
-  await user.click(screen.getByText("Nature", { selector: "summary span" }));
-  const rows = within(category("Nature")).getAllByRole("listitem");
+it("shows the standard and the own categories as two views and the cards of an opened category from easy to hard", async () => {
+  const { user } = await renderList();
+  expect(screen.getByRole("group", { name: "Cards by category" })).toBeVisible();
+  // Standard categories first, alphabetical, only with the count: no chapters to fold out.
+  expect(categoryNames()).toEqual(["Culture", "Everyday life", "Nature"]);
+  expect(document.querySelector("details")).toBeNull();
+  expect(screen.getByRole("button", { name: "Standard" })).toHaveAttribute("aria-pressed", "true");
+  const nature = [...document.querySelectorAll(".kit-nav-row")].find((row) =>
+    row.textContent?.startsWith("Nature"),
+  )!;
+  expect(nature).toHaveTextContent("2");
+
+  // The second view lists the own categories with their language.
+  await user.click(screen.getByRole("button", { name: "Own" }));
+  expect(categoryNames()).toEqual(["Sport (EN)"]);
+
+  await openCategory(user, "Nature");
+  const rows = screen.getAllByRole("listitem");
   expect(rows.map((row) => row.querySelector("strong")?.textContent)).toEqual(["Moon", "Sun"]);
   // Own and built-in cards of a category are separate blocks with labels.
-  const labels = [...category("Nature").querySelectorAll(".taboo-card-list__label")].map(
+  const labels = [...document.querySelectorAll(".taboo-card-list__label")].map(
     (label) => label.textContent,
   );
   expect(labels).toEqual(["Own cards", "Built-in cards"]);
-  // Own and standard categories are two labeled groups, the own ones first.
-  expect(
-    [...document.querySelectorAll(".taboo-card-list__group > small")].map(
-      (item) => item.textContent,
-    ),
-  ).toEqual(["Standard categories (German and English)", "Own categories"]);
   expect(rows[0]).toHaveTextContent("night · sky · orbit · space");
   expect(rows[1]).toHaveTextContent("Hard");
   // Only own cards can be edited, and cards of the other language are not shown.
   expect(within(rows[0]!).getByRole("button", { name: "Edit card Moon" })).toBeVisible();
   expect(within(rows[1]!).queryByRole("button")).toBeNull();
   expect(screen.queryByText("Mond")).not.toBeInTheDocument();
+  // The way back stays in the header; it leads to the list of the view.
+  await user.click(screen.getByRole("button", { name: "Back to the categories" }));
+  expect(categoryNames()).toEqual(["Culture", "Everyday life", "Nature"]);
+});
+
+it("tells where to create an own category while there is none", async () => {
+  const { user } = await renderList({ allCards: [sun], ownCards: [], standardCards: [sun] });
+  await user.click(screen.getByRole("button", { name: "Own" }));
+  expect(screen.getByText(/You do not have any own categories yet/)).toBeVisible();
 });
 
 it("edits a card, validates the input and saves a new category", async () => {
   const { user, onUpdate } = await renderList();
-  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  await openCategory(user, "Nature");
   await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
   const words = () => screen.getByLabelText("Four forbidden words, separated by commas");
 
@@ -136,7 +169,7 @@ it("edits a card, validates the input and saves a new category", async () => {
 
 it("cancels editing and reports a storage failure", async () => {
   const { user } = await renderList({ onUpdate: () => Promise.reject(new Error("disk")) });
-  await user.click(screen.getByText("Sport (EN)", { selector: "summary span" }));
+  await openCategory(user, "Sport (EN)", "Own");
   await user.click(screen.getByRole("button", { name: "Edit card Goal" }));
   await user.click(screen.getByRole("button", { name: "Cancel" }));
   expect(screen.queryByLabelText("Term")).not.toBeInTheDocument();
@@ -148,7 +181,7 @@ it("cancels editing and reports a storage failure", async () => {
 
 it("deletes a card from the editor only after a second tap", async () => {
   const { user, onRemove } = await renderList();
-  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  await openCategory(user, "Nature");
   await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
   await user.click(screen.getByRole("button", { name: "Delete card Moon" }));
   expect(onRemove).not.toHaveBeenCalled();
@@ -159,7 +192,7 @@ it("deletes a card from the editor only after a second tap", async () => {
 
 it("shows the editor buttons as save symbol, red delete symbol and a text cancel button", async () => {
   const { user } = await renderList();
-  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  await openCategory(user, "Nature");
   await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
   const actions = document.querySelector(".kit-action-row")!;
   const buttons = [...actions.querySelectorAll("button")];
@@ -185,13 +218,11 @@ it.each([
   async (language, idle, armed) => {
     const { user, onRemove } = await renderList({}, language);
     // Standard categories cannot be deleted.
-    await user.click(
-      screen.getByText(language === "en" ? "Nature" : "Natur", { selector: "summary span" }),
-    );
+    await openCategory(user, language === "en" ? "Nature" : "Natur");
     expect(
       screen.queryByRole("button", { name: /(Delete category|Kategorie) Nat/ }),
     ).not.toBeInTheDocument();
-    await user.click(screen.getByText("Sport (EN)", { selector: "summary span" }));
+    await openCategory(user, "Sport (EN)", "Own");
     await user.click(screen.getByRole("button", { name: idle }));
     expect(onRemove).not.toHaveBeenCalled();
     await new Promise((resolve) => setTimeout(resolve, 450));
@@ -216,9 +247,15 @@ it.each([
       </I18nextProvider>,
     );
     await user.click(screen.getByRole("button", { name: manage }));
-    await user.click(screen.getByText(nature, { selector: "summary span" }));
+    await openCategory(user, nature);
     await user.click(await screen.findByRole("button", { name: edit }));
-    await user.type(screen.getAllByRole("textbox", { name: /Begriff|Term/ }).at(-1)!, "s");
+    // The tab "Add card" has a field for a term, too; the edit field is in the list.
+    await user.type(
+      within(document.querySelector<HTMLElement>(".taboo-card-list__edit")!).getByRole("textbox", {
+        name: /Begriff|Term/,
+      }),
+      "s",
+    );
     await user.click(screen.getByRole("button", { name: save }));
     await waitFor(async () => {
       expect((await repository.list())[0]?.term).toBe("Moons");
@@ -265,21 +302,18 @@ it("sorts custom categories among the others and the cards of a category by diff
     ownCards: own,
     standardCards: standard,
   });
-  const names = [...document.querySelectorAll("summary span")].map((item) => item.textContent);
-  expect(names).toEqual(["Culture", "Everyday life", "Nature", "aardvarks (EN)", "Zebras (EN)"]);
+  expect(categoryNames()).toEqual(["Culture", "Everyday life", "Nature"]);
+  await user.click(screen.getByRole("button", { name: "Own" }));
+  expect(categoryNames()).toEqual(["aardvarks (EN)", "Zebras (EN)"]);
 
-  await user.click(screen.getByText("Zebras (EN)", { selector: "summary span" }));
+  await openCategory(user, "Zebras (EN)", "Own");
   expect(
-    within(category("Zebras (EN)"))
-      .getAllByRole("listitem")
-      .map((row) => row.querySelector("strong")?.textContent),
+    screen.getAllByRole("listitem").map((row) => row.querySelector("strong")?.textContent),
   ).toEqual(["apple pie", "Bagel", "Zeppelin"]);
 
-  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  await openCategory(user, "Nature");
   expect(
-    within(category("Nature"))
-      .getAllByRole("listitem")
-      .map((row) => row.querySelector("strong")?.textContent),
+    screen.getAllByRole("listitem").map((row) => row.querySelector("strong")?.textContent),
   ).toEqual(["Moss", "Anchor"]);
 });
 
@@ -293,12 +327,13 @@ it("shows own categories of both languages with their language and only the coun
     difficulty: "easy",
   });
   const own = [mk("1", "de"), mk("2", "en"), mk("3", "en")];
-  await renderList({ allCards: own, ownCards: own, standardCards: [] });
-  const rows = [...document.querySelectorAll(".taboo-card-list__category > summary")].map((row) =>
+  const { user } = await renderList({ allCards: own, ownCards: own, standardCards: [] });
+  await user.click(screen.getByRole("button", { name: "Own" }));
+  const rows = [...document.querySelectorAll(".kit-nav-row")].map((row) =>
     row.textContent?.replace(/\s+/g, " ").trim(),
   );
-  // Own categories are listed after the standard ones; no "own" in the count.
-  expect(rows.slice(-2)).toEqual(["Sport (DE)1", "Sport (EN)2"]);
+  // Each own category has its language in the name; the row shows only the count.
+  expect(rows).toEqual(["Sport (DE)1", "Sport (EN)2"]);
 });
 
 it.each([
@@ -320,14 +355,8 @@ it.each([
       { allCards: own, ownCards: own, standardCards: [] },
       language,
     );
-    const summaries = [...document.querySelectorAll(".taboo-card-list__category > summary")];
-    const sport = summaries.find((summary) => (summary.textContent ?? "").startsWith("Sport"))!;
-    await user.click(sport);
-    await user.click(
-      within(sport.closest("details")!).getByRole("button", {
-        name: buttonName,
-      }),
-    );
+    await openCategory(user, "Sport (EN)", "Own");
+    await user.click(screen.getByRole("button", { name: buttonName }));
     const input = screen.getByLabelText(inputName);
     expect(input).toHaveValue("Sport");
     const alertText = () => screen.getByRole("alert").textContent;
@@ -366,7 +395,7 @@ it.each([
 
 it("makes the first letter of a term and of the forbidden words a capital letter when editing", async () => {
   const { user, onUpdate } = await renderList();
-  await user.click(screen.getByText("Nature", { selector: "summary span" }));
+  await openCategory(user, "Nature");
   await user.click(screen.getByRole("button", { name: "Edit card Moon" }));
   await user.clear(screen.getByLabelText("Term"));
   await user.type(screen.getByLabelText("Term"), "full moon");

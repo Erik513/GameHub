@@ -30,7 +30,7 @@ export function SetupScreen({
   startLabel,
 }: SetupScreenProps) {
   return (
-    <>
+    <div className="kit-onepage">
       {messages}
       <form id={formId} noValidate onChange={onChange} onSubmit={onSubmit}>
         {children}
@@ -40,6 +40,6 @@ export function SetupScreen({
           {startLabel}
         </Button>
       </StartBar>
-    </>
+    </div>
   );
 }

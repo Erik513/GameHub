@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { selectNewTabooCards } from "../../business/games/taboo/cardExchange";
 import {
@@ -11,7 +11,7 @@ import {
 import { capitalizeFirst, validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, ConfirmButton, Icon, Toast, useNotice } from "../components";
-import { ActionRow, SetupSection } from "../game-kit";
+import { ActionRow, TabPane } from "../game-kit";
 import { useCategoryLabel, useCategorySorter, useInterfaceLanguage } from "./categoryLabel";
 import { sortCardsForList } from "../../business/games/taboo/ordering";
 import { TabooCategoryField } from "./TabooCategoryField";
@@ -26,6 +26,8 @@ interface TabooCardListProps {
   /** The standard categories with their names. */
   categoryInfos?: readonly TabooCategoryInfo[];
   disabled: boolean;
+  /** Controls below the list that never scroll away, for example import and export. */
+  footer?: ReactNode;
   onRemove: (id: string) => Promise<void>;
   /** Gives all own cards of an own category another name. */
   onRenameCategory: (from: OwnCategory, to: string) => Promise<void>;
@@ -55,6 +57,7 @@ export function TabooCardList({
   cardLanguage,
   categoryInfos = builtInCategories,
   disabled,
+  footer,
   onRemove,
   onRenameCategory,
   onUpdate,
@@ -79,13 +82,29 @@ export function TabooCardList({
   const standardCategoryIds = sortCategories(
     availableCategories(categoryInfos, allCards, cardLanguage).map((info) => info.id),
   );
-  const groups = [
-    {
-      key: "standard",
-      entries: standardCategoryIds.map((id) => ({ id, language: cardLanguage })),
-    },
-    { key: "own", entries: ownCategoryList },
-  ] as const;
+  // Two views: the standard categories (shown with the cards of the card language) and the own
+  // categories (of both languages). A category is opened to show and change its cards.
+  const [view, setView] = useState<"standard" | "own">("standard");
+  const [opened, setOpened] = useState<OwnCategory>();
+  const entries: readonly OwnCategory[] =
+    view === "own"
+      ? ownCategoryList
+      : standardCategoryIds.map((id) => ({ id, language: cardLanguage }));
+  const current = opened
+    ? entries.find((entry) => entry.id === opened.id && entry.language === opened.language)
+    : undefined;
+  const titleOf = (entry: OwnCategory) =>
+    view === "own"
+      ? `${categoryName(entry.id)} (${entry.language.toUpperCase()})`
+      : categoryName(entry.id);
+  const cardsOf = (entry: OwnCategory) => ({
+    own: ownCards.filter(
+      (card) => card.language === entry.language && card.categoryId === entry.id,
+    ),
+    standard: standardCards.filter(
+      (card) => card.language === entry.language && card.categoryId === entry.id,
+    ),
+  });
 
   function startEditing(card: TabooCard) {
     setEditing(card);
@@ -175,6 +194,7 @@ export function TabooCardList({
         setEditing(undefined);
       }
       setRenaming(undefined);
+      setOpened(undefined);
       notify("renamed");
     } catch {
       notify("storage");
@@ -287,149 +307,176 @@ export function TabooCardList({
     );
   }
 
-  return (
-    <SetupSection title={t("tabooList.title")}>
-      <div className="taboo-card-list">
-        {notice && (
-          <Toast key={notice.id} tone={notice.value === "renamed" ? "success" : "error"}>
-            {isCardProblem(notice.value)
-              ? t(`tabooCardProblems.${notice.value}`)
-              : notice.value === "renamed"
-                ? t("tabooList.categoryRenamed")
-                : t(`tabooList.problems.${notice.value}`)}
-          </Toast>
-        )}
-        {groups.map((group) =>
-          group.entries.length === 0 ? null : (
-            <div className="taboo-card-list__group" key={group.key}>
-              {(ownCategoryList.length > 0 || group.key === "standard") && (
-                <small>
-                  {t(
-                    `tabooList.groups.${group.key === "own" ? "ownCategories" : "standardCategories"}`,
-                  )}
-                </small>
-              )}
-              {group.entries.map(({ id: categoryId, language }) => {
-                const own = ownCards.filter(
-                  (card) => card.language === language && card.categoryId === categoryId,
-                );
-                const standard = standardCards.filter(
-                  (card) => card.language === language && card.categoryId === categoryId,
-                );
-                // An own category belongs to a language, which is part of its name everywhere.
-                const title =
-                  group.key === "own"
-                    ? `${categoryName(categoryId)} (${language.toUpperCase()})`
-                    : categoryName(categoryId);
-                return (
-                  <details
-                    className="kit-disclosure taboo-card-list__category"
-                    key={`${language}:${categoryId}`}
-                  >
-                    <summary>
-                      <span>{title}</span>
-                      <small>{t("tabooList.count", { count: own.length + standard.length })}</small>
-                    </summary>
-                    {own.length > 0 && (
-                      <>
-                        {standard.length > 0 && (
-                          <small className="taboo-card-list__label">
-                            {t("tabooList.groups.ownCards")}
-                          </small>
-                        )}
-                        <ul>
-                          {sortCardsForList(own, language).map((card) => (
-                            <li key={card.id}>{renderRow(card, true)}</li>
-                          ))}
-                        </ul>
-                        {group.key === "own" && (
-                          <div className="taboo-card-list__category-actions">
-                            {renaming?.id === categoryId && renaming.language === language ? (
-                              <form
-                                className="taboo-card-list__rename"
-                                noValidate
-                                onSubmit={(event) => void renameCategory(event)}
-                              >
-                                <input
-                                  aria-label={t("tabooList.renameName")}
-                                  autoComplete="off"
-                                  className="field__input"
-                                  defaultValue={categoryId}
-                                  maxLength={24}
-                                  name="name"
-                                />
-                                <Button
-                                  aria-label={t("tabooList.save")}
-                                  className="icon-button"
-                                  disabled={disabled}
-                                  title={t("tabooList.save")}
-                                  type="submit"
-                                  variant="success"
-                                >
-                                  <Icon name="check" />
-                                </Button>
-                                <Button onClick={() => setRenaming(undefined)} variant="danger">
-                                  {t("tabooList.cancel")}
-                                </Button>
-                              </form>
-                            ) : (
-                              <>
-                                <Button
-                                  aria-label={t("tabooList.renameCategoryLabel", {
-                                    category: title,
-                                  })}
-                                  disabled={disabled}
-                                  onClick={() => setRenaming({ id: categoryId, language })}
-                                  variant="secondary"
-                                >
-                                  <Icon name="pencil" />
-                                  {t("tabooList.renameCategory")}
-                                </Button>
-                                <ConfirmButton
-                                  armedContent={t("tabooList.deleteCategoryAgain", {
-                                    count: own.length,
-                                  })}
-                                  armedLabel={t("tabooList.deleteCategoryConfirm", {
-                                    category: title,
-                                    count: own.length,
-                                  })}
-                                  idleLabel={t("tabooList.deleteCategoryLabel", {
-                                    category: title,
-                                    count: own.length,
-                                  })}
-                                  idleVariant="danger"
-                                  onConfirm={() => void removeCategory(own)}
-                                >
-                                  <Icon name="trash" />
-                                  {t("tabooList.deleteCategory")}
-                                </ConfirmButton>
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    )}
-                    {standard.length > 0 && (
-                      <>
-                        {own.length > 0 && (
-                          <small className="taboo-card-list__label">
-                            {t("tabooList.groups.standardCards")}
-                          </small>
-                        )}
-                        <ul>
-                          {sortCardsForList(standard, language).map((card) => (
-                            <li key={card.id}>{renderRow(card, false)}</li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
-                  </details>
-                );
-              })}
-            </div>
-          ),
-        )}
+  const toast = notice && (
+    <Toast key={notice.id} tone={notice.value === "renamed" ? "success" : "error"}>
+      {isCardProblem(notice.value)
+        ? t(`tabooCardProblems.${notice.value}`)
+        : notice.value === "renamed"
+          ? t("tabooList.categoryRenamed")
+          : t(`tabooList.problems.${notice.value}`)}
+    </Toast>
+  );
+
+  // The header stays: the switch between the two views, or the way back with the category.
+  let header: ReactNode;
+  let body: ReactNode;
+  if (!current) {
+    header = (
+      <div aria-label={t("tabooList.title")} className="kit-segmented" role="group">
+        {(["standard", "own"] as const).map((value) => (
+          <button
+            aria-pressed={view === value}
+            key={value}
+            onClick={() => setView(value)}
+            type="button"
+          >
+            {t(`tabooList.views.${value}`)}
+          </button>
+        ))}
       </div>
-    </SetupSection>
+    );
+    body =
+      entries.length === 0 ? (
+        <p className="kit-pane__empty">{t("tabooList.noOwnCategories")}</p>
+      ) : (
+        <ul className="taboo-card-list__categories">
+          {entries.map((entry) => (
+            <li key={`${entry.language}:${entry.id}`}>
+              <button className="kit-nav-row" onClick={() => setOpened(entry)} type="button">
+                <span>{titleOf(entry)}</span>
+                <small>
+                  {t("tabooList.count", {
+                    count: cardsOf(entry).own.length + cardsOf(entry).standard.length,
+                  })}
+                </small>
+                <Icon name="chevronRight" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      );
+  } else {
+    const { own, standard } = cardsOf(current);
+    const title = titleOf(current);
+    const renamingThis = renaming?.id === current.id && renaming.language === current.language;
+    header = (
+      <div className="taboo-card-list__head">
+        <div className="taboo-card-list__head-row">
+          <Button
+            aria-label={t("tabooList.back")}
+            className="icon-button"
+            onClick={() => {
+              setOpened(undefined);
+              setEditing(undefined);
+              setRenaming(undefined);
+            }}
+            title={t("tabooList.back")}
+            variant="secondary"
+          >
+            <Icon name="arrowLeft" />
+          </Button>
+          <h3>{title}</h3>
+          <small>{t("tabooList.count", { count: own.length + standard.length })}</small>
+        </div>
+        {view === "own" &&
+          (renamingThis ? (
+            <form
+              className="taboo-card-list__rename"
+              noValidate
+              onSubmit={(event) => void renameCategory(event)}
+            >
+              <input
+                aria-label={t("tabooList.renameName")}
+                autoComplete="off"
+                className="field__input"
+                defaultValue={current.id}
+                maxLength={24}
+                name="name"
+              />
+              <Button
+                aria-label={t("tabooList.save")}
+                className="icon-button"
+                disabled={disabled}
+                title={t("tabooList.save")}
+                type="submit"
+                variant="success"
+              >
+                <Icon name="check" />
+              </Button>
+              <Button onClick={() => setRenaming(undefined)} variant="danger">
+                {t("tabooList.cancel")}
+              </Button>
+            </form>
+          ) : (
+            <div className="taboo-card-list__category-actions">
+              <Button
+                aria-label={t("tabooList.renameCategoryLabel", { category: title })}
+                disabled={disabled}
+                onClick={() => setRenaming({ id: current.id, language: current.language })}
+                variant="secondary"
+              >
+                <Icon name="pencil" />
+                {t("tabooList.renameCategory")}
+              </Button>
+              <ConfirmButton
+                armedContent={t("tabooList.deleteCategoryAgain", { count: own.length })}
+                armedLabel={t("tabooList.deleteCategoryConfirm", {
+                  category: title,
+                  count: own.length,
+                })}
+                idleLabel={t("tabooList.deleteCategoryLabel", {
+                  category: title,
+                  count: own.length,
+                })}
+                idleVariant="danger"
+                onConfirm={() => {
+                  setOpened(undefined);
+                  void removeCategory(own);
+                }}
+              >
+                <Icon name="trash" />
+                {t("tabooList.deleteCategory")}
+              </ConfirmButton>
+            </div>
+          ))}
+      </div>
+    );
+    body = (
+      <>
+        {own.length > 0 && (
+          <>
+            {standard.length > 0 && (
+              <small className="taboo-card-list__label">{t("tabooList.groups.ownCards")}</small>
+            )}
+            <ul className="taboo-card-list__cards">
+              {sortCardsForList(own, current.language).map((card) => (
+                <li key={card.id}>{renderRow(card, true)}</li>
+              ))}
+            </ul>
+          </>
+        )}
+        {standard.length > 0 && (
+          <>
+            {own.length > 0 && (
+              <small className="taboo-card-list__label">
+                {t("tabooList.groups.standardCards")}
+              </small>
+            )}
+            <ul className="taboo-card-list__cards">
+              {sortCardsForList(standard, current.language).map((card) => (
+                <li key={card.id}>{renderRow(card, false)}</li>
+              ))}
+            </ul>
+          </>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <TabPane footer={footer} header={header}>
+      {toast}
+      {body}
+    </TabPane>
   );
 }

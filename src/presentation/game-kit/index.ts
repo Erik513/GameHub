@@ -16,6 +16,7 @@ export { SetupScreen } from "./SetupScreen";
 export { SetupSection } from "./SetupSection";
 export { SetupTabs, type SetupTab } from "./SetupTabs";
 export { StartBar, TurnStrip } from "./StartBar";
+export { TabPane } from "./TabPane";
 export { TeamOrder } from "./TeamOrder";
 export { TeamsSetup } from "./TeamsSetup";
 export { TeamSetupMemoryProvider } from "./TeamSetupMemoryProvider";

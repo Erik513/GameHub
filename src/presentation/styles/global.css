@@ -447,8 +447,9 @@ h1 {
   width: min(100%, 34rem);
   max-height: calc(100vh - 2 * var(--space-4));
   max-height: calc(100dvh - 2 * var(--space-4));
-  overflow: auto;
-  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   padding: var(--space-4) calc(var(--space-4) + var(--safe-right))
     calc(var(--space-4) + var(--safe-bottom)) calc(var(--space-4) + var(--safe-left));
   border: 1px solid var(--color-line);
@@ -476,7 +477,19 @@ h1 {
 }
 
 .dialog__content {
+  flex: 1;
+  min-height: 0;
   margin-top: var(--space-4);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.dialog__header {
+  flex: none;
+}
+
+.dialog > p {
+  flex: none;
 }
 
 /* The close button sits in the top right corner of every window, framed like other icon buttons. */
@@ -1209,4 +1222,42 @@ h1 {
   font: inherit;
   text-decoration: underline;
   cursor: pointer;
+}
+
+/*
+ * One page: on the phone the game selection does not scroll as a page, only the list of games does.
+ * (The desktop layout is part of the task for the PC layout.)
+ */
+@media (max-width: 47.99rem) {
+  .app-shell:has(.game-library) {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .app-shell:has(.game-library) .main-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+    min-height: 0;
+    padding-bottom: calc(var(--space-3) + var(--safe-bottom));
+  }
+
+  .game-library {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .game-library .game-grid {
+    flex: 1;
+    align-content: start;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }

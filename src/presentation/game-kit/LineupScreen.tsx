@@ -31,7 +31,7 @@ export function LineupScreen({
   startLabel,
 }: LineupScreenProps) {
   return (
-    <section aria-label={ariaLabel} className="kit-lineup">
+    <section aria-label={ariaLabel} className="kit-lineup kit-onepage">
       {messages}
       <form id={formId} noValidate onSubmit={onSubmit}>
         {children}

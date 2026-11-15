@@ -48,7 +48,8 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   render(view(reopened, [{ ...card, id: "standard-sun", term: "Sun" }]));
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
   // The saved cards load after the page opens; the export only offers them once they are shown.
-  expect(await screen.findByText("Space (EN)", { selector: "summary span" })).toBeVisible();
+  fireEvent.click(screen.getByRole("button", { name: "Own" }));
+  expect(await screen.findByText("Space (EN)", { selector: ".kit-nav-row span" })).toBeVisible();
   fireEvent.click(screen.getByRole("button", { name: "Export" }));
   const exportButton = within(screen.getByRole("dialog")).getByRole("button", {
     name: "Space (1)",
@@ -225,8 +226,8 @@ it.each([
     fireEvent.click(screen.getByRole("button", { name: language === "de" ? "Karten" : "Cards" }));
     const select = screen.getAllByRole("combobox")[0]!;
     expect(within(select).queryByRole("option", { name: animals })).not.toBeInTheDocument();
-    expect(screen.getByText(food, { selector: "summary span" })).toBeInTheDocument();
-    expect(screen.queryByText(animals, { selector: "summary span" })).not.toBeInTheDocument();
+    expect(screen.getByText(food, { selector: ".kit-nav-row span" })).toBeInTheDocument();
+    expect(screen.queryByText(animals, { selector: ".kit-nav-row span" })).not.toBeInTheDocument();
   },
 );
 
@@ -270,15 +271,19 @@ it("renames an own category for all its cards and keeps the new name in the stor
   );
   render(view);
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
-  const summary = await screen.findByText("Sport (EN)", { selector: "summary span" });
-  fireEvent.click(summary);
+  fireEvent.click(screen.getByRole("button", { name: "Own" }));
+  fireEvent.click(await screen.findByText("Sport (EN)", { selector: ".kit-nav-row span" }));
   fireEvent.click(screen.getByRole("button", { name: "Rename category Sport (EN)" }));
   const input = screen.getByLabelText("New name of the category");
   fireEvent.change(input, { target: { value: "Ball games" } });
   fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
-  expect(await screen.findByText("Ball games (EN)", { selector: "summary span" })).toBeVisible();
-  expect(screen.queryByText("Sport (EN)", { selector: "summary span" })).not.toBeInTheDocument();
+  expect(
+    await screen.findByText("Ball games (EN)", { selector: ".kit-nav-row span" }),
+  ).toBeVisible();
+  expect(
+    screen.queryByText("Sport (EN)", { selector: ".kit-nav-row span" }),
+  ).not.toBeInTheDocument();
   const saved = await repository.list();
   expect(saved.map((item) => [item.id, item.categoryId])).toEqual(
     expect.arrayContaining([

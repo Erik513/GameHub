@@ -1,31 +1,28 @@
 import { useId, type ReactNode } from "react";
-import { ActionRow } from "./ActionRow";
+import { SetupTabs, type SetupTab } from "./SetupTabs";
 
 interface ManageScreenProps {
-  /** Buttons at the bottom of the screen, for example import and export; they share the width. */
-  readonly actions?: ReactNode;
-  /** The chapters of the screen, usually `SetupSection`s. */
-  readonly children: ReactNode;
-  /** A short text below the title. */
-  readonly hint?: string;
-  /** Messages shown below the actions, for example the result of an import. */
+  /** Accessible name of the row of tabs. */
+  readonly tabsLabel: string;
+  /** Messages shown above the tabs, for example the result of an import. */
   readonly messages?: ReactNode;
+  /** The parts of the editor as tabs, for example "Cards" and "Add card". */
+  readonly tabs: readonly SetupTab[];
   readonly title: string;
 }
 
 /**
- * The frame of the editor of a game: title and hint, the chapters, a row of actions and messages.
- * Every game with own content (cards, questions, words) uses it.
+ * The frame of the editor of a game: the title, and the parts as tabs. Each tab can keep its own
+ * controls in place (`TabPane`). Like every screen it is one page: only the box of the chosen tab scrolls. Every game with
+ * own content (cards, questions, words) uses it.
  */
-export function ManageScreen({ actions, children, hint, messages, title }: ManageScreenProps) {
+export function ManageScreen({ messages, tabs, tabsLabel, title }: ManageScreenProps) {
   const titleId = useId();
   return (
-    <section aria-labelledby={titleId} className="kit-manage">
+    <section aria-labelledby={titleId} className="kit-manage kit-onepage">
       <h2 id={titleId}>{title}</h2>
-      {hint && <p>{hint}</p>}
-      {children}
-      {actions && <ActionRow>{actions}</ActionRow>}
       {messages}
+      <SetupTabs ariaLabel={tabsLabel} tabs={tabs} />
     </section>
   );
 }

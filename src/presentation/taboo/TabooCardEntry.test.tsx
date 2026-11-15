@@ -53,7 +53,7 @@ it.each(["en", "de"] as const)(
         <TabooCardEntry cards={[]} disabled={false} onAdd={onAdd} />
       </I18nextProvider>,
     );
-    expect(screen.getByRole("heading", { name: text.title })).toBeVisible();
+    expect(screen.getByRole("form", { name: text.title })).toBeVisible();
 
     // Without an own category the form starts with a new one, which needs a name first.
     expect(screen.getByLabelText(text.category)).toHaveDisplayValue(text.newCategory);

@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent, useId } from "react";
 import { useTranslation } from "react-i18next";
 import {
   builtInCategories,
@@ -8,7 +8,7 @@ import {
 import { capitalizeFirst, validateCard, type TabooCard } from "../../business/games/taboo/model";
 import type { SupportedLanguage } from "../../i18n";
 import { Button, Toast, useNotice } from "../components";
-import { SetupSection } from "../game-kit";
+import { TabPane } from "../game-kit";
 import { TabooCategoryField } from "./TabooCategoryField";
 import { newCategoryChoice, ownChoice, resolveCategory } from "./categoryChoice";
 import { useInterfaceLanguage } from "./categoryLabel";
@@ -48,6 +48,7 @@ export function TabooCardEntry({
   const [newLanguage, setNewLanguage] = useState<SupportedLanguage>("en");
   const [difficulty, setDifficulty] = useState<(typeof difficulties)[number]>("easy");
   const termInput = useRef<HTMLInputElement>(null);
+  const formId = useId();
   const title = t("tabooEntry.title");
 
   const own = ownCategories(
@@ -108,8 +109,20 @@ export function TabooCardEntry({
   }
 
   return (
-    <SetupSection title={title}>
-      <form className="taboo-card-entry" noValidate onSubmit={(event) => void submit(event)}>
+    <TabPane
+      footer={
+        <Button disabled={disabled} form={formId} type="submit" variant="success">
+          {t("tabooEntry.add")}
+        </Button>
+      }
+    >
+      <form
+        aria-label={title}
+        className="taboo-card-entry"
+        id={formId}
+        noValidate
+        onSubmit={(event) => void submit(event)}
+      >
         <div className="taboo-card-entry__pair">
           <TabooCategoryField
             choice={choice}
@@ -159,9 +172,6 @@ export function TabooCardEntry({
             value={words}
           />
         </label>
-        <Button disabled={disabled} type="submit" variant="success">
-          {t("tabooEntry.add")}
-        </Button>
       </form>
       {notice && (
         <Toast key={notice.id} tone={notice.value === "added" ? "success" : "error"}>
@@ -170,6 +180,6 @@ export function TabooCardEntry({
             : t(`tabooEntry.${notice.value}`)}
         </Toast>
       )}
-    </SetupSection>
+    </TabPane>
   );
 }

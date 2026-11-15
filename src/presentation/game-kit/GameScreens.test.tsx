@@ -5,6 +5,7 @@ import { vi } from "vitest";
 import { ActionRow } from "./ActionRow";
 import { LineupScreen } from "./LineupScreen";
 import { ManageScreen } from "./ManageScreen";
+import { TabPane } from "./TabPane";
 import { ScoreScreen } from "./ScoreScreen";
 
 const teams = [
@@ -28,25 +29,40 @@ it("puts the buttons of an action row next to each other in the given order", ()
   ).toEqual(["Save", "Delete", "Cancel"]);
 });
 
-it("frames an editor with title, hint, chapters, a row of actions and messages", () => {
+it("frames an editor with title, tabs, a row of actions pinned to the bottom and messages", () => {
   render(
     <ManageScreen
-      actions={
-        <>
-          <button type="button">Import</button>
-          <button type="button">Export</button>
-        </>
-      }
-      hint="Import or export cards."
       messages={<p role="status">Imported 3</p>}
+      tabs={[
+        {
+          content: (
+            <TabPane
+              footer={
+                <ActionRow>
+                  <button type="button">Import</button>
+                  <button type="button">Export</button>
+                </ActionRow>
+              }
+            >
+              <p>All cards</p>
+            </TabPane>
+          ),
+          id: "cards",
+          label: "Cards",
+        },
+        { content: <p>Form</p>, id: "add", label: "Add card" },
+      ]}
+      tabsLabel="Editor"
       title="Own cards"
-    >
-      <p>Chapters</p>
-    </ManageScreen>,
+    />,
   );
   const screenRegion = screen.getByRole("region", { name: "Own cards" });
+  expect(screenRegion).toHaveClass("kit-onepage");
   expect(within(screenRegion).getByRole("heading", { name: "Own cards" })).toBeVisible();
-  expect(within(screenRegion).getByText("Import or export cards.")).toBeVisible();
+  // The cards are on the left, the form to add one on the right; the first tab is open.
+  const tabs = within(screenRegion).getAllByRole("tab");
+  expect(tabs.map((tab) => tab.textContent)).toEqual(["Cards", "Add card"]);
+  expect(tabs[0]).toHaveAttribute("aria-selected", "true");
   const row = screenRegion.querySelector<HTMLElement>(".kit-action-row")!;
   expect(within(row).getAllByRole("button")).toHaveLength(2);
   expect(within(screenRegion).getByRole("status")).toHaveTextContent("Imported 3");

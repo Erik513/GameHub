@@ -1,6 +1,7 @@
 const paths = {
   arrowLeft: "M19 12H5m6-6-6 6 6 6",
   close: "M6 6l12 12M18 6 6 18",
+  chevronRight: "m9 5 7 7-7 7",
   check: "m5 12.5 4.5 4.5L19 7",
   cards: "M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM9 9h6M9 13h4",
   grip: "M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01",

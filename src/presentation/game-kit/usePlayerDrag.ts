@@ -60,8 +60,16 @@ export function usePlayerDrag({ onDrop, onTap }: PlayerDragOptions) {
       // Scrolls the page while the pointer is held near the top or the bottom, so teams that are
       // out of sight can be reached, and looks again which field is under the pointer.
       const scrollNearEdge = () => {
-        if (latest.y < scrollEdge) window.scrollBy(0, -scrollStep);
-        else if (latest.y > window.innerHeight - scrollEdgeBottom) window.scrollBy(0, scrollStep);
+        // On a one-page screen the box of the tab scrolls, otherwise the page does.
+        const panel = document.querySelector<HTMLElement>(
+          '.kit-onepage .kit-tabpanel[data-active="true"]',
+        );
+        const bounds = panel?.getBoundingClientRect();
+        const top = bounds ? bounds.top + scrollEdge : scrollEdge;
+        const bottom = bounds ? bounds.bottom - scrollEdge : window.innerHeight - scrollEdgeBottom;
+        const by = (dy: number) => (panel ? panel.scrollBy(0, dy) : window.scrollBy(0, dy));
+        if (latest.y < top) by(-scrollStep);
+        else if (latest.y > bottom) by(scrollStep);
         else {
           frame = requestAnimationFrame(scrollNearEdge);
           return;
