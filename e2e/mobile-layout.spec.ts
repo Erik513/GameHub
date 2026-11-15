@@ -24,6 +24,8 @@ const labels = {
     draw: "Draw teams",
     noTeam: "No team",
     cards: "Cards",
+    categories: "Categories",
+    manage: "Categories and cards",
     rules: "Rules",
     settingsTab: "Game settings",
   },
@@ -50,6 +52,8 @@ const labels = {
     draw: "Teams auslosen",
     noTeam: "Ohne Team",
     cards: "Karten",
+    categories: "Kategorien",
+    manage: "Kategorien und Karten",
     rules: "Spielregeln",
     settingsTab: "Spieleinstellungen",
   },
@@ -218,7 +222,7 @@ for (const language of ["en", "de"] as const) {
 
       await press(t.open);
       await check("setup");
-      await page.getByRole("tab", { name: t.cards, exact: true }).click();
+      await page.getByRole("tab", { name: t.categories, exact: true }).click();
       await check("setup cards");
       await press(t.rules);
       await check("rules dialog");
@@ -389,10 +393,10 @@ test("the card editor is one page with two tabs on a small phone in both languag
       await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
     }
     await page.getByRole("button", { name: t.open }).click();
-    await page.getByRole("tab", { name: t.cards, exact: true }).click();
+    await page.getByRole("tab", { name: t.categories, exact: true }).click();
     await page
       .locator('.kit-tabpanel[data-active="true"]')
-      .getByRole("button", { name: t.cards, exact: true })
+      .getByRole("button", { name: t.manage, exact: true })
       .click();
     // The cards are the left tab, the form to add a card the right one.
     const tabs = page.locator(".kit-manage").getByRole("tab");

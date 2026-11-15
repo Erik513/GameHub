@@ -4,7 +4,7 @@ import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
 import { defaultRaceTarget, raceTargetChoices } from "../../business/games/taboo/race";
 import type { SupportedLanguage } from "../../i18n";
-import { ChoiceGroup, SetupScreen, SetupTabs } from "../game-kit";
+import { ChoiceGroup, SetupScreen, SetupTabs, TabPane } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
 import { useGameRulesButton } from "../GameChrome";
 import { Button, Dialog } from "../components";
@@ -224,8 +224,7 @@ export function TabooSetupForm({
             id: "cards",
             label: t("tabooSetup.cardsSection"),
             content: (
-              <>
-                {children}
+              <TabPane header={children}>
                 {onCardLanguageChange && (
                   <ChoiceGroup
                     initial={cardLanguage}
@@ -295,7 +294,7 @@ export function TabooSetupForm({
                     );
                   })}
                 </fieldset>
-              </>
+              </TabPane>
             ),
           },
         ]}

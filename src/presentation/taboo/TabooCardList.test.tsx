@@ -256,8 +256,8 @@ it.each([
 );
 
 it.each([
-  ["en", "Cards", "Edit card Moon", "Save", "Nature"],
-  ["de", "Karten", "Karte Moon bearbeiten", "Speichern", "Natur"],
+  ["en", "Categories and cards", "Edit card Moon", "Save", "Nature"],
+  ["de", "Kategorien und Karten", "Karte Moon bearbeiten", "Speichern", "Natur"],
 ] as const)(
   "edits and deletes a stored card from the card page in %s",
   async (language, manage, edit, save, nature) => {

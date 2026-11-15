@@ -1,7 +1,7 @@
 /** All texts of the Taboo game; the shared app texts live in `common.ts`. */
 export const tabooTexts = {
   tabooLibrary: {
-    manage: "Cards",
+    manage: "Categories and cards",
     back: "Back",
     title: "Taboo cards",
     cardsTab: "Cards",
@@ -217,7 +217,7 @@ export const tabooTexts = {
     raceCardShortage:
       "Not enough {{difficulty}} cards: {{available}} available, {{required}} needed so that every team gets the same mix.",
     raceTarget: "Cards per team",
-    cardsSection: "Cards",
+    cardsSection: "Categories",
     cardSource: "Card source",
     cardSources: { local: "Local only", ai: "AI only", both: "Both" },
     tiebreak: "Tiebreak on a tie",

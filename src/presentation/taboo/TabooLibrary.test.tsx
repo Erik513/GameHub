@@ -36,7 +36,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   // Only the player's own categories can be exported.
   const own: TabooCard = { ...card, categoryId: "Space" };
   const { unmount } = render(view(repository, []));
-  fireEvent.click(screen.getByRole("button", { name: "Cards" }));
+  fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   upload("invalid");
   expect(await screen.findByRole("alert")).toHaveTextContent("not a valid");
   upload(serializeTabooCards([own]));
@@ -46,7 +46,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   unmount();
   const reopened = new IndexedDbTabooCardRepository(factory);
   render(view(reopened, [{ ...card, id: "standard-sun", term: "Sun" }]));
-  fireEvent.click(screen.getByRole("button", { name: "Cards" }));
+  fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   // The saved cards load after the page opens; the export only offers them once they are shown.
   fireEvent.click(screen.getByRole("radio", { name: "Own" }));
   expect(await screen.findByText("Space (EN)", { selector: ".kit-nav-row span" })).toBeVisible();
@@ -93,7 +93,7 @@ it("reports a storage error when the saved cards cannot be read or written", asy
       <TabooLibrary repository={failing} cardLanguage="en" cards={[]} />
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByRole("button", { name: "Cards" }));
+  fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Local cards could not be accessed.");
   // Importing fails the same way.
   upload(serializeTabooCards([card]));
@@ -121,7 +121,7 @@ it("ignores an empty file selection and works without a repository", async () =>
       <TabooLibrary repository={repository} cardLanguage="en" cards={[]} />
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByRole("button", { name: "Cards" }));
+  fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   fireEvent.change(screen.getByLabelText("Import"), { target: { files: [] } });
   expect(repository.addAll).not.toHaveBeenCalled();
 });
@@ -151,7 +151,7 @@ it("shows the card tools on their own page with the back button in the app heade
   expect(header.queryByRole("button", { name: "Back" })).not.toBeInTheDocument();
   expect(screen.queryByRole("heading", { name: "Taboo cards" })).not.toBeInTheDocument();
 
-  fireEvent.click(screen.getByRole("button", { name: "Cards" }));
+  fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   expect(screen.getByRole("heading", { name: "Taboo cards" })).toBeVisible();
   expect(header.getByRole("button", { name: "Back" })).toBeVisible();
   expect(header.queryByRole("button", { name: "Settings" })).not.toBeInTheDocument();
@@ -159,7 +159,7 @@ it("shows the card tools on their own page with the back button in the app heade
 
   fireEvent.click(header.getByRole("button", { name: "Back" }));
   expect(screen.queryByRole("heading", { name: "Taboo cards" })).not.toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Cards" })).toBeVisible();
+  expect(screen.getByRole("button", { name: "Categories and cards" })).toBeVisible();
   expect(header.getByRole("button", { name: "Settings" })).toBeVisible();
 });
 
@@ -174,7 +174,7 @@ it("opens the file chooser from the import button", async () => {
       />
     </I18nextProvider>,
   );
-  fireEvent.click(screen.getByRole("button", { name: "Cards" }));
+  fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   const chooser = vi.spyOn(HTMLInputElement.prototype, "click").mockImplementation(() => undefined);
   fireEvent.click(screen.getByRole("button", { name: "Import" }));
   expect(chooser).toHaveBeenCalledOnce();
@@ -224,7 +224,11 @@ it.each([
     expect(loadCardPack).toHaveBeenCalledWith(language);
 
     // On the card page the standard categories are listed but cannot be chosen for a new card.
-    fireEvent.click(screen.getByRole("button", { name: language === "de" ? "Karten" : "Cards" }));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: language === "de" ? "Kategorien und Karten" : "Categories and cards",
+      }),
+    );
     const select = screen.getAllByRole("combobox")[0]!;
     expect(within(select).queryByRole("option", { name: animals })).not.toBeInTheDocument();
     expect(screen.getByText(food, { selector: ".kit-nav-row span" })).toBeInTheDocument();
@@ -271,7 +275,7 @@ it("renames an own category for all its cards and keeps the new name in the stor
     </I18nextProvider>
   );
   render(view);
-  fireEvent.click(screen.getByRole("button", { name: "Cards" }));
+  fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   fireEvent.click(screen.getByRole("radio", { name: "Own" }));
   fireEvent.click(await screen.findByText("Sport (EN)", { selector: ".kit-nav-row span" }));
   fireEvent.click(screen.getByRole("button", { name: "Rename category Sport (EN)" }));

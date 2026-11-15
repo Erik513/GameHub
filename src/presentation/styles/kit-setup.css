@@ -972,3 +972,11 @@
 .game-library .game-grid > li {
   scroll-snap-align: start;
 }
+
+/* A button in the fixed header of a pane has the full width, like a button in the box of a tab. */
+.kit-pane__header > .button {
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0;
+  gap: var(--space-2);
+}
