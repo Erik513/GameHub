@@ -1033,10 +1033,39 @@ h1 {
   font-size: var(--text-md);
 }
 
-/* Setup choices: all buttons of a group are equally wide. */
+/*
+ * Setup choices: ONE joined row of equally wide buttons, like a segmented control (1 | 2 | 3). Every
+ * fixed setting and every switch between views is built like this.
+ */
 .kit-choice-grid--equal {
   display: grid;
-  gap: var(--space-2);
+  gap: 0;
+}
+
+.kit-choice-grid--equal .kit-choice span {
+  border-radius: 0;
+}
+
+.kit-choice-grid--equal > :not(:first-child) {
+  margin-left: -1px;
+}
+
+.kit-choice-grid--equal > :first-child span {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.kit-choice-grid--equal > :last-child span {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.kit-choice-grid--equal > :only-child span {
+  border-radius: var(--radius-md);
+}
+
+/* The chosen button is in front, so its colored border is complete. */
+.kit-choice-grid--equal .kit-choice input:checked + span {
+  position: relative;
+  z-index: 1;
 }
 
 .kit-choice-grid--equal .kit-choice {
@@ -1196,6 +1225,7 @@ h1 {
 
 /* Centered without a transform: a transform would jump when the button is pressed. */
 .kit-info-button.kit-info-button--option {
+  z-index: 2;
   top: 0;
   bottom: 0;
   right: 0;

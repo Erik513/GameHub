@@ -22,7 +22,7 @@ Teams, Spieler und Spieleinstellungen kommen in jedem Spiel vor. Sie sollen einm
 | Reine Logik | `business/shared/players.ts` (`parsePlayers`, `splitIntoTeams`), `teamOrder.ts` (`normalizeOrder`, `moveTeam`, `randomOrder`, `isDefaultOrder`) | Schon spielunabhängig und getestet. |
 | Texte | `tabooSetup.teams*`, `tabooSetup.team*`, `tabooPlayers.*` in `taboo.ts` je Sprache | Gehören zum Tabu-Namensraum. |
 | Stile | `taboo.css` (`taboo-section`, `taboo-team-names`, `taboo-players`, `taboo-toolbar`) | Ebenfalls Tabu. |
-| Spieleinstellungen | `ChoiceGroup`, `InfoButton` im `game-kit` | Bausteine sind schon gemeinsam, die Zusammenstellung nicht. |
+| Spieleinstellungen | `ChoiceGroup` (eine zusammenhängende Knopfleiste, auch als Umschalter von Ansichten), `InfoButton` im `game-kit` | Bausteine sind schon gemeinsam, die Zusammenstellung nicht. |
 
 Das Spiel bekommt heute nur `teams: { id, name }[]` (`GameConfiguration` in `business/games/taboo/model.ts`).
 

@@ -344,18 +344,18 @@ export function TabooCardList({
   let body: ReactNode;
   if (!current) {
     header = (
-      <div aria-label={t("tabooList.title")} className="kit-segmented" role="group">
-        {(["standard", "own"] as const).map((value) => (
-          <button
-            aria-pressed={view === value}
-            key={value}
-            onClick={() => setView(value)}
-            type="button"
-          >
-            {t(`tabooList.views.${value}`)}
-          </button>
-        ))}
-      </div>
+      <ChoiceGroup
+        hideLegend
+        initial={view}
+        legend={t("tabooList.title")}
+        name="view"
+        onChange={(value) => setView(value === "own" ? "own" : "standard")}
+        options={(["standard", "own"] as const).map((value) => ({
+          value,
+          label: t(`tabooList.views.${value}`),
+        }))}
+        value={view}
+      />
     );
     body =
       entries.length === 0 ? (

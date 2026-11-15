@@ -80,7 +80,7 @@ async function openCategory(
   });
   if (back) await user.click(back);
   await user.click(
-    screen.getByRole("button", { name: view === "Own" ? /^(Own|Eigene)$/ : "Standard" }),
+    screen.getByRole("radio", { name: view === "Own" ? /^(Own|Eigene)$/ : "Standard" }),
   );
   const row = [...document.querySelectorAll<HTMLElement>(".kit-nav-row")].find(
     (item) => item.querySelector("span")?.textContent === name,
@@ -94,14 +94,14 @@ it("shows the standard and the own categories as two views and the cards of an o
   // Standard categories first, alphabetical, only with the count: no chapters to fold out.
   expect(categoryNames()).toEqual(["Culture", "Everyday life", "Nature"]);
   expect(document.querySelector("details")).toBeNull();
-  expect(screen.getByRole("button", { name: "Standard" })).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getByRole("radio", { name: "Standard" })).toBeChecked();
   const nature = [...document.querySelectorAll(".kit-nav-row")].find((row) =>
     row.textContent?.startsWith("Nature"),
   )!;
   expect(nature).toHaveTextContent("2");
 
   // The second view lists the own categories with their language.
-  await user.click(screen.getByRole("button", { name: "Own" }));
+  await user.click(screen.getByRole("radio", { name: "Own" }));
   expect(categoryNames()).toEqual(["Sport (EN)"]);
 
   await openCategory(user, "Nature");
@@ -125,7 +125,7 @@ it("shows the standard and the own categories as two views and the cards of an o
 
 it("tells where to create an own category while there is none", async () => {
   const { user } = await renderList({ allCards: [sun], ownCards: [], standardCards: [sun] });
-  await user.click(screen.getByRole("button", { name: "Own" }));
+  await user.click(screen.getByRole("radio", { name: "Own" }));
   expect(screen.getByText(/You do not have any own categories yet/)).toBeVisible();
 });
 
@@ -327,7 +327,7 @@ it("sorts custom categories among the others and the cards of a category by diff
     standardCards: standard,
   });
   expect(categoryNames()).toEqual(["Culture", "Everyday life", "Nature"]);
-  await user.click(screen.getByRole("button", { name: "Own" }));
+  await user.click(screen.getByRole("radio", { name: "Own" }));
   expect(categoryNames()).toEqual(["aardvarks (EN)", "Zebras (EN)"]);
 
   await openCategory(user, "Zebras (EN)", "Own");
@@ -352,7 +352,7 @@ it("shows own categories of both languages with their language and only the coun
   });
   const own = [mk("1", "de"), mk("2", "en"), mk("3", "en")];
   const { user } = await renderList({ allCards: own, ownCards: own, standardCards: [] });
-  await user.click(screen.getByRole("button", { name: "Own" }));
+  await user.click(screen.getByRole("radio", { name: "Own" }));
   const rows = [...document.querySelectorAll(".kit-nav-row")].map((row) =>
     row.textContent?.replace(/\s+/g, " ").trim(),
   );

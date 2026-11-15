@@ -48,7 +48,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   render(view(reopened, [{ ...card, id: "standard-sun", term: "Sun" }]));
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
   // The saved cards load after the page opens; the export only offers them once they are shown.
-  fireEvent.click(screen.getByRole("button", { name: "Own" }));
+  fireEvent.click(screen.getByRole("radio", { name: "Own" }));
   expect(await screen.findByText("Space (EN)", { selector: ".kit-nav-row span" })).toBeVisible();
   fireEvent.click(screen.getByRole("button", { name: "Export" }));
   const exportButton = within(screen.getByRole("dialog")).getByRole("button", {
@@ -272,7 +272,7 @@ it("renames an own category for all its cards and keeps the new name in the stor
   );
   render(view);
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
-  fireEvent.click(screen.getByRole("button", { name: "Own" }));
+  fireEvent.click(screen.getByRole("radio", { name: "Own" }));
   fireEvent.click(await screen.findByText("Sport (EN)", { selector: ".kit-nav-row span" }));
   fireEvent.click(screen.getByRole("button", { name: "Rename category Sport (EN)" }));
   const input = screen.getByLabelText("New name of the category");
