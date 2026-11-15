@@ -8,7 +8,7 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
   expect(setupWidth).toBeLessThanOrEqual(480);
   // The cards (difficulty, categories) are in their own tab of the main menu.
   await page.getByRole("tab", { name: "Cards", exact: true }).click();
-  await expect(page.getByRole("group", { name: "Difficulty" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Difficulty (several possible)" })).toBeVisible();
   const nature = page.getByRole("checkbox", { name: "Nature" });
   const choice = page.locator("label").filter({ has: nature });
   expect((await choice.boundingBox())?.height).toBeGreaterThanOrEqual(48);

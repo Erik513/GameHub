@@ -19,7 +19,8 @@ interface ChoiceGroupProps {
   readonly hideLegend?: boolean;
   /** Adds an info button next to the legend that explains the setting. */
   readonly info?: InfoContent;
-  readonly initial: string;
+  /** The chosen value at first; with `multiple` and no "all" option a list of values. */
+  readonly initial: string | readonly string[];
   readonly legend: string;
   /**
    * Allows several choices. The option with the empty value means "all": it excludes the
@@ -50,11 +51,21 @@ export function ChoiceGroup({
   options,
   value: controlled,
 }: ChoiceGroupProps) {
-  const [selected, setSelected] = useState<readonly string[]>([initial]);
+  const [selected, setSelected] = useState<readonly string[]>(
+    typeof initial === "string" ? [initial] : initial,
+  );
   const specific = options.filter((option) => option.value !== "").length;
+  const hasAll = options.some((option) => option.value === "");
 
   function toggle(value: string) {
     setSelected((current) => {
+      // Without an "all" option the choices are plain: any number can be picked, but one stays.
+      if (!hasAll) {
+        const next = current.includes(value)
+          ? current.filter((item) => item !== value)
+          : [...current, value];
+        return next.length === 0 ? current : next;
+      }
       if (value === "") return [""];
       const picked = current.filter((item) => item !== "");
       const next = picked.includes(value)

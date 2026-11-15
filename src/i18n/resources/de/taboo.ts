@@ -212,7 +212,7 @@ export const tabooTexts = {
       tiebreak:
         "Bei Gleichstand spielen die Teams 3 Karten in 90 Sekunden.\nMehr Treffer gewinnen, dann die schnellere Zeit.",
       skips: "So oft darf ein Team pro Runde eine Karte überspringen.",
-      difficulty: "Wie schwer eine Karte zu erklären ist.\nDu kannst mehrere wählen.",
+      difficulty: "Wie schwer eine Karte zu erklären ist.",
     },
     raceCardShortage:
       "Zu wenige Karten der Schwierigkeit {{difficulty}}: {{available}} vorhanden, {{required}} nötig, damit jedes Team dieselbe Mischung bekommt.",
@@ -234,7 +234,7 @@ export const tabooTexts = {
     categoryGroups: { standard: "Standard", own: "Eigene" },
     duration: "Rundendauer (Sekunden)",
     difficulty: "Schwierigkeit",
-    anyDifficulty: "Alle",
+    difficultyMultiple: "Schwierigkeit (mehrere möglich)",
     categories: "Kategorien",
     selectCategory: "Wähle mindestens eine Kategorie.",
     start: "Starten",

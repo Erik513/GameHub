@@ -212,7 +212,7 @@ export const tabooTexts = {
       tiebreak:
         "On a tie the teams play 3 cards in 90 seconds.\nMore hits win, then the faster time.",
       skips: "How often a team may skip a card per round.",
-      difficulty: "How hard a card is to explain.\nYou can choose more than one.",
+      difficulty: "How hard a card is to explain.",
     },
     raceCardShortage:
       "Not enough {{difficulty}} cards: {{available}} available, {{required}} needed so that every team gets the same mix.",
@@ -234,7 +234,7 @@ export const tabooTexts = {
     categoryGroups: { standard: "Standard", own: "Own" },
     duration: "Round duration (seconds)",
     difficulty: "Difficulty",
-    anyDifficulty: "All",
+    difficultyMultiple: "Difficulty (several possible)",
     categories: "Categories",
     selectCategory: "Select at least one category.",
     start: "Start",

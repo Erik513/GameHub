@@ -17,7 +17,9 @@ it("blocks a six-turn setup when the chosen filters match only five cards", asyn
   );
   await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
-  await user.click(screen.getByRole("checkbox", { name: "Easy" }));
+  // All three difficulties are chosen at first; keeping only Easy leaves 5 cards.
+  await user.click(screen.getByRole("checkbox", { name: "Medium" }));
+  await user.click(screen.getByRole("checkbox", { name: "Hard" }));
   await user.click(screen.getByRole("button", { name: "Start" }));
   await user.click(screen.getByRole("button", { name: "Start game" }));
   expect(screen.getByRole("alert")).toHaveTextContent("The filters match 5 cards");
@@ -230,7 +232,10 @@ it("offers short, medium, long and unlimited games with the short one preselecte
   expect(group.getByRole("radio", { name: /Short/ })).toBeChecked();
   expect(group.getByRole("radio", { name: "Unlimited" })).toBeVisible();
   // Difficulties carry their color in the menu already.
-  const difficulty = screen.getByRole("group", { name: "Difficulty" });
+  // The legend says that several can be chosen; all three are chosen at first (there is no "All").
+  const difficulty = screen.getByRole("group", { name: "Difficulty (several possible)" });
+  expect(within(difficulty).getAllByRole("checkbox")).toHaveLength(3);
+  for (const box of within(difficulty).getAllByRole("checkbox")) expect(box).toBeChecked();
   expect(difficulty.querySelector("[data-tone='easy']")).not.toBeNull();
   expect(difficulty.querySelector("[data-tone='hard']")).not.toBeNull();
 });
@@ -297,7 +302,7 @@ it.each([
   fireEvent.click(within(dialog).getByRole("button", { name: "Close" }));
   // Reading the explanation neither starts nor changes the game.
   expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
-  expect(screen.getByRole("group", { name: setting })).toBeVisible();
+  expect(screen.getByRole("group", { name: new RegExp(`^${setting}`) })).toBeVisible();
 });
 
 it.each([

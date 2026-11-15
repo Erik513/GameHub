@@ -253,18 +253,15 @@ export function TabooSetupForm({
                 )}
                 <ChoiceGroup
                   info={info("difficulty", t("tabooSetup.difficulty"))}
-                  legend={t("tabooSetup.difficulty")}
+                  legend={t("tabooSetup.difficultyMultiple")}
                   multiple
                   name="difficulty"
-                  initial=""
-                  options={[
-                    { value: "", label: t("tabooSetup.anyDifficulty") },
-                    ...difficulties.map((value) => ({
-                      value,
-                      label: t(`tabooSetup.difficulties.${value}`),
-                      tone: value,
-                    })),
-                  ]}
+                  initial={difficulties}
+                  options={difficulties.map((value) => ({
+                    value,
+                    label: t(`tabooSetup.difficulties.${value}`),
+                    tone: value,
+                  }))}
                 />
                 <fieldset className="kit-choice-group">
                   <legend>{t("tabooSetup.categories")}</legend>

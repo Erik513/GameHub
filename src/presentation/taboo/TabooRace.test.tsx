@@ -174,7 +174,8 @@ it("keeps the settings of both modes when the mode is changed and changed back",
   // Classic settings, a shared setting and the settings of the race.
   await user.click(radio("Rounds per team", /^Long/));
   await user.click(radio("Round duration (seconds)", "90"));
-  await user.click(box("Difficulty", "Easy"));
+  // Easy is switched off (all three difficulties are chosen at first).
+  await user.click(box("Difficulty (several possible)", "Easy"));
   await user.click(radio("Game mode", "Race"));
   await user.click(radio("Cards per team", "15"));
   expect(screen.queryByRole("group", { name: "Rounds per team" })).not.toBeInTheDocument();
@@ -182,11 +183,11 @@ it("keeps the settings of both modes when the mode is changed and changed back",
   await user.click(radio("Game mode", "Classic"));
   expect(radio("Rounds per team", /^Long/)).toBeChecked();
   expect(radio("Round duration (seconds)", "90")).toBeChecked();
-  expect(box("Difficulty", "Easy")).toBeChecked();
+  expect(box("Difficulty (several possible)", "Easy")).not.toBeChecked();
 
   await user.click(radio("Game mode", "Race"));
   expect(radio("Cards per team", "15")).toBeChecked();
-  expect(box("Difficulty", "Easy")).toBeChecked();
+  expect(box("Difficulty (several possible)", "Easy")).not.toBeChecked();
 });
 
 it("gives every team exactly the same mix of difficulties", async () => {

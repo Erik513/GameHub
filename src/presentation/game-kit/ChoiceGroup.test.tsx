@@ -58,3 +58,30 @@ it("falls back to All when the last choice is removed or every choice is picked"
   fireEvent.click(box("All"));
   expect(box("All")).toBeChecked();
 });
+
+it("lets any number of choices be picked without an all option, but keeps one", () => {
+  render(
+    <form aria-label="settings">
+      <ChoiceGroup
+        initial={["easy", "medium", "hard"]}
+        legend="Difficulty"
+        multiple
+        name="difficulty"
+        options={options.slice(1)}
+      />
+    </form>,
+  );
+  const submitted = () =>
+    new FormData(screen.getByRole<HTMLFormElement>("form", { name: "settings" })).getAll(
+      "difficulty",
+    );
+  expect(submitted()).toEqual(["easy", "medium", "hard"]);
+  fireEvent.click(screen.getByRole("checkbox", { name: "Easy" }));
+  fireEvent.click(screen.getByRole("checkbox", { name: "Medium" }));
+  expect(submitted()).toEqual(["hard"]);
+  // The last choice cannot be switched off.
+  fireEvent.click(screen.getByRole("checkbox", { name: "Hard" }));
+  expect(submitted()).toEqual(["hard"]);
+  fireEvent.click(screen.getByRole("checkbox", { name: "Easy" }));
+  expect(submitted()).toEqual(["easy", "hard"]);
+});
