@@ -201,7 +201,6 @@ export const tabooTexts = {
     infoLabel: "Info zu {{setting}}",
     info: {
       raceTarget: "So viele Karten löst jedes Team.\nAlle bekommen gleich schwere Karten.",
-      rounds: "In einer Runde ist jedes Team einmal dran.",
       cardSource:
         "Nur lokal: Karten aus der App, auch ohne Internet.\nNur KI: Die lokale KI macht die Karten.\nBeides: gemischt.",
       tiebreak:

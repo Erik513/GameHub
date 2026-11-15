@@ -119,7 +119,7 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     // An info dialog explains a setting and uses the selected language too.
     fireEvent.click(
       screen.getByRole("button", {
-        name: new RegExp(`^(Info zu|Info about) ${t("tabooSetup.rounds")}`),
+        name: new RegExp(`^(Info zu|Info about) ${t("tabooSetup.skips")}`),
       }),
     );
     checkScreen("info dialog");

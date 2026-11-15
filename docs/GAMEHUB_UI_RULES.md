@@ -88,7 +88,7 @@ Bei jeder Kategorie steht nur die **Kartenanzahl**. Die **Standardkategorien** g
 Auf Wunsch des Auftraggebers und nach üblichen Mustern (Info-Symbol für kurze Erklärung genau dort, längeres im Hilfe-Bereich; kurz halten, Beispiele zeigen) gilt:
 
 - **Spielregeln** (Knopf in der Kopfleiste, 2.1): erklären **alles** in kurzen Teilen mit Überschrift, möglichst **mit Bild** (Beispielkarte, Knöpfe in ihren echten Farben) und in der Reihenfolge eines Spiels. Pro Zeile höchstens etwa 100 Zeichen.
-- **i-Knöpfe**: erklären **nur diese eine Einstellung**, in **einem bis zwei kurzen Sätzen** (höchstens 2 Zeilen, etwa 190 Zeichen), ohne die allgemeinen Regeln zu wiederholen, und **ohne Werte zu wiederholen, die in den Auswahlknöpfen darunter schon sichtbar sind** (bei „Runden pro Team“ und „Überspringen pro Runde“ genügt ein Satz). Einen i-Knopf gibt es nur dort, wo eine Einstellung nicht selbsterklärend ist.
+- **i-Knöpfe**: erklären **nur diese eine Einstellung**, in **einem bis zwei kurzen Sätzen** (höchstens 2 Zeilen, etwa 190 Zeichen), ohne die allgemeinen Regeln zu wiederholen, und **ohne Werte zu wiederholen, die in den Auswahlknöpfen darunter schon sichtbar sind** (bei „Überspringen pro Runde“ genügt ein Satz; „Runden pro Team“ ist selbsterklärend und hat **keinen** i-Knopf). Einen i-Knopf gibt es nur dort, wo eine Einstellung nicht selbsterklärend ist.
 - Beides ist in Deutsch und Englisch kurz und einfach geschrieben; ein Test (`helpTexts.test.ts`) hält die Längen ein.
 - Ein neues Spiel liefert für beides nur Texte: ein Regelfenster aus `RulesSection`en und die kurzen i-Texte.
 

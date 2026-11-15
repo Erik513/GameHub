@@ -270,7 +270,6 @@ it("lets the group finish an unlimited game after every completed round", async 
 });
 
 it.each([
-  ["Rounds per team", "In a round every team is on once.", "Rounds per team"],
   ["Card source", "Local only: the cards that come with the app", "Card source"],
   // The tiebreak has its own window with its own title.
   ["Tiebreak on a tie", "the teams play 3 cards in 90 seconds", "Tiebreak"],

@@ -80,10 +80,7 @@ export function TabooSetupForm({
   const categoryLabel = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);
   const isStandard = (id: string) => categoryInfos.some((info) => info.id === id);
-  const info = (
-    key: "rounds" | "raceTarget" | "cardSource" | "skips" | "difficulty",
-    legend: string,
-  ) => ({
+  const info = (key: "raceTarget" | "cardSource" | "skips" | "difficulty", legend: string) => ({
     closeLabel: t("settings.close"),
     label: t("tabooSetup.infoLabel", { setting: legend }),
     text: t(`tabooSetup.info.${key}`),
@@ -187,7 +184,6 @@ export function TabooSetupForm({
                 </div>
                 <div className="taboo-mode-settings" hidden={mode !== "classic"}>
                   <ChoiceGroup
-                    info={info("rounds", t("tabooSetup.rounds"))}
                     legend={t("tabooSetup.rounds")}
                     name="rounds"
                     initial={String(roundChoices.includes(3) ? 3 : roundChoices[0])}
