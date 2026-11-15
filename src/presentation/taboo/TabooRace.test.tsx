@@ -245,22 +245,26 @@ it.each([
 const rulesTexts = {
   en: {
     legend: "Game mode",
-    open: "Rules",
-    title: "Taboo rules",
+    rulesTab: "Rules",
+    modes: "Rules for the game mode",
     close: "Close",
-    classic: { label: "Info about Classic", tab: "Classic", text: "Every card shows a term" },
+    classic: {
+      label: "Info about Classic",
+      tab: "Classic",
+      text: "The team with the most points wins",
+    },
     race: { label: "Info about Race", tab: "Race", text: "guesses all cards the fastest wins" },
     tiebreak: { title: "Tiebreak", text: "Every team gets 3 cards" },
   },
   de: {
     legend: "Spielmodus",
-    open: "Spielregeln",
-    title: "Spielregeln Tabu",
+    rulesTab: "Regeln",
+    modes: "Regeln für den Spielmodus",
     close: "Schließen",
     classic: {
       label: "Info zu Klassisch",
       tab: "Klassisch",
-      text: "Auf jeder Karte steht ein Begriff",
+      text: "Das Team mit den meisten Punkten gewinnt",
     },
     race: { label: "Info zu Auf Zeit", tab: "Auf Zeit", text: "am schnellsten errät, gewinnt" },
     tiebreak: { title: "Stechen", text: "Jedes Team bekommt 3 Karten" },
@@ -278,28 +282,34 @@ async function renderSetup(language: "en" | "de") {
   return { text: rulesTexts[language], user };
 }
 
+/** The panel of the tab "Rules" and the tab itself. */
+function rulesPanel(text: (typeof rulesTexts)["en" | "de"]) {
+  const tab = screen.getByRole("tab", { name: text.rulesTab });
+  const panel = document.getElementById(tab.getAttribute("aria-controls") ?? "")!;
+  return { panel, tab };
+}
+
 it.each(["en", "de"] as const)(
-  "shows all game modes as tabs in one rules window in %s",
+  "shows the rules of all game modes in the tab Rules in %s",
   async (language) => {
     const { text, user } = await renderSetup(language);
-    // The button at the top of the settings opens the window at the chosen game mode.
-    await user.click(screen.getByRole("button", { name: text.open }));
-    const dialog = screen.getByRole("dialog", { name: text.title });
-    const tabs = within(within(dialog).getByRole("tablist")).getAllByRole("tab");
-    expect(tabs.map((tab) => tab.textContent)).toEqual([text.classic.tab, text.race.tab]);
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-    // What is the same in every game mode stands above the tabs.
-    expect(within(dialog).getAllByRole("listitem").length).toBeGreaterThanOrEqual(2);
-    expect(within(dialog).getByRole("tabpanel")).toHaveTextContent(text.classic.text);
+    await user.click(screen.getByRole("tab", { name: text.rulesTab }));
+    const { panel, tab } = rulesPanel(text);
+    expect(tab).toHaveAttribute("aria-selected", "true");
+    // What is the same in every game mode stands above the game modes.
+    expect(within(panel).getAllByRole("listitem").length).toBeGreaterThanOrEqual(2);
+    const modes = within(within(panel).getByRole("group", { name: text.modes })).getAllByRole(
+      "button",
+    );
+    expect(modes.map((mode) => mode.textContent)).toEqual([text.classic.tab, text.race.tab]);
+    expect(modes[0]).toHaveAttribute("aria-pressed", "true");
+    expect(panel).toHaveTextContent(text.classic.text);
 
-    // Another tab shows the other rules below; the chosen game mode stays as it is.
-    await user.click(tabs[1]!);
-    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
-    const panel = within(dialog).getByRole("tabpanel");
+    // Another game mode shows its rules; the chosen game mode of the game stays as it is.
+    await user.click(modes[1]!);
+    expect(modes[1]).toHaveAttribute("aria-pressed", "true");
     expect(panel).toHaveTextContent(text.race.text);
     expect(panel).not.toHaveTextContent(text.classic.text);
-    await user.click(within(dialog).getByRole("button", { name: text.close }));
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     const group = screen.getByRole("group", { name: text.legend });
     expect(
       within(group).getByRole("radio", { name: new RegExp(`^${text.classic.tab}`) }),
@@ -308,7 +318,7 @@ it.each(["en", "de"] as const)(
 );
 
 it.each(["en", "de"] as const)(
-  "opens the rules window at the game mode of the info button and chooses it in %s",
+  "shows the rules of the game mode of the info button in the tab Rules and chooses it in %s",
   async (language) => {
     const { text, user } = await renderSetup(language);
     const group = screen.getByRole("group", { name: text.legend });
@@ -316,20 +326,16 @@ it.each(["en", "de"] as const)(
     expect(within(group).getAllByRole("button")).toHaveLength(2);
 
     await user.click(within(group).getByRole("button", { name: text.race.label }));
-    const dialog = screen.getByRole("dialog", { name: text.title });
-    const tabs = within(dialog).getAllByRole("tab");
-    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
-    expect(within(dialog).getByRole("tabpanel")).toHaveTextContent(text.race.text);
-    await user.click(within(dialog).getByRole("button", { name: text.close }));
+    const { panel, tab } = rulesPanel(text);
+    expect(tab).toHaveAttribute("aria-selected", "true");
+    expect(panel).toHaveTextContent(text.race.text);
     // The game mode of the info button is chosen now.
     expect(
       within(group).getByRole("radio", { name: new RegExp(`^${text.race.tab}`) }),
     ).toBeChecked();
 
     await user.click(within(group).getByRole("button", { name: text.classic.label }));
-    const again = screen.getByRole("dialog", { name: text.title });
-    expect(within(again).getByRole("tabpanel")).toHaveTextContent(text.classic.text);
-    await user.click(within(again).getByRole("button", { name: text.close }));
+    expect(rulesPanel(text).panel).toHaveTextContent(text.classic.text);
     expect(
       within(group).getByRole("radio", { name: new RegExp(`^${text.classic.tab}`) }),
     ).toBeChecked();
@@ -340,17 +346,15 @@ it.each(["en", "de"] as const)(
   "refers from the classic rules to the tiebreak window in %s",
   async (language) => {
     const { text, user } = await renderSetup(language);
-    // Open the rules at the classic tab, then the tiebreak from the link in the last bullet.
+    // Show the classic rules, then open the tiebreak from the link in the last bullet.
     await user.click(screen.getByRole("button", { name: text.classic.label }));
-    const items = within(within(screen.getByRole("dialog")).getByRole("tabpanel")).getAllByRole(
-      "listitem",
-    );
+    const items = within(rulesPanel(text).panel).getAllByRole("listitem");
     await user.click(
       within(items[items.length - 1]!).getByRole("button", {
         name: new RegExp(`^${text.tiebreak.title}$`, "i"),
       }),
     );
-    // The rules window closes and the tiebreak window takes its place.
+    // The tiebreak window opens above the page.
     const tiebreak = screen.getByRole("dialog");
     expect(tiebreak).toHaveAccessibleName(text.tiebreak.title);
     expect(tiebreak).toHaveTextContent(text.tiebreak.text);

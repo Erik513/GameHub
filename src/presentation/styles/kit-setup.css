@@ -71,20 +71,21 @@
   z-index: 1;
 }
 
+/* The tabs share the width by the length of their names, so a long name does not break. */
 .kit-tab {
-  flex: 1 1 0;
+  flex: 1 1 auto;
   min-width: 0;
   min-height: var(--touch-target);
   margin: 0;
-  padding: 0 var(--space-3);
+  padding: 0 var(--space-2);
   border: 1px solid var(--color-line);
   border-bottom: 0;
   border-radius: var(--radius-md) var(--radius-md) 0 0;
   color: var(--color-ink-muted);
   background: var(--color-canvas);
   font: inherit;
+  font-size: var(--text-sm);
   font-weight: var(--weight-bold);
-  overflow-wrap: anywhere;
   cursor: pointer;
 }
 
@@ -405,13 +406,6 @@
   gap: var(--space-4);
 }
 
-.kit-rules-button {
-  gap: var(--space-2);
-  width: auto;
-  min-height: 2.75rem;
-  padding-inline: var(--space-4);
-}
-
 .kit-rules-list {
   display: grid;
   gap: 0.75rem;
@@ -420,39 +414,18 @@
   line-height: 1.5;
 }
 
-/* The rules window: the game modes side by side as tabs, the rules of the chosen one below. */
-.kit-rules-tabs {
+/* The rules tab: the game modes side by side as buttons, the rules of the chosen one below. */
+.kit-rules-modes {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   gap: var(--space-2);
-  margin: var(--space-4) 0 var(--space-3);
 }
 
-.kit-rules-tab {
+.kit-rules-modes .button {
+  width: 100%;
   min-height: var(--touch-target);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  color: var(--color-ink);
-  font: inherit;
-  font-weight: var(--weight-bold);
-  cursor: pointer;
-}
-
-.kit-rules-tab[aria-selected="true"] {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
-}
-
-.kit-rules-panels {
-  display: grid;
-}
-
-.kit-rules-panels > [role="tabpanel"] {
-  grid-area: 1 / 1;
+  margin: 0;
 }
 
 /* The teams: one field per team for its name, with its players as text under it. */

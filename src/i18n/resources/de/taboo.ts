@@ -14,8 +14,7 @@ export const tabooTexts = {
     storage: "Auf die lokalen Karten konnte nicht zugegriffen werden.",
   },
   tabooRules: {
-    open: "Spielregeln",
-    title: "Spielregeln Tabu",
+    modes: "Regeln für den Spielmodus",
     goal: "Auf jeder Karte steht ein Begriff mit 4 verbotenen Wörtern.",
     turn: "Ein Spieler erklärt den Begriff seinem Team, ohne die 4 verbotenen Wörter, den Begriff selbst oder Teile davon zu sagen. Beispiel: Bei „Fußball“ ist auch „Ball“ verboten.",
   },

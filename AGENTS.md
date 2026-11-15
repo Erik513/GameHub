@@ -20,6 +20,7 @@ Diese Regeln gelten für Codex, Claude Code und andere automatisierte Entwicklun
 - Vermeide unnötige Änderungen, Refactorings und neue Abhängigkeiten.
 - Bewahre funktionierendes Verhalten und bestehende öffentliche Schnittstellen, sofern die Aufgabe keine Änderung verlangt.
 - Beginne keine Folgeaufgabe ohne Freigabe, wenn der Auftraggeber ausdrücklich eine Freigabegrenze gesetzt hat.
+- Entwickle jedes Spiel in einem eigenen Git-Branch (Annahme für den Namen: `game/<spiel-id>`, zum Beispiel `game/wortbombe`) und führe ihn erst nach Freigabe des Auftraggebers mit `main` zusammen.
 
 ## Architektur
 

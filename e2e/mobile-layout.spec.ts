@@ -24,7 +24,8 @@ const labels = {
     draw: "Draw teams",
     noTeam: "No team",
     cards: "Cards",
-    settingsTab: "Game settings",
+    rules: "Rules",
+    settingsTab: "Settings",
   },
   de: {
     open: "Fortschritt ansehen",
@@ -49,7 +50,8 @@ const labels = {
     draw: "Teams auslosen",
     noTeam: "Ohne Team",
     cards: "Karten",
-    settingsTab: "Spieleinstellungen",
+    rules: "Regeln",
+    settingsTab: "Einstellungen",
   },
 } as const;
 
@@ -93,6 +95,8 @@ async function audit(page: Page, screen: string): Promise<string[]> {
     );
     for (const element of targets) {
       if (!visible(element)) continue;
+      // A link inside a sentence may be as small as its text (an inline link is exempt from the target size).
+      if (element.matches(".kit-link-button")) continue;
       const rect = element.getBoundingClientRect();
       if (rect.height < minimum - 0.5 || rect.width < minimum - 0.5) {
         found.push({
@@ -184,6 +188,8 @@ for (const language of ["en", "de"] as const) {
       await check("setup");
       await page.getByRole("tab", { name: t.cards, exact: true }).click();
       await check("setup cards");
+      await page.getByRole("tab", { name: t.rules, exact: true }).click();
+      await check("setup rules");
       await page.getByRole("tab", { name: t.settingsTab, exact: true }).click();
       await press(t.start);
       await check("line-up");

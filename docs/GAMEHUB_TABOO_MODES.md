@@ -69,7 +69,7 @@ Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. W
 
 - **Setup:** Neue Knopfgruppe **Spielmodus** (Klassisch, Auf Zeit, Gegen die Zeit) als erste Gruppe der Spieleinstellungen (nach der Kartensprache), mit Info-Knopf. Je Modus zeigt das Setup nur die passenden Gruppen: Klassisch wie bisher (Runden, Dauer, Überspringen, Stechen); Auf Zeit: Zielzahl; Gegen die Zeit: Zeitkonto. Kartenquelle, Schwierigkeit und Kategorien bleiben für alle Modi.
 - **Ansichten:** Wieder die festen Typen aus `docs/GAMEHUB_UI_RULES.md`: Übersicht und Endstand mit `ScoreScreen` (Zeiten beziehungsweise Restzeiten statt Punkten), der Zug mit `TimerHud` (`useStopwatch` für Auf Zeit, `useCountdown` für Gegen die Zeit), die Hauptaktion unten fest. Keine neuen Ansichtstypen.
-- **Spielregeln:** Das Fenster „Spielregeln“ bekommt je Modus einen Abschnitt (Deutsch und Englisch).
+- **Spielregeln:** Der Reiter „Regeln“ im Hauptmenü bekommt je Modus einen Abschnitt (Deutsch und Englisch).
 - **Handy:** Hauptaktionen unten, 44-Pixel-Ziele; die Layoutprüfung (e2e) deckt jede neue Ansicht in beiden Sprachen ab.
 
 **Persistenz:** Die letzte Gruppe (`Al-09-03`) und die Spielerliste (`Al-09-06`) gelten unverändert für alle Modi.

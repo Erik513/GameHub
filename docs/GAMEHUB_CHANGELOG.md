@@ -2,7 +2,18 @@
 
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
+## 2026-11-15
+
+### Neue Arbeitsregel: ein Branch pro Spiel
+
+- Auf Wunsch des Auftraggebers wird **jedes Spiel in einem eigenen Branch entwickelt** (Annahme für den Namen: `game/<spiel-id>`). Zusammengeführt wird erst nach Freigabe. Die Regel steht in `AGENTS.md`. Bereits auf `main` liegende Tabu-Arbeit bleibt dort.
+
 ## 2026-11-14
+
+### Spielregeln als eigener Reiter statt Fenster
+
+- Das Hauptmenü von Tabu hat jetzt drei Reiter: **„Einstellungen | Karten | Regeln“** (die „Spieleinstellungen“ heißen kurz „Einstellungen“, damit drei Reiter auf das Handy passen). Der Reiter **„Regeln“** zeigt die Regeln direkt auf der Seite: oben die Regeln für alle Spielmodi, darunter die Spielmodi als zwei Knöpfe (der gewählte ist gefüllt) und die Regeln des gewählten Modus, ohne die oben stehenden Zeilen zu wiederholen. Der Knopf „Spielregeln“ in den Einstellungen und das Regelfenster entfallen; die kleinen **i-Knöpfe** an den Spielmodi wählen den Modus und wechseln zum Reiter „Regeln“. Das Stechen bleibt ein Infofenster, zu dem ein Link in den klassischen Regeln führt.
+- Code: neuer Baustein `RulesView` (ersetzt `RulesDialog` und `RulesButton`), `TabooRulesPanel` (ersetzt `TabooRulesDialog`), Reiter-Texte `kitSetup.tabSettings/tabRules`, `tabooRules.modes`; `kitSetup.settingsSection`, `tabooRules.open` und `tabooRules.title` entfallen. Tabs teilen sich die Breite nach der Länge ihrer Namen (kein Umbruch mitten im Wort). Tests für Regeln und Info-Knöpfe auf den Reiter umgestellt, Layout-Prüfung mit dem Reiter „Regeln“; Links im Satz (`kit-link-button`) sind von der Mindestgröße der Tippfläche ausgenommen (Standard für Links im Text). 644 Unit-Tests, 30 e2e-Tests grün.
 
 ### Reiter wie im Browser statt aufklappbarer Kapitel (ADR-026)
 

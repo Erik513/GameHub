@@ -99,7 +99,7 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-15T00:10:00+01:00",
+      "lastRunAt": "2026-11-15T01:00:00+01:00",
       "passed": 30,
       "failed": 0,
       "details": "30 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 6 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Neu: Aufstellung mit Spielern, Teams, Ziehen und Reihenfolge (Deutsch und Englisch) und die Layout-Prüfung mit gefüllter Aufstellung."

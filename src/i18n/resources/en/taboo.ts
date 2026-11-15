@@ -14,8 +14,7 @@ export const tabooTexts = {
     storage: "Local cards could not be accessed.",
   },
   tabooRules: {
-    open: "Rules",
-    title: "Taboo rules",
+    modes: "Rules for the game mode",
     goal: "Every card shows a term with 4 forbidden words.",
     turn: "One player explains the term to their team without saying the 4 forbidden words, the term itself or parts of it. Example: for “football” the word “ball” is forbidden too.",
   },

@@ -7,11 +7,11 @@ import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
 
 it.each([
-  ["de", "Spielregeln", "Spielregeln Tabu", "Auf jeder Karte", "Auf Zeit"],
-  ["en", "Rules", "Taboo rules", "Every card shows", "Race"],
+  ["de", "Regeln", "Regeln für den Spielmodus", "Auf jeder Karte", "Auf Zeit", "Klassisch"],
+  ["en", "Rules", "Rules for the game mode", "Every card shows", "Race", "Classic"],
 ] as const)(
-  "explains the card and the forbidden words above the tabs and moves between tabs with the arrow keys in %s",
-  async (language, open, title, general, raceTab) => {
+  "explains the card and the forbidden words above the game modes in the rules tab in %s",
+  async (language, tabName, modes, general, raceMode, classicMode) => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n(language);
     render(
@@ -20,22 +20,26 @@ it.each([
       </I18nextProvider>,
     );
 
-    await user.click(screen.getByRole("button", { name: open }));
-    const dialog = screen.getByRole("dialog", { name: title });
-    // Two rules for every game mode stand above the tabs.
-    const general2 = within(dialog).getAllByRole("listitem").slice(0, 2);
-    expect(general2[0]).toHaveTextContent(general);
-    expect(general2[1]).toHaveTextContent(/4/);
+    // The rules are a tab of the main menu now, not a window.
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("tab", { name: tabName }));
+    const tab = screen.getByRole("tab", { name: tabName });
+    expect(tab).toHaveAttribute("aria-selected", "true");
+    const panel = document.getElementById(tab.getAttribute("aria-controls") ?? "")!;
+    expect(panel).toHaveAttribute("data-active", "true");
 
-    const tabs = within(dialog).getAllByRole("tab");
-    tabs[0]!.focus();
-    await user.keyboard("{ArrowRight}");
-    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
-    expect(tabs[1]).toHaveTextContent(raceTab);
-    expect(tabs[1]).toHaveFocus();
-    // The arrow keys go around.
-    await user.keyboard("{ArrowRight}");
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-    expect(within(dialog).getByRole("tabpanel")).toHaveAttribute("aria-labelledby", tabs[0]!.id);
+    // Two rules for every game mode stand above the game modes.
+    const items = within(panel).getAllByRole("listitem");
+    expect(items[0]).toHaveTextContent(general);
+    expect(items[1]).toHaveTextContent(/4/);
+
+    // The game modes are buttons; the chosen one is filled and its rules stand below.
+    const group = within(panel).getByRole("group", { name: modes });
+    const buttons = within(group).getAllByRole("button");
+    expect(buttons.map((button) => button.textContent)).toEqual([classicMode, raceMode]);
+    expect(buttons[0]).toHaveAttribute("aria-pressed", "true");
+    await user.click(buttons[1]!);
+    expect(buttons[1]).toHaveAttribute("aria-pressed", "true");
+    expect(buttons[0]).toHaveAttribute("aria-pressed", "false");
   },
 );

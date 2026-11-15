@@ -10,7 +10,7 @@ export { PlayerRosterProvider } from "./PlayerRosterProvider";
 export { PlayersSetup } from "./PlayersSetup";
 export { Scoreboard } from "./Scoreboard";
 export { RosterPicker } from "./RosterPicker";
-export { RulesButton, RulesDialog, type RulesTab } from "./RulesDialog";
+export { RulesView, type RulesItem } from "./RulesView";
 export { ScoreScreen } from "./ScoreScreen";
 export { SetupScreen } from "./SetupScreen";
 export { SetupSection } from "./SetupSection";

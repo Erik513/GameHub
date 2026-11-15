@@ -1,56 +1,37 @@
 import { Trans, useTranslation } from "react-i18next";
-import { RulesButton, RulesDialog } from "../game-kit";
+import { RulesView } from "../game-kit";
 import { tabooModes, type TabooMode } from "./tabooSetupModel";
 
-/** The button that opens the rules window of Taboo. */
-export function TabooRulesButton({ onClick }: { onClick: () => void }) {
-  const { t } = useTranslation();
-  return <RulesButton label={t("tabooRules.open")} onClick={onClick} />;
-}
-
-interface TabooRulesDialogProps {
-  onClose: () => void;
-  /** Closes the window and shows the tiebreak window instead. */
+interface TabooRulesPanelProps {
+  /** Shows the tiebreak window; the rules of the classic mode link to it. */
   onOpenTiebreak: () => void;
   /** Shows the rules of another game mode; this does not change the chosen game mode. */
-  onTabChange: (mode: TabooMode) => void;
-  open: boolean;
+  onModeChange: (mode: TabooMode) => void;
   /** The game mode whose rules are shown. */
-  tab: TabooMode;
+  mode: TabooMode;
 }
 
-/** The rules of Taboo: the card and the forbidden words, then one tab per game mode. */
-export function TabooRulesDialog({
-  onClose,
-  onOpenTiebreak,
-  onTabChange,
-  open,
-  tab,
-}: TabooRulesDialogProps) {
+/** The rules of Taboo for the tab "Rules": the card and the forbidden words, then the rules of a game mode. */
+export function TabooRulesPanel({ mode, onModeChange, onOpenTiebreak }: TabooRulesPanelProps) {
   const { t } = useTranslation();
+  // The first rules are the same in every game mode and stand on top; they are not repeated below.
+  const intro: readonly string[] = [t("tabooRules.goal"), t("tabooRules.turn")];
 
   return (
-    <RulesDialog
-      closeLabel={t("settings.close")}
-      intro={[t("tabooRules.goal"), t("tabooRules.turn")]}
-      onClose={onClose}
-      onTabChange={(id) => {
-        const mode = tabooModes.find((value) => value === id);
-        if (mode) onTabChange(mode);
-      }}
-      open={open}
-      tab={tab}
-      tabs={tabooModes.map((mode) => ({
-        id: mode,
-        label: t(`tabooMode.${mode}`),
+    <RulesView
+      intro={intro}
+      items={tabooModes.map((value) => ({
+        id: value,
+        label: t(`tabooMode.${value}`),
         content: (
           <ul className="kit-rules-list">
-            {t(`tabooMode.${mode}Rules`)
+            {t(`tabooMode.${value}Rules`)
               .split("\n")
+              .filter((line) => !intro.includes(line))
               .map((line) => (
                 <li key={line}>{line}</li>
               ))}
-            {mode === "classic" && (
+            {value === "classic" && (
               <li>
                 <Trans
                   components={{
@@ -67,8 +48,12 @@ export function TabooRulesDialog({
           </ul>
         ),
       }))}
-      tabsLabel={t("tabooMode.legend")}
-      title={t("tabooRules.title")}
+      label={t("tabooRules.modes")}
+      onSelect={(id) => {
+        const next = tabooModes.find((value) => value === id);
+        if (next) onModeChange(next);
+      }}
+      selected={mode}
     />
   );
 }
