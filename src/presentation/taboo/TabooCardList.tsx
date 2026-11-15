@@ -26,7 +26,7 @@ interface TabooCardListProps {
   /** The standard categories with their names. */
   categoryInfos?: readonly TabooCategoryInfo[];
   disabled: boolean;
-  /** Controls below the list that never scroll away, for example import and export. */
+  /** Controls below the list of the own categories that never scroll away: import and export. */
   footer?: ReactNode;
   onRemove: (id: string) => Promise<void>;
   /** Gives all own cards of an own category another name. */
@@ -502,7 +502,9 @@ export function TabooCardList({
   }
 
   return (
-    <TabPane footer={footer} header={header}>
+    // Import and export belong to the own categories: they are only offered in the list of the own
+    // categories, not in the standard view and not while a category or a card is open.
+    <TabPane footer={view === "own" && !current ? footer : undefined} header={header}>
       {toast}
       {body}
     </TabPane>

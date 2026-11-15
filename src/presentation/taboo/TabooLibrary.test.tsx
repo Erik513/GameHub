@@ -176,6 +176,9 @@ it("opens the file chooser from the import button", async () => {
   );
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   const chooser = vi.spyOn(HTMLInputElement.prototype, "click").mockImplementation(() => undefined);
+  // Import and export belong to the own categories: not in the standard view, not in an opened category.
+  expect(screen.queryByRole("button", { name: "Import" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("radio", { name: "Own" }));
   fireEvent.click(screen.getByRole("button", { name: "Import" }));
   expect(chooser).toHaveBeenCalledOnce();
   chooser.mockRestore();
