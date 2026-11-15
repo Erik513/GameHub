@@ -149,16 +149,16 @@ it("shows the card tools on their own page with the back button in the app heade
   expect(header.getByRole("button", { name: "Settings" })).toBeVisible();
   expect(header.getByRole("button", { name: "Close game" })).toBeVisible();
   expect(header.queryByRole("button", { name: "Back" })).not.toBeInTheDocument();
-  expect(screen.queryByRole("heading", { name: "Custom Taboo cards" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "Taboo cards" })).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByRole("button", { name: "Cards" }));
-  expect(screen.getByRole("heading", { name: "Custom Taboo cards" })).toBeVisible();
+  expect(screen.getByRole("heading", { name: "Taboo cards" })).toBeVisible();
   expect(header.getByRole("button", { name: "Back" })).toBeVisible();
   expect(header.queryByRole("button", { name: "Settings" })).not.toBeInTheDocument();
   expect(header.queryByRole("button", { name: "Close game" })).not.toBeInTheDocument();
 
   fireEvent.click(header.getByRole("button", { name: "Back" }));
-  expect(screen.queryByRole("heading", { name: "Custom Taboo cards" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "Taboo cards" })).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Cards" })).toBeVisible();
   expect(header.getByRole("button", { name: "Settings" })).toBeVisible();
 });

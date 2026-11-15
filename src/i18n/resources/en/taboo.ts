@@ -3,7 +3,7 @@ export const tabooTexts = {
   tabooLibrary: {
     manage: "Cards",
     back: "Back",
-    title: "Custom Taboo cards",
+    title: "Taboo cards",
     cardsTab: "Cards",
     import: "Import",
     export: "Export",

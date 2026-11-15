@@ -924,3 +924,30 @@
   margin-right: calc(var(--scroll-edge-gap) - var(--space-4) - var(--safe-right));
   padding-right: calc(var(--space-4) + var(--safe-right) - var(--scroll-edge-gap));
 }
+
+/*
+ * The focus ring of a control is not cut off at the edge of a scrolling box: the box has some room
+ * around its content (padding) and takes it back with a negative margin, so nothing moves.
+ */
+:root {
+  --focus-room: 0.5rem;
+}
+
+.kit-pane__body {
+  padding: var(--focus-room) calc(var(--space-4) - var(--scroll-edge-gap)) var(--focus-room)
+    var(--focus-room);
+  margin: calc(-1 * var(--focus-room)) calc(var(--scroll-edge-gap) - var(--space-4))
+    calc(-1 * var(--focus-room)) calc(-1 * var(--focus-room));
+}
+
+.dialog__content {
+  padding: var(--focus-room) calc(var(--space-4) + var(--safe-right) - var(--scroll-edge-gap))
+    var(--focus-room) var(--focus-room);
+  margin: calc(var(--space-4) - var(--focus-room))
+    calc(var(--scroll-edge-gap) - var(--space-4) - var(--safe-right)) calc(-1 * var(--focus-room))
+    calc(-1 * var(--focus-room));
+}
+
+.kit-pane {
+  gap: calc(var(--space-3) + var(--focus-room));
+}

@@ -3,7 +3,7 @@ export const tabooTexts = {
   tabooLibrary: {
     manage: "Karten",
     back: "Zurück",
-    title: "Eigene Tabu-Karten",
+    title: "Tabu-Karten",
     cardsTab: "Karten",
     import: "Importieren",
     export: "Exportieren",
