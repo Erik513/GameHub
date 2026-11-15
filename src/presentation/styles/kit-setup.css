@@ -951,3 +951,22 @@
 .kit-pane {
   gap: calc(var(--space-3) + var(--focus-room));
 }
+
+/*
+ * Scrolling snaps to whole items: a list of blocks (categories, cards, games) always stops with an
+ * item at the top, so no item is cut off at the edge once the scrolling has settled.
+ */
+.kit-pane__body,
+.game-library .game-grid {
+  scroll-snap-type: y mandatory;
+}
+
+.kit-pane__body {
+  scroll-padding-top: var(--focus-room);
+}
+
+.taboo-card-list__categories > li,
+.taboo-card-list__cards > li,
+.game-library .game-grid > li {
+  scroll-snap-align: start;
+}
