@@ -27,6 +27,9 @@ function reachTiebreak() {
   fireEvent.click(
     screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
   );
+  // Only Easy is chosen at first; the tiebreak tests use cards of every difficulty.
+  fireEvent.click(screen.getByRole("checkbox", { name: "Medium" }));
+  fireEvent.click(screen.getByRole("checkbox", { name: "Hard" }));
   press("Start");
   press("Start game");
   press("Start round");

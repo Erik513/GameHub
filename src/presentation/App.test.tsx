@@ -214,6 +214,9 @@ describe("App", () => {
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    // Only Easy is chosen at first; these cards need all difficulties.
+    fireEvent.click(screen.getByRole("checkbox", { name: "Medium" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Hard" }));
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));

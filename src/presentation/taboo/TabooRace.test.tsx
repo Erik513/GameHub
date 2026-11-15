@@ -174,8 +174,8 @@ it("keeps the settings of both modes when the mode is changed and changed back",
   // Classic settings, a shared setting and the settings of the race.
   await user.click(radio("Rounds per team", /^Long/));
   await user.click(radio("Round duration (seconds)", "90"));
-  // Easy is switched off (all three difficulties are chosen at first).
-  await user.click(box("Difficulty (several possible)", "Easy"));
+  // Only Easy is chosen at first; Medium is added.
+  await user.click(box("Difficulty (several possible)", "Medium"));
   await user.click(radio("Game mode", "Race"));
   await user.click(radio("Cards per team", "15"));
   expect(screen.queryByRole("group", { name: "Rounds per team" })).not.toBeInTheDocument();
@@ -183,11 +183,11 @@ it("keeps the settings of both modes when the mode is changed and changed back",
   await user.click(radio("Game mode", "Classic"));
   expect(radio("Rounds per team", /^Long/)).toBeChecked();
   expect(radio("Round duration (seconds)", "90")).toBeChecked();
-  expect(box("Difficulty (several possible)", "Easy")).not.toBeChecked();
+  expect(box("Difficulty (several possible)", "Medium")).toBeChecked();
 
   await user.click(radio("Game mode", "Race"));
   expect(radio("Cards per team", "15")).toBeChecked();
-  expect(box("Difficulty (several possible)", "Easy")).not.toBeChecked();
+  expect(box("Difficulty (several possible)", "Medium")).toBeChecked();
 });
 
 it("gives every team exactly the same mix of difficulties", async () => {
@@ -196,6 +196,9 @@ it("gives every team exactly the same mix of difficulties", async () => {
   await user.click(
     within(screen.getByRole("group", { name: text.target })).getByRole("radio", { name: "5" }),
   );
+  // Only Easy is chosen at first; the mix needs all three difficulties.
+  await user.click(screen.getByRole("checkbox", { name: "Medium" }));
+  await user.click(screen.getByRole("checkbox", { name: "Hard" }));
   await user.click(screen.getByRole("button", { name: text.start }));
   await user.click(screen.getByRole("button", { name: text.startGame }));
 
@@ -236,6 +239,8 @@ it.each([
         name: text.race,
       }),
     );
+    // Medium is chosen on purpose: there are no Medium cards.
+    await user.click(screen.getByRole("checkbox", { name: /^(Medium|Mittel)$/ }));
     await user.click(screen.getByRole("button", { name: text.start }));
     await user.click(screen.getByRole("button", { name: text.startGame }));
     expect(await screen.findByRole("alert")).toHaveTextContent(message);

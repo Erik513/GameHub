@@ -256,7 +256,7 @@ export function TabooSetupForm({
                   legend={t("tabooSetup.difficultyMultiple")}
                   multiple
                   name="difficulty"
-                  initial={difficulties}
+                  initial={["easy"]}
                   options={difficulties.map((value) => ({
                     value,
                     label: t(`tabooSetup.difficulties.${value}`),

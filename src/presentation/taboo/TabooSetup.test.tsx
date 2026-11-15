@@ -17,9 +17,7 @@ it("blocks a six-turn setup when the chosen filters match only five cards", asyn
   );
   await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
-  // All three difficulties are chosen at first; keeping only Easy leaves 5 cards.
-  await user.click(screen.getByRole("checkbox", { name: "Medium" }));
-  await user.click(screen.getByRole("checkbox", { name: "Hard" }));
+  // Only Easy is chosen at first and leaves 5 cards.
   await user.click(screen.getByRole("button", { name: "Start" }));
   await user.click(screen.getByRole("button", { name: "Start game" }));
   expect(screen.getByRole("alert")).toHaveTextContent("The filters match 5 cards");
@@ -175,6 +173,9 @@ it("lets a turn use more than its fair share of cards and reuses cards in later 
   await user.click(
     screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
   );
+  // Only Easy is chosen at first; these cards need all difficulties.
+  await user.click(screen.getByRole("checkbox", { name: "Medium" }));
+  await user.click(screen.getByRole("checkbox", { name: "Hard" }));
   await user.click(screen.getByRole("button", { name: "Start" }));
   await user.click(screen.getByRole("button", { name: "Start game" }));
   await user.click(screen.getByRole("button", { name: "Start round" }));
@@ -232,10 +233,12 @@ it("offers short, medium, long and unlimited games with the short one preselecte
   expect(group.getByRole("radio", { name: /Short/ })).toBeChecked();
   expect(group.getByRole("radio", { name: "Unlimited" })).toBeVisible();
   // Difficulties carry their color in the menu already.
-  // The legend says that several can be chosen; all three are chosen at first (there is no "All").
+  // The legend says that several can be chosen; only Easy is chosen at first, so the active choice is clear.
   const difficulty = screen.getByRole("group", { name: "Difficulty (several possible)" });
   expect(within(difficulty).getAllByRole("checkbox")).toHaveLength(3);
-  for (const box of within(difficulty).getAllByRole("checkbox")) expect(box).toBeChecked();
+  expect(within(difficulty).getByRole("checkbox", { name: "Easy" })).toBeChecked();
+  expect(within(difficulty).getByRole("checkbox", { name: "Medium" })).not.toBeChecked();
+  expect(within(difficulty).getByRole("checkbox", { name: "Hard" })).not.toBeChecked();
   expect(difficulty.querySelector("[data-tone='easy']")).not.toBeNull();
   expect(difficulty.querySelector("[data-tone='hard']")).not.toBeNull();
 });
