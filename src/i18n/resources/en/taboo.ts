@@ -94,7 +94,6 @@ export const tabooTexts = {
     deleteCategory: "Delete category",
     deleteCategoryLabel: "Delete category {{category}} with {{count}} cards",
     deleteCategoryConfirm: "Tap again to delete {{category}} with {{count}} cards",
-    deleteCategoryAgain: "Tap again: delete {{count}} cards",
     deleteLabel: "Delete card {{term}}",
     deleteConfirm: "Tap again to delete {{term}}",
     problems: {
@@ -233,6 +232,7 @@ export const tabooTexts = {
       "The filters match {{available}} cards. The scheduled turns need at least {{required}}.",
     rounds: "Rounds per team",
     categoryGroups: { standard: "Standard", own: "Own" },
+    noOwnCategories: 'None yet. Add them under "Categories and cards".',
     duration: "Round duration (seconds)",
     difficulty: "Difficulty",
     difficultyMultiple: "Difficulty (several possible)",

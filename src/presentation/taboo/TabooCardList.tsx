@@ -444,7 +444,13 @@ export function TabooCardList({
                 {t("tabooList.renameCategory")}
               </Button>
               <ConfirmButton
-                armedContent={t("tabooList.deleteCategoryAgain", { count: own.length })}
+                // The text stays the same; the button only turns bright red after the first tap.
+                armedContent={
+                  <>
+                    <Icon name="trash" />
+                    {t("tabooList.deleteCategory")}
+                  </>
+                }
                 armedLabel={t("tabooList.deleteCategoryConfirm", {
                   category: title,
                   count: own.length,

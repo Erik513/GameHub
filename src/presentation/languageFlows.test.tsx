@@ -33,7 +33,8 @@ function foreignTexts(language: SupportedLanguage): Set<string> {
   for (const [key, text] of other) {
     // Strings with placeholders appear with filled-in values, so only plain texts are compared.
     if (text.includes("{{") || text.length < 4) continue;
-    if (own.get(key) !== text) foreign.add(text);
+    // A word that both languages use (like "Standard") is not foreign, even under another key.
+    if (own.get(key) !== text && ![...own.values()].includes(text)) foreign.add(text);
   }
   return foreign;
 }

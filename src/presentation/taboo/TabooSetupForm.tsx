@@ -268,11 +268,14 @@ export function TabooSetupForm({
                     const ids = sortCategories(
                       categoryIds.filter((id) => isStandard(id) === (group === "standard")),
                     );
-                    if (ids.length === 0) return null;
+                    // Both headings are always there, so the groups are clear even without own categories.
                     return (
                       <div className="taboo-category-group" key={group}>
-                        {categoryIds.some((id) => !isStandard(id)) && (
-                          <small>{t(`tabooSetup.categoryGroups.${group}`)}</small>
+                        <small>{t(`tabooSetup.categoryGroups.${group}`)}</small>
+                        {ids.length === 0 && (
+                          <p className="taboo-category-group__empty">
+                            {t("tabooSetup.noOwnCategories")}
+                          </p>
                         )}
                         <div className="kit-choice-grid kit-choice-grid--categories">
                           {ids.map((category) => (

@@ -179,15 +179,20 @@ it("offers a custom category as a filter in the setup", async () => {
   expect(screen.getByRole("checkbox", { name: "Sport (EN)" })).not.toBeChecked();
 });
 
-it("shows no group labels while there are only standard categories", async () => {
+it("always shows both group headings and says that there are no own categories yet", async () => {
   const i18n = await createGameHubI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
       <TabooSetup cardLanguage="en" cards={tabooStandardCards} roundChoices={[1]} />
     </I18nextProvider>,
   );
-  expect(document.querySelectorAll(".taboo-category-group")).toHaveLength(1);
-  expect(document.querySelector(".taboo-category-group small")).toBeNull();
+  const groups = [...document.querySelectorAll(".taboo-category-group")];
+  expect(groups.map((group) => group.querySelector("small")?.textContent)).toEqual([
+    "Standard",
+    "Own",
+  ]);
+  expect(groups[1]).toHaveTextContent("None yet");
+  expect(groups[0]).not.toHaveTextContent("None yet");
 });
 
 it("offers only own categories with their language and gives a card the language of its category", async () => {

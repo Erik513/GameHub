@@ -94,7 +94,6 @@ export const tabooTexts = {
     deleteCategory: "Kategorie löschen",
     deleteCategoryLabel: "Kategorie {{category}} mit {{count}} Karten löschen",
     deleteCategoryConfirm: "Nochmal tippen, um {{category}} mit {{count}} Karten zu löschen",
-    deleteCategoryAgain: "Nochmal tippen: {{count}} Karten löschen",
     deleteLabel: "Karte {{term}} löschen",
     deleteConfirm: "Nochmal tippen, um {{term}} zu löschen",
     problems: {
@@ -233,6 +232,7 @@ export const tabooTexts = {
       "Die Auswahl enthält {{available}} Karten. Für die geplanten Teamrunden werden mindestens {{required}} benötigt.",
     rounds: "Runden pro Team",
     categoryGroups: { standard: "Standard", own: "Eigene" },
+    noOwnCategories: "Noch keine. Lege sie unter „Kategorien und Karten“ an.",
     duration: "Rundendauer (Sekunden)",
     difficulty: "Schwierigkeit",
     difficultyMultiple: "Schwierigkeit (mehrere möglich)",
