@@ -65,7 +65,7 @@ export const kitTexts = {
     pickTitle: "Spieler wählen",
     manage: "Spielerliste verwalten",
     pickInfo: "Wähle, wer heute mitspielt.",
-    pickEmpty: "Die Spielerliste ist leer. Lege Spieler über den Knopf „Spieler“ im Hauptmenü an.",
+    pickEmpty: "Die Spielerliste ist leer. Lege Spieler mit „Spielerliste verwalten“ an.",
     pickAll: "Alle wählen",
     pickNone: "Keinen wählen",
     pickApply: "Übernehmen",

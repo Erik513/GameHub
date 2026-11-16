@@ -39,7 +39,7 @@ export const tabooTexts = {
     settingsDuration: "so lange dauert ein Zug.",
     settingsSkips: "so oft darfst du ohne Punkt weiterspringen.",
     settingsTiebreak: "entscheidet ein Unentschieden.",
-    settingsCards: "Sprache, Schwierigkeit und Kategorien der Karten.",
+    settingsCards: "welche Karten gespielt werden: Sprache, Schwierigkeit, Kategorien.",
   },
   tabooCardProblems: {
     noTerm: "Gib einen Begriff ein.",
@@ -77,7 +77,7 @@ export const tabooTexts = {
     categoryDeleted: "Kategorie gelöscht.",
     groups: {
       ownCards: "Eigene Karten",
-      standardCards: "Mitgelieferte Karten",
+      standardCards: "Standardkarten",
     },
     title: "Karten nach Kategorie",
     views: { standard: "Standard", own: "Eigene" },
@@ -136,7 +136,7 @@ export const tabooTexts = {
     run: "Lauf Auf Zeit",
     intro: "Jedes Team löst {{count}} Karten so schnell wie möglich. Einmal überspringen pro Team.",
     times: "Zeiten",
-    pending: "noch nicht gespielt",
+    pending: "noch offen",
     time: "{{time}} s",
     partial: "{{solved}}/{{total}} Karten · {{time}} s",
     start: "Lauf starten",
@@ -144,7 +144,7 @@ export const tabooTexts = {
     timer: "{{time}} Sekunden",
     forbiddenHint: "kostet Zeit, neue Karte",
     restartRun: "Lauf neu starten",
-    restartRunConfirm: "Nochmal tippen zum Neustart",
+    restartRunConfirm: "Nochmal tippen zum Neustarten",
     noCards: "Für den nächsten Lauf sind nicht genug Karten da.",
     finalTimes: "Endzeiten",
   },
@@ -154,15 +154,15 @@ export const tabooTexts = {
   },
   tabooTiebreak: {
     title: "Stechen",
-    round: "Stechen-Versuch",
+    round: "Versuch im Stechen",
     rules:
-      "Gleichstand! Jedes Team erklärt drei Begriffe auf Zeit. Ein verbotenes Wort zählt als falsch und bringt eine neue Karte, einmal überspringen ist erlaubt. Die meisten Begriffe in der kürzesten Zeit gewinnen.",
+      "Gleichstand! Jedes Team erklärt drei Karten auf Zeit. Ein verbotenes Wort zählt als falsch und bringt eine neue Karte, einmal überspringen ist erlaubt. Die meisten Karten in der kürzesten Zeit gewinnen.",
     forbiddenHint: "zählt als falsch",
     results: "Ergebnis Stechen",
-    result: "{{solved}}/{{total}} Begriffe · {{time}} s",
+    result: "{{solved}}/{{total}} Karten · {{time}} s",
     pending: "noch offen",
     start: "Stechen starten",
-    cardOf: "Begriff {{current}}/{{total}}",
+    cardOf: "Karte {{current}}/{{total}}",
     timer: "{{time}} Sekunden",
     endAttempt: "Versuch beenden",
     noCards: "Für das Stechen sind nicht genug Karten verfügbar.",
@@ -206,7 +206,8 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info zu {{setting}}",
     info: {
-      raceTarget: "So viele Karten löst jedes Team.\nAlle bekommen gleich schwere Karten.",
+      raceTarget:
+        "So viele Karten löst jedes Team.\nJedes Team bekommt dieselbe Mischung der Schwierigkeiten.",
       cardSource:
         "Nur lokal: Karten aus der App, auch ohne Internet.\nNur KI: Die lokale KI macht die Karten.\nBeides: gemischt.",
       tiebreak:

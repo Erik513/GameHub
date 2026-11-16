@@ -65,7 +65,7 @@ export const kitTexts = {
     pickTitle: "Choose players",
     manage: "Manage player list",
     pickInfo: "Choose who is playing today.",
-    pickEmpty: "The player list is empty. Add players with the Players button in the main menu.",
+    pickEmpty: 'The player list is empty. Tap "Manage player list" to add players.',
     pickAll: "Choose all",
     pickNone: "Choose none",
     pickApply: "Apply",

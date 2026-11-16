@@ -42,7 +42,7 @@ const texts = {
     result: "Spiel beendet",
     times: "Endzeiten",
     winner: /Gewinner: /,
-    pending: "noch nicht gespielt",
+    pending: "noch offen",
     newSetup: "Neue Partie konfigurieren",
   },
 } as const;

@@ -36,7 +36,7 @@ async function setup(language: "en" | "de", allCards: readonly TabooCard[] = car
 }
 
 it.each([
-  ["en", "Export", "Tap the category of your own"],
+  ["en", "Export", "Tap the own category"],
   ["de", "Exportieren", "Tippe auf die eigene Kategorie"],
 ] as const)(
   "opens a window with an info text and the own categories as buttons in %s",

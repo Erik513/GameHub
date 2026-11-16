@@ -7,7 +7,7 @@ export const tabooTexts = {
     cardsTab: "Cards",
     import: "Import",
     export: "Export",
-    exportInfo: "Tap the category of your own that you want to export as a file.",
+    exportInfo: "Tap the own category you want to export as a file.",
     exportEmpty: "You do not have any own categories to export yet.",
     exported: "Cards exported.",
     imported: "Imported cards: {{count}}. Existing cards were kept.",
@@ -30,16 +30,16 @@ export const tabooTexts = {
     correctText: "Guessed: 1 point.",
     skipText: "Next card, no point.",
     forbiddenText: "You said a forbidden word: no point.",
-    turnEnd: "When the time is up, the next team is on.",
+    turnEnd: "When time is up, it is the next team's turn.",
     modesTitle: "Game modes",
-    classicText: "The teams play rounds in turn. The most points win.",
+    classicText: "The teams take turns playing rounds. The most points win.",
     raceText: "Every team solves the same number of cards. The shortest time wins.",
     settingsTitle: "Settings",
-    settingsRounds: "how often every team is on.",
+    settingsRounds: "how many rounds each team plays.",
     settingsDuration: "how long a turn lasts.",
     settingsSkips: "how often you may move on without a point.",
     settingsTiebreak: "decides a tie.",
-    settingsCards: "language, difficulty and categories of the cards.",
+    settingsCards: "which cards are played: language, difficulty, categories.",
   },
   tabooCardProblems: {
     noTerm: "Enter a term.",
@@ -77,7 +77,7 @@ export const tabooTexts = {
     categoryDeleted: "Category deleted.",
     groups: {
       ownCards: "Own cards",
-      standardCards: "Built-in cards",
+      standardCards: "Standard cards",
     },
     title: "Cards by category",
     views: { standard: "Standard", own: "Own" },
@@ -206,7 +206,8 @@ export const tabooTexts = {
   tabooSetup: {
     infoLabel: "Info about {{setting}}",
     info: {
-      raceTarget: "How many cards every team solves.\nAll teams get cards of the same difficulty.",
+      raceTarget:
+        "How many cards every team solves.\nEvery team gets the same mix of difficulties.",
       cardSource:
         "Local only: the cards that come with the app, also offline.\nAI only: the local AI makes the cards.\nBoth: mixed.",
       tiebreak:

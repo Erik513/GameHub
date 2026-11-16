@@ -111,7 +111,7 @@ it("shows the standard and the own categories as two views and the cards of an o
   const labels = [...document.querySelectorAll(".taboo-card-list__label")].map(
     (label) => label.textContent,
   );
-  expect(labels).toEqual(["Own cards", "Built-in cards"]);
+  expect(labels).toEqual(["Own cards", "Standard cards"]);
   expect(rows[0]).toHaveTextContent("night · sky · orbit · space");
   expect(rows[1]).toHaveTextContent("Hard");
   // Only own cards can be edited, and cards of the other language are not shown.
