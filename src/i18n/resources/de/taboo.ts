@@ -183,7 +183,7 @@ export const tabooTexts = {
     },
     overview: "Rundenübersicht",
     upNext: "Als Nächstes dran",
-    allRoundsPlayed: "Alle vorgesehenen Runden sind gespielt.",
+    allRoundsPlayed: "Spiel zu Ende.",
     exhausted: "Es sind keine Karten mehr verfügbar.",
     title: "Laufende Runde",
     score: "Punkte: {{score}}",

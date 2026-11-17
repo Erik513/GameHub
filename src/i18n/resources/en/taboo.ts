@@ -183,7 +183,7 @@ export const tabooTexts = {
     },
     overview: "Round overview",
     upNext: "Up next",
-    allRoundsPlayed: "All scheduled rounds have been played.",
+    allRoundsPlayed: "Game finished.",
     exhausted: "No cards are left.",
     title: "Active round",
     score: "Score: {{score}}",

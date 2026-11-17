@@ -24,6 +24,8 @@ interface ScoreScreenProps {
   /** Stacks several actions below each other. */
   readonly stackedActions?: boolean;
   readonly standings?: {
+    /** The points of the turn that just ended, by team (see `Scoreboard`). */
+    readonly gains?: readonly (number | undefined)[];
     readonly scores: readonly number[];
     readonly teams: readonly { readonly id: string; readonly name: string }[];
     readonly title: string;
@@ -55,6 +57,7 @@ export function ScoreScreen({
   const board = standings && (
     <Scoreboard
       label={standings.title}
+      {...(standings.gains ? { gains: standings.gains } : {})}
       scores={standings.scores}
       teams={standings.teams}
       {...(standings.winnerIds ? { winnerIds: standings.winnerIds } : {})}

@@ -156,6 +156,13 @@ textarea {
   justify-self: end;
 }
 
+/* The points a team got in the turn that just ended, small and green next to its total. */
+.kit-scoreboard__gain {
+  color: var(--color-success);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
 .settings-fields {
   display: grid;
   gap: var(--space-5);
@@ -917,9 +924,9 @@ h1 {
 }
 
 .kit-turn-strip strong {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  line-height: 1.1;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
   overflow-wrap: anywhere;
 }
 
@@ -1008,9 +1015,17 @@ h1 {
 }
 
 .kit-scoreboard__score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
   font-size: 1.75rem;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+}
+
+/* No points in the turn: muted instead of green. */
+.kit-scoreboard__gain[data-zero] {
+  color: var(--color-ink-muted);
 }
 
 .settings-fields {

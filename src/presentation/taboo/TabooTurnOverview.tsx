@@ -54,6 +54,15 @@ export function TabooTurnOverview({
             : rounds * teamCount,
         };
 
+  // The points the team got in the turn that just ended (a corrected result counts).
+  const gains = ended
+    ? overview.configuration.teams.map((_, index) =>
+        index === ended.turn.teamIndex
+          ? ended.results.filter((result) => result.outcome === "correct").length
+          : undefined,
+      )
+    : undefined;
+
   return (
     <ScoreScreen
       actions={
@@ -94,6 +103,7 @@ export function TabooTurnOverview({
       {...(progress ? { progress } : {})}
       stackedActions={canFinishEarly}
       standings={{
+        ...(gains ? { gains } : {}),
         scores: overview.scores,
         tabLabel: t("tabooRound.standingsTab"),
         teams: overview.configuration.teams,

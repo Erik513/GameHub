@@ -49,3 +49,13 @@ it("shows no crown while nobody has points", () => {
   const rows = screen.getAllByRole("listitem");
   expect(rows.every((row) => row.querySelector(".kit-scoreboard__rank svg") === null)).toBe(true);
 });
+
+it("shows what a team got in the turn that just ended next to its total", () => {
+  render(
+    <Scoreboard gains={[2, undefined]} label="Scores" scores={[5, 1]} teams={teams.slice(0, 2)} />,
+  );
+  const rows = screen.getAllByRole("listitem");
+  expect(rows[0]!.querySelector(".kit-scoreboard__gain")).toHaveTextContent("+2");
+  expect(rowText(rows[0]!)).toBe("Owls: 5");
+  expect(rows[1]!.querySelector(".kit-scoreboard__gain")).toBeNull();
+});
