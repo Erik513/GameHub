@@ -126,6 +126,23 @@ async function audit(page: Page, screen: string): Promise<string[]> {
       }
     }
 
+    // A card with its forbidden words is never covered by the buttons and never cut off.
+    const turnCard = document.querySelector(".taboo-round__card");
+    if (turnCard && turnCard.scrollHeight > turnCard.clientHeight + 1) {
+      found.push({
+        kind: "card of the turn scrolls",
+        detail: `${turnCard.scrollHeight} > ${turnCard.clientHeight}`,
+      });
+    }
+    const outcomeBar = document.querySelector(".taboo-round__actions");
+    for (const word of document.querySelectorAll(".taboo-round__card li")) {
+      if (!visible(word) || !outcomeBar) continue;
+      const rect = word.getBoundingClientRect();
+      if (rect.bottom > outcomeBar.getBoundingClientRect().top + 1) {
+        found.push({ kind: "forbidden word covered by the buttons", detail: describe(word) });
+      }
+    }
+
     const targets = document.querySelectorAll(
       "button, a[href], summary, select, input[type=text], label.kit-choice, .taboo-review__item",
     );
