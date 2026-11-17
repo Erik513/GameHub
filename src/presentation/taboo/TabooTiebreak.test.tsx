@@ -72,8 +72,8 @@ describe("Taboo tiebreak", () => {
     // Team 1 solves three cards; a forbidden word only costs the time for a new card.
     const attempt = screen.getByRole("region", { name: "Tiebreak attempt" });
     expect(within(attempt).getByRole("timer")).toHaveTextContent("0.0");
-    // Like a turn of the classic mode: only the team and the time above the card.
-    expect(attempt).not.toHaveTextContent("Card 1/3");
+    // The bar shows the cards; the text under the team says which card of the three it is.
+    expect(attempt).toHaveTextContent("Card 1/3");
     advance(4000);
     const firstTerm = within(attempt).getByRole("heading").textContent;
     fireEvent.click(within(attempt).getByRole("button", { name: "Forbidden word" }));

@@ -162,6 +162,7 @@ export const tabooTexts = {
     resultCards: "{{solved}}/{{total}} Karten",
     pending: "noch offen",
     start: "Stechen starten",
+    cardOf: "Karte {{current}}/{{total}}",
     timer: "{{time}} Sekunden",
     endAttemptConfirm: "Nochmal tippen zum Beenden",
     endAttempt: "Versuch beenden",
