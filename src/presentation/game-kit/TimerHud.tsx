@@ -15,7 +15,7 @@ interface TimerHudProps {
   readonly title: string;
 }
 
-/** One block with title, meta line, time and a shrinking time bar. */
+/** A thin time bar at the very top (like the progress bar of the overview), below it a block with title, meta line and time. */
 export function TimerHud({
   fraction,
   meta,
@@ -28,18 +28,20 @@ export function TimerHud({
   const warn = remainingSeconds > 10 && remainingSeconds <= 20;
 
   return (
-    <div className="kit-hud">
-      <div className="kit-hud__row">
-        <div>
-          <p className="kit-hud__title">{title}</p>
-          <p className="kit-hud__meta">{meta}</p>
-        </div>
-        <p role="timer" data-low={low} data-warn={warn} aria-label={timerLabel}>
-          {time}
-        </p>
-      </div>
+    <div className="kit-hud-wrap">
       <div className="kit-hud__bar" aria-hidden="true" data-low={low} data-warn={warn}>
         <span style={{ transform: `scaleX(${Math.max(0, fraction)})` }} />
+      </div>
+      <div className="kit-hud">
+        <div className="kit-hud__row">
+          <div>
+            <p className="kit-hud__title">{title}</p>
+            <p className="kit-hud__meta">{meta}</p>
+          </div>
+          <p role="timer" data-low={low} data-warn={warn} aria-label={timerLabel}>
+            {time}
+          </p>
+        </div>
       </div>
     </div>
   );
