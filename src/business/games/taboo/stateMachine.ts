@@ -553,6 +553,19 @@ function transitionTiebreak(
   return { ...state, active: { ...active, solved, results, index: active.index + 1 } };
 }
 
+/**
+ * Whether ending the game now leads to a tiebreak: the tiebreak is switched on and two or three teams
+ * share the lead. Otherwise the final result follows.
+ */
+export function tiebreakFollows(
+  configuration: GameConfiguration,
+  scores: readonly number[],
+): boolean {
+  const highestScore = scores.reduce((highest, score) => Math.max(highest, score), 0);
+  const leaders = scores.filter((score) => score === highestScore).length;
+  return configuration.tiebreak === true && leaders >= 2 && leaders <= TIEBREAK_MAX_TEAMS;
+}
+
 export function countSkips(results: readonly TabooResult[]): number {
   return results.filter((result) => result.outcome === "skipped").length;
 }

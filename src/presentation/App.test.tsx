@@ -261,7 +261,8 @@ describe("App", () => {
       fireEvent.click(screen.getByRole("button", { name: "Start round" }));
       act(() => void vi.advanceTimersByTime(60000));
     }
-    fireEvent.click(screen.getByRole("button", { name: "Show final results" }));
+    // All teams are tied: the button leads to the tiebreak, not to the final result.
+    fireEvent.click(screen.getByRole("button", { name: "Start tiebreak" }));
     fireEvent.click(screen.getByRole("button", { name: "Start tiebreak" }));
 
     act(() => void vi.advanceTimersByTime(3000));

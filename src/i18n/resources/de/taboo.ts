@@ -184,6 +184,7 @@ export const tabooTexts = {
     },
     overview: "Rundenübersicht",
     upNext: "Als Nächstes dran",
+    tieNext: "Unentschieden! Als Nächstes das Stechen.",
     allRoundsPlayed: "Spiel zu Ende.",
     exhausted: "Es sind keine Karten mehr verfügbar.",
     title: "Laufende Runde",

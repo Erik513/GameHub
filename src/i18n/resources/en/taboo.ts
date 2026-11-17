@@ -184,6 +184,7 @@ export const tabooTexts = {
     },
     overview: "Round overview",
     upNext: "Up next",
+    tieNext: "A tie! The tiebreak is next.",
     allRoundsPlayed: "Game finished.",
     exhausted: "No cards are left.",
     title: "Active round",

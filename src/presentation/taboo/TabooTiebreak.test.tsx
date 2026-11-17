@@ -37,7 +37,10 @@ function reachTiebreak() {
   advance(60000);
   press("Start round");
   advance(60000);
-  press("Show final results");
+  // The teams are tied, so the game does not end here: the button leads to the tiebreak.
+  expect(screen.queryByRole("button", { name: "Show final results" })).not.toBeInTheDocument();
+  expect(screen.getByText("A tie! The tiebreak is next.")).toBeVisible();
+  press("Start tiebreak");
 }
 
 function resultRows() {

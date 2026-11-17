@@ -264,10 +264,10 @@ it("lets the group finish an unlimited game after every completed round", async 
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     act(() => void vi.advanceTimersByTime(60000));
     // After the last team of the round the group may stop or continue with round 2.
-    expect(screen.getByRole("button", { name: "Show final results" })).toBeVisible();
     expect(screen.getByText("Round 2")).toBeVisible();
-    // Both teams are still at zero, so finishing early leads into the tiebreak.
-    fireEvent.click(screen.getByRole("button", { name: "Show final results" }));
+    // Both teams are still at zero, so finishing early leads into the tiebreak: the button says so.
+    expect(screen.queryByRole("button", { name: "Show final results" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Start tiebreak" }));
     expect(screen.getByRole("region", { name: "Tiebreak" })).toBeVisible();
   } finally {
     vi.useRealTimers();

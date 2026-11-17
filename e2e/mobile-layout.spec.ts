@@ -326,7 +326,8 @@ test("the tiebreak screens fit a small phone in both languages", async ({ page }
       await press(t.startRound);
       await page.clock.fastForward(60_000);
     }
-    await press(t.show);
+    // A tie: the button leads to the tiebreak and says so.
+    await press(t.startTiebreak);
     await check("tiebreak overview");
     await press(t.startTiebreak);
     await check("tiebreak attempt");

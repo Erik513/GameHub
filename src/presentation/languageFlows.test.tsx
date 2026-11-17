@@ -149,7 +149,7 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
       press("tabooRound.start");
       advance(60000);
     }
-    press("tabooResult.show");
+    press("tabooTiebreak.start");
     checkScreen("tiebreak overview");
     press("tabooTiebreak.start");
     checkScreen("tiebreak attempt");

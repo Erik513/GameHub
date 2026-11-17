@@ -4,6 +4,7 @@ import {
   createTabooGame,
   getNextTabooTurn,
   reviseOutcome,
+  tiebreakFollows,
   transitionTaboo,
   type TabooEvent,
   type TabooState,
@@ -547,5 +548,25 @@ describe("reviseOutcome", () => {
     expect(reviseOutcome(result("skipped"), "correct")).toBeUndefined();
     expect(reviseOutcome(result("correct"), "skipped")).toBeUndefined();
     expect(reviseOutcome(result("correct"), "correct")).toBeUndefined();
+  });
+});
+
+describe("tiebreakFollows", () => {
+  const withTiebreak = { ...configuration, tiebreak: true };
+
+  it("tells whether ending the game leads to a tiebreak", () => {
+    // Two or three teams share the lead.
+    expect(tiebreakFollows(withTiebreak, [2, 2, 0])).toBe(true);
+    expect(tiebreakFollows(withTiebreak, [0, 0, 0])).toBe(true);
+    // A single leader wins at once.
+    expect(tiebreakFollows(withTiebreak, [3, 2, 2])).toBe(false);
+    // The tiebreak is off.
+    expect(tiebreakFollows(configuration, [2, 2, 0])).toBe(false);
+    expect(tiebreakFollows({ ...configuration, tiebreak: false }, [2, 2, 0])).toBe(false);
+  });
+
+  it("agrees with the state machine", () => {
+    const state = setup(withTiebreak);
+    expect(tiebreakFollows(state.configuration, state.scores)).toBe(true);
   });
 });

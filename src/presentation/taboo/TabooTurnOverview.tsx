@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { TabooOutcome } from "../../business/games/taboo/stateMachine";
+import { tiebreakFollows, type TabooOutcome } from "../../business/games/taboo/stateMachine";
 import { Button, Toast } from "../components";
 import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooRoundReview } from "./TabooRoundReview";
@@ -31,6 +31,10 @@ export function TabooTurnOverview({
   overview,
 }: TabooTurnOverviewProps) {
   const { t } = useTranslation();
+
+  // With a tie at the top the game goes on with the tiebreak, so the button must not promise the result.
+  const toTiebreak = tiebreakFollows(overview.configuration, overview.scores);
+  const finishLabel = t(toTiebreak ? "tabooTiebreak.start" : "tabooResult.show");
 
   const roundText =
     overview.turn &&
@@ -69,7 +73,7 @@ export function TabooTurnOverview({
         <>
           {canFinishEarly && (
             <Button variant="secondary" onClick={() => onFinish()}>
-              {t("tabooResult.show")}
+              {finishLabel}
             </Button>
           )}
           {overview.turn ? (
@@ -84,7 +88,7 @@ export function TabooTurnOverview({
             </>
           ) : (
             <Button variant="success" onClick={() => onFinish()}>
-              {t("tabooResult.show")}
+              {finishLabel}
             </Button>
           )}
         </>
@@ -97,7 +101,9 @@ export function TabooTurnOverview({
               {t("tabooSetup.noExtraCards")}
             </p>
           )}
-          {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
+          {!overview.turn && (
+            <p>{t(toTiebreak ? "tabooRound.tieNext" : "tabooRound.allRoundsPlayed")}</p>
+          )}
         </>
       }
       {...(progress ? { progress } : {})}
