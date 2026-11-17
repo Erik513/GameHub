@@ -43,6 +43,28 @@ describe("raceDifficultyMix", () => {
     expect(raceDifficultyMix(target)).toEqual(mix);
   });
 
+  it("follows the chosen difficulties: only easy gives only easy cards, more difficulties are mixed", () => {
+    // The player chooses the difficulties like in the classic mode; the system shares the cards.
+    expect(raceDifficultyMix(3, ["easy"])).toEqual({ easy: 3, medium: 0, hard: 0 });
+    // Easy and medium with 3 cards: two easy ones, the last one medium.
+    expect(raceDifficultyMix(3, ["easy", "medium"])).toEqual({ easy: 2, medium: 1, hard: 0 });
+    expect(raceDifficultyMix(3, ["easy", "medium", "hard"])).toEqual({
+      easy: 1,
+      medium: 1,
+      hard: 1,
+    });
+    expect(raceDifficultyMix(5, ["easy", "medium"])).toEqual({ easy: 3, medium: 2, hard: 0 });
+    expect(raceDifficultyMix(7, ["easy", "medium", "hard"])).toEqual({
+      easy: 3,
+      medium: 2,
+      hard: 2,
+    });
+    // The run itself has exactly these cards, in this order: easy first.
+    const cards =
+      pickRaceCards(pool(10), 3, new Set(), new Set(), Math.random, ["easy", "medium"]) ?? [];
+    expect(cards.map((item) => item.difficulty)).toEqual(["easy", "easy", "medium"]);
+  });
+
   it("shares the cards only among the allowed difficulties", () => {
     expect(raceDifficultyMix(5, ["hard"])).toEqual({ easy: 0, medium: 0, hard: 5 });
     expect(raceDifficultyMix(5, ["medium", "hard"])).toEqual({ easy: 0, medium: 3, hard: 2 });
