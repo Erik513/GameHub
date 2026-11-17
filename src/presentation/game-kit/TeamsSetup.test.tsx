@@ -305,6 +305,26 @@ it.each(["en", "de"] as const)(
   },
 );
 
+it.each([
+  ["en", "Remove player"],
+  ["de", "Spieler entfernen"],
+] as const)("removes a player from the choice of his team in %s", async (language, removeLabel) => {
+  const { latest, user, text } = await setup(language);
+  await user.type(screen.getByLabelText(text.add), "Anna, Ben");
+  await user.click(screen.getByRole("button", { name: text.addButton }));
+  await user.click(screen.getByRole("button", { name: "Anna" }));
+  const dialog = screen.getByRole("dialog", { name: text.pick("Anna") });
+  // The red button is the last choice, below the teams and "No team".
+  const buttons = within(dialog).getAllByRole("button");
+  expect(buttons.at(-1)).toHaveAccessibleName(removeLabel);
+  expect(buttons.at(-1)).toHaveClass("button--danger");
+  await user.click(within(dialog).getByRole("button", { name: removeLabel }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(latest.value.playersText).toBe("Ben");
+  expect(screen.queryByRole("button", { name: "Anna" })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Ben" })).toBeVisible();
+});
+
 it("puts a player into a team with a tap and the keyboard, without dragging", async () => {
   const { latest, user, text } = await setup("en");
   await user.type(screen.getByRole("textbox", { name: "Name of team 2" }), "Blue");

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { removePlayerFromText } from "../../business/shared/playerList";
 import { parsePlayers, splitIntoTeams } from "../../business/shared/players";
 import {
   clampTeamCount,
@@ -79,6 +80,16 @@ export function TeamsSetup({
 
   function choose(player: string, target: DropTarget) {
     place(player, target);
+    setPicking(undefined);
+  }
+
+  /** Takes the player out of the list (and so out of his team). */
+  function remove(player: string) {
+    const playersText = removePlayerFromText(value.playersText, player);
+    const assignment = Object.fromEntries(
+      Object.entries(value.assignment).filter(([name]) => name !== player),
+    );
+    onChange({ ...value, assignment, playersText });
     setPicking(undefined);
   }
 
@@ -183,6 +194,9 @@ export function TeamsSetup({
               variant={teamOf(picking) === undefined ? "primary" : "secondary"}
             >
               {t("kitPlayers.noTeam")}
+            </Button>
+            <Button className="kit-pick__remove" onClick={() => remove(picking)} variant="danger">
+              {t("kitPlayers.removePlayer")}
             </Button>
           </div>
         )}

@@ -35,6 +35,7 @@ export const kitTexts = {
     addPlaceholder: "Name des Spielers",
     addButton: "Hinzufügen",
     removeLabel: "{{player}} entfernen",
+    removePlayer: "Spieler entfernen",
     noTeam: "Ohne Team",
     count: "Spieler: {{count}}",
   },
