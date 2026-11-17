@@ -8,7 +8,7 @@ import {
   type TabooOutcome,
   type TiebreakActive,
 } from "../../business/games/taboo/stateMachine";
-import { Button } from "../components";
+import { Button, ConfirmButton } from "../components";
 import { TimerHud, useStopwatch } from "../game-kit";
 import { formatSeconds } from "./formatTime";
 
@@ -96,9 +96,11 @@ export function TabooTiebreakRound({
           <Button variant="success" onClick={onResume}>
             {t("navigation.resume")}
           </Button>
-          <Button
-            variant="secondary"
-            onClick={() =>
+          {/* Ending the attempt cannot be undone, so it needs a second tap like ending a round. */}
+          <ConfirmButton
+            armedLabel={t("tabooTiebreak.endAttemptConfirm")}
+            idleLabel={t("tabooTiebreak.endAttempt")}
+            onConfirm={() =>
               dispatch({
                 type: "endTiebreakAttempt",
                 elapsedMs: totalMs,
@@ -106,7 +108,7 @@ export function TabooTiebreakRound({
             }
           >
             {t("tabooTiebreak.endAttempt")}
-          </Button>
+          </ConfirmButton>
         </div>
       ) : (
         <div

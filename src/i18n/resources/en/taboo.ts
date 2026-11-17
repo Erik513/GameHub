@@ -163,6 +163,7 @@ export const tabooTexts = {
     start: "Start tiebreak",
     cardOf: "Card {{current}}/{{total}}",
     timer: "{{time}} seconds",
+    endAttemptConfirm: "Tap again to end",
     endAttempt: "End attempt",
     noCards: "Not enough cards are available for the tiebreak.",
   },

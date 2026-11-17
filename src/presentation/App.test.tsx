@@ -277,6 +277,9 @@ describe("App", () => {
     // Ending the attempt from the pause screen records the solved cards and the time.
     fireEvent.click(screen.getByRole("button", { name: "Pause" }));
     fireEvent.click(screen.getByRole("button", { name: "End attempt" }));
+    // The first tap only asks again; the second one ends the attempt.
+    act(() => void vi.advanceTimersByTime(600));
+    fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
     const results = within(screen.getByRole("list", { name: "Tiebreak results" })).getAllByRole(
       "listitem",
     );

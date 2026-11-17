@@ -163,6 +163,7 @@ export const tabooTexts = {
     start: "Stechen starten",
     cardOf: "Karte {{current}}/{{total}}",
     timer: "{{time}} Sekunden",
+    endAttemptConfirm: "Nochmal tippen zum Beenden",
     endAttempt: "Versuch beenden",
     noCards: "Für das Stechen sind nicht genug Karten verfügbar.",
   },

@@ -18,6 +18,7 @@ const labels = {
     show: "Show final results",
     startTiebreak: "Start tiebreak",
     endAttempt: "End attempt",
+    endAttemptConfirm: "Tap again to end",
     interfaceLanguage: "Interface language",
     players: "Players",
     addPlayer: "Add player",
@@ -47,6 +48,7 @@ const labels = {
     show: "Endergebnis anzeigen",
     startTiebreak: "Stechen starten",
     endAttempt: "Versuch beenden",
+    endAttemptConfirm: "Nochmal tippen zum Beenden",
     interfaceLanguage: "Oberflächensprache",
     players: "Spieler",
     addPlayer: "Spieler hinzufügen",
@@ -336,6 +338,9 @@ test("the tiebreak screens fit a small phone in both languages", async ({ page }
     await press(t.startTiebreak);
     await press(t.pause);
     await press(t.endAttempt);
+    // A second tap confirms; it counts only after a short moment.
+    await page.clock.fastForward(500);
+    await press(t.endAttemptConfirm);
     await check("final result after the tiebreak");
   }
   expect(problems, problems.join("\n")).toEqual([]);
