@@ -39,7 +39,7 @@ interface ChoiceGroupProps {
   readonly value?: string;
 }
 
-/** Radio group (or checkbox group with `multiple`) rendered as one joined row of equally wide buttons; the value is read from the surrounding form. */
+/** Radio group (or checkbox group with `multiple`) rendered as one joined row of equally wide buttons (a single choice) or as separate buttons (several choices at once); the value is read from the surrounding form. */
 export function ChoiceGroup({
   hideLegend = false,
   info,
@@ -80,7 +80,7 @@ export function ChoiceGroup({
       <legend className={hideLegend ? "visually-hidden" : undefined}>{legend}</legend>
       {info && <InfoButton {...info} />}
       <div
-        className="kit-choice-grid kit-choice-grid--equal"
+        className={`kit-choice-grid kit-choice-grid--equal${multiple ? " kit-choice-grid--separate" : ""}`}
         style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
       >
         {options.map(({ value, label, ariaLabel, hint, tone, info: optionInfo }) => {
