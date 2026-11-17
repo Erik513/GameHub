@@ -71,7 +71,7 @@ it.each([
     expect(rowText(standingsRow(0))).toBe(correct ? "Team 1: 1" : "Team 1: 0");
     fireEvent.click(
       screen.getByRole("button", {
-        name: correct ? "Play again with the same setup" : "Set up a new game",
+        name: correct ? "Play again" : "Back to the main menu",
       }),
     );
     if (correct) {

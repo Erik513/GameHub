@@ -111,7 +111,7 @@ describe("Taboo tiebreak", () => {
     expect(screen.getByRole("tab", { name: "Tiebreak" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 1");
     expect(resultRows()).toEqual(["Team 1: 3/3 cards · 10.0 s", "Team 2: 1/3 cards · 90.0 s"]);
-    press("Play again with the same setup");
+    press("Play again");
     // The same settings lead to the line-up, the game starts again from there.
     press("Start game");
     expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
@@ -199,7 +199,7 @@ describe("Taboo tiebreak", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Not enough cards are available");
     expect(screen.getByRole("button", { name: "Start tiebreak" })).toBeDisabled();
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
-    press("Set up a new game");
+    press("Back to the main menu");
     expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
   });
 

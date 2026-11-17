@@ -111,8 +111,8 @@ export const tabooTexts = {
     title: "Game over",
     winner: "Winner",
     tie: "Shared win",
-    sameSetup: "Play again with the same setup",
-    newSetup: "Set up a new game",
+    sameSetup: "Play again",
+    newSetup: "Back to the main menu",
     show: "Show final results",
   },
   tabooLineup: {

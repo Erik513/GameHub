@@ -27,6 +27,7 @@ export function TabooResultView({ finished, onNewSetup, onSameSetup }: TabooResu
         </>
       }
       ariaLabel={t("tabooResult.title")}
+      celebrate
       eyebrow={t("tabooResult.title")}
       {...(finished.tiebreak
         ? {

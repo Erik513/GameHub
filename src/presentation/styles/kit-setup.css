@@ -258,10 +258,12 @@
 }
 
 /* The winner block of the final screen. */
+/* The winner block has the green frame; the rows of the list below do not. */
 .kit-winner {
   display: grid;
   gap: var(--space-1);
   padding: var(--space-4);
+  border: 1px solid var(--color-success);
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);
 }
@@ -1030,4 +1032,48 @@
   border-radius: inherit;
   background: var(--color-accent);
   transition: width 200ms ease;
+}
+
+/*
+ * Confetti: pieces fall from the top edge, drift to the side and spin. They only decorate: no taps, no
+ * layout and no scrollbar (the shower is clipped to the screen).
+ */
+.kit-confetti {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.kit-confetti__piece {
+  position: absolute;
+  top: -2rem;
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: kit-confetti-fall;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+}
+
+@keyframes kit-confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--confetti-drift), 110vh, 0) rotate(var(--confetti-spin));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kit-confetti {
+    display: none;
+  }
 }

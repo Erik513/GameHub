@@ -172,6 +172,7 @@ export function TabooRaceGame({
           </>
         }
         ariaLabel={t("tabooResult.title")}
+        celebrate
         eyebrow={t("tabooResult.title")}
         stackedActions
         winner={{

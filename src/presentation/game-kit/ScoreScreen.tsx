@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Confetti } from "./Confetti";
 import { Scoreboard } from "./Scoreboard";
 import { SetupTabs } from "./SetupTabs";
 import { StartBar } from "./StartBar";
@@ -10,6 +11,8 @@ interface ScoreScreenProps {
   readonly ariaLabel: string;
   /** More content below the standings, for example a message or the results of a tiebreak. */
   readonly children?: ReactNode;
+  /** A shower of confetti over the screen, for the final screen of a game that has a winner. */
+  readonly celebrate?: boolean;
   /** A small heading above everything, for example "Round 2 of 3". */
   readonly eyebrow?: string;
   /**
@@ -49,6 +52,7 @@ interface ScoreScreenProps {
 export function ScoreScreen({
   actions,
   ariaLabel,
+  celebrate = false,
   children,
   eyebrow,
   extraTab,
@@ -72,6 +76,7 @@ export function ScoreScreen({
 
   return (
     <section aria-label={ariaLabel} className="kit-score-screen kit-onepage">
+      {celebrate && <Confetti />}
       {progress && (
         <div
           aria-label={eyebrow ?? ariaLabel}

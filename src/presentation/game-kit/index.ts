@@ -1,4 +1,5 @@
 export { ActionRow } from "./ActionRow";
+export { Confetti } from "./Confetti";
 export { ChoiceGroup, type ChoiceOption } from "./ChoiceGroup";
 export { InfoButton, type InfoContent } from "./InfoButton";
 export { LineupScreen } from "./LineupScreen";

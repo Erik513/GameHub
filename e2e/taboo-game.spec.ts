@@ -15,7 +15,7 @@ const cases = [
     next: "Team 2",
     show: "Show final results",
     winner: "Winner: Team 1",
-    restart: "Play again with the same setup",
+    restart: "Play again",
   },
   {
     language: "de",
@@ -31,7 +31,7 @@ const cases = [
     next: "Team 2",
     show: "Endergebnis anzeigen",
     winner: "Gemeinsam gewonnen: Team 1, Team 2",
-    restart: "Mit gleicher Konfiguration neu spielen",
+    restart: "Erneut spielen",
   },
 ] as const;
 

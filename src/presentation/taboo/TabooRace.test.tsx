@@ -26,7 +26,7 @@ const texts = {
     pending: "still to play",
     show: "Show final results",
     reviewTab: /^Last run/,
-    newSetup: "Set up a new game",
+    newSetup: "Back to the main menu",
   },
   de: {
     mode: "Spielmodus",
@@ -47,7 +47,7 @@ const texts = {
     pending: "noch offen",
     show: "Endergebnis anzeigen",
     reviewTab: /^Letzter Lauf/,
-    newSetup: "Neue Partie konfigurieren",
+    newSetup: "Zurück zum Hauptmenü",
   },
 } as const;
 

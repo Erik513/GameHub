@@ -111,8 +111,8 @@ export const tabooTexts = {
     title: "Spiel beendet",
     winner: "Gewinner",
     tie: "Gemeinsam gewonnen",
-    sameSetup: "Mit gleicher Konfiguration neu spielen",
-    newSetup: "Neue Partie konfigurieren",
+    sameSetup: "Erneut spielen",
+    newSetup: "Zurück zum Hauptmenü",
     show: "Endergebnis anzeigen",
   },
   tabooLineup: {
