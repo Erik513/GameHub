@@ -218,7 +218,7 @@ describe("correcting a finished run of the mode Auf Zeit", () => {
   }
 
   const revise = (state: RaceState, teamIndex: number, cardId: string, outcome: Outcome) =>
-    transitionRace(state, { type: "reviseRunResult", teamIndex, cardId, outcome });
+    transitionRace(state, { type: "reviseRunResult", teamIndex, round: 1, cardId, outcome });
 
   it("records every card of a run and how many counted", () => {
     expect(playRace([9000, 12000])).toMatchObject({

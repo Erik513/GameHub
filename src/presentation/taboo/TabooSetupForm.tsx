@@ -2,7 +2,12 @@ import { useState, type FormEvent, type ReactNode, type Ref } from "react";
 import { useTranslation } from "react-i18next";
 import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
-import { defaultRaceTarget, raceTargetChoices } from "../../business/games/taboo/race";
+import {
+  defaultRaceRounds,
+  defaultRaceTarget,
+  raceRoundChoices,
+  raceTargetChoices,
+} from "../../business/games/taboo/race";
 import type { SupportedLanguage } from "../../i18n";
 import { ChoiceGroup, SetupScreen, SetupTabs, TabPane } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
@@ -175,6 +180,15 @@ export function TabooSetupForm({
                 {/* The settings of both modes stay in the form and are only hidden, so a choice is kept when
             the mode is changed and changed back. */}
                 <div className="taboo-mode-settings" hidden={mode !== "race"}>
+                  <ChoiceGroup
+                    legend={t("tabooSetup.rounds")}
+                    name="raceRounds"
+                    initial={String(defaultRaceRounds)}
+                    options={raceRoundChoices.map((value) => ({
+                      value: String(value),
+                      label: String(value),
+                    }))}
+                  />
                   <ChoiceGroup
                     info={info("raceTarget", t("tabooSetup.raceTarget"))}
                     legend={t("tabooSetup.raceTarget")}

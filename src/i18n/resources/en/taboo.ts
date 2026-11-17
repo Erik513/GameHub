@@ -33,8 +33,7 @@ export const tabooTexts = {
     turnEnd: "When time is up, it is the next team's turn.",
     modesTitle: "Game modes",
     classicText: "The teams take turns playing rounds. The most points win.",
-    raceText:
-      "Same number of cards for every team, the shortest time wins. A forbidden word costs time.",
+    raceText: "Each round every team plays a run, easy cards first. The shortest total time wins.",
     settingsTitle: "Settings",
     settingsRounds: "how many rounds each team plays.",
     settingsDuration: "how long a turn lasts.",
@@ -125,7 +124,8 @@ export const tabooTexts = {
   tabooMode: {
     tiebreakRule: "On a tie there is a <ref>tiebreak</ref>.",
     classicInfo: "Several rounds with a timer. The most points win.",
-    raceInfo: "Every team solves the same number of cards. The shortest time wins.",
+    raceInfo:
+      "In every round each team solves the same number of cards. The shortest total time wins.",
     legend: "Game mode",
     classic: "Classic",
     race: "Race",
@@ -133,8 +133,9 @@ export const tabooTexts = {
   tabooRace: {
     overview: "Race overview",
     run: "Race run",
-    runOf: "Run {{current}}/{{total}}",
     times: "Times",
+    totalTimes: "Total times",
+    lastRun: "Last run {{time}} s",
     pending: "still to play",
     time: "{{time}} s",
     partialCards: "{{solved}}/{{total}} cards",
@@ -144,6 +145,7 @@ export const tabooTexts = {
     restartRunConfirm: "Tap again to restart",
     noCards: "Not enough cards are available for the next run.",
     finalTimes: "Final times",
+    finalTotalTimes: "Final total times",
   },
   tabooReview: {
     lastRun: "Last run ({{count}})",
@@ -211,7 +213,7 @@ export const tabooTexts = {
     infoLabel: "Info about {{setting}}",
     info: {
       raceTarget:
-        "How many cards every team solves.\nEvery team gets the same mix of difficulties.",
+        "How many cards every team solves per round.\nEasy cards first, hard ones last; the same mix for every team.",
       cardSource:
         "Local only: the cards that come with the app, also offline.\nAI only: the local AI makes the cards.\nBoth: mixed.",
       tiebreak:
@@ -221,7 +223,7 @@ export const tabooTexts = {
     },
     raceCardShortage:
       "Not enough {{difficulty}} cards: {{available}} available, {{required}} needed so that every team gets the same mix.",
-    raceTarget: "Cards per team",
+    raceTarget: "Cards per team per round",
     cardsSection: "Categories",
     cardSource: "Card source",
     cardSources: { local: "Local only", ai: "AI only", both: "Both" },

@@ -2,8 +2,11 @@ import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Difficulty, TabooCard } from "../../business/games/taboo/model";
 import {
-  getRaceNextTeam,
-  rankRaceAttempts,
+  comparableRaceTotals,
+  getRaceTurn,
+  racePlayedCardIds,
+  raceRounds,
+  raceTotals,
   transitionRace,
   type RaceEvent,
   type RaceState,
@@ -37,7 +40,8 @@ interface TabooRaceGameProps {
 
 /**
  * The whole game of the mode "Auf Zeit": overview before every run, the run with the stopwatch and
- * the final times. The rules are in `race.ts`; this view only drives them with the clock.
+ * the final total times. Every round each team plays one run. The rules are in `race.ts`; this view
+ * only drives them with the clock.
  */
 export function TabooRaceGame({
   difficulties,
@@ -83,7 +87,7 @@ export function TabooRaceGame({
       pool,
       configuration.target,
       new Set(state.usedCardIds),
-      new Set(),
+      racePlayedCardIds(state),
       Math.random,
       difficulties,
     );
@@ -101,7 +105,8 @@ export function TabooRaceGame({
   const onTable = running?.active.cards[running.active.solved];
   const canReplace =
     onTable === undefined ||
-    pickRaceReplacement(pool, onTable, new Set(state.usedCardIds), new Set()) !== undefined;
+    pickRaceReplacement(pool, onTable, new Set(state.usedCardIds), racePlayedCardIds(state)) !==
+      undefined;
 
   if (running && clock) {
     return (
@@ -113,7 +118,7 @@ export function TabooRaceGame({
         pausedAt={clock.pausedAt}
         pausedMs={clock.pausedMs}
         pickReplacement={(card) =>
-          pickRaceReplacement(pool, card, new Set(state.usedCardIds), new Set())
+          pickRaceReplacement(pool, card, new Set(state.usedCardIds), racePlayedCardIds(state))
         }
         startedAt={clock.startedAt}
         target={configuration.target}
@@ -122,7 +127,6 @@ export function TabooRaceGame({
     );
   }
 
-  // A wrong result can be fixed after every run, also after the last one, before the final screen.
   // Only the run that was just played can be corrected (also the last one, before the final screen).
   const lastAttempt = state.attempts.at(-1);
   const reviewTab = lastAttempt
@@ -130,14 +134,20 @@ export function TabooRaceGame({
         content: (
           <TabooAttemptReviews
             attempt={{
-              id: String(lastAttempt.teamIndex),
+              id: `${lastAttempt.round}-${lastAttempt.teamIndex}`,
               maxCorrect: configuration.target,
               results: lastAttempt.results,
               teamIndex: lastAttempt.teamIndex,
               teamName: teamName(lastAttempt.teamIndex),
             }}
             onRevise={(teamIndex, cardId, outcome) =>
-              dispatch({ type: "reviseRunResult", teamIndex, cardId, outcome })
+              dispatch({
+                type: "reviseRunResult",
+                teamIndex,
+                round: lastAttempt.round,
+                cardId,
+                outcome,
+              })
             }
             titleKey="tabooReview.runTitle"
           />
@@ -146,19 +156,30 @@ export function TabooRaceGame({
       }
     : undefined;
 
-  if (state.status === "finished" && resultShown) {
-    const winners = state.winnerIds;
-    const rows: RaceRow[] = rankRaceAttempts(state.attempts).map((attempt) => {
-      const team = configuration.teams[attempt.teamIndex];
+  const rounds = raceRounds(configuration);
+  const totals = raceTotals(configuration, state.attempts);
+  const ownRows = (ranked: ReadonlySet<number> | undefined): RaceRow[] =>
+    configuration.teams.map((team, index) => {
+      const total = totals[index];
+      if (!total || total.runs === 0) return { id: team.id, name: team.name };
+      const lastRun = state.attempts.filter((attempt) => attempt.teamIndex === index).at(-1);
       return {
-        id: team?.id ?? String(attempt.teamIndex),
-        name: team?.name ?? "",
-        timeMs: attempt.timeMs,
-        solved: attempt.solved,
-        total: configuration.target,
-        winner: team ? winners.includes(team.id) : false,
+        id: team.id,
+        name: team.name,
+        timeMs: total.tenths * 100,
+        solved: total.solved,
+        total: configuration.target * total.runs,
+        ...(ranked ? { ranked: ranked.has(index) } : {}),
+        // From the second run on the row also tells the time of the latest run.
+        ...(total.runs > 1 && lastRun ? { lastTimeMs: lastRun.timeMs } : {}),
       };
     });
+
+  if (state.status === "finished" && resultShown) {
+    const winners = state.winnerIds;
+    // The list puts the best total on top by itself.
+    const rows = ownRows(undefined).map((row) => ({ ...row, winner: winners.includes(row.id) }));
+    const finalTitle = t(rounds > 1 ? "tabooRace.finalTotalTimes" : "tabooRace.finalTimes");
     return (
       <ScoreScreen
         actions={
@@ -183,23 +204,18 @@ export function TabooRaceGame({
             .join(", "),
         }}
       >
-        <h2>{t("tabooRace.finalTimes")}</h2>
-        <TabooRaceResults label={t("tabooRace.finalTimes")} rows={rows} />
+        <h2>{finalTitle}</h2>
+        <TabooRaceResults label={finalTitle} rows={rows} />
       </ScoreScreen>
     );
   }
 
-  const next = state.status === "finished" ? undefined : getRaceNextTeam(state);
-  const rows: RaceRow[] = configuration.teams.map((team, index) => {
-    const attempt = state.attempts.find((candidate) => candidate.teamIndex === index);
-    return {
-      id: team.id,
-      name: team.name,
-      ...(attempt
-        ? { timeMs: attempt.timeMs, solved: attempt.solved, total: configuration.target }
-        : {}),
-    };
-  });
+  const turn = getRaceTurn(state);
+  // In the middle of a round only the teams that played the same number of runs are ranked.
+  const comparable = new Set(comparableRaceTotals(totals).map((total) => total.teamIndex));
+  const rows = ownRows(comparable);
+  const timesLabel = t(rounds > 1 ? "tabooRace.totalTimes" : "tabooRace.times");
+  const next = turn?.teamIndex;
 
   return (
     <ScoreScreen
@@ -223,18 +239,15 @@ export function TabooRaceGame({
       // Like the round overview of the classic mode: a thin progress bar (runs played of all runs)
       // and "Run n/m" above the box.
       eyebrow={
-        next === undefined
+        turn === undefined
           ? t("tabooRound.allRoundsPlayed")
-          : t("tabooRace.runOf", {
-              current: state.attempts.length + 1,
-              total: configuration.teams.length,
-            })
+          : t("tabooRound.roundOf", { round: turn.round, total: rounds })
       }
-      progress={{ max: configuration.teams.length, value: state.attempts.length }}
-      {...(reviewTab ? { extraTab: reviewTab, tabLabel: t("tabooRace.times") } : {})}
+      progress={{ max: configuration.teams.length * rounds, value: state.attempts.length }}
+      {...(reviewTab ? { extraTab: reviewTab, tabLabel: timesLabel } : {})}
     >
-      {!reviewTab && <h2>{t("tabooRace.times")}</h2>}
-      <TabooRaceResults label={t("tabooRace.times")} rows={rows} />
+      {!reviewTab && <h2>{timesLabel}</h2>}
+      <TabooRaceResults label={timesLabel} rows={rows} />
       {noCards && (
         <Toast key={noCards.id} title={t("tabooRound.empty")} tone="error">
           {t("tabooRace.noCards")}

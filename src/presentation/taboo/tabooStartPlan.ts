@@ -80,7 +80,7 @@ export function planTabooStart({
       : undefined;
   const race =
     settings.mode === "race"
-      ? createRaceGame({ teams, cardLanguage, target: raceTarget })
+      ? createRaceGame({ teams, cardLanguage, rounds: settings.raceRounds, target: raceTarget })
       : undefined;
   const checked = classic ?? race;
   if (!checked?.valid) return { valid: false, issues: checked?.issues ?? [] };

@@ -4,6 +4,7 @@ import type {
   GameConfiguration,
   ValidationIssue,
 } from "../../business/games/taboo/model";
+import { defaultRaceRounds } from "../../business/games/taboo/race";
 import {
   TIEBREAK_CARD_COUNT,
   type createTabooGame,
@@ -117,6 +118,8 @@ export interface TabooSettings {
   readonly difficulties: readonly Difficulty[];
   readonly duration: number;
   readonly mode: TabooMode;
+  /** Rounds of the mode "Auf Zeit": every team plays one run per round. */
+  readonly raceRounds: number;
   readonly raceTarget: number;
   readonly rounds: number | "unlimited";
   /** Skips per round; undefined means as many as you like. */
@@ -132,6 +135,7 @@ export function readTabooSettings(
   const source = data.get("cardSource");
   const rounds = data.get("rounds");
   const skips = data.get("skips");
+  const raceRounds = Number(data.get("raceRounds"));
   return {
     cardSource: options.hasGenerators
       ? (cardSources.find((candidate) => candidate === source) ?? "both")
@@ -144,6 +148,9 @@ export function readTabooSettings(
     ),
     duration: Number(data.get("duration")),
     mode: options.mode,
+    // A missing or broken value is the default, so the setup never starts a game without rounds.
+    raceRounds:
+      Number.isSafeInteger(raceRounds) && raceRounds >= 1 ? raceRounds : defaultRaceRounds,
     raceTarget: Number(data.get("raceTarget")),
     rounds: rounds === "unlimited" ? "unlimited" : Number(rounds),
     skips: skips === "unlimited" || skips === null ? undefined : Number(skips),

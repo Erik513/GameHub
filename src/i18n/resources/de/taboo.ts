@@ -34,7 +34,7 @@ export const tabooTexts = {
     modesTitle: "Spielmodi",
     classicText: "Die Teams spielen abwechselnd Runden. Die meisten Punkte gewinnen.",
     raceText:
-      "Jedes Team löst gleich viele Karten, die kürzeste Zeit gewinnt. Ein verbotenes Wort kostet Zeit.",
+      "Jedes Team spielt pro Runde einen Lauf, leichte Karten zuerst. Kürzeste Gesamtzeit gewinnt.",
     settingsTitle: "Einstellungen",
     settingsRounds: "wie oft jedes Team dran ist.",
     settingsDuration: "so lange dauert ein Zug.",
@@ -125,7 +125,8 @@ export const tabooTexts = {
   tabooMode: {
     tiebreakRule: "Bei Unentschieden gibt es ein <ref>Stechen</ref>.",
     classicInfo: "Mehrere Runden mit Zeit. Die meisten Punkte gewinnen.",
-    raceInfo: "Jedes Team löst gleich viele Karten. Die kürzeste Zeit gewinnt.",
+    raceInfo:
+      "In jeder Runde löst jedes Team gleich viele Karten. Die kürzeste Gesamtzeit gewinnt.",
     legend: "Spielmodus",
     classic: "Klassisch",
     race: "Auf Zeit",
@@ -133,8 +134,9 @@ export const tabooTexts = {
   tabooRace: {
     overview: "Übersicht Auf Zeit",
     run: "Lauf Auf Zeit",
-    runOf: "Lauf {{current}}/{{total}}",
     times: "Zeiten",
+    totalTimes: "Gesamtzeiten",
+    lastRun: "Letzter Lauf {{time}} s",
     pending: "noch offen",
     time: "{{time}} s",
     partialCards: "{{solved}}/{{total}} Karten",
@@ -144,6 +146,7 @@ export const tabooTexts = {
     restartRunConfirm: "Nochmal tippen zum Neustarten",
     noCards: "Für den nächsten Lauf sind nicht genug Karten da.",
     finalTimes: "Endzeiten",
+    finalTotalTimes: "Gesamtzeiten am Ende",
   },
   tabooReview: {
     lastRun: "Letzter Lauf ({{count}})",
@@ -211,7 +214,7 @@ export const tabooTexts = {
     infoLabel: "Info zu {{setting}}",
     info: {
       raceTarget:
-        "So viele Karten löst jedes Team.\nJedes Team bekommt dieselbe Mischung der Schwierigkeiten.",
+        "So viele Karten löst jedes Team pro Runde.\nLeichte zuerst, schwere zuletzt; gleiche Mischung für alle.",
       cardSource:
         "Nur lokal: Karten aus der App, auch ohne Internet.\nNur KI: Die lokale KI macht die Karten.\nBeides: gemischt.",
       tiebreak:
@@ -221,7 +224,7 @@ export const tabooTexts = {
     },
     raceCardShortage:
       "Zu wenige Karten der Schwierigkeit {{difficulty}}: {{available}} vorhanden, {{required}} nötig, damit jedes Team dieselbe Mischung bekommt.",
-    raceTarget: "Karten pro Team",
+    raceTarget: "Karten pro Team pro Runde",
     cardsSection: "Kategorien",
     cardSource: "Kartenquelle",
     cardSources: { local: "Nur lokal", ai: "Nur KI", both: "Beides" },

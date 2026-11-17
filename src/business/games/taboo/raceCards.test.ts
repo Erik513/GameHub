@@ -90,7 +90,17 @@ describe("pickRaceCards", () => {
     expect(pickRaceCards(pool(1), 5, new Set(), new Set())).toBeUndefined();
   });
 
-  it("shuffles the order with the given random source", () => {
+  it("puts the cards in order from easy to hard, so the hard ones come last", () => {
+    for (const random of [() => 0, () => 0.5, () => 0.99, Math.random]) {
+      const cards = pickRaceCards(pool(10), 10, new Set(), new Set(), random) ?? [];
+      const rank = { easy: 0, medium: 1, hard: 2 } as const;
+      const order = cards.map((item) => rank[item.difficulty]);
+      expect(order).toEqual([...order].sort((x, y) => x - y));
+      expect(mixOf(cards)).toEqual([4, 3, 3]);
+    }
+  });
+
+  it("picks the same cards with the same random source", () => {
     const fixed = () => 0;
     const first = pickRaceCards(pool(10), 10, new Set(), new Set(), fixed);
     const again = pickRaceCards(pool(10), 10, new Set(), new Set(), fixed);

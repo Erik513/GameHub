@@ -1,4 +1,3 @@
-import { shuffle } from "../../shared/shuffle";
 import type { Difficulty, TabooCard } from "./model";
 
 /** The difficulties in the order the remainder of a split is handed out. */
@@ -45,8 +44,9 @@ function pickOfDifficulty(
 }
 
 /**
- * Picks the cards of one run: exactly the shared difficulty mix, never repeating a card. Returns
- * nothing when a difficulty has too few cards; the order of the run is shuffled.
+ * Picks the cards of one run: exactly the shared difficulty mix, never repeating a card. The cards
+ * come from easy to hard, so the hard ones are always at the end of the run; inside a difficulty the
+ * order is random. Returns nothing when a difficulty has too few cards.
  */
 export function pickRaceCards(
   pool: readonly TabooCard[],
@@ -67,7 +67,7 @@ export function pickRaceCards(
       cards.push(card);
     }
   }
-  return shuffle(cards, random);
+  return cards;
 }
 
 /**

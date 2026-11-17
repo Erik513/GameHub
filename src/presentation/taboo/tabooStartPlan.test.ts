@@ -15,6 +15,7 @@ const classic: TabooSettings = {
   difficulties: [],
   duration: 60,
   mode: "classic",
+  raceRounds: 3,
   raceTarget: 5,
   rounds: 3,
   skips: 1,
@@ -84,6 +85,8 @@ describe("planTabooStart", () => {
     expect(planned.plan.mode).toBe("race");
     expect(planned.plan.classic).toBeUndefined();
     expect(planned.plan.race?.configuration.target).toBe(10);
+    // The rounds of the race come from their own setting, not from the rounds of the classic mode.
+    expect(planned.plan.race?.configuration.rounds).toBe(3);
     expect(planned.plan.required).toBe(2 * (10 + 2));
   });
 

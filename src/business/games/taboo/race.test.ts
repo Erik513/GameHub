@@ -3,9 +3,15 @@ import type { Difficulty, TabooCard } from "./model";
 import {
   createRaceGame,
   getRaceNextTeam,
+  comparableRaceTotals,
+  getRaceTurn,
+  maxRaceRounds,
   maxRaceTarget,
-  rankRaceAttempts,
+  racePlayedCardIds,
+  raceRounds,
   raceTimeTenths,
+  raceTotals,
+  rankRaceTotals,
   transitionRace,
   type RaceConfiguration,
   type RaceEvent,
@@ -234,7 +240,11 @@ describe("the end of the game", () => {
     const state = play([9000, 7000, 8000]);
     expect(state).toMatchObject({ status: "finished", winnerIds: ["blue"] });
     expect(getRaceNextTeam(state)).toBeUndefined();
-    expect(rankRaceAttempts(state.attempts).map((attempt) => attempt.teamIndex)).toEqual([1, 2, 0]);
+    expect(
+      rankRaceTotals(raceTotals(state.configuration, state.attempts)).map(
+        (total) => total.teamIndex,
+      ),
+    ).toEqual([1, 2, 0]);
   });
 
   it("shares the win when the times are equal to the tenth of a second", () => {
@@ -255,5 +265,156 @@ describe("raceTimeTenths", () => {
   it("rounds to tenths of a second", () => {
     expect(raceTimeTenths(7040)).toBe(70);
     expect(raceTimeTenths(7050)).toBe(71);
+  });
+});
+
+describe("a game with several rounds", () => {
+  /** Plays the given runs (milliseconds, in playing order); every run is one card of the card "round-team". */
+  const play = (timesMs: readonly number[], rounds = 2): RaceState => {
+    let state = setup({ target: 1, rounds });
+    timesMs.forEach((timeMs, index) => {
+      state = run(state, [
+        { type: "beginRun", cards: [card(`card-${index}`)] },
+        { type: "answerCard", outcome: "correct", elapsedMs: timeMs },
+      ]);
+    });
+    return state;
+  };
+
+  it("has one round when nothing is set and validates the number of rounds", () => {
+    expect(raceRounds(configuration)).toBe(1);
+    expect(raceRounds({ ...configuration, rounds: 4 })).toBe(4);
+    for (const rounds of [0, -1, 1.5, Number.NaN, maxRaceRounds + 1]) {
+      expect(createRaceGame({ ...configuration, rounds })).toEqual({
+        valid: false,
+        issues: [{ field: "rounds", code: "positive_integer_required" }],
+      });
+    }
+    expect(createRaceGame({ ...configuration, rounds: maxRaceRounds }).valid).toBe(true);
+  });
+
+  it("lets every team play once per round and ends after the last run of the last round", () => {
+    let state = setup({ target: 1, rounds: 2 });
+    const turns: unknown[] = [];
+    for (let index = 0; index < 4; index += 1) {
+      turns.push(getRaceTurn(state));
+      state = run(state, [
+        { type: "beginRun", cards: [card(`card-${index}`)] },
+        { type: "answerCard", outcome: "correct", elapsedMs: 1000 },
+      ]);
+    }
+    expect(turns).toEqual([
+      { round: 1, teamIndex: 0 },
+      { round: 1, teamIndex: 1 },
+      { round: 2, teamIndex: 0 },
+      { round: 2, teamIndex: 1 },
+    ]);
+    expect(state.status).toBe("finished");
+    expect(getRaceTurn(state)).toBeUndefined();
+    expect(state.attempts.map((attempt) => [attempt.round, attempt.teamIndex])).toEqual([
+      [1, 0],
+      [1, 1],
+      [2, 0],
+      [2, 1],
+    ]);
+  });
+
+  it("goes back to the overview between the runs and starts the next round with the first team", () => {
+    const afterRound = play([1000, 2000]);
+    expect(afterRound.status).toBe("overview");
+    expect(getRaceTurn(afterRound)).toEqual({ round: 2, teamIndex: 0 });
+  });
+
+  it("adds the times of all runs and lets the shortest total time win", () => {
+    // Red: 9.0 s + 3.0 s = 12.0 s, Blue: 8.0 s + 5.0 s = 13.0 s. Blue won the first round only.
+    const state = play([9000, 8000, 3000, 5000]);
+    expect(state).toMatchObject({ status: "finished", winnerIds: ["red"] });
+    const totals = raceTotals(state.configuration, state.attempts);
+    expect(totals).toEqual([
+      { teamIndex: 0, runs: 2, solved: 2, tenths: 120 },
+      { teamIndex: 1, runs: 2, solved: 2, tenths: 130 },
+    ]);
+    expect(rankRaceTotals(totals).map((total) => total.teamIndex)).toEqual([0, 1]);
+  });
+
+  it("adds the times as they are shown, so the total equals the sum of the shown times", () => {
+    // 3.04 s is shown as 3.0 s, so two such runs make 6.0 s and not 6.1 s.
+    const state = play([3040, 3000, 3040, 3000]);
+    expect(raceTotals(state.configuration, state.attempts)[0]?.tenths).toBe(60);
+    // The same total is a tie, however the single times fall.
+    expect(state).toMatchObject({ winnerIds: ["red", "blue"] });
+  });
+
+  it("counts the solved cards before the time: a team with fewer solved cards is behind", () => {
+    const state = play([1000, 9000, 1000, 9000]);
+    const revised = run(state, [
+      {
+        type: "reviseRunResult",
+        teamIndex: 0,
+        round: 1,
+        cardId: "card-0",
+        outcome: "forbiddenWord",
+      },
+    ]);
+    expect(revised).toMatchObject({ winnerIds: ["blue"] });
+    expect(raceTotals(revised.configuration, revised.attempts)[0]).toMatchObject({ solved: 1 });
+  });
+
+  it("corrects only the run of the given round", () => {
+    const state = play([1000, 9000, 1000, 9000]);
+    // Round 2 has no card-0, and a team's run of another round is not the run that was meant.
+    const wrong = run(state, [
+      {
+        type: "reviseRunResult",
+        teamIndex: 0,
+        round: 3,
+        cardId: "card-0",
+        outcome: "forbiddenWord",
+      },
+    ]);
+    expect(wrong).toBe(state);
+    const other = run(state, [
+      {
+        type: "reviseRunResult",
+        teamIndex: 0,
+        round: 2,
+        cardId: "card-0",
+        outcome: "forbiddenWord",
+      },
+    ]);
+    expect(other).toBe(state);
+  });
+
+  it("ranks only the teams that have played the same number of runs in the middle of a round", () => {
+    const state = play([1000, 2000, 3000]);
+    const totals = raceTotals(state.configuration, state.attempts);
+    expect(totals.map((total) => total.runs)).toEqual([2, 1]);
+    expect(comparableRaceTotals(totals).map((total) => total.teamIndex)).toEqual([0]);
+    expect(comparableRaceTotals(raceTotals(configuration, []))).toEqual([]);
+  });
+
+  it("never gives a card twice in a round, but lets a new round use it again", () => {
+    let state = setup({ target: 1, rounds: 2 });
+    state = run(state, [
+      { type: "beginRun", cards: [card("a")] },
+      { type: "answerCard", outcome: "correct", elapsedMs: 1000 },
+    ]);
+    // The second team of the same round must not get the card of the first one.
+    expect(transitionRace(state, { type: "beginRun", cards: [card("a")] })).toBe(state);
+    state = run(state, [
+      { type: "beginRun", cards: [card("b")] },
+      { type: "answerCard", outcome: "correct", elapsedMs: 1000 },
+    ]);
+    // A new round starts with no card used; the cards of the earlier round count as played.
+    expect(state.usedCardIds).toEqual([]);
+    expect([...racePlayedCardIds(state)].sort()).toEqual(["a", "b"]);
+    expect(transitionRace(state, { type: "beginRun", cards: [card("a")] }).status).toBe("running");
+  });
+
+  it("keeps the cards of a thrown away run used for the rest of the round", () => {
+    let state = setup({ target: 1, rounds: 2 });
+    state = run(state, [{ type: "beginRun", cards: [card("a")] }, { type: "restartRun" }]);
+    expect(state.usedCardIds).toEqual(["a"]);
+    expect(transitionRace(state, { type: "beginRun", cards: [card("a")] })).toBe(state);
   });
 });
