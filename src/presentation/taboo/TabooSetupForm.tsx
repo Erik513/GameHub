@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode, type Ref } from "react";
 import { useTranslation } from "react-i18next";
 import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
@@ -26,10 +26,13 @@ interface TabooSetupFormProps {
   children?: ReactNode;
   /** Counts the start attempts; see `TabooSetupMessages`. */
   attempt: number;
+  /** The form is the settings screen: it is read by the game when the game starts. */
+  formRef: Ref<HTMLFormElement>;
   /** False while another screen covers the form, so its messages are not shown twice. */
   messagesVisible: boolean;
+  /** The header button "Rules" is offered (on the line-up and in the settings, not during a game). */
+  rulesActive: boolean;
   deckEmpty: boolean;
-  generating: boolean;
   hasGenerators: boolean;
   issues: readonly ValidationIssue[];
   /** The game mode; the settings below depend on it. */
@@ -54,9 +57,10 @@ export function TabooSetupForm({
   categoryInfos,
   children,
   attempt,
+  formRef,
   messagesVisible,
+  rulesActive,
   deckEmpty,
-  generating,
   hasGenerators,
   issues,
   menuTab,
@@ -75,7 +79,7 @@ export function TabooSetupForm({
   const [rulesOpen, setRulesOpen] = useState(false);
   const [modeInfo, setModeInfo] = useState<TabooMode>();
   // The button "Rules" of the header opens all the rules.
-  useGameRulesButton(messagesVisible, () => setRulesOpen(true));
+  useGameRulesButton(rulesActive, () => setRulesOpen(true));
   const [tiebreakOpen, setTiebreakOpen] = useState(false);
   const categoryLabel = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);
@@ -110,11 +114,11 @@ export function TabooSetupForm({
   return (
     <SetupScreen
       formId="taboo-setup-form"
+      formRef={formRef}
       messages={messages}
       onChange={onChange}
       onSubmit={onSubmit}
-      startDisabled={generating}
-      startLabel={t(generating ? "tabooSetup.preparingCards" : "tabooSetup.start")}
+      startLabel={t("tabooSetup.done")}
     >
       <TabooRulesDialog
         onClose={() => setRulesOpen(false)}

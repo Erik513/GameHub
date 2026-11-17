@@ -8,6 +8,7 @@ import { IndexedDbTabooCardRepository } from "../../data/indexedDbTabooCardRepos
 import { createGameHubI18n } from "../../i18n";
 import { TabooCardList } from "./TabooCardList";
 import { TabooLibrary } from "./TabooLibrary";
+import { openGameSettings } from "../testing/gameSettings";
 
 const moon: TabooCard = {
   id: "own-moon",
@@ -270,6 +271,7 @@ it.each([
         <TabooLibrary cardLanguage={language} cards={[]} repository={repository} />
       </I18nextProvider>,
     );
+    openGameSettings();
     await user.click(screen.getByRole("button", { name: manage }));
     await openCategory(user, nature);
     await user.click(await screen.findByRole("button", { name: edit }));

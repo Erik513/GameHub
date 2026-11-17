@@ -5,6 +5,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
+import { closeGameSettings, openGameSettings } from "../testing/gameSettings";
 
 const texts = {
   en: {
@@ -64,6 +65,7 @@ async function startRace(language: "en" | "de") {
       <TabooSetup cardLanguage={language} cards={tabooStandardCards} />
     </I18nextProvider>,
   );
+  openGameSettings();
   const mode = screen.getByRole("group", { name: text.mode });
   await user.click(within(mode).getByRole("radio", { name: text.race }));
   return { text, user };
@@ -101,7 +103,7 @@ it.each(["en", "de"] as const)(
     await user.click(
       within(screen.getByRole("group", { name: text.target })).getByRole("radio", { name: "5" }),
     );
-    await user.click(screen.getByRole("button", { name: text.start }));
+    closeGameSettings();
     await user.click(screen.getByRole("button", { name: text.startGame }));
 
     const overview = await screen.findByRole("region", { name: text.overview });
@@ -134,6 +136,8 @@ it.each(["en", "de"] as const)(
     expect(rows[1]).not.toHaveAttribute("data-winner");
 
     await user.click(screen.getByRole("button", { name: text.newSetup }));
+    // The line-up comes first again; the settings are one tap away.
+    openGameSettings();
     expect(screen.getByRole("group", { name: text.mode })).toBeVisible();
     // The final screen is gone, only the setup is left.
     expect(screen.queryByRole("region", { name: text.result })).not.toBeInTheDocument();
@@ -143,7 +147,7 @@ it.each(["en", "de"] as const)(
 it("allows one skip per run and replaces a card with a forbidden word", async () => {
   vi.spyOn(Date, "now").mockImplementation(() => 5_000_000);
   const { text, user } = await startRace("en");
-  await user.click(screen.getByRole("button", { name: text.start }));
+  closeGameSettings();
   await user.click(screen.getByRole("button", { name: text.startGame }));
   await user.click(await screen.findByRole("button", { name: text.startRun }));
 
@@ -171,6 +175,7 @@ it("keeps the settings of both modes when the mode is changed and changed back",
       <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
+  openGameSettings();
   const radio = (group: string, name: string | RegExp) =>
     within(screen.getByRole("group", { name: group })).getByRole("radio", { name });
 
@@ -205,7 +210,7 @@ it("gives every team exactly the same mix of difficulties", async () => {
   // Only Easy is chosen at first; the mix needs all three difficulties.
   await user.click(screen.getByRole("checkbox", { name: "Medium" }));
   await user.click(screen.getByRole("checkbox", { name: "Hard" }));
-  await user.click(screen.getByRole("button", { name: text.start }));
+  closeGameSettings();
   await user.click(screen.getByRole("button", { name: text.startGame }));
 
   const mixes: string[][] = [];
@@ -240,6 +245,7 @@ it.each([
         <TabooSetup cardLanguage={language} cards={cards} />
       </I18nextProvider>,
     );
+    openGameSettings();
     await user.click(
       within(screen.getByRole("group", { name: text.mode })).getByRole("radio", {
         name: text.race,
@@ -247,7 +253,7 @@ it.each([
     );
     // Medium is chosen on purpose: there are no Medium cards.
     await user.click(screen.getByRole("checkbox", { name: /^(Medium|Mittel)$/ }));
-    await user.click(screen.getByRole("button", { name: text.start }));
+    closeGameSettings();
     await user.click(screen.getByRole("button", { name: text.startGame }));
     expect(await screen.findByRole("alert")).toHaveTextContent(message);
     expect(screen.queryByRole("region", { name: text.overview })).not.toBeInTheDocument();
@@ -295,6 +301,7 @@ async function renderSetup(language: "en" | "de") {
       <TabooSetup cardLanguage={language} cards={tabooStandardCards} />
     </I18nextProvider>,
   );
+  openGameSettings();
   return { text: rulesTexts[language], user };
 }
 
@@ -364,7 +371,7 @@ it.each([
     let now = 1_000_000;
     vi.spyOn(Date, "now").mockImplementation(() => now);
     const { text, user } = await startRace(language);
-    await user.click(screen.getByRole("button", { name: text.start }));
+    closeGameSettings();
     await user.click(screen.getByRole("button", { name: text.startGame }));
     // The first team needs 5 seconds, the second one 3 seconds and wins.
     for (const seconds of [5, 3]) {

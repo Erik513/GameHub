@@ -1,10 +1,12 @@
-import type { FormEventHandler, ReactNode } from "react";
+import type { FormEventHandler, ReactNode, Ref } from "react";
 import { Button } from "../components";
 import { StartBar } from "./StartBar";
 
 interface SetupScreenProps {
   /** The sections of the setup, usually `SetupSection`s. */
   readonly children: ReactNode;
+  /** Lets the game read the values of the form at any time, for example when the game starts. */
+  readonly formRef?: Ref<HTMLFormElement>;
   /** Id of the form; the start button belongs to it. */
   readonly formId: string;
   /** Messages shown above the form, for example errors. */
@@ -23,6 +25,7 @@ interface SetupScreenProps {
 export function SetupScreen({
   children,
   formId,
+  formRef,
   messages,
   onChange,
   onSubmit,
@@ -32,7 +35,7 @@ export function SetupScreen({
   return (
     <div className="kit-onepage">
       {messages}
-      <form id={formId} noValidate onChange={onChange} onSubmit={onSubmit}>
+      <form id={formId} noValidate onChange={onChange} onSubmit={onSubmit} ref={formRef}>
         {children}
       </form>
       <StartBar>

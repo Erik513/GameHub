@@ -243,7 +243,7 @@ export const tabooTexts = {
     difficultyMultiple: "Schwierigkeit (mehrere möglich)",
     categories: "Kategorien",
     selectCategory: "Wähle mindestens eine Kategorie.",
-    start: "Starten",
+    done: "Fertig",
     invalidSetup: "Prüfe die Spielkonfiguration",
     emptyTeam: "Gib jedem Team einen Namen.",
     duplicateTeam: "Verwende für jedes Team einen eigenen Namen.",

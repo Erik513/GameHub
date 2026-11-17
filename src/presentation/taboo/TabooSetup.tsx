@@ -24,7 +24,7 @@ import { tabooLineup } from "../../business/games/taboo/lineup";
 import { resolveLineup, validateLineup, type LineupIssue } from "../../business/shared/lineup";
 import { buildTeams, initialTeamSetup, type TeamSetupValue } from "../../business/shared/teamSetup";
 import { hasTeamSetupContent } from "../../business/shared/savedTeamSetup";
-import { Toast, useNotice } from "../components";
+import { Button, Icon, Toast, useNotice } from "../components";
 import { useGameBack, useGameExit } from "../GameChrome";
 import { LineupScreen, LineupSetup, useTeamSetupMemory } from "../game-kit";
 import { TabooRaceGame } from "./TabooRaceGame";
@@ -90,10 +90,11 @@ export function TabooSetup({
     required: number;
   }>();
   const [mode, setMode] = useState<TabooMode>("classic");
-  // The settings of the main menu, read when "Start" is pressed; the line-up follows.
-  const [settings, setSettings] = useState<TabooSettings>();
+  // The line-up is the first view. The settings are their own view, opened from the line-up; the form
+  // stays mounted (hidden) so its values are kept and read when the game starts.
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const [menuTab, setMenuTab] = useState("settings");
-  const [lineupOpen, setLineupOpen] = useState(false);
   // The cards of the game that was just played; a replay with the same settings reuses them.
   const replayDeck = useRef<readonly TabooCard[] | undefined>(undefined);
   // The game of the mode "Auf Zeit"; the key starts it anew when the same setup is played again.
@@ -161,15 +162,13 @@ export function TabooSetup({
     setIssues([]);
     if (!keepConfiguration) {
       setSession(undefined);
-      setSettings(undefined);
-      setLineupOpen(false);
+      setSettingsOpen(false);
       setFormVersion((version) => version + 1);
       setTeamSetup(initialTeamSetup());
     } else if (session) {
       // Same settings: back to the line-up, where the teams can be drawn anew; the cards are reused.
       replayDeck.current = session.deck;
       setSession(undefined);
-      setLineupOpen(true);
     }
   }
 
@@ -240,8 +239,7 @@ export function TabooSetup({
     if (!raceSession) return;
     if (!keepConfiguration) {
       setRaceSession(undefined);
-      setSettings(undefined);
-      setLineupOpen(false);
+      setSettingsOpen(false);
       setFormVersion((version) => version + 1);
       setTeamSetup(initialTeamSetup());
       return;
@@ -249,7 +247,6 @@ export function TabooSetup({
     // Same settings: back to the line-up, the cards of the race are reused.
     replayDeck.current = raceSession.pool;
     setRaceSession(undefined);
-    setLineupOpen(true);
   }
 
   // Leaving a game returns to the main window with the previous setup still filled in.
@@ -259,7 +256,6 @@ export function TabooSetup({
       refill.reset();
       setRound(undefined);
       setSession(undefined);
-      setLineupOpen(false);
       setDeckEmpty(false);
       setIssues([]);
     },
@@ -268,7 +264,8 @@ export function TabooSetup({
       : undefined,
   );
 
-  const lineupVisible = lineupOpen && !session && !round && !raceSession && Boolean(settings);
+  const lineupVisible = !settingsOpen && !session && !round && !raceSession;
+  const settingsVisible = settingsOpen && !session && !round && !raceSession;
   const screen: TabooScreen = lineupVisible
     ? "lineup"
     : raceSession
@@ -279,12 +276,10 @@ export function TabooSetup({
           ? "preparing"
           : "menu";
   useEffect(() => onScreenChange?.(screen), [onScreenChange, screen]);
-  // On the line-up the header offers a way back to the main menu.
-  useGameBack(lineupVisible, () => {
+  // In the settings the header offers a way back to the line-up.
+  useGameBack(settingsVisible, () => {
     activeGeneration.current?.abort();
-    setLineupOpen(false);
-    setShortage(undefined);
-    setIssues([]);
+    setSettingsOpen(false);
   });
 
   function startRound(
@@ -319,35 +314,46 @@ export function TabooSetup({
     });
   }
 
-  /** The main menu: the settings are read once, then the line-up of the teams follows. */
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setAttempt((count) => count + 1);
-    if (activeGeneration.current) return;
-    const read = readTabooSettings(new FormData(event.currentTarget), {
+  /**
+   * Reads the settings from their form. Without a category the settings are opened at the cards, where
+   * the problem is fixed.
+   */
+  function readSettings(): TabooSettings | undefined {
+    const form = formRef.current;
+    if (!form) return undefined;
+    const read = readTabooSettings(new FormData(form), {
       categoryIds,
       hasGenerators: Boolean(generators),
       mode,
     });
     if (read.categories.length === 0) {
       setIssues([{ field: "categories", code: "required" }]);
-      // The categories are in the cards tab; show it so the problem can be fixed.
       setMenuTab("cards");
-      return;
+      setSettingsOpen(true);
+      return undefined;
     }
+    return read;
+  }
+
+  /** "Done" in the settings: back to the line-up, if the settings are complete. */
+  function closeSettings(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setAttempt((count) => count + 1);
+    if (!readSettings()) return;
     setIssues([]);
     setShortage(undefined);
     setDeckEmpty(false);
     setGenerationEmpty(false);
-    setSettings(read);
-    setLineupOpen(true);
+    setSettingsOpen(false);
   }
 
   /** The line-up: the teams are known now, so the game and its cards are prepared and it starts. */
   async function startGame(event: FormEvent<HTMLFormElement>) {
     setAttempt((count) => count + 1);
     event.preventDefault();
-    if (activeGeneration.current || !settings) return;
+    if (activeGeneration.current) return;
+    const settings = readSettings();
+    if (!settings) return;
     // The game's own rules for the line-up (Taboo leaves players without a team out).
     const lineupIssue = validateLineup(tabooLineup, teamSetup)[0];
     if (lineupIssue) {
@@ -457,7 +463,6 @@ export function TabooSetup({
       setShortage(missing);
       return;
     }
-    setLineupOpen(false);
     if (race?.valid) {
       setRaceSession({
         difficulties: chosenDifficulties,
@@ -506,6 +511,21 @@ export function TabooSetup({
         <LineupScreen
           ariaLabel={t("tabooLineup.label")}
           formId="taboo-lineup-form"
+          sideAction={
+            <Button
+              aria-label={t("kitSetup.tabSettings")}
+              className="kit-lineup__settings"
+              onClick={() => {
+                activeGeneration.current?.abort();
+                setShortage(undefined);
+                setSettingsOpen(true);
+              }}
+              title={t("kitSetup.tabSettings")}
+              variant="secondary"
+            >
+              <Icon name="sliders" />
+            </Button>
+          }
           messages={
             <>
               <TabooSetupMessages
@@ -543,10 +563,7 @@ export function TabooSetup({
           difficulties={raceSession.difficulties}
           initial={raceSession.state}
           key={`race-${raceSession.key}`}
-          onExit={() => {
-            setRaceSession(undefined);
-            setLineupOpen(false);
-          }}
+          onExit={() => setRaceSession(undefined)}
           onNewSetup={() => restartRace(false)}
           onSameSetup={() => restartRace(true)}
           pool={raceSession.pool}
@@ -592,19 +609,16 @@ export function TabooSetup({
           overview={overview}
         />
       )}
-      <div
-        className="taboo-setup__screen"
-        hidden={Boolean(round) || Boolean(session) || Boolean(raceSession) || lineupVisible}
-        key={`form-${formVersion}`}
-      >
+      <div className="taboo-setup__screen" hidden={!settingsVisible} key={`form-${formVersion}`}>
         <TabooSetupForm
           attempt={attempt}
-          messagesVisible={!(round ?? session ?? raceSession ?? lineupVisible)}
+          formRef={formRef}
+          messagesVisible={settingsVisible}
+          rulesActive={!(round ?? session ?? raceSession)}
           cardLanguage={cardLanguage}
           categoryIds={categoryIds}
           categoryInfos={categoryInfos}
           deckEmpty={deckEmpty}
-          generating={generating}
           hasGenerators={Boolean(generators)}
           issues={issues}
           menuTab={menuTab}
@@ -616,7 +630,7 @@ export function TabooSetup({
             handleFormChange();
             setMode(next);
           }}
-          onSubmit={(event) => void submit(event)}
+          onSubmit={closeSettings}
           roundChoices={roundChoices}
           shortage={shortage}
         >

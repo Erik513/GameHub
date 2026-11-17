@@ -9,6 +9,7 @@ import { createGameHubI18n } from "../../i18n";
 import { AppShell } from "../AppShell";
 import type { TabooCardPack } from "../../business/games/taboo/cardPack";
 import { TabooLibrary } from "./TabooLibrary";
+import { openGameSettings } from "../testing/gameSettings";
 
 const card: TabooCard = {
   id: "own-moon",
@@ -36,6 +37,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   // Only the player's own categories can be exported.
   const own: TabooCard = { ...card, categoryId: "Space" };
   const { unmount } = render(view(repository, []));
+  openGameSettings();
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   upload("invalid");
   expect(await screen.findByRole("alert")).toHaveTextContent("not a valid");
@@ -46,6 +48,7 @@ it("imports once, keeps own cards after a standard deck update and exports a res
   unmount();
   const reopened = new IndexedDbTabooCardRepository(factory);
   render(view(reopened, [{ ...card, id: "standard-sun", term: "Sun" }]));
+  openGameSettings();
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   // The saved cards load after the page opens; the export only offers them once they are shown.
   fireEvent.click(screen.getByRole("radio", { name: "Own" }));
@@ -93,6 +96,7 @@ it("reports a storage error when the saved cards cannot be read or written", asy
       <TabooLibrary repository={failing} cardLanguage="en" cards={[]} />
     </I18nextProvider>,
   );
+  openGameSettings();
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Local cards could not be accessed.");
   // Importing fails the same way.
@@ -108,6 +112,7 @@ it("ignores an empty file selection and works without a repository", async () =>
       <TabooLibrary repository={undefined} cardLanguage="en" cards={[]} />
     </I18nextProvider>,
   );
+  openGameSettings();
   expect(screen.queryByRole("button", { name: "Cards" })).not.toBeInTheDocument();
   unmount();
   const repository = {
@@ -121,6 +126,7 @@ it("ignores an empty file selection and works without a repository", async () =>
       <TabooLibrary repository={repository} cardLanguage="en" cards={[]} />
     </I18nextProvider>,
   );
+  openGameSettings();
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   fireEvent.change(screen.getByLabelText("Import"), { target: { files: [] } });
   expect(repository.addAll).not.toHaveBeenCalled();
@@ -145,10 +151,13 @@ it("shows the card tools on their own page with the back button in the app heade
     </I18nextProvider>,
   );
   const header = within(screen.getByRole("banner"));
-  // The setup shows settings and home in the header; the back button is not there yet.
+  // The line-up shows settings and home in the header; the back button is not there yet.
   expect(header.getByRole("button", { name: "Settings" })).toBeVisible();
   expect(header.getByRole("button", { name: "Close game" })).toBeVisible();
   expect(header.queryByRole("button", { name: "Back" })).not.toBeInTheDocument();
+  // In the game's settings the back button leads to the line-up.
+  openGameSettings();
+  expect(header.getByRole("button", { name: "Back" })).toBeVisible();
   expect(screen.queryByRole("heading", { name: "Taboo cards" })).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
@@ -157,9 +166,11 @@ it("shows the card tools on their own page with the back button in the app heade
   expect(header.queryByRole("button", { name: "Settings" })).not.toBeInTheDocument();
   expect(header.queryByRole("button", { name: "Close game" })).not.toBeInTheDocument();
 
+  // Back leads from the card tools to the settings, and from there to the line-up.
   fireEvent.click(header.getByRole("button", { name: "Back" }));
   expect(screen.queryByRole("heading", { name: "Taboo cards" })).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Categories and cards" })).toBeVisible();
+  fireEvent.click(header.getByRole("button", { name: "Back" }));
   expect(header.getByRole("button", { name: "Settings" })).toBeVisible();
 });
 
@@ -174,6 +185,7 @@ it("opens the file chooser from the import button", async () => {
       />
     </I18nextProvider>,
   );
+  openGameSettings();
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   const chooser = vi.spyOn(HTMLInputElement.prototype, "click").mockImplementation(() => undefined);
   // Import and export belong to the own categories: not in the standard view, not in an opened category.
@@ -221,6 +233,7 @@ it.each([
         />
       </I18nextProvider>,
     );
+    openGameSettings();
     // The category with a pack card appears in the setup, the empty one does not.
     expect(await screen.findByRole("checkbox", { name: food })).toBeChecked();
     expect(screen.queryByRole("checkbox", { name: animals })).not.toBeInTheDocument();
@@ -247,6 +260,7 @@ it("keeps the built-in cards when the pack is missing, fails or is for another l
     </I18nextProvider>
   );
   const { rerender } = render(view(() => Promise.resolve(undefined)));
+  openGameSettings();
   expect(screen.getByRole("checkbox", { name: "Nature" })).toBeChecked();
   rerender(view(() => Promise.reject(new Error("offline"))));
   await waitFor(() => expect(screen.getByRole("checkbox", { name: "Nature" })).toBeChecked());
@@ -278,6 +292,7 @@ it("renames an own category for all its cards and keeps the new name in the stor
     </I18nextProvider>
   );
   render(view);
+  openGameSettings();
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
   fireEvent.click(screen.getByRole("radio", { name: "Own" }));
   fireEvent.click(await screen.findByText("Sport (EN)", { selector: ".kit-nav-row span" }));

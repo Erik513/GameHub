@@ -115,7 +115,9 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     checkScreen("settings");
     press("settings.close");
 
-    // Open the folded options so the whole setup is checked.
+    // The game opens on its line-up; the settings are their own screen above it.
+    checkScreen("line-up");
+    press("kitSetup.tabSettings");
     checkScreen("setup");
     // An info dialog explains a setting and uses the selected language too.
     fireEvent.click(
@@ -125,8 +127,7 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     );
     checkScreen("info dialog");
     press("settings.close");
-    press("tabooSetup.start");
-    checkScreen("line-up");
+    press("tabooSetup.done");
     press("tabooLineup.start");
     checkScreen("round overview before the first turn");
 

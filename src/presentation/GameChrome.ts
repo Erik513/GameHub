@@ -12,7 +12,12 @@ export interface GameExit {
   readonly pause?: GamePauseControl;
 }
 
-type RegisterGameExit = (exit: GameExit | undefined) => void;
+/**
+ * Registers a game action for the header. Several can be active at once (the settings of a game and
+ * its card library above them): the last one counts, and when it is removed (`remove`) the one below
+ * counts again. Without `remove`, `undefined` clears all.
+ */
+type RegisterGameExit = (exit: GameExit | undefined, remove?: GameExit) => void;
 
 export const GameChromeContext = createContext<RegisterGameExit>(() => undefined);
 
@@ -40,11 +45,12 @@ export function useGameExit(active: boolean, onExit: () => void, pause?: PauseOp
 
   useEffect(() => {
     if (!active) return;
-    register({
+    const entry: GameExit = {
       run: () => latestExit.current(),
       ...(hasPause ? { pause: { paused, toggle: () => latestToggle.current?.() } } : {}),
-    });
-    return () => register(undefined);
+    };
+    register(entry);
+    return () => register(undefined, entry);
   }, [active, hasPause, paused, register]);
 }
 
@@ -62,8 +68,9 @@ export function useGameBack(active: boolean, onBack: () => void) {
 
   useEffect(() => {
     if (!active) return;
-    register({ back: true, run: () => latestBack.current() });
-    return () => register(undefined);
+    const entry: GameExit = { back: true, run: () => latestBack.current() };
+    register(entry);
+    return () => register(undefined, entry);
   }, [active, register]);
 }
 

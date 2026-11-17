@@ -5,6 +5,7 @@ import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { rowText } from "../testing/scoreRows";
+import { closeGameSettings, openGameSettings } from "../testing/gameSettings";
 
 beforeEach(() => {
   // Always pick the last slot so the shuffled team order stays Team 1, Team 2, ...
@@ -37,6 +38,7 @@ it.each([
         <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
+    openGameSettings();
     fireEvent.click(
       within(screen.getByRole("group", { name: "Rounds per team" })).getByRole("radio", {
         name: "1",
@@ -55,7 +57,7 @@ it.each([
         }),
       );
     }
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    closeGameSettings();
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     if (correct) fireEvent.click(screen.getByRole("button", { name: "Correct" }));
@@ -82,6 +84,8 @@ it.each([
       expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Team 1");
       expect(screen.getByRole("timer")).toHaveTextContent(/^90$/);
     } else {
+      // Back to the main menu: the line-up comes first, the settings are one tap away.
+      openGameSettings();
       expect(
         within(screen.getByRole("group", { name: "Rounds per team" })).getByRole("radio", {
           name: /3/,
@@ -103,7 +107,8 @@ it("plays cards without resetting the countdown and ends the round on time", asy
         <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    openGameSettings();
+    closeGameSettings();
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const round = screen.getByRole("region", { name: "Active round" });
@@ -174,7 +179,8 @@ it("shows the remaining time as a shrinking bar", async () => {
         <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
       </I18nextProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    openGameSettings();
+    closeGameSettings();
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const bar = () => document.querySelector<HTMLElement>(".kit-hud__bar span")!;

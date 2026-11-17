@@ -6,7 +6,8 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
     .getByRole("main")
     .evaluate((main) => main.getBoundingClientRect().width);
   expect(setupWidth).toBeLessThanOrEqual(480);
-  // The cards (difficulty, categories) are in their own tab of the main menu.
+  // The game opens on its line-up; the settings (with the cards) are their own screen.
+  await page.getByRole("button", { name: "Game settings", exact: true }).click();
   await page.getByRole("tab", { name: "Categories", exact: true }).click();
   await expect(page.getByRole("group", { name: "Difficulty (several possible)" })).toBeVisible();
   const nature = page.getByRole("checkbox", { name: "Nature" });
@@ -17,7 +18,7 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
   await expect(nature).not.toBeChecked();
   await nature.press("Space");
   await expect(nature).toBeChecked();
-  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await page.getByRole("button", { name: "Done", exact: true }).click();
   await page.getByRole("button", { name: "Start game", exact: true }).click();
   await page.getByRole("button", { name: "Start round" }).click();
   const round = page.getByRole("region", { name: "Active round" });
@@ -93,6 +94,7 @@ test("persists the UI language and the card language of Taboo independently", as
 
   // The card language is a setting of Taboo.
   await page.getByRole("button", { name: "Fortschritt ansehen" }).click();
+  await page.getByRole("button", { name: "Spieleinstellungen", exact: true }).click();
   await page.getByRole("tab", { name: "Kategorien", exact: true }).click();
   const cardLanguage = page.getByRole("group", { name: "Kartensprache" });
   await expect(cardLanguage.getByRole("radio", { name: "Englisch" })).toBeChecked();
@@ -103,10 +105,13 @@ test("persists the UI language and the card language of Taboo independently", as
 
   await page.reload();
 
+  await page.getByRole("button", { name: "Spieleinstellungen", exact: true }).click();
   await page.getByRole("tab", { name: "Kategorien", exact: true }).click();
   await expect(
     page.getByRole("group", { name: "Kartensprache" }).getByRole("radio", { name: "Deutsch" }),
   ).toBeChecked();
+  // In the game's settings the header offers the way back to the line-up first.
+  await page.getByRole("button", { name: "Zurück" }).click();
   await page.getByRole("button", { name: "Spiel schließen" }).click();
   await page.getByRole("button", { name: "Einstellungen" }).click();
   await expect(

@@ -8,6 +8,7 @@ import type {
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
+import { openGameSettings } from "../testing/gameSettings";
 
 function pendingGenerator() {
   const releases: ((result: TabooGenerationResult) => void)[] = [];
@@ -36,6 +37,7 @@ async function renderSetup(generator: TabooCardGenerator) {
       />
     </I18nextProvider>,
   );
+  openGameSettings();
 }
 
 beforeEach(() => {

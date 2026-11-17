@@ -1077,3 +1077,27 @@
     display: none;
   }
 }
+
+/* The start bar with a small icon button (the settings) left of the main button. */
+.kit-start-bar--row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.kit-start-bar--row > .button {
+  flex: 1;
+}
+
+.kit-start-bar__side {
+  display: flex;
+  flex: none;
+}
+
+.game-preview .kit-start-bar .kit-start-bar__side .button,
+.kit-lineup__settings {
+  width: 4rem;
+  min-height: 4rem;
+  margin: 0;
+  padding: 0;
+}

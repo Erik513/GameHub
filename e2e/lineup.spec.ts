@@ -49,7 +49,6 @@ for (const labels of cases) {
       await page.getByRole("dialog").getByRole("button", { name: "Schließen" }).click();
     }
     await page.getByRole("button", { name: labels.open }).click();
-    await page.getByRole("button", { name: labels.start, exact: true }).click();
 
     // The tab of the teams is open (Taboo does not need names); open the players and add some.
     await page.getByRole("tab", { name: new RegExp(`^${labels.players}`) }).click();

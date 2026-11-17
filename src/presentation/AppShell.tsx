@@ -1,4 +1,4 @@
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
 import { Button, ConfirmButton, Icon } from "./components";
@@ -29,7 +29,12 @@ export function AppShell({
   const { t } = useTranslation();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [gameExit, setGameExit] = useState<GameExit>();
-  const registerGameExit = useCallback((exit: GameExit | undefined) => setGameExit(exit), []);
+  const gameExits = useRef<GameExit[]>([]);
+  const registerGameExit = useCallback((exit: GameExit | undefined, remove?: GameExit) => {
+    if (exit) gameExits.current = [...gameExits.current, exit];
+    else gameExits.current = remove ? gameExits.current.filter((entry) => entry !== remove) : [];
+    setGameExit(gameExits.current[gameExits.current.length - 1]);
+  }, []);
   // The main menu of a game puts its rules into the header, where the GameHub has the players.
   const [rulesAction, setRulesAction] = useState<GameRulesAction>();
   const registerGameRules = useCallback(

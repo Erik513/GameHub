@@ -1,8 +1,8 @@
 # Tabu – Einstieg und mögliche Online-Lobby
 
-## Geplanter Einstieg
+## Einstieg (lokal seit 2026-11-17 umgesetzt)
 
-- Nach der Auswahl von Tabu öffnet sich direkt **Spieler und Teams**. Die Gruppe sieht ihre Aufstellung, kann sie anpassen und öffnet **Einstellungen** und **Spielregeln** bei Bedarf von dort. **Spiel starten** startet die Partie.
+- Nach der Auswahl von Tabu öffnet sich direkt **Spieler und Teams**; ein Symbolknopf links neben „Spiel starten“ öffnet die Einstellungen als eigenen Bildschirm. Die Gruppe sieht ihre Aufstellung, kann sie anpassen und öffnet **Einstellungen** und **Spielregeln** bei Bedarf von dort. **Spiel starten** startet die Partie.
 - Für ein Online-Spiel dient dieselbe Ansicht als Lobby. Der Host kann die Einstellungen bearbeiten. Gäste öffnen dieselbe Einstellungsübersicht und sehen die aktuellen Werte im Lesemodus. Änderungen an den Spieleinstellungen setzen die Bereitschaft der Gäste zurück.
 - Der lokale Einstieg bleibt eigenständig. Die Entscheidung über Online-Tabu und seinen Umfang steht noch aus.
 

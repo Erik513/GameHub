@@ -7,6 +7,7 @@ import { createGameHubI18n } from "../../i18n";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { TabooCardEntry } from "./TabooCardEntry";
 import { TabooSetup } from "./TabooSetup";
+import { openGameSettings } from "../testing/gameSettings";
 
 const labels = {
   en: {
@@ -167,6 +168,7 @@ it("offers a custom category as a filter in the setup", async () => {
       <TabooSetup cardLanguage="en" cards={[own, ...tabooStandardCards]} roundChoices={[1]} />
     </I18nextProvider>,
   );
+  openGameSettings();
   const groups = [...document.querySelectorAll(".taboo-category-group")];
   expect(groups.map((group) => group.querySelector("small")?.textContent)).toEqual([
     "Standard",
@@ -186,6 +188,7 @@ it("always shows both group headings and says that there are no own categories y
       <TabooSetup cardLanguage="en" cards={tabooStandardCards} roundChoices={[1]} />
     </I18nextProvider>,
   );
+  openGameSettings();
   const groups = [...document.querySelectorAll(".taboo-category-group")];
   expect(groups.map((group) => group.querySelector("small")?.textContent)).toEqual([
     "Standard",

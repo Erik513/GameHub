@@ -7,6 +7,8 @@ interface LineupScreenProps {
   readonly ariaLabel: string;
   /** The teams and players, usually a `SetupSection` with `TeamsSetup` or `PlayersSetup`. */
   readonly children: ReactNode;
+  /** A small button left of the start button, for example the icon button to the settings. */
+  readonly sideAction?: ReactNode;
   /** Id of the form; the start button belongs to it. */
   readonly formId: string;
   /** Messages shown above the form, for example errors. */
@@ -27,6 +29,7 @@ export function LineupScreen({
   formId,
   messages,
   onSubmit,
+  sideAction,
   startDisabled = false,
   startLabel,
 }: LineupScreenProps) {
@@ -36,7 +39,7 @@ export function LineupScreen({
       <form id={formId} noValidate onSubmit={onSubmit}>
         {children}
       </form>
-      <StartBar>
+      <StartBar sideAction={sideAction}>
         <Button disabled={startDisabled} form={formId} type="submit" variant="success">
           {startLabel}
         </Button>

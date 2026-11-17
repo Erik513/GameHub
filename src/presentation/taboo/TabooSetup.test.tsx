@@ -7,6 +7,7 @@ import { TeamSetupMemoryProvider } from "../game-kit";
 import { TabooSetup } from "./TabooSetup";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { rowText } from "../testing/scoreRows";
+import { closeGameSettings, openGameSettings } from "../testing/gameSettings";
 
 it("blocks a six-turn setup when the chosen filters match only five cards", async () => {
   const user = userEvent.setup();
@@ -16,10 +17,11 @@ it("blocks a six-turn setup when the chosen filters match only five cards", asyn
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
+  openGameSettings();
   await user.click(screen.getByRole("checkbox", { name: "Everyday life" }));
   await user.click(screen.getByRole("checkbox", { name: "Culture" }));
   // Only Easy is chosen at first and leaves 5 cards.
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  closeGameSettings();
   await user.click(screen.getByRole("button", { name: "Start game" }));
   expect(screen.getByRole("alert")).toHaveTextContent("The filters match 5 cards");
   expect(screen.queryByRole("button", { name: "Start round" })).not.toBeInTheDocument();
@@ -33,15 +35,16 @@ it("asks for a category before the line-up opens", async () => {
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
+  openGameSettings();
   for (const category of ["Everyday life", "Culture", "Nature"]) {
     await user.click(screen.getByRole("checkbox", { name: category }));
   }
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  closeGameSettings();
   expect(screen.getByRole("alert")).toHaveTextContent("Select at least one category.");
   expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
 });
 
-it("opens the line-up after Start and only starts the game from there", async () => {
+it("opens on the line-up, keeps the settings on their own screen and starts the game from the line-up", async () => {
   const user = userEvent.setup();
   const i18n = await createGameHubI18n("en");
   render(
@@ -49,20 +52,54 @@ it("opens the line-up after Start and only starts the game from there", async ()
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
-  // The main menu has no teams any more.
-  expect(screen.queryByRole("group", { name: "Teams" })).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  // The first view is the line-up; the settings are not shown.
   const lineup = screen.getByRole("region", { name: "Line-up" });
-  expect(within(lineup).getByRole("group", { name: "Teams" })).toBeVisible();
-  // Taboo does not need names: the tab "Teams" is open, the tab "Players" is the other one.
+  expect(screen.queryByRole("group", { name: "Rounds per team" })).not.toBeInTheDocument();
   const tabs = within(lineup).getAllByRole("tab");
   expect(tabs.map((tab) => tab.textContent)).toEqual(["Players (0)", "Teams (2)"]);
   expect(tabs[1]).toHaveAttribute("aria-selected", "true");
   expect(within(lineup).getByRole("textbox", { name: "Name of team 1" })).toBeVisible();
   expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
-  await user.click(within(lineup).getByRole("button", { name: "Start game" }));
+  // The button above the tabs opens the settings as their own screen, "Done" leads back.
+  openGameSettings();
+  expect(screen.getByRole("group", { name: "Rounds per team" })).toBeVisible();
+  expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Start game" })).not.toBeInTheDocument();
+  closeGameSettings();
+  expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
+  await user.click(
+    within(screen.getByRole("region", { name: "Line-up" })).getByRole("button", {
+      name: "Start game",
+    }),
+  );
   expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
   expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
+});
+
+it("keeps the changed settings when the line-up is shown again and uses them in the game", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
+    </I18nextProvider>,
+  );
+  openGameSettings();
+  await user.click(
+    within(screen.getByRole("group", { name: "Rounds per team" })).getByRole("radio", {
+      name: "1",
+    }),
+  );
+  closeGameSettings();
+  openGameSettings();
+  expect(
+    within(screen.getByRole("group", { name: "Rounds per team" })).getByRole("radio", {
+      name: "1",
+    }),
+  ).toBeChecked();
+  closeGameSettings();
+  await user.click(screen.getByRole("button", { name: "Start game" }));
+  expect(screen.getByText("Round 1/1")).toBeVisible();
 });
 
 it("starts although players that were added have no team, because Taboo does not need names", async () => {
@@ -73,7 +110,8 @@ it("starts although players that were added have no team, because Taboo does not
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  openGameSettings();
+  closeGameSettings();
   const lineup = screen.getByRole("region", { name: "Line-up" });
   await user.type(within(lineup).getByLabelText("Add player"), "Anna, Ben{enter}");
   await user.click(within(lineup).getByRole("button", { name: "Start game" }));
@@ -82,9 +120,9 @@ it("starts although players that were added have no team, because Taboo does not
 });
 
 it.each([
-  ["en", "Start", "Start game"],
-  ["de", "Starten", "Spiel starten"],
-] as const)("starts the first round directly in %s", async (language, start, startGame) => {
+  ["en", "Start game"],
+  ["de", "Spiel starten"],
+] as const)("starts the first round directly in %s", async (language, startGame) => {
   const user = userEvent.setup();
   const i18n = await createGameHubI18n(language);
   render(
@@ -92,7 +130,8 @@ it.each([
       <TabooSetup roundChoices={[1, 3]} cardLanguage={language} cards={tabooStandardCards} />
     </I18nextProvider>,
   );
-  await user.click(screen.getByRole("button", { name: start }));
+  openGameSettings();
+  closeGameSettings();
   await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
   await user.click(screen.getByRole("button", { name: startGame }));
   expect(
@@ -109,7 +148,8 @@ it("uses custom team names and falls back to defaults for blank fields", async (
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  openGameSettings();
+  closeGameSettings();
   await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
   await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Foxes");
   await user.type(screen.getByRole("textbox", { name: "Name of team 3" }), "  Owls ");
@@ -128,7 +168,8 @@ it("rejects duplicate custom team names", async () => {
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  openGameSettings();
+  closeGameSettings();
   await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Same");
   await user.type(screen.getByRole("textbox", { name: "Name of team 2" }), "Same");
   await user.click(screen.getByRole("button", { name: "Start game" }));
@@ -143,7 +184,8 @@ it("plays the teams in the order that was set for the whole game", async () => {
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  openGameSettings();
+  closeGameSettings();
   await user.click(screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!);
   // Team 3 is moved to the top place with the keyboard, the others move down.
   screen.getByRole("button", { name: "Move Team 3, place 3" }).focus();
@@ -167,13 +209,14 @@ it("lets a turn use more than its fair share of cards and reuses cards in later 
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={cards} />
     </I18nextProvider>,
   );
+  openGameSettings();
   await user.click(
     screen.getByRole("group", { name: "Rounds per team" }).querySelector("input[value='1']")!,
   );
   // Only Easy is chosen at first; these cards need all difficulties.
   await user.click(screen.getByRole("checkbox", { name: "Medium" }));
   await user.click(screen.getByRole("checkbox", { name: "Hard" }));
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  closeGameSettings();
   await user.click(screen.getByRole("button", { name: "Start game" }));
   await user.click(screen.getByRole("button", { name: "Start round" }));
   for (let played = 0; played < 5; played += 1) {
@@ -198,12 +241,13 @@ it.each([
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
+  openGameSettings();
   await user.click(
     within(screen.getByRole("group", { name: "Skips per round" })).getByRole("radio", {
       name: option,
     }),
   );
-  await user.click(screen.getByRole("button", { name: "Start" }));
+  closeGameSettings();
   await user.click(screen.getByRole("button", { name: "Start game" }));
   await user.click(screen.getByRole("button", { name: "Start round" }));
   for (let index = 0; index < skips; index += 1) {
@@ -220,6 +264,7 @@ it("offers short, medium, long and unlimited games with the short one preselecte
       <TabooSetup cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
+  openGameSettings();
   const group = within(screen.getByRole("group", { name: "Rounds per team" }));
   expect(group.getAllByRole("radio").map((radio) => (radio as HTMLInputElement).value)).toEqual([
     "3",
@@ -249,12 +294,13 @@ it("lets the group finish an unlimited game after every completed round", async 
         <TabooSetup cardLanguage="en" cards={tabooStandardCards} roundChoices={[3, "unlimited"]} />
       </I18nextProvider>,
     );
+    openGameSettings();
     fireEvent.click(
       within(screen.getByRole("group", { name: "Rounds per team" })).getByRole("radio", {
         name: "Unlimited",
       }),
     );
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    closeGameSettings();
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     expect(screen.getByText("Round 1")).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
@@ -296,6 +342,7 @@ it.each([
       />
     </I18nextProvider>,
   );
+  openGameSettings();
   fireEvent.click(screen.getByRole("button", { name: `Info about ${setting}` }));
   const dialog = screen.getByRole("dialog", { name: title });
   expect(dialog.textContent).toContain(excerpt);
@@ -306,11 +353,11 @@ it.each([
 });
 
 it.each([
-  ["en", "Start", "Start game"],
-  ["de", "Starten", "Spiel starten"],
+  ["en", "Start game"],
+  ["de", "Spiel starten"],
 ] as const)(
   "starts with team 1 when the order was not changed in %s",
-  async (language, start, startGame) => {
+  async (language, startGame) => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n(language);
     render(
@@ -318,7 +365,8 @@ it.each([
         <TabooSetup roundChoices={[1, 3]} cardLanguage={language} cards={tabooStandardCards} />
       </I18nextProvider>,
     );
-    await user.click(screen.getByRole("button", { name: start }));
+    openGameSettings();
+    closeGameSettings();
     await user.click(
       screen.getByRole("group", { name: "Teams" }).querySelector("input[value='3']")!,
     );
@@ -340,13 +388,11 @@ it("remembers the group for the next game when a game starts, but not an empty s
     </I18nextProvider>
   );
   const first = render(view());
-  await user.click(screen.getByRole("button", { name: "Start" }));
   await user.click(screen.getByRole("button", { name: "Start game" }));
   expect(written).toEqual([]);
   first.unmount();
 
   render(view());
-  await user.click(screen.getByRole("button", { name: "Start" }));
   await user.type(screen.getByRole("textbox", { name: "Name of team 1" }), "Foxes");
   await user.click(screen.getByRole("button", { name: "Start game" }));
   expect(written).toHaveLength(1);
@@ -372,6 +418,7 @@ it.each([
         />
       </I18nextProvider>,
     );
+    openGameSettings();
     const group = screen.getByRole("group", { name: legend });
     // English is the left option and the chosen one here.
     const radios = within(group).getAllByRole("radio");
@@ -389,5 +436,6 @@ it("does not offer the card language without a way to change it", async () => {
       <TabooSetup cardLanguage="en" cards={tabooStandardCards} roundChoices={[1, 3]} />
     </I18nextProvider>,
   );
+  openGameSettings();
   expect(screen.queryByRole("group", { name: "Card language" })).not.toBeInTheDocument();
 });

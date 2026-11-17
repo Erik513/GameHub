@@ -5,6 +5,7 @@ import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
 import { resultText } from "../testing/scoreRows";
+import { openGameSettings } from "../testing/gameSettings";
 
 async function renderGame() {
   const i18n = await createGameHubI18n("en");
@@ -13,6 +14,7 @@ async function renderGame() {
       <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
     </I18nextProvider>,
   );
+  openGameSettings();
 }
 
 function press(name: string) {
@@ -31,7 +33,7 @@ function reachTiebreak() {
   // Only Easy is chosen at first; the tiebreak tests use cards of every difficulty.
   fireEvent.click(screen.getByRole("checkbox", { name: "Medium" }));
   fireEvent.click(screen.getByRole("checkbox", { name: "Hard" }));
-  press("Start");
+  press("Done");
   press("Start game");
   press("Start round");
   advance(60000);
@@ -194,13 +196,14 @@ describe("Taboo tiebreak", () => {
         <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={twoCards} />
       </I18nextProvider>,
     );
+    openGameSettings();
     reachTiebreak();
     press("Start tiebreak");
     expect(screen.getByRole("alert")).toHaveTextContent("Not enough cards are available");
     expect(screen.getByRole("button", { name: "Start tiebreak" })).toBeDisabled();
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
     press("Back to the main menu");
-    expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Start game" })).toBeVisible();
   });
 
   it("never uses cards of another language for a tiebreak", async () => {
@@ -214,6 +217,7 @@ describe("Taboo tiebreak", () => {
         <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={mixed} />
       </I18nextProvider>,
     );
+    openGameSettings();
     reachTiebreak();
     press("Start tiebreak");
     // Only four English cards exist, which is enough for three cards plus one replacement.
@@ -232,6 +236,7 @@ describe("Taboo tiebreak", () => {
         <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={exactlyThree} />
       </I18nextProvider>,
     );
+    openGameSettings();
     reachTiebreak();
     press("Start tiebreak");
     const attempt = screen.getByRole("region", { name: "Tiebreak attempt" });

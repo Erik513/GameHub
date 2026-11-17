@@ -5,7 +5,8 @@ const cases = [
     language: "en",
     open: "View progress",
     rounds: "Rounds per team",
-    prepare: "Start",
+    settings: "Game settings",
+    done: "Done",
     lineup: "Start game",
     start: "Start round",
     active: "Active round",
@@ -21,7 +22,8 @@ const cases = [
     language: "de",
     open: "Fortschritt ansehen",
     rounds: "Runden pro Team",
-    prepare: "Starten",
+    settings: "Spieleinstellungen",
+    done: "Fertig",
     lineup: "Spiel starten",
     start: "Runde starten",
     active: "Laufende Runde",
@@ -54,12 +56,13 @@ for (const labels of cases) {
     await page.getByRole("button", { name: labels.open }).click();
     if (labels.language === "de") {
       // The German game ends in a tie; switch the tiebreak off to check the shared win.
+      await page.getByRole("button", { name: labels.settings, exact: true }).click();
       await page
         .getByRole("group", { name: "Stechen bei Gleichstand" })
         .getByRole("radio", { name: "Aus" })
         .check();
+      await page.getByRole("button", { name: labels.done, exact: true }).click();
     }
-    await page.getByRole("button", { name: labels.prepare, exact: true }).click();
     await page.getByRole("button", { name: labels.lineup, exact: true }).click();
     await page.getByRole("button", { name: labels.start, exact: true }).click();
     const round = page.getByRole("region", { name: labels.active });
@@ -110,7 +113,8 @@ for (const labels of cases) {
     await expect(round.getByRole("timer")).toBeVisible();
     await page.reload();
     await expect(round).toHaveCount(0);
-    await expect(page.getByRole("button", { name: labels.prepare, exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: labels.lineup, exact: true })).toBeVisible();
+    await page.getByRole("button", { name: labels.settings, exact: true }).click();
     await expect(
       page.getByRole("group", { name: labels.rounds }).getByRole("radio", { name: /3/ }),
     ).toBeChecked();

@@ -5,7 +5,7 @@ const labels = {
     open: "View progress",
     settings: "Settings",
     close: "Close",
-    start: "Start",
+    done: "Done",
     startGame: "Start game",
     startRound: "Start round",
     forbidden: "Forbidden word",
@@ -35,7 +35,7 @@ const labels = {
     open: "Fortschritt ansehen",
     settings: "Einstellungen",
     close: "Schließen",
-    start: "Starten",
+    done: "Fertig",
     startGame: "Spiel starten",
     startRound: "Runde starten",
     forbidden: "Verbotenes Wort",
@@ -242,15 +242,18 @@ for (const language of ["en", "de"] as const) {
       await page.getByRole("dialog").getByRole("button", { name: t.close }).click();
 
       await press(t.open);
-      await check("setup");
-      await page.getByRole("tab", { name: t.categories, exact: true }).click();
-      await check("setup cards");
+      // The game opens on its line-up; the settings are their own screen above it.
+      await check("line-up");
+      // The rules are one tap away on the line-up (the settings have the back arrow in the header).
       await press(t.rules);
       await check("rules dialog");
       await page.getByRole("dialog").getByRole("button", { name: t.close }).click();
+      await press(t.settingsTab);
+      await check("setup");
+      await page.getByRole("tab", { name: t.categories, exact: true }).click();
+      await check("setup cards");
       await page.getByRole("tab", { name: t.settingsTab, exact: true }).click();
-      await press(t.start);
-      await check("line-up");
+      await press(t.done);
       // The same screen with players in the boxes: some drawn into teams, one waiting without a team.
       await page.getByRole("tab", { name: new RegExp(`^${t.players}`) }).click();
       await page
@@ -319,7 +322,6 @@ test("the tiebreak screens fit a small phone in both languages", async ({ page }
     const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
 
     await press(t.open);
-    await press(t.start);
     await press(t.startGame);
     // Nobody scores in the six turns of a short game, so the game ends in a tie.
     for (let turn = 0; turn < 6; turn += 1) {
@@ -379,12 +381,13 @@ test("the race screens fit a small phone in both languages", async ({ page }, te
     const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
 
     await press(t.open);
+    await press(t.settingsTab);
     const mode = page.getByRole("group", { name: race.mode });
     // Bring the group to the middle so the start bar at the bottom does not cover it.
     await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
     await mode.getByRole("radio", { name: race.race }).check({ force: true });
     await check("race setup");
-    await press(t.start);
+    await press(t.done);
     await check("race line-up");
     await press(t.startGame);
     await check("race overview before the first run");
@@ -423,6 +426,7 @@ test("the card editor is one page with two tabs on a small phone in both languag
       await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
     }
     await page.getByRole("button", { name: t.open }).click();
+    await page.getByRole("button", { name: t.settingsTab, exact: true }).click();
     await page.getByRole("tab", { name: t.categories, exact: true }).click();
     await page
       .locator('.kit-tabpanel[data-active="true"]')

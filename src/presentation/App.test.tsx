@@ -7,6 +7,7 @@ import { tabooStandardCards } from "../data/tabooStandardCards";
 import { App } from "./App";
 import type { GameModule } from "./gameModule";
 import { createTabooModule } from "./taboo/tabooModule";
+import { closeGameSettings, openGameSettings } from "./testing/gameSettings";
 
 const languageCases = [
   {
@@ -101,7 +102,6 @@ describe("App", () => {
     // Main window of the game: settings and the way back to the hub are available.
     expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();
     expect(screen.queryByRole("button", { name: "End game" })).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
 
     // During the game: no hub navigation, no settings.
@@ -125,7 +125,7 @@ describe("App", () => {
     await act(() => vi.advanceTimersByTimeAsync(600));
     fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
     expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Start game" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Close game" })).toBeVisible();
   });
@@ -143,7 +143,6 @@ describe("App", () => {
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     // Between turns only the end-game action exists; there is nothing to pause.
     expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
@@ -203,7 +202,7 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "End game" }));
     act(() => void vi.advanceTimersByTime(600));
     fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
-    expect(screen.getByRole("button", { name: "Start" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Start game" })).toBeVisible();
   });
 
   it("tells the players when a restarted round has no new cards left", async () => {
@@ -221,10 +220,11 @@ describe("App", () => {
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    openGameSettings();
     // Only Easy is chosen at first; these cards need all difficulties.
     fireEvent.click(screen.getByRole("checkbox", { name: "Medium" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "Hard" }));
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    closeGameSettings();
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     for (let shown = 0; shown < 5; shown += 1) {
@@ -254,7 +254,6 @@ describe("App", () => {
       </I18nextProvider>,
     );
     fireEvent.click(screen.getByRole("button", { name: "View progress" }));
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     // Three short rounds for two teams: six turns that nobody scores in.
     for (let turn = 0; turn < 6; turn += 1) {

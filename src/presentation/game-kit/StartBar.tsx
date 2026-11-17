@@ -4,10 +4,20 @@ interface StartBarProps {
   readonly children: ReactNode;
   /** Stacks several actions below each other instead of one button with a strip. */
   readonly stacked?: boolean;
+  /** A small icon button left of the main button. */
+  readonly sideAction?: ReactNode;
 }
 
 /** The main action of a screen, pinned to the bottom edge within thumb reach. */
-export function StartBar({ children, stacked = false }: StartBarProps) {
+export function StartBar({ children, stacked = false, sideAction }: StartBarProps) {
+  if (sideAction) {
+    return (
+      <div className="kit-start-bar kit-start-bar--row">
+        <span className="kit-start-bar__side">{sideAction}</span>
+        {children}
+      </div>
+    );
+  }
   return (
     <div className={stacked ? "kit-start-bar kit-start-bar--stack" : "kit-start-bar"}>
       {children}
