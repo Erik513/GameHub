@@ -29,6 +29,8 @@ export const kitTexts = {
   },
   kitPlayers: {
     loadLast: "Load last players",
+    clear: "Clear players",
+    clearConfirm: "Really clear the players? Tap again",
     addLabel: "Add player",
     addPlaceholder: "Player name",
     addButton: "Add",

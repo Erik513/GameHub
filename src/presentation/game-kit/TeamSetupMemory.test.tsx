@@ -129,9 +129,24 @@ it.each([
   },
 );
 
-it("has no clear button for the players", async () => {
-  await renderTeams("en", remembered);
-  expect(screen.queryByRole("button", { name: /Remove all players/ })).not.toBeInTheDocument();
+it.each([
+  ["en", "Clear players", "Really clear the players? Tap again"],
+  ["de", "Spieler leeren", "Spieler wirklich leeren? Nochmal tippen"],
+] as const)("clears the players with a second tap in %s", async (language, clear, confirm) => {
+  const { latest, user } = await renderTeams(language, remembered);
+  await user.click(screen.getAllByRole("tab")[0]!);
+  // Nothing to clear yet: the button stands next to "Load last players" but cannot be used.
+  expect(screen.getByRole("button", { name: clear })).toBeDisabled();
+  await user.click(
+    screen.getByRole("button", { name: /^(Load last players|Letzte Spieler laden)$/ }),
+  );
+  expect(latest.value.playersText).toBe("Anna, Ben");
+  await user.click(screen.getByRole("button", { name: clear }));
+  expect(latest.value.playersText).toBe("Anna, Ben");
+  await pause();
+  await user.click(screen.getByRole("button", { name: confirm }));
+  expect(latest.value).toMatchObject({ assignment: {}, playersText: "" });
+  expect(screen.getByRole("button", { name: clear })).toBeDisabled();
 });
 
 it("cannot load anything when no group was remembered", async () => {

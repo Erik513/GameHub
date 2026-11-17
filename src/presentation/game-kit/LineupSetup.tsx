@@ -31,7 +31,7 @@ function assignmentOf(
  * has a player list and a collapsible box "Teams" when it has teams. A game without teams (everyone
  * plays for himself) shows only the players, a game that does not need names (like Taboo) has the
  * player box collapsed. Each box can take over what was remembered from the last game (of any
- * game; the teams come with their players); the box "Teams" also has a button that clears the team names and the assignment. The
+ * game; the teams come with their players); each box also has a button that clears it (the players, or the team names and the assignment). The
  * buttons are always there and cannot be used when they would change nothing.
  */
 export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
@@ -81,19 +81,30 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
     tabs.push({
       content: (
         <>
-          <Button
-            disabled={!showLoadPlayers}
-            onClick={() =>
-              onChange({
-                ...value,
-                assignment: assignmentOf(value.assignment, savedPlayers),
-                playersText: savedPlayers,
-              })
-            }
-            variant="secondary"
-          >
-            {t("kitPlayers.loadLast")}
-          </Button>
+          <div className="kit-players__actions">
+            <Button
+              disabled={!showLoadPlayers}
+              onClick={() =>
+                onChange({
+                  ...value,
+                  assignment: assignmentOf(value.assignment, savedPlayers),
+                  playersText: savedPlayers,
+                })
+              }
+              variant="secondary"
+            >
+              {t("kitPlayers.loadLast")}
+            </Button>
+            <ConfirmButton
+              armedContent={t("kitSetup.sure")}
+              armedLabel={t("kitPlayers.clearConfirm")}
+              disabled={playerCount === 0}
+              idleLabel={t("kitPlayers.clear")}
+              onConfirm={() => onChange({ ...value, assignment: {}, playersText: "" })}
+            >
+              {t("kitPlayers.clear")}
+            </ConfirmButton>
+          </div>
           <PlayersSetup onChange={onChange} value={value} />
         </>
       ),

@@ -29,6 +29,8 @@ export const kitTexts = {
   },
   kitPlayers: {
     loadLast: "Letzte Spieler laden",
+    clear: "Spieler leeren",
+    clearConfirm: "Spieler wirklich leeren? Nochmal tippen",
     addLabel: "Spieler hinzufügen",
     addPlaceholder: "Name des Spielers",
     addButton: "Hinzufügen",
