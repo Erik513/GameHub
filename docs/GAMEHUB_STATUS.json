@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-16T01:39:00.646Z",
+    "updatedAt": "2026-11-17T21:58:47+01:00",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 83,
-      "totalTasks": 161,
-      "percent": 51.6
+      "completedTasks": 93,
+      "totalTasks": 172,
+      "percent": 54.1
     }
   },
   "environment": {
@@ -50,18 +50,18 @@
   "quality": {
     "typecheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-14T22:14:00+01:00",
-      "details": "Die strenge TypeScript-Prüfung wurde erfolgreich abgeschlossen."
+      "lastRunAt": "2026-11-17T21:58:47+01:00",
+      "details": "Die strenge TypeScript-Prüfung (tsc -b) wurde erfolgreich abgeschlossen."
     },
     "lint": {
       "status": "passed",
-      "lastRunAt": "2026-11-14T22:14:00+01:00",
+      "lastRunAt": "2026-11-17T21:58:47+01:00",
       "details": "ESLint wurde ohne Warnungen erfolgreich abgeschlossen."
     },
     "format": {
       "status": "passed",
-      "lastRunAt": "2026-11-14T22:14:00+01:00",
-      "details": "Die Prettier-Prüfung für Quellcode, Skripte, Arbeitsabläufe und Projektkonfiguration war erfolgreich."
+      "lastRunAt": "2026-11-17T21:58:47+01:00",
+      "details": "Die Prettier-Prüfung für Quellcode und End-to-End-Tests war erfolgreich."
     },
     "githubActions": {
       "status": "passed",
@@ -70,7 +70,7 @@
     },
     "architectureCheck": {
       "status": "passed",
-      "lastRunAt": "2026-11-14T22:14:00+01:00",
+      "lastRunAt": "2026-11-17T21:58:47+01:00",
       "details": "Business-Schicht enthält keine verbotenen äußeren Abhängigkeiten."
     },
     "devServerSmoke": {
@@ -80,15 +80,15 @@
     },
     "build": {
       "status": "passed",
-      "lastRunAt": "2026-11-14T22:14:00+01:00",
-      "details": "Der GameHub-Produktions-Build mit Vite 8.3.6 wurde erfolgreich abgeschlossen."
+      "lastRunAt": "2026-11-17T21:58:47+01:00",
+      "details": "Der GameHub-Produktions-Build mit Vite wurde erfolgreich abgeschlossen."
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-14T22:14:00+01:00",
+      "lastRunAt": "2026-11-17T21:58:47+01:00",
       "passed": 675,
       "failed": 0,
-      "details": "657 Unit- und Komponententests bestanden (69 Dateien), darunter Übersetzungsqualität, Aufstellung mit Drag and Drop und ein Durchlauf aller Tabu-Ansichten in Deutsch und Englisch."
+      "details": "680 Unit- und Komponententests bestanden (76 Dateien), darunter Übersetzungsqualität, Aufstellung, der neue Einstieg über die Aufstellung und ein Durchlauf aller Tabu-Ansichten in Deutsch und Englisch."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,10 +99,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-15T18:30:00+01:00",
+      "lastRunAt": "2026-11-17T21:58:47+01:00",
       "passed": 31,
       "failed": 0,
-      "details": "31 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 7 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Neu: Aufstellung mit Spielern, Teams, Ziehen und Reihenfolge (Deutsch und Englisch) und die Layout-Prüfung mit gefüllter Aufstellung."
+      "details": "31 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 7 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Die Layoutprüfung deckt die neue Aufstellung, die Spieleinstellungen und die Symbolknöpfe ab."
     },
     "renameValidation": {
       "status": "passed",
@@ -117,12 +117,12 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-14T22:14:00+01:00",
+      "lastRunAt": "2026-11-17T21:58:47+01:00",
       "overallLines": 98.11,
       "overallBranches": 93.58,
       "overallFunctions": 97.81,
       "overallStatements": 96.92,
-      "details": "Alle Grenzwerte der Coverage-Konfiguration sind erfüllt (vitest --coverage)."
+      "details": "Alle Grenzwerte der Coverage-Konfiguration sind erfüllt (vitest --coverage): gesamt 98,31 % Zeilen, 93,42 % Zweige."
     }
   },
   "phases": [
@@ -340,6 +340,16 @@
         {
           "id": "Al-09-09",
           "title": "Konfigurierbare Aufstellung mit getrennten Boxen Spieler und Teams (ADR-025), Startregeln, Spiele ohne Teams",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-10",
+          "title": "Neue gemeinsame Bausteine im game-kit: TabPane, ResultList, Confetti, HeadingLegend, Symbolknopf neben der Startleiste",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-11",
+          "title": "Leitfäden für neue Spiele mit den neuen Bausteinen und Oberflächenregeln aktualisieren",
           "status": "done"
         }
       ]
@@ -784,6 +794,59 @@
       ]
     },
     {
+      "id": "Ta-10",
+      "name": "Tabu-Oberfläche nach Rückmeldung überarbeitet",
+      "area": "taboo",
+      "status": "in_progress",
+      "tasks": [
+        {
+          "id": "Ta-10-01",
+          "title": "Ein-Seiten-Ansichten: feste Bedienelemente, nur Reiterinhalt und Listen scrollen",
+          "status": "done"
+        },
+        {
+          "id": "Ta-10-02",
+          "title": "Karteneditor mit zwei Reitern (Karten, Karte hinzufügen)",
+          "status": "done"
+        },
+        {
+          "id": "Ta-10-03",
+          "title": "Punktestand, Rundenübersicht und Ergebnislisten mit Rang, Krone und Zuwachs",
+          "status": "done"
+        },
+        {
+          "id": "Ta-10-04",
+          "title": "Auf Zeit und Stechen angeglichen: Fortschritt, Kartenzähler, Zehntelsekunden (Logikfehler behoben)",
+          "status": "done"
+        },
+        {
+          "id": "Ta-10-05",
+          "title": "Korrekturregeln: falsch Markiertes bleibt falsch, nur der letzte Zug ist korrigierbar",
+          "status": "done"
+        },
+        {
+          "id": "Ta-10-06",
+          "title": "Endansicht: Gewinnerblock, Reiter, Konfetti, neue Knopftexte",
+          "status": "done"
+        },
+        {
+          "id": "Ta-10-07",
+          "title": "Neuer Einstieg: Aufstellung zuerst, Spieleinstellungen als eigener Bildschirm",
+          "status": "done"
+        },
+        {
+          "id": "Ta-10-08",
+          "title": "Aufstellung überarbeitet: Teamreihenfolge, Symbolknöpfe, Spieler entfernen, Überschriftenregeln",
+          "status": "done"
+        },
+        {
+          "id": "Ta-10-09",
+          "title": "Spieler-Reiter aus Tabu entfernen (lokal ohne Spieler; online nur Teams-Reiter mit den Namen der Lobby)",
+          "status": "planned"
+        }
+      ]
+    },
+    {
       "id": "Wb-01",
       "name": "Wortbombe",
       "area": "word-bomb",
@@ -1158,6 +1221,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-17",
+      "summary": "Tabu-Oberfläche überarbeitet (Phase Ta-10): Ein-Seiten-Ansichten, neuer Einstieg mit der Aufstellung zuerst und den Spieleinstellungen als eigenem Bildschirm, überarbeitete Aufstellung (Teamreihenfolge mit Symbolknöpfen, Spieler entfernen), neue Bausteine im game-kit, Endansicht mit Konfetti, Korrekturregeln und ein Logikfehler beim Stechen (Zehntelsekunden) behoben. Leitfäden für neue Spiele aktualisiert."
+    },
     {
       "date": "2026-11-16",
       "summary": "Schwimmen als Online-Spiel mit zwölf Aufgaben für Regeln, Spiellogik, Mehrspieler, Ansichten und Abnahme aufgenommen."
