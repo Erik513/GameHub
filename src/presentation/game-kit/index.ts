@@ -2,6 +2,7 @@ export { ActionRow } from "./ActionRow";
 export { Confetti } from "./Confetti";
 export { ChoiceGroup, type ChoiceOption } from "./ChoiceGroup";
 export { InfoButton, type InfoContent } from "./InfoButton";
+export { InfoLegend } from "./InfoLegend";
 export { LineupScreen } from "./LineupScreen";
 export { LineupSetup } from "./LineupSetup";
 export { ManageScreen } from "./ManageScreen";

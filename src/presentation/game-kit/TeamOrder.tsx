@@ -8,7 +8,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { moveTeam, normalizeOrder, randomOrder } from "../../business/shared/teamOrder";
 import { Button, Icon } from "../components";
-import { InfoButton } from "./InfoButton";
+import { InfoLegend } from "./InfoLegend";
 
 interface TeamOrderProps {
   /** Number of teams of the game. */
@@ -31,7 +31,6 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
   const list = useRef<HTMLOListElement>(null);
   // The team that is being dragged.
   const [dragged, setDragged] = useState<number>();
-  const [infoOpen, setInfoOpen] = useState(false);
   const titleId = useId();
 
   /** The place under the pointer, from the rows as they are on the screen right now. */
@@ -77,25 +76,17 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
   }
 
   return (
-    <fieldset aria-labelledby={titleId} className="kit-choice-group kit-choice-group--info">
-      <legend className="kit-order__legend">
-        <button
-          className="kit-order__title"
-          id={titleId}
-          onClick={() => setInfoOpen(true)}
-          type="button"
-        >
-          {t("kitTeams.orderLegend")}
-        </button>
-        <InfoButton
-          className="kit-info-button--inline"
-          closeLabel={t("settings.close")}
-          label={t("kitSetup.infoLabel", { setting: t("kitTeams.orderLegend") })}
-          onOpenChange={setInfoOpen}
-          open={infoOpen}
-          text={t("kitTeams.orderInfo")}
-          title={t("kitTeams.orderLegend")}
-        />
+    <fieldset aria-labelledby={titleId} className="kit-choice-group">
+      <InfoLegend
+        id={titleId}
+        info={{
+          closeLabel: t("settings.close"),
+          label: t("kitSetup.infoLabel", { setting: t("kitTeams.orderLegend") }),
+          text: t("kitTeams.orderInfo"),
+          title: t("kitTeams.orderLegend"),
+        }}
+        legend={t("kitTeams.orderLegend")}
+      >
         <Button
           aria-label={t("kitTeams.orderRandom")}
           className="kit-heading-button kit-order__shuffle"
@@ -105,21 +96,23 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
         >
           <Icon name="shuffle" />
         </Button>
-      </legend>
+      </InfoLegend>
       <ol className="kit-order" ref={list}>
         {current.map((team, place) => (
           <li className="kit-order__row" data-dragging={dragged === team || undefined} key={team}>
             <span className="kit-order__place">{place + 1}.</span>
-            <span className="kit-order__name">{teamName(team)}</span>
-            <button
-              aria-label={t("kitTeams.orderMove", { place: place + 1, team: teamName(team) })}
-              className="kit-order__handle"
-              onKeyDown={keyMove(place)}
-              onPointerDown={startDrag(team)}
-              type="button"
-            >
-              <Icon name="grip" />
-            </button>
+            <div className="kit-order__box">
+              <span className="kit-order__name">{teamName(team)}</span>
+              <button
+                aria-label={t("kitTeams.orderMove", { place: place + 1, team: teamName(team) })}
+                className="kit-order__handle"
+                onKeyDown={keyMove(place)}
+                onPointerDown={startDrag(team)}
+                type="button"
+              >
+                <Icon name="grip" />
+              </button>
+            </div>
           </li>
         ))}
       </ol>

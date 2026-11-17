@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { InfoButton, type InfoAction, type InfoContent } from "./InfoButton";
+import { InfoLegend } from "./InfoLegend";
 
 export interface ChoiceOption {
   readonly value: string;
@@ -17,7 +18,7 @@ export interface ChoiceOption {
 interface ChoiceGroupProps {
   /** Keeps the legend for screen readers only, for example for a switch between two views. */
   readonly hideLegend?: boolean;
-  /** Adds an info button next to the legend that explains the setting. */
+  /** Adds an info button directly next to the legend (a tap on the legend opens it, too). */
   readonly info?: InfoContent;
   /** The chosen value at first; with `multiple` and no "all" option a list of values. */
   readonly initial: string | readonly string[];
@@ -51,6 +52,7 @@ export function ChoiceGroup({
   options,
   value: controlled,
 }: ChoiceGroupProps) {
+  const legendId = useId();
   const [selected, setSelected] = useState<readonly string[]>(
     typeof initial === "string" ? [initial] : initial,
   );
@@ -76,9 +78,15 @@ export function ChoiceGroup({
   }
 
   return (
-    <fieldset className={info ? "kit-choice-group kit-choice-group--info" : "kit-choice-group"}>
-      <legend className={hideLegend ? "visually-hidden" : undefined}>{legend}</legend>
-      {info && <InfoButton {...info} />}
+    <fieldset
+      aria-labelledby={info && !hideLegend ? legendId : undefined}
+      className="kit-choice-group"
+    >
+      {info && !hideLegend ? (
+        <InfoLegend id={legendId} info={info} legend={legend} />
+      ) : (
+        <legend className={hideLegend ? "visually-hidden" : undefined}>{legend}</legend>
+      )}
       <div
         className={`kit-choice-grid kit-choice-grid--equal${multiple ? " kit-choice-grid--separate" : ""}`}
         style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
