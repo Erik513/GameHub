@@ -1,9 +1,5 @@
 import type { useTranslation } from "react-i18next";
-import type {
-  Difficulty,
-  GameConfiguration,
-  ValidationIssue,
-} from "../../business/games/taboo/model";
+import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
 import { defaultRaceRounds } from "../../business/games/taboo/race";
 import {
   TIEBREAK_CARD_COUNT,
@@ -29,6 +25,22 @@ export type SetupState = Extract<ReturnType<typeof createTabooGame>, { valid: tr
 export type EndedState = Extract<TabooState, { status: "roundEnded" }>;
 export type FinishedState = Extract<TabooState, { status: "gameEnded" }>;
 export type TiebreakView = Extract<TabooState, { status: "tiebreak" }>;
+
+/** What the tiebreak screens read of a game: the teams and the tiebreak itself. Every mode has it. */
+export interface TiebreakData {
+  readonly attempts: readonly TiebreakAttempt[];
+  readonly configuration: {
+    readonly teams: readonly { readonly id: string; readonly name: string }[];
+  };
+  readonly contenders: readonly number[];
+}
+
+/** A finished game as the tiebreak screens read it: the teams and the attempts of the tiebreak. */
+export interface TiebreakFinished {
+  readonly configuration: TiebreakData["configuration"];
+  readonly tiebreak?: readonly TiebreakAttempt[] | undefined;
+  readonly winnerIds: readonly string[];
+}
 
 /** What the turn overview needs: the game, its scores and the turn that is up next (if any). */
 export interface OverviewData {
@@ -56,7 +68,7 @@ export function teamNameFrom(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-export function tiebreakTeamName(state: TiebreakView) {
+export function tiebreakTeamName(state: TiebreakData) {
   const teamIndex = state.contenders[state.attempts.length];
   return teamIndex === undefined ? "" : (state.configuration.teams[teamIndex]?.name ?? "");
 }
@@ -64,7 +76,7 @@ export function tiebreakTeamName(state: TiebreakView) {
 /** The cards of every finished tiebreak attempt, ready for corrections. */
 export function tiebreakReviews(
   attempts: readonly TiebreakAttempt[],
-  configuration: GameConfiguration,
+  configuration: TiebreakData["configuration"],
 ): readonly AttemptReview[] {
   return attempts.map((attempt) => ({
     id: String(attempt.teamIndex),
@@ -75,7 +87,7 @@ export function tiebreakReviews(
   }));
 }
 
-export function tiebreakRows(state: TiebreakView): readonly TiebreakRow[] {
+export function tiebreakRows(state: TiebreakData): readonly TiebreakRow[] {
   return state.contenders.map((teamIndex) => {
     const team = state.configuration.teams[teamIndex];
     const attempt = state.attempts.find((candidate) => candidate.teamIndex === teamIndex);
@@ -109,6 +121,18 @@ export function roundOption(
     : { value: String(value), label: String(value) };
 }
 
+/** The names of the lengths of a game of the mode "Auf Zeit": 1, 3 or 5 rounds are short, medium or long. */
+export function raceRoundOption(
+  value: number,
+  t: ReturnType<typeof useTranslation>["t"],
+): ChoiceOption {
+  const names: Record<number, "short" | "medium" | "long"> = { 1: "short", 3: "medium", 5: "long" };
+  const name = names[value];
+  return name
+    ? { value: String(value), label: t(`tabooSetup.roundOptions.${name}`), hint: String(value) }
+    : { value: String(value), label: String(value) };
+}
+
 /** The settings of the main menu, read once when "Start" is pressed. */
 export interface TabooSettings {
   readonly cardSource: (typeof cardSources)[number];
@@ -120,6 +144,8 @@ export interface TabooSettings {
   readonly mode: TabooMode;
   /** Rounds of the mode "Auf Zeit": every team plays one run per round. */
   readonly raceRounds: number;
+  /** Whether a tie of the race is decided by a tiebreak. */
+  readonly raceTiebreak: boolean;
   readonly raceTarget: number;
   readonly rounds: number | "unlimited";
   /** Skips per round; undefined means as many as you like. */
@@ -152,6 +178,7 @@ export function readTabooSettings(
     raceRounds:
       Number.isSafeInteger(raceRounds) && raceRounds >= 1 ? raceRounds : defaultRaceRounds,
     raceTarget: Number(data.get("raceTarget")),
+    raceTiebreak: data.get("raceTiebreak") !== "off",
     rounds: rounds === "unlimited" ? "unlimited" : Number(rounds),
     skips: skips === "unlimited" || skips === null ? undefined : Number(skips),
     tiebreak: data.get("tiebreak") !== "off",

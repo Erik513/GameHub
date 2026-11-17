@@ -16,6 +16,7 @@ const classic: TabooSettings = {
   duration: 60,
   mode: "classic",
   raceRounds: 3,
+  raceTiebreak: true,
   raceTarget: 5,
   rounds: 3,
   skips: 1,

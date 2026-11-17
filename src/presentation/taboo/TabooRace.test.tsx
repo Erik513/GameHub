@@ -13,6 +13,11 @@ const texts = {
     race: "Race",
     target: "Cards per team per round",
     rounds: "Rounds per team",
+    tiebreak: "Tiebreak on a tie",
+    tieNext: "A tie! The tiebreak is next.",
+    startTiebreak: "Start tiebreak",
+    tiebreakTitle: "Tiebreak",
+    tiebreakResults: "Tiebreak results",
     start: "Start",
     startGame: "Start game",
     overview: "Race overview",
@@ -36,6 +41,11 @@ const texts = {
     race: "Auf Zeit",
     target: "Karten pro Team pro Runde",
     rounds: "Runden pro Team",
+    tiebreak: "Stechen bei Gleichstand",
+    tieNext: "Unentschieden! Als Nächstes das Stechen.",
+    startTiebreak: "Stechen starten",
+    tiebreakTitle: "Stechen",
+    tiebreakResults: "Ergebnis Stechen",
     start: "Starten",
     startGame: "Spiel starten",
     overview: "Übersicht Auf Zeit",
@@ -74,37 +84,50 @@ async function startRace(language: "en" | "de", rounds: number | null = 1) {
   const mode = screen.getByRole("group", { name: text.mode });
   await user.click(within(mode).getByRole("radio", { name: text.race }));
   // The tests play one run per team unless they ask for more rounds.
-  if (rounds !== null) {
-    await user.click(
-      within(screen.getByRole("group", { name: text.rounds })).getByRole("radio", {
-        name: String(rounds),
-      }),
-    );
-  }
+  if (rounds !== null) await choose(user, text.rounds, rounds);
   return { text, user };
+}
+
+/** Chooses a button of a group by its value (the rounds are named, for example "Short" for 1). */
+async function choose(user: ReturnType<typeof userEvent.setup>, group: string, value: number) {
+  const radio = screen
+    .getByRole("group", { name: group })
+    .querySelector<HTMLInputElement>(`input[value='${value}']`);
+  if (!radio) throw new Error(`No choice ${value} in ${group}.`);
+  await user.click(radio);
 }
 
 it.each(["en", "de"] as const)(
   "offers the race settings instead of the round settings in %s",
   async (language) => {
     const { text, user } = await startRace(language, null);
-    // The race has its own rounds (1 to 5, three at first), then the cards per team per round, in
-    // the same order as the classic mode: rounds first.
+    // The race has its own rounds (short 1, medium 3, long 5; one at first), then the cards per team
+    // per round and the tiebreak, in the same order as the classic mode: rounds first.
     const rounds = screen.getByRole("group", { name: text.rounds });
     expect(
       within(rounds)
         .getAllByRole("radio")
         .map((radio) => (radio as HTMLInputElement).value),
-    ).toEqual(["1", "2", "3", "4", "5"]);
-    expect(within(rounds).getByRole("radio", { name: "3" })).toBeChecked();
+    ).toEqual(["1", "3", "5"]);
+    expect(within(rounds).getByRole("radio", { name: /^(Short|Kurz)/ })).toBeChecked();
+    expect(within(rounds).getByRole("radio", { name: /^(Medium|Mittel)/ })).not.toBeChecked();
+    expect(within(rounds).getByRole("radio", { name: /^(Long|Lang)/ })).not.toBeChecked();
     const target = screen.getByRole("group", { name: text.target });
     expect(rounds.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(
       within(target)
         .getAllByRole("radio")
         .map((radio) => (radio as HTMLInputElement).value),
-    ).toEqual(["5", "10", "15"]);
-    expect(within(target).getByRole("radio", { name: "5" })).toBeChecked();
+    ).toEqual(["3", "5", "7"]);
+    // Three cards at first.
+    expect(within(target).getByRole("radio", { name: "3" })).toBeChecked();
+    // The tiebreak is set like in the classic mode, on at first, and comes last.
+    const tiebreak = screen.getByRole("group", { name: text.tiebreak });
+    expect(
+      target.compareDocumentPosition(tiebreak) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(within(tiebreak).getAllByRole("radio")).toHaveLength(2);
+    expect(within(tiebreak).getByRole("radio", { name: /^(On|An)$/ })).toBeChecked();
     // Going back to the classic mode brings the round settings back.
     await user.click(
       within(screen.getByRole("group", { name: text.mode })).getByRole("radio", {
@@ -128,9 +151,7 @@ it.each(["en", "de"] as const)(
     let now = 1_000_000;
     vi.spyOn(Date, "now").mockImplementation(() => now);
     const { text, user } = await startRace(language);
-    await user.click(
-      within(screen.getByRole("group", { name: text.target })).getByRole("radio", { name: "5" }),
-    );
+    await choose(user, text.target, 5);
     closeGameSettings();
     await user.click(screen.getByRole("button", { name: text.startGame }));
 
@@ -196,22 +217,25 @@ it("allows one skip per run and replaces a card with a forbidden word", async ()
 });
 
 it.each(["en", "de"] as const)(
-  "plays two rounds and adds up the times of all runs in %s",
+  "plays three rounds and adds up the times of all runs in %s",
   async (language) => {
     let now = 1_000_000;
     vi.spyOn(Date, "now").mockImplementation(() => now);
-    const { text, user } = await startRace(language, 2);
+    const { text, user } = await startRace(language, 3);
+    await choose(user, text.target, 5);
     closeGameSettings();
     await user.click(screen.getByRole("button", { name: text.startGame }));
 
-    // Round 1: Team 1 needs 5 s, Team 2 3 s. Round 2: Team 1 1 s, Team 2 6 s. Team 2 wins the first
-    // round, but Team 1 has the shorter total time (6 s against 9 s).
-    const runTimes = [5, 3, 1, 6];
+    // Round 1: Team 1 needs 5 s, Team 2 3 s. Round 2: 1 s and 6 s. Round 3: 2 s and 4 s. Team 2 wins
+    // the first round, but Team 1 has the shorter total time (8 s against 13 s).
+    const runTimes = [5, 3, 1, 6, 2, 4];
     for (const [index, seconds] of runTimes.entries()) {
       const overview = await screen.findByRole("region", { name: text.overview });
       // The overview says which round is next and shows the total times so far.
       expect(overview).toHaveTextContent(
-        language === "en" ? `Round ${index < 2 ? 1 : 2}/2` : `Runde ${index < 2 ? 1 : 2}/2`,
+        language === "en"
+          ? `Round ${Math.floor(index / 2) + 1}/3`
+          : `Runde ${Math.floor(index / 2) + 1}/3`,
       );
       await user.click(screen.getByRole("button", { name: text.startRun }));
       for (let card = 0; card < 5; card += 1) {
@@ -237,22 +261,106 @@ it.each(["en", "de"] as const)(
       "listitem",
     );
     expect(rows[0]).toHaveTextContent("Team 1");
-    expect(rows[0]).toHaveTextContent(language === "en" ? "6.0 s" : "6,0 s");
-    expect(rows[1]).toHaveTextContent(language === "en" ? "9.0 s" : "9,0 s");
+    expect(rows[0]).toHaveTextContent(language === "en" ? "8.0 s" : "8,0 s");
+    expect(rows[1]).toHaveTextContent(language === "en" ? "13.0 s" : "13,0 s");
     expect(rows[0]).toHaveAttribute("data-winner", "true");
   },
 );
 
+/** Plays the three cards of a run, every card after the given number of seconds. */
+async function playCards(
+  user: ReturnType<typeof userEvent.setup>,
+  clock: { now: number },
+  seconds: number,
+  count: number,
+  button: RegExp,
+) {
+  for (let card = 0; card < count; card += 1) {
+    clock.now += seconds * 1000;
+    await user.click(screen.getByRole("button", { name: button }));
+  }
+}
+
+it.each(["en", "de"] as const)(
+  "decides a tied race with a tiebreak of three cards in %s",
+  async (language) => {
+    const clock = { now: 5_000_000 };
+    vi.spyOn(Date, "now").mockImplementation(() => clock.now);
+    const { text, user } = await startRace(language, 1);
+    await choose(user, text.target, 3);
+    closeGameSettings();
+    await user.click(screen.getByRole("button", { name: text.startGame }));
+    const correct = new RegExp(`^${text.correct}`);
+
+    // Both teams need 3 s: the game is tied.
+    for (let team = 0; team < 2; team += 1) {
+      await user.click(await screen.findByRole("button", { name: text.startRun }));
+      await playCards(user, clock, 1, 3, correct);
+    }
+    const overview = await screen.findByRole("region", { name: text.overview });
+    expect(overview).toHaveTextContent(text.tieNext);
+    // The button leads into the tiebreak, it does not promise the result.
+    expect(screen.queryByRole("button", { name: text.show })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: text.startTiebreak }));
+
+    // The overview of the tiebreak, then one attempt per tied team: Team 1 needs 9 s, Team 2 6 s.
+    const tiebreak = await screen.findByRole("region", { name: text.tiebreakTitle });
+    expect(tiebreak).toBeVisible();
+    for (const seconds of [3, 2]) {
+      await user.click(screen.getByRole("button", { name: text.startTiebreak }));
+      await playCards(user, clock, seconds, 3, correct);
+    }
+
+    // After the last attempt its cards can be checked before the final screen.
+    await user.click(await screen.findByRole("button", { name: text.show }));
+    const result = await screen.findByRole("region", { name: text.result });
+    expect(within(result).getByRole("status")).toHaveTextContent("Team 2");
+    // The tiebreak decided the game, so its tab is open first.
+    expect(within(result).getByRole("tab", { name: text.tiebreakTitle })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    const rows = within(
+      within(result).getByRole("list", { name: text.tiebreakResults }),
+    ).getAllByRole("listitem");
+    expect(rows[0]).toHaveTextContent("Team 2");
+    expect(rows[0]).toHaveTextContent(language === "en" ? "6.0 s" : "6,0 s");
+  },
+);
+
+it("goes straight to the final result of a tied race when the tiebreak is switched off", async () => {
+  const clock = { now: 6_000_000 };
+  vi.spyOn(Date, "now").mockImplementation(() => clock.now);
+  const { text, user } = await startRace("en", 1);
+  await choose(user, text.target, 3);
+  await user.click(
+    within(screen.getByRole("group", { name: text.tiebreak })).getByRole("radio", { name: "Off" }),
+  );
+  closeGameSettings();
+  await user.click(screen.getByRole("button", { name: text.startGame }));
+  for (let team = 0; team < 2; team += 1) {
+    await user.click(await screen.findByRole("button", { name: text.startRun }));
+    await playCards(user, clock, 1, 3, new RegExp(`^${text.correct}`));
+  }
+  const overview = await screen.findByRole("region", { name: text.overview });
+  expect(overview).not.toHaveTextContent(text.tieNext);
+  await user.click(screen.getByRole("button", { name: text.show }));
+  const result = await screen.findByRole("region", { name: text.result });
+  // A shared win: both teams are named.
+  expect(within(result).getByRole("status")).toHaveTextContent("Team 1, Team 2");
+});
+
 it("puts the hard cards last in a run and gives every run the same mix", async () => {
   vi.spyOn(Date, "now").mockImplementation(() => 3_000_000);
-  const { text, user } = await startRace("en", 2);
+  const { text, user } = await startRace("en", 3);
+  await choose(user, text.target, 5);
   await user.click(screen.getByRole("checkbox", { name: "Medium" }));
   await user.click(screen.getByRole("checkbox", { name: "Hard" }));
   closeGameSettings();
   await user.click(screen.getByRole("button", { name: text.startGame }));
 
-  // Four runs (two teams, two rounds): in each one the cards go from easy to hard.
-  for (let runNumber = 0; runNumber < 4; runNumber += 1) {
+  // Six runs (two teams, three rounds): in each one the cards go from easy to hard.
+  for (let runNumber = 0; runNumber < 6; runNumber += 1) {
     await user.click(await screen.findByRole("button", { name: text.startRun }));
     const levels: string[] = [];
     for (let card = 0; card < 5; card += 1) {
@@ -285,8 +393,9 @@ it("keeps the settings of both modes when the mode is changed and changed back",
   // Only Easy is chosen at first; Medium is added.
   await user.click(box("Difficulty (several possible)", "Medium"));
   await user.click(radio("Game mode", "Race"));
-  await user.click(radio("Cards per team per round", "15"));
-  await user.click(radio("Rounds per team", "4"));
+  await user.click(radio("Cards per team per round", "7"));
+  await user.click(radio("Rounds per team", /^Long/));
+  await user.click(radio("Tiebreak on a tie", "Off"));
 
   await user.click(radio("Game mode", "Classic"));
   expect(radio("Rounds per team", /^Long/)).toBeChecked();
@@ -294,8 +403,9 @@ it("keeps the settings of both modes when the mode is changed and changed back",
   expect(box("Difficulty (several possible)", "Medium")).toBeChecked();
 
   await user.click(radio("Game mode", "Race"));
-  expect(radio("Cards per team per round", "15")).toBeChecked();
-  expect(radio("Rounds per team", "4")).toBeChecked();
+  expect(radio("Cards per team per round", "7")).toBeChecked();
+  expect(radio("Rounds per team", /^Long/)).toBeChecked();
+  expect(radio("Tiebreak on a tie", "Off")).toBeChecked();
   expect(box("Difficulty (several possible)", "Medium")).toBeChecked();
 });
 
@@ -469,6 +579,8 @@ it.each([
     let now = 1_000_000;
     vi.spyOn(Date, "now").mockImplementation(() => now);
     const { text, user } = await startRace(language);
+    // The test plays five cards per run.
+    await choose(user, text.target, 5);
     closeGameSettings();
     await user.click(screen.getByRole("button", { name: text.startGame }));
     // The first team needs 5 seconds, the second one 3 seconds and wins.

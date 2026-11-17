@@ -4,10 +4,10 @@ import { Button } from "../components";
 import { ScoreScreen } from "../game-kit";
 import { TabooAttemptReviews } from "./TabooAttemptReviews";
 import { TabooTiebreakResults } from "./TabooTiebreakResults";
-import { tiebreakReviews, type FinishedState } from "./tabooSetupModel";
+import { tiebreakReviews, type TiebreakFinished } from "./tabooSetupModel";
 
 interface TabooTiebreakWrapUpProps {
-  finished: FinishedState;
+  finished: TiebreakFinished;
   onRevise: (teamIndex: number, cardId: string, outcome: TabooOutcome) => void;
   onShow: () => void;
 }

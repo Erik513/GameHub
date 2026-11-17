@@ -4,9 +4,9 @@ import type { TabooCard } from "../../business/games/taboo/model";
 import {
   TIEBREAK_CARD_COUNT,
   TIEBREAK_LIMIT_SECONDS,
-  type TabooEvent,
   type TabooOutcome,
   type TiebreakActive,
+  type TiebreakEvent,
 } from "../../business/games/taboo/stateMachine";
 import { Button, ConfirmButton } from "../components";
 import { TimerHud, useStopwatch } from "../game-kit";
@@ -22,7 +22,7 @@ const limitMs = TIEBREAK_LIMIT_SECONDS * 1000;
 
 interface TabooTiebreakRoundProps {
   active: TiebreakActive;
-  dispatch: (event: TabooEvent) => void;
+  dispatch: (event: TiebreakEvent) => void;
   onResume: () => void;
   /** Start of the attempt and the time spent paused, so pauses do not count. */
   pausedAt: number | undefined;
@@ -59,7 +59,7 @@ export function TabooTiebreakRound({
   if (!card) return null;
 
   function answer(outcome: TabooOutcome) {
-    const event: TabooEvent = {
+    const event: TiebreakEvent = {
       type: "answerTiebreak",
       outcome,
       elapsedMs: readClock.current() - startedAt - pausedMs,

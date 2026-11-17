@@ -318,8 +318,8 @@ describe("App", () => {
     act(() => void vi.advanceTimersByTime(2000));
     expect(screen.getByRole("timer")).toHaveTextContent("5.0");
 
-    // Solving the five cards now gives 5.0 s: the 20 seconds of the pause are not part of the time.
-    for (let card = 0; card < 5; card += 1) {
+    // Solving the three cards now gives 5.0 s: the 20 seconds of the pause are not part of the time.
+    for (let card = 0; card < 3; card += 1) {
       fireEvent.click(screen.getByRole("button", { name: /^Correct/ }));
     }
     const overview = screen.getByRole("region", { name: "Race overview" });

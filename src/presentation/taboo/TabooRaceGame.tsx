@@ -6,6 +6,7 @@ import {
   getRaceTurn,
   racePlayedCardIds,
   raceRounds,
+  raceTiebreakFollows,
   raceTotals,
   transitionRace,
   type RaceEvent,
@@ -18,6 +19,8 @@ import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooAttemptReviews } from "./TabooAttemptReviews";
 import { TabooRaceResults, type RaceRow } from "./TabooRaceResults";
 import { TabooRaceRun } from "./TabooRaceRun";
+import { TabooRaceTiebreak } from "./TabooRaceTiebreak";
+import { TabooTiebreakResults } from "./TabooTiebreakResults";
 
 interface Clock {
   readonly pausedAt?: number | undefined;
@@ -26,6 +29,8 @@ interface Clock {
 }
 
 interface TabooRaceGameProps {
+  /** Every card the game knows; the tiebreak takes its cards of the card language from here. */
+  cards: readonly TabooCard[];
   /** The difficulties of the game; every team gets the same mix of them. */
   difficulties: readonly Difficulty[];
   /** The game as it was set up, in the overview before the first run. */
@@ -39,11 +44,12 @@ interface TabooRaceGameProps {
 }
 
 /**
- * The whole game of the mode "Auf Zeit": overview before every run, the run with the stopwatch and
- * the final total times. Every round each team plays one run. The rules are in `race.ts`; this view
- * only drives them with the clock.
+ * The whole game of the mode "Auf Zeit": overview before every run, the run with the stopwatch, the
+ * tiebreak when the win is tied and the final total times. Every round each team plays one run. The
+ * rules are in `race.ts` and `tiebreak.ts`; this view only drives them with the clock.
  */
 export function TabooRaceGame({
+  cards,
   difficulties,
   initial,
   onExit,
@@ -76,10 +82,15 @@ export function TabooRaceGame({
     });
   }, []);
 
+  // A run and a tiebreak attempt are timed, so both can be paused.
+  const attemptGoing =
+    running !== undefined || (state.status === "tiebreak" && state.tiebreak.active);
   useGameExit(
     true,
     onExit,
-    running && clock ? { paused: clock.pausedAt !== undefined, onToggle: togglePause } : undefined,
+    attemptGoing && clock
+      ? { paused: clock.pausedAt !== undefined, onToggle: togglePause }
+      : undefined,
   );
 
   function beginRun() {
@@ -123,6 +134,26 @@ export function TabooRaceGame({
         startedAt={clock.startedAt}
         target={configuration.target}
         teamName={teamName(running.active.teamIndex)}
+      />
+    );
+  }
+
+  // The tiebreak: its overview, its attempts and a look at the last one before the final screen.
+  if (
+    state.status === "tiebreak" ||
+    (state.status === "finished" && state.tiebreak && !resultShown)
+  ) {
+    return (
+      <TabooRaceTiebreak
+        cards={cards}
+        clock={clock}
+        dispatch={dispatch}
+        onNewSetup={onNewSetup}
+        onResume={togglePause}
+        onShowResult={() => setResultShown(true)}
+        onStartClock={() => setClock({ pausedMs: 0, startedAt: Date.now() })}
+        pool={pool}
+        state={state}
       />
     );
   }
@@ -195,6 +226,29 @@ export function TabooRaceGame({
         ariaLabel={t("tabooResult.title")}
         celebrate
         eyebrow={t("tabooResult.title")}
+        {...(state.tiebreak
+          ? {
+              extraTab: {
+                content: (
+                  <TabooTiebreakResults
+                    rows={state.tiebreak.map((attempt) => {
+                      const team = configuration.teams[attempt.teamIndex];
+                      return {
+                        id: team?.id ?? String(attempt.teamIndex),
+                        name: team?.name ?? "",
+                        result: { solved: attempt.solved, timeMs: attempt.timeMs },
+                        winner: team ? winners.includes(team.id) : false,
+                      };
+                    })}
+                  />
+                ),
+                label: t("tabooTiebreak.title"),
+              },
+              // The tiebreak decided the game, so its result is shown first.
+              extraTabFirst: true,
+              tabLabel: finalTitle,
+            }
+          : {})}
         stackedActions
         winner={{
           label: t(winners.length === 1 ? "tabooResult.winner" : "tabooResult.tie"),
@@ -204,7 +258,7 @@ export function TabooRaceGame({
             .join(", "),
         }}
       >
-        <h2>{finalTitle}</h2>
+        {!state.tiebreak && <h2>{finalTitle}</h2>}
         <TabooRaceResults label={finalTitle} rows={rows} />
       </ScoreScreen>
     );
@@ -216,14 +270,21 @@ export function TabooRaceGame({
   const rows = ownRows(comparable);
   const timesLabel = t(rounds > 1 ? "tabooRace.totalTimes" : "tabooRace.times");
   const next = turn?.teamIndex;
+  // With a tie at the top the game goes on with the tiebreak, so the button must not promise the result.
+  const toTiebreak = raceTiebreakFollows(state);
 
   return (
     <ScoreScreen
       actions={
         <>
           {next === undefined ? (
-            <Button variant="success" onClick={() => setResultShown(true)}>
-              {t("tabooResult.show")}
+            <Button
+              variant="success"
+              onClick={() =>
+                toTiebreak ? dispatch({ type: "startTiebreak" }) : setResultShown(true)
+              }
+            >
+              {t(toTiebreak ? "tabooTiebreak.start" : "tabooResult.show")}
             </Button>
           ) : (
             <>
@@ -243,6 +304,7 @@ export function TabooRaceGame({
           ? t("tabooRound.allRoundsPlayed")
           : t("tabooRound.roundOf", { round: turn.round, total: rounds })
       }
+      intro={toTiebreak ? <p>{t("tabooRound.tieNext")}</p> : undefined}
       progress={{ max: configuration.teams.length * rounds, value: state.attempts.length }}
       {...(reviewTab ? { extraTab: reviewTab, tabLabel: timesLabel } : {})}
     >

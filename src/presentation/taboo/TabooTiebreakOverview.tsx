@@ -8,7 +8,7 @@ import {
   tiebreakRows,
   tiebreakTeamName,
   tiebreakReviews,
-  type TiebreakView,
+  type TiebreakData,
 } from "./tabooSetupModel";
 
 interface TabooTiebreakOverviewProps {
@@ -16,7 +16,7 @@ interface TabooTiebreakOverviewProps {
   onBegin: () => void;
   onNewSetup: () => void;
   onRevise: (teamIndex: number, cardId: string, outcome: TabooOutcome) => void;
-  state: TiebreakView;
+  state: TiebreakData;
 }
 
 /** Between two tiebreak attempts: rules, results so far and who plays next. */

@@ -7,6 +7,7 @@ import {
   getRaceTurn,
   maxRaceRounds,
   maxRaceTarget,
+  raceTiebreakFollows,
   racePlayedCardIds,
   raceRounds,
   raceTimeTenths,
@@ -416,5 +417,182 @@ describe("a game with several rounds", () => {
     state = run(state, [{ type: "beginRun", cards: [card("a")] }, { type: "restartRun" }]);
     expect(state.usedCardIds).toEqual(["a"]);
     expect(transitionRace(state, { type: "beginRun", cards: [card("a")] })).toBe(state);
+  });
+});
+
+describe("the tiebreak of a tied race", () => {
+  const three = [...teams, { id: "green", name: "Green" }];
+  /** Plays one run per team with one card each; the times are given per team. */
+  const play = (timesMs: readonly number[], tiebreak = true): RaceState => {
+    let state = setup({
+      teams:
+        timesMs.length === 3
+          ? three
+          : timesMs.length === 4
+            ? [...three, { id: "gold", name: "Gold" }]
+            : teams,
+      target: 1,
+      tiebreak,
+    });
+    timesMs.forEach((timeMs, index) => {
+      state = run(state, [
+        { type: "beginRun", cards: [card(`run-${index}`)] },
+        { type: "answerCard", outcome: "correct", elapsedMs: timeMs },
+      ]);
+    });
+    return state;
+  };
+  const tiebreakCards = (prefix: string) => [
+    card(`${prefix}1`),
+    card(`${prefix}2`),
+    card(`${prefix}3`),
+  ];
+  /** One tiebreak attempt: three correct cards, the last one at the given time. */
+  const attempt = (state: RaceState, prefix: string, timeMs: number): RaceState =>
+    run(state, [
+      { type: "beginTiebreakAttempt", cards: tiebreakCards(prefix) },
+      { type: "answerTiebreak", outcome: "correct", elapsedMs: 1000 },
+      { type: "answerTiebreak", outcome: "correct", elapsedMs: 2000 },
+      { type: "answerTiebreak", outcome: "correct", elapsedMs: timeMs },
+    ]);
+
+  it("follows a tie of two or three teams when it is switched on, and nothing else", () => {
+    expect(raceTiebreakFollows(play([7000, 7000]))).toBe(true);
+    expect(raceTiebreakFollows(play([7000, 7040, 9000]))).toBe(true);
+    expect(raceTiebreakFollows(play([7000, 7000, 7000]))).toBe(true);
+    // Off, no tie, still running, or four tied teams that just share the win.
+    expect(raceTiebreakFollows(play([7000, 7000], false))).toBe(false);
+    expect(raceTiebreakFollows(play([7000, 8000]))).toBe(false);
+    expect(raceTiebreakFollows(setup({ tiebreak: true }))).toBe(false);
+    expect(raceTiebreakFollows(play([7000, 7000, 7000, 7000]))).toBe(false);
+  });
+
+  it("starts with the tied teams in the playing order, and only when a tie follows", () => {
+    const state = play([7000, 9000, 7000]);
+    const started = transitionRace(state, { type: "startTiebreak" });
+    expect(started).toMatchObject({
+      status: "tiebreak",
+      tiebreak: { contenders: [0, 2], attempts: [], usedCardIds: [] },
+    });
+    expect(getRaceTurn(started)).toBeUndefined();
+    const plain = play([7000, 9000]);
+    expect(transitionRace(plain, { type: "startTiebreak" })).toBe(plain);
+    expect(transitionRace(setup(), { type: "startTiebreak" })).toBeDefined();
+  });
+
+  it("lets the faster of two tied teams win after three cards each", () => {
+    let state = transitionRace(play([7000, 7000]), { type: "startTiebreak" });
+    state = attempt(state, "a", 9000);
+    expect(state).toMatchObject({ status: "tiebreak", tiebreak: { attempts: [{ teamIndex: 0 }] } });
+    state = attempt(state, "b", 8000);
+    expect(state).toMatchObject({ status: "finished", winnerIds: ["blue"] });
+    if (state.status !== "finished") throw new Error("expected a finished game");
+    expect(state.tiebreak?.map((entry) => [entry.teamIndex, entry.solved])).toEqual([
+      [0, 3],
+      [1, 3],
+    ]);
+    // The game is over now: no second tiebreak.
+    expect(transitionRace(state, { type: "startTiebreak" })).toBe(state);
+  });
+
+  it("shares the win when the attempts are equal to the tenth of a second", () => {
+    let state = transitionRace(play([7000, 7000]), { type: "startTiebreak" });
+    state = attempt(state, "a", 9040);
+    state = attempt(state, "b", 9000);
+    expect(state).toMatchObject({ status: "finished", winnerIds: ["red", "blue"] });
+  });
+
+  it("counts the most cards first: a team with fewer cards loses against a slower team", () => {
+    let state = transitionRace(play([7000, 7000]), { type: "startTiebreak" });
+    // Red solves two cards, a forbidden word costs the third; the attempt ends at the limit.
+    state = run(state, [
+      { type: "beginTiebreakAttempt", cards: tiebreakCards("a") },
+      { type: "answerTiebreak", outcome: "correct", elapsedMs: 1000 },
+      { type: "answerTiebreak", outcome: "correct", elapsedMs: 2000 },
+      { type: "endTiebreakAttempt", elapsedMs: 90000 },
+    ]);
+    state = attempt(state, "b", 60000);
+    expect(state).toMatchObject({ status: "finished", winnerIds: ["blue"] });
+  });
+
+  it("never gives a card twice in the tiebreak and ignores events that do not fit", () => {
+    let state = transitionRace(play([7000, 7000]), { type: "startTiebreak" });
+    state = run(state, [{ type: "beginTiebreakAttempt", cards: tiebreakCards("a") }]);
+    expect(state.status === "tiebreak" && state.tiebreak.active).toBeTruthy();
+    // A second attempt cannot begin while one is running.
+    expect(transitionRace(state, { type: "beginTiebreakAttempt", cards: tiebreakCards("b") })).toBe(
+      state,
+    );
+    state = run(state, [{ type: "endTiebreakAttempt", elapsedMs: 5000 }]);
+    // Cards of the first attempt cannot come back; the wrong number of cards is refused.
+    expect(transitionRace(state, { type: "beginTiebreakAttempt", cards: tiebreakCards("a") })).toBe(
+      state,
+    );
+    expect(transitionRace(state, { type: "beginTiebreakAttempt", cards: [card("x")] })).toBe(state);
+    // Outside the tiebreak the events do nothing.
+    const plain = setup();
+    expect(transitionRace(plain, { type: "beginTiebreakAttempt", cards: tiebreakCards("a") })).toBe(
+      plain,
+    );
+    expect(transitionRace(plain, { type: "endTiebreakAttempt", elapsedMs: 1 })).toBe(plain);
+    expect(transitionRace(state, { type: "restartRun" })).toBe(state);
+  });
+
+  it("corrects the tiebreak results before and after the game ended, and the winners follow", () => {
+    let state = transitionRace(play([7000, 7000]), { type: "startTiebreak" });
+    state = attempt(state, "a", 9000);
+    state = attempt(state, "b", 8000);
+    expect(state).toMatchObject({ winnerIds: ["blue"] });
+    // Blue's third card was a forbidden word: Red wins now.
+    const fixed = run(state, [
+      { type: "reviseTiebreakResult", teamIndex: 1, cardId: "b3", outcome: "forbiddenWord" },
+    ]);
+    expect(fixed).toMatchObject({ status: "finished", winnerIds: ["red"] });
+    // In the middle of the tiebreak the last attempt can be corrected, too.
+    let middle = transitionRace(play([7000, 7000]), { type: "startTiebreak" });
+    middle = attempt(middle, "a", 9000);
+    const revised = run(middle, [
+      { type: "reviseTiebreakResult", teamIndex: 0, cardId: "a1", outcome: "forbiddenWord" },
+    ]);
+    expect(revised.status === "tiebreak" && revised.tiebreak.attempts[0]?.solved).toBe(2);
+    expect(
+      run(middle, [
+        { type: "reviseTiebreakResult", teamIndex: 0, cardId: "nope", outcome: "forbiddenWord" },
+      ]),
+    ).toBe(middle);
+  });
+
+  it("lets a run be corrected only before the tiebreak, and a corrected run can end the tie", () => {
+    const state = play([7000, 7000]);
+    // Red's only card was a forbidden word: the tie is gone, Blue wins and no tiebreak follows.
+    const fixed = transitionRace(state, {
+      type: "reviseRunResult",
+      teamIndex: 0,
+      round: 1,
+      cardId: "run-0",
+      outcome: "forbiddenWord",
+    });
+    expect(fixed).toMatchObject({ status: "finished", winnerIds: ["blue"] });
+    expect(raceTiebreakFollows(fixed)).toBe(false);
+    // Once the tiebreak has begun the runs are final.
+    const started = transitionRace(state, { type: "startTiebreak" });
+    expect(
+      transitionRace(started, {
+        type: "reviseRunResult",
+        teamIndex: 0,
+        round: 1,
+        cardId: "run-0",
+        outcome: "forbiddenWord",
+      }),
+    ).toBe(started);
+  });
+
+  it("validates the setting of the tiebreak", () => {
+    expect(createRaceGame({ ...configuration, tiebreak: true }).valid).toBe(true);
+    expect(createRaceGame({ ...configuration, tiebreak: false }).valid).toBe(true);
+    expect(createRaceGame({ ...configuration, tiebreak: "yes" as unknown as boolean })).toEqual({
+      valid: false,
+      issues: [{ field: "tiebreak", code: "boolean_required" }],
+    });
   });
 });

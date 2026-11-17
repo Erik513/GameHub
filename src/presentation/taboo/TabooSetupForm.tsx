@@ -18,6 +18,7 @@ import { TabooSetupMessages } from "./TabooSetupMessages";
 import {
   cardSources,
   difficulties,
+  raceRoundOption,
   roundOption,
   tabooModes,
   type RoundChoice,
@@ -107,6 +108,12 @@ export function TabooSetupForm({
     title: t("tabooTiebreakInfo.title"),
   };
 
+  // The race has the same setting; its info button only opens the window the classic mode owns.
+  const raceTiebreakInfo = {
+    label: tiebreakInfo.label,
+    onOpen: () => setTiebreakOpen(true),
+  };
+
   const messages = messagesVisible && (
     <TabooSetupMessages
       attempt={attempt}
@@ -184,10 +191,7 @@ export function TabooSetupForm({
                     legend={t("tabooSetup.rounds")}
                     name="raceRounds"
                     initial={String(defaultRaceRounds)}
-                    options={raceRoundChoices.map((value) => ({
-                      value: String(value),
-                      label: String(value),
-                    }))}
+                    options={raceRoundChoices.map((value) => raceRoundOption(value, t))}
                   />
                   <ChoiceGroup
                     info={info("raceTarget", t("tabooSetup.raceTarget"))}
@@ -197,6 +201,16 @@ export function TabooSetupForm({
                     options={raceTargetChoices.map((value) => ({
                       value: String(value),
                       label: String(value),
+                    }))}
+                  />
+                  <ChoiceGroup
+                    legend={t("tabooSetup.tiebreak")}
+                    name="raceTiebreak"
+                    initial="on"
+                    options={(["on", "off"] as const).map((value) => ({
+                      value,
+                      label: t(`tabooSetup.tiebreakOptions.${value}`),
+                      ...(value === "on" ? { info: raceTiebreakInfo } : {}),
                     }))}
                   />
                 </div>

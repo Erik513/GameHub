@@ -7,22 +7,32 @@ import {
   type ValidationIssue,
   type ValidationResult,
 } from "./model";
-import { reviseOutcome, type TabooOutcome, type TabooResult } from "./stateMachine";
+import { reviseOutcome, type TabooOutcome, type TabooResult } from "./outcome";
+import {
+  isTiebreakTie,
+  reviseTiebreakAttempts,
+  stepTiebreak,
+  tiebreakWinnerIds,
+  type TiebreakAttempt,
+  type TiebreakEvent,
+  type TiebreakPart,
+} from "./tiebreak";
 
 /**
  * Mode "Auf Zeit" (race): in every round each team plays one run in which it has to solve the same
- * number of cards. The times of all runs of a team add up; the shortest total time wins.
+ * number of cards. The times of all runs of a team add up; the shortest total time wins. A tie of two
+ * or three teams is decided by the tiebreak (`tiebreak.ts`) when the game has it switched on.
  */
 
 /** The target numbers the player can choose in the setup. */
-export const raceTargetChoices: readonly number[] = [5, 10, 15];
-export const defaultRaceTarget = 5;
+export const raceTargetChoices: readonly number[] = [3, 5, 7];
+export const defaultRaceTarget = 3;
 /** The numbers of rounds the player can choose in the setup. */
-export const raceRoundChoices: readonly number[] = [1, 2, 3, 4, 5];
-export const defaultRaceRounds = 3;
+export const raceRoundChoices: readonly number[] = [1, 3, 5];
+export const defaultRaceRounds = 1;
 /** The most cards a run can have; the setup offers fewer, this guards the logic. */
 export const maxRaceTarget = 50;
-/** The most rounds a game can have; the setup offers 1 to 5, this guards the logic. */
+/** The most rounds a game can have; the setup offers 1, 3 and 5, this guards the logic. */
 export const maxRaceRounds = 99;
 
 export interface RaceConfiguration {
@@ -32,6 +42,8 @@ export interface RaceConfiguration {
   /** Rounds in which every team plays one run; without it the game has one round. */
   readonly rounds?: number;
   readonly teams: readonly Team[];
+  /** Play a timed tiebreak when 2-3 teams share the win at the end; undefined means off. */
+  readonly tiebreak?: boolean;
 }
 
 /** The number of rounds of a game; one when nothing was set. */
@@ -86,7 +98,14 @@ interface RaceBase {
 export type RaceState =
   | (RaceBase & { readonly status: "overview" })
   | (RaceBase & { readonly status: "running"; readonly active: RaceActive })
-  | (RaceBase & { readonly status: "finished"; readonly winnerIds: readonly string[] });
+  /** The tied teams play off; the runs are over. */
+  | (RaceBase & { readonly status: "tiebreak"; readonly tiebreak: TiebreakPart })
+  | (RaceBase & {
+      readonly status: "finished";
+      readonly winnerIds: readonly string[];
+      /** The attempts of the tiebreak, when it decided the game. */
+      readonly tiebreak?: readonly TiebreakAttempt[];
+    });
 
 export type RaceEvent =
   /** Starts the run of the next team with its cards (exactly `target` cards, easy first). */
@@ -113,7 +132,10 @@ export type RaceEvent =
       readonly round: number;
       readonly cardId: string;
       readonly outcome: TabooOutcome;
-    };
+    }
+  /** Starts the tiebreak of a finished game whose win is tied (see `raceTiebreakFollows`). */
+  | { readonly type: "startTiebreak" }
+  | TiebreakEvent;
 
 export function createRaceGame(input: RaceConfiguration): ValidationResult<RaceState> {
   const { teams, issues: teamIssues } = validateTeams(input.teams);
@@ -131,6 +153,9 @@ export function createRaceGame(input: RaceConfiguration): ValidationResult<RaceS
   ) {
     issues.push({ field: "rounds", code: "positive_integer_required" });
   }
+  if (input.tiebreak !== undefined && typeof input.tiebreak !== "boolean") {
+    issues.push({ field: "tiebreak", code: "boolean_required" });
+  }
   if (issues.length > 0) return { valid: false, issues };
   return {
     valid: true,
@@ -147,7 +172,7 @@ export function createRaceGame(input: RaceConfiguration): ValidationResult<RaceS
 export function getRaceTurn(
   state: RaceState,
 ): { readonly round: number; readonly teamIndex: number } | undefined {
-  if (state.status === "finished") return undefined;
+  if (state.status === "finished" || state.status === "tiebreak") return undefined;
   if (state.status === "running") {
     return { round: state.active.round, teamIndex: state.active.teamIndex };
   }
@@ -229,6 +254,20 @@ function raceWinnerIds(
     });
 }
 
+/**
+ * Whether the game goes on with the tiebreak: all runs are played, the tiebreak is switched on, the
+ * win is shared by two or three teams and the tiebreak was not played yet. After a correction of a
+ * run the tie can be gone, and then the final result follows.
+ */
+export function raceTiebreakFollows(state: RaceState): boolean {
+  return (
+    state.status === "finished" &&
+    state.tiebreak === undefined &&
+    state.configuration.tiebreak === true &&
+    isTiebreakTie(state.winnerIds.length)
+  );
+}
+
 /** Every card that was shown in a finished run or in the current round; used to prefer new cards. */
 export function racePlayedCardIds(state: RaceState): ReadonlySet<string> {
   const played = new Set(state.usedCardIds);
@@ -286,8 +325,65 @@ function finishRun(state: Extract<RaceState, { status: "running" }>, elapsedMs: 
 export function transitionRace(state: RaceState, event: RaceEvent): RaceState {
   const { configuration } = state;
 
+  if (event.type === "startTiebreak") {
+    if (state.status !== "finished" || !raceTiebreakFollows(state)) return state;
+    const contenders = configuration.teams.flatMap((team, index) =>
+      state.winnerIds.includes(team.id) ? [index] : [],
+    );
+    return {
+      status: "tiebreak",
+      configuration,
+      attempts: state.attempts,
+      usedCardIds: state.usedCardIds,
+      tiebreak: { contenders, attempts: [], usedCardIds: [] },
+    };
+  }
+
+  if (event.type === "reviseTiebreakResult") {
+    if (state.status === "tiebreak" && !state.tiebreak.active) {
+      const attempts = reviseTiebreakAttempts(state.tiebreak.attempts, event);
+      return attempts ? { ...state, tiebreak: { ...state.tiebreak, attempts } } : state;
+    }
+    if (state.status === "finished" && state.tiebreak) {
+      const attempts = reviseTiebreakAttempts(state.tiebreak, event);
+      return attempts
+        ? {
+            ...state,
+            tiebreak: attempts,
+            winnerIds: tiebreakWinnerIds(configuration.teams, attempts),
+          }
+        : state;
+    }
+    return state;
+  }
+
+  if (
+    event.type === "beginTiebreakAttempt" ||
+    event.type === "answerTiebreak" ||
+    event.type === "endTiebreakAttempt"
+  ) {
+    if (state.status !== "tiebreak") return state;
+    const step = stepTiebreak(
+      { cardLanguage: configuration.cardLanguage, teams: configuration.teams },
+      state.tiebreak,
+      event,
+    );
+    if (!step) return state;
+    if ("part" in step) return { ...state, tiebreak: step.part };
+    return {
+      status: "finished",
+      configuration,
+      attempts: state.attempts,
+      usedCardIds: state.usedCardIds,
+      winnerIds: step.winnerIds,
+      tiebreak: step.attempts,
+    };
+  }
+
   if (event.type === "reviseRunResult") {
-    if (state.status === "running") return state;
+    // The runs of a game whose tiebreak has begun are final.
+    if (state.status === "running" || state.status === "tiebreak") return state;
+    if (state.status === "finished" && state.tiebreak) return state;
     const attempt = state.attempts.find(
       (candidate) => candidate.teamIndex === event.teamIndex && candidate.round === event.round,
     );

@@ -209,6 +209,7 @@ export function TabooSetup({
       )}
       {raceSession && (
         <TabooRaceGame
+          cards={cards}
           difficulties={raceSession.difficulties}
           initial={raceSession.state}
           key={`race-${raceSession.key}`}
