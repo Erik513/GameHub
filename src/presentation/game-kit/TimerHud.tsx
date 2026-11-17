@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
 
 interface TimerHudProps {
-  /** Fraction of the time that is left, from 0 to 1. */
+  /**
+   * How full the bar is, from 0 to 1. A countdown shows the time that is left (the bar shrinks), a
+   * task like "solve three cards as fast as possible" shows its progress (the bar fills up).
+   */
   readonly fraction: number;
   /** Small second line, for example the card number; without it only the title is shown. */
   readonly meta?: ReactNode;

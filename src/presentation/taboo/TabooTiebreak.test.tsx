@@ -75,10 +75,22 @@ describe("Taboo tiebreak", () => {
     const firstTerm = within(attempt).getByRole("heading").textContent;
     fireEvent.click(within(attempt).getByRole("button", { name: "Forbidden word" }));
     expect(within(attempt).getByRole("timer")).toHaveTextContent("4.0");
+    // The bar above shows the cards (three to solve) and fills up with them, like in the race.
+    const barFill = () =>
+      parseFloat(
+        (attempt.querySelector<HTMLElement>(".kit-hud__bar span")?.style.transform ?? "").replace(
+          "scaleX(",
+          "",
+        ),
+      );
+    expect(barFill()).toBe(0);
     expect(within(attempt).getByRole("heading").textContent).not.toBe(firstTerm);
     for (let card = 0; card < 3; card += 1) {
       advance(2000);
       fireEvent.click(within(attempt).getByRole("button", { name: "Correct" }));
+      // One more card is solved: the bar is one third fuller (the last card ends the attempt).
+      if (card === 0) expect(barFill()).toBeCloseTo(1 / 3, 2);
+      if (card === 1) expect(barFill()).toBeCloseTo(2 / 3, 2);
     }
     expect(resultRows()[0]).toBe("Team 1: 3/3 cards · 10.0 s");
     expect(resultRows()[1]).toBe("Team 2: still to play");

@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { TabooCard } from "../../business/games/taboo/model";
 import {
+  TIEBREAK_CARD_COUNT,
   TIEBREAK_LIMIT_SECONDS,
   type TabooEvent,
   type TabooOutcome,
@@ -75,7 +76,8 @@ export function TabooTiebreakRound({
   return (
     <section className="taboo-round taboo-round--running" aria-label={t("tabooTiebreak.round")}>
       <TimerHud
-        fraction={1 - totalMs / limitMs}
+        // The task is to solve three cards as fast as possible: the bar shows the cards, like in the race.
+        fraction={active.index / TIEBREAK_CARD_COUNT}
         remainingSeconds={(limitMs - totalMs) / 1000}
         time={formatSeconds(totalMs, i18n.language)}
         timerLabel={t("tabooTiebreak.timer", { time: formatSeconds(totalMs, i18n.language) })}
