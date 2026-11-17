@@ -79,7 +79,7 @@ it.each([
       expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
       fireEvent.click(screen.getByRole("button", { name: "Start game" }));
       fireEvent.click(screen.getByRole("button", { name: "Start round" }));
-      expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Score: 0");
+      expect(screen.getByRole("region", { name: "Active round" })).toHaveTextContent("Team 1");
       expect(screen.getByRole("timer")).toHaveTextContent(/^90$/);
     } else {
       expect(
@@ -120,7 +120,8 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     // The single skip per round is used up, so the button disappears.
     expect(within(round).queryByRole("button", { name: "Skip" })).not.toBeInTheDocument();
     fireEvent.click(within(round).getByRole("button", { name: "Forbidden word" }));
-    expect(round).toHaveTextContent("Score: 1");
+    // Round and points are not shown during the turn; the overview between the turns has them.
+    expect(round).not.toHaveTextContent(/Score|Round 1/);
     expect(within(round).getByRole("timer")).toHaveTextContent(/^59$/);
     void act(() => {
       vi.advanceTimersByTime(59000);

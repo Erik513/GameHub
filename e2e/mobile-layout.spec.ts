@@ -14,6 +14,7 @@ const labels = {
     pause: "Pause",
     resume: "Resume",
     endRound: "End round",
+    endRoundConfirm: "Tap again to end",
     show: "Show final results",
     startTiebreak: "Start tiebreak",
     endAttempt: "End attempt",
@@ -42,6 +43,7 @@ const labels = {
     pause: "Pause",
     resume: "Fortsetzen",
     endRound: "Runde beenden",
+    endRoundConfirm: "Nochmal tippen zum Beenden",
     show: "Endergebnis anzeigen",
     startTiebreak: "Stechen starten",
     endAttempt: "Versuch beenden",
@@ -274,6 +276,9 @@ for (const language of ["en", "de"] as const) {
       await press(t.resume);
       await press(t.pause);
       await press(t.endRound);
+      // A second tap confirms; it counts only after a short moment.
+      await page.clock.fastForward(500);
+      await press(t.endRoundConfirm);
       await check("round review");
 
       for (let turn = 0; turn < 5; turn += 1) {

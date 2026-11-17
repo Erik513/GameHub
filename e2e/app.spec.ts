@@ -25,7 +25,7 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
   await expect(page.getByText("Taboo cards", { exact: true })).toBeHidden();
   await expect(round.getByRole("listitem")).toHaveCount(4);
   await round.getByRole("button", { name: "Correct" }).click();
-  await expect(round.getByText("Score: 1")).toBeVisible();
+  await expect(round).not.toContainText("Score");
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
     await page.evaluate(() => window.innerWidth),
   );

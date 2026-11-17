@@ -16,7 +16,6 @@ const cases = [
     show: "Show final results",
     winner: "Winner: Team 1",
     restart: "Play again with the same setup",
-    score: "Score: 0",
   },
   {
     language: "de",
@@ -33,7 +32,6 @@ const cases = [
     show: "Endergebnis anzeigen",
     winner: "Gemeinsam gewonnen: Team 1, Team 2",
     restart: "Mit gleicher Konfiguration neu spielen",
-    score: "Punkte: 0",
   },
 ] as const;
 
@@ -108,7 +106,7 @@ for (const labels of cases) {
     // The same settings lead to the line-up, the game starts again from there.
     await page.getByRole("button", { name: labels.lineup, exact: true }).click();
     await page.getByRole("button", { name: labels.start, exact: true }).click();
-    await expect(round.getByText(labels.score)).toBeVisible();
+    await expect(round.getByRole("timer")).toBeVisible();
     await page.reload();
     await expect(round).toHaveCount(0);
     await expect(page.getByRole("button", { name: labels.prepare, exact: true })).toBeVisible();

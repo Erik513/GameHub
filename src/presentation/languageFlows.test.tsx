@@ -140,6 +140,8 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     fireEvent.click(screen.getAllByRole("button", { name: t("navigation.resume") })[0]!);
     press("navigation.pause");
     press("tabooRound.endRound");
+    advance(600);
+    press("tabooRound.endRoundConfirm");
     checkScreen("round review");
 
     // The other five turns of a short game run out of time without points.

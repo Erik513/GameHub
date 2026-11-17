@@ -35,7 +35,7 @@ export function TabooRound({
   state,
 }: TabooRoundProps) {
   const { t } = useTranslation();
-  const { card, configuration, scores, turn } = state;
+  const { card, configuration, turn } = state;
   const { round, teamIndex } = turn;
   const { skipsPerRound } = configuration;
   const skipsLeft =
@@ -60,15 +60,6 @@ export function TabooRound({
     <section className="taboo-round taboo-round--running" aria-label={t("tabooRound.title")}>
       <TimerHud
         fraction={fraction}
-        meta={
-          <>
-            {configuration.roundsPerTeam === "unlimited"
-              ? t("tabooRound.roundOfUnlimited", { round })
-              : t("tabooRound.roundOf", { round, total: configuration.roundsPerTeam })}
-            {" · "}
-            {t("tabooRound.score", { score: scores[teamIndex] ?? 0 })}
-          </>
-        }
         remainingSeconds={seconds}
         time={String(seconds)}
         timerLabel={t("tabooRound.seconds", { seconds })}
@@ -89,9 +80,14 @@ export function TabooRound({
           >
             {t("tabooRound.restartRound")}
           </ConfirmButton>
-          <Button variant="secondary" onClick={() => dispatch({ type: "endRound", turn })}>
+          {/* Ending the round cannot be undone, so it needs a second tap like the restart. */}
+          <ConfirmButton
+            armedLabel={t("tabooRound.endRoundConfirm")}
+            idleLabel={t("tabooRound.endRound")}
+            onConfirm={() => dispatch({ type: "endRound", turn })}
+          >
             {t("tabooRound.endRound")}
-          </Button>
+          </ConfirmButton>
         </div>
       ) : (
         <div

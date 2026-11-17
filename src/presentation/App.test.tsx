@@ -173,7 +173,8 @@ describe("App", () => {
     // The header offers no way to end the game during a round, only to pause it.
     expect(screen.queryByRole("button", { name: "End game" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Correct" }));
-    expect(screen.getByText(/Score: 1/)).toBeVisible();
+    // Round and points are not shown during the turn.
+    expect(screen.queryByText(/Score:/)).not.toBeInTheDocument();
 
     // Restarting a turn needs a second tap, discards its points and shows new cards.
     const shownBeforeRestart = [term, screen.getByRole("heading", { level: 2 }).textContent];
@@ -183,7 +184,6 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Tap again to restart" }));
     act(() => void vi.advanceTimersByTime(200));
     expect(screen.getByRole("timer")).toHaveTextContent("60");
-    expect(screen.getByText(/Score: 0/)).toBeVisible();
     expect(screen.queryByRole("heading", { name: "Paused" })).not.toBeInTheDocument();
     expect(shownBeforeRestart).not.toContain(screen.getByRole("heading", { level: 2 }).textContent);
 
@@ -191,8 +191,15 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Correct" }));
     fireEvent.click(screen.getByRole("button", { name: "Pause" }));
     fireEvent.click(screen.getByRole("button", { name: "End round" }));
+    // The first tap only asks again; the round is still paused and nothing has ended.
+    expect(screen.getByRole("heading", { name: "Paused" })).toBeVisible();
+    expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
+    act(() => void vi.advanceTimersByTime(600));
+    fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();
+    // The restart discarded the first point: the turn brought exactly the one point after it.
+    expect(document.querySelector(".kit-scoreboard__gain")).toHaveTextContent("+1");
     fireEvent.click(screen.getByRole("button", { name: "End game" }));
     act(() => void vi.advanceTimersByTime(600));
     fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
