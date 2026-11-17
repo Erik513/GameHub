@@ -25,12 +25,18 @@ interface ResultListProps {
 
 /**
  * Results that are no points, for example the times of a race: the same rows as the scoreboard (bar,
- * rank with a crown for the best, name), but with a result text instead of a number.
+ * rank with a crown for the best, name), but with a result text instead of a number. The best result
+ * is always on top.
  */
 export function ResultList({ label, pendingLabel, rows }: ResultListProps) {
+  // The best result is always on top; rows without a result come last. Equal ranks keep their order.
+  const ordered = [...rows].sort(
+    (a, b) => (a.rank ?? Number.MAX_SAFE_INTEGER) - (b.rank ?? Number.MAX_SAFE_INTEGER),
+  );
+
   return (
     <ol className="kit-scoreboard" aria-label={label}>
-      {rows.map(({ bar, id, name, note, rank, value, winner }) => (
+      {ordered.map(({ bar, id, name, note, rank, value, winner }) => (
         <li
           data-rank={rank === undefined ? undefined : Math.min(rank, 4)}
           data-winner={winner ? true : undefined}

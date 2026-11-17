@@ -30,3 +30,23 @@ it("shows the rank with a crown for the best, the result with a note and a pendi
   expect(rows[1]!.querySelector<HTMLElement>(".kit-scoreboard__bar")?.style.width).toBe("50%");
   expect(rows[2]!.querySelector(".kit-scoreboard__bar")).toBeNull();
 });
+
+it("puts the best result on top and rows without a result at the end", () => {
+  render(
+    <ResultList
+      label="Times"
+      pendingLabel="still to play"
+      rows={[
+        { id: "a", name: "Owls" },
+        { id: "b", name: "Foxes", rank: 2, value: "8.0 s" },
+        { id: "c", name: "Bears", rank: 1, value: "4.0 s" },
+      ]}
+    />,
+  );
+  const rows = within(screen.getByRole("list", { name: "Times" })).getAllByRole("listitem");
+  expect(rows.map((row) => resultText(row))).toEqual([
+    "Bears: 4.0 s",
+    "Foxes: 8.0 s",
+    "Owls: still to play",
+  ]);
+});
