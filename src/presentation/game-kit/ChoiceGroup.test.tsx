@@ -85,3 +85,53 @@ it("lets any number of choices be picked without an all option, but keeps one", 
   fireEvent.click(screen.getByRole("checkbox", { name: "Easy" }));
   expect(submitted()).toEqual(["easy", "hard"]);
 });
+
+it("opens the info from the info button next to the heading and from the heading text", () => {
+  render(
+    <form>
+      <ChoiceGroup
+        info={{
+          closeLabel: "Close",
+          label: "Info about Skips",
+          text: "How often.",
+          title: "Skips",
+        }}
+        initial="1"
+        legend="Skips"
+        name="skips"
+        options={[
+          { value: "0", label: "None" },
+          { value: "1", label: "1" },
+        ]}
+      />
+    </form>,
+  );
+  // The group is named by its heading text only, not by the info button.
+  const group = screen.getByRole("group", { name: "Skips" });
+  expect(group).toBeVisible();
+  fireEvent.click(screen.getByRole("button", { name: "Info about Skips" }));
+  expect(screen.getByRole("dialog", { name: "Skips" })).toHaveTextContent("How often.");
+  fireEvent.click(screen.getByRole("button", { name: "Close" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  // A tap on the heading text opens the same window.
+  fireEvent.click(screen.getByRole("button", { name: "Skips" }));
+  expect(screen.getByRole("dialog", { name: "Skips" })).toBeVisible();
+});
+
+it("shows a plain heading with its buttons when a group has no info", () => {
+  render(
+    <form>
+      <ChoiceGroup
+        initial="a"
+        legend="Mode"
+        name="mode"
+        options={[
+          { value: "a", label: "A" },
+          { value: "b", label: "B" },
+        ]}
+      />
+    </form>,
+  );
+  expect(screen.getByRole("group", { name: "Mode" })).toBeVisible();
+  expect(screen.queryByRole("button", { name: /Info/ })).not.toBeInTheDocument();
+});

@@ -201,7 +201,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-17T21:58:47+01:00",
+    "updatedAt": "2026-11-17T21:12:10.055Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -210,9 +210,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 93,
-      "totalTasks": 172,
-      "percent": 54.1
+      "completedTasks": 94,
+      "totalTasks": 179,
+      "percent": 52.5
     }
   },
   "environment": {
@@ -282,10 +282,10 @@
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-17T21:58:47+01:00",
+      "lastRunAt": "2026-11-17T21:12:10.056Z",
       "passed": 675,
       "failed": 0,
-      "details": "680 Unit- und Komponententests bestanden (76 Dateien), darunter Übersetzungsqualität, Aufstellung, der neue Einstieg über die Aufstellung und ein Durchlauf aller Tabu-Ansichten in Deutsch und Englisch."
+      "details": "684 Unit- und Komponententests bestanden (76 Dateien), darunter Übersetzungsqualität, Aufstellung, der neue Einstieg über die Aufstellung, Pause im Rennen und ein Durchlauf aller Tabu-Ansichten in Deutsch und Englisch."
     },
     "integrationTests": {
       "status": "passed",
@@ -314,12 +314,12 @@
     },
     "coverage": {
       "status": "passed",
-      "lastRunAt": "2026-11-17T21:58:47+01:00",
+      "lastRunAt": "2026-11-17T21:12:10.056Z",
       "overallLines": 98.11,
       "overallBranches": 93.58,
       "overallFunctions": 97.81,
       "overallStatements": 96.92,
-      "details": "Alle Grenzwerte der Coverage-Konfiguration sind erfüllt (vitest --coverage): gesamt 98,31 % Zeilen, 93,42 % Zweige."
+      "details": "Alle Grenzwerte der Coverage-Konfiguration sind erfüllt (vitest --coverage): gesamt 98,3 % Zeilen, 93,4 % Zweige, 97,7 % Funktionen."
     }
   },
   "phases": [
@@ -603,6 +603,41 @@
         {
           "id": "Al-10-03",
           "title": "KI-Kartenquelle später wieder anschließen (vorerst abgeschaltet, ADR-024; Anbieter Ollama oder LM Studio klären)",
+          "status": "planned"
+        },
+        {
+          "id": "Al-10-04",
+          "title": "Gesamtanalyse von Tabu vor dem nächsten Spielmodus: Optik in beiden Sprachen, Logik, Quellcode, Struktur, Schichten, Bausteine, Testabdeckung, Randfälle, Fehlersuche",
+          "status": "done"
+        },
+        {
+          "id": "Al-10-05",
+          "title": "Systemzurück-Taste bei laufendem Spiel abfangen (Verlassen mit Bestätigung oder Ansichten als Adressen)",
+          "status": "planned"
+        },
+        {
+          "id": "Al-10-06",
+          "title": "Stechen bei vier oder mehr gleichen Teams: Regel entscheiden und im Regeltext erklären",
+          "status": "planned"
+        },
+        {
+          "id": "Al-10-07",
+          "title": "Monotone Zeitmessung statt Wanduhr für Runde, Rennen und Stechen",
+          "status": "planned"
+        },
+        {
+          "id": "Al-10-08",
+          "title": "Stile ordnen: Kit-Stile aus global.css in Bausteindateien, doppelte Selektoren zusammenführen, ungenutzte Klassen entfernen",
+          "status": "planned"
+        },
+        {
+          "id": "Al-10-09",
+          "title": "Fokusführung beim Ansichtswechsel für Tastatur und Screenreader",
+          "status": "planned"
+        },
+        {
+          "id": "Al-10-10",
+          "title": "Layout der Spielkarte und der Kopfleiste für Telefone mit 320 Pixel Breite",
           "status": "planned"
         }
       ]
@@ -1418,6 +1453,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-17",
+      "summary": "Gesamtanalyse von Tabu (Al-10-04, Bericht in docs/GAMEHUB_QUALITY_CHECK.md): Schichten und Importe ohne Verstoß, keine Zyklen, 684 Tests, Abdeckung 98,3 % Zeilen. Befunde als Folgeaufgaben Al-10-05 bis Al-10-10, vor allem die Systemzurück-Taste (verwirft ein laufendes Spiel), die Größe von TabooSetup und die Zeitmessung mit der Wanduhr."
+    },
     {
       "date": "2026-11-17",
       "summary": "Tabu-Oberfläche überarbeitet (Phase Ta-10): Ein-Seiten-Ansichten, neuer Einstieg mit der Aufstellung zuerst und den Spieleinstellungen als eigenem Bildschirm, überarbeitete Aufstellung (Teamreihenfolge mit Symbolknöpfen, Spieler entfernen), neue Bausteine im game-kit, Endansicht mit Konfetti, Korrekturregeln und ein Logikfehler beim Stechen (Zehntelsekunden) behoben. Leitfäden für neue Spiele aktualisiert."

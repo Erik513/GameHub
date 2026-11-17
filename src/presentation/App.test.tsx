@@ -286,6 +286,74 @@ describe("App", () => {
     expect(results.some((row) => row.textContent.endsWith(": 0/3 cards · 5.0 s"))).toBe(true);
   });
 
+  it("does not count the time of a pause in a race run", async () => {
+    vi.useFakeTimers();
+    const i18n = await createGameHubI18n("en");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App
+          cardLanguage="en"
+          onCardLanguageChange={vi.fn()}
+          modules={[createTabooModule({ cards: tabooStandardCards })]}
+        />
+      </I18nextProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    openGameSettings();
+    fireEvent.click(
+      within(screen.getByRole("group", { name: "Game mode" })).getByRole("radio", { name: "Race" }),
+    );
+    closeGameSettings();
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start run" }));
+
+    act(() => void vi.advanceTimersByTime(3000));
+    expect(screen.getByRole("timer")).toHaveTextContent("3.0");
+    fireEvent.click(screen.getByRole("button", { name: "Pause" }));
+    act(() => void vi.advanceTimersByTime(20000));
+    // While paused the clock stands still and the buttons for the cards cannot be used.
+    expect(screen.getByRole("timer")).toHaveTextContent("3.0");
+    expect(screen.getByRole("button", { name: /^Correct/ })).toBeDisabled();
+    fireEvent.click(screen.getAllByRole("button", { name: "Resume" })[0]!);
+    act(() => void vi.advanceTimersByTime(2000));
+    expect(screen.getByRole("timer")).toHaveTextContent("5.0");
+
+    // Solving the five cards now gives 5.0 s: the 20 seconds of the pause are not part of the time.
+    for (let card = 0; card < 5; card += 1) {
+      fireEvent.click(screen.getByRole("button", { name: /^Correct/ }));
+    }
+    const overview = screen.getByRole("region", { name: "Race overview" });
+    expect(overview).toHaveTextContent("5.0 s");
+    expect(overview).not.toHaveTextContent("25.0 s");
+  });
+
+  it("opens the settings at the categories when the game is started without a category", async () => {
+    const i18n = await createGameHubI18n("en");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <App
+          cardLanguage="en"
+          onCardLanguageChange={vi.fn()}
+          modules={[createTabooModule({ cards: tabooStandardCards })]}
+        />
+      </I18nextProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    openGameSettings();
+    for (const category of ["Everyday life", "Culture", "Nature"]) {
+      fireEvent.click(screen.getByRole("checkbox", { name: category }));
+    }
+    // Leaving the settings with the back arrow does not check them; the game does when it starts.
+    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Start game" }));
+    expect(screen.getByRole("alert")).toHaveTextContent("Select at least one category.");
+    expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();
+    // The settings are open again, at the categories.
+    expect(screen.getByRole("checkbox", { name: "Nature" })).toBeVisible();
+    expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
+  });
+
   it("renders whatever module is registered for a game and nothing else of it", async () => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n("de");
