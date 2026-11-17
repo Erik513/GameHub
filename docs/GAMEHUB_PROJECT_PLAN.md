@@ -33,6 +33,8 @@ GameHub wird eine kostenlose, international ausgerichtete, mobile-first Spiele-P
 
 ### 2.4 Tabu
 
+Der geplante Einstieg über **Spieler und Teams** sowie die mögliche Rollen- und Kartenverteilung bei Online-Tabu stehen in [Tabu – Einstieg und mögliche Online-Lobby](GAMEHUB_TABOO_LOBBY.md).
+
 - Mindestens zwei Teams.
 - Standarddauer einer Runde 60 Sekunden, konfigurierbar.
 - Konfigurierbare Rundenzahl.
@@ -749,6 +751,49 @@ Ziel: Vor der Ansicht für Teams und Spieler und vor dem nächsten Spielmodus pr
 | `Lb-01-03` – Anzweifeln und letzte Ablage auswerten | Frühere Ablagen bleiben verdeckt.<br>Ein Joker zählt auch an einem Ass-Tisch als korrekt.<br>Bei falscher Ablage verliert der Ablegende, bei korrekter Ablage die anzweifelnde Person. |
 | `Lb-01-07` – Risikoauflösung, Folgerunde und Sieg | Doppelte Verarbeitung erhöht den Zähler nur einmal.<br>Die betroffene Person scheidet genau beim Erreichen der Schwelle aus.<br>Die nächste Runde erhält neue Hände und einen Tischwert.<br>Mit nur einer aktiven Person startet keine Folgerunde. |
 | `Lb-01-05` – Spielmenü, Übersetzungen und mobile Abnahme | Das Spiel ist aus der Spielauswahl erreichbar.<br>Alle Ansichten sind in beiden Sprachen bedienbar.<br>In beiden Fällen wird die richtige Person belastet.<br>Eine Runde kann bei leeren Händen nicht hängen bleiben.<br>Die letzte aktive Person wird als Gewinner angezeigt. |
+
+### Schwimmen (Sw)
+
+[Spielregeln und Hausregeln](GAMEHUB_SCHWIMMEN.md)
+
+Grundmodus ist eine Online-Runde ohne Leben. Die reine Spiellogik kann vor dem Onlinedienst umgesetzt und getestet werden. Die Online-Einbindung baut auf der Multiplayer-Entscheidung Al-06-01 auf. Die Entwicklung ist für den Branch `game/schwimmen` vorgesehen. Der optionale Modus mit Leben folgt nach Abnahme des Grundmodus.
+
+#### Sw-01 – Regeln und offene Entscheidungen
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Sw-01-01` – Rundenregeln und Grenzfälle festlegen | Spielerzahl, Austeilen, Gleichstand bei gleicher Farbsumme, Ende bei 31 auf der Hand, Vorrang von Blitz bei gleichzeitigem Sonderfall und Ersatz bei erschöpftem Stapel sind entschieden. |
+
+#### Sw-02 – Karten, Züge und Wertung
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Sw-02-01` – Deck, Austeilen und Handwertung umsetzen | 36 eindeutige Karten, je drei Handkarten und drei offene Tischkarten. Tests decken Farbsummen und die Rangfolge aller Drillinge ab. |
+| `Sw-02-02` – Kartentausch und Schieben umsetzen | Einzel- und Dreiertausch sind möglich. Ein kompletter Umlauf ohne Tausch ersetzt die Tischkarten nach der vereinbarten Stapelregel. |
+| `Sw-02-03` – Blitz und die drei Fälle für 31 umsetzen | Tests prüfen Blitz, gültig angelegte 31, automatische Niederlage bei 31 nach einem Tausch und Neuausteilen bei 31 in der Starthand. |
+| `Sw-02-04` – Klopfen und beide Wertungsarten umsetzen | Klopfen ist ein eigener Zug ab dem zweiten Umlauf. Die letzte Zugfolge wird korrekt abgewickelt. Im strengen Modus reicht geteilte Führung, bei Fehlklopfen verliert nur die klopfende Person. |
+
+#### Sw-03 – Online-Raum und private Kartenhände
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Sw-03-01` – Raum, Beitritt und Spielerzuordnung anbinden | Nach Al-06-01 können mehrere Geräte demselben Raum beitreten und eine Partie mit gemeinsamer Zugreihenfolge starten. |
+| `Sw-03-02` – Züge prüfen und Karten pro Spieler übertragen | Die Serverinstanz mischt und entscheidet über Züge und Ergebnisse. Jedes Gerät erhält nur eigene Handkarten und öffentliche Informationen. Fremde, verspätete und doppelte Züge verändern die Partie nicht. |
+| `Sw-03-03` – Wiederbeitritt und Verbindungsverlust behandeln | Nach einer kurzen Unterbrechung erhält dieselbe Person ihren zulässigen aktuellen Stand. Das Verhalten bei längerem Verbindungsverlust ist festgelegt und getestet. |
+
+#### Sw-04 – Lobby, Spieltisch und Rundenergebnis
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Sw-04-01` – Lobby für Raumbeitritt und Wertungswahl bauen | Die Gruppe kann Räume erstellen oder betreten. Vor dem Start ist die gewählte Wertungsart für alle sichtbar. |
+| `Sw-04-02` – Spieltisch mit Hand, Tischkarten und Zugaktionen bauen | Die Ansicht zeigt eigene und offene Karten, die Person am Zug und nur die erlaubten Aktionen für Tauschen, Schieben, Klopfen und 31. |
+| `Sw-04-03` – Rundenergebnis und neue Runde anzeigen | Das Ergebnis zeigt die entscheidende Regel und wer verloren hat. Die Gruppe kann im selben Raum neu starten. |
+
+#### Sw-05 – Spielmenü und Mehrgeräte-Abnahme
+
+| Aufgabe | Abnahme |
+| --- | --- |
+| `Sw-05-01` – Schwimmen ins Spielmenü einbinden und online abnehmen | Navigation und Bedienung auf Deutsch und Englisch sowie vollständige Partien auf mehreren Geräten werden geprüft. Dazu gehören Sichtschutz, Wiederbeitritt und beide Wertungsarten. |
 
 ## 6. Abhängigkeiten und Reihenfolge
 

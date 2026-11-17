@@ -2,6 +2,12 @@
 
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
+## 2026-11-16
+
+### Schwimmen geplant
+
+- Schwimmen als Online-Spiel mit zwölf Aufgaben für Regeln, Spiellogik, Mehrspieler, Ansichten und Abnahme aufgenommen.
+
 ## 2026-11-15
 
 ### Neue Arbeitsregel: ein Branch pro Spiel
@@ -31,13 +37,13 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - **„Kategorie löschen“:** Nach dem ersten Tipp bleibt der Text des Knopfes gleich, nur der Knopf wird kräftig rot (der lange Text „Nochmal tippen: n Karten löschen“ passte nicht hinein; Screenreader hören weiter die Rückfrage). Schlüssel `tabooList.deleteCategoryAgain` entfällt.
 - **Eigene Kategorien näher an den Standardkategorien:** Im Reiter „Kategorien“ des Hauptmenüs bleiben die eigenen Kategorien **unter** den Standardkategorien; der Abstand zwischen den beiden Gruppen und zur Überschrift ist kleiner, damit man bei wenigen eigenen weniger scrollen muss.
 - **Überschriften „Standard“ und „Eigene“ immer sichtbar:** Im Reiter „Kategorien“ des Hauptmenüs stehen beide Überschriften auch ohne eigene Kategorien; unter „Eigene“ steht dann „Noch keine. Lege sie unter „Kategorien und Karten“ an.“ (neuer Text `tabooSetup.noOwnCategories`, klein, grau und kursiv wie die Überschrift, damit er nicht auffälliger ist als sie).
+- **Leiste nur für eine Auswahl (2026-11-17):** Die zusammenhängende Knopfleiste (`ChoiceGroup`) steht nur noch für „genau eine Auswahl“. Die Mehrfachauswahl (Schwierigkeit im Hauptmenü, `multiple`) zeigt einzelne Knöpfe mit Lücken, wie die Kategorien.
 - **Spielauswahl** auf dem Handy ebenfalls ein One-Pager (nur die Liste der Spiele scrollt). Eine Prüfung aller Handy-Bildschirme zeigte sonst keine scrollende Seite. Neuer e2e-Test für den Karteneditor. 657 Unit-Tests, 31 e2e-Tests grün.
 
 ### Hilfekonzept: Spielregeln erklären alles, i-Knöpfe nur Einzelnes
 
 - **Nachtrag:** Der i-Knopf bei „Runden pro Team“ entfällt (selbsterklärend, die Werte stehen in den Auswahlknöpfen; die Regeln erklären Runden im Fenster „Spielregeln“). Text `tabooSetup.info.rounds` entfernt.
 
-- **Leiste nur für eine Auswahl (2026-11-17):** Die zusammenhängende Knopfleiste (`ChoiceGroup`) steht nur noch für „genau eine Auswahl“. Die Mehrfachauswahl (Schwierigkeit im Hauptmenü, `multiple`) zeigt einzelne Knöpfe mit Lücken, wie die Kategorien.
 - Auf Wunsch des Auftraggebers neu aufgeteilt (Muster: Info-Symbol für kurze Erklärung genau dort, längeres im Hilfe-Bereich; kurz halten; zeigen statt erklären). **Spielregeln:** ein Fenster mit kurzen Teilen mit Überschrift: **Ziel, Die Karte** (mit **Beispielkarte** „Strand“ / „Beach“ und vier verbotenen Wörtern), **Ein Zug** (3 Schritte und die drei Knöpfe **Richtig, Überspringen, Verbotenes Wort** in ihren Farben mit je einem Satz), **Spielmodi** (Klassisch mit Link zum Stechen, Auf Zeit, je ein bis zwei Sätze) und **Einstellungen** (je eine Zeile). Die Auswahl der Modi im Fenster entfällt.
 - **i-Knöpfe:** erklären nur noch die eine Einstellung, in höchstens zwei kurzen Zeilen (alle Texte in Deutsch und Englisch gekürzt, ohne Wiederholung der allgemeinen Regeln). Die Infos zu **„Runden pro Team“ und „Überspringen pro Runde“ haben nur einen Satz**, weil die Werte (Kurz 3, Mittel 5, Lang 10, Nie, ∞) in den Auswahlknöpfen direkt darunter sichtbar sind. Der i-Knopf an einem **Spielmodus** erklärt nur diesen Modus in einem Satz und hat einen Knopf **„Alle Regeln“**, der das Regelfenster öffnet.
 - Code: `RulesSection` (ersetzt `RulesView`), `TabooRulesDialog` neu aufgebaut, Fenster für die Modus-Info in `TabooSetupForm`, Stile `kit-rules-*` und `taboo-rules-card`; Texte `tabooRules.*`, `tabooMode.classicInfo/raceInfo` neu, `classicRules/raceRules` und die alten Regelzeilen entfallen. Neuer Test `helpTexts.test.ts` hält die Kürze der i-Texte und des Regelfensters ein. Regeln dazu: `docs/GAMEHUB_UI_RULES.md` 2.5a. 660 Unit-Tests, 30 e2e-Tests grün.

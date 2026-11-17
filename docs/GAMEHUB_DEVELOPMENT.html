@@ -201,7 +201,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-14T22:30:00+01:00",
+    "updatedAt": "2026-11-16T01:39:00.646Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -211,8 +211,8 @@
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
       "completedTasks": 83,
-      "totalTasks": 149,
-      "percent": 55.7
+      "totalTasks": 161,
+      "percent": 51.6
     }
   },
   "environment": {
@@ -1251,9 +1251,114 @@
           "status": "planned"
         }
       ]
+    },
+    {
+      "id": "Sw-01",
+      "name": "Regeln und offene Entscheidungen",
+      "area": "schwimmen",
+      "status": "planned",
+      "document": "GAMEHUB_SCHWIMMEN.md",
+      "tasks": [
+        {
+          "id": "Sw-01-01",
+          "title": "Rundenregeln und Grenzfälle festlegen",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "Sw-02",
+      "name": "Karten, Züge und Wertung",
+      "area": "schwimmen",
+      "status": "planned",
+      "tasks": [
+        {
+          "id": "Sw-02-01",
+          "title": "Deck, Austeilen und Handwertung umsetzen",
+          "status": "planned"
+        },
+        {
+          "id": "Sw-02-02",
+          "title": "Kartentausch und Schieben umsetzen",
+          "status": "planned"
+        },
+        {
+          "id": "Sw-02-03",
+          "title": "Blitz und die drei Fälle für 31 umsetzen",
+          "status": "planned"
+        },
+        {
+          "id": "Sw-02-04",
+          "title": "Klopfen und beide Wertungsarten umsetzen",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "Sw-03",
+      "name": "Online-Raum und private Kartenhände",
+      "area": "schwimmen",
+      "status": "planned",
+      "tasks": [
+        {
+          "id": "Sw-03-01",
+          "title": "Raum, Beitritt und Spielerzuordnung anbinden",
+          "status": "planned"
+        },
+        {
+          "id": "Sw-03-02",
+          "title": "Züge prüfen und Karten pro Spieler übertragen",
+          "status": "planned"
+        },
+        {
+          "id": "Sw-03-03",
+          "title": "Wiederbeitritt und Verbindungsverlust behandeln",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "Sw-04",
+      "name": "Lobby, Spieltisch und Rundenergebnis",
+      "area": "schwimmen",
+      "status": "planned",
+      "tasks": [
+        {
+          "id": "Sw-04-01",
+          "title": "Lobby für Raumbeitritt und Wertungswahl bauen",
+          "status": "planned"
+        },
+        {
+          "id": "Sw-04-02",
+          "title": "Spieltisch mit Hand, Tischkarten und Zugaktionen bauen",
+          "status": "planned"
+        },
+        {
+          "id": "Sw-04-03",
+          "title": "Rundenergebnis und neue Runde anzeigen",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "Sw-05",
+      "name": "Spielmenü und Mehrgeräte-Abnahme",
+      "area": "schwimmen",
+      "status": "planned",
+      "tasks": [
+        {
+          "id": "Sw-05-01",
+          "title": "Schwimmen ins Spielmenü einbinden und online abnehmen",
+          "status": "planned"
+        }
+      ]
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-16",
+      "summary": "Schwimmen als Online-Spiel mit zwölf Aufgaben für Regeln, Spiellogik, Mehrspieler, Ansichten und Abnahme aufgenommen."
+    },
     {
       "date": "2026-11-14",
       "summary": "Dashboard neu gegliedert: jede Phase gehört zu genau einem Bereich (Allgemein oder ein Spiel), der Phasenstatus wird aus den Aufgaben berechnet, die Spiel-Tabs zeigen dieselben Phasen wie Allgemein, Qualitätswerte aktualisiert."
@@ -1615,6 +1720,10 @@
     {
       "id": "liars-bar",
       "name": "Liar’s Bar"
+    },
+    {
+      "id": "schwimmen",
+      "name": "Schwimmen"
     }
   ]
 };
