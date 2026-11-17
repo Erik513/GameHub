@@ -20,7 +20,10 @@ export function ManageScreen({ messages, tabs, tabsLabel, title }: ManageScreenP
   const titleId = useId();
   return (
     <section aria-labelledby={titleId} className="kit-manage kit-onepage">
-      <h2 id={titleId}>{title}</h2>
+      {/* The header already names the game; the title is only for screen readers. */}
+      <h2 className="visually-hidden" id={titleId}>
+        {title}
+      </h2>
       {messages}
       <SetupTabs ariaLabel={tabsLabel} tabs={tabs} />
     </section>

@@ -928,11 +928,22 @@
 }
 
 /*
- * The focus ring of a control is not cut off at the edge of a scrolling box: the box has some room
- * around its content (padding) and takes it back with a negative margin, so nothing moves.
+ * The focus ring of a control is not cut off at the edge of a scrolling box: inside such a box the
+ * ring is drawn inside the control (inset). A box without extra room around its content also does
+ * not get a scrollbar for a few pixels of padding when the content fits.
  */
 :root {
-  --focus-room: 0.5rem;
+  --focus-room: 0px;
+}
+
+.kit-pane__body :focus-visible,
+.dialog__content :focus-visible {
+  outline-offset: -3px;
+}
+
+.kit-pane__body .kit-choice input:focus-visible + span,
+.dialog__content .kit-choice input:focus-visible + span {
+  outline-offset: -3px;
 }
 
 .kit-pane__body {
@@ -951,7 +962,7 @@
 }
 
 .kit-pane {
-  gap: calc(var(--space-3) + var(--focus-room));
+  gap: calc(var(--space-4) + var(--focus-room));
 }
 
 /*
