@@ -1,15 +1,16 @@
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
-import { Button, ConfirmButton, Icon } from "./components";
+import { Button, ConfirmButton, Dialog, Icon } from "./components";
 import {
   GameChromeContext,
   GameRulesContext,
   type GameExit,
   type GameRulesAction,
 } from "./GameChrome";
-import { PlayerRosterButton } from "./game-kit";
+import { ActionRow, PlayerRosterButton } from "./game-kit";
 import { SettingsDialog } from "./SettingsDialog";
+import { useSystemBack } from "./useSystemBack";
 
 interface AppShellProps {
   children: ReactNode;
@@ -35,6 +36,33 @@ export function AppShell({
     else gameExits.current = remove ? gameExits.current.filter((entry) => entry !== remove) : [];
     setGameExit(gameExits.current[gameExits.current.length - 1]);
   }, []);
+  // The Back key of the system: in a sub page of a game it goes one step back like the arrow in the
+  // header; in a running game it asks first, and a running round is paused while the question is open.
+  const [leaveAsked, setLeaveAsked] = useState(false);
+  const pausedByQuestion = useRef(false);
+  useSystemBack(gameExit !== undefined, () => {
+    if (!gameExit) return;
+    if (gameExit.back) {
+      gameExit.run();
+      return;
+    }
+    if (gameExit.pause && !gameExit.pause.paused) {
+      gameExit.pause.toggle();
+      pausedByQuestion.current = true;
+    }
+    setLeaveAsked(true);
+  });
+  function keepPlaying() {
+    setLeaveAsked(false);
+    if (pausedByQuestion.current) gameExit?.pause?.toggle();
+    pausedByQuestion.current = false;
+  }
+  function endGameNow() {
+    setLeaveAsked(false);
+    pausedByQuestion.current = false;
+    gameExit?.run();
+  }
+
   // The main menu of a game puts its rules into the header, where the GameHub has the players.
   const [rulesAction, setRulesAction] = useState<GameRulesAction>();
   const registerGameRules = useCallback(
@@ -233,6 +261,22 @@ export function AppShell({
           <main className="main-content">{children}</main>
         </GameRulesContext.Provider>
       </GameChromeContext.Provider>
+      <Dialog
+        closeLabel={t("settings.close")}
+        description={t("navigation.leaveGameText")}
+        onClose={keepPlaying}
+        open={leaveAsked && gameExit !== undefined && !gameExit.back}
+        title={t("navigation.leaveGameTitle")}
+      >
+        <ActionRow>
+          <Button variant="success" onClick={keepPlaying}>
+            {t("navigation.keepPlaying")}
+          </Button>
+          <Button variant="danger" onClick={endGameNow}>
+            {t("navigation.exitGame")}
+          </Button>
+        </ActionRow>
+      </Dialog>
       <SettingsDialog
         onClose={() => setSettingsOpen(false)}
         onLanguageChange={onLanguageChange}

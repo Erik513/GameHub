@@ -694,7 +694,7 @@ Ziel: Vor der Ansicht für Teams und Spieler und vor dem nächsten Spielmodus pr
 - **Al-10-02:** Den Container `TabooSetup.tsx` weiter aufteilen (`startGame`, Pause und Neustart als Hooks). Status: planned
 - **Al-10-03:** KI-Kartenquelle später wieder anschließen. Der Auftraggeber hat sie am 2026-11-13 vorerst abgeschaltet (`ADR-024`): Es gibt keine Auswahl „Kartenquelle“ mehr, gespielt werden nur mitgelieferte und eigene Karten. Der Code bleibt ungenutzt; zu entscheiden ist später der Anbieter (Ollama oder LM Studio). Status: planned
 - **Al-10-04:** Gesamtanalyse von Tabu vor dem nächsten Spielmodus (Bericht in `docs/GAMEHUB_QUALITY_CHECK.md`). Status: done
-- **Al-10-05:** Systemzurück-Taste bei laufendem Spiel abfangen. Status: planned
+- **Al-10-05:** Systemzurück-Taste bei laufendem Spiel abfangen (`useSystemBack`, Dialog „Spiel beenden?“). Status: done
 - **Al-10-06:** Stechen bei vier oder mehr gleichen Teams: Regel entscheiden und erklären. Status: planned
 - **Al-10-07:** Monotone Zeitmessung statt Wanduhr. Status: planned
 - **Al-10-08:** Stile ordnen (Kit-Stile, Duplikate, ungenutzte Klassen). Status: planned

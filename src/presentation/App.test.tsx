@@ -354,6 +354,92 @@ describe("App", () => {
     expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
   });
 
+  describe("the Back key of the system", () => {
+    /** The Back key: the history moves back one entry; the events arrive a moment later. */
+    async function pressSystemBack() {
+      await act(async () => {
+        window.history.back();
+        await new Promise((resolve) => setTimeout(resolve, 40));
+      });
+    }
+
+    async function renderTaboo() {
+      const i18n = await createGameHubI18n("en");
+      render(
+        <I18nextProvider i18n={i18n}>
+          <App
+            cardLanguage="en"
+            onCardLanguageChange={vi.fn()}
+            modules={[createTabooModule({ cards: tabooStandardCards })]}
+          />
+        </I18nextProvider>,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+      // The navigation that opened the game finishes first.
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 40));
+      });
+    }
+
+    it("asks before it leaves a running game, pauses the round meanwhile and can keep playing", async () => {
+      await renderTaboo();
+      fireEvent.click(screen.getByRole("button", { name: "Start game" }));
+      fireEvent.click(screen.getByRole("button", { name: "Start round" }));
+      expect(screen.getByRole("button", { name: "Pause" })).toBeVisible();
+
+      await pressSystemBack();
+      // The game is still there, the question is open and the round stands still.
+      const question = screen.getByRole("dialog", { name: "End the game?" });
+      expect(question).toHaveTextContent("The game that is running will be lost.");
+      expect(screen.getByRole("heading", { name: "Paused" })).toBeVisible();
+      expect(window.location.hash).toBe("#/games/taboo");
+
+      // Keep playing: the question closes and the round goes on.
+      fireEvent.click(within(question).getByRole("button", { name: "Keep playing" }));
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name: "Paused" })).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Pause" })).toBeVisible();
+
+      // Asked again, the game can be ended: it returns to the line-up of the game, not to the hub.
+      await pressSystemBack();
+      fireEvent.click(
+        within(screen.getByRole("dialog", { name: "End the game?" })).getByRole("button", {
+          name: "End game",
+        }),
+      );
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
+      expect(window.location.hash).toBe("#/games/taboo");
+
+      // On the line-up one Back leaves the game for the hub; the guard left no entry behind.
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 40));
+      });
+      await pressSystemBack();
+      expect(window.location.hash).toBe("#/");
+      expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
+    });
+
+    it("goes one step back in the settings of a game, like the arrow in the header", async () => {
+      await renderTaboo();
+      openGameSettings();
+      expect(screen.getByRole("group", { name: "Rounds per team" })).toBeVisible();
+
+      await pressSystemBack();
+      expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(window.location.hash).toBe("#/games/taboo");
+    });
+
+    it("leaves the game for the hub from its line-up", async () => {
+      await renderTaboo();
+      expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
+      await pressSystemBack();
+      expect(window.location.hash).toBe("#/");
+      expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
+    });
+  });
+
   it("renders whatever module is registered for a game and nothing else of it", async () => {
     const user = userEvent.setup();
     const i18n = await createGameHubI18n("de");

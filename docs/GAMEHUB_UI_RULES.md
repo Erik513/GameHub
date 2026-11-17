@@ -93,6 +93,10 @@ Auf Wunsch des Auftraggebers und nach üblichen Mustern (Info-Symbol für kurze 
 - Beides ist in Deutsch und Englisch kurz und einfach geschrieben; ein Test (`helpTexts.test.ts`) hält die Längen ein.
 - Ein neues Spiel liefert für beides nur Texte: ein Regelfenster aus `RulesSection`en und die kurzen i-Texte.
 
+### 2.4a Zurück-Taste des Systems (Regel vom 2026-11-17)
+
+Die Zurück-Taste des Handys oder des Browsers verhält sich wie der Pfeil in der Kopfleiste und wirft nie ein Spiel weg: **in einer Unteransicht** (Spieleinstellungen, Kartenverwaltung) geht sie einen Schritt zurück; **in einem laufenden Spiel** öffnet sie das Fenster „Spiel beenden?“ mit „Weiterspielen“ (grün) und „Spiel beenden“ (rot), eine laufende Runde wird währenddessen pausiert; **auf der Aufstellung** verlässt sie das Spiel zur Spielauswahl. Umgesetzt für alle Spiele in `AppShell` mit `useSystemBack`.
+
 ### 2.5 Infofenster
 
 **Lage und Größe:** Jedes Fenster steht **mittig** mit Rand, auf dem Handy wie am PC (höchstens 34 rem breit). Ein Fenster mit Reitern behält für alle Reiter **dieselbe Größe**, damit sich Reiter und Knöpfe beim Wechseln nicht verschieben.
