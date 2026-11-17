@@ -74,12 +74,14 @@ for (const labels of cases) {
     await round.getByRole("button", { name: labels.forbidden }).click();
     await page.clock.fastForward(60_000);
     if (labels.language === "en") {
-      // Three cards were scored; fix two of them in the round review.
+      // Three cards were scored; fix two of them in the round review (the second tab).
+      await page.getByRole("tab", { name: /^Last round/ }).click();
       const review = page.getByRole("region", { name: "Played round: Team 1" });
       await expect(review.getByRole("button")).toHaveCount(4);
       await review.getByRole("button").nth(1).press("Enter");
       await review.getByRole("button").nth(2).click();
       await expect(review.getByRole("button").nth(1)).toHaveAttribute("aria-pressed", "false");
+      await page.getByRole("tab", { name: "Scores" }).click();
     }
     await expect(page.locator(".kit-turn-strip")).toContainText(labels.next);
     await expect(page.getByRole("listitem").filter({ hasText: /^Team 1: 1$/ })).toBeVisible();

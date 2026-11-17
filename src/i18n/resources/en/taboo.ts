@@ -167,6 +167,8 @@ export const tabooTexts = {
     noCards: "Not enough cards are available for the tiebreak.",
   },
   tabooRound: {
+    standingsTab: "Scores",
+    reviewTab: "Last round ({{count}})",
     standings: "Total scores",
     teamTotal: "{{team}}: {{score}}",
     roundOfUnlimited: "Round {{round}}",

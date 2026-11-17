@@ -143,3 +143,49 @@ it("frames the line-up with messages and a start button that submits the form", 
   expect(screen.getByRole("button", { name: "Preparing" })).toBeDisabled();
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });
+
+it("is one page: standings and review are tabs when there is a review, otherwise one box", () => {
+  const { rerender } = render(
+    <ScoreScreen
+      actions={<button type="button">Start round</button>}
+      ariaLabel="Overview"
+      standings={{ scores: [1, 3], tabLabel: "Scores", teams, title: "Standings" }}
+    />,
+  );
+  const overview = screen.getByRole("region", { name: "Overview" });
+  expect(overview).toHaveClass("kit-onepage");
+  // Without a review there are no tabs: the standings are in one box.
+  expect(within(overview).queryByRole("tab")).not.toBeInTheDocument();
+  expect(overview.querySelector(".kit-score-box")).not.toBeNull();
+
+  rerender(
+    <ScoreScreen
+      actions={<button type="button">Start round</button>}
+      ariaLabel="Overview"
+      extraTab={{ content: <p>Cards of the turn</p>, label: "Last round (4)" }}
+      standings={{ scores: [1, 3], tabLabel: "Scores", teams, title: "Standings" }}
+    />,
+  );
+  const tabs = within(overview).getAllByRole("tab");
+  expect(tabs.map((tab) => tab.textContent)).toEqual(["Scores", "Last round (4)"]);
+  // The standings are open first; the main action stays at the bottom.
+  expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+  expect(within(overview).getByRole("button", { name: "Start round" })).toBeVisible();
+});
+
+it("shows a progress bar above the heading of the overview when there is a progress", () => {
+  render(
+    <ScoreScreen
+      actions={<button type="button">Start round</button>}
+      ariaLabel="Overview"
+      eyebrow="Round 2 of 3"
+      progress={{ max: 6, value: 3 }}
+    />,
+  );
+  const bar = screen.getByRole("progressbar", { name: "Round 2 of 3" });
+  expect(bar).toHaveAttribute("aria-valuenow", "3");
+  expect(bar).toHaveAttribute("aria-valuemax", "6");
+  expect(bar.firstElementChild).toHaveStyle({ width: "50%" });
+  // The bar comes first, the round text right below it.
+  expect(bar.nextElementSibling).toHaveTextContent("Round 2 of 3");
+});

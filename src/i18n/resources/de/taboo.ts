@@ -167,6 +167,8 @@ export const tabooTexts = {
     noCards: "Für das Stechen sind nicht genug Karten verfügbar.",
   },
   tabooRound: {
+    standingsTab: "Punktestand",
+    reviewTab: "Letzte Runde ({{count}})",
     standings: "Gesamtpunktestand",
     teamTotal: "{{team}}: {{score}}",
     roundOfUnlimited: "Runde {{round}}",

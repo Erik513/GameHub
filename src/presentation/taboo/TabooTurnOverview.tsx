@@ -41,6 +41,19 @@ export function TabooTurnOverview({
           total: overview.configuration.roundsPerTeam,
         }));
 
+  // The turns that are played of all turns; there is no bar when the game has no fixed length.
+  const teamCount = overview.configuration.teams.length;
+  const rounds = overview.configuration.roundsPerTeam;
+  const progress =
+    rounds === "unlimited"
+      ? undefined
+      : {
+          max: rounds * teamCount,
+          value: overview.turn
+            ? (overview.turn.round - 1) * teamCount + overview.turn.teamIndex
+            : rounds * teamCount,
+        };
+
   return (
     <ScoreScreen
       actions={
@@ -78,21 +91,31 @@ export function TabooTurnOverview({
           {!overview.turn && <p>{t("tabooRound.allRoundsPlayed")}</p>}
         </>
       }
+      {...(progress ? { progress } : {})}
       stackedActions={canFinishEarly}
       standings={{
         scores: overview.scores,
+        tabLabel: t("tabooRound.standingsTab"),
         teams: overview.configuration.teams,
         title: t("tabooRound.standings"),
       }}
+      {...(ended
+        ? {
+            // The cards of the turn that just ended are a second tab; only it scrolls with them.
+            extraTab: {
+              label: t("tabooRound.reviewTab", { count: ended.results.length }),
+              content: (
+                <TabooRoundReview
+                  results={ended.results}
+                  teamName={ended.configuration.teams[ended.turn.teamIndex]?.name ?? ""}
+                  onRevise={(cardId, outcome) => onRevise(cardId, outcome)}
+                />
+              ),
+            },
+          }
+        : {})}
       {...(roundText ? { eyebrow: roundText } : {})}
     >
-      {ended && (
-        <TabooRoundReview
-          results={ended.results}
-          teamName={ended.configuration.teams[ended.turn.teamIndex]?.name ?? ""}
-          onRevise={(cardId, outcome) => onRevise(cardId, outcome)}
-        />
-      )}
       {deckEmpty && (
         <>
           <Toast title={t("tabooRound.empty")} tone="error">

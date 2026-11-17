@@ -227,7 +227,7 @@
   gap: var(--space-4);
 }
 
-.kit-score-screen > h2 {
+.kit-score-box h2 {
   margin: 0;
   font-size: var(--text-lg);
 }
@@ -990,4 +990,37 @@
   min-height: 2.75rem;
   margin: 0;
   gap: var(--space-2);
+}
+
+/* Without tabs the standings and the rest share one box that looks like the box of a tab. */
+.kit-score-box {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: var(--space-4);
+  min-height: 0;
+  padding: var(--space-4);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  scrollbar-color: var(--color-line) transparent;
+  scrollbar-width: thin;
+}
+
+/* A thin progress bar, for example the turns played of all turns of a game. */
+.kit-progress {
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-line);
+}
+
+.kit-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+  transition: width 200ms ease;
 }
