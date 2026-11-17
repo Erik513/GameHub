@@ -691,7 +691,7 @@ Vorschlag für den Aufbau:
 Ziel: Vor der Ansicht für Teams und Spieler und vor dem nächsten Spielmodus prüfen, ob die Schichten sauber getrennt sind, ob Logik und Oberfläche für andere Spiele wiederverwendbar liegen, ob die Bedienung ruhig bleibt (nichts springt, die Scrollposition wird gemerkt) und ob toter Code übrig ist. Ergebnis: `docs/GAMEHUB_QUALITY_CHECK.md`.
 
 - **Al-10-01:** Gesamtcheck. **Ergebnis:** Schichten sauber; toter Code entfernt; Kartenbedarf und Generator-Anfragen in der Business-Schicht (`cardPlan.ts`); `RulesDialog`, `RulesButton` und `useScreenScroll` im `game-kit`; Stechen in `useTabooTiebreak`; Leitfaden für neue Spiele aktualisiert. Status: done
-- **Al-10-02:** Den Container `TabooSetup.tsx` weiter aufteilen (`startGame`, Pause und Neustart als Hooks). Status: planned
+- **Al-10-02:** Den Container `TabooSetup.tsx` weiter aufteilen: Hooks für das klassische Spiel, den Start und die Einstellungsansicht, reine Planungsfunktionen, eigene Komponenten für Aufstellung und Bildschirme (642 auf 255 Zeilen, Komplexität 109 auf 24, Verhalten unverändert). Status: done
 - **Al-10-03:** KI-Kartenquelle später wieder anschließen. Der Auftraggeber hat sie am 2026-11-13 vorerst abgeschaltet (`ADR-024`): Es gibt keine Auswahl „Kartenquelle“ mehr, gespielt werden nur mitgelieferte und eigene Karten. Der Code bleibt ungenutzt; zu entscheiden ist später der Anbieter (Ollama oder LM Studio). Status: planned
 - **Al-10-04:** Gesamtanalyse von Tabu vor dem nächsten Spielmodus (Bericht in `docs/GAMEHUB_QUALITY_CHECK.md`). Status: done
 - **Al-10-05:** Systemzurück-Taste bei laufendem Spiel abfangen (`useSystemBack`, Dialog „Spiel beenden?“). Status: done

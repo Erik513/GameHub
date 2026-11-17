@@ -40,7 +40,7 @@ Ein Skript hat den Importgraphen aller Produktionsdateien aufgebaut:
 
 | Stelle | Messung | Urteil |
 |---|---|---|
-| `TabooSetup.tsx` | 642 Zeilen, Hauptfunktion 590 Zeilen, Komplexität 109; `startGame` 126 Zeilen, Komplexität 32 | **Zu groß.** Ein Container für Aufstellung, Einstellungen, Klassisch, Rennen, Stechen, KI-Nachladen, Pause und Neustart. Ein dritter Modus würde ihn weiter aufblähen. `Al-10-02` (schon geplant) wird dringender. |
+| `TabooSetup.tsx` | 642 Zeilen, Hauptfunktion 590 Zeilen, Komplexität 109; `startGame` 126 Zeilen, Komplexität 32 | **Erledigt am 2026-11-17 (`Al-10-02`):** vorher ein Container für alles; jetzt 255 Zeilen, Komplexität 24, aufgeteilt in Hooks und Komponenten (siehe Changelog). Der ursprüngliche Befund: ein Container für Aufstellung, Einstellungen, Klassisch, Rennen, Stechen, KI-Nachladen, Pause und Neustart. Ein dritter Modus würde ihn weiter aufblähen. `Al-10-02` (schon geplant) wird dringender. |
 | `stateMachine.ts`, `transitionTaboo` | 209 Zeilen, Komplexität 73 | Eine Funktion für alle Ereignisse. Gut getestet (99,3 % Zeilen, 98,2 % Zweige, Zufallsprüfung), aber schwer zu lesen; je Ereignis aufteilen, sobald „Gegen die Zeit“ dazukommt. |
 | `TabooCardList.tsx` | 518 Zeilen, Komplexität 54 | Größte Komponente der Kartenverwaltung; Zeilen und Umbenennen könnten in eigene Komponenten. |
 | Stile | `global.css` 1369, `kit-setup.css` 1181, `games/taboo.css` 782 Zeilen; **43 Selektoren mehrfach definiert** (zum Beispiel die Rundenkarte bis zu viermal) | Bausteine des `game-kit` (Zeitleiste, Auswahl, Punktetafel) stehen in `global.css`, andere in `kit-setup.css`. Die Wirkung hängt an der Reihenfolge der Überschreibungen. → `Al-10-08`. |
@@ -62,7 +62,7 @@ Alle Ansichten (Spielauswahl, Einstellungen des GameHub, Aufstellung, Regeln, Sp
 ### 6. Empfohlene Reihenfolge
 
 1. **`Al-10-05`** Systemzurück bei laufendem Spiel abfangen (B1), klein und wirkungsvoll.
-2. **`Al-10-02`** `TabooSetup` aufteilen, **vor** „Gegen die Zeit“ (S. 3).
+2. ~~**`Al-10-02`** `TabooSetup` aufteilen~~ (**erledigt am 2026-11-17**).
 3. **`Al-10-06`** Regelentscheidung zum Stechen bei vier oder mehr Teams (B2), eine Entscheidung des Auftraggebers.
 4. **`Al-10-07`** Monotone Zeitmessung (B4).
 5. **`Al-10-08`** Stile ordnen (Kit-Stile in Bausteindateien, Duplikate, tote Klassen).

@@ -77,7 +77,7 @@ Bausteine in `src/presentation/game-kit/`, die ein neues Spiel einfach benutzt:
 
 ## Noch nicht umgesetzt
 
-- Pause, Neustart und die Aufbereitung der Karten beim Start liegen noch im Container `TabooSetup.tsx` (`Al-10-02`); Hooks dafür folgen, wenn das zweite Spiel sie braucht. Schon ausgelagert: das Stechen (`useTabooTiebreak`), das Nachladen der KI-Karten (`useTabooRefill`) und die Rechenregeln für Kartenbedarf und Erzeugung (`business/games/taboo/cardPlan.ts`).
+- **Aufbau eines Spielcontainers (Vorbild `TabooSetup`, `Al-10-02`):** Ein Spiel mit mehreren Modi hält seinen Container klein und verteilt die Aufgaben: die Einstellungsansicht in einen Hook (`useTabooSettingsView`), den Start aus der Aufstellung in einen Hook (`useTabooStart`) mit **reinen Planungsfunktionen ohne React** (`tabooStartPlan.ts`), je Modus einen Hook für den Spielzustand (`useTabooClassicGame`) und eine Komponente für seine Bildschirme (`TabooClassicScreens`), die Aufstellung als eigene Komponente (`TabooLineup`). Der Container verbindet sie nur und hält, was sie teilen (Aufstellung, Meldungen). Ein neuer Modus bekommt so seinen eigenen Hook und seine eigenen Bildschirme.
 - Ergebnisse nachträglich korrigieren (`TabooReviewList`, `TabooAttemptReviews`) und die Kartenverwaltung sind Tabu-spezifisch, bis ein zweites Spiel sie braucht. Die Regeln dafür (`reviseOutcome` in `business/games/taboo`): falsch Markiertes bleibt falsch, korrigiert werden kann nur der zuletzt gespielte Zug.
 - Der Spieler-Reiter der Aufstellung bleibt im Kit für Spiele mit Namen; **Tabu verzichtet darauf** (lokal sind Spieler nicht wichtig, online reicht der Teams-Reiter mit den Namen aus der Lobby, `Ta-10-09`).
 

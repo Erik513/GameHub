@@ -58,6 +58,8 @@ export default defineConfig({
     environment: "jsdom",
     include: ["src/**/*.test.{ts,tsx}"],
     restoreMocks: true,
+    // Typing tests of the card forms take about two seconds alone and need more under parallel load.
+    testTimeout: 20000,
     setupFiles: ["./src/test/setup.ts"],
   },
 });
