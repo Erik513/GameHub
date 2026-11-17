@@ -136,14 +136,13 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     // The skipped card stays visible but neutral and cannot be changed.
     expect(review.getAllByRole("listitem")).toHaveLength(3);
     expect(review.getByText("Skipped")).toBeVisible();
-    expect(items.map((item) => item.getAttribute("aria-pressed"))).toEqual(["true", "false"]);
-    fireEvent.click(items[1]!);
-    expect(rowText(standingsRow(0))).toBe("Team 1: 2");
-    expect(items[1]).toHaveAttribute("aria-pressed", "true");
+    // The card marked wrong during the turn stays wrong and cannot be tapped; only the correct one can.
+    expect(items.map((item) => item.getAttribute("aria-pressed"))).toEqual(["true"]);
+    expect(review.getByText("Wrong").closest("[data-locked]")).not.toBeNull();
     fireEvent.click(items[0]!);
-    expect(rowText(standingsRow(0))).toBe("Team 1: 1");
+    expect(rowText(standingsRow(0))).toBe("Team 1: 0");
+    // Turning it wrong can be taken back.
     fireEvent.click(items[0]!);
-    fireEvent.click(items[1]!);
     expect(rowText(standingsRow(0))).toBe("Team 1: 1");
     expect(rowText(standingsRow(1))).toBe("Team 2: 0");
     expect(upNext()).toHaveTextContent("Team 2");

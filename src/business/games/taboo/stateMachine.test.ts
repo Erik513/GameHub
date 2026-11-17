@@ -3,6 +3,7 @@ import type { GameConfiguration, TabooCard } from "./model";
 import {
   createTabooGame,
   getNextTabooTurn,
+  reviseOutcome,
   transitionTaboo,
   type TabooEvent,
   type TabooState,
@@ -71,9 +72,14 @@ describe("Taboo state machine", () => {
     expect(transitionTaboo(ended, { ...revise, outcome: "correct" })).toBe(ended);
     const wrong = transitionTaboo(ended, revise);
     expect(wrong).toMatchObject({ roundPoints: 0, scores: [0, 0, 0] });
-    const bothRight = transitionTaboo(wrong, { ...revise, cardId: second.id, outcome: "correct" });
-    expect(bothRight).toMatchObject({ roundPoints: 1, scores: [1, 0, 0] });
-    expect(bothRight).toMatchObject({ resolvedCardIds: [card.id, second.id] });
+    // A card that was marked wrong during the turn can never become correct afterwards.
+    expect(transitionTaboo(wrong, { ...revise, cardId: second.id, outcome: "correct" })).toBe(
+      wrong,
+    );
+    // A card that was marked correct can be turned wrong and back again.
+    const back = transitionTaboo(wrong, { ...revise, outcome: "correct" });
+    expect(back).toMatchObject({ roundPoints: 1, scores: [1, 0, 0] });
+    expect(back).toMatchObject({ resolvedCardIds: [card.id, second.id] });
 
     // Skipped cards stay in the list but are final.
     const third = { ...card, id: "third" };
@@ -519,5 +525,27 @@ describe("Taboo state machine", () => {
         createTabooGame({ ...unlimited, roundsPerTeam: "many" as unknown as "unlimited" }),
       ).toMatchObject({ valid: false });
     });
+  });
+});
+
+describe("reviseOutcome", () => {
+  const result = (outcome: "correct" | "forbiddenWord" | "skipped") => ({ card, outcome });
+
+  it("lets a correct card become wrong and back, but never a wrong card become correct", () => {
+    const wrong = reviseOutcome(result("correct"), "forbiddenWord");
+    expect(wrong).toMatchObject({ outcome: "forbiddenWord", original: "correct" });
+    expect(reviseOutcome(wrong!, "correct")).toMatchObject({
+      outcome: "correct",
+      original: "correct",
+    });
+    expect(reviseOutcome(result("forbiddenWord"), "correct")).toBeUndefined();
+    // Also after it was corrected once, the original wrong mark stays.
+    expect(
+      reviseOutcome({ ...result("forbiddenWord"), original: "forbiddenWord" }, "correct"),
+    ).toBe(undefined);
+    // Skipped cards are final and nothing can become skipped.
+    expect(reviseOutcome(result("skipped"), "correct")).toBeUndefined();
+    expect(reviseOutcome(result("correct"), "skipped")).toBeUndefined();
+    expect(reviseOutcome(result("correct"), "correct")).toBeUndefined();
   });
 });

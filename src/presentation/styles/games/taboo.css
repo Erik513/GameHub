@@ -227,6 +227,14 @@
   font-size: var(--text-sm);
 }
 
+/* A card that was marked wrong during the turn cannot be changed: darker red, no pointer, so it differs from the cards that can be changed. */
+.taboo-review__item[data-locked="true"] {
+  border-color: color-mix(in srgb, var(--color-danger-fill) 55%, var(--color-line));
+  background: color-mix(in srgb, var(--color-danger-fill) 28%, var(--color-surface-muted));
+  color: var(--color-ink-muted);
+  cursor: default;
+}
+
 .taboo-review__item[data-skipped="true"] {
   border-color: var(--color-line);
   background: var(--color-surface-muted);

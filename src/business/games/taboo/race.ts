@@ -7,7 +7,7 @@ import {
   type ValidationIssue,
   type ValidationResult,
 } from "./model";
-import type { TabooOutcome, TabooResult } from "./stateMachine";
+import { reviseOutcome, type TabooOutcome, type TabooResult } from "./stateMachine";
 
 /** Mode "Auf Zeit" (race): every team solves the same number of cards, the shortest time wins. */
 
@@ -191,13 +191,10 @@ export function transitionRace(state: RaceState, event: RaceEvent): RaceState {
     if (state.status === "running") return state;
     const attempt = state.attempts.find((candidate) => candidate.teamIndex === event.teamIndex);
     const previous = attempt?.results.find((result) => result.card.id === event.cardId);
-    // Skipped cards are not part of the scoring and cannot be revised.
-    if (!attempt || !previous || previous.outcome === "skipped" || event.outcome === "skipped")
-      return state;
-    if (previous.outcome === event.outcome) return state;
-    const results = attempt.results.map((result) =>
-      result === previous ? { ...result, outcome: event.outcome } : result,
-    );
+    // Skipped cards are not part of the scoring; a card marked wrong cannot become correct.
+    const revised = previous ? reviseOutcome(previous, event.outcome) : undefined;
+    if (!attempt || !previous || !revised) return state;
+    const results = attempt.results.map((result) => (result === previous ? revised : result));
     const solved = results.filter((result) => result.outcome === "correct").length;
     // A forbidden card was replaced, so it can only count when the run has room for it.
     if (solved > configuration.target) return state;

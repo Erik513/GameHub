@@ -8,7 +8,10 @@ interface TabooReviewListProps {
   results: readonly TabooResult[];
 }
 
-/** Every card of a finished turn or run in green (correct) or red (not scored); a tap flips it. */
+/**
+ * Every card of a finished turn or run in green (correct) or red (not scored). A correct card can be
+ * turned wrong by a tap (and back); a card that was marked wrong during the turn cannot be changed.
+ */
 export function TabooReviewList({
   canMarkCorrect = true,
   onRevise,
@@ -39,6 +42,22 @@ export function TabooReviewList({
           );
         }
         const correct = outcome === "correct";
+        const result = results.find((candidate) => candidate.card.id === card.id);
+        // A card that was marked wrong during the turn stays wrong: it is shown but cannot be changed.
+        if (!correct && (result?.original ?? outcome) !== "correct") {
+          return (
+            <li key={card.id}>
+              <div
+                className="taboo-review__item"
+                data-correct="false"
+                data-locked="true"
+                lang={card.language}
+              >
+                {content(t("tabooRound.review.wrong"))}
+              </div>
+            </li>
+          );
+        }
         return (
           <li key={card.id}>
             <button

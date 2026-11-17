@@ -26,6 +26,24 @@ export type TabooOutcome = "correct" | "skipped" | "forbiddenWord";
 export interface TabooResult {
   readonly card: TabooCard;
   readonly outcome: TabooOutcome;
+  /** How the card was marked during the turn; set when the result was corrected afterwards. */
+  readonly original?: TabooOutcome;
+}
+
+/**
+ * The corrected result of a card, or nothing when the correction is not allowed. A card that was
+ * marked wrong during the turn (forbidden word) can never become correct afterwards; a card that was
+ * marked correct can be turned wrong and back again.
+ */
+export function reviseOutcome(
+  previous: TabooResult,
+  outcome: TabooOutcome,
+): TabooResult | undefined {
+  if (previous.outcome === "skipped" || outcome === "skipped") return undefined;
+  if (previous.outcome === outcome) return undefined;
+  const original = previous.original ?? previous.outcome;
+  if (outcome === "correct" && original !== "correct") return undefined;
+  return { ...previous, outcome, original };
 }
 
 interface TurnState extends GameState {
@@ -156,9 +174,9 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
     )
       return state;
     const previous = state.results.find((result) => result.card.id === event.cardId);
-    // Skipped cards are not part of the scoring and cannot be revised.
-    if (!previous || previous.outcome === "skipped" || event.outcome === "skipped") return state;
-    if (previous.outcome === event.outcome) return state;
+    // Skipped cards are not part of the scoring; a card marked wrong cannot become correct.
+    const revised = previous ? reviseOutcome(previous, event.outcome) : undefined;
+    if (!previous || !revised) return state;
     const delta = Number(event.outcome === "correct") - Number(previous.outcome === "correct");
     return {
       ...state,
@@ -166,9 +184,7 @@ export function transitionTaboo(state: TabooState, event: TabooEvent): TabooStat
       scores: scores.map((score, index) =>
         index === state.turn.teamIndex ? score + delta : score,
       ),
-      results: state.results.map((result) =>
-        result === previous ? { ...result, outcome: event.outcome } : result,
-      ),
+      results: state.results.map((result) => (result === previous ? revised : result)),
     };
   }
   if (event.type === "resolveCard") {
@@ -436,13 +452,10 @@ function reviseAttempts(
 ): readonly TiebreakAttempt[] | undefined {
   const attempt = attempts.find((candidate) => candidate.teamIndex === event.teamIndex);
   const previous = attempt?.results.find((result) => result.card.id === event.cardId);
-  // Skipped cards are not part of the scoring and cannot be revised.
-  if (!attempt || !previous || previous.outcome === "skipped" || event.outcome === "skipped")
-    return undefined;
-  if (previous.outcome === event.outcome) return undefined;
-  const results = attempt.results.map((result) =>
-    result === previous ? { ...result, outcome: event.outcome } : result,
-  );
+  // Skipped cards are not part of the scoring; a card marked wrong cannot become correct.
+  const revised = previous ? reviseOutcome(previous, event.outcome) : undefined;
+  if (!attempt || !previous || !revised) return undefined;
+  const results = attempt.results.map((result) => (result === previous ? revised : result));
   const solved = results.filter((result) => result.outcome === "correct").length;
   // A forbidden card was replaced, so it can only count when the attempt has room for it.
   if (solved > TIEBREAK_CARD_COUNT) return undefined;

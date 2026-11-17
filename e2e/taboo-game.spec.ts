@@ -75,7 +75,8 @@ for (const labels of cases) {
       // Three cards were scored; fix two of them in the round review (the second tab).
       await page.getByRole("tab", { name: /^Last round/ }).click();
       const review = page.getByRole("region", { name: "Played round: Team 1" });
-      await expect(review.getByRole("button")).toHaveCount(4);
+      // The wrong and the skipped card cannot be tapped any more, only the three correct ones.
+      await expect(review.getByRole("button")).toHaveCount(3);
       await review.getByRole("button").nth(1).press("Enter");
       await review.getByRole("button").nth(2).click();
       await expect(review.getByRole("button").nth(1)).toHaveAttribute("aria-pressed", "false");
