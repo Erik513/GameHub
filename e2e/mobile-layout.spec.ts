@@ -155,7 +155,11 @@ async function audit(page: Page, screen: string): Promise<string[]> {
       // A link inside a sentence may be as small as its text (an inline link is exempt from the target size).
       if (element.matches(".kit-link-button")) continue;
       const rect = element.getBoundingClientRect();
-      if (rect.height < minimum - 0.5 || rect.width < minimum - 0.5) {
+      // A button next to a heading is flat; its invisible tap layer reaches 6 px over it (12 px in total).
+      const flat = element.matches(".kit-heading-button");
+      const height = rect.height + (flat ? 12 : 0);
+      const width = rect.width + (flat ? 8 : 0);
+      if (height < minimum - 0.5 || width < minimum - 0.5) {
         found.push({
           kind: "small touch target",
           detail: `${describe(element)} ${Math.round(rect.width)}x${Math.round(rect.height)}`,

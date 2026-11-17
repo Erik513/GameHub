@@ -21,8 +21,7 @@ const texts = {
     name: (n: number) => `Name of team ${n}`,
     defaultName: (n: number) => `Team ${n}`,
     order: "Team order",
-    orderDefault: "Default",
-    orderRandom: "Random",
+    orderRandom: "Random order",
     move: (place: number, team: string) => `Move ${team}, place ${place}`,
     pick: (player: string) => `Team of ${player}`,
     add: "Add player",
@@ -40,8 +39,7 @@ const texts = {
     name: (n: number) => `Name von Team ${n}`,
     defaultName: (n: number) => `Team ${n}`,
     order: "Teamreihenfolge",
-    orderDefault: "Standard",
-    orderRandom: "Zufällig",
+    orderRandom: "Zufällige Reihenfolge",
     move: (place: number, team: string) => `${team} verschieben, Platz ${place}`,
     pick: (player: string) => `Team für ${player}`,
     add: "Spieler hinzufügen",
@@ -143,9 +141,10 @@ it.each(["en", "de"] as const)("sets the playing order of the teams in %s", asyn
     within(screen.getByRole("group", { name: "Teams" })).getByRole("radio", { name: "3" }),
   );
 
-  // The normal order, one below the other with fixed places; the button for it cannot be used.
+  // The normal order, one below the other with fixed places.
   expect(placeNames(text)).toEqual(["1.Team 1", "2.Team 2", "3.Team 3"]);
-  expect(screen.getByRole("button", { name: text.orderDefault })).toBeDisabled();
+  // There is no "Default" button; the dice button is an icon without text.
+  expect(screen.getByRole("button", { name: text.orderRandom })).toHaveTextContent("");
 
   // The arrow keys on the handle move a team by one place.
   screen.getByRole("button", { name: text.move(3, "Team 3") }).focus();
@@ -156,19 +155,21 @@ it.each(["en", "de"] as const)("sets the playing order of the teams in %s", asyn
   expect(latest.value.order).toEqual([2, 0, 1]);
   expect(teamsOf(latest.value).map((team) => team.name)).toEqual(["Team 3", "Team 1", "Team 2"]);
 
-  // "Default" stands left of "Random".
-  expect(
-    [...document.querySelectorAll<HTMLElement>(".kit-players__actions button")]
-      .slice(-2)
-      .map((button) => button.textContent),
-  ).toEqual([text.orderDefault, text.orderRandom]);
-  // "Random" mixes all teams, "Default" brings back the normal order.
+  // The dice button mixes all teams (the mocked random number gives a fixed result).
   await user.click(screen.getByRole("button", { name: text.orderRandom }));
   expect([...latest.value.order].sort()).toEqual([0, 1, 2]);
-  await user.click(screen.getByRole("button", { name: text.orderDefault }));
-  expect(latest.value.order).toEqual([]);
-  expect(placeNames(text)).toEqual(["1.Team 1", "2.Team 2", "3.Team 3"]);
   random.mockRestore();
+});
+
+it("opens the info of the team order from the info button and from the heading", async () => {
+  const { user, text } = await setup("en");
+  const info = () => screen.queryByRole("dialog", { name: text.order });
+  await user.click(screen.getByRole("button", { name: `Info about ${text.order}` }));
+  expect(info()).toBeInTheDocument();
+  await user.click(within(info()!).getByRole("button", { name: "Close" }));
+  expect(info()).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: text.order }));
+  expect(info()).toBeInTheDocument();
 });
 
 it("drags a team to another place by its handle", async () => {

@@ -1,16 +1,12 @@
 import {
+  useId,
   useRef,
   useState,
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  isDefaultOrder,
-  moveTeam,
-  normalizeOrder,
-  randomOrder,
-} from "../../business/shared/teamOrder";
+import { moveTeam, normalizeOrder, randomOrder } from "../../business/shared/teamOrder";
 import { Button, Icon } from "../components";
 import { InfoButton } from "./InfoButton";
 
@@ -26,8 +22,8 @@ interface TeamOrderProps {
 /**
  * The playing order of all teams, one below the other with fixed places 1, 2, 3 ...: the team at the
  * top starts. A team is dragged by its handle to another place (mouse or finger); with the keyboard
- * the arrow keys on the handle move it. "Random" mixes all teams, "Default" brings back team 1,
- * team 2, team 3 and so on.
+ * the arrow keys on the handle move it. The dice button mixes all teams. The info button stands next
+ * to the heading, and the heading opens the same info window.
  */
 export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) {
   const { t } = useTranslation();
@@ -35,6 +31,8 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
   const list = useRef<HTMLOListElement>(null);
   // The team that is being dragged.
   const [dragged, setDragged] = useState<number>();
+  const [infoOpen, setInfoOpen] = useState(false);
+  const titleId = useId();
 
   /** The place under the pointer, from the rows as they are on the screen right now. */
   function placeAt(y: number): number {
@@ -79,14 +77,35 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
   }
 
   return (
-    <fieldset className="kit-choice-group kit-choice-group--info">
-      <legend>{t("kitTeams.orderLegend")}</legend>
-      <InfoButton
-        closeLabel={t("settings.close")}
-        label={t("kitSetup.infoLabel", { setting: t("kitTeams.orderLegend") })}
-        text={t("kitTeams.orderInfo")}
-        title={t("kitTeams.orderLegend")}
-      />
+    <fieldset aria-labelledby={titleId} className="kit-choice-group kit-choice-group--info">
+      <legend className="kit-order__legend">
+        <button
+          className="kit-order__title"
+          id={titleId}
+          onClick={() => setInfoOpen(true)}
+          type="button"
+        >
+          {t("kitTeams.orderLegend")}
+        </button>
+        <InfoButton
+          className="kit-info-button--inline"
+          closeLabel={t("settings.close")}
+          label={t("kitSetup.infoLabel", { setting: t("kitTeams.orderLegend") })}
+          onOpenChange={setInfoOpen}
+          open={infoOpen}
+          text={t("kitTeams.orderInfo")}
+          title={t("kitTeams.orderLegend")}
+        />
+        <Button
+          aria-label={t("kitTeams.orderRandom")}
+          className="kit-heading-button kit-order__shuffle"
+          onClick={() => onChange(randomOrder(count))}
+          title={t("kitTeams.orderRandom")}
+          variant="secondary"
+        >
+          <Icon name="shuffle" />
+        </Button>
+      </legend>
       <ol className="kit-order" ref={list}>
         {current.map((team, place) => (
           <li className="kit-order__row" data-dragging={dragged === team || undefined} key={team}>
@@ -104,18 +123,6 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
           </li>
         ))}
       </ol>
-      <div className="kit-players__actions">
-        <Button
-          disabled={isDefaultOrder(order, count)}
-          onClick={() => onChange([])}
-          variant="secondary"
-        >
-          {t("kitTeams.orderDefault")}
-        </Button>
-        <Button onClick={() => onChange(randomOrder(count))} variant="secondary">
-          {t("kitTeams.orderRandom")}
-        </Button>
-      </div>
     </fieldset>
   );
 }

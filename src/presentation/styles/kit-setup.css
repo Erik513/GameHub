@@ -1101,3 +1101,63 @@
   margin: 0;
   padding: 0;
 }
+
+/* Team order: the info button stands right next to the heading, the heading opens the same window. */
+.kit-order__legend {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.kit-order__title {
+  /* The heading line has the height of a tap area. */
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.kit-order__title:focus-visible {
+  border-radius: var(--radius-sm);
+}
+
+.kit-choice-group .kit-info-button--inline {
+  position: static;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
+  margin: 0;
+}
+
+/*
+ * A button next to a heading: flat and wide (not square), so it belongs to the heading line. Its tap
+ * area is as big as every other one: an invisible layer reaches 6 px over the button on every side.
+ */
+.button.kit-heading-button {
+  position: relative;
+  align-self: center;
+  min-width: 3.25rem;
+  height: 2rem;
+  min-height: 0;
+  margin: 0;
+  padding: 0 var(--space-3);
+  line-height: 1;
+}
+
+.kit-heading-button::after {
+  position: absolute;
+  inset: -0.375rem -0.25rem;
+  content: "";
+}
+
+/* The dice button (random order) stands at the right end of the heading line. */
+.kit-order__legend .kit-order__shuffle {
+  margin-left: auto;
+}
