@@ -8,10 +8,20 @@ interface DialogProps {
   description?: string;
   onClose: () => void;
   open: boolean;
+  /** A large window for lists: wider and as high as the screen allows. */
+  size?: "large";
   title: string;
 }
 
-export function Dialog({ children, closeLabel, description, onClose, open, title }: DialogProps) {
+export function Dialog({
+  children,
+  closeLabel,
+  description,
+  onClose,
+  open,
+  size,
+  title,
+}: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -56,7 +66,7 @@ export function Dialog({ children, closeLabel, description, onClose, open, title
         aria-describedby={description ? descriptionId : undefined}
         aria-labelledby={titleId}
         aria-modal="true"
-        className="dialog"
+        className={size === "large" ? "dialog dialog--large" : "dialog"}
         role="dialog"
       >
         <div className="dialog__header">

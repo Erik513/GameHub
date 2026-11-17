@@ -38,7 +38,7 @@ async function renderWith(
 
 const texts = {
   en: {
-    open: "Players",
+    open: "Player list",
     name: "Name of the player",
     add: "Add",
     list: "Saved players",
@@ -52,7 +52,7 @@ const texts = {
     none: "Choose none",
   },
   de: {
-    open: "Spieler",
+    open: "Spielerliste",
     name: "Name des Spielers",
     add: "Hinzufügen",
     list: "Gespeicherte Spieler",
@@ -109,7 +109,7 @@ it.each(["en", "de"] as const)(
 
 it("shows nothing without a player list in the app", async () => {
   await renderWith("en", undefined, <PlayerRosterButton />);
-  expect(screen.queryByRole("button", { name: "Players" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Player list" })).not.toBeInTheDocument();
 });
 
 it.each(["en", "de"] as const)(

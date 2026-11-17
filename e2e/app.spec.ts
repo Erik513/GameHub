@@ -190,3 +190,68 @@ for (const language of ["en", "de"] as const) {
     expect(["", "#/"]).toContain(new URL(page.url()).hash);
   });
 }
+
+test("the player list and the player choice are large windows that show whole players only", async ({
+  page,
+}) => {
+  // Many players, so the list has to scroll on every screen.
+  const names = Array.from(
+    { length: 30 },
+    (_, index) => `Player ${String(index + 1).padStart(2, "0")}`,
+  );
+  await page.addInitScript((saved) => {
+    window.localStorage.setItem("gamehub.players", JSON.stringify(saved));
+  }, names);
+  await page.goto("/");
+
+  /** The open window: its size, whether its content scrolls sideways and how many rows are cut off. */
+  const measure = async () =>
+    page.evaluate(() => {
+      const dialog = document.querySelector(".dialog")!.getBoundingClientRect();
+      const content = document.querySelector(".dialog__content")!;
+      const scroll = document.querySelector<HTMLElement>(".kit-roster__scroll")!;
+      const cutOff = () => {
+        const box = scroll.getBoundingClientRect();
+        return [...scroll.querySelectorAll("li")].filter((row) => {
+          const rect = row.getBoundingClientRect();
+          const atTop = rect.top < box.top - 0.5 && rect.bottom > box.top + 0.5;
+          const atBottom = rect.top < box.bottom - 0.5 && rect.bottom > box.bottom + 0.5;
+          return atTop || atBottom;
+        }).length;
+      };
+      const cutAtTop = cutOff();
+      // At the end of the list the last rows must be whole, too (the list stops at whole rows).
+      scroll.scrollTop = scroll.scrollHeight;
+      return {
+        cutAtEnd: cutOff(),
+        cutAtTop,
+        heightShare: dialog.height / window.innerHeight,
+        scrolls: scroll.scrollHeight > scroll.clientHeight,
+        sideways: content.scrollWidth > content.clientWidth,
+        title: document.querySelector(".dialog h2")?.textContent ?? "",
+      };
+    });
+
+  // The button and the window are called "Player list".
+  await page.getByRole("button", { name: "Player list", exact: true }).click();
+  let window_ = await measure();
+  expect(window_.title).toBe("Player list");
+  expect(window_.sideways).toBe(false);
+  expect(window_.scrolls).toBe(true);
+  expect(window_.cutAtTop).toBe(0);
+  expect(window_.cutAtEnd).toBe(0);
+  expect(window_.heightShare).toBeGreaterThan(0.6);
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+
+  // The player choice of a game is as large and shows whole players only, too.
+  await page.getByRole("button", { name: "View progress" }).click();
+  await page.getByRole("tab", { name: /^Players/ }).click();
+  await page.getByRole("button", { name: "Choose from player list" }).click();
+  window_ = await measure();
+  expect(window_.title).toBe("Choose players");
+  expect(window_.sideways).toBe(false);
+  expect(window_.scrolls).toBe(true);
+  expect(window_.cutAtTop).toBe(0);
+  expect(window_.cutAtEnd).toBe(0);
+  expect(window_.heightShare).toBeGreaterThan(0.6);
+});

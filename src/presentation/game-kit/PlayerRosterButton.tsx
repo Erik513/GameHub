@@ -1,8 +1,9 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { maxPlayerNameLength } from "../../business/shared/playerRoster";
 import { Button, ConfirmButton, Dialog, Icon } from "../components";
 import { usePlayerRoster } from "./PlayerRosterContext";
+import { useWholeRows } from "./useWholeRows";
 
 type Problem = "empty" | "invalid" | "duplicate" | "full";
 
@@ -12,6 +13,9 @@ export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; ope
   const roster = usePlayerRoster();
   const [name, setName] = useState("");
   const [problem, setProblem] = useState<Problem>();
+  // The list shows whole players only: its height is calculated in whole rows.
+  const listRef = useRef<HTMLDivElement>(null);
+  const listHeight = useWholeRows(listRef, roster?.players.length ?? 0, open);
 
   if (!roster) return null;
 
@@ -39,9 +43,10 @@ export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; ope
       description={t("kitRoster.description")}
       onClose={close}
       open={open}
+      size="large"
       title={t("kitRoster.title")}
     >
-      <div className="kit-roster">
+      <div className="kit-roster kit-roster--manage">
         <form className="kit-roster__add" noValidate onSubmit={submit}>
           <input
             aria-invalid={problem ? true : undefined}
@@ -68,7 +73,11 @@ export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; ope
         <p className="kit-roster__problem" {...(problem ? { role: "alert" } : {})}>
           {problem ? t(`kitRoster.problems.${problem}`) : "\u00a0"}
         </p>
-        <div className="kit-roster__scroll">
+        <div
+          className="kit-roster__scroll"
+          ref={listRef}
+          {...(listHeight === undefined ? {} : { style: { height: listHeight } })}
+        >
           {roster.players.length === 0 ? (
             <p>{t("kitRoster.empty")}</p>
           ) : (

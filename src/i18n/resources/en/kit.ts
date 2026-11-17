@@ -43,8 +43,8 @@ export const kitTexts = {
     players_without_team: "Players without a team: {{count}}. Draw the teams or tap a name.",
   },
   kitRoster: {
-    open: "Players",
-    title: "Players",
+    open: "Player list",
+    title: "Player list",
     description:
       "These players stay saved. In every game you can choose from the list who is playing.",
     nameLabel: "Name of the player",

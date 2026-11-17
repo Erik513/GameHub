@@ -401,11 +401,13 @@ test("the race screens fit a small phone in both languages", async ({ page }, te
     await press(t.pause);
     await check("paused race");
     await press(t.resume);
-    for (let card = 0; card < 5; card += 1) await press(t.correct);
+    // A run has three cards (the default of the race).
+    for (let card = 0; card < 3; card += 1) await press(t.correct);
     await check("race overview with a time");
 
     await press(race.startRun);
-    for (let card = 0; card < 5; card += 1) await press(t.correct);
+    // A run has three cards (the default of the race).
+    for (let card = 0; card < 3; card += 1) await press(t.correct);
     await check("race result");
   }
   expect(problems, problems.join("\n")).toEqual([]);

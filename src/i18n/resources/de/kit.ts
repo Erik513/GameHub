@@ -43,8 +43,8 @@ export const kitTexts = {
     players_without_team: "Spieler ohne Team: {{count}}. Teams auslosen oder einen Namen antippen.",
   },
   kitRoster: {
-    open: "Spieler",
-    title: "Spieler",
+    open: "Spielerliste",
+    title: "Spielerliste",
     description:
       "Diese Spieler bleiben gespeichert. In jedem Spiel kannst du aus der Liste wählen, wer mitspielt.",
     nameLabel: "Name des Spielers",

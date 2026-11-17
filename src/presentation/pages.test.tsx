@@ -106,7 +106,7 @@ describe("header of the app", () => {
         </AppShell>
       </PlayerRosterProvider>,
     );
-    expect(buttons()).toEqual(["Players", "Settings"]);
+    expect(buttons()).toEqual(["Player list", "Settings"]);
     expect(document.querySelector(".brand__mark")).toBeNull();
   });
 
@@ -125,7 +125,7 @@ describe("header of the app", () => {
       </PlayerRosterProvider>,
     );
     // The name is at the left; the buttons at the right end with the settings and then home.
-    expect(buttons()).toEqual(["Players", "Settings", "Close game"]);
+    expect(buttons()).toEqual(["Player list", "Settings", "Close game"]);
     const header = document.querySelector<HTMLElement>("header")!;
     expect(within(header).getByText("Taboo").closest(".brand")).not.toBeNull();
     expect(document.querySelector(".brand__mark")).toBeNull();

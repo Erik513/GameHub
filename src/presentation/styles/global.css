@@ -464,6 +464,15 @@ h1 {
   background: var(--color-surface);
 }
 
+/* A large window (for example the player list): wider and as high as the screen allows. */
+.dialog.dialog--large {
+  width: min(100%, 44rem);
+  /* As high as its content, at most as high as the screen allows (the list inside is shortened in
+     whole rows, see `useWholeRows`). */
+  max-height: min(46rem, calc(100vh - 2 * var(--space-4)));
+  max-height: min(46rem, calc(100dvh - 2 * var(--space-4)));
+}
+
 .dialog__header {
   display: flex;
   align-items: center;

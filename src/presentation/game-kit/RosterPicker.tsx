@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { applyRosterSelection, rosterPlayersIn } from "../../business/shared/playerRoster";
 import { Button, Dialog, Icon } from "../components";
 import { ActionRow } from "./ActionRow";
 import { usePlayerRoster } from "./PlayerRosterContext";
 import { PlayerRosterDialog } from "./PlayerRosterButton";
+import { useWholeRows } from "./useWholeRows";
 
 interface RosterPickerProps {
   /** Receives the new text of the players field when the choice is applied. */
@@ -37,6 +38,7 @@ export function RosterPicker({ onChange, value }: RosterPickerProps) {
         description={t(roster.players.length > 0 ? "kitRoster.pickInfo" : "kitRoster.pickEmpty")}
         onClose={() => setOpen(false)}
         open={open}
+        size="large"
         title={t("kitRoster.pickTitle")}
       >
         <PickerBody
@@ -73,6 +75,10 @@ function PickerBody({
   const [selected, setSelected] = useState<ReadonlySet<string>>(() =>
     rosterPlayersIn(value, players),
   );
+  // The list shows whole players only: its height is calculated in whole rows (the body only exists
+  // while the window is open).
+  const listRef = useRef<HTMLDivElement>(null);
+  const listHeight = useWholeRows(listRef, players.length, true);
 
   if (players.length === 0) return null;
 
@@ -84,14 +90,18 @@ function PickerBody({
   };
 
   return (
-    <div className="kit-roster">
+    <div className="kit-roster kit-roster--pick">
       <Button
         onClick={() => setSelected(selected.size === players.length ? new Set() : new Set(players))}
         variant="secondary"
       >
         {t(selected.size === players.length ? "kitRoster.pickNone" : "kitRoster.pickAll")}
       </Button>
-      <div className="kit-roster__scroll">
+      <div
+        className="kit-roster__scroll"
+        ref={listRef}
+        {...(listHeight === undefined ? {} : { style: { height: listHeight } })}
+      >
         <ul
           aria-label={t("kitRoster.listLabel")}
           className="kit-roster__list kit-roster__list--pick"

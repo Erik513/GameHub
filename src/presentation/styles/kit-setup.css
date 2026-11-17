@@ -331,10 +331,10 @@
   font-size: var(--text-sm);
 }
 
-/* The list area has the same height whatever the number of players; more names scroll. */
+/* The list area: eight rows at first; in a window the height is set in whole rows, to the number of
+   players or as many as fit on the screen, so no player is ever cut off. */
 .kit-roster__scroll {
-  /* Exactly five rows with their gaps: five players are always fully visible, never cut off. */
-  height: calc(5 * var(--roster-button) + 4 * var(--space-2));
+  height: calc(8 * var(--roster-button) + 7 * var(--space-2));
   /* The scrollbar has a fixed width and its place is always reserved. It sits in the margin of the
      window, right of the delete buttons: the buttons end at the edge of the add button and the
      scrollbar keeps a gap to them. */
@@ -349,6 +349,27 @@
 
 .kit-roster__list li {
   scroll-snap-align: start;
+}
+
+/*
+ * The large window of the player list: wider and as high as its content, at most as the screen allows.
+ * The list shows whole rows only (its height is set in whole rows by `useWholeRows`) and scrolls in
+ * whole rows.
+ */
+.dialog--large .dialog__content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* The content reaches into the right padding of the window and has the same padding itself: the
+     scrollbar of the list sits there, right of the buttons, and nothing sticks out of the content,
+     so there is never a horizontal scrollbar. */
+  margin-right: calc(-1 * (var(--space-4) + var(--safe-right)));
+  padding-right: calc(var(--space-4) + var(--safe-right));
+}
+
+.dialog--large .dialog__content > .button {
+  flex: none;
+  margin-top: var(--space-3);
 }
 
 .kit-roster__scroll::-webkit-scrollbar {

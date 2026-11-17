@@ -13,7 +13,7 @@ const texts = {
     open: "Fortschritt ansehen",
     rules: "Spielregeln",
     title: "Spielregeln Tabu",
-    players: "Spieler",
+    players: "Spielerliste",
     close: "Schließen",
     headings: ["Ziel", "Die Karte", "Ein Zug", "Spielmodi", "Einstellungen"],
     buttons: ["Richtig", "Überspringen", "Verbotenes Wort"],
@@ -25,7 +25,7 @@ const texts = {
     open: "View progress",
     rules: "Rules",
     title: "Taboo rules",
-    players: "Players",
+    players: "Player list",
     close: "Close",
     headings: ["Goal", "The card", "One turn", "Game modes", "Settings"],
     buttons: ["Correct", "Skip", "Forbidden word"],
@@ -55,11 +55,11 @@ it.each(["de", "en"] as const)(
       </I18nextProvider>,
     );
 
-    // The GameHub has the button "Players" in the header, not the rules.
+    // The GameHub has the button "Player list" in the header, not the rules.
     expect(screen.getByRole("button", { name: text.players })).toBeVisible();
     expect(screen.queryByRole("button", { name: text.rules })).not.toBeInTheDocument();
 
-    // The main menu of a game has the button "Rules" instead of "Players".
+    // The main menu of a game has the button "Rules" instead of "Player list".
     await user.click(screen.getByRole("button", { name: text.open }));
     expect(screen.queryByRole("button", { name: text.players })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: text.rules }));

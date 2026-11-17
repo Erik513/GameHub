@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-17T22:31:54.712Z",
+    "updatedAt": "2026-11-17T23:06:31.415Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 104,
-      "totalTasks": 187,
-      "percent": 55.6
+      "completedTasks": 105,
+      "totalTasks": 188,
+      "percent": 55.9
     }
   },
   "environment": {
@@ -85,10 +85,10 @@
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-17T22:31:54.714Z",
+      "lastRunAt": "2026-11-17T22:58:44.024Z",
       "passed": 675,
       "failed": 0,
-      "details": "724 Unit- und Komponententests bestanden (77 Dateien), darunter Übersetzungsqualität, Aufstellung, die Systemzurück-Taste, Runden und Stechen bei Auf Zeit und Zufallsprüfungen der Zustandsmaschinen."
+      "details": "725 Unit- und Komponententests bestanden (77 Dateien), darunter Übersetzungsqualität, Aufstellung, die Systemzurück-Taste, Runden und Stechen bei Auf Zeit und Zufallsprüfungen der Zustandsmaschinen."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,10 +99,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-17T22:31:54.714Z",
+      "lastRunAt": "2026-11-17T22:58:44.024Z",
       "passed": 31,
       "failed": 0,
-      "details": "35 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 7 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Neu: die Systemzurück-Taste in einem laufenden Spiel, in den Einstellungen und auf der Aufstellung, in Deutsch und Englisch."
+      "details": "37 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 7 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Neu: große Fenster der Spielerliste und der Spielerauswahl ohne seitliche Scrollleiste."
     },
     "renameValidation": {
       "status": "passed",
@@ -350,6 +350,11 @@
         {
           "id": "Al-09-11",
           "title": "Leitfäden für neue Spiele mit den neuen Bausteinen und Oberflächenregeln aktualisieren",
+          "status": "done"
+        },
+        {
+          "id": "Al-09-12",
+          "title": "Spielerliste im GameHub: Name „Spielerliste“, großes Fenster und große Spielerauswahl mit ganzen Zeilen, keine waagerechte Scrollleiste",
           "status": "done"
         }
       ]
@@ -1296,6 +1301,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-17",
+      "summary": "Spielerliste im GameHub (Al-09-12): Knopf und Fenster heißen „Spielerliste“, Fenster und Spielerauswahl sind größer (Dialog mit size large, acht Namen sichtbar), die waagerechte Scrollleiste ist behoben."
+    },
     {
       "date": "2026-11-17",
       "summary": "Auf Zeit mit Stechen (Ta-06-09): Runden 1/3/5 (Kurz, Mittel, Lang, Standard 1), Karten pro Team pro Runde 3/5/7, Stechen bei Gleichstand einstellbar wie bei Klassisch. Die Stechen-Regeln liegen jetzt einmal in tiebreak.ts und gelten für beide Modi; das Verhalten von Klassisch ist unverändert."
