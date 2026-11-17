@@ -1,5 +1,4 @@
 import {
-  useId,
   useRef,
   useState,
   type KeyboardEvent,
@@ -13,7 +12,7 @@ import {
   randomOrder,
 } from "../../business/shared/teamOrder";
 import { Button, Icon } from "../components";
-import { InfoLegend } from "./InfoLegend";
+import { HeadingLegend } from "./HeadingLegend";
 
 interface TeamOrderProps {
   /** Number of teams of the game. */
@@ -36,7 +35,6 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
   const list = useRef<HTMLOListElement>(null);
   // The team that is being dragged.
   const [dragged, setDragged] = useState<number>();
-  const titleId = useId();
 
   /** The place under the pointer, from the rows as they are on the screen right now. */
   function placeAt(y: number): number {
@@ -81,17 +79,8 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
   }
 
   return (
-    <fieldset aria-labelledby={titleId} className="kit-choice-group">
-      <InfoLegend
-        id={titleId}
-        info={{
-          closeLabel: t("settings.close"),
-          label: t("kitSetup.infoLabel", { setting: t("kitTeams.orderLegend") }),
-          text: t("kitTeams.orderInfo"),
-          title: t("kitTeams.orderLegend"),
-        }}
-        legend={t("kitTeams.orderLegend")}
-      >
+    <fieldset className="kit-choice-group">
+      <HeadingLegend legend={t("kitTeams.orderLegend")}>
         <span className="kit-order__actions">
           <Button
             aria-label={t("kitTeams.orderDefault")}
@@ -113,7 +102,7 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
             <Icon name="shuffle" />
           </Button>
         </span>
-      </InfoLegend>
+      </HeadingLegend>
       <ol className="kit-order" ref={list}>
         {current.map((team, place) => (
           <li className="kit-order__row" data-dragging={dragged === team || undefined} key={team}>

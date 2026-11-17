@@ -1118,7 +1118,7 @@
 }
 
 /* Every heading with an info button: the button stands right next to the heading text, the text opens the same window. */
-.kit-info-legend {
+.kit-heading-legend {
   display: flex;
   width: 100%;
   /* One text line high like every other heading; the tap areas reach over it. */
@@ -1127,7 +1127,7 @@
   gap: var(--space-1);
 }
 
-.kit-info-legend__title {
+.kit-heading-legend__title {
   min-height: 2.75rem;
   margin: -0.875rem 0;
   padding: 0;
@@ -1140,7 +1140,7 @@
   cursor: pointer;
 }
 
-.kit-info-legend__title:focus-visible {
+.kit-heading-legend__title:focus-visible {
   border-radius: var(--radius-sm);
 }
 

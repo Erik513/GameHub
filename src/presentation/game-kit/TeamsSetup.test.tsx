@@ -170,15 +170,12 @@ it.each(["en", "de"] as const)("sets the playing order of the teams in %s", asyn
   random.mockRestore();
 });
 
-it("opens the info of the team order from the info button and from the heading", async () => {
-  const { user, text } = await setup("en");
-  const info = () => screen.queryByRole("dialog", { name: text.order });
-  await user.click(screen.getByRole("button", { name: `Info about ${text.order}` }));
-  expect(info()).toBeInTheDocument();
-  await user.click(within(info()!).getByRole("button", { name: "Close" }));
-  expect(info()).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: text.order }));
-  expect(info()).toBeInTheDocument();
+it("has no info button at the team order, only the two icon buttons", async () => {
+  const { text } = await setup("en");
+  const group = screen.getByRole("group", { name: text.order });
+  expect(within(group).queryByRole("button", { name: /^Info/ })).not.toBeInTheDocument();
+  expect(within(group).getByRole("button", { name: text.orderDefault })).toBeVisible();
+  expect(within(group).getByRole("button", { name: text.orderRandom })).toBeVisible();
 });
 
 it("drags a team to another place by its handle", async () => {

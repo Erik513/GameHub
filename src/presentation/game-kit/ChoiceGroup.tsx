@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 import { InfoButton, type InfoAction, type InfoContent } from "./InfoButton";
-import { InfoLegend } from "./InfoLegend";
+import { HeadingLegend } from "./HeadingLegend";
 
 export interface ChoiceOption {
   readonly value: string;
@@ -83,7 +83,7 @@ export function ChoiceGroup({
       className="kit-choice-group"
     >
       {info && !hideLegend ? (
-        <InfoLegend id={legendId} info={info} legend={legend} />
+        <HeadingLegend id={legendId} info={info} legend={legend} />
       ) : (
         <legend className={hideLegend ? "visually-hidden" : undefined}>{legend}</legend>
       )}
