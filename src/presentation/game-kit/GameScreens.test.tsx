@@ -190,3 +190,17 @@ it("shows a progress bar above the heading of the overview when there is a progr
   // The bar comes first, the round text right below it.
   expect(bar.nextElementSibling).toHaveTextContent("Round 2 of 3");
 });
+
+it("can open the second tab first, for example the tiebreak that decided the game", () => {
+  render(
+    <ScoreScreen
+      actions={<button type="button">New game</button>}
+      ariaLabel="Result"
+      extraTab={{ content: <p>Tiebreak results</p>, label: "Tiebreak" }}
+      extraTabFirst
+      standings={{ scores: [2, 2], tabLabel: "Scores", teams, title: "Standings" }}
+    />,
+  );
+  expect(screen.getByRole("tab", { name: "Tiebreak" })).toHaveAttribute("aria-selected", "true");
+  expect(screen.getByRole("tab", { name: "Scores" })).toHaveAttribute("aria-selected", "false");
+});

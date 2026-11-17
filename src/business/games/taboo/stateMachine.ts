@@ -435,10 +435,17 @@ function tiebreakWinnerIds(
   configuration: GameConfiguration,
   attempts: readonly TiebreakAttempt[],
 ): string[] {
-  const ranked = [...attempts].sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs);
+  // Times count in tenths of a second, as they are shown: the same tenth is a tie.
+  const tenths = (timeMs: number) => Math.round(timeMs / 100);
+  const ranked = [...attempts].sort(
+    (a, b) => b.solved - a.solved || tenths(a.timeMs) - tenths(b.timeMs),
+  );
   const best = ranked[0];
   return ranked
-    .filter((attempt) => attempt.solved === best?.solved && attempt.timeMs === best.timeMs)
+    .filter(
+      (attempt) =>
+        attempt.solved === best?.solved && tenths(attempt.timeMs) === tenths(best.timeMs),
+    )
     .flatMap((attempt) => {
       const team = configuration.teams[attempt.teamIndex];
       return team ? [team.id] : [];

@@ -107,6 +107,8 @@ describe("Taboo tiebreak", () => {
 
     // After the last attempt a summary comes first; the final screen follows on a tap.
     press("Show final results");
+    // The tiebreak decided the game, so its result is the tab that is open on the final screen.
+    expect(screen.getByRole("tab", { name: "Tiebreak" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 1");
     expect(resultRows()).toEqual(["Team 1: 3/3 cards · 10.0 s", "Team 2: 1/3 cards · 90.0 s"]);
     press("Play again with the same setup");

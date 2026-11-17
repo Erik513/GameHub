@@ -72,6 +72,13 @@ describe("correcting a finished tiebreak attempt", () => {
     });
   });
 
+  it("shares the win when the times are the same to the tenth of a second", () => {
+    // 11 249 ms and 11 151 ms are both shown as 11.2 s: the same time, so both win.
+    expect(playTiebreak([3, 3], [11249, 11151])).toMatchObject({ winnerIds: ["red", "blue"] });
+    // One tenth more is slower: the team with 11.3 s loses against 11.2 s.
+    expect(playTiebreak([3, 3], [11349, 11151])).toMatchObject({ winnerIds: ["blue"] });
+  });
+
   it("changes the ranking and the winner after the game ended", () => {
     const ended = playTiebreak([3, 3], [20000, 30000]);
     const fixed = revise(ended, 0, "p01", "forbiddenWord");

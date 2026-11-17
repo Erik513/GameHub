@@ -17,6 +17,8 @@ interface ScoreScreenProps {
    * Without it everything shares one box.
    */
   readonly extraTab?: { readonly content: ReactNode; readonly label: string };
+  /** Opens the `extraTab` first, for example the tiebreak that decided the game. */
+  readonly extraTabFirst?: boolean;
   /** The name of the first tab when there is an `extraTab` (default: the title of the standings). */
   readonly tabLabel?: string;
   /** Text or messages between the eyebrow and the standings. */
@@ -50,6 +52,7 @@ export function ScoreScreen({
   children,
   eyebrow,
   extraTab,
+  extraTabFirst = false,
   intro,
   progress,
   stackedActions = false,
@@ -93,6 +96,7 @@ export function ScoreScreen({
       {extraTab ? (
         <SetupTabs
           ariaLabel={tabLabel ?? standings?.title ?? ariaLabel}
+          initial={extraTabFirst ? "extra" : "standings"}
           tabs={[
             {
               id: "standings",

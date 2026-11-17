@@ -48,16 +48,14 @@ export function TabooTiebreakWrapUp({ finished, onRevise, onShow }: TabooTiebrea
       tabLabel={t("tabooTiebreak.results")}
     >
       <TabooTiebreakResults
-        rows={[...attempts]
-          .sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs)
-          .map((attempt) => {
-            const team = finished.configuration.teams[attempt.teamIndex];
-            return {
-              id: team?.id ?? String(attempt.teamIndex),
-              name: team?.name ?? "",
-              result: { solved: attempt.solved, timeMs: attempt.timeMs },
-            };
-          })}
+        rows={attempts.map((attempt) => {
+          const team = finished.configuration.teams[attempt.teamIndex];
+          return {
+            id: team?.id ?? String(attempt.teamIndex),
+            name: team?.name ?? "",
+            result: { solved: attempt.solved, timeMs: attempt.timeMs },
+          };
+        })}
       />
     </ScoreScreen>
   );

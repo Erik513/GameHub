@@ -33,21 +33,21 @@ export function TabooResultView({ finished, onNewSetup, onSameSetup }: TabooResu
             extraTab: {
               content: (
                 <TabooTiebreakResults
-                  rows={[...finished.tiebreak]
-                    .sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs)
-                    .map((attempt) => {
-                      const team = finished.configuration.teams[attempt.teamIndex];
-                      return {
-                        id: team?.id ?? String(attempt.teamIndex),
-                        name: team?.name ?? "",
-                        result: { solved: attempt.solved, timeMs: attempt.timeMs },
-                        winner: team ? finished.winnerIds.includes(team.id) : false,
-                      };
-                    })}
+                  rows={finished.tiebreak.map((attempt) => {
+                    const team = finished.configuration.teams[attempt.teamIndex];
+                    return {
+                      id: team?.id ?? String(attempt.teamIndex),
+                      name: team?.name ?? "",
+                      result: { solved: attempt.solved, timeMs: attempt.timeMs },
+                      winner: team ? finished.winnerIds.includes(team.id) : false,
+                    };
+                  })}
                 />
               ),
               label: t("tabooTiebreak.title"),
             },
+            // The tiebreak decided the game, so its result is shown first.
+            extraTabFirst: true,
           }
         : {})}
       stackedActions
