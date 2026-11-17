@@ -6,6 +6,7 @@ import { createGameHubI18n } from "../../i18n";
 import { TeamSetupMemoryProvider } from "../game-kit";
 import { TabooSetup } from "./TabooSetup";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
+import { rowText } from "../testing/scoreRows";
 
 it("blocks a six-turn setup when the chosen filters match only five cards", async () => {
   const user = userEvent.setup();
@@ -116,11 +117,7 @@ it("uses custom team names and falls back to defaults for blank fields", async (
   const standings = within(screen.getByRole("list", { name: "Total scores" })).getAllByRole(
     "listitem",
   );
-  expect(standings.map((row) => row.textContent).sort()).toEqual([
-    "Foxes: 0",
-    "Owls: 0",
-    "Team 2: 0",
-  ]);
+  expect(standings.map((row) => rowText(row)).sort()).toEqual(["Foxes: 0", "Owls: 0", "Team 2: 0"]);
 });
 
 it("rejects duplicate custom team names", async () => {
@@ -157,7 +154,7 @@ it("plays the teams in the order that was set for the whole game", async () => {
   expect(
     within(screen.getByRole("list", { name: "Total scores" }))
       .getAllByRole("listitem")
-      .map((row) => row.textContent),
+      .map((row) => rowText(row)),
   ).toEqual(["Team 3: 0", "Team 1: 0", "Team 2: 0"]);
 });
 

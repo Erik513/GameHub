@@ -4,6 +4,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
+import { rowText } from "../testing/scoreRows";
 
 beforeEach(() => {
   // Always pick the last slot so the shuffled team order stays Team 1, Team 2, ...
@@ -67,7 +68,7 @@ it.each([
     });
     fireEvent.click(screen.getByRole("button", { name: "Show final results" }));
     expect(screen.getByRole("status")).toHaveTextContent(result);
-    expect(standingsRow(0)).toHaveTextContent(correct ? "Team 1: 1" : "Team 1: 0");
+    expect(rowText(standingsRow(0))).toBe(correct ? "Team 1: 1" : "Team 1: 0");
     fireEvent.click(
       screen.getByRole("button", {
         name: correct ? "Play again with the same setup" : "Set up a new game",
@@ -136,14 +137,14 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     expect(review.getByText("Skipped")).toBeVisible();
     expect(items.map((item) => item.getAttribute("aria-pressed"))).toEqual(["true", "false"]);
     fireEvent.click(items[1]!);
-    expect(standingsRow(0)).toHaveTextContent("Team 1: 2");
+    expect(rowText(standingsRow(0))).toBe("Team 1: 2");
     expect(items[1]).toHaveAttribute("aria-pressed", "true");
     fireEvent.click(items[0]!);
-    expect(standingsRow(0)).toHaveTextContent("Team 1: 1");
+    expect(rowText(standingsRow(0))).toBe("Team 1: 1");
     fireEvent.click(items[0]!);
     fireEvent.click(items[1]!);
-    expect(standingsRow(0)).toHaveTextContent("Team 1: 1");
-    expect(standingsRow(1)).toHaveTextContent("Team 2: 0");
+    expect(rowText(standingsRow(0))).toBe("Team 1: 1");
+    expect(rowText(standingsRow(1))).toBe("Team 2: 0");
     expect(upNext()).toHaveTextContent("Team 2");
     expect(screen.getByText("Round 1/3")).toBeVisible();
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
@@ -156,7 +157,7 @@ it("plays cards without resetting the countdown and ends the round on time", asy
       vi.advanceTimersByTime(60000);
     });
     expect(screen.getByText("No card was played in this round.")).toBeVisible();
-    expect(standingsRow(0)).toHaveTextContent("Team 1: 1");
+    expect(rowText(standingsRow(0))).toBe("Team 1: 1");
     expect(upNext()).toHaveTextContent("Team 1");
     expect(screen.getByText("Round 2/3")).toBeVisible();
   } finally {

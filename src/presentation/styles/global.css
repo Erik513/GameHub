@@ -931,30 +931,71 @@ h1 {
 
 .kit-scoreboard {
   display: grid;
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin: 0;
   padding: 0;
   list-style: none;
-  counter-reset: rank;
 }
 
+/* One row per team: a bar as long as the points, then the rank, the name and the points. */
 .kit-scoreboard li {
+  position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
+  min-height: 4.5rem;
   padding: var(--space-3) var(--space-4);
+  overflow: hidden;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   background: var(--color-surface-muted);
-  counter-increment: rank;
   font-weight: var(--weight-bold);
 }
 
-.kit-scoreboard li::before {
-  min-width: 1.5ch;
+.kit-scoreboard li > :not(.kit-scoreboard__bar, .visually-hidden) {
+  position: relative;
+}
+
+.kit-scoreboard__bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  transition: width 300ms ease;
+}
+
+/* The rank is a small round badge; the first three get gold, silver and bronze. */
+.kit-scoreboard__rank {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
   color: var(--color-ink-muted);
-  content: counter(rank);
+  font-size: var(--text-sm);
+}
+
+.kit-scoreboard li[data-rank="1"] .kit-scoreboard__rank {
+  border-color: var(--color-medium);
+  color: var(--color-medium);
+}
+
+.kit-scoreboard li[data-rank="2"] .kit-scoreboard__rank {
+  border-color: var(--color-ink-muted);
+  color: var(--color-ink);
+}
+
+.kit-scoreboard li[data-rank="3"] .kit-scoreboard__rank {
+  border-color: color-mix(in srgb, var(--color-medium) 55%, var(--color-danger-fill));
+  color: color-mix(in srgb, var(--color-medium) 55%, var(--color-danger-fill));
+}
+
+.kit-scoreboard__rank svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
 }
 
 .kit-scoreboard li[data-winner] {
@@ -962,12 +1003,14 @@ h1 {
 }
 
 .kit-scoreboard__name {
+  display: grid;
   overflow-wrap: anywhere;
 }
 
 .kit-scoreboard__score {
-  font-size: var(--text-lg);
+  font-size: 1.75rem;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .settings-fields {

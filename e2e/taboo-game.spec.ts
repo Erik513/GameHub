@@ -84,7 +84,13 @@ for (const labels of cases) {
       await page.getByRole("tab", { name: "Scores" }).click();
     }
     await expect(page.locator(".kit-turn-strip")).toContainText(labels.next);
-    await expect(page.getByRole("listitem").filter({ hasText: /^Team 1: 1$/ })).toBeVisible();
+    // The scoreboard rows have a rank, a gap and a bar around the name and the points.
+    const points = (team: string) =>
+      page
+        .locator(".kit-scoreboard li")
+        .filter({ hasText: team })
+        .locator(".kit-scoreboard__score");
+    await expect(points("Team 1")).toHaveText(/1$/);
     await expect(round).toHaveCount(0);
     await page.getByRole("button", { name: labels.start, exact: true }).click();
     await expect(round.getByText("Team 2", { exact: true })).toBeVisible();
@@ -97,11 +103,7 @@ for (const labels of cases) {
     }
     await page.getByRole("button", { name: labels.show }).click();
     await expect(page.getByText(labels.winner)).toBeVisible();
-    await expect(
-      page.getByRole("listitem").filter({
-        hasText: new RegExp(`^Team 2: ${labels.language === "de" ? 1 : 0}$`),
-      }),
-    ).toBeVisible();
+    await expect(points("Team 2")).toHaveText(new RegExp(`${labels.language === "de" ? 1 : 0}$`));
     await page.getByRole("button", { name: labels.restart }).click();
     // The same settings lead to the line-up, the game starts again from there.
     await page.getByRole("button", { name: labels.lineup, exact: true }).click();

@@ -7,6 +7,7 @@ import { LineupScreen } from "./LineupScreen";
 import { ManageScreen } from "./ManageScreen";
 import { TabPane } from "./TabPane";
 import { ScoreScreen } from "./ScoreScreen";
+import { rowText } from "../testing/scoreRows";
 
 const teams = [
   { id: "a", name: "Red" },
@@ -87,7 +88,7 @@ it("shows the standings between the turns with an extra text and the main action
   expect(
     within(screen.getByRole("list", { name: "Standings" }))
       .getAllByRole("listitem")
-      .map((row) => row.textContent),
+      .map((row) => rowText(row)),
   ).toEqual(["Blue: 3", "Red: 1"]);
   expect(within(overview).getByText("Review")).toBeVisible();
   expect(within(overview).getByRole("button", { name: "Start round" })).toBeVisible();
