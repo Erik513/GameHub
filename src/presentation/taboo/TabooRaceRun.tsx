@@ -68,13 +68,6 @@ export function TabooRaceRun({
     <section className="taboo-round taboo-round--running" aria-label={t("tabooRace.run")}>
       <TimerHud
         fraction={active.solved / target}
-        meta={
-          <>
-            {t("tabooRace.title")}
-            {" · "}
-            {t("tabooRace.cardOf", { current: active.solved + 1, total: target })}
-          </>
-        }
         remainingSeconds={Number.POSITIVE_INFINITY}
         time={time}
         timerLabel={t("tabooRace.timer", { time })}
@@ -126,9 +119,6 @@ export function TabooRaceRun({
               onClick={() => answer(outcome)}
             >
               {t(`tabooRound.${outcome}`)}
-              {outcome === "forbiddenWord" && (
-                <small aria-hidden="true">{t("tabooRace.forbiddenHint")}</small>
-              )}
               {outcome === "skipped" && (
                 <small aria-hidden="true">{t("tabooRound.skipOnce")}</small>
               )}

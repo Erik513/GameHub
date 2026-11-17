@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { createGameHubI18n } from "../../i18n";
 import { TabooSetup } from "./TabooSetup";
+import { resultText } from "../testing/scoreRows";
 
 async function renderGame() {
   const i18n = await createGameHubI18n("en");
@@ -42,7 +43,7 @@ function reachTiebreak() {
 function resultRows() {
   return within(screen.getByRole("list", { name: "Tiebreak results" }))
     .getAllByRole("listitem")
-    .map((row) => row.textContent);
+    .map((row) => resultText(row));
 }
 
 beforeEach(() => {
@@ -89,6 +90,8 @@ describe("Taboo tiebreak", () => {
     advance(95000);
     expect(screen.queryByRole("timer")).not.toBeInTheDocument();
 
+    // After the last attempt a summary comes first; the final screen follows on a tap.
+    press("Show final results");
     expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 1");
     expect(resultRows()).toEqual(["Team 1: 3/3 cards · 10.0 s", "Team 2: 1/3 cards · 90.0 s"]);
     press("Play again with the same setup");
@@ -110,7 +113,7 @@ describe("Taboo tiebreak", () => {
 
     // Between the attempts: one card had a forbidden word after all.
     const review = screen.getByRole("region", { name: "Correct a result" });
-    fireEvent.click(within(review).getByText("Team 1: check the cards"));
+    expect(within(review).getByRole("heading", { name: "Played attempt: Team 1" })).toBeVisible();
     const cards = within(review).getAllByRole("button");
     expect(cards).toHaveLength(3);
     fireEvent.click(cards[0]!);
@@ -125,17 +128,20 @@ describe("Taboo tiebreak", () => {
       advance(1000);
       fireEvent.click(screen.getByRole("button", { name: "Correct" }));
     }
-    expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 2");
-
-    // On the final screen the winner's mistake is fixed: Team 1 wins with more cards.
+    // The summary after the last attempt: the winner's mistake is fixed here, before the final screen.
+    fireEvent.click(screen.getByRole("tab", { name: /^Last attempt/ }));
     const finalReview = screen.getByRole("region", { name: "Correct a result" });
-    fireEvent.click(within(finalReview).getByText("Team 2: check the cards"));
-    const team2 = within(finalReview.querySelectorAll("details")[1] as HTMLElement).getAllByRole(
-      "button",
-    );
+    // Only the attempt that was just played (Team 2) can be corrected, not the one before.
+    expect(
+      within(finalReview).getByRole("heading", { name: "Played attempt: Team 2" }),
+    ).toBeVisible();
+    const team2 = within(finalReview).getAllByRole("button");
     fireEvent.click(team2[0]!);
     expect(resultRows()).toEqual(["Team 1: 3/3 cards · 6.0 s", "Team 2: 2/3 cards · 3.0 s"]);
+    press("Show final results");
     expect(screen.getByRole("status")).toHaveTextContent("Winner: Team 1");
+    // The final screen shows the result only; nothing can be corrected any more.
+    expect(screen.queryByRole("region", { name: "Correct a result" })).not.toBeInTheDocument();
   });
 
   it("shows the difficulty and allows a single skip with a card of the same difficulty", async () => {

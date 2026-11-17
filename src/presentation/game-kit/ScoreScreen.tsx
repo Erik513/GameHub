@@ -13,10 +13,12 @@ interface ScoreScreenProps {
   /** A small heading above everything, for example "Round 2 of 3". */
   readonly eyebrow?: string;
   /**
-   * A second tab next to the standings, for example the cards of the turn that just ended. Without
-   * it the standings and the other content share one box.
+   * A second tab next to the standings or results, for example the cards of the turn that just ended.
+   * Without it everything shares one box.
    */
   readonly extraTab?: { readonly content: ReactNode; readonly label: string };
+  /** The name of the first tab when there is an `extraTab` (default: the title of the standings). */
+  readonly tabLabel?: string;
   /** Text or messages between the eyebrow and the standings. */
   readonly intro?: ReactNode;
   /** A thin progress bar above the eyebrow, for example the turns played of all turns. */
@@ -52,6 +54,7 @@ export function ScoreScreen({
   progress,
   stackedActions = false,
   standings,
+  tabLabel,
   winner,
 }: ScoreScreenProps) {
   const board = standings && (
@@ -87,13 +90,13 @@ export function ScoreScreen({
         </div>
       )}
       {intro}
-      {extraTab && standings ? (
+      {extraTab ? (
         <SetupTabs
-          ariaLabel={standings.title}
+          ariaLabel={tabLabel ?? standings?.title ?? ariaLabel}
           tabs={[
             {
               id: "standings",
-              label: standings.tabLabel ?? standings.title,
+              label: tabLabel ?? standings?.tabLabel ?? standings?.title ?? ariaLabel,
               content: (
                 <>
                   {board}

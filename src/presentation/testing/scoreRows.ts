@@ -4,3 +4,10 @@ export function rowText(row: Element): string {
   const points = row.querySelector(".kit-scoreboard__score")?.lastChild?.textContent ?? "";
   return `${name}: ${points}`;
 }
+
+/** Reads a row of a result list as "Name: note · value" (for example "Team 1: 3/3 cards · 10.0 s"). */
+export function resultText(row: Element): string {
+  const name = row.querySelector(".kit-scoreboard__name")?.textContent ?? "";
+  const result = row.querySelector(".kit-scoreboard__score")?.textContent ?? "";
+  return `${name}: ${result}`;
+}

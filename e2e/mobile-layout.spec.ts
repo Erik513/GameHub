@@ -341,6 +341,8 @@ test("the tiebreak screens fit a small phone in both languages", async ({ page }
     // A second tap confirms; it counts only after a short moment.
     await page.clock.fastForward(500);
     await press(t.endAttemptConfirm);
+    await check("summary after the tiebreak");
+    await press(t.show);
     await check("final result after the tiebreak");
   }
   expect(problems, problems.join("\n")).toEqual([]);

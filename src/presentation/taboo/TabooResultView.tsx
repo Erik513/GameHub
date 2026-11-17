@@ -1,25 +1,17 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "../components";
 import { ScoreScreen } from "../game-kit";
-import type { TabooOutcome } from "../../business/games/taboo/stateMachine";
-import { TabooAttemptReviews } from "./TabooAttemptReviews";
-import { tiebreakReviews, type FinishedState } from "./tabooSetupModel";
+import type { FinishedState } from "./tabooSetupModel";
 import { TabooTiebreakResults } from "./TabooTiebreakResults";
 
 interface TabooResultViewProps {
   finished: FinishedState;
   onNewSetup: () => void;
-  onRevise: (teamIndex: number, cardId: string, outcome: TabooOutcome) => void;
   onSameSetup: () => void;
 }
 
 /** The final screen: winner, scores, optional tiebreak results and the two follow-up actions. */
-export function TabooResultView({
-  finished,
-  onNewSetup,
-  onRevise,
-  onSameSetup,
-}: TabooResultViewProps) {
+export function TabooResultView({ finished, onNewSetup, onSameSetup }: TabooResultViewProps) {
   const { t } = useTranslation();
 
   return (
@@ -66,10 +58,6 @@ export function TabooResultView({
                   winner: team ? finished.winnerIds.includes(team.id) : false,
                 };
               })}
-          />
-          <TabooAttemptReviews
-            attempts={tiebreakReviews(finished.tiebreak, finished.configuration)}
-            onRevise={onRevise}
           />
         </>
       )}

@@ -166,6 +166,7 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
     press("tabooTiebreak.endAttempt");
     advance(600);
     press("tabooTiebreak.endAttemptConfirm");
+    press("tabooResult.show");
     checkScreen("final result");
 
     expect(missing).toEqual([]);

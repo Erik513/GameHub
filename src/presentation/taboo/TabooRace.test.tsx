@@ -24,6 +24,8 @@ const texts = {
     times: "Final times",
     winner: /Winner: /,
     pending: "still to play",
+    show: "Show final results",
+    reviewTab: /^Last run/,
     newSetup: "Set up a new game",
   },
   de: {
@@ -43,6 +45,8 @@ const texts = {
     times: "Endzeiten",
     winner: /Gewinner: /,
     pending: "noch offen",
+    show: "Endergebnis anzeigen",
+    reviewTab: /^Letzter Lauf/,
     newSetup: "Neue Partie konfigurieren",
   },
 } as const;
@@ -116,6 +120,8 @@ it.each(["en", "de"] as const)(
       }
     }
 
+    // After the last run an overview comes first (the cards can still be checked there).
+    await user.click(await screen.findByRole("button", { name: text.show }));
     const result = await screen.findByRole("region", { name: text.result });
     expect(within(result).getByRole("status")).toHaveTextContent(text.winner);
     const rows = within(within(result).getByRole("list", { name: text.times })).getAllByRole(
@@ -350,11 +356,11 @@ it.each(["en", "de"] as const)(
 );
 
 it.each([
-  ["en", /check the cards/, "Wrong", /Winner: /],
-  ["de", /Karten prüfen/, "Falsch", /Gewinner: /],
+  ["en", "Wrong"],
+  ["de", "Falsch"],
 ] as const)(
-  "lets the players correct a run on the final screen of the race in %s",
-  async (language, summary, wrongLabel, winner) => {
+  "lets the players correct the last run before the final screen of the race in %s",
+  async (language, wrongLabel) => {
     let now = 1_000_000;
     vi.spyOn(Date, "now").mockImplementation(() => now);
     const { text, user } = await startRace(language);
@@ -368,25 +374,37 @@ it.each([
         await user.click(screen.getByRole("button", { name: new RegExp(`^${text.correct}`) }));
       }
     }
-    const result = await screen.findByRole("region", { name: text.result });
-    const before = within(result).getByRole("status").textContent;
-    expect(before).toMatch(winner);
+    // The last run is checked on the overview before the final screen; there the winner changes.
+    const overview = await screen.findByRole("region", { name: text.overview });
+    await user.click(within(overview).getByRole("tab", { name: text.reviewTab }));
 
     // The winner of the run said a forbidden word on one card: it must not count.
-    const reviews = within(result).getAllByText(summary);
-    expect(reviews).toHaveLength(2);
-    await user.click(reviews[1]!);
-    const card = within(reviews[1]!.closest("details")!).getAllByRole("button")[0]!;
+    // Like the last round of the classic mode: only the run that was just played (Team 2) can be
+    // corrected; the run before cannot be changed any more.
+    expect(within(overview).queryByRole("radio")).not.toBeInTheDocument();
+    expect(within(overview).getByRole("heading", { name: /Team 2$/ })).toBeVisible();
+    const card = within(overview.querySelector<HTMLElement>(".taboo-review")!).getAllByRole(
+      "button",
+    )[0]!;
     expect(card).toHaveAttribute("aria-pressed", "true");
     await user.click(card);
     expect(card).toHaveAttribute("aria-pressed", "false");
     expect(card).toHaveTextContent(wrongLabel);
-    // Four of five cards now rank behind the slower team with all cards.
-    expect(within(result).getByRole("status").textContent).not.toBe(before);
-    expect(within(result).getByRole("list", { name: text.times })).toHaveTextContent("4/5");
-
-    // The correction can be taken back.
+    // The correction can be taken back and made again.
     await user.click(card);
-    expect(within(result).getByRole("status").textContent).toBe(before);
+    expect(card).toHaveAttribute("aria-pressed", "true");
+    await user.click(card);
+    expect(card).toHaveAttribute("aria-pressed", "false");
+
+    // Four of five cards now rank behind the slower team with all cards: the other team wins.
+    await user.click(within(overview).getByRole("button", { name: text.show }));
+    const result = await screen.findByRole("region", { name: text.result });
+    expect(within(result).getByRole("status").textContent).toMatch(/Team 1/);
+    expect(within(result).getByRole("list", { name: text.times })).toHaveTextContent("4/5");
+    // The final screen only shows the result: there is nothing to correct any more.
+    expect(within(result).queryByRole("tab")).not.toBeInTheDocument();
+    expect(
+      within(result).queryByRole("heading", { name: /^(Played run|Gespielter Lauf)/ }),
+    ).not.toBeInTheDocument();
   },
 );

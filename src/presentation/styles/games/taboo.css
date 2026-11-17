@@ -360,10 +360,6 @@
   line-height: 1.5;
 }
 
-.taboo-tiebreak-results .kit-scoreboard__score {
-  font-size: var(--text-md);
-}
-
 /* Difficulty on the card: top left, a colored dot followed by the plain text. */
 .taboo-round .taboo-round__difficulty {
   align-self: flex-start;

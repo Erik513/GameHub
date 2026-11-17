@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { ResultList, type ResultRow } from "../game-kit";
 import { formatSeconds } from "./formatTime";
 
 export interface RaceRow {
@@ -12,7 +13,7 @@ export interface RaceRow {
   readonly winner?: boolean;
 }
 
-/** Lists the times of the runs of the mode "Auf Zeit": one row per team. */
+/** Lists the times of the runs of the mode "Auf Zeit": one row per team, the fastest gets the crown. */
 export function TabooRaceResults({
   label,
   rows,
@@ -22,25 +23,28 @@ export function TabooRaceResults({
 }) {
   const { t, i18n } = useTranslation();
 
-  return (
-    <ol className="kit-scoreboard taboo-tiebreak-results" aria-label={label}>
-      {rows.map(({ id, name, solved, timeMs, total, winner }) => (
-        <li data-winner={winner ? true : undefined} key={id}>
-          <span className="kit-scoreboard__name">{name}</span>
-          <span className="visually-hidden">: </span>
-          <span className="kit-scoreboard__score">
-            {timeMs === undefined
-              ? t("tabooRace.pending")
-              : solved !== undefined && total !== undefined && solved < total
-                ? t("tabooRace.partial", {
-                    solved,
-                    total,
-                    time: formatSeconds(timeMs, i18n.language),
-                  })
-                : t("tabooRace.time", { time: formatSeconds(timeMs, i18n.language) })}
-          </span>
-        </li>
-      ))}
-    </ol>
-  );
+  // Most solved cards first, then the fastest; the same result shares a rank.
+  const played = rows.filter((row) => row.timeMs !== undefined);
+  const better = (a: RaceRow, b: RaceRow) =>
+    (a.solved ?? a.total ?? 0) > (b.solved ?? b.total ?? 0) ||
+    ((a.solved ?? a.total ?? 0) === (b.solved ?? b.total ?? 0) &&
+      Math.round((a.timeMs ?? 0) / 100) < Math.round((b.timeMs ?? 0) / 100));
+  const fastest = Math.min(...played.map((row) => row.timeMs ?? Number.POSITIVE_INFINITY));
+
+  const list: ResultRow[] = rows.map((row) => {
+    const { id, name, solved, timeMs, total, winner } = row;
+    if (timeMs === undefined) return { id, name };
+    const partial = solved !== undefined && total !== undefined && solved < total;
+    return {
+      bar: timeMs > 0 ? Math.min(1, fastest / timeMs) * (partial ? solved / total : 1) : 1,
+      id,
+      name,
+      ...(partial ? { note: t("tabooRace.partialCards", { solved, total }) } : {}),
+      rank: 1 + played.filter((other) => better(other, row)).length,
+      value: t("tabooRace.time", { time: formatSeconds(timeMs, i18n.language) }),
+      ...(winner ? { winner } : {}),
+    };
+  });
+
+  return <ResultList label={label} pendingLabel={t("tabooRace.pending")} rows={list} />;
 }

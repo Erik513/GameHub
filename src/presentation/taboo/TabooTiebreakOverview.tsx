@@ -28,7 +28,11 @@ export function TabooTiebreakOverview({
   state,
 }: TabooTiebreakOverviewProps) {
   const { t } = useTranslation();
-  const reviews: readonly AttemptReview[] = tiebreakReviews(state.attempts, state.configuration);
+  // Only the attempt that was just played can be corrected.
+  const lastReview: AttemptReview | undefined = tiebreakReviews(
+    state.attempts,
+    state.configuration,
+  ).at(-1);
 
   return (
     <ScoreScreen
@@ -42,11 +46,25 @@ export function TabooTiebreakOverview({
       }
       ariaLabel={t("tabooTiebreak.title")}
       eyebrow={t("tabooTiebreak.title")}
+      {...(lastReview
+        ? {
+            extraTab: {
+              content: (
+                <TabooAttemptReviews
+                  attempt={lastReview}
+                  onRevise={onRevise}
+                  titleKey="tabooReview.attemptTitle"
+                />
+              ),
+              label: t("tabooReview.lastAttempt", { count: lastReview.results.length }),
+            },
+            tabLabel: t("tabooTiebreak.results"),
+          }
+        : {})}
       intro={<p className="taboo-tiebreak__rules">{t("tabooTiebreak.rules")}</p>}
     >
-      <h2>{t("tabooTiebreak.results")}</h2>
+      {!lastReview && <h2>{t("tabooTiebreak.results")}</h2>}
       <TabooTiebreakResults rows={tiebreakRows(state)} />
-      <TabooAttemptReviews attempts={reviews} onRevise={onRevise} />
       {noCards && (
         <>
           <Toast title={t("tabooRound.empty")} tone="error">

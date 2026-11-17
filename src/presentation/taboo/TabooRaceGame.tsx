@@ -54,6 +54,9 @@ export function TabooRaceGame({
   const { configuration } = state;
   const running = state.status === "running" ? state : undefined;
 
+  // The last run is checked on an overview first; the final screen shows only the result.
+  const [resultShown, setResultShown] = useState(false);
+
   const dispatch = useCallback((event: RaceEvent) => {
     setState((current) => transitionRace(current, event));
   }, []);
@@ -119,23 +122,31 @@ export function TabooRaceGame({
     );
   }
 
-  // A wrong result can be fixed after every run and on the final screen.
-  const reviews = (
-    <TabooAttemptReviews
-      attempts={state.attempts.map((attempt) => ({
-        id: String(attempt.teamIndex),
-        maxCorrect: configuration.target,
-        results: attempt.results,
-        teamIndex: attempt.teamIndex,
-        teamName: teamName(attempt.teamIndex),
-      }))}
-      onRevise={(teamIndex, cardId, outcome) =>
-        dispatch({ type: "reviseRunResult", teamIndex, cardId, outcome })
+  // A wrong result can be fixed after every run, also after the last one, before the final screen.
+  // Only the run that was just played can be corrected (also the last one, before the final screen).
+  const lastAttempt = state.attempts.at(-1);
+  const reviewTab = lastAttempt
+    ? {
+        content: (
+          <TabooAttemptReviews
+            attempt={{
+              id: String(lastAttempt.teamIndex),
+              maxCorrect: configuration.target,
+              results: lastAttempt.results,
+              teamIndex: lastAttempt.teamIndex,
+              teamName: teamName(lastAttempt.teamIndex),
+            }}
+            onRevise={(teamIndex, cardId, outcome) =>
+              dispatch({ type: "reviseRunResult", teamIndex, cardId, outcome })
+            }
+            titleKey="tabooReview.runTitle"
+          />
+        ),
+        label: t("tabooReview.lastRun", { count: lastAttempt.results.length }),
       }
-    />
-  );
+    : undefined;
 
-  if (state.status === "finished") {
+  if (state.status === "finished" && resultShown) {
     const winners = state.winnerIds;
     const rows: RaceRow[] = rankRaceAttempts(state.attempts).map((attempt) => {
       const team = configuration.teams[attempt.teamIndex];
@@ -173,12 +184,11 @@ export function TabooRaceGame({
       >
         <h2>{t("tabooRace.finalTimes")}</h2>
         <TabooRaceResults label={t("tabooRace.finalTimes")} rows={rows} />
-        {reviews}
       </ScoreScreen>
     );
   }
 
-  const next = getRaceNextTeam(state);
+  const next = state.status === "finished" ? undefined : getRaceNextTeam(state);
   const rows: RaceRow[] = configuration.teams.map((team, index) => {
     const attempt = state.attempts.find((candidate) => candidate.teamIndex === index);
     return {
@@ -194,22 +204,36 @@ export function TabooRaceGame({
     <ScoreScreen
       actions={
         <>
-          <TurnStrip
-            hiddenLabel={t("tabooRound.upNext")}
-            name={next === undefined ? "" : teamName(next)}
-          />
-          <Button variant="success" onClick={beginRun}>
-            {t("tabooRace.start")}
-          </Button>
+          {next === undefined ? (
+            <Button variant="success" onClick={() => setResultShown(true)}>
+              {t("tabooResult.show")}
+            </Button>
+          ) : (
+            <>
+              <TurnStrip hiddenLabel={t("tabooRound.upNext")} name={teamName(next)} />
+              <Button variant="success" onClick={beginRun}>
+                {t("tabooRace.start")}
+              </Button>
+            </>
+          )}
         </>
       }
       ariaLabel={t("tabooRace.overview")}
-      eyebrow={t("tabooRace.title")}
-      intro={<p>{t("tabooRace.intro", { count: configuration.target })}</p>}
+      // Like the round overview of the classic mode: a thin progress bar (runs played of all runs)
+      // and "Run n/m" above the box.
+      eyebrow={
+        next === undefined
+          ? t("tabooRound.allRoundsPlayed")
+          : t("tabooRace.runOf", {
+              current: state.attempts.length + 1,
+              total: configuration.teams.length,
+            })
+      }
+      progress={{ max: configuration.teams.length, value: state.attempts.length }}
+      {...(reviewTab ? { extraTab: reviewTab, tabLabel: t("tabooRace.times") } : {})}
     >
-      <h2>{t("tabooRace.times")}</h2>
+      {!reviewTab && <h2>{t("tabooRace.times")}</h2>}
       <TabooRaceResults label={t("tabooRace.times")} rows={rows} />
-      {reviews}
       {noCards && (
         <Toast key={noCards.id} title={t("tabooRound.empty")} tone="error">
           {t("tabooRace.noCards")}

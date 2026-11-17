@@ -1023,6 +1023,24 @@ h1 {
   line-height: 1;
 }
 
+/* A small text before the result, for example "4/5 cards". */
+.kit-scoreboard__note {
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+}
+
+/* A result that is still to come: small and muted, the rank badge is empty. */
+.kit-scoreboard__score[data-pending] {
+  color: var(--color-ink-muted);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+}
+
+.kit-scoreboard__rank[data-empty="true"] {
+  border-style: dashed;
+}
+
 /* No points in the turn: muted instead of green. */
 .kit-scoreboard__gain[data-zero] {
   color: var(--color-ink-muted);

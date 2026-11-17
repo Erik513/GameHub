@@ -12,32 +12,37 @@ export interface AttemptReview {
 }
 
 interface TabooAttemptReviewsProps {
-  attempts: readonly AttemptReview[];
+  /** The attempt that was played last; only it can be corrected, like the last round of the classic mode. */
+  attempt: AttemptReview;
   onRevise: (teamIndex: number, cardId: string, outcome: TabooOutcome) => void;
+  /** The heading above the cards, for example "Played run: {{team}}". */
+  titleKey: "tabooReview.runTitle" | "tabooReview.attemptTitle";
 }
 
-/** Lets the players fix a wrong result of a finished tiebreak attempt or race run, per team. */
-export function TabooAttemptReviews({ attempts, onRevise }: TabooAttemptReviewsProps) {
+/**
+ * Lets the players fix a wrong result of the tiebreak attempt or race run that was just played. It
+ * looks like the review of a round of the classic mode: the cards in green and red. After the next
+ * attempt the cards can no longer be changed.
+ */
+export function TabooAttemptReviews({ attempt, onRevise, titleKey }: TabooAttemptReviewsProps) {
   const { t } = useTranslation();
-  if (attempts.length === 0) return null;
+  const correct = attempt.results.filter((result) => result.outcome === "correct").length;
 
   return (
     <section className="taboo-review" aria-label={t("tabooReview.title")}>
-      <h2>{t("tabooReview.title")}</h2>
-      {attempts.map(({ id, maxCorrect, results, teamIndex, teamName }) => {
-        const correct = results.filter((result) => result.outcome === "correct").length;
-        return (
-          <details className="taboo-review__attempt" key={id}>
-            <summary>{t("tabooReview.attempt", { team: teamName })}</summary>
-            <p className="taboo-review__hint">{t("tabooRound.review.hint")}</p>
-            <TabooReviewList
-              canMarkCorrect={correct < maxCorrect}
-              onRevise={(cardId, outcome) => onRevise(teamIndex, cardId, outcome)}
-              results={results}
-            />
-          </details>
-        );
-      })}
+      <h2>{t(titleKey, { team: attempt.teamName })}</h2>
+      {attempt.results.length === 0 ? (
+        <p>{t("tabooRound.review.empty")}</p>
+      ) : (
+        <>
+          <p className="taboo-review__hint">{t("tabooRound.review.hint")}</p>
+          <TabooReviewList
+            canMarkCorrect={correct < attempt.maxCorrect}
+            onRevise={(cardId, outcome) => onRevise(attempt.teamIndex, cardId, outcome)}
+            results={attempt.results}
+          />
+        </>
+      )}
     </section>
   );
 }

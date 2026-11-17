@@ -35,6 +35,7 @@ import { TabooSetupForm } from "./TabooSetupForm";
 import { TabooSetupMessages } from "./TabooSetupMessages";
 import type { TabooScreen } from "./tabooSetupModel";
 import { TabooTiebreakOverview } from "./TabooTiebreakOverview";
+import { TabooTiebreakWrapUp } from "./TabooTiebreakWrapUp";
 import { TabooTurnOverview } from "./TabooTurnOverview";
 import {
   defaultRoundChoices,
@@ -133,6 +134,10 @@ export function TabooSetup({
   const [restartUnavailable, setRestartUnavailable] = useState(false);
   const ended = round?.state.status === "roundEnded" ? round.state : undefined;
   const finished = round?.state.status === "gameEnded" ? round.state : undefined;
+  // After a tiebreak the last attempt is checked first; only then the final screen follows.
+  // (The configuration of a game stays the same object until the game ends, so it tells which game.)
+  const [wrapUpFor, setWrapUpFor] = useState<object>();
+  const wrapUpDone = finished !== undefined && wrapUpFor === finished.configuration;
   const nextTurn = ended ? getNextTabooTurn(ended) : null;
   // With unlimited rounds the group may stop after every completed round.
   const canFinishEarly =
@@ -547,11 +552,17 @@ export function TabooSetup({
           pool={raceSession.pool}
         />
       )}
-      {finished && (
+      {finished?.tiebreak && !wrapUpDone && (
+        <TabooTiebreakWrapUp
+          finished={finished}
+          onRevise={tiebreak.revise}
+          onShow={() => setWrapUpFor(finished.configuration)}
+        />
+      )}
+      {finished && (!finished.tiebreak || wrapUpDone) && (
         <TabooResultView
           finished={finished}
           onNewSetup={() => restart(false)}
-          onRevise={tiebreak.revise}
           onSameSetup={() => restart(true)}
         />
       )}
