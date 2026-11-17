@@ -227,9 +227,16 @@
   gap: var(--space-4);
 }
 
-.kit-score-box h2 {
-  margin: 0;
-  font-size: var(--text-lg);
+/* The heading of a list ("Total scores") only repeats what the screen says: screen readers only. */
+.kit-score-box > h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .kit-score-screen > p {
@@ -268,9 +275,9 @@
 }
 
 .kit-winner strong {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 9vw, 2.75rem);
-  line-height: 1.05;
+  font-size: clamp(1.75rem, 8vw, 2.25rem);
+  font-weight: var(--weight-bold);
+  line-height: 1.1;
   overflow-wrap: anywhere;
 }
 

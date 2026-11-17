@@ -1005,10 +1005,6 @@ h1 {
   stroke: currentColor;
 }
 
-.kit-scoreboard li[data-winner] {
-  border-color: var(--color-success);
-}
-
 .kit-scoreboard__name {
   display: grid;
   overflow-wrap: anywhere;
