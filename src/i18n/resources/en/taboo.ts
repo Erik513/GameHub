@@ -162,7 +162,6 @@ export const tabooTexts = {
     resultCards: "{{solved}}/{{total}} cards",
     pending: "still to play",
     start: "Start tiebreak",
-    cardOf: "Card {{current}}/{{total}}",
     timer: "{{time}} seconds",
     endAttemptConfirm: "Tap again to end",
     endAttempt: "End attempt",

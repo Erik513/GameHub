@@ -28,10 +28,33 @@ export function TabooResultView({ finished, onNewSetup, onSameSetup }: TabooResu
       }
       ariaLabel={t("tabooResult.title")}
       eyebrow={t("tabooResult.title")}
+      {...(finished.tiebreak
+        ? {
+            extraTab: {
+              content: (
+                <TabooTiebreakResults
+                  rows={[...finished.tiebreak]
+                    .sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs)
+                    .map((attempt) => {
+                      const team = finished.configuration.teams[attempt.teamIndex];
+                      return {
+                        id: team?.id ?? String(attempt.teamIndex),
+                        name: team?.name ?? "",
+                        result: { solved: attempt.solved, timeMs: attempt.timeMs },
+                        winner: team ? finished.winnerIds.includes(team.id) : false,
+                      };
+                    })}
+                />
+              ),
+              label: t("tabooTiebreak.title"),
+            },
+          }
+        : {})}
       stackedActions
       standings={{
         scores: finished.scores,
         teams: finished.configuration.teams,
+        tabLabel: t("tabooRound.standingsTab"),
         title: t("tabooRound.standings"),
         winnerIds: finished.winnerIds,
       }}
@@ -42,25 +65,6 @@ export function TabooResultView({ finished, onNewSetup, onSameSetup }: TabooResu
           .map((team) => team.name)
           .join(", "),
       }}
-    >
-      {finished.tiebreak && (
-        <>
-          <h2>{t("tabooTiebreak.results")}</h2>
-          <TabooTiebreakResults
-            rows={[...finished.tiebreak]
-              .sort((a, b) => b.solved - a.solved || a.timeMs - b.timeMs)
-              .map((attempt) => {
-                const team = finished.configuration.teams[attempt.teamIndex];
-                return {
-                  id: team?.id ?? String(attempt.teamIndex),
-                  name: team?.name ?? "",
-                  result: { solved: attempt.solved, timeMs: attempt.timeMs },
-                  winner: team ? finished.winnerIds.includes(team.id) : false,
-                };
-              })}
-          />
-        </>
-      )}
-    </ScoreScreen>
+    />
   );
 }

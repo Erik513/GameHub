@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { TabooCard } from "../../business/games/taboo/model";
 import {
-  TIEBREAK_CARD_COUNT,
   TIEBREAK_LIMIT_SECONDS,
   type TabooEvent,
   type TabooOutcome,
@@ -77,13 +76,6 @@ export function TabooTiebreakRound({
     <section className="taboo-round taboo-round--running" aria-label={t("tabooTiebreak.round")}>
       <TimerHud
         fraction={1 - totalMs / limitMs}
-        meta={
-          <>
-            {t("tabooTiebreak.title")}
-            {" · "}
-            {t("tabooTiebreak.cardOf", { current: active.index + 1, total: TIEBREAK_CARD_COUNT })}
-          </>
-        }
         remainingSeconds={(limitMs - totalMs) / 1000}
         time={formatSeconds(totalMs, i18n.language)}
         timerLabel={t("tabooTiebreak.timer", { time: formatSeconds(totalMs, i18n.language) })}

@@ -25,18 +25,23 @@ export function TabooRaceResults({
 
   // Most solved cards first, then the fastest; the same result shares a rank.
   const played = rows.filter((row) => row.timeMs !== undefined);
+  // Times count in tenths of a second (as they are shown), so equal times have equal bars.
+  const tenths = (ms: number) => Math.round(ms / 100);
   const better = (a: RaceRow, b: RaceRow) =>
     (a.solved ?? a.total ?? 0) > (b.solved ?? b.total ?? 0) ||
     ((a.solved ?? a.total ?? 0) === (b.solved ?? b.total ?? 0) &&
-      Math.round((a.timeMs ?? 0) / 100) < Math.round((b.timeMs ?? 0) / 100));
-  const fastest = Math.min(...played.map((row) => row.timeMs ?? Number.POSITIVE_INFINITY));
+      tenths(a.timeMs ?? 0) < tenths(b.timeMs ?? 0));
+  const fastest = Math.min(...played.map((row) => tenths(row.timeMs ?? Number.POSITIVE_INFINITY)));
 
   const list: ResultRow[] = rows.map((row) => {
     const { id, name, solved, timeMs, total, winner } = row;
     if (timeMs === undefined) return { id, name };
     const partial = solved !== undefined && total !== undefined && solved < total;
     return {
-      bar: timeMs > 0 ? Math.min(1, fastest / timeMs) * (partial ? solved / total : 1) : 1,
+      bar:
+        tenths(timeMs) > 0
+          ? Math.min(1, fastest / tenths(timeMs)) * (partial ? solved / total : 1)
+          : 1,
       id,
       name,
       ...(partial ? { note: t("tabooRace.partialCards", { solved, total }) } : {}),
