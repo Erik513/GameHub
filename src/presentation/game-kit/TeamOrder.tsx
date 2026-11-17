@@ -6,7 +6,12 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { moveTeam, normalizeOrder, randomOrder } from "../../business/shared/teamOrder";
+import {
+  isDefaultOrder,
+  moveTeam,
+  normalizeOrder,
+  randomOrder,
+} from "../../business/shared/teamOrder";
 import { Button, Icon } from "../components";
 import { InfoLegend } from "./InfoLegend";
 
@@ -87,15 +92,27 @@ export function TeamOrder({ count, onChange, order, teamName }: TeamOrderProps) 
         }}
         legend={t("kitTeams.orderLegend")}
       >
-        <Button
-          aria-label={t("kitTeams.orderRandom")}
-          className="kit-heading-button kit-order__shuffle"
-          onClick={() => onChange(randomOrder(count))}
-          title={t("kitTeams.orderRandom")}
-          variant="secondary"
-        >
-          <Icon name="shuffle" />
-        </Button>
+        <span className="kit-order__actions">
+          <Button
+            aria-label={t("kitTeams.orderDefault")}
+            className="kit-heading-button"
+            disabled={isDefaultOrder(order, count)}
+            onClick={() => onChange([])}
+            title={t("kitTeams.orderDefault")}
+            variant="secondary"
+          >
+            <Icon name="reset" />
+          </Button>
+          <Button
+            aria-label={t("kitTeams.orderRandom")}
+            className="kit-heading-button"
+            onClick={() => onChange(randomOrder(count))}
+            title={t("kitTeams.orderRandom")}
+            variant="secondary"
+          >
+            <Icon name="shuffle" />
+          </Button>
+        </span>
       </InfoLegend>
       <ol className="kit-order" ref={list}>
         {current.map((team, place) => (

@@ -1173,7 +1173,9 @@
   content: "";
 }
 
-/* The dice button (random order) stands at the right end of the heading line. */
-.kit-info-legend .kit-order__shuffle {
+/* The two icon buttons (default order, random order) stand at the right end of the heading line. */
+.kit-order__actions {
+  display: flex;
+  gap: var(--space-3);
   margin-left: auto;
 }

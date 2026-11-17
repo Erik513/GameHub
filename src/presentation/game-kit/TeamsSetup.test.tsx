@@ -22,6 +22,7 @@ const texts = {
     defaultName: (n: number) => `Team ${n}`,
     order: "Team order",
     orderRandom: "Random order",
+    orderDefault: "Default order",
     move: (place: number, team: string) => `Move ${team}, place ${place}`,
     pick: (player: string) => `Team of ${player}`,
     add: "Add player",
@@ -40,6 +41,7 @@ const texts = {
     defaultName: (n: number) => `Team ${n}`,
     order: "Teamreihenfolge",
     orderRandom: "Zufällige Reihenfolge",
+    orderDefault: "Standardreihenfolge",
     move: (place: number, team: string) => `${team} verschieben, Platz ${place}`,
     pick: (player: string) => `Team für ${player}`,
     add: "Spieler hinzufügen",
@@ -143,8 +145,9 @@ it.each(["en", "de"] as const)("sets the playing order of the teams in %s", asyn
 
   // The normal order, one below the other with fixed places.
   expect(placeNames(text)).toEqual(["1.Team 1", "2.Team 2", "3.Team 3"]);
-  // There is no "Default" button; the dice button is an icon without text.
+  // Both buttons are icons without text; the one for the default order cannot be used yet.
   expect(screen.getByRole("button", { name: text.orderRandom })).toHaveTextContent("");
+  expect(screen.getByRole("button", { name: text.orderDefault })).toBeDisabled();
 
   // The arrow keys on the handle move a team by one place.
   screen.getByRole("button", { name: text.move(3, "Team 3") }).focus();
@@ -158,6 +161,12 @@ it.each(["en", "de"] as const)("sets the playing order of the teams in %s", asyn
   // The dice button mixes all teams (the mocked random number gives a fixed result).
   await user.click(screen.getByRole("button", { name: text.orderRandom }));
   expect([...latest.value.order].sort()).toEqual([0, 1, 2]);
+  // The arrow brings back the normal order (and is disabled again afterwards).
+  await user.keyboard("{Escape}");
+  await user.click(screen.getByRole("button", { name: text.orderDefault }));
+  expect(latest.value.order).toEqual([]);
+  expect(placeNames(text)).toEqual(["1.Team 1", "2.Team 2", "3.Team 3"]);
+  expect(screen.getByRole("button", { name: text.orderDefault })).toBeDisabled();
   random.mockRestore();
 });
 

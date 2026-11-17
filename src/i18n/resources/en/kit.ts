@@ -23,9 +23,10 @@ export const kitTexts = {
     nameLabel: "Name of team {{number}}",
     orderLegend: "Team order",
     orderRandom: "Random order",
+    orderDefault: "Default order",
     orderMove: "Move {{team}}, place {{place}}",
     orderInfo:
-      "This is how the teams play one after the other; the team at the top starts. Drag a team by its handle up or down to change its place. The dice button mixes all teams. Tap the heading or the i for this explanation.",
+      "This is how the teams play one after the other; the team at the top starts. Drag a team by its handle up or down to change its place. The arrow button brings back team 1, team 2, team 3 and so on, the dice button mixes all teams. Tap the heading or the i for this explanation.",
   },
   kitPlayers: {
     loadLast: "Load last players",

@@ -23,9 +23,10 @@ export const kitTexts = {
     nameLabel: "Name von Team {{number}}",
     orderLegend: "Teamreihenfolge",
     orderRandom: "Zufällige Reihenfolge",
+    orderDefault: "Standardreihenfolge",
     orderMove: "{{team}} verschieben, Platz {{place}}",
     orderInfo:
-      "So spielen die Teams nacheinander; das oberste Team beginnt. Ziehe ein Team am Griff nach oben oder unten, um seine Reihenfolge zu ändern. Der Würfel-Knopf mischt alle Teams. Tippe auf die Überschrift oder das i für diese Erklärung.",
+      "So spielen die Teams nacheinander; das oberste Team beginnt. Ziehe ein Team am Griff nach oben oder unten, um seine Reihenfolge zu ändern. Der Pfeil-Knopf stellt Team 1, Team 2, Team 3 … wieder her, der Würfel-Knopf mischt alle Teams. Tippe auf die Überschrift oder das i für diese Erklärung.",
   },
   kitPlayers: {
     loadLast: "Letzte Spieler laden",
