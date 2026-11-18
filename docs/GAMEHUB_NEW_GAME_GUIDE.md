@@ -83,4 +83,4 @@ Bausteine in `src/presentation/game-kit/`, die ein neues Spiel einfach benutzt:
 
 Den Zustand der Schichten, entfernten toten Code und offene Punkte beschreibt `docs/GAMEHUB_QUALITY_CHECK.md`.
 
-Stile je Spiel: `src/presentation/styles/games/<spiel>.css`, in `main.tsx` nach `global.css` importiert.
+Stile je Spiel: `src/presentation/styles/games/<spiel>.css`, in `main.tsx` nach `global.css` importiert. Die Stile der Bausteine liegen in `kit-*.css` (`kit-hud`, `kit-choice`, `kit-result`, `kit-screen`, `kit-info`, `kit-setup`). Wer Stile umbaut, prüft mit `e2e/styleSnapshot.ts` und `scripts/compare-style-snapshots.mjs`, dass sich keine Ansicht ändert (`Al-10-08`).

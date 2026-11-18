@@ -1,5 +1,6 @@
 import { useId, type ReactNode } from "react";
 import { SetupTabs, type SetupTab } from "./SetupTabs";
+import { useFocusOnShow } from "./useFocusOnShow";
 
 interface ManageScreenProps {
   /** Accessible name of the row of tabs. */
@@ -18,8 +19,14 @@ interface ManageScreenProps {
  */
 export function ManageScreen({ messages, tabs, tabsLabel, title }: ManageScreenProps) {
   const titleId = useId();
+  const focus = useFocusOnShow<HTMLElement>();
   return (
-    <section aria-labelledby={titleId} className="kit-manage kit-onepage">
+    <section
+      aria-labelledby={titleId}
+      className="kit-manage kit-onepage focus-target"
+      ref={focus}
+      tabIndex={-1}
+    >
       {/* The header already names the game; the title is only for screen readers. */}
       <h2 className="visually-hidden" id={titleId}>
         {title}

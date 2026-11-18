@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { GameAvailability, GameModuleDescriptor } from "../app/gameCatalog";
 import { Button, Card, EmptyState } from "./components";
+import { useFocusOnShow } from "./game-kit/useFocusOnShow";
 
 interface GameSelectionPageProps {
   games: readonly GameModuleDescriptor[];
@@ -16,6 +17,7 @@ const availabilityOrder: Record<GameAvailability, number> = {
 
 export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
   const { i18n, t } = useTranslation();
+  const focus = useFocusOnShow<HTMLElement>();
   // Within each group the games are sorted alphabetically by their title in the UI language.
   const sortedGames = [...games].sort(
     (a, b) =>
@@ -27,7 +29,12 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
   );
 
   return (
-    <section className="game-library" aria-labelledby="game-library-title">
+    <section
+      className="game-library focus-target"
+      aria-labelledby="game-library-title"
+      ref={focus}
+      tabIndex={-1}
+    >
       <div className="page-intro">
         <p className="eyebrow">{t("gameSelection.eyebrow")}</p>
         <h1 id="game-library-title">{t("gameSelection.title")}</h1>

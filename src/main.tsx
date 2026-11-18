@@ -15,6 +15,11 @@ import { createLocalStoragePlayedCardsStore } from "./infrastructure/localStorag
 import { createLocalStorageTeamSetupMemory } from "./infrastructure/localStorageTeamSetupMemory";
 import { createTabooModule } from "./presentation/taboo/tabooModule";
 import "./presentation/styles/global.css";
+import "./presentation/styles/kit-screen.css";
+import "./presentation/styles/kit-hud.css";
+import "./presentation/styles/kit-choice.css";
+import "./presentation/styles/kit-result.css";
+import "./presentation/styles/kit-info.css";
 import "./presentation/styles/kit-setup.css";
 import "./presentation/styles/games/taboo.css";
 

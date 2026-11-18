@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
 import {
   availableCategories,
@@ -11,6 +11,7 @@ import { initialTeamSetup, type TeamSetupValue } from "../../business/shared/tea
 import type { SupportedLanguage } from "../../i18n";
 import { useNotice } from "../components";
 import { useGameBack, useGameExit } from "../GameChrome";
+import { focusIsLost } from "../game-kit";
 import { TabooClassicScreens } from "./TabooClassicScreens";
 import type { TabooGenerators } from "./TabooGeneration";
 import { TabooLineup } from "./TabooLineup";
@@ -170,6 +171,17 @@ export function TabooSetup({
     !settings.settingsOpen && !session && !round && !raceSession && !countdownSession;
   const settingsVisible =
     settings.settingsOpen && !session && !round && !raceSession && !countdownSession;
+  // When the settings open, the line-up goes away with the button that was pressed: the focus goes to
+  // the chosen tab of the settings, so the keyboard and screen readers start there.
+  const settingsScreen = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!settingsVisible) return;
+    if (!focusIsLost()) return;
+    settingsScreen.current
+      ?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
+      ?.focus({ preventScroll: true });
+  }, [settingsVisible]);
+
   const screen: TabooScreen = lineupVisible
     ? "lineup"
     : countdownSession
@@ -271,6 +283,7 @@ export function TabooSetup({
       <div
         className="taboo-setup__screen"
         hidden={!settingsVisible}
+        ref={settingsScreen}
         key={`form-${settings.formVersion}`}
       >
         <TabooSetupForm

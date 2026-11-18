@@ -8,6 +8,8 @@ import { Button } from "../components";
 import { TimerHud, useCountdown } from "../game-kit";
 import { TabooCountdownStrip, type CountdownStripTeam } from "./TabooCountdownStrip";
 import { formatMinutes } from "./formatTime";
+import { monotonicNow } from "../monotonicClock";
+import { useFocusOnShow } from "../game-kit/useFocusOnShow";
 
 const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
 const outcomeVariants = {
@@ -55,9 +57,10 @@ export function TabooCountdownRun({
   teams,
 }: TabooCountdownRunProps) {
   const { t } = useTranslation();
+  const focus = useFocusOnShow<HTMLElement>();
   const paused = pausedAt !== undefined;
   const { card } = active;
-  const readClock = useRef(Date.now);
+  const readClock = useRef(monotonicNow);
   // A pause moves the end of the account on by the time it lasted.
   const { seconds } = useCountdown({
     deadline: startedAt + remainingAtStartMs + pausedMs,
@@ -84,10 +87,12 @@ export function TabooCountdownRun({
     <section
       className={
         teams
-          ? "taboo-round taboo-round--running taboo-round--with-row"
-          : "taboo-round taboo-round--running"
+          ? "taboo-round taboo-round--running taboo-round--with-row focus-target"
+          : "taboo-round taboo-round--running focus-target"
       }
       aria-label={t("tabooCountdown.run")}
+      ref={focus}
+      tabIndex={-1}
     >
       <TimerHud
         fraction={Math.min(1, (seconds * 1000) / budgetMs)}

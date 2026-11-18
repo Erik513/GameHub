@@ -1,0 +1,88 @@
+/* Game kit block: the clock of a turn (`TimerHud`). */
+
+.kit-hud p {
+  margin: 0;
+}
+
+.kit-hud__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+}
+
+.kit-hud__meta {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}
+
+.kit-hud [role="timer"] {
+  min-width: 2ch;
+  color: var(--color-ink);
+  font-size: 3.5rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  text-align: right;
+}
+
+/* Round header: a thin time bar on top, below it one block with team, round, points and seconds. */
+
+.kit-hud-wrap {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.kit-hud {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.kit-hud__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.kit-hud__bar {
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-line);
+}
+
+.kit-hud__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+  transform-origin: left;
+  transition: transform 120ms linear;
+}
+
+/* Time display changes color in the last seconds: amber first, then red. */
+
+.kit-hud [role="timer"][data-warn="true"] {
+  color: var(--color-warning);
+}
+
+.kit-hud [role="timer"][data-low="true"] {
+  color: var(--color-danger-fill);
+}
+
+.kit-hud__bar[data-warn="true"] span {
+  background: var(--color-warning);
+}
+
+.kit-hud__bar[data-low="true"] span {
+  background: var(--color-danger-fill);
+}
+
+@media (max-height: 36rem) {
+  .kit-hud [role="timer"] {
+    font-size: 2.5rem;
+  }
+}

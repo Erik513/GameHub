@@ -12,6 +12,7 @@ import type { TabooGenerators } from "./TabooGeneration";
 import type { SetupState } from "./tabooSetupModel";
 import { useTabooRefill } from "./useTabooRefill";
 import { useTabooTiebreak, type ActiveGame } from "./useTabooTiebreak";
+import { monotonicNow } from "../monotonicClock";
 
 /** A prepared game: its state before the first turn and the cards it plays with. */
 export interface TabooSession {
@@ -91,16 +92,16 @@ export function useTabooClassicGame({ cardLanguage, cards, generators }: Classic
       const { pausedAt } = current;
       if (current.state.status === "roundRunning") {
         // Resuming moves the deadline by the time spent paused.
-        if (pausedAt === undefined) return { ...current, pausedAt: Date.now() };
-        return { state: current.state, deadline: current.deadline + (Date.now() - pausedAt) };
+        if (pausedAt === undefined) return { ...current, pausedAt: monotonicNow() };
+        return { state: current.state, deadline: current.deadline + (monotonicNow() - pausedAt) };
       }
       if (current.state.status === "tiebreak" && current.state.active) {
-        if (pausedAt === undefined) return { ...current, pausedAt: Date.now() };
+        if (pausedAt === undefined) return { ...current, pausedAt: monotonicNow() };
         return {
           state: current.state,
           deadline: current.deadline,
           ...(current.startedAt === undefined ? {} : { startedAt: current.startedAt }),
-          pausedMs: (current.pausedMs ?? 0) + (Date.now() - pausedAt),
+          pausedMs: (current.pausedMs ?? 0) + (monotonicNow() - pausedAt),
         };
       }
       return current;
@@ -131,7 +132,7 @@ export function useTabooClassicGame({ cardLanguage, cards, generators }: Classic
       return;
     }
     setRestartUnavailable(false);
-    setRound({ state, deadline: Date.now() + state.configuration.roundDurationSeconds * 1000 });
+    setRound({ state, deadline: monotonicNow() + state.configuration.roundDurationSeconds * 1000 });
   }, [round, session]);
 
   /** Starts the next turn, by default the first one of the prepared game or the one after the last. */
@@ -160,7 +161,7 @@ export function useTabooClassicGame({ cardLanguage, cards, generators }: Classic
     setRestartUnavailable(false);
     setRound({
       state,
-      deadline: Date.now() + state.configuration.roundDurationSeconds * 1000,
+      deadline: monotonicNow() + state.configuration.roundDurationSeconds * 1000,
     });
   }
 

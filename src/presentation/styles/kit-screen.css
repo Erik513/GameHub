@@ -1,0 +1,56 @@
+/* Game kit block: the shared game screen with the pinned start bar and the turn strip. */
+
+.kit-start-bar {
+  position: sticky;
+  z-index: 2;
+  bottom: 0;
+  margin-top: auto;
+  /* Reaches into the bottom padding of the page so the bar sits at the screen edge at the end. */
+  margin-bottom: calc(-1 * (var(--space-6) + var(--safe-bottom)));
+  padding: var(--space-3) 0 var(--safe-bottom);
+  background: linear-gradient(to bottom, transparent, var(--color-canvas) 0.75rem);
+}
+
+.game-preview .kit-start-bar .button {
+  width: 100%;
+  margin-top: 0;
+  min-height: 4rem;
+  font-size: var(--text-lg);
+}
+
+.kit-turn-strip {
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background: var(--color-surface-muted);
+  text-align: center;
+}
+
+.kit-turn-strip strong {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* The team name sits on top of the start button and extends it upwards. */
+
+.kit-start-bar .kit-turn-strip + .button {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.kit-start-bar--stack {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.game-preview .kit-start-bar--stack .button {
+  min-height: var(--touch-target);
+  font-size: var(--text-md);
+}
+
+/* A view that gets the focus by program (not by the player) shows no frame around the whole view. */
+.focus-target:focus {
+  outline: none;
+}

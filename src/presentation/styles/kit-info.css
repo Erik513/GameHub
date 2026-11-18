@@ -1,0 +1,50 @@
+/* Game kit block: info buttons and links inside texts. */
+
+.kit-info-button {
+  position: absolute;
+  top: -0.9rem;
+  right: 0;
+  width: 2.75rem;
+  padding: 0;
+  color: var(--color-ink-muted);
+}
+
+.kit-info-text {
+  margin: 0;
+  color: var(--color-ink);
+  line-height: 1.55;
+}
+
+/* Centered without a transform: a transform would jump when the button is pressed. */
+
+.kit-info-button.kit-info-button--option {
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  height: 2.75rem;
+  margin: auto 0;
+  color: inherit;
+}
+
+/* An explanation with several lines is a list of bullet points. */
+
+.kit-info-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+/* A reference inside a text that opens another window, for example from the rules to the tiebreak. */
+
+.kit-link-button {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent, currentColor);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

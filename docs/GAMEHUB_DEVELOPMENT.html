@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T18:29:00.737Z",
+    "updatedAt": "2026-11-18T19:05:35.548Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 119,
-      "totalTasks": 193,
-      "percent": 61.7
+      "completedTasks": 123,
+      "totalTasks": 192,
+      "percent": 64.1
     }
   },
   "environment": {
@@ -634,7 +634,7 @@
       "id": "Al-10",
       "name": "Gesamtprüfung nach den Tabu-Erweiterungen",
       "area": "general",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         {
           "id": "Al-10-01",
@@ -645,11 +645,6 @@
           "id": "Al-10-02",
           "title": "Container TabooSetup aufteilen (Hooks für Spiel, Start und Einstellungsansicht, reine Planungsfunktionen, Komponenten für Aufstellung und Bildschirme)",
           "status": "done"
-        },
-        {
-          "id": "Al-10-03",
-          "title": "KI-Kartenquelle später wieder anschließen (vorerst abgeschaltet, ADR-024; Anbieter Ollama oder LM Studio klären)",
-          "status": "planned"
         },
         {
           "id": "Al-10-04",
@@ -669,22 +664,22 @@
         {
           "id": "Al-10-07",
           "title": "Monotone Zeitmessung statt Wanduhr für Runde, Rennen und Stechen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-10-08",
           "title": "Stile ordnen: Kit-Stile aus global.css in Bausteindateien, doppelte Selektoren zusammenführen, ungenutzte Klassen entfernen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-10-09",
           "title": "Fokusführung beim Ansichtswechsel für Tastatur und Screenreader",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-10-10",
           "title": "Layout der Spielkarte und der Kopfleiste für Telefone mit 320 Pixel Breite",
-          "status": "planned"
+          "status": "done"
         }
       ]
     },
@@ -1561,6 +1556,26 @@
   "recentChanges": [
     {
       "date": "2026-11-18",
+      "summary": "Layout für 320 Pixel (Al-10-10): Alle Layoutprüfungen laufen jetzt auch bei 320 x 568; die pausierte Karte und die Karte mit der Teamleiste sind auf sehr niedrigen Bildschirmen kompakter und passen ohne Scrollen."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Fokusführung (Al-10-09): Jede neue Ansicht bekommt den Tastaturfokus (useFocusOnShow), beim Öffnen der Einstellungen der gewählte Reiter; der Fokus wird nur bewegt, wenn er verloren war."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Stile geordnet (Al-10-08): acht tote Klassen entfernt, Bausteinstile in fünf eigenen Dateien (global.css 1300 auf 821 Zeilen), vier sichere Zusammenführungen von 50 doppelten Selektoren (der Rest sind echte Überschreibungen); belegt durch einen Stilvergleich aller Elemente in 135 Ansichten, keine Änderung."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Monotone Zeitmessung (Al-10-07): Runde, Lauf, Zug, Stechen, Pause und Bestätigungsknöpfe messen mit performance.now statt Date.now und sind damit unabhängig von Sprüngen der Systemzeit."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Aufgabe Al-10-03 (KI-Kartenquelle wieder anschließen) auf Wunsch des Auftraggebers entfernt; ADR-024 bleibt bestehen, der ungenutzte KI-Code ebenso."
+    },
+    {
+      "date": "2026-11-18",
       "summary": "Gespielte Karten merken (Ta-09-06): je Kartensprache im Browser, neue Spiele bevorzugen ungespielte Karten und beginnen bei Bedarf einen neuen Durchgang; Einstellung und Knopf zum Vergessen. Alle offenen Punkte zu Gegen die Zeit vom Auftraggeber bestätigt."
     },
     {
@@ -2238,26 +2253,26 @@
   },
   "werewolfUiPlan": {
     "title": "UI-Planung für Werwolf",
-    "stage": "Gemeinsam zuerst die Hauptansicht planen, danach die Konfiguration und anschließend den Spielablauf.",
+    "stage": "Hauptansicht und feste Rollenkonfiguration werden gemeinsam konkretisiert. Der variable Modus und die Spielphasen folgen danach.",
     "views": [
       {
         "name": "Hauptansicht",
-        "status": "Wird zuerst geplant",
+        "status": "Teilweise abgestimmt; Details offen",
         "purpose": "Einstieg nach Auswahl von Werwolf und Ausgangspunkt zur Vorbereitung."
       },
       {
         "name": "Konfiguration",
-        "status": "Wird danach geplant",
+        "status": "Feste Rollen werden jetzt geplant",
         "purpose": "Rollen, Items und Partieeinstellungen festlegen."
       },
       {
         "name": "Spielablauf",
-        "status": "Wird anschließend geplant",
+        "status": "Noch zu planen",
         "purpose": "Rollenverteilung sowie Nacht, Morgen, Tag, Abstimmung und Ergebnis."
       }
     ],
-    "proposal": "Bestätigt: Spieler- und Sitzplatzreiter, Kreisübersicht mit Anfangsbuchstaben und Namensfenster durch Gedrückthalten. Spiel starten, Spieleinstellungen und Spielanleitung sind gemeinsame Standardaktionen. Die konkrete Anordnung bleibt noch abzustimmen.",
-    "open": "Werwolf-spezifisch noch zu klären: Erzählerauswahl, Umsortieren und Teilnehmeränderungen in der Sitzordnung, Einrichtungsvorschau, Namensfenster-Details sowie Fortsetzen/Neustart. Vorbereitungsdaten beim Ansichtswechsel erhalten.",
+    "proposal": "Bestätigt: Umschalter Fest/Variabel mit möglichst gleichem Aufbau. Feste Ansicht oben mit automatischen Werwölfen, Pflicht-Seherin und aufgefüllten Dorfbewohnern; alle Rollen als Buttons sichtbar, nach Mindestspielerzahl gruppiert. Leibwächter/Dorfmatratze gemeinsam auswählen, Dorftrottel separat. Hexe/Magier dynamisch alternativ oder gemeinsam. Amulett/Trunkenbold separat; jede Rolle und jeder Zusatz mit i-Erklärung. Nur dokumentiert.",
+    "open": "Noch zu klären: Position der Rollenvarianten (z. B. Jägerschuss/Gerber-Ziel), genaue Auswahl- und Infofensterbedienung sowie allgemeine Partieoptionen. Hauptansicht: Sortieren/Teilnehmeränderungen, Erzählerwechsel und Namensfenster-Details bleiben offen. Variable Konfiguration folgt später.",
     "document": "GAMEHUB_WERWOLF_UI.md"
   }
 };

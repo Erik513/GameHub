@@ -21,6 +21,7 @@ import { TabooRaceResults, type RaceRow } from "./TabooRaceResults";
 import { TabooRaceRun } from "./TabooRaceRun";
 import { TabooRaceTiebreak } from "./TabooRaceTiebreak";
 import { TabooTiebreakResults } from "./TabooTiebreakResults";
+import { monotonicNow } from "../monotonicClock";
 
 interface Clock {
   readonly pausedAt?: number | undefined;
@@ -81,9 +82,9 @@ export function TabooRaceGame({
   const togglePause = useCallback(() => {
     setClock((current) => {
       if (!current) return current;
-      if (current.pausedAt === undefined) return { ...current, pausedAt: Date.now() };
+      if (current.pausedAt === undefined) return { ...current, pausedAt: monotonicNow() };
       return {
-        pausedMs: current.pausedMs + (Date.now() - current.pausedAt),
+        pausedMs: current.pausedMs + (monotonicNow() - current.pausedAt),
         startedAt: current.startedAt,
       };
     });
@@ -114,7 +115,7 @@ export function TabooRaceGame({
       notifyNoCards(true);
       return;
     }
-    setClock({ pausedMs: 0, startedAt: Date.now() });
+    setClock({ pausedMs: 0, startedAt: monotonicNow() });
     setState(next);
   }
 
@@ -160,7 +161,7 @@ export function TabooRaceGame({
         onNewSetup={onNewSetup}
         onResume={togglePause}
         onShowResult={() => setResultShown(true)}
-        onStartClock={() => setClock({ pausedMs: 0, startedAt: Date.now() })}
+        onStartClock={() => setClock({ pausedMs: 0, startedAt: monotonicNow() })}
         pool={pool}
         state={state}
       />

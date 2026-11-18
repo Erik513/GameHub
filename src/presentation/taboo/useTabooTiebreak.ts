@@ -8,6 +8,7 @@ import {
 } from "../../business/games/taboo/stateMachine";
 import { pickTiebreakCard, pickTiebreakCards } from "../../business/games/taboo/tiebreakCards";
 import type { SupportedLanguage } from "../../i18n";
+import { monotonicNow } from "../monotonicClock";
 
 /** The running game as the container keeps it. */
 export interface ActiveGame {
@@ -66,7 +67,7 @@ export function useTabooTiebreak({
       return;
     }
     setNoCards(false);
-    setRound({ state, deadline: 0, startedAt: Date.now(), pausedMs: 0 });
+    setRound({ state, deadline: 0, startedAt: monotonicNow(), pausedMs: 0 });
   }
 
   /** A card of the same difficulty that was not used yet, for a skip or a forbidden word. */

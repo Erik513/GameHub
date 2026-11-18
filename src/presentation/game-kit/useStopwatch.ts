@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { monotonicNow } from "../monotonicClock";
 
 interface StopwatchOptions {
   /** While paused the clock stands still. */
@@ -10,12 +11,12 @@ interface StopwatchOptions {
 
 /** Measures the elapsed time of an attempt in milliseconds, excluding pauses. */
 export function useStopwatch({ pausedAt, pausedMs, startedAt }: StopwatchOptions): number {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(() => monotonicNow());
   const paused = pausedAt !== undefined;
 
   useEffect(() => {
     if (paused) return;
-    const clock = setInterval(() => setNow(Date.now()), 100);
+    const clock = setInterval(() => setNow(monotonicNow()), 100);
     return () => clearInterval(clock);
   }, [paused]);
 

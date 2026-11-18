@@ -17,6 +17,7 @@ import { useGameExit } from "../GameChrome";
 import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooCountdownResults } from "./TabooCountdownResults";
 import { TabooCountdownRun } from "./TabooCountdownRun";
+import { monotonicNow } from "../monotonicClock";
 
 interface Clock {
   readonly pausedAt?: number | undefined;
@@ -89,7 +90,7 @@ export function TabooCountdownGame({
     // The next team starts at once: its clock begins when the turn before ended.
     if (next.status === "running" && current.status === "running") {
       if (next.active.teamIndex !== current.active.teamIndex) {
-        setClock({ pausedMs: 0, startedAt: Date.now() });
+        setClock({ pausedMs: 0, startedAt: monotonicNow() });
       }
     }
     // A team that dropped out while the game goes on is announced; the final screen tells the rest.
@@ -109,9 +110,9 @@ export function TabooCountdownGame({
   const togglePause = useCallback(() => {
     setClock((current) => {
       if (!current) return current;
-      if (current.pausedAt === undefined) return { ...current, pausedAt: Date.now() };
+      if (current.pausedAt === undefined) return { ...current, pausedAt: monotonicNow() };
       return {
-        pausedMs: current.pausedMs + (Date.now() - current.pausedAt),
+        pausedMs: current.pausedMs + (monotonicNow() - current.pausedAt),
         startedAt: current.startedAt,
       };
     });
@@ -135,7 +136,7 @@ export function TabooCountdownGame({
       notifyNoCards(true);
       return;
     }
-    setClock({ pausedMs: 0, startedAt: Date.now() });
+    setClock({ pausedMs: 0, startedAt: monotonicNow() });
     latest.current = next;
     setState(next);
   }

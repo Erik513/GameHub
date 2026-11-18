@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "./Button";
+import { monotonicNow } from "../monotonicClock";
 
 interface ConfirmButtonProps {
   /** Accessible name and announcement while the button waits for the second press. */
@@ -42,12 +43,12 @@ export function ConfirmButton({
 
   function handleClick() {
     if (!armed) {
-      armedAt.current = Date.now();
+      armedAt.current = monotonicNow();
       setArmed(true);
       timer.current = setTimeout(() => setArmed(false), timeoutMs);
       return;
     }
-    if (Date.now() - armedAt.current < guardMs) return;
+    if (monotonicNow() - armedAt.current < guardMs) return;
     clearTimeout(timer.current);
     setArmed(false);
     onConfirm();

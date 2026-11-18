@@ -1,60 +1,5 @@
 /* Styles of the shared setup building blocks (setup screen, teams, players). */
 
-.kit-disclosure {
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-}
-
-.kit-disclosure > summary {
-  display: flex;
-  align-items: center;
-  min-height: var(--touch-target);
-  padding: 0 var(--space-4);
-  color: var(--color-ink-muted);
-  font-weight: var(--weight-bold);
-  cursor: pointer;
-}
-
-.kit-disclosure[open] > summary {
-  border-bottom: 1px solid var(--color-line);
-}
-
-.kit-disclosure > fieldset {
-  margin: var(--space-4);
-}
-
-.kit-disclosure > summary {
-  justify-content: space-between;
-  list-style: none;
-}
-
-.kit-disclosure > summary::-webkit-details-marker {
-  display: none;
-}
-
-.kit-disclosure > summary::after {
-  width: 0.6rem;
-  height: 0.6rem;
-  border-right: 2px solid currentcolor;
-  border-bottom: 2px solid currentcolor;
-  transform: rotate(45deg);
-  content: "";
-}
-
-.kit-disclosure[open] > summary::after {
-  transform: rotate(-135deg);
-}
-
-.kit-disclosure__body {
-  display: grid;
-  gap: var(--space-3);
-  padding: var(--space-4);
-}
-
-.kit-disclosure__body > * {
-  margin: 0;
-}
-
 /*
  * Tabs like in a browser: the tabs sit on top, the content of the chosen tab is in a box that is
  * joined to it. The inactive tabs stay in the page (hidden), so the form still reads their values.
@@ -347,10 +292,6 @@
   scroll-snap-type: y mandatory;
 }
 
-.kit-roster__list li {
-  scroll-snap-align: start;
-}
-
 /*
  * The large window of the player list: wider and as high as its content, at most as the screen allows.
  * The list shows whole rows only (its height is set in whole rows by `useWholeRows`) and scrolls in
@@ -396,6 +337,7 @@
 }
 
 .kit-roster__list li {
+  scroll-snap-align: start;
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--roster-button);
   align-items: center;
@@ -860,16 +802,6 @@
 /* The editor of a game is one page, too: title, tabs, the actions pinned to the bottom. */
 .kit-manage.kit-onepage {
   flex: 1;
-}
-
-.kit-manage__actions {
-  position: static;
-  margin-top: 0;
-}
-
-.kit-tab-section {
-  display: grid;
-  gap: var(--space-4);
 }
 
 /*

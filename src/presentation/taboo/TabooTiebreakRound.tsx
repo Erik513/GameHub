@@ -12,6 +12,8 @@ import {
 import { Button, ConfirmButton } from "../components";
 import { TimerHud, useStopwatch } from "../game-kit";
 import { formatSeconds } from "./formatTime";
+import { monotonicNow } from "../monotonicClock";
+import { useFocusOnShow } from "../game-kit/useFocusOnShow";
 
 const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
 const outcomeVariants = {
@@ -48,9 +50,10 @@ export function TabooTiebreakRound({
   teamName,
 }: TabooTiebreakRoundProps) {
   const { t, i18n } = useTranslation();
+  const focus = useFocusOnShow<HTMLElement>();
   const paused = pausedAt !== undefined;
   const card = active.cards[active.index];
-  const readClock = useRef(Date.now);
+  const readClock = useRef(monotonicNow);
   const totalMs = useStopwatch({ pausedAt, pausedMs, startedAt });
   const timeUp = totalMs >= limitMs;
 
@@ -78,7 +81,12 @@ export function TabooTiebreakRound({
   }
 
   return (
-    <section className="taboo-round taboo-round--running" aria-label={t("tabooTiebreak.round")}>
+    <section
+      className="taboo-round taboo-round--running focus-target"
+      aria-label={t("tabooTiebreak.round")}
+      ref={focus}
+      tabIndex={-1}
+    >
       <TimerHud
         // The task is to solve three cards as fast as possible: the bar shows the cards, like in the race.
         fraction={active.index / TIEBREAK_CARD_COUNT}

@@ -7,6 +7,8 @@ import {
 } from "../../business/games/taboo/stateMachine";
 import { Button, ConfirmButton } from "../components";
 import { TimerHud, useCountdown } from "../game-kit";
+import { monotonicNow } from "../monotonicClock";
+import { useFocusOnShow } from "../game-kit/useFocusOnShow";
 
 const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
 const outcomeVariants = {
@@ -39,6 +41,7 @@ export function TabooRound({
   state,
 }: TabooRoundProps) {
   const { t } = useTranslation();
+  const focus = useFocusOnShow<HTMLElement>();
   const { card, configuration, turn } = state;
   const { round, teamIndex } = turn;
   const { skipsPerRound } = configuration;
@@ -61,7 +64,12 @@ export function TabooRound({
   });
 
   return (
-    <section className="taboo-round taboo-round--running" aria-label={t("tabooRound.title")}>
+    <section
+      className="taboo-round taboo-round--running focus-target"
+      aria-label={t("tabooRound.title")}
+      ref={focus}
+      tabIndex={-1}
+    >
       <TimerHud
         fraction={fraction}
         remainingSeconds={seconds}
@@ -125,7 +133,7 @@ export function TabooRound({
               variant={outcomeVariants[outcome]}
               onClick={() => {
                 dispatch(
-                  Date.now() >= deadline
+                  monotonicNow() >= deadline
                     ? { type: "endRound", turn }
                     : { type: "resolveCard", turn, cardId: card.id, outcome },
                 );

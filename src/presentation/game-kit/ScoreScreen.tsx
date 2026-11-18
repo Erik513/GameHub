@@ -3,6 +3,7 @@ import { Confetti } from "./Confetti";
 import { Scoreboard } from "./Scoreboard";
 import { SetupTabs } from "./SetupTabs";
 import { StartBar } from "./StartBar";
+import { useFocusOnShow } from "./useFocusOnShow";
 
 interface ScoreScreenProps {
   /** The buttons of the start bar at the bottom; the main action is the last one. */
@@ -64,6 +65,7 @@ export function ScoreScreen({
   tabLabel,
   winner,
 }: ScoreScreenProps) {
+  const focus = useFocusOnShow<HTMLElement>();
   const board = standings && (
     <Scoreboard
       label={standings.title}
@@ -75,7 +77,12 @@ export function ScoreScreen({
   );
 
   return (
-    <section aria-label={ariaLabel} className="kit-score-screen kit-onepage">
+    <section
+      aria-label={ariaLabel}
+      className="kit-score-screen kit-onepage focus-target"
+      ref={focus}
+      tabIndex={-1}
+    >
       {celebrate && <Confetti />}
       {progress && (
         <div

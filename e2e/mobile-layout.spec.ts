@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { snapshotStyles } from "./styleSnapshot";
 
 const labels = {
   en: {
@@ -63,7 +64,14 @@ const labels = {
   },
 } as const;
 
+/** The phones the other checks run at, from the small one to the tiny one. */
+const smallPhones = [
+  { name: "small phone", width: 360, height: 640 },
+  { name: "tiny phone", width: 320, height: 568 },
+] as const;
+
 const viewports = [
+  { name: "tiny phone", width: 320, height: 568 },
   { name: "small phone", width: 360, height: 640 },
   { name: "large phone", width: 412, height: 915 },
 ] as const;
@@ -78,6 +86,7 @@ interface Violation {
 
 /** Looks for layout problems that make a screen hard to use with one hand. */
 async function audit(page: Page, screen: string): Promise<string[]> {
+  await snapshotStyles(page, screen);
   const violations = await page.evaluate<Violation[], number>((minimum) => {
     const found: Violation[] = [];
     const describe = (element: Element) =>
@@ -302,266 +311,287 @@ for (const language of ["en", "de"] as const) {
   }
 }
 
-test("the tiebreak screens fit a small phone in both languages", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
-  const problems: string[] = [];
-  for (const language of ["en", "de"] as const) {
-    const t = labels[language];
-    await page.setViewportSize({ width: 360, height: 640 });
-    await page.clock.install();
-    await page.addInitScript(() => {
-      Math.random = () => 0.99;
-    });
-    await page.goto("/");
-    if (language === "de") {
-      await page.getByRole("button", { name: labels.en.settings }).click();
-      await page
-        .getByRole("group", { name: labels.en.interfaceLanguage })
-        .getByRole("radio", { name: "German" })
-        .check({ force: true });
-      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
-    }
-    const check = async (screen: string) =>
-      problems.push(...(await audit(page, `${language} ${screen}`)));
-    const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
+for (const size of smallPhones)
+  test(`the tiebreak screens fit a small phone in both languages (${size.name})`, async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+    const problems: string[] = [];
+    for (const language of ["en", "de"] as const) {
+      const t = labels[language];
+      await page.setViewportSize({ width: size.width, height: size.height });
+      await page.clock.install();
+      await page.addInitScript(() => {
+        Math.random = () => 0.99;
+      });
+      await page.goto("/");
+      if (language === "de") {
+        await page.getByRole("button", { name: labels.en.settings }).click();
+        await page
+          .getByRole("group", { name: labels.en.interfaceLanguage })
+          .getByRole("radio", { name: "German" })
+          .check({ force: true });
+        await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+      }
+      const check = async (screen: string) =>
+        problems.push(...(await audit(page, `${language} ${screen}`)));
+      const press = (name: string) =>
+        page.getByRole("button", { name, exact: true }).first().click();
 
-    await press(t.open);
-    await press(t.startGame);
-    // Nobody scores in the six turns of a short game, so the game ends in a tie.
-    for (let turn = 0; turn < 6; turn += 1) {
-      await press(t.startRound);
-      await page.clock.fastForward(60_000);
+      await press(t.open);
+      await press(t.startGame);
+      // Nobody scores in the six turns of a short game, so the game ends in a tie.
+      for (let turn = 0; turn < 6; turn += 1) {
+        await press(t.startRound);
+        await page.clock.fastForward(60_000);
+      }
+      // A tie: the button leads to the tiebreak and says so.
+      await press(t.startTiebreak);
+      await check("tiebreak overview");
+      await press(t.startTiebreak);
+      await check("tiebreak attempt");
+      await press(t.pause);
+      await check("paused tiebreak attempt");
+      await press(t.resume);
+      for (let card = 0; card < 3; card += 1) await press(t.correct);
+      await check("tiebreak overview with a result");
+      await press(t.startTiebreak);
+      await press(t.pause);
+      await press(t.endAttempt);
+      // A second tap confirms; it counts only after a short moment.
+      await page.clock.fastForward(500);
+      await press(t.endAttemptConfirm);
+      await check("summary after the tiebreak");
+      await press(t.show);
+      await check("final result after the tiebreak");
     }
-    // A tie: the button leads to the tiebreak and says so.
-    await press(t.startTiebreak);
-    await check("tiebreak overview");
-    await press(t.startTiebreak);
-    await check("tiebreak attempt");
-    await press(t.pause);
-    await check("paused tiebreak attempt");
-    await press(t.resume);
-    for (let card = 0; card < 3; card += 1) await press(t.correct);
-    await check("tiebreak overview with a result");
-    await press(t.startTiebreak);
-    await press(t.pause);
-    await press(t.endAttempt);
-    // A second tap confirms; it counts only after a short moment.
-    await page.clock.fastForward(500);
-    await press(t.endAttemptConfirm);
-    await check("summary after the tiebreak");
-    await press(t.show);
-    await check("final result after the tiebreak");
-  }
-  expect(problems, problems.join("\n")).toEqual([]);
-});
+    expect(problems, problems.join("\n")).toEqual([]);
+  });
 
 const raceLabels = {
   en: { mode: "Game mode", race: "Race", startRun: "Start run" },
   de: { mode: "Spielmodus", race: "Auf Zeit", startRun: "Lauf starten" },
 } as const;
 
-test("the race screens fit a small phone in both languages", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
-  const problems: string[] = [];
-  for (const language of ["en", "de"] as const) {
-    const t = labels[language];
-    const race = raceLabels[language];
-    await page.setViewportSize({ width: 360, height: 640 });
-    await page.clock.install();
-    await page.addInitScript(() => {
-      Math.random = () => 0.99;
-    });
-    await page.goto("/");
-    if (language === "de") {
-      await page.getByRole("button", { name: labels.en.settings }).click();
-      await page
-        .getByRole("group", { name: labels.en.interfaceLanguage })
-        .getByRole("radio", { name: "German" })
-        .check({ force: true });
-      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+for (const size of smallPhones)
+  test(`the race screens fit a small phone in both languages (${size.name})`, async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+    const problems: string[] = [];
+    for (const language of ["en", "de"] as const) {
+      const t = labels[language];
+      const race = raceLabels[language];
+      await page.setViewportSize({ width: size.width, height: size.height });
+      await page.clock.install();
+      await page.addInitScript(() => {
+        Math.random = () => 0.99;
+      });
+      await page.goto("/");
+      if (language === "de") {
+        await page.getByRole("button", { name: labels.en.settings }).click();
+        await page
+          .getByRole("group", { name: labels.en.interfaceLanguage })
+          .getByRole("radio", { name: "German" })
+          .check({ force: true });
+        await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+      }
+      const check = async (screen: string) =>
+        problems.push(...(await audit(page, `${language} ${screen}`)));
+      const press = (name: string) =>
+        page.getByRole("button", { name, exact: true }).first().click();
+
+      await press(t.open);
+      await press(t.settingsTab);
+      const mode = page.getByRole("group", { name: race.mode });
+      // Bring the group to the middle so the start bar at the bottom does not cover it.
+      await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
+      await mode
+        .getByRole("radio", { name: race.race })
+        .evaluate((element) => (element as HTMLInputElement).click());
+      await check("race setup");
+      await press(t.done);
+      await check("race line-up");
+      await press(t.startGame);
+      await check("race overview before the first run");
+
+      await press(race.startRun);
+      await check("running race");
+      await press(t.pause);
+      await check("paused race");
+      await press(t.resume);
+      // A run has three cards (the default of the race).
+      for (let card = 0; card < 3; card += 1) await press(t.correct);
+      await check("race overview with a time");
+
+      await press(race.startRun);
+      // A run has three cards (the default of the race).
+      for (let card = 0; card < 3; card += 1) await press(t.correct);
+      await check("race result");
     }
-    const check = async (screen: string) =>
-      problems.push(...(await audit(page, `${language} ${screen}`)));
-    const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
+    expect(problems, problems.join("\n")).toEqual([]);
+  });
 
-    await press(t.open);
-    await press(t.settingsTab);
-    const mode = page.getByRole("group", { name: race.mode });
-    // Bring the group to the middle so the start bar at the bottom does not cover it.
-    await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
-    await mode.getByRole("radio", { name: race.race }).check({ force: true });
-    await check("race setup");
-    await press(t.done);
-    await check("race line-up");
-    await press(t.startGame);
-    await check("race overview before the first run");
-
-    await press(race.startRun);
-    await check("running race");
-    await press(t.pause);
-    await check("paused race");
-    await press(t.resume);
-    // A run has three cards (the default of the race).
-    for (let card = 0; card < 3; card += 1) await press(t.correct);
-    await check("race overview with a time");
-
-    await press(race.startRun);
-    // A run has three cards (the default of the race).
-    for (let card = 0; card < 3; card += 1) await press(t.correct);
-    await check("race result");
-  }
-  expect(problems, problems.join("\n")).toEqual([]);
-});
-
-test("the card editor is one page with two tabs on a small phone in both languages", async ({
-  page,
-}, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
-  const problems: string[] = [];
-  const addTab = { en: "Add card", de: "Karte hinzufügen" } as const;
-  for (const language of ["en", "de"] as const) {
-    const t = labels[language];
-    await page.setViewportSize({ width: 360, height: 640 });
-    await page.goto("/");
-    if (language === "de") {
-      await page.getByRole("button", { name: labels.en.settings }).click();
+for (const size of smallPhones)
+  test(`the card editor is one page with two tabs on a small phone in both languages (${size.name})`, async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+    const problems: string[] = [];
+    const addTab = { en: "Add card", de: "Karte hinzufügen" } as const;
+    for (const language of ["en", "de"] as const) {
+      const t = labels[language];
+      await page.setViewportSize({ width: size.width, height: size.height });
+      await page.goto("/");
+      if (language === "de") {
+        await page.getByRole("button", { name: labels.en.settings }).click();
+        await page
+          .getByRole("group", { name: labels.en.interfaceLanguage })
+          .getByRole("radio", { name: "German" })
+          .check({ force: true });
+        await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+      }
+      await page.getByRole("button", { name: t.open, exact: true }).first().click();
+      await page.getByRole("button", { name: t.settingsTab, exact: true }).click();
+      await page.getByRole("tab", { name: t.categories, exact: true }).click();
       await page
-        .getByRole("group", { name: labels.en.interfaceLanguage })
-        .getByRole("radio", { name: "German" })
-        .check({ force: true });
-      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+        .locator('.kit-tabpanel[data-active="true"]')
+        .getByRole("button", { name: t.manage, exact: true })
+        .click();
+      // The cards are the left tab, the form to add a card the right one.
+      const tabs = page.locator(".kit-manage").getByRole("tab");
+      await expect(tabs).toHaveText([t.cards, addTab[language]]);
+      problems.push(...(await audit(page, `${language} card editor: cards`)));
+      // An opened category shows its cards; the way back stays in the header.
+      await page.locator(".kit-nav-row").first().click();
+      problems.push(...(await audit(page, `${language} card editor: category`)));
+      await tabs.nth(1).click();
+      problems.push(...(await audit(page, `${language} card editor: add`)));
     }
-    await page.getByRole("button", { name: t.open, exact: true }).first().click();
-    await page.getByRole("button", { name: t.settingsTab, exact: true }).click();
-    await page.getByRole("tab", { name: t.categories, exact: true }).click();
-    await page
-      .locator('.kit-tabpanel[data-active="true"]')
-      .getByRole("button", { name: t.manage, exact: true })
-      .click();
-    // The cards are the left tab, the form to add a card the right one.
-    const tabs = page.locator(".kit-manage").getByRole("tab");
-    await expect(tabs).toHaveText([t.cards, addTab[language]]);
-    problems.push(...(await audit(page, `${language} card editor: cards`)));
-    // An opened category shows its cards; the way back stays in the header.
-    await page.locator(".kit-nav-row").first().click();
-    problems.push(...(await audit(page, `${language} card editor: category`)));
-    await tabs.nth(1).click();
-    problems.push(...(await audit(page, `${language} card editor: add`)));
-  }
-  expect(problems, problems.join("\n")).toEqual([]);
-});
+    expect(problems, problems.join("\n")).toEqual([]);
+  });
 
 const countdownLabels = {
   en: { mode: "Game mode", countdown: "Against the clock", start: "Start turn" },
   de: { mode: "Spielmodus", countdown: "Gegen die Zeit", start: "Zug starten" },
 } as const;
 
-test("the countdown screens fit a small phone in both languages", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
-  const problems: string[] = [];
-  for (const language of ["en", "de"] as const) {
-    const t = labels[language];
-    const countdown = countdownLabels[language];
-    await page.setViewportSize({ width: 360, height: 640 });
-    await page.clock.install();
-    await page.addInitScript(() => {
-      Math.random = () => 0.99;
-    });
-    await page.goto("/");
-    if (language === "de") {
-      await page.getByRole("button", { name: labels.en.settings }).click();
+for (const size of smallPhones)
+  test(`the countdown screens fit a small phone in both languages (${size.name})`, async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+    const problems: string[] = [];
+    for (const language of ["en", "de"] as const) {
+      const t = labels[language];
+      const countdown = countdownLabels[language];
+      await page.setViewportSize({ width: size.width, height: size.height });
+      await page.clock.install();
+      await page.addInitScript(() => {
+        Math.random = () => 0.99;
+      });
+      await page.goto("/");
+      if (language === "de") {
+        await page.getByRole("button", { name: labels.en.settings }).click();
+        await page
+          .getByRole("group", { name: labels.en.interfaceLanguage })
+          .getByRole("radio", { name: "German" })
+          .check({ force: true });
+        await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+      }
+      const check = async (screen: string) =>
+        problems.push(...(await audit(page, `${language} ${screen}`)));
+      const press = (name: string) =>
+        page.getByRole("button", { name, exact: true }).first().click();
+
+      await press(t.open);
+      await press(t.settingsTab);
+      const mode = page.getByRole("group", { name: countdown.mode });
+      await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
+      await mode
+        .getByRole("radio", { name: countdown.countdown })
+        .evaluate((element) => (element as HTMLInputElement).click());
       await page
-        .getByRole("group", { name: labels.en.interfaceLanguage })
-        .getByRole("radio", { name: "German" })
-        .check({ force: true });
-      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+        .getByRole("group", { name: switchLabels[language].change })
+        .getByRole("radio", { name: switchLabels[language].manual })
+        .evaluate((element) => (element as HTMLInputElement).click());
+      await check("countdown setup");
+      await press(t.done);
+      await press(t.startGame);
+      await check("countdown overview before the first turn");
+
+      await press(countdown.start);
+      await check("running countdown");
+      await press(t.pause);
+      await check("paused countdown");
+      await press(t.resume);
+      await press(t.correct);
+      await check("countdown overview with a time");
+
+      // The second team lets its whole account run out, so the first team wins.
+      await press(countdown.start);
+      await page.clock.fastForward(400_000);
+      await page.getByRole("status").first().waitFor();
+      await check("countdown result");
     }
-    const check = async (screen: string) =>
-      problems.push(...(await audit(page, `${language} ${screen}`)));
-    const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
-
-    await press(t.open);
-    await press(t.settingsTab);
-    const mode = page.getByRole("group", { name: countdown.mode });
-    await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
-    await mode.getByRole("radio", { name: countdown.countdown }).check({ force: true });
-    await page
-      .getByRole("group", { name: switchLabels[language].change })
-      .getByRole("radio", { name: switchLabels[language].manual })
-      .check({ force: true });
-    await check("countdown setup");
-    await press(t.done);
-    await press(t.startGame);
-    await check("countdown overview before the first turn");
-
-    await press(countdown.start);
-    await check("running countdown");
-    await press(t.pause);
-    await check("paused countdown");
-    await press(t.resume);
-    await press(t.correct);
-    await check("countdown overview with a time");
-
-    // The second team lets its whole account run out, so the first team wins.
-    await press(countdown.start);
-    await page.clock.fastForward(400_000);
-    await page.getByRole("status").first().waitFor();
-    await check("countdown result");
-  }
-  expect(problems, problems.join("\n")).toEqual([]);
-});
+    expect(problems, problems.join("\n")).toEqual([]);
+  });
 
 const switchLabels = {
   en: { change: "Team change", auto: "Automatic", manual: "Manual" },
   de: { change: "Teamwechsel", auto: "Automatisch", manual: "Manuell" },
 } as const;
 
-test("the countdown with the automatic team change fits a small phone", async ({
-  page,
-}, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
-  const problems: string[] = [];
-  for (const language of ["en", "de"] as const) {
-    const t = labels[language];
-    const countdown = countdownLabels[language];
-    const change = switchLabels[language];
-    await page.setViewportSize({ width: 360, height: 640 });
-    await page.clock.install();
-    await page.addInitScript(() => {
-      Math.random = () => 0.99;
-    });
-    await page.goto("/");
-    if (language === "de") {
-      await page.getByRole("button", { name: labels.en.settings }).click();
-      await page
-        .getByRole("group", { name: labels.en.interfaceLanguage })
-        .getByRole("radio", { name: "German" })
-        .check({ force: true });
-      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
-    }
-    const check = async (screen: string) =>
-      problems.push(...(await audit(page, `${language} ${screen}`)));
-    const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
+for (const size of smallPhones)
+  test(`the countdown with the automatic team change fits a small phone (${size.name})`, async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+    const problems: string[] = [];
+    for (const language of ["en", "de"] as const) {
+      const t = labels[language];
+      const countdown = countdownLabels[language];
+      const change = switchLabels[language];
+      await page.setViewportSize({ width: size.width, height: size.height });
+      await page.clock.install();
+      await page.addInitScript(() => {
+        Math.random = () => 0.99;
+      });
+      await page.goto("/");
+      if (language === "de") {
+        await page.getByRole("button", { name: labels.en.settings }).click();
+        await page
+          .getByRole("group", { name: labels.en.interfaceLanguage })
+          .getByRole("radio", { name: "German" })
+          .check({ force: true });
+        await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+      }
+      const check = async (screen: string) =>
+        problems.push(...(await audit(page, `${language} ${screen}`)));
+      const press = (name: string) =>
+        page.getByRole("button", { name, exact: true }).first().click();
 
-    await press(t.open);
-    await press(t.settingsTab);
-    const mode = page.getByRole("group", { name: countdown.mode });
-    await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
-    await mode.getByRole("radio", { name: countdown.countdown }).check({ force: true });
-    await page
-      .getByRole("group", { name: change.change })
-      .getByRole("radio", { name: change.auto })
-      .check({ force: true });
-    await check("countdown setup with the team change");
-    await press(t.done);
-    await press(t.startGame);
-    await press(countdown.start);
-    await check("running countdown with all accounts");
-    await press(t.pause);
-    await check("paused countdown with all accounts");
-    await press(t.resume);
-    await press(t.correct);
-    await check("countdown after the automatic change");
-  }
-  expect(problems, problems.join("\n")).toEqual([]);
-});
+      await press(t.open);
+      await press(t.settingsTab);
+      const mode = page.getByRole("group", { name: countdown.mode });
+      await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
+      await mode
+        .getByRole("radio", { name: countdown.countdown })
+        .evaluate((element) => (element as HTMLInputElement).click());
+      await page
+        .getByRole("group", { name: change.change })
+        .getByRole("radio", { name: change.auto })
+        .evaluate((element) => (element as HTMLInputElement).click());
+      await check("countdown setup with the team change");
+      await press(t.done);
+      await press(t.startGame);
+      await press(countdown.start);
+      await check("running countdown with all accounts");
+      await press(t.pause);
+      await check("paused countdown with all accounts");
+      await press(t.resume);
+      await press(t.correct);
+      await check("countdown after the automatic change");
+    }
+    expect(problems, problems.join("\n")).toEqual([]);
+  });

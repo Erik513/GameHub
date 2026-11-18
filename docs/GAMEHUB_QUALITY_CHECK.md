@@ -15,7 +15,7 @@ Ein Skript hat den Importgraphen aller Produktionsdateien aufgebaut:
 - **0 Schichtverstöße.** `business` importiert nichts von außerhalb und kein React, `i18next` oder Browser-API; kein Spiel importiert ein anderes Spiel; `data` und `infrastructure` kennen keine Oberfläche; die Oberfläche importiert nie direkt `data` oder `infrastructure`; `game-kit` und `components` hängen von keinem Spiel ab. `scripts/check-business-boundaries.mjs` ist grün.
 - **0 Importzyklen.**
 - **Abhängigkeiten schlank:** vier Laufzeitpakete (`react`, `react-dom`, `i18next`, `react-i18next`), keines ungenutzt. Paket `dist`: 750 KB, Hauptdatei 440 KB (etwa 135 KB gepackt), die Kartenpools laden erst bei Bedarf.
-- **Kein toter Code von Bedeutung.** Ungenutzte Exporte gibt es nur in der bewusst abgeschalteten KI-Kette (Ollama-Anbieter, lokaler Rückfall, Pool-Erzeugung und -Prüfung, `ADR-024`, `Al-10-03`). Keine `any`, keine `@ts-ignore`, keine `eslint-disable`, kein `TODO`, kein `innerHTML`; ein einziger `console.warn` (Offline-Fehler in `main.tsx`). Zufall wird überall eingespeist (`random`-Parameter), die Logik ist deterministisch testbar.
+- **Kein toter Code von Bedeutung.** Ungenutzte Exporte gibt es nur in der bewusst abgeschalteten KI-Kette (Ollama-Anbieter, lokaler Rückfall, Pool-Erzeugung und -Prüfung, `ADR-024`). Keine `any`, keine `@ts-ignore`, keine `eslint-disable`, kein `TODO`, kein `innerHTML`; ein einziger `console.warn` (Offline-Fehler in `main.tsx`). Zufall wird überall eingespeist (`random`-Parameter), die Logik ist deterministisch testbar.
 
 ### 2. Befunde (nach Dringlichkeit)
 
@@ -117,7 +117,7 @@ Neu im `game-kit` (für jedes Spiel): `RulesDialog` und `RulesButton` (ein Regel
 
 ## 5. Kartenquelle „KI“ (abgeschaltet, `ADR-024`)
 
-**Entscheidung des Auftraggebers (2026-11-13):** Die KI-Einstellung wird vorerst ignoriert und ist nicht mehr auswählbar. Gespielt werden nur die mitgelieferten und die eigenen Karten. `main.tsx` verdrahtet keinen Generator mehr; der Code (Adapter, Prüfung, Planung, Nachladen) bleibt ungenutzt im Projekt, bis `Al-10-03` entschieden ist.
+**Entscheidung des Auftraggebers (2026-11-13):** Die KI-Einstellung wird vorerst ignoriert und ist nicht mehr auswählbar. Gespielt werden nur die mitgelieferten und die eigenen Karten. `main.tsx` verdrahtet keinen Generator mehr; der Code (Adapter, Prüfung, Planung, Nachladen) bleibt ungenutzt im Projekt, bis eine Aufräumrunde es entfernt.
 
 Stand der Prüfung davor:
 
@@ -129,7 +129,6 @@ Stand der Prüfung davor:
 ## 6. Offen (Folgeaufgaben)
 
 - `Al-10-02`: Den Container `TabooSetup.tsx` (597 Zeilen) weiter aufteilen: `startGame` (Kartenaufbereitung, Erzeugung, Prüfung) und Pause/Neustart als Hooks.
-- `Al-10-03`: Die KI-Kartenquelle später wieder anschließen (Anbieter wählen: Ollama oder LM Studio); bis dahin ungenutzter Code, den man bei einer Aufräumrunde auch entfernen kann.
 - Die mobile Layout-Prüfung im Browser (`e2e`) lief in dieser Sitzung nicht (`pnpm` fehlt in der Shell); sie ist vor dem nächsten Commit-Block auszuführen.
 
 ## Zahlen

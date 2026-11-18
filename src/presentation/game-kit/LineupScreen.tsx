@@ -1,6 +1,7 @@
 import type { FormEventHandler, ReactNode } from "react";
 import { Button } from "../components";
 import { StartBar } from "./StartBar";
+import { useFocusOnShow } from "./useFocusOnShow";
 
 interface LineupScreenProps {
   /** Accessible name of the screen, for example "Line-up". */
@@ -33,8 +34,14 @@ export function LineupScreen({
   startDisabled = false,
   startLabel,
 }: LineupScreenProps) {
+  const focus = useFocusOnShow<HTMLElement>();
   return (
-    <section aria-label={ariaLabel} className="kit-lineup kit-onepage">
+    <section
+      aria-label={ariaLabel}
+      className="kit-lineup kit-onepage focus-target"
+      ref={focus}
+      tabIndex={-1}
+    >
       {messages}
       <form id={formId} noValidate onSubmit={onSubmit}>
         {children}
