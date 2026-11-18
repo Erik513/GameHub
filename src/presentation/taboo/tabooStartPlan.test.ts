@@ -20,6 +20,7 @@ const classic: TabooSettings = {
   raceRounds: 3,
   raceTiebreak: true,
   raceTarget: 5,
+  rememberPlayed: true,
   rounds: 3,
   skips: 1,
   tiebreak: true,

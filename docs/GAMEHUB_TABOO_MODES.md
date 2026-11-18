@@ -94,7 +94,7 @@ Nach jedem Schritt gilt: alle Tests, Typen, ESLint, Prettier, Schichtprüfung un
 
 ## 6. Offene Bestätigungen (Annahmen)
 
-Diese Punkte hat der Auftraggeber nicht ausdrücklich entschieden:
+**Der Auftraggeber hat am 2026-11-18 alle Punkte dieses Abschnitts bestätigt** (Annahmen 2, 3 und 5 zu „Gegen die Zeit“, keine Ergebniskorrektur dort und die gleiche Schwierigkeit im n-ten Zug für alle Teams). Die Liste bleibt als Begründung stehen:
 
 1. **Zielzahl bei Auf Zeit:** Auswahl 3, 5 oder 7 pro Team und Runde; Standard 3 (vom Auftraggeber festgelegt, zuerst 5, 10, 15).
 2. **Verbotenes Wort bei Auf Zeit und Gegen die Zeit:** Karte wird ersetzt und zählt nicht, die Uhr läuft weiter (also keine zusätzliche Zeitstrafe)?

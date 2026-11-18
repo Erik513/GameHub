@@ -14,6 +14,7 @@ import { useGameBack, useGameExit } from "../GameChrome";
 import { TabooClassicScreens } from "./TabooClassicScreens";
 import type { TabooGenerators } from "./TabooGeneration";
 import { TabooLineup } from "./TabooLineup";
+import { usePlayedCards } from "./usePlayedCards";
 import { TabooCountdownGame } from "./TabooCountdownGame";
 import { TabooRaceGame } from "./TabooRaceGame";
 import { TabooSetupForm } from "./TabooSetupForm";
@@ -78,6 +79,7 @@ export function TabooSetup({
     setIssues,
   });
   const game = useTabooClassicGame({ cardLanguage, cards, generators });
+  const played = usePlayedCards(cardLanguage);
   const { round, session, setSession } = game;
   const start = useTabooStart({
     cardLanguage,
@@ -87,12 +89,24 @@ export function TabooSetup({
     game,
     generators,
     notifyLineup,
+    played,
     readSettings: settings.readSettings,
     setIssues,
     setCountdownSession,
     setRaceSession,
     teamSetup,
   });
+
+  // The cards of the classic game are remembered as they are shown.
+  const classicState = game.round?.state;
+  useEffect(() => {
+    if (!classicState || !("resolvedCardIds" in classicState)) return;
+    played.remember(
+      classicState.status === "roundRunning"
+        ? [...classicState.resolvedCardIds, classicState.card.id]
+        : classicState.resolvedCardIds,
+    );
+  }, [classicState, played]);
 
   /** A new setup: an empty line-up and the settings as they start. */
   function startOver() {
@@ -233,6 +247,7 @@ export function TabooSetup({
         <TabooCountdownGame
           difficulties={countdownSession.difficulties}
           initial={countdownSession.state}
+          onCardsPlayed={played.remember}
           key={`countdown-${countdownSession.key}`}
           onExit={() => setCountdownSession(undefined)}
           onNewSetup={() => restartCountdown(false)}
@@ -245,6 +260,7 @@ export function TabooSetup({
           cards={cards}
           difficulties={raceSession.difficulties}
           initial={raceSession.state}
+          onCardsPlayed={played.remember}
           key={`race-${raceSession.key}`}
           onExit={() => setRaceSession(undefined)}
           onNewSetup={() => restartRace(false)}
@@ -271,6 +287,7 @@ export function TabooSetup({
           menuTab={settings.menuTab}
           mode={settings.mode}
           onCardLanguageChange={onCardLanguageChange}
+          playedCards={played}
           onMenuTabChange={settings.setMenuTab}
           onChange={handleFormChange}
           onModeChange={(next) => {

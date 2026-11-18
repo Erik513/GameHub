@@ -149,6 +149,8 @@ export interface TabooSettings {
   readonly mode: TabooMode;
   /** Rounds of the mode "Auf Zeit": every team plays one run per round. */
   readonly raceRounds: number;
+  /** Whether the cards of the game are remembered, so new games prefer unplayed ones. */
+  readonly rememberPlayed: boolean;
   /** Whether a tie of the race is decided by a tiebreak. */
   readonly raceTiebreak: boolean;
   readonly raceTarget: number;
@@ -190,6 +192,7 @@ export function readTabooSettings(
       Number.isSafeInteger(raceRounds) && raceRounds >= 1 ? raceRounds : defaultRaceRounds,
     raceTarget: Number(data.get("raceTarget")),
     raceTiebreak: data.get("raceTiebreak") !== "off",
+    rememberPlayed: data.get("rememberPlayed") !== "off",
     rounds: rounds === "unlimited" ? "unlimited" : Number(rounds),
     skips: skips === "unlimited" || skips === null ? undefined : Number(skips),
     tiebreak: data.get("tiebreak") !== "off",

@@ -241,6 +241,7 @@ export const tabooTexts = {
         "Local only: the cards that come with the app, also offline.\nAI only: the local AI makes the cards.\nBoth: mixed.",
       tiebreak:
         "On a tie the teams play 3 cards in 90 seconds.\nMore hits win, then the faster time.",
+      rememberPlayed: "New games prefer cards you have not played yet.",
       skips: "How often a team may skip a card per round.",
       difficulty: "How hard a card is to explain.",
     },
@@ -249,6 +250,9 @@ export const tabooTexts = {
     raceTarget: "Cards per team per round",
     countdownBudget: "Time per team",
     countdownBudgetUnit: "min",
+    rememberPlayed: "Remember played cards",
+    resetPlayed: "Forget played cards ({{count}})",
+    resetPlayedConfirm: "Tap again to forget",
     countdownSwitch: "Team change",
     countdownSwitchOptions: {
       manual: "Manual",

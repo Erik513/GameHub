@@ -242,6 +242,7 @@ export const tabooTexts = {
         "Nur lokal: Karten aus der App, auch ohne Internet.\nNur KI: Die lokale KI macht die Karten.\nBeides: gemischt.",
       tiebreak:
         "Bei Gleichstand spielen die Teams 3 Karten in 90 Sekunden.\nMehr Treffer gewinnen, dann die schnellere Zeit.",
+      rememberPlayed: "Neue Spiele nehmen bevorzugt Karten, die ihr noch nicht gespielt habt.",
       skips: "So oft darf ein Team pro Runde eine Karte überspringen.",
       difficulty: "Wie schwer eine Karte zu erklären ist.",
     },
@@ -250,6 +251,9 @@ export const tabooTexts = {
     raceTarget: "Karten pro Team pro Runde",
     countdownBudget: "Zeit pro Team",
     countdownBudgetUnit: "Min.",
+    rememberPlayed: "Gespielte Karten merken",
+    resetPlayed: "Gespielte Karten vergessen ({{count}})",
+    resetPlayedConfirm: "Nochmal tippen zum Vergessen",
     countdownSwitch: "Teamwechsel",
     countdownSwitchOptions: {
       manual: "Manuell",

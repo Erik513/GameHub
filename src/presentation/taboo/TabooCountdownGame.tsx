@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   countdownRemainingTeams,
@@ -29,6 +29,8 @@ interface TabooCountdownGameProps {
   difficulties: readonly Difficulty[];
   /** The game as it was set up, in the overview before the first turn. */
   initial: CountdownState;
+  /** Tells which cards were shown, so they can be remembered. */
+  onCardsPlayed?: (ids: readonly string[]) => void;
   /** Leaves the game and returns to the main menu with the setup still filled in. */
   onExit: () => void;
   onNewSetup: () => void;
@@ -45,6 +47,7 @@ interface TabooCountdownGameProps {
 export function TabooCountdownGame({
   difficulties,
   initial,
+  onCardsPlayed,
   onExit,
   onNewSetup,
   onSameSetup,
@@ -98,6 +101,10 @@ export function TabooCountdownGame({
       notifyDropped(out === undefined ? "" : (next.configuration.teams[out]?.name ?? ""));
     }
   }
+
+  useEffect(() => {
+    onCardsPlayed?.(state.usedCardIds);
+  }, [onCardsPlayed, state.usedCardIds]);
 
   const togglePause = useCallback(() => {
     setClock((current) => {

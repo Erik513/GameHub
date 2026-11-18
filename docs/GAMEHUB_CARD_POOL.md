@@ -74,7 +74,7 @@ Die größte Gefahr ist nicht die Menge, sondern schlechte Karten (siehe Test mi
 
 **Noch offen (nicht blockierend):**
 
-5. **Gespielte Karten merken** (Punkt 7 im Aufbau): später entscheiden. `Ta-09-06` bleibt eine optionale Aufgabe.
+5. **Gespielte Karten merken** (Punkt 7 im Aufbau): am 2026-11-18 umgesetzt (`Ta-09-06`), siehe unten.
 
 ## 7. Aufgaben (Vorschlag)
 
@@ -86,6 +86,8 @@ Die größte Gefahr ist nicht die Menge, sondern schlechte Karten (siehe Test mi
 | Ta-09-04 | Prüfwerkzeug (zweiter KI-Durchgang und Durchsicht), Regelliste. |
 | Ta-09-05 | Pool in Etappen erzeugen, prüfen und einbauen (zuerst eine Kategorie als Probelauf). |
 | Ta-09-06 | Optional: gespielte Karten merken. |
+
+**Gespielte Karten merken (umgesetzt am 2026-11-18, `Ta-09-06`):** Das Spiel merkt sich je Kartensprache die Kennungen der Karten, die in einem Spiel gezeigt wurden (Klassisch, Auf Zeit, Gegen die Zeit; das Stechen nicht). Ein neues Spiel nimmt bevorzugt **Karten, die noch nicht gespielt wurden**. Reichen die ungespielten Karten für das Spiel nicht (bei „Auf Zeit“ und „Gegen die Zeit“ prüft das die Kartenzahl je Schwierigkeit), beginnt ein **neuer Durchgang**: die gemerkten Karten dieses Spiels gelten wieder als ungespielt und alle Karten sind im Spiel; ein Spiel scheitert nie am Gedächtnis. **Einstellung** im Reiter „Kategorien“: „Gespielte Karten merken“ (An/Aus, Standard An, mit Info-Knopf) und der Knopf „Gespielte Karten vergessen (n)“ mit Bestätigung durch zweites Tippen. Gespeichert wird im `localStorage` unter `gamehub.taboo.playedCards` (höchstens 5000 Kennungen je Sprache, die ältesten fallen zuerst heraus); die Geschäftslogik kennt nur den Port `PlayedCardsStore` (`playedCards.ts`), der Adapter liegt in `src/infrastructure/localStoragePlayedCardsStore.ts`. Es werden nur Kennungen gespeichert, keine Namen oder Spielstände.
 
 Reihenfolge: 01, dann 02 und 03 unabhängig, dann 04, 05 zum Schluss, 06 nur auf Wunsch.
 

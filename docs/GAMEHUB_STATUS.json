@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T18:17:29.010Z",
+    "updatedAt": "2026-11-18T18:29:00.737Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 118,
+      "completedTasks": 119,
       "totalTasks": 193,
-      "percent": 61.1
+      "percent": 61.7
     }
   },
   "environment": {
@@ -849,7 +849,7 @@
       "id": "Ta-09",
       "name": "Großer Kartenpool für Tabu",
       "area": "taboo",
-      "status": "in_progress",
+      "status": "done",
       "tasks": [
         {
           "id": "Ta-09-01",
@@ -879,7 +879,7 @@
         {
           "id": "Ta-09-06",
           "title": "Optional: gespielte Karten merken",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Ta-09-07",
@@ -1326,6 +1326,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-18",
+      "summary": "Gespielte Karten merken (Ta-09-06): je Kartensprache im Browser, neue Spiele bevorzugen ungespielte Karten und beginnen bei Bedarf einen neuen Durchgang; Einstellung und Knopf zum Vergessen. Alle offenen Punkte zu Gegen die Zeit vom Auftraggeber bestätigt."
+    },
     {
       "date": "2026-11-18",
       "summary": "Stechen bei jedem Gleichstand ab zwei Teams (Al-10-06, Entscheidung des Auftraggebers): keine Obergrenze mehr; ohne Stechen gewinnen die gleichen Teams gemeinsam."
@@ -2019,8 +2023,8 @@
         "purpose": "Rollenverteilung sowie Nacht, Morgen, Tag, Abstimmung und Ergebnis."
       }
     ],
-    "proposal": "Erster Vorschlag für die Hauptansicht: Mitspieler und Erzähler, kompakte Einrichtungsvorschau, Konfiguration und Regeln öffnen sowie Spiel starten. Details werden gemeinsam bestätigt.",
-    "open": "Zur Abstimmung: Sitzreihenfolge bereits in der Hauptansicht oder erst beim Start? Erzählerauswahl und weitere Übergänge werden anschließend geklärt.",
+    "proposal": "Bestätigt: Spieler- und Sitzplatzreiter, Kreisübersicht mit Anfangsbuchstaben und Namensfenster durch Gedrückthalten. Spiel starten, Spieleinstellungen und Spielanleitung sind gemeinsame Standardaktionen. Die konkrete Anordnung bleibt noch abzustimmen.",
+    "open": "Werwolf-spezifisch noch zu klären: Erzählerauswahl, Umsortieren und Teilnehmeränderungen in der Sitzordnung, Einrichtungsvorschau, Namensfenster-Details sowie Fortsetzen/Neustart. Vorbereitungsdaten beim Ansichtswechsel erhalten.",
     "document": "GAMEHUB_WERWOLF_UI.md"
   }
 }

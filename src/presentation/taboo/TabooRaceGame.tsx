@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Difficulty, TabooCard } from "../../business/games/taboo/model";
 import {
@@ -35,6 +35,8 @@ interface TabooRaceGameProps {
   difficulties: readonly Difficulty[];
   /** The game as it was set up, in the overview before the first run. */
   initial: RaceState;
+  /** Tells which cards were shown, so they can be remembered. */
+  onCardsPlayed?: (ids: readonly string[]) => void;
   /** Leaves the game and returns to the main menu with the setup still filled in. */
   onExit: () => void;
   onNewSetup: () => void;
@@ -52,6 +54,7 @@ export function TabooRaceGame({
   cards,
   difficulties,
   initial,
+  onCardsPlayed,
   onExit,
   onNewSetup,
   onSameSetup,
@@ -66,6 +69,10 @@ export function TabooRaceGame({
 
   // The last run is checked on an overview first; the final screen shows only the result.
   const [resultShown, setResultShown] = useState(false);
+
+  useEffect(() => {
+    onCardsPlayed?.([...racePlayedCardIds(state)]);
+  }, [onCardsPlayed, state]);
 
   const dispatch = useCallback((event: RaceEvent) => {
     setState((current) => transitionRace(current, event));

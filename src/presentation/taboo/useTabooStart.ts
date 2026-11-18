@@ -10,6 +10,7 @@ import { shuffle } from "../../business/shared/shuffle";
 import { buildTeams, type TeamSetupValue } from "../../business/shared/teamSetup";
 import type { SupportedLanguage } from "../../i18n";
 import { useTeamSetupMemory } from "../game-kit";
+import type { PlayedCards } from "./usePlayedCards";
 import { generateHiddenCards, type TabooGenerators } from "./TabooGeneration";
 import {
   cardShortageFor,
@@ -32,6 +33,8 @@ interface StartOptions {
   readonly generators: TabooGenerators | undefined;
   /** Tells the player that the line-up cannot start (too few players and so on). */
   readonly notifyLineup: (issue: LineupIssue) => void;
+  /** The memory for the played cards: new games prefer cards that were not played yet. */
+  readonly played: PlayedCards;
   /** The settings as the form holds them; nothing when they are incomplete (the form says why). */
   readonly readSettings: () => TabooSettings | undefined;
   readonly setIssues: (issues: readonly ValidationIssue[]) => void;
@@ -54,6 +57,7 @@ export function useTabooStart({
   game,
   generators,
   notifyLineup,
+  played,
   readSettings,
   setIssues,
   setCountdownSession,
@@ -91,6 +95,7 @@ export function useTabooStart({
     game.setDeckEmpty(false);
     setShortage(undefined);
     game.setSession(undefined);
+    played.begin(settings.rememberPlayed);
     const reusable = replayDeck.current;
     replayDeck.current = undefined;
     const teams = buildTeams(resolveLineup(tabooLineup, teamSetup), {
@@ -143,7 +148,11 @@ export function useTabooStart({
         setGenerationEmpty(additions.length === 0);
       }
       const pool = plan.cardSource === "ai" ? additions : [...cards, ...additions];
-      deck = buildDeck(pool, plan.filters, Math.random).cards;
+      // Cards that were not played yet come first; when they are not enough the cards start anew.
+      deck = played.choose(
+        buildDeck(pool, plan.filters, Math.random).cards,
+        (candidates) => !cardShortageFor(plan, candidates),
+      );
     }
     const missing = cardShortageFor(plan, deck);
     if (missing) {

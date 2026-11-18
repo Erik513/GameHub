@@ -16,7 +16,8 @@ import type { SupportedLanguage } from "../../i18n";
 import { ChoiceGroup, SetupScreen, SetupTabs, TabPane } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
 import { useGameRulesButton } from "../GameChrome";
-import { Button, Dialog } from "../components";
+import { Button, ConfirmButton, Dialog } from "../components";
+import type { PlayedCards } from "./usePlayedCards";
 import { TabooRulesDialog } from "./TabooRules";
 import { TabooSetupMessages } from "./TabooSetupMessages";
 import {
@@ -47,6 +48,8 @@ interface TabooSetupFormProps {
   issues: readonly ValidationIssue[];
   /** The game mode; the settings below depend on it. */
   mode: TabooMode;
+  /** The memory for the played cards; its setting is only offered when the app has one. */
+  playedCards?: PlayedCards;
   onModeChange: (mode: TabooMode) => void;
   /** The tab of the main menu that is shown: the game settings or the cards. */
   menuTab: string;
@@ -75,6 +78,7 @@ export function TabooSetupForm({
   issues,
   menuTab,
   mode,
+  playedCards,
   onCardLanguageChange,
   onMenuTabChange,
   onChange,
@@ -94,7 +98,10 @@ export function TabooSetupForm({
   const categoryLabel = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);
   const isStandard = (id: string) => categoryInfos.some((info) => info.id === id);
-  const info = (key: "raceTarget" | "cardSource" | "skips" | "difficulty", legend: string) => ({
+  const info = (
+    key: "raceTarget" | "cardSource" | "skips" | "difficulty" | "rememberPlayed",
+    legend: string,
+  ) => ({
     closeLabel: t("settings.close"),
     label: t("tabooSetup.infoLabel", { setting: legend }),
     text: t(`tabooSetup.info.${key}`),
@@ -321,6 +328,29 @@ export function TabooSetupForm({
                     tone: value,
                   }))}
                 />
+                {playedCards?.available && (
+                  <>
+                    <ChoiceGroup
+                      info={info("rememberPlayed", t("tabooSetup.rememberPlayed"))}
+                      legend={t("tabooSetup.rememberPlayed")}
+                      name="rememberPlayed"
+                      initial="on"
+                      options={(["on", "off"] as const).map((value) => ({
+                        value,
+                        label: t(`tabooSetup.tiebreakOptions.${value}`),
+                      }))}
+                    />
+                    {playedCards.count > 0 && (
+                      <ConfirmButton
+                        armedLabel={t("tabooSetup.resetPlayedConfirm")}
+                        idleLabel={t("tabooSetup.resetPlayed", { count: playedCards.count })}
+                        onConfirm={playedCards.reset}
+                      >
+                        {t("tabooSetup.resetPlayed", { count: playedCards.count })}
+                      </ConfirmButton>
+                    )}
+                  </>
+                )}
                 <fieldset className="kit-choice-group">
                   <legend>{t("tabooSetup.categories")}</legend>
                   {(["standard", "own"] as const).map((group) => {

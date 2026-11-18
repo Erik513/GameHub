@@ -11,6 +11,7 @@ import {
   createLocalStorageLanguagePreferenceStore,
 } from "./infrastructure/localStorageLanguagePreferenceStore";
 import { createLocalStoragePlayerRosterStore } from "./infrastructure/localStoragePlayerRosterStore";
+import { createLocalStoragePlayedCardsStore } from "./infrastructure/localStoragePlayedCardsStore";
 import { createLocalStorageTeamSetupMemory } from "./infrastructure/localStorageTeamSetupMemory";
 import { createTabooModule } from "./presentation/taboo/tabooModule";
 import "./presentation/styles/global.css";
@@ -46,6 +47,7 @@ createRoot(rootElement).render(
         createTabooModule({
           cards: tabooStandardCards,
           loadCardPack: loadTabooCardPack,
+          playedCards: createLocalStoragePlayedCardsStore(window.localStorage),
           // The card generators (Ollama, fixed list) are switched off for now: only the cards that
           // come with the app and the player's own cards can be played (docs ADR-024).
           repository: new IndexedDbTabooCardRepository(),
