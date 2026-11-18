@@ -482,7 +482,7 @@ const rulesTexts = {
       text: "The team with the most points wins",
     },
     race: { label: "Info about Race", tab: "Race", text: "The shortest total time wins" },
-    tiebreak: { title: "Tiebreak", text: "the teams play 3 cards in 90 seconds" },
+    tiebreak: { title: "Tiebreak", text: "Each tied team explains 3 cards in at most 90 seconds" },
   },
   de: {
     legend: "Spielmodus",
@@ -497,7 +497,10 @@ const rulesTexts = {
       text: "Das Team mit den meisten Punkten gewinnt",
     },
     race: { label: "Info zu Auf Zeit", tab: "Auf Zeit", text: "Kürzeste Gesamtzeit gewinnt" },
-    tiebreak: { title: "Stechen", text: "spielen die Teams 3 Karten in 90 Sekunden" },
+    tiebreak: {
+      title: "Stechen",
+      text: "Jedes gleichstehende Team erklärt 3 Karten in höchstens 90 Sekunden",
+    },
   },
 } as const;
 
@@ -551,21 +554,20 @@ it.each(["en", "de"] as const)(
 );
 
 it.each(["en", "de"] as const)(
-  "refers from the rules of the classic mode to the tiebreak window in %s",
+  "explains the tiebreak inside the rules, not in a window of its own, in %s",
   async (language) => {
     const { text, user } = await renderSetup(language);
-    // Open the rules through the info button of a game mode, then the tiebreak from the link.
     await user.click(screen.getByRole("button", { name: text.classic.label }));
     await user.click(screen.getByRole("button", { name: text.all }));
     const rules = screen.getByRole("dialog", { name: text.title });
-    await user.click(
-      within(rules).getByRole("button", { name: new RegExp(`^${text.tiebreak.title}$`, "i") }),
-    );
-    // The rules window closes and the tiebreak window takes its place.
-    const tiebreak = screen.getByRole("dialog");
-    expect(tiebreak).toHaveAccessibleName(text.tiebreak.title);
-    expect(tiebreak).toHaveTextContent(text.tiebreak.text);
-    await user.click(within(tiebreak).getByRole("button", { name: text.close }));
+    // The tiebreak is a part of the rules with its own heading and all of its rules.
+    expect(within(rules).getByRole("heading", { name: text.tiebreak.title })).toBeVisible();
+    expect(rules).toHaveTextContent(text.tiebreak.text);
+    // There is no link that leads away to another window.
+    expect(
+      within(rules).queryByRole("button", { name: new RegExp(`^${text.tiebreak.title}$`, "i") }),
+    ).not.toBeInTheDocument();
+    await user.click(within(rules).getByRole("button", { name: text.close }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   },
 );

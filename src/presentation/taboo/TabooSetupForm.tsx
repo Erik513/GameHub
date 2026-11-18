@@ -143,14 +143,7 @@ export function TabooSetupForm({
       onSubmit={onSubmit}
       startLabel={t("tabooSetup.done")}
     >
-      <TabooRulesDialog
-        onClose={() => setRulesOpen(false)}
-        onOpenTiebreak={() => {
-          setRulesOpen(false);
-          setTiebreakOpen(true);
-        }}
-        open={rulesOpen}
-      />
+      <TabooRulesDialog onClose={() => setRulesOpen(false)} open={rulesOpen} />
       <Dialog
         closeLabel={t("settings.close")}
         onClose={() => setModeInfo(undefined)}

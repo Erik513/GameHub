@@ -38,6 +38,10 @@ export const tabooTexts = {
     countdownText:
       "Jedes Team hat ein Zeitkonto, das nur im eigenen Zug läuft. Das letzte Team mit Zeit gewinnt.",
     countdownSkipText: "Jedes Team darf pro Spiel einmal eine Karte überspringen.",
+    tiebreakTitle: "Stechen",
+    tiebreakIntro: "Stehen am Ende mehrere Teams gleichauf, spielen sie ein Stechen.",
+    tiebreakSteps:
+      "Jedes gleichstehende Team erklärt 3 Karten in höchstens 90 Sekunden.\nEin verbotenes Wort zählt als falsch und bringt eine neue Karte.\nEinmal überspringen ist erlaubt.\nDie meisten Karten gewinnen, bei gleicher Zahl die kürzeste Zeit.\nIn den Einstellungen lässt sich das Stechen ausschalten, dann gewinnen die Teams gemeinsam.",
     settingsTitle: "Einstellungen",
     settingsRounds: "wie oft jedes Team dran ist.",
     settingsDuration: "so lange dauert ein Zug.",
@@ -128,7 +132,6 @@ export const tabooTexts = {
     title: "Stechen",
   },
   tabooMode: {
-    tiebreakRule: "Bei Unentschieden gibt es ein <ref>Stechen</ref>.",
     classicInfo: "Mehrere Runden mit Zeit. Die meisten Punkte gewinnen.",
     raceInfo:
       "In jeder Runde löst jedes Team gleich viele Karten. Die kürzeste Gesamtzeit gewinnt.",

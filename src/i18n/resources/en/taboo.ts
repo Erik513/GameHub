@@ -37,6 +37,10 @@ export const tabooTexts = {
     countdownText:
       "Every team has a time account that only runs on its own turn. The last team with time left wins.",
     countdownSkipText: "Each team may skip one card per game.",
+    tiebreakTitle: "Tiebreak",
+    tiebreakIntro: "If several teams are tied at the end, they play off.",
+    tiebreakSteps:
+      "Each tied team explains 3 cards in at most 90 seconds.\nA forbidden word counts as wrong and brings a new card.\nOne skip is allowed.\nThe most cards win, then the shortest time.\nIn the settings the tiebreak can be switched off; then the tied teams win together.",
     settingsTitle: "Settings",
     settingsRounds: "how many rounds each team plays.",
     settingsDuration: "how long a turn lasts.",
@@ -127,7 +131,6 @@ export const tabooTexts = {
     title: "Tiebreak",
   },
   tabooMode: {
-    tiebreakRule: "On a tie there is a <ref>tiebreak</ref>.",
     classicInfo: "Several rounds with a timer. The most points win.",
     raceInfo:
       "In every round each team solves the same number of cards. The shortest total time wins.",

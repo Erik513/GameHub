@@ -37,14 +37,3 @@
 }
 
 /* A reference inside a text that opens another window, for example from the rules to the tiebreak. */
-
-.kit-link-button {
-  min-height: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--color-accent, currentColor);
-  font: inherit;
-  text-decoration: underline;
-  cursor: pointer;
-}

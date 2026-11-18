@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T19:05:35.548Z",
+    "updatedAt": "2026-11-18T19:31:48.755Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 123,
-      "totalTasks": 192,
-      "percent": 64.1
+      "completedTasks": 124,
+      "totalTasks": 193,
+      "percent": 64.2
     }
   },
   "environment": {
@@ -943,6 +943,11 @@
           "id": "Ta-10-10",
           "title": "Spiel aus der Pause beenden: Knopf „Spiel beenden“ auf der Pause-Karte aller Modi",
           "status": "done"
+        },
+        {
+          "id": "Ta-10-11",
+          "title": "Stechen im Regelfenster von Tabu in der Ansicht erklären statt in einem eigenen Fenster",
+          "status": "done"
         }
       ]
     },
@@ -1321,6 +1326,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-18",
+      "summary": "Regelfenster Tabu (Ta-10-11): Das Stechen hat einen eigenen Abschnitt in der Ansicht statt eines separaten Fensters."
+    },
     {
       "date": "2026-11-18",
       "summary": "Layout für 320 Pixel (Al-10-10): Alle Layoutprüfungen laufen jetzt auch bei 320 x 568; die pausierte Karte und die Karte mit der Teamleiste sind auf sehr niedrigen Bildschirmen kompakter und passen ohne Scrollen."
@@ -1787,7 +1796,7 @@
   "werewolfLineupOverview": {
     "note": "Eine Seherin ist immer Pflicht. Die Zeilen bauen aufeinander auf: Bereits freigegebene Rollen und Zusätze bleiben verfügbar. Alle weiteren Rollen sind optional; gewöhnliche Dorfbewohner füllen freie Plätze. Nachprüfungen übernommen: 7 Spieler mit 1–2 Wölfen (Standard 1), 8 mit 1–2 (Standard 2), 9 und 10 immer mit genau 2, 11 mit 2–3 (Standard 2).",
     "constraints": "Leibwächter und Dorfmatratze sind immer Alternativen. Beim Bürgermeister gilt entweder doppelte Stimme oder Hammer. Trunkenbold und Schutzamulett belegen keinen zusätzlichen Rollenplatz; beide sind standardmäßig aus. Alle Auswahlen müssen in die freien Spielerplätze passen.",
-    "wolfPolicy": "Einrichtungslogik abgeschlossen. Variabel: zuerst konkrete Sonderrollen und Items auslosen → dafür die Wolfszahl berechnen → mit Dorfbewohnern auffüllen → Rollen verteilen. Vorher wird nur die Machbarkeit geprüft, ohne Punktebewertung. Es gelten ausschließlich die freigegebenen Wolfszahlen; bei 9 und 10 immer genau zwei.",
+    "wolfPolicy": "Aktuelle UI-Vorgabe: Feste Rollen erlauben manuelle Wahl innerhalb dieser Wolfsgrenzen, mit separater Empfehlung. Variable Rollen bestimmen die Zahl automatisch nach der konkreten Ziehung. Bei mehreren auswählbaren Werten erhält der empfohlene Button einen Rand und darunter „empfohlen“; Einzelwerte bleiben ohne Empfehlungsmarkierung. Der bisher automatische feste Startpfad wird vor UI-Integration in We-03-62 angepasst.",
     "rows": [
       {
         "players": 6,
@@ -2038,8 +2047,8 @@
         "purpose": "Rollenverteilung sowie Nacht, Morgen, Tag, Abstimmung und Ergebnis."
       }
     ],
-    "proposal": "Bestätigt: Umschalter Fest/Variabel mit möglichst gleichem Aufbau. Feste Ansicht oben mit automatischen Werwölfen, Pflicht-Seherin und aufgefüllten Dorfbewohnern; alle Rollen als Buttons sichtbar, nach Mindestspielerzahl gruppiert. Leibwächter/Dorfmatratze gemeinsam auswählen, Dorftrottel separat. Hexe/Magier dynamisch alternativ oder gemeinsam. Amulett/Trunkenbold separat; jede Rolle und jeder Zusatz mit i-Erklärung. Nur dokumentiert.",
-    "open": "Noch zu klären: Position der Rollenvarianten (z. B. Jägerschuss/Gerber-Ziel), genaue Auswahl- und Infofensterbedienung sowie allgemeine Partieoptionen. Hauptansicht: Sortieren/Teilnehmeränderungen, Erzählerwechsel und Namensfenster-Details bleiben offen. Variable Konfiguration folgt später.",
+    "proposal": "Bestätigt: Fest/Variabel-Umschalter, Rollenbuttons und Freigabezeilen, Pflicht-/Füllrollen sowie getrennte Zusätze. Feste Wolfswahl mit kompakter Empfehlung, variable Wolfszahl automatisch. Jäger, Gerber, Bürgermeister und Alte Vettel je über optionalen Variantenbutton: leer = Rolle aus, Variante gewählt = Rolle an. Erster Wolfsangriff und Rollen nach Ausscheiden sind allgemeine Einstellungen. Nur dokumentiert.",
+    "open": "Noch zu gestalten: konkrete Öffnungs-/Wechsel-/Leerbedienung der Auswahlbuttons, Infofenster, Position des allgemeinen Einstellungsblocks sowie Konfliktbedienung. Hauptansicht: Sitzsortierung/Teilnehmeränderungen, Erzählerwechsel und Namensfenster. Variable Konfiguration folgt später. Trennung der allgemeinen und rollenbezogenen Einstellungen ist bestätigt.",
     "document": "GAMEHUB_WERWOLF_UI.md"
   }
 }

@@ -1,11 +1,9 @@
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Dialog } from "../components";
 import { RulesSection } from "../game-kit";
 
 interface TabooRulesDialogProps {
   onClose: () => void;
-  /** Closes the rules and shows the tiebreak window instead; the rules of the classic mode link to it. */
-  onOpenTiebreak: () => void;
   open: boolean;
 }
 
@@ -14,7 +12,7 @@ interface TabooRulesDialogProps {
  * card (with an example), one turn with the three buttons, the game modes and what the settings mean.
  * The info buttons of the settings explain only their own setting, in a sentence or two.
  */
-export function TabooRulesDialog({ onClose, onOpenTiebreak, open }: TabooRulesDialogProps) {
+export function TabooRulesDialog({ onClose, open }: TabooRulesDialogProps) {
   const { t } = useTranslation();
 
   return (
@@ -77,17 +75,7 @@ export function TabooRulesDialog({ onClose, onOpenTiebreak, open }: TabooRulesDi
       <RulesSection title={t("tabooRules.modesTitle")}>
         <ul className="kit-rules-list">
           <li>
-            <strong>{t("tabooMode.classic")}:</strong> {t("tabooRules.classicText")}{" "}
-            <Trans
-              components={{
-                ref: (
-                  <button className="kit-link-button" type="button" onClick={onOpenTiebreak}>
-                    {t("tabooTiebreakInfo.title")}
-                  </button>
-                ),
-              }}
-              i18nKey="tabooMode.tiebreakRule"
-            />
+            <strong>{t("tabooMode.classic")}:</strong> {t("tabooRules.classicText")}
           </li>
           <li>
             <strong>{t("tabooMode.race")}:</strong> {t("tabooRules.raceText")}
@@ -97,6 +85,17 @@ export function TabooRulesDialog({ onClose, onOpenTiebreak, open }: TabooRulesDi
             {t("tabooRules.countdownSkipText")}
           </li>
         </ul>
+      </RulesSection>
+
+      <RulesSection title={t("tabooRules.tiebreakTitle")}>
+        <p>{t("tabooRules.tiebreakIntro")}</p>
+        <ol className="kit-rules-steps">
+          {t("tabooRules.tiebreakSteps")
+            .split("\n")
+            .map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+        </ol>
       </RulesSection>
 
       <RulesSection title={t("tabooRules.settingsTitle")}>
