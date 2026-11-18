@@ -740,6 +740,13 @@
   }
 }
 
+/* A short screen with the extra row of the accounts: the forbidden words take a little less room. */
+@media (max-height: 36rem) {
+  .taboo-round--with-row .taboo-round__card li {
+    min-height: 2.5rem;
+  }
+}
+
 /* The time accounts of all teams in one row above the card (automatic change of teams). */
 .taboo-countdown-strip {
   display: flex;

@@ -8,7 +8,10 @@ export default defineConfig({
   forbidOnly: isContinuousIntegration,
   retries: isContinuousIntegration ? 2 : 0,
   workers: isContinuousIntegration ? 1 : undefined,
-  reporter: [["list"], ["html", { open: "never" }]],
+  // On CI every failed test is also reported as an annotation of the run (readable without the log).
+  reporter: isContinuousIntegration
+    ? [["list"], ["github"], ["html", { open: "never" }]]
+    : [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: "http://127.0.0.1:4173",
     channel: "chrome",
