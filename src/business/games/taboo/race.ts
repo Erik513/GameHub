@@ -42,7 +42,7 @@ export interface RaceConfiguration {
   /** Rounds in which every team plays one run; without it the game has one round. */
   readonly rounds?: number;
   readonly teams: readonly Team[];
-  /** Play a timed tiebreak when 2-3 teams share the win at the end; undefined means off. */
+  /** Play a timed tiebreak when two or more teams share the win at the end; undefined means off. */
   readonly tiebreak?: boolean;
 }
 
@@ -256,7 +256,7 @@ function raceWinnerIds(
 
 /**
  * Whether the game goes on with the tiebreak: all runs are played, the tiebreak is switched on, the
- * win is shared by two or three teams and the tiebreak was not played yet. After a correction of a
+ * win is shared by two or more teams and the tiebreak was not played yet. After a correction of a
  * run the tie can be gone, and then the final result follows.
  */
 export function raceTiebreakFollows(state: RaceState): boolean {

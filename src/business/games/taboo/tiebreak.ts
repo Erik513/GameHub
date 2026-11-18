@@ -10,9 +10,8 @@ import { reviseOutcome, type TabooOutcome, type TabooResult } from "./outcome";
 
 export const TIEBREAK_CARD_COUNT = 3;
 export const TIEBREAK_LIMIT_SECONDS = 90;
-/** A tiebreak is played by two or three teams; with more teams tied the win is shared. */
+/** A tiebreak is played by every tied team, from two up to all teams (decision of 2026-11-18). */
 export const TIEBREAK_MIN_TEAMS = 2;
-export const TIEBREAK_MAX_TEAMS = 3;
 
 export interface TiebreakAttempt {
   readonly teamIndex: number;
@@ -71,9 +70,12 @@ export interface TiebreakContext {
   readonly teams: readonly { readonly id: string }[];
 }
 
-/** Whether `leaders` tied teams are played off in a tiebreak (and not just share the win). */
+/**
+ * Whether `leaders` tied teams are played off in a tiebreak (and not just share the win): two or
+ * more teams, however many. A game with the tiebreak switched off lets them share the win.
+ */
 export function isTiebreakTie(leaders: number): boolean {
-  return leaders >= TIEBREAK_MIN_TEAMS && leaders <= TIEBREAK_MAX_TEAMS;
+  return leaders >= TIEBREAK_MIN_TEAMS;
 }
 
 /** Most cards first, then the shortest time; equal results share the win. */

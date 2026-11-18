@@ -456,15 +456,15 @@ describe("the tiebreak of a tied race", () => {
       { type: "answerTiebreak", outcome: "correct", elapsedMs: timeMs },
     ]);
 
-  it("follows a tie of two or three teams when it is switched on, and nothing else", () => {
+  it("follows a tie of two or more teams when it is switched on, and nothing else", () => {
     expect(raceTiebreakFollows(play([7000, 7000]))).toBe(true);
     expect(raceTiebreakFollows(play([7000, 7040, 9000]))).toBe(true);
     expect(raceTiebreakFollows(play([7000, 7000, 7000]))).toBe(true);
-    // Off, no tie, still running, or four tied teams that just share the win.
+    expect(raceTiebreakFollows(play([7000, 7000, 7000, 7000]))).toBe(true);
+    // Off, no tie or still running.
     expect(raceTiebreakFollows(play([7000, 7000], false))).toBe(false);
     expect(raceTiebreakFollows(play([7000, 8000]))).toBe(false);
     expect(raceTiebreakFollows(setup({ tiebreak: true }))).toBe(false);
-    expect(raceTiebreakFollows(play([7000, 7000, 7000, 7000]))).toBe(false);
   });
 
   it("starts with the tied teams in the playing order, and only when a tie follows", () => {

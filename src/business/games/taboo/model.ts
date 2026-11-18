@@ -23,7 +23,7 @@ export interface GameConfiguration {
   readonly cardLanguage: GameHubLanguage;
   /** Allowed skips per turn; undefined means unlimited. */
   readonly skipsPerRound?: number;
-  /** Play a timed tiebreak when 2-3 teams share the lead at the end; undefined means off. */
+  /** Play a timed tiebreak when two or more teams share the lead at the end; undefined means off. */
   readonly tiebreak?: boolean;
 }
 export interface ValidationIssue {

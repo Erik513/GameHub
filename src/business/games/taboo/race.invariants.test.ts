@@ -80,10 +80,10 @@ function checkInvariants(state: RaceState) {
   if (state.status === "overview") expect(attempts.length).toBeLessThan(teams.length * rounds);
   if (state.status === "tiebreak") {
     const { tiebreak: part } = state;
-    // Two or three teams play off; every run is played.
+    // Two or more teams play off; every run is played.
     expect(attempts).toHaveLength(teams.length * rounds);
     expect(part.contenders.length).toBeGreaterThanOrEqual(2);
-    expect(part.contenders.length).toBeLessThanOrEqual(3);
+    expect(part.contenders.length).toBeLessThanOrEqual(teams.length);
     expect(unique(part.contenders.map(String))).toBe(true);
     expect(part.attempts.map((attempt) => attempt.teamIndex)).toEqual(
       part.contenders.slice(0, part.attempts.length),
@@ -99,7 +99,7 @@ function checkInvariants(state: RaceState) {
     // The tiebreak decided: its winners are the winners, and only tied teams played it.
     expect(state.winnerIds).toEqual(tiebreakWinnerIds(teams, state.tiebreak));
     expect(state.tiebreak.length).toBeGreaterThanOrEqual(2);
-    expect(state.tiebreak.length).toBeLessThanOrEqual(3);
+    expect(state.tiebreak.length).toBeLessThanOrEqual(teams.length);
   } else if (state.status === "finished") {
     expect(attempts).toHaveLength(teams.length * rounds);
     const totals = comparableRaceTotals(raceTotals(configuration, attempts));

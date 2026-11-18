@@ -21,7 +21,6 @@ export { reviseOutcome, type TabooOutcome, type TabooResult } from "./outcome";
 export {
   TIEBREAK_CARD_COUNT,
   TIEBREAK_LIMIT_SECONDS,
-  TIEBREAK_MAX_TEAMS,
   type TiebreakActive,
   type TiebreakAttempt,
   type TiebreakEvent,
@@ -387,7 +386,7 @@ function transitionTiebreak(state: TabooState, event: TiebreakEvent): TabooState
 }
 
 /**
- * Whether ending the game now leads to a tiebreak: the tiebreak is switched on and two or three teams
+ * Whether ending the game now leads to a tiebreak: the tiebreak is switched on and two or more teams
  * share the lead. Otherwise the final result follows.
  */
 export function tiebreakFollows(

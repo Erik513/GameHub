@@ -341,7 +341,7 @@ describe("Taboo state machine", () => {
       return transitionTaboo(tied, { type: "beginTiebreakAttempt", cards });
     }
 
-    it("only plays a tiebreak when enabled and 2-3 teams share the lead", () => {
+    it("only plays a tiebreak when enabled and two or more teams share the lead", () => {
       expect(transitionTaboo(tiedAtTheEnd(), finish)).toMatchObject({
         status: "gameEnded",
         winnerIds: ["a", "b"],
@@ -355,7 +355,13 @@ describe("Taboo state machine", () => {
         status: "tiebreak",
         contenders: [0, 1, 2],
       });
+      // Four or more teams play off, too.
       expect(transitionTaboo(tiedAtTheEnd({ tiebreak: true }, 4), finish)).toMatchObject({
+        status: "tiebreak",
+        contenders: [0, 1, 2, 3],
+      });
+      // Without the tiebreak they share the win.
+      expect(transitionTaboo(tiedAtTheEnd({}, 4), finish)).toMatchObject({
         status: "gameEnded",
         winnerIds: ["a", "b", "c", "d"],
       });
@@ -555,7 +561,7 @@ describe("tiebreakFollows", () => {
   const withTiebreak = { ...configuration, tiebreak: true };
 
   it("tells whether ending the game leads to a tiebreak", () => {
-    // Two or three teams share the lead.
+    // Two or more teams share the lead.
     expect(tiebreakFollows(withTiebreak, [2, 2, 0])).toBe(true);
     expect(tiebreakFollows(withTiebreak, [0, 0, 0])).toBe(true);
     // A single leader wins at once.

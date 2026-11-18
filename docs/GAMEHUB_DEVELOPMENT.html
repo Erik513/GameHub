@@ -172,6 +172,15 @@
         <section class="grid" aria-label="Projektübersicht">
           <nav id="dashboard-tabs" class="dashboard-tabs" aria-label="Aufgabenbereiche"></nav>
 
+          <article id="werewolf-ui-plan" class="card full" aria-labelledby="werewolf-ui-heading" hidden>
+            <h2 id="werewolf-ui-heading">UI-Planung für Werwolf</h2>
+            <p id="werewolf-ui-stage" class="lineup-note"></p>
+            <ul id="werewolf-ui-views" class="list"></ul>
+            <p id="werewolf-ui-proposal" class="lineup-note" style="margin-top: 14px"></p>
+            <p id="werewolf-ui-open" class="lineup-note"></p>
+            <p class="stage-note"><a id="werewolf-ui-document" href="./GAMEHUB_WERWOLF_UI.md">UI-Spezifikation und Übergabe für Claude Code</a></p>
+          </article>
+
           <article id="werewolf-lineup-overview" class="card full" aria-labelledby="werewolf-lineup-heading" hidden>
             <h2 id="werewolf-lineup-heading">Rollen und Wolfszahlen · 6–20 Spieler</h2>
             <p id="werewolf-lineup-note" class="lineup-note"></p>
@@ -228,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T18:08:25.108Z",
+    "updatedAt": "2026-11-18T18:17:29.010Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -237,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 117,
+      "completedTasks": 118,
       "totalTasks": 193,
-      "percent": 60.6
+      "percent": 61.1
     }
   },
   "environment": {
@@ -655,7 +664,7 @@
         {
           "id": "Al-10-06",
           "title": "Stechen bei vier oder mehr gleichen Teams: Regel entscheiden und im Regeltext erklären",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-10-07",
@@ -1552,6 +1561,10 @@
   "recentChanges": [
     {
       "date": "2026-11-18",
+      "summary": "Stechen bei jedem Gleichstand ab zwei Teams (Al-10-06, Entscheidung des Auftraggebers): keine Obergrenze mehr; ohne Stechen gewinnen die gleichen Teams gemeinsam."
+    },
+    {
+      "date": "2026-11-18",
       "summary": "Gegen die Zeit: Zeit pro Team 2, 3 und 4 Minuten statt 2, 3 und 5 (Ta-06-12)."
     },
     {
@@ -2218,6 +2231,30 @@
         "recommendedWolves": 4
       }
     ]
+  },
+  "werewolfUiPlan": {
+    "title": "UI-Planung für Werwolf",
+    "stage": "Gemeinsam zuerst die Hauptansicht planen, danach die Konfiguration und anschließend den Spielablauf.",
+    "views": [
+      {
+        "name": "Hauptansicht",
+        "status": "Wird zuerst geplant",
+        "purpose": "Einstieg nach Auswahl von Werwolf und Ausgangspunkt zur Vorbereitung."
+      },
+      {
+        "name": "Konfiguration",
+        "status": "Wird danach geplant",
+        "purpose": "Rollen, Items und Partieeinstellungen festlegen."
+      },
+      {
+        "name": "Spielablauf",
+        "status": "Wird anschließend geplant",
+        "purpose": "Rollenverteilung sowie Nacht, Morgen, Tag, Abstimmung und Ergebnis."
+      }
+    ],
+    "proposal": "Erster Vorschlag für die Hauptansicht: Mitspieler und Erzähler, kompakte Einrichtungsvorschau, Konfiguration und Regeln öffnen sowie Spiel starten. Details werden gemeinsam bestätigt.",
+    "open": "Zur Abstimmung: Sitzreihenfolge bereits in der Hauptansicht oder erst beim Start? Erzählerauswahl und weitere Übergänge werden anschließend geklärt.",
+    "document": "GAMEHUB_WERWOLF_UI.md"
   }
 };
       const REFRESH_INTERVAL_MS = 20_000;
@@ -2402,6 +2439,18 @@
         document.querySelector(selector).innerHTML = items.length ? items.map(template).join("") : `<li class="empty">${escapeHtml(emptyText)}</li>`;
       }
 
+      function renderWerewolfUiPlan(data) {
+        const plan = data.werewolfUiPlan;
+        const panel = document.querySelector("#werewolf-ui-plan");
+        panel.hidden = activeView !== "werewolf" || !plan;
+        if (panel.hidden) return;
+        document.querySelector("#werewolf-ui-stage").textContent = plan.stage;
+        document.querySelector("#werewolf-ui-views").innerHTML = plan.views.map((view) => `<li><strong>${escapeHtml(view.name)}</strong> · ${escapeHtml(view.status)}<br>${escapeHtml(view.purpose)}</li>`).join("");
+        document.querySelector("#werewolf-ui-proposal").textContent = plan.proposal;
+        document.querySelector("#werewolf-ui-open").textContent = plan.open;
+        document.querySelector("#werewolf-ui-document").href = `./${encodeURIComponent(plan.document)}`;
+      }
+
       function renderWerewolfLineup(data) {
         const overview = data.werewolfLineupOverview;
         const panel = document.querySelector("#werewolf-lineup-overview");
@@ -2421,6 +2470,7 @@
         const view = views.find(({ id }) => id === activeView) ?? views[0];
         activeView = view.id;
         renderWerewolfLineup(data);
+        renderWerewolfUiPlan(data);
         const isGeneral = activeView === "general";
         for (const element of document.querySelectorAll("[data-general-only]")) {
           element.hidden = !isGeneral;

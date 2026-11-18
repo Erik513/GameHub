@@ -17,7 +17,7 @@ Bezug: `docs/GAMEHUB_TABOO_LOGIC.md` (klassischer Modus), `docs/GAMEHUB_UI_RULES
 
 Kurz: Wer die Zielzahl Karten am schnellsten löst, gewinnt.
 
-**Einstellungen (Stand 2026-11-17):** **Runden pro Team** (1, 3 oder 5 mit den Namen Kurz, Mittel, Lang, Standard Kurz; in jeder Runde spielt jedes Team einen Lauf, es gewinnt die kürzeste **Gesamtzeit**), **Karten pro Team pro Runde** (3, 5 oder 7, Standard 3) und **Stechen bei Gleichstand** (An/Aus, Standard An; bei zwei oder drei gleichen Teams spielt jedes drei Karten so schnell wie möglich wie bei Klassisch). In jedem Lauf kommen die Karten von leicht nach schwer. Die Gruppen stehen in der Reihenfolge von Klassisch. Entscheidungen des Auftraggebers.
+**Einstellungen (Stand 2026-11-17):** **Runden pro Team** (1, 3 oder 5 mit den Namen Kurz, Mittel, Lang, Standard Kurz; in jeder Runde spielt jedes Team einen Lauf, es gewinnt die kürzeste **Gesamtzeit**), **Karten pro Team pro Runde** (3, 5 oder 7, Standard 3) und **Stechen bei Gleichstand** (An/Aus, Standard An; bei zwei oder mehr gleichen Teams spielt jedes drei Karten so schnell wie möglich wie bei Klassisch). In jedem Lauf kommen die Karten von leicht nach schwer. Die Gruppen stehen in der Reihenfolge von Klassisch. Entscheidungen des Auftraggebers.
 
 **Ablauf:**
 

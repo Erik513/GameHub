@@ -7,7 +7,7 @@ Dieses Dokument beschreibt die Regeln der Zustandsmaschine (`src/business/games/
 `setup` → `roundRunning` → `roundEnded` → (`roundRunning` | `gameEnded` | `tiebreak`) → `gameEnded`
 
 - Ergebnisse korrigieren: Im Stechen speichert jeder Versuch alle Karten mit ihrem Ergebnis (`results`). Das Ereignis `reviseTiebreakResult` ändert eine Karte zwischen richtig und falsch (verbotenes Wort), solange kein Versuch läuft, auch nach dem Spielende. Gewertet werden neu berechnet: Anzahl richtiger Karten (höchstens 3), danach die Zeit; die Sieger werden neu bestimmt. Übersprungene Karten bleiben unverändert. Im Modus „Auf Zeit“ gilt dasselbe mit `reviseRunResult`: Eine auf falsch korrigierte Karte zählt nicht; das Team hat dann weniger Karten geschafft und steht hinter allen Teams mit mehr Karten, bei gleich vielen entscheidet die Zeit. Es gibt keine Zeitstrafe.
-- `tiebreak` entsteht nur aus `roundEnded`, wenn `tiebreak` aktiv ist und zwei bis drei Teams gleichauf führen.
+- `tiebreak` entsteht nur aus `roundEnded`, wenn `tiebreak` aktiv ist und **zwei oder mehr** Teams gleichauf führen (seit 2026-11-18 ohne Obergrenze, Entscheidung `Al-10-06`).
 - `gameEnded` ist endgültig: Jedes weitere Ereignis liefert denselben Zustand zurück.
 - Jedes unzulässige oder ungültige Ereignis liefert exakt dasselbe Zustandsobjekt zurück (keine Teiländerung).
 

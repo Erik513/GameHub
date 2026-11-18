@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T18:08:25.108Z",
+    "updatedAt": "2026-11-18T18:17:29.010Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 117,
+      "completedTasks": 118,
       "totalTasks": 193,
-      "percent": 60.6
+      "percent": 61.1
     }
   },
   "environment": {
@@ -431,7 +431,7 @@
         {
           "id": "Al-10-06",
           "title": "Stechen bei vier oder mehr gleichen Teams: Regel entscheiden und im Regeltext erklären",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-10-07",
@@ -1328,6 +1328,10 @@
   "recentChanges": [
     {
       "date": "2026-11-18",
+      "summary": "Stechen bei jedem Gleichstand ab zwei Teams (Al-10-06, Entscheidung des Auftraggebers): keine Obergrenze mehr; ohne Stechen gewinnen die gleichen Teams gemeinsam."
+    },
+    {
+      "date": "2026-11-18",
       "summary": "Gegen die Zeit: Zeit pro Team 2, 3 und 4 Minuten statt 2, 3 und 5 (Ta-06-12)."
     },
     {
@@ -1994,5 +1998,29 @@
         "recommendedWolves": 4
       }
     ]
+  },
+  "werewolfUiPlan": {
+    "title": "UI-Planung für Werwolf",
+    "stage": "Gemeinsam zuerst die Hauptansicht planen, danach die Konfiguration und anschließend den Spielablauf.",
+    "views": [
+      {
+        "name": "Hauptansicht",
+        "status": "Wird zuerst geplant",
+        "purpose": "Einstieg nach Auswahl von Werwolf und Ausgangspunkt zur Vorbereitung."
+      },
+      {
+        "name": "Konfiguration",
+        "status": "Wird danach geplant",
+        "purpose": "Rollen, Items und Partieeinstellungen festlegen."
+      },
+      {
+        "name": "Spielablauf",
+        "status": "Wird anschließend geplant",
+        "purpose": "Rollenverteilung sowie Nacht, Morgen, Tag, Abstimmung und Ergebnis."
+      }
+    ],
+    "proposal": "Erster Vorschlag für die Hauptansicht: Mitspieler und Erzähler, kompakte Einrichtungsvorschau, Konfiguration und Regeln öffnen sowie Spiel starten. Details werden gemeinsam bestätigt.",
+    "open": "Zur Abstimmung: Sitzreihenfolge bereits in der Hauptansicht oder erst beim Start? Erzählerauswahl und weitere Übergänge werden anschließend geklärt.",
+    "document": "GAMEHUB_WERWOLF_UI.md"
   }
 }
