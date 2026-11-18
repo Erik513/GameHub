@@ -55,7 +55,12 @@ afterEach(() => {
 });
 
 /** Opens the settings of the mode "Gegen die Zeit"; the account is two minutes. */
-async function startCountdown(language: "en" | "de", minutes: number | null = 2) {
+/** Opens the settings of the mode "Gegen die Zeit"; the change of teams is manual unless told otherwise. */
+async function startCountdown(
+  language: "en" | "de",
+  minutes: number | null = 2,
+  change: "auto" | "manual" | null = "manual",
+) {
   const text = texts[language];
   const user = userEvent.setup();
   const i18n = await createGameHubI18n(language);
@@ -74,13 +79,20 @@ async function startCountdown(language: "en" | "de", minutes: number | null = 2)
     if (!radio) throw new Error(`No account of ${minutes} minutes.`);
     await user.click(radio);
   }
+  if (change !== null) {
+    const radio = screen
+      .getByRole("group", { name: language === "en" ? "Team change" : "Teamwechsel" })
+      .querySelector<HTMLInputElement>(`input[value='${change}']`);
+    if (!radio) throw new Error(`No team change ${change}.`);
+    await user.click(radio);
+  }
   return { text, user };
 }
 
 it.each(["en", "de"] as const)(
   "offers the accounts of two, three and five minutes, two minutes at first, in %s",
   async (language) => {
-    const { text } = await startCountdown(language, null);
+    const { text } = await startCountdown(language, null, null);
     const group = screen.getByRole("group", { name: text.budget });
     expect(
       within(group)
@@ -169,11 +181,13 @@ it.each(["en", "de"] as const)(
       language === "en"
         ? { change: "Team change", auto: "Automatic", manual: "Manual" }
         : { change: "Teamwechsel", auto: "Automatisch", manual: "Manuell" };
-    const { user } = await startCountdown(language);
+    const { user } = await startCountdown(language, 2, null);
     const change = screen.getByRole("group", { name: labels.change });
-    // The change is manual at first.
-    expect(within(change).getByRole("radio", { name: labels.manual })).toBeChecked();
-    await user.click(within(change).getByRole("radio", { name: labels.auto }));
+    // The change is automatic at first, and the automatic one is on the left.
+    const radios = within(change).getAllByRole("radio");
+    expect(radios[0]).toBe(within(change).getByRole("radio", { name: labels.auto }));
+    expect(radios[0]).toBeChecked();
+    expect(within(change).getByRole("radio", { name: labels.manual })).not.toBeChecked();
     closeGameSettings();
     await user.click(screen.getByRole("button", { name: text.startGame }));
     // Nothing to tap between turns: the first team starts after its tap, the others follow by themselves.

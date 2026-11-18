@@ -40,7 +40,7 @@ Kurz: Wer die Zielzahl Karten am schnellsten löst, gewinnt.
 
 Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. Wer zuerst keine Zeit mehr hat, verliert.
 
-**Einstellungen (Stand 2026-11-18):** Zeit pro Team 2, 3 oder 5 Minuten, **Standard 2**; **Teamwechsel Manuell (Standard) oder Automatisch** (Wunsch des Auftraggebers vom 2026-11-18).
+**Einstellungen (Stand 2026-11-18):** Zeit pro Team 2, 3 oder 5 Minuten, **Standard 2**; **Teamwechsel Automatisch (Standard, links) oder Manuell** (Wunsch des Auftraggebers vom 2026-11-18); die Modi stehen in der Reihenfolge Klassisch, Gegen die Zeit, Auf Zeit.
 
 **Ablauf:**
 

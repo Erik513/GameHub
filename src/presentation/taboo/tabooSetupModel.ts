@@ -18,7 +18,7 @@ export type TabooScreen = "menu" | "lineup" | "preparing" | "game" | "race" | "c
 export const difficulties = ["easy", "medium", "hard"] as const;
 export const cardSources = ["both", "local", "ai"] as const;
 /** The game modes the player can choose in the setup. */
-export const tabooModes = ["classic", "race", "countdown"] as const;
+export const tabooModes = ["classic", "countdown", "race"] as const;
 export type TabooMode = (typeof tabooModes)[number];
 export type RoundChoice = number | "unlimited";
 export const defaultRoundChoices: readonly RoundChoice[] = [3, 5, 10, "unlimited"];
@@ -172,7 +172,7 @@ export function readTabooSettings(
     cardSource: options.hasGenerators
       ? (cardSources.find((candidate) => candidate === source) ?? "both")
       : "local",
-    countdownAutoSwitch: data.get("countdownSwitch") === "auto",
+    countdownAutoSwitch: data.get("countdownSwitch") !== "manual",
     countdownBudgetMs:
       Number.isSafeInteger(countdownBudget) && countdownBudget >= 1
         ? countdownBudget

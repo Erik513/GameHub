@@ -485,6 +485,10 @@ test("the countdown screens fit a small phone in both languages", async ({ page 
     const mode = page.getByRole("group", { name: countdown.mode });
     await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
     await mode.getByRole("radio", { name: countdown.countdown }).check({ force: true });
+    await page
+      .getByRole("group", { name: switchLabels[language].change })
+      .getByRole("radio", { name: switchLabels[language].manual })
+      .check({ force: true });
     await check("countdown setup");
     await press(t.done);
     await press(t.startGame);
@@ -508,8 +512,8 @@ test("the countdown screens fit a small phone in both languages", async ({ page 
 });
 
 const switchLabels = {
-  en: { change: "Team change", auto: "Automatic" },
-  de: { change: "Teamwechsel", auto: "Automatisch" },
+  en: { change: "Team change", auto: "Automatic", manual: "Manual" },
+  de: { change: "Teamwechsel", auto: "Automatisch", manual: "Manuell" },
 } as const;
 
 test("the countdown with the automatic team change fits a small phone", async ({

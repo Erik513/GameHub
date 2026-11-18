@@ -234,8 +234,8 @@ export function TabooSetupForm({
                   <ChoiceGroup
                     legend={t("tabooSetup.countdownSwitch")}
                     name="countdownSwitch"
-                    initial="manual"
-                    options={(["manual", "auto"] as const).map((value) => ({
+                    initial="auto"
+                    options={(["auto", "manual"] as const).map((value) => ({
                       value,
                       label: t(`tabooSetup.countdownSwitchOptions.${value}`),
                     }))}
