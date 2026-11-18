@@ -47,7 +47,7 @@ Eigene Zustandsmaschine (Regeln: `docs/GAMEHUB_TABOO_MODES.md`). Zustände: `ove
 
 | Bereich | Regel |
 |---|---|
-| Start | `createCountdownGame` prüft Teams, Kartensprache und das Konto (`budgetMs`, ganze Zahl von 1 bis `maxCountdownBudgetMs`); angeboten werden 2, 3 und 5 Minuten, Standard 2. Jedes Team beginnt mit demselben Konto. |
+| Start | `createCountdownGame` prüft Teams, Kartensprache und das Konto (`budgetMs`, ganze Zahl von 1 bis `maxCountdownBudgetMs`); angeboten werden 2, 3 und 4 Minuten, Standard 2. Jedes Team beginnt mit demselben Konto. |
 | Zug | `beginTurn` startet den Zug des nächsten Teams mit einer gültigen Karte der Kartensprache. Nur das Konto des spielenden Teams sinkt, und erst am Ende des Zuges um die Zeit des ganzen Zuges. |
 | Richtig | Beendet den Zug; das nächste Team, das noch im Spiel ist, folgt in der Reihenfolge der Teams. Die gelösten Karten zählen nur als Information. |
 | Überspringen | Einmal pro Team im ganzen Spiel; die Karte wird durch eine gültige Karte **derselben Schwierigkeit** ersetzt, die Uhr läuft weiter. Ohne Ersatz oder beim zweiten Mal keine Änderung. |

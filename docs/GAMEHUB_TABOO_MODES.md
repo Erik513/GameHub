@@ -10,7 +10,7 @@ Bezug: `docs/GAMEHUB_TABOO_LOGIC.md` (klassischer Modus), `docs/GAMEHUB_UI_RULES
 |---|---|
 | Auf Zeit: Ablauf | Jedes Team spielt **am Stück**: ein Lauf bis zur Zielzahl gelöster Karten, danach das nächste Team. |
 | Auf Zeit: Überspringen und Gleichstand | **Einmal pro Team**, die übersprungene Karte wird **ersetzt** und zählt nicht. Bei genau gleicher Zeit gewinnen die Teams gemeinsam. |
-| Gegen die Zeit: Zeitkonto | **2, 3 oder 5 Minuten wählbar**, für alle Teams gleich. Wer zuerst keine Zeit mehr hat, verliert. |
+| Gegen die Zeit: Zeitkonto | **2, 3 oder 4 Minuten wählbar** (zuerst 2, 3 und 5; am 2026-11-18 auf 4 geändert), für alle Teams gleich. Wer zuerst keine Zeit mehr hat, verliert. |
 | Gegen die Zeit: Rollen | Der Vorschlag „Gegnerteam erklärt, aktives Team rät“ wurde **abgelehnt**: Das Gegnerteam könnte absichtlich trödeln und dem ratenden Team Zeit nehmen. Es gilt deshalb: **Das aktive Team erklärt und rät selbst.** Das Gegnerteam sieht nur zu und achtet auf verbotene Wörter. |
 
 ## 2. Modus „Auf Zeit“
@@ -40,7 +40,7 @@ Kurz: Wer die Zielzahl Karten am schnellsten löst, gewinnt.
 
 Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. Wer zuerst keine Zeit mehr hat, verliert.
 
-**Einstellungen (Stand 2026-11-18):** Zeit pro Team 2, 3 oder 5 Minuten, **Standard 2**; **Teamwechsel Automatisch (Standard, links) oder Manuell** (Wunsch des Auftraggebers vom 2026-11-18); die Modi stehen in der Reihenfolge Klassisch, Gegen die Zeit, Auf Zeit.
+**Einstellungen (Stand 2026-11-18):** Zeit pro Team 2, 3 oder 4 Minuten, **Standard 2**; **Teamwechsel Automatisch (Standard, links) oder Manuell** (Wunsch des Auftraggebers vom 2026-11-18); die Modi stehen in der Reihenfolge Klassisch, Gegen die Zeit, Auf Zeit.
 
 **Ablauf:**
 
@@ -87,7 +87,7 @@ Die Umsetzung ist groß (der Container `TabooSetup.tsx` hat rund 470 Zeilen). Na
 1. **Ta-06-07-A (erledigt):** Business „Auf Zeit“: `race.ts` (Zustandsmaschine mit `overview`, `running`, `finished`; Ereignisse `beginRun`, `answerCard`, `restartRun`), `raceCards.ts` (Schwierigkeitsmischung, Kartenauswahl, Ersatzkarten), Tests und Zufallsprüfung mit 60 Durchläufen.
 2. **Ta-06-07-B (erledigt):** Oberfläche „Auf Zeit“: Knopfgruppe „Spielmodus“ (Klassisch, Auf Zeit) und „Karten pro Team“ im Setup (die Gruppen des klassischen Modus sind im Rennen ausgeblendet, ihre Werte bleiben erhalten); die Einstellungen, die nicht vom Modus abhängen, stehen im eigenen Feld „Karten“, `TabooRaceGame` (Übersicht vor jedem Lauf, Endstand mit `ScoreScreen`), `TabooRaceRun` (Stoppuhr mit `TimerHud`, Richtig, Überspringen einmal, Verbotenes Wort, Pause mit Neustart des Laufs), `TabooRaceResults`, Regeln im Fenster „Spielregeln“, Texte in Deutsch und Englisch. Für das Rennen sind je Team Zielzahl plus zwei Ersatzkarten nötig (die Kartenprüfung im Setup meldet es). Tests: Komponentenläufe in beiden Sprachen und eine Handy-Layoutprüfung aller Ansichten.
 3. **Ta-06-07-C (erledigt):** Business „Gegen die Zeit“: `countdown.ts` (Zustände `overview`, `running`, `finished`; Ereignisse `beginTurn`, `answerCard`, `timeUp`), `countdownCards.ts` (Schwierigkeit je Zug für alle Teams gleich, Kartenwahl, Kartenprüfung), Tests und Zufallsprüfung mit 60 Spielen.
-4. **Ta-06-07-D (erledigt):** Oberfläche „Gegen die Zeit“: Knopfgruppe „Zeit pro Team“ (2, 3, 5 Minuten, Standard 2), `TabooCountdownGame` (Übersicht der Zeitkonten, Endstand), `TabooCountdownRun` (Zug mit `useCountdown`, Pause ohne Neustart), `TabooCountdownResults`, Texte, Regelabschnitt, Tests und Handy-Layoutprüfung. In einem langen Spiel dürfen Karten wiederkommen (neue werden bevorzugt).
+4. **Ta-06-07-D (erledigt):** Oberfläche „Gegen die Zeit“: Knopfgruppe „Zeit pro Team“ (2, 3, 4 Minuten, Standard 2), `TabooCountdownGame` (Übersicht der Zeitkonten, Endstand), `TabooCountdownRun` (Zug mit `useCountdown`, Pause ohne Neustart), `TabooCountdownResults`, Texte, Regelabschnitt, Tests und Handy-Layoutprüfung. In einem langen Spiel dürfen Karten wiederkommen (neue werden bevorzugt).
 5. **Ta-06-07-E (erledigt):** Regeln und Leitfaden aktualisiert: Regelfenster mit Modus und Einstellung, `GAMEHUB_TABOO_LOGIC.md` mit Abschnitt „Gegen die Zeit“, Ausnahme zur Korrektur in `GAMEHUB_UI_RULES.md`, beide Zeitmodi abschließend getestet.
 
 Nach jedem Schritt gilt: alle Tests, Typen, ESLint, Prettier, Schichtprüfung und e2e grün, Commit nur auf Zuruf.

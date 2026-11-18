@@ -65,7 +65,7 @@ describe("createCountdownGame", () => {
     expect(state.status).toBe("overview");
     expect(state.teams.map((team) => team.remainingMs)).toEqual([10_000, 10_000, 10_000]);
     expect(getCountdownNextTeam(state)).toBe(0);
-    expect(countdownBudgetChoices).toEqual([120_000, 180_000, 300_000]);
+    expect(countdownBudgetChoices).toEqual([120_000, 180_000, 240_000]);
   });
 
   it("rejects wrong accounts, languages and teams", () => {

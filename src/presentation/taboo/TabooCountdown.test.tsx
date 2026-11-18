@@ -90,7 +90,7 @@ async function startCountdown(
 }
 
 it.each(["en", "de"] as const)(
-  "offers the accounts of two, three and five minutes, two minutes at first, in %s",
+  "offers the accounts of two, three and four minutes, two minutes at first, in %s",
   async (language) => {
     const { text } = await startCountdown(language, null, null);
     const group = screen.getByRole("group", { name: text.budget });
@@ -98,7 +98,7 @@ it.each(["en", "de"] as const)(
       within(group)
         .getAllByRole("radio")
         .map((radio) => (radio as HTMLInputElement).value),
-    ).toEqual(["120000", "180000", "300000"]);
+    ).toEqual(["120000", "180000", "240000"]);
     expect(group.querySelector<HTMLInputElement>("input[value='120000']")).toBeChecked();
   },
 );

@@ -15,8 +15,8 @@ import type { TabooOutcome } from "./outcome";
  * team left wins. The ranking follows the order in which the teams dropped out.
  */
 
-/** The accounts the player can choose in the setup, in milliseconds (2, 3 or 5 minutes). */
-export const countdownBudgetChoices: readonly number[] = [120_000, 180_000, 300_000];
+/** The accounts the player can choose in the setup, in milliseconds (2, 3 or 4 minutes). */
+export const countdownBudgetChoices: readonly number[] = [120_000, 180_000, 240_000];
 export const defaultCountdownBudgetMs = 120_000;
 /** The longest account the logic accepts; the setup offers fewer. */
 export const maxCountdownBudgetMs = 3_600_000;
