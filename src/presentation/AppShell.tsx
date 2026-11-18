@@ -14,19 +14,12 @@ import { useSystemBack } from "./useSystemBack";
 
 interface AppShellProps {
   children: ReactNode;
-  currentRoute: string;
   gameTitle?: string | undefined;
   onCloseGame?: (() => void) | undefined;
   onLanguageChange: (language: SupportedLanguage) => void;
 }
 
-export function AppShell({
-  children,
-  currentRoute,
-  gameTitle,
-  onCloseGame,
-  onLanguageChange,
-}: AppShellProps) {
+export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }: AppShellProps) {
   const { t } = useTranslation();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [gameExit, setGameExit] = useState<GameExit>();
@@ -104,15 +97,6 @@ export function AppShell({
             <span>GameHub</span>
           </a>
         )}
-        <nav aria-label={t("navigation.ariaLabel")}>
-          <a
-            className="nav-link"
-            href="#/"
-            aria-current={currentRoute === "/" ? "page" : undefined}
-          >
-            {t("navigation.home")}
-          </a>
-        </nav>
         <div className="site-header__actions">
           {gameExit?.back ? (
             <Button

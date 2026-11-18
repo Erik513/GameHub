@@ -14,20 +14,17 @@ const languageCases = [
     language: "en",
     heading: "Choose a game",
     intro: "Pick what fits the table. New games join the same library as they become ready.",
-    navigation: "Games",
   },
   {
     language: "de",
     heading: "Wähle ein Spiel",
     intro:
       "Wähle, was zu eurer Runde passt. Neue Spiele kommen in dieselbe Sammlung, sobald sie bereit sind.",
-    navigation: "Spiele",
   },
 ] satisfies readonly {
   language: SupportedLanguage;
   heading: string;
   intro: string;
-  navigation: string;
 }[];
 
 afterEach(() => {
@@ -41,7 +38,7 @@ beforeEach(() => {
 describe("App", () => {
   it.each(languageCases)(
     "renders the $language game selection",
-    async ({ language, heading, intro, navigation }) => {
+    async ({ language, heading, intro }) => {
       const i18n = await createGameHubI18n(language);
 
       render(
@@ -51,15 +48,11 @@ describe("App", () => {
       );
 
       expect(screen.getByRole("link", { name: "GameHub" })).toBeVisible();
-      expect(screen.getByRole("link", { name: navigation })).toHaveAttribute(
-        "aria-current",
-        "page",
-      );
       expect(screen.getByRole("heading", { name: heading })).toBeVisible();
       expect(screen.getByText(intro)).toBeVisible();
       expect(
         within(screen.getByRole("list", { name: heading })).getAllByRole("listitem"),
-      ).toHaveLength(5);
+      ).toHaveLength(6);
     },
   );
 
@@ -73,10 +66,11 @@ describe("App", () => {
       </I18nextProvider>,
     );
 
-    expect(screen.getAllByRole("button", { name: "Coming later" })).toHaveLength(4);
-    expect(screen.getAllByRole("button", { name: "Coming later" })[0]).toBeDisabled();
+    expect(screen.getAllByRole("button", { name: "Play" })).toHaveLength(6);
+    expect(screen.getAllByRole("button", { name: "Play" })[0]).toBeEnabled();
+    expect(screen.getAllByRole("button", { name: "Play" })[1]).toBeDisabled();
 
-    await user.click(screen.getByRole("button", { name: "View progress" }));
+    await user.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
 
     expect(screen.getByRole("heading", { name: "Taboo" })).toBeVisible();
     expect(window.location.hash).toBe("#/games/taboo");
@@ -98,7 +92,7 @@ describe("App", () => {
       </I18nextProvider>,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
     // Main window of the game: settings and the way back to the hub are available.
     expect(screen.getByRole("button", { name: "Settings" })).toBeVisible();
     expect(screen.queryByRole("button", { name: "End game" })).not.toBeInTheDocument();
@@ -142,7 +136,7 @@ describe("App", () => {
         />
       </I18nextProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     // Between turns only the end-game action exists; there is nothing to pause.
     expect(screen.queryByRole("button", { name: "Pause" })).not.toBeInTheDocument();
@@ -219,7 +213,7 @@ describe("App", () => {
         />
       </I18nextProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
     openGameSettings();
     // Only Easy is chosen at first; these cards need all difficulties.
     fireEvent.click(screen.getByRole("checkbox", { name: "Medium" }));
@@ -253,7 +247,7 @@ describe("App", () => {
         />
       </I18nextProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     // Three short rounds for two teams: six turns that nobody scores in.
     for (let turn = 0; turn < 6; turn += 1) {
@@ -298,7 +292,7 @@ describe("App", () => {
         />
       </I18nextProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
     openGameSettings();
     fireEvent.click(
       within(screen.getByRole("group", { name: "Game mode" })).getByRole("radio", { name: "Race" }),
@@ -338,7 +332,7 @@ describe("App", () => {
         />
       </I18nextProvider>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
     openGameSettings();
     for (const category of ["Everyday life", "Culture", "Nature"]) {
       fireEvent.click(screen.getByRole("checkbox", { name: category }));
@@ -374,7 +368,7 @@ describe("App", () => {
           />
         </I18nextProvider>,
       );
-      fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+      fireEvent.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
       // The navigation that opened the game finishes first.
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 40));
@@ -457,7 +451,7 @@ describe("App", () => {
         <App cardLanguage="en" modules={[example]} onCardLanguageChange={vi.fn()} />
       </I18nextProvider>,
     );
-    await user.click(screen.getByRole("button", { name: "Fortschritt ansehen" }));
+    await user.click(screen.getAllByRole("button", { name: "Spielen" }).at(0)!);
     expect(screen.getByText("Beispielspiel")).toBeVisible();
     expect(seen).toContain("en");
   });
@@ -470,7 +464,7 @@ describe("App", () => {
         <App cardLanguage="en" onCardLanguageChange={vi.fn()} />
       </I18nextProvider>,
     );
-    await user.click(screen.getByRole("button", { name: "View progress" }));
+    await user.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
     expect(screen.getByText(/already part of GameHub/)).toBeVisible();
   });
 

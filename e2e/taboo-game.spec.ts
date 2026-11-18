@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 const cases = [
   {
     language: "en",
-    open: "View progress",
+    open: "Play",
     rounds: "Rounds per team",
     settings: "Game settings",
     done: "Done",
@@ -20,7 +20,7 @@ const cases = [
   },
   {
     language: "de",
-    open: "Fortschritt ansehen",
+    open: "Spielen",
     rounds: "Runden pro Team",
     settings: "Spieleinstellungen",
     done: "Fertig",
@@ -53,7 +53,7 @@ for (const labels of cases) {
         .check({ force: true });
       await page.getByRole("dialog").getByRole("button", { name: "Schließen" }).click();
     }
-    await page.getByRole("button", { name: labels.open }).click();
+    await page.getByRole("button", { name: labels.open, exact: true }).first().click();
     if (labels.language === "de") {
       // The German game ends in a tie; switch the tiebreak off to check the shared win.
       await page.getByRole("button", { name: labels.settings, exact: true }).click();

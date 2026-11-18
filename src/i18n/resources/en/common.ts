@@ -19,8 +19,6 @@ export const common = {
     },
   },
   navigation: {
-    home: "Games",
-    ariaLabel: "Main navigation",
     pause: "Pause",
     resume: "Resume",
     exitGame: "End game",
@@ -53,9 +51,7 @@ export const common = {
       planned: "Planned",
     },
     action: {
-      available: "Play",
-      preview: "View progress",
-      planned: "Coming later",
+      play: "Play",
     },
   },
   games: {
@@ -63,21 +59,25 @@ export const common = {
       title: "Taboo",
       description: "Explain the term without using the forbidden words.",
     },
-    cards: {
-      title: "Card game",
-      description: "A flexible home for future shedding and matching card games.",
+    wordBomb: {
+      title: "Word bomb",
+      description: "Name a fitting word fast, before the bomb goes off in your hand.",
     },
-    charades: {
-      title: "Charades",
-      description: "Act out a prompt while your team races the clock.",
+    imposter: {
+      title: "Imposter",
+      description: "Everyone knows the secret word except the imposter. Who gets caught?",
     },
-    quiz: {
-      title: "Quiz",
-      description: "Questions, teams, and flexible rounds for any topic.",
+    werewolf: {
+      title: "Werewolf",
+      description: "The village sleeps while the werewolves hunt. Find them in time.",
     },
-    whoAmI: {
-      title: "Who am I?",
-      description: "Discover the hidden character by asking clever questions.",
+    liarsBar: {
+      title: "Liar’s Bar",
+      description: "Play cards face down, bluff, and call out the liars.",
+    },
+    schwimmen: {
+      title: "Schwimmen",
+      description: "Swap cards and reach 31 points without sinking.",
     },
   },
   gamePreview: {

@@ -108,7 +108,7 @@ describe.each(["de", "en"] as const)("every Taboo screen in %s", (language) => {
       </I18nextProvider>,
     );
     checkScreen("game selection");
-    fireEvent.click(screen.getByRole("button", { name: t("gameSelection.action.preview") }));
+    fireEvent.click(screen.getAllByRole("button", { name: t("gameSelection.action.play") }).at(0)!);
 
     // Settings are reachable from the main window of the game.
     press("settings.open");

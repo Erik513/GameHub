@@ -136,12 +136,7 @@ it("shows the card tools on their own page with the back button in the app heade
   const i18n = await createGameHubI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
-      <AppShell
-        currentRoute="/games/taboo"
-        gameTitle="Taboo"
-        onCloseGame={vi.fn()}
-        onLanguageChange={vi.fn()}
-      >
+      <AppShell gameTitle="Taboo" onCloseGame={vi.fn()} onLanguageChange={vi.fn()}>
         <TabooLibrary
           cardLanguage="en"
           cards={[]}

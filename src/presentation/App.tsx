@@ -49,7 +49,6 @@ export function App({
 
   return (
     <AppShell
-      currentRoute={selectedGame ? currentRoute : homeRoute}
       gameTitle={
         selectedGame && selectedGame.availability !== "planned"
           ? t(`games.${selectedGame.translationKey}.title`)

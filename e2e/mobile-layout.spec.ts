@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 const labels = {
   en: {
-    open: "View progress",
+    open: "Play",
     settings: "Settings",
     close: "Close",
     done: "Done",
@@ -32,7 +32,7 @@ const labels = {
     settingsTab: "Game settings",
   },
   de: {
-    open: "Fortschritt ansehen",
+    open: "Spielen",
     settings: "Einstellungen",
     close: "Schließen",
     done: "Fertig",
@@ -431,7 +431,7 @@ test("the card editor is one page with two tabs on a small phone in both languag
         .check({ force: true });
       await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
     }
-    await page.getByRole("button", { name: t.open }).click();
+    await page.getByRole("button", { name: t.open, exact: true }).first().click();
     await page.getByRole("button", { name: t.settingsTab, exact: true }).click();
     await page.getByRole("tab", { name: t.categories, exact: true }).click();
     await page

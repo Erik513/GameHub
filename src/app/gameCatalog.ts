@@ -1,6 +1,7 @@
 export type GameAvailability = "available" | "preview" | "planned";
 export type GameAccent = "blue" | "coral" | "amber" | "mint" | "violet";
-export type GameTranslationKey = "taboo" | "cards" | "charades" | "quiz" | "whoAmI";
+export type GameTranslationKey =
+  "taboo" | "wordBomb" | "imposter" | "werewolf" | "liarsBar" | "schwimmen";
 
 export interface GameModuleDescriptor {
   readonly accent: GameAccent;
@@ -19,32 +20,39 @@ export const gameCatalog = [
     accent: "coral",
   },
   {
-    id: "cards",
-    route: "/games/cards",
-    translationKey: "cards",
+    id: "word-bomb",
+    route: "/games/word-bomb",
+    translationKey: "wordBomb",
     availability: "planned",
-    accent: "blue",
+    accent: "coral",
   },
   {
-    id: "charades",
-    route: "/games/charades",
-    translationKey: "charades",
+    id: "imposter",
+    route: "/games/imposter",
+    translationKey: "imposter",
     availability: "planned",
-    accent: "amber",
+    accent: "coral",
   },
   {
-    id: "quiz",
-    route: "/games/quiz",
-    translationKey: "quiz",
+    id: "werewolf",
+    route: "/games/werewolf",
+    translationKey: "werewolf",
     availability: "planned",
-    accent: "mint",
+    accent: "coral",
   },
   {
-    id: "who-am-i",
-    route: "/games/who-am-i",
-    translationKey: "whoAmI",
+    id: "liars-bar",
+    route: "/games/liars-bar",
+    translationKey: "liarsBar",
     availability: "planned",
-    accent: "violet",
+    accent: "coral",
+  },
+  {
+    id: "schwimmen",
+    route: "/games/schwimmen",
+    translationKey: "schwimmen",
+    availability: "planned",
+    accent: "coral",
   },
 ] as const satisfies readonly GameModuleDescriptor[];
 

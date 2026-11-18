@@ -44,12 +44,12 @@ describe("GameSelectionPage", () => {
   it("only lets players open games that are not merely planned", async () => {
     const onSelect = vi.fn();
     await renderWithI18n("en", <GameSelectionPage games={gameCatalog} onSelect={onSelect} />);
-    for (const planned of screen.getAllByRole("button", { name: "Coming later" })) {
+    for (const planned of screen.getAllByRole("button", { name: "Play" }).slice(1)) {
       expect(planned).toBeDisabled();
       fireEvent.click(planned);
     }
     expect(onSelect).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole("button", { name: "View progress" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
     expect(onSelect).toHaveBeenCalledWith(taboo);
   });
 });
@@ -58,7 +58,7 @@ describe("AppShell", () => {
   it("opens the settings, closes them again and keeps the page content", async () => {
     await renderWithI18n(
       "en",
-      <AppShell currentRoute="/" onLanguageChange={vi.fn()}>
+      <AppShell onLanguageChange={vi.fn()}>
         <p>Page content</p>
       </AppShell>,
     );
@@ -74,12 +74,7 @@ describe("AppShell", () => {
     const onCloseGame = vi.fn();
     await renderWithI18n(
       "en",
-      <AppShell
-        currentRoute="/games/taboo"
-        gameTitle="Taboo"
-        onCloseGame={onCloseGame}
-        onLanguageChange={vi.fn()}
-      >
+      <AppShell gameTitle="Taboo" onCloseGame={onCloseGame} onLanguageChange={vi.fn()}>
         <p>Game</p>
       </AppShell>,
     );
@@ -101,7 +96,7 @@ describe("header of the app", () => {
     await renderWithI18n(
       "en",
       <PlayerRosterProvider store={store}>
-        <AppShell currentRoute="/" onLanguageChange={vi.fn()}>
+        <AppShell onLanguageChange={vi.fn()}>
           <p>Page</p>
         </AppShell>
       </PlayerRosterProvider>,
@@ -114,12 +109,7 @@ describe("header of the app", () => {
     await renderWithI18n(
       "en",
       <PlayerRosterProvider store={store}>
-        <AppShell
-          currentRoute="/games/taboo"
-          gameTitle="Taboo"
-          onCloseGame={vi.fn()}
-          onLanguageChange={vi.fn()}
-        >
+        <AppShell gameTitle="Taboo" onCloseGame={vi.fn()} onLanguageChange={vi.fn()}>
           <p>Game</p>
         </AppShell>
       </PlayerRosterProvider>,

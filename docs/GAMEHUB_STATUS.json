@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-17T23:06:31.415Z",
+    "updatedAt": "2026-11-18T14:26:46.053Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 105,
-      "totalTasks": 188,
-      "percent": 55.9
+      "completedTasks": 106,
+      "totalTasks": 189,
+      "percent": 56.1
     }
   },
   "environment": {
@@ -85,10 +85,10 @@
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-17T22:58:44.024Z",
+      "lastRunAt": "2026-11-18T14:26:46.053Z",
       "passed": 675,
       "failed": 0,
-      "details": "725 Unit- und Komponententests bestanden (77 Dateien), darunter Übersetzungsqualität, Aufstellung, die Systemzurück-Taste, Runden und Stechen bei Auf Zeit und Zufallsprüfungen der Zustandsmaschinen."
+      "details": "725 Unit- und Komponententests bestanden (77 Dateien)."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,10 +99,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-17T22:58:44.024Z",
+      "lastRunAt": "2026-11-18T14:26:46.053Z",
       "passed": 31,
       "failed": 0,
-      "details": "37 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 7 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Neu: große Fenster der Spielerliste und der Spielerauswahl ohne seitliche Scrollleiste."
+      "details": "37 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 7 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen."
     },
     "renameValidation": {
       "status": "passed",
@@ -259,6 +259,11 @@
         {
           "id": "Al-04-03",
           "title": "Einstellungen und Statusmeldungen",
+          "status": "done"
+        },
+        {
+          "id": "Al-04-04",
+          "title": "Startseite: Knopf „Spielen“, geplante Spiele (Wortbombe, Imposter, Werwolf, Liar’s Bar, Schwimmen) im Stil von Tabu, ohne Kartenzahl und ohne Knopf „Spiele“ in der Kopfleiste",
           "status": "done"
         }
       ]
@@ -1301,6 +1306,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-18",
+      "summary": "Startseite (Al-04-04): Knopf „Spielen“, die wirklich geplanten Spiele im Stil von Tabu, Kartenzahl und Knopf „Spiele“ in der Kopfleiste entfernt."
+    },
     {
       "date": "2026-11-17",
       "summary": "Spielerliste im GameHub (Al-09-12): Knopf und Fenster heißen „Spielerliste“, Fenster und Spielerauswahl sind größer (Dialog mit size large, acht Namen sichtbar), die waagerechte Scrollleiste ist behoben."

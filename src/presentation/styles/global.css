@@ -86,10 +86,6 @@ textarea {
   backdrop-filter: blur(14px);
 }
 
-.site-header nav {
-  display: none;
-}
-
 .site-header .button {
   min-height: 2.75rem;
   padding-inline: var(--space-3);
@@ -117,23 +113,6 @@ textarea {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.nav-link {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--control-height);
-  padding: 0 var(--space-3);
-  border-radius: var(--radius-sm);
-  color: var(--color-ink-muted);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-bold);
-  text-decoration: none;
-}
-
-.nav-link[aria-current="page"] {
-  color: var(--color-ink);
-  background: var(--color-surface-muted);
 }
 
 .main-content {
@@ -235,7 +214,7 @@ h1 {
   position: relative;
   display: grid;
   grid-template-areas:
-    "index status"
+    "status status"
     "title title"
     "desc desc"
     "action action";
@@ -249,10 +228,6 @@ h1 {
 
 .game-card__body {
   display: contents;
-}
-
-.game-card__index {
-  grid-area: index;
 }
 
 .game-card .game-status {
@@ -281,19 +256,6 @@ h1 {
   margin-top: var(--space-2);
 }
 
-/* Planned games stay visible but take far less visual weight. */
-.game-card:has(.button:disabled) {
-  background: transparent;
-}
-
-.game-card:has(.button:disabled) .button {
-  min-height: var(--control-height);
-}
-
-.game-card:has(.button:disabled) h2 {
-  color: var(--color-ink-muted);
-}
-
 [data-accent="coral"] {
   --game-accent: var(--color-accent);
 }
@@ -312,13 +274,6 @@ h1 {
 
 [data-accent="violet"] {
   --game-accent: #ba93ed;
-}
-
-.game-card__index {
-  color: var(--game-accent);
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
-  font-weight: var(--weight-bold);
 }
 
 .game-status {
@@ -633,14 +588,10 @@ h1 {
   }
 
   .site-header {
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: var(--space-6);
     min-height: 5rem;
     padding-inline: clamp(var(--space-4), 5vw, var(--space-7));
-  }
-
-  .site-header nav {
-    display: block;
   }
 
   .main-content {

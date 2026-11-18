@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 const cases = [
   {
     language: "en",
-    open: "View progress",
+    open: "Play",
     start: "Start",
     startGame: "Start game",
     players: "Players",
@@ -19,7 +19,7 @@ const cases = [
   },
   {
     language: "de",
-    open: "Fortschritt ansehen",
+    open: "Spielen",
     start: "Starten",
     startGame: "Spiel starten",
     players: "Spieler",
@@ -48,7 +48,7 @@ for (const labels of cases) {
         .check({ force: true });
       await page.getByRole("dialog").getByRole("button", { name: "Schließen" }).click();
     }
-    await page.getByRole("button", { name: labels.open }).click();
+    await page.getByRole("button", { name: labels.open, exact: true }).first().click();
 
     // The tab of the teams is open (Taboo does not need names); open the players and add some.
     await page.getByRole("tab", { name: new RegExp(`^${labels.players}`) }).click();

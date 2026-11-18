@@ -10,7 +10,7 @@ import { createTabooModule } from "./tabooModule";
 
 const texts = {
   de: {
-    open: "Fortschritt ansehen",
+    open: "Spielen",
     rules: "Spielregeln",
     title: "Spielregeln Tabu",
     players: "Spielerliste",
@@ -22,7 +22,7 @@ const texts = {
     mode: "Klassisch",
   },
   en: {
-    open: "View progress",
+    open: "Play",
     rules: "Rules",
     title: "Taboo rules",
     players: "Player list",
@@ -60,7 +60,7 @@ it.each(["de", "en"] as const)(
     expect(screen.queryByRole("button", { name: text.rules })).not.toBeInTheDocument();
 
     // The main menu of a game has the button "Rules" instead of "Player list".
-    await user.click(screen.getByRole("button", { name: text.open }));
+    await user.click(screen.getAllByRole("button", { name: text.open }).at(0)!);
     expect(screen.queryByRole("button", { name: text.players })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: text.rules }));
     const dialog = screen.getByRole("dialog", { name: text.title });

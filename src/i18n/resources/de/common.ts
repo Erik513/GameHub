@@ -19,8 +19,6 @@ export const common = {
     },
   },
   navigation: {
-    home: "Spiele",
-    ariaLabel: "Hauptnavigation",
     pause: "Pause",
     resume: "Fortsetzen",
     exitGame: "Spiel beenden",
@@ -54,9 +52,7 @@ export const common = {
       planned: "Geplant",
     },
     action: {
-      available: "Spielen",
-      preview: "Fortschritt ansehen",
-      planned: "Kommt später",
+      play: "Spielen",
     },
   },
   games: {
@@ -64,21 +60,25 @@ export const common = {
       title: "Tabu",
       description: "Erkläre den Begriff, ohne die verbotenen Wörter zu verwenden.",
     },
-    cards: {
-      title: "Kartenspiel",
-      description: "Ein flexibler Platz für zukünftige Ablege- und Zuordnungsspiele.",
+    wordBomb: {
+      title: "Wortbombe",
+      description: "Nenne schnell ein passendes Wort, bevor die Bombe in deiner Hand platzt.",
     },
-    charades: {
-      title: "Scharade",
-      description: "Stelle einen Begriff dar, während dein Team gegen die Zeit spielt.",
+    imposter: {
+      title: "Imposter",
+      description: "Alle kennen den geheimen Begriff – außer dem Imposter. Wer fliegt auf?",
     },
-    quiz: {
-      title: "Quiz",
-      description: "Fragen, Teams und flexible Runden für jedes Thema.",
+    werewolf: {
+      title: "Werwolf",
+      description: "Das Dorf schläft, die Werwölfe jagen. Findet sie, bevor es zu spät ist.",
     },
-    whoAmI: {
-      title: "Wer bin ich?",
-      description: "Entdecke die geheime Figur mit klugen Fragen.",
+    liarsBar: {
+      title: "Liar’s Bar",
+      description: "Lege Karten verdeckt ab, bluffe und zweifle die Lügner an.",
+    },
+    schwimmen: {
+      title: "Schwimmen",
+      description: "Tausche Karten und bilde 31 Punkte, ohne unterzugehen.",
     },
   },
   gamePreview: {

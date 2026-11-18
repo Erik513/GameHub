@@ -39,8 +39,8 @@ test("renders the GameHub game selection", async ({ page }) => {
   await expect(page.getByRole("link", { name: "GameHub" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Choose a game" })).toBeVisible();
   await expect(page.getByRole("list", { name: "Choose a game" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "View progress" })).toBeEnabled();
-  await expect(page.getByRole("button", { name: "Coming later" }).first()).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Play", exact: true }).first()).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Play", exact: true }).nth(1)).toBeDisabled();
 });
 
 test("persists the selected UI language", async ({ page }) => {
@@ -71,7 +71,7 @@ test("persists the selected UI language", async ({ page }) => {
 test("navigates between the game library and preview", async ({ page }) => {
   await page.goto("/");
 
-  await page.getByRole("button", { name: "View progress" }).click();
+  await page.getByRole("button", { name: "Play", exact: true }).first().click();
   await expect(page).toHaveURL(/#\/games\/taboo$/);
   await expect(page.getByRole("heading", { name: "Taboo" })).toBeVisible();
 
@@ -93,7 +93,7 @@ test("persists the UI language and the card language of Taboo independently", as
   await page.getByRole("button", { name: "Schließen" }).click();
 
   // The card language is a setting of Taboo.
-  await page.getByRole("button", { name: "Fortschritt ansehen" }).click();
+  await page.getByRole("button", { name: "Spielen", exact: true }).first().click();
   await page.getByRole("button", { name: "Spieleinstellungen", exact: true }).click();
   await page.getByRole("tab", { name: "Kategorien", exact: true }).click();
   const cardLanguage = page.getByRole("group", { name: "Kartensprache" });
@@ -135,7 +135,7 @@ for (const language of ["en", "de"] as const) {
     const t =
       language === "en"
         ? {
-            open: "View progress",
+            open: "Play",
             start: "Start game",
             round: "Start round",
             title: "End the game?",
@@ -144,7 +144,7 @@ for (const language of ["en", "de"] as const) {
             settings: "Game settings",
           }
         : {
-            open: "Fortschritt ansehen",
+            open: "Spielen",
             start: "Spiel starten",
             round: "Runde starten",
             title: "Spiel beenden?",
@@ -161,7 +161,7 @@ for (const language of ["en", "de"] as const) {
         .check({ force: true });
       await page.getByRole("button", { name: "Schließen" }).click();
     }
-    await page.getByRole("button", { name: t.open }).click();
+    await page.getByRole("button", { name: t.open, exact: true }).first().click();
     await page.getByRole("button", { name: t.start, exact: true }).click();
     await page.getByRole("button", { name: t.round, exact: true }).click();
 
@@ -185,7 +185,7 @@ for (const language of ["en", "de"] as const) {
 
     // On the line-up one Back leaves the game for the game selection.
     await back();
-    await expect(page.getByRole("button", { name: t.open })).toBeVisible();
+    await expect(page.getByRole("button", { name: t.open, exact: true }).first()).toBeVisible();
     // The game selection is the first page of the app (no address part).
     expect(["", "#/"]).toContain(new URL(page.url()).hash);
   });
@@ -244,7 +244,7 @@ test("the player list and the player choice are large windows that show whole pl
   await page.getByRole("button", { name: "Close", exact: true }).click();
 
   // The player choice of a game is as large and shows whole players only, too.
-  await page.getByRole("button", { name: "View progress" }).click();
+  await page.getByRole("button", { name: "Play", exact: true }).first().click();
   await page.getByRole("tab", { name: /^Players/ }).click();
   await page.getByRole("button", { name: "Choose from player list" }).click();
   window_ = await measure();

@@ -24,15 +24,12 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
         />
       ) : null}
       <ul className="game-grid" aria-label={t("gameSelection.title")}>
-        {games.map((game, index) => {
+        {games.map((game) => {
           const isPlanned = game.availability === "planned";
 
           return (
             <li key={game.id}>
               <Card className="game-card" data-accent={game.accent}>
-                <div className="game-card__index" aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
-                </div>
                 <div className="game-card__body">
                   <span className="game-status" data-status={game.availability}>
                     {t(`gameSelection.status.${game.availability}`)}
@@ -45,7 +42,7 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
                   variant={isPlanned ? "secondary" : "primary"}
                   onClick={() => onSelect(game)}
                 >
-                  {t(`gameSelection.action.${game.availability}`)}
+                  {t("gameSelection.action.play")}
                 </Button>
               </Card>
             </li>
