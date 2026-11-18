@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { GameModuleDescriptor } from "../app/gameCatalog";
+import type { GameAvailability, GameModuleDescriptor } from "../app/gameCatalog";
 import { Button, Card, EmptyState } from "./components";
 
 interface GameSelectionPageProps {
@@ -7,8 +7,24 @@ interface GameSelectionPageProps {
   onSelect: (game: GameModuleDescriptor) => void;
 }
 
+/** Playable games first, then games in development, the planned ones last. */
+const availabilityOrder: Record<GameAvailability, number> = {
+  available: 0,
+  preview: 1,
+  planned: 2,
+};
+
 export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
+  // Within each group the games are sorted alphabetically by their title in the UI language.
+  const sortedGames = [...games].sort(
+    (a, b) =>
+      availabilityOrder[a.availability] - availabilityOrder[b.availability] ||
+      t(`games.${a.translationKey}.title`).localeCompare(
+        t(`games.${b.translationKey}.title`),
+        i18n.language,
+      ),
+  );
 
   return (
     <section className="game-library" aria-labelledby="game-library-title">
@@ -24,7 +40,7 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
         />
       ) : null}
       <ul className="game-grid" aria-label={t("gameSelection.title")}>
-        {games.map((game) => {
+        {sortedGames.map((game) => {
           const isPlanned = game.availability === "planned";
 
           return (
