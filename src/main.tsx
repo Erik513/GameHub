@@ -10,6 +10,7 @@ import {
   createLocalStorageCardLanguagePreferenceStore,
   createLocalStorageLanguagePreferenceStore,
 } from "./infrastructure/localStorageLanguagePreferenceStore";
+import { createLocalStoragePlayerGroupStore } from "./infrastructure/localStoragePlayerGroupStore";
 import { createLocalStoragePlayerRosterStore } from "./infrastructure/localStoragePlayerRosterStore";
 import { createLocalStoragePlayedCardsStore } from "./infrastructure/localStoragePlayedCardsStore";
 import { createLocalStorageTeamSetupMemory } from "./infrastructure/localStorageTeamSetupMemory";
@@ -37,6 +38,7 @@ const cardLanguagePreferenceStore = createLocalStorageCardLanguagePreferenceStor
 );
 const initialCardLanguage =
   parseSupportedLanguage(cardLanguagePreferenceStore.read()) ?? initialLanguage;
+const playerRosterStore = createLocalStoragePlayerRosterStore(window.localStorage);
 await gameHubI18n.changeLanguage(initialLanguage);
 
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
@@ -62,7 +64,8 @@ createRoot(rootElement).render(
       cardLanguagePreferenceStore={cardLanguagePreferenceStore}
       initialCardLanguage={initialCardLanguage}
       languagePreferenceStore={languagePreferenceStore}
-      playerRosterStore={createLocalStoragePlayerRosterStore(window.localStorage)}
+      playerGroupStore={createLocalStoragePlayerGroupStore(window.localStorage, playerRosterStore)}
+      playerRosterStore={playerRosterStore}
       teamSetupMemory={createLocalStorageTeamSetupMemory(window.localStorage)}
     />
   </StrictMode>,

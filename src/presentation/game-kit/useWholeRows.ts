@@ -14,6 +14,13 @@ export function useWholeRows(
   scroll: RefObject<HTMLElement | null>,
   rows: number,
   open: boolean,
+  /**
+   * Shows always this many rows (as far as the screen allows), also with fewer or more players, so a
+   * window with several views keeps its size. 0 shows as many rows as there are.
+   */
+  fixedRows = 0,
+  /** Another value that changes what is shown (for example the chosen tab); the height is calculated again. */
+  refreshKey = "",
 ): number | undefined {
   const [height, setHeight] = useState<number>();
 
@@ -31,7 +38,7 @@ export function useWholeRows(
       if (row <= 0) return setHeight(undefined);
       const gap = Number.parseFloat(getComputedStyle(list).rowGap) || 0;
       const pitch = row + gap;
-      const count = list.children.length;
+      const count = fixedRows > 0 ? fixedRows : list.children.length;
       // What the window needs besides the list (its content may already be cut off by the limit of the
       // window, so the height of the content is what it wants, not what it got), and what the screen
       // allows for the list.
@@ -48,7 +55,7 @@ export function useWholeRows(
     fit();
     window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
-  }, [open, rows, scroll]);
+  }, [fixedRows, open, refreshKey, rows, scroll]);
 
   return height;
 }

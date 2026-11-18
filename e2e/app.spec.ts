@@ -208,8 +208,16 @@ test("the player list and the player choice are large windows that show whole pl
     { length: 30 },
     (_, index) => `Player ${String(index + 1).padStart(2, "0")}`,
   );
+  // All players are in one group; a second, small group shows that the window keeps its size.
   await page.addInitScript((saved) => {
     window.localStorage.setItem("gamehub.players", JSON.stringify(saved));
+    window.localStorage.setItem(
+      "gamehub.playerGroups",
+      JSON.stringify([
+        { name: "Everyone", members: saved },
+        { name: "Few", members: saved.slice(0, 2) },
+      ]),
+    );
   }, names);
   await page.goto("/");
 
@@ -234,6 +242,7 @@ test("the player list and the player choice are large windows that show whole pl
       return {
         cutAtEnd: cutOff(),
         cutAtTop,
+        height: Math.round(dialog.height),
         heightShare: dialog.height / window.innerHeight,
         scrolls: scroll.scrollHeight > scroll.clientHeight,
         sideways: content.scrollWidth > content.clientWidth,
@@ -243,7 +252,14 @@ test("the player list and the player choice are large windows that show whole pl
 
   // The button and the window are called "Player list".
   await page.getByRole("button", { name: "Player list", exact: true }).click();
+  const groupList = await measure();
+  // Every view of the window is equally big: the list of groups and each group.
+  await page.getByRole("button", { name: /^Few/ }).click();
+  expect((await measure()).height).toBe(groupList.height);
+  await page.getByRole("button", { name: /^Back to the groups/ }).click();
+  await page.getByRole("button", { name: /^Everyone/ }).click();
   let window_ = await measure();
+  expect(window_.height).toBe(groupList.height);
   expect(window_.title).toBe("Player list");
   expect(window_.sideways).toBe(false);
   expect(window_.scrolls).toBe(true);
@@ -256,7 +272,13 @@ test("the player list and the player choice are large windows that show whole pl
   await page.getByRole("button", { name: "Play", exact: true }).first().click();
   await page.getByRole("tab", { name: /^Players/ }).click();
   await page.getByRole("button", { name: "Choose from player list" }).click();
+  const pickList = await measure();
+  await page.getByRole("button", { name: /^Few/ }).click();
+  expect((await measure()).height).toBe(pickList.height);
+  await page.getByRole("button", { name: /^Back to the groups/ }).click();
+  await page.getByRole("button", { name: /^Everyone/ }).click();
   window_ = await measure();
+  expect(window_.height).toBe(pickList.height);
   expect(window_.title).toBe("Choose players");
   expect(window_.sideways).toBe(false);
   expect(window_.scrolls).toBe(true);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { gameHubI18n, type SupportedLanguage } from "../i18n";
+import type { PlayerGroupStore } from "../business/shared/playerGroups";
 import type { PlayerRosterStore } from "../business/shared/playerRoster";
 import type { TeamSetupMemory } from "../business/shared/savedTeamSetup";
 import type { LanguagePreferenceStore } from "../i18n/languagePreference";
@@ -16,6 +17,8 @@ interface AppRootProps {
   languagePreferenceStore?: LanguagePreferenceStore;
   /** Keeps the saved players of all games. */
   playerRosterStore?: PlayerRosterStore;
+  /** Keeps the groups of the saved players. */
+  playerGroupStore?: PlayerGroupStore;
   /** Remembers the last teams and players for all games. */
   teamSetupMemory?: TeamSetupMemory;
 }
@@ -30,6 +33,7 @@ export function AppRoot({
   cardLanguagePreferenceStore,
   initialCardLanguage = "en",
   languagePreferenceStore,
+  playerGroupStore,
   playerRosterStore,
   teamSetupMemory,
 }: AppRootProps) {
@@ -43,7 +47,11 @@ export function AppRoot({
   return (
     <I18nextProvider i18n={gameHubI18n}>
       <DocumentLanguage />
-      <PlayerRosterProvider store={playerRosterStore}>
+      <PlayerRosterProvider
+        defaultGroupName={gameHubI18n.t("kitRoster.defaultGroup")}
+        groupStore={playerGroupStore}
+        store={playerRosterStore}
+      >
         <TeamSetupMemoryProvider memory={teamSetupMemory}>
           <App
             modules={modules}

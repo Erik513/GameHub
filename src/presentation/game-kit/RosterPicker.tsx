@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { PlayerGroup } from "../../business/shared/playerGroups";
 import { applyRosterSelection, rosterPlayersIn } from "../../business/shared/playerRoster";
 import { Button, Dialog, Icon } from "../components";
 import { ActionRow } from "./ActionRow";
+import { GroupButtons, PlayerChecklist } from "./GroupBox";
 import { usePlayerRoster } from "./PlayerRosterContext";
-import { PlayerRosterDialog } from "./PlayerRosterButton";
+import { PlayerRosterDialog, rosterRows } from "./PlayerRosterButton";
 import { useWholeRows } from "./useWholeRows";
 
 interface RosterPickerProps {
@@ -15,8 +17,9 @@ interface RosterPickerProps {
 }
 
 /**
- * The button "Choose from player list" and its window: tick who plays today. Chosen players are
- * added to the players field, deselected ones are removed; names typed by hand stay.
+ * The button "Choose from player list" and its window: the groups are listed, a tap on a group shows
+ * its players to tick who plays today. Chosen players are added to the players field, deselected ones
+ * are removed; names typed by hand stay.
  */
 export function RosterPicker({ onChange, value }: RosterPickerProps) {
   const { t } = useTranslation();
@@ -46,6 +49,7 @@ export function RosterPicker({ onChange, value }: RosterPickerProps) {
             onChange(text);
             setOpen(false);
           }}
+          groups={roster.groups}
           onCancel={() => setOpen(false)}
           players={roster.players}
           value={value}
@@ -61,11 +65,13 @@ export function RosterPicker({ onChange, value }: RosterPickerProps) {
 
 /** The content of the window; it is created anew on every opening, so the choice starts fresh. */
 function PickerBody({
+  groups,
   onApply,
   onCancel,
   players,
   value,
 }: {
+  readonly groups: readonly PlayerGroup[];
   readonly onApply: (text: string) => void;
   readonly onCancel: () => void;
   readonly players: readonly string[];
@@ -75,50 +81,87 @@ function PickerBody({
   const [selected, setSelected] = useState<ReadonlySet<string>>(() =>
     rosterPlayersIn(value, players),
   );
-  // The list shows whole players only: its height is calculated in whole rows (the body only exists
-  // while the window is open).
+  // The group whose players are shown instead of the list of groups.
+  const [openGroup, setOpenGroup] = useState<string>();
+  // The list shows whole rows only: its height is calculated in whole rows (the body only exists while
+  // the window is open).
   const listRef = useRef<HTMLDivElement>(null);
-  const listHeight = useWholeRows(listRef, players.length, true);
+  const listHeight = useWholeRows(listRef, players.length, true, rosterRows, openGroup ?? "");
 
   if (players.length === 0) return null;
 
-  const toggle = (name: string) => {
+  const toggle = (name: string, checked: boolean) => {
     const next = new Set(selected);
-    if (next.has(name)) next.delete(name);
-    else next.add(name);
+    if (checked) next.add(name);
+    else next.delete(name);
     setSelected(next);
   };
+  const count = (list: readonly string[]) =>
+    `${list.filter((player) => selected.has(player)).length}/${list.length}`;
+  const shown = groups.find((group) => group.name === openGroup);
+  // "Choose all" and "Choose none" work on the players that are shown (all players in the list of groups).
+  const visible = shown ? shown.members : players;
+  const allVisible = visible.length > 0 && visible.every((player) => selected.has(player));
 
   return (
     <div className="kit-roster kit-roster--pick">
-      <Button
-        onClick={() => setSelected(selected.size === players.length ? new Set() : new Set(players))}
-        variant="secondary"
-      >
-        {t(selected.size === players.length ? "kitRoster.pickNone" : "kitRoster.pickAll")}
-      </Button>
+      {/* Both views have the same build (buttons, a line of text, the list), so the window keeps its size. */}
+      <div className="kit-roster__pair" data-pair={shown ? "true" : "false"}>
+        {shown && (
+          <Button
+            aria-label={t("kitRoster.groupBackTo", { name: shown.name })}
+            className="kit-roster__wide"
+            onClick={() => setOpenGroup(undefined)}
+            variant="secondary"
+          >
+            <Icon name="arrowLeft" />
+            <span className="kit-roster__wide-text">{shown.name}</span>
+          </Button>
+        )}
+        <Button
+          className="kit-roster__wide"
+          disabled={visible.length === 0}
+          onClick={() => {
+            const next = new Set(selected);
+            for (const player of visible) {
+              if (allVisible) next.delete(player);
+              else next.add(player);
+            }
+            setSelected(next);
+          }}
+          variant="secondary"
+        >
+          {t(allVisible ? "kitRoster.pickNone" : "kitRoster.pickAll")}
+        </Button>
+      </div>
+      <h3 className="kit-roster__line">{shown ? shown.name : t("kitRoster.groupsTitle")}</h3>
       <div
         className="kit-roster__scroll"
         ref={listRef}
         {...(listHeight === undefined ? {} : { style: { height: listHeight } })}
       >
-        <ul
-          aria-label={t("kitRoster.listLabel")}
-          className="kit-roster__list kit-roster__list--pick"
-        >
-          {players.map((player) => (
-            <li key={player}>
-              <label>
-                <input
-                  checked={selected.has(player)}
-                  onChange={() => toggle(player)}
-                  type="checkbox"
-                />
-                <span>{player}</span>
-              </label>
-            </li>
-          ))}
-        </ul>
+        {shown ? (
+          shown.members.length === 0 ? (
+            <p>{t("kitRoster.groupEmpty")}</p>
+          ) : (
+            <PlayerChecklist
+              isChecked={(player) => selected.has(player)}
+              label={t("kitRoster.groupMembers", { name: shown.name })}
+              onToggle={toggle}
+              players={shown.members}
+            />
+          )
+        ) : (
+          <GroupButtons
+            groups={groups.map((group) => ({
+              count: count(group.members),
+              key: group.name,
+              title: group.name,
+            }))}
+            label={t("kitRoster.groupsTitle")}
+            onOpen={setOpenGroup}
+          />
+        )}
       </div>
       <ActionRow>
         <Button

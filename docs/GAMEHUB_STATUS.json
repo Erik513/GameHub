@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T22:17:29.585Z",
+    "updatedAt": "2026-11-18T23:14:14.182Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 132,
+      "completedTasks": 133,
       "totalTasks": 196,
-      "percent": 67.3
+      "percent": 67.9
     }
   },
   "environment": {
@@ -85,10 +85,10 @@
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-18T20:18:27.061Z",
+      "lastRunAt": "2026-11-18T23:14:14.182Z",
       "passed": 675,
       "failed": 0,
-      "details": "867 Unit- und Komponententests bestanden, darunter die Bausteine und Tastenkürzel des PC-Layouts."
+      "details": "889 Unit- und Komponententests bestanden, darunter Gruppenlogik, Speicher und Gruppenoberfläche in Deutsch und Englisch."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,7 +99,7 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-18T20:18:27.061Z",
+      "lastRunAt": "2026-11-18T23:14:14.182Z",
       "passed": 31,
       "failed": 0,
       "details": "64 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, darunter die neue PC-Layoutprüfung bei 1024, 1280 und 1920 Pixel in beiden Sprachen; 40 Handy-Prüfungen werden auf dem Desktop-Projekt (und umgekehrt) bewusst übersprungen."
@@ -340,7 +340,7 @@
         {
           "id": "Al-09-08",
           "title": "Spielergruppen in der Spielerverwaltung (zum Beispiel Freundesgruppen)",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-09-09",
@@ -1341,6 +1341,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-18",
+      "summary": "Spielergruppen (Al-09-08): Die Spielerliste besteht nur noch aus Gruppen; jeder Spieler ist in mindestens einer Gruppe und wird nur in einer Gruppe hinzugefügt; Auflistung der Gruppen, Klick zeigt die Spieler; Fenster in allen Ansichten gleich groß."
+    },
     {
       "date": "2026-11-18",
       "summary": "PC-Layout für Tabu fertig (Al-08-01 bis Al-08-05): Einrichtung nebeneinander, Runde mit Seitenfeld und Tastenkürzeln, Übersichten und Ergebnis in zwei Spalten, Kartenverwaltung mit beiden Teilen nebeneinander, PC-Layoutprüfung; Handy unverändert."
