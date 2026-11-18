@@ -178,7 +178,7 @@
             <ul id="werewolf-ui-views" class="list"></ul>
             <p id="werewolf-ui-proposal" class="lineup-note" style="margin-top: 14px"></p>
             <p id="werewolf-ui-open" class="lineup-note"></p>
-            <p class="stage-note"><a id="werewolf-ui-document" href="./GAMEHUB_WERWOLF_UI.md">UI-Spezifikation und Übergabe für Claude Code</a></p>
+            <p class="stage-note"><a id="werewolf-ui-document" href="./GAMEHUB_WERWOLF_HANDOFF.md">UI-Planung und technische Übergabe für Claude Code</a></p>
           </article>
 
           <article id="werewolf-lineup-overview" class="card full" aria-labelledby="werewolf-lineup-heading" hidden>
@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T23:14:14.182Z",
+    "updatedAt": "2026-11-18T23:26:05.371Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 133,
-      "totalTasks": 196,
-      "percent": 67.9
+      "completedTasks": 212,
+      "totalTasks": 276,
+      "percent": 76.8
     }
   },
   "environment": {
@@ -1184,7 +1184,7 @@
         },
         {
           "id": "Ta-10-09",
-          "title": "Spieler-Reiter aus Tabu entfernen (lokal ohne Spieler; online nur Teams-Reiter mit den Namen der Lobby)",
+          "title": "Optional: Spieler-Reiter aus Tabu entfernen (bleibt vorerst drin; lokal ohne Spieler, online nur Teams-Reiter mit den Namen der Lobby)",
           "status": "planned"
         },
         {
@@ -1339,11 +1339,11 @@
         {
           "id": "We-01-02",
           "title": "Nachtlogik für Seherin und Werwölfe",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "We-01-04",
-          "title": "Nachtansicht für den Erzähler",
+          "title": "Nachtphasen und Rollenaktionen in der zentralen Erzähleransicht umsetzen",
           "status": "planned"
         },
         {
@@ -1354,47 +1354,465 @@
         {
           "id": "We-01-06",
           "title": "Rollen auslosen und verdeckt zuteilen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "We-01-08",
           "title": "Nominierung und Tagesabstimmung",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "We-01-09",
           "title": "Siegbedingungen für Dorf und Werwölfe",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "We-01-10",
-          "title": "Morgenansicht für Werwolf",
+          "title": "Morgenübergang und Bekanntgabe der Verstorbenen in der Erzähleransicht umsetzen",
           "status": "planned"
         },
         {
           "id": "We-01-26",
-          "title": "Einrichtung für Werwolf",
+          "title": "Feste Rollenkonfiguration mit Variantenbuttons, Pflichtrollen und separater Wolfsempfehlung umsetzen",
           "status": "planned"
         },
         {
           "id": "We-01-27",
-          "title": "Verdeckte Rollenanzeige für Werwolf",
+          "title": "Verdeckte Rollenverteilung mit gehaltener Hochziehkarte umsetzen",
           "status": "planned"
         },
         {
           "id": "We-01-28",
-          "title": "Tagesansicht für Diskussion und Nominierung",
+          "title": "Tagesphase mit Diskussion, Nominierung und Tag beenden umsetzen",
           "status": "planned"
         },
         {
           "id": "We-01-29",
-          "title": "Abstimmungsansicht für Werwolf",
+          "title": "Abstimmung mit benannten Stimmen und Rollenregeln in die Erzähleransicht integrieren",
           "status": "planned"
         },
         {
           "id": "We-01-30",
-          "title": "Ergebnisansicht für Werwolf",
+          "title": "Gewinneransicht anbinden; Gestaltung erst am Ende mit Claude Code abstimmen",
           "status": "planned"
+        },
+        {
+          "id": "We-01-31",
+          "title": "Rollenraster mit verfügbaren/gesperrten Freigabegruppen und i-Erklärungen umsetzen",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-32",
+          "title": "Variable Rollen-/Itemkonfiguration nach späterer UI-Abstimmung anbinden",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-33",
+          "title": "UI- und technische Übergabe einschließlich aktueller HTML-Aufgaben pflegen",
+          "status": "done",
+          "validation": "Technische Quellpfade geprüft; beide verwendeten HTML-Dateien im Browser kontrolliert, alle 93 Werwolf-Aufgaben und vier Übergabedokumente identisch; Snapshot-Prüfungen bestanden."
+        },
+        {
+          "id": "We-01-34",
+          "title": "Hauptansicht mit Spieler-/Sitzplatzreitern, Erzählerplatz und Startaktionen umsetzen",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-35",
+          "title": "Spieler-/Sitzplatzreiter, Kreisübersicht und Namensanzeige durch Gedrückthalten dokumentieren",
+          "status": "done"
+        },
+        {
+          "id": "We-01-36",
+          "title": "Gemeinsame Spielaktionen bestätigen und verbleibende Hauptansicht-Entscheidungen eingrenzen",
+          "status": "done"
+        },
+        {
+          "id": "We-01-37",
+          "title": "Erzählerzuweisung und festen Platz unten mittig dokumentieren",
+          "status": "done"
+        },
+        {
+          "id": "We-01-38",
+          "title": "Feste Rollenkonfiguration mit Freigabezeilen, Rollenbuttons und Infos dokumentieren",
+          "status": "done"
+        },
+        {
+          "id": "We-01-39",
+          "title": "Optionalen Varianten-Auswahlbutton für den Jäger dokumentieren",
+          "status": "done"
+        },
+        {
+          "id": "We-01-40",
+          "title": "Anzeige einer abweichenden Wolfsempfehlung und Auswahlprinzip dokumentieren",
+          "status": "done"
+        },
+        {
+          "id": "We-01-41",
+          "title": "Manuelle Wolfswahl bei festen Rollen und kompakte Empfehlung verbindlich dokumentieren",
+          "status": "done"
+        },
+        {
+          "id": "We-01-42",
+          "title": "Vorhandene Rollen- und Partieeinstellungen vollständig für die Konfiguration festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-01-43",
+          "title": "Allgemeine Einstellungen und optionale Rollenvarianten-Auswahl bestätigen",
+          "status": "done"
+        },
+        {
+          "id": "We-01-44",
+          "title": "Erweiterte private Live-Kreisübersicht mit Detailfeld und Legende umsetzen",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-45",
+          "title": "Ganz zuletzt: optionale Spielverlaufsansicht nach Partieende prüfen",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "We-02",
+      "name": "Optionale Sonderrollen",
+      "area": "werewolf",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "We-02-01",
+          "title": "Leibwächter und nächtlichen Schutz umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-02-02",
+          "title": "Hexe mit Heiltrank und Gifttrank umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-02-03",
+          "title": "Jäger und Siegprüfung nach dem letzten Schuss umsetzen",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "We-03",
+      "name": "Rollenregeln, Konfiguration und Balance",
+      "area": "werewolf",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "We-03-01",
+          "title": "Amor, Liebespaar und gemeinsamen Sieg umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-02",
+          "title": "Dorftrottel und Stummschaltung in der Tagesabstimmung umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-03",
+          "title": "Doppelte Stimme und geheimen Bürgermeister-Hammer umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-04",
+          "title": "Vollständige Werwolf-Partien automatisiert durchspielen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-05",
+          "title": "Harter Bursche, Seher-Lehrling und Paranormaler Ermittler",
+          "status": "done"
+        },
+        {
+          "id": "We-03-06",
+          "title": "Trunkenbold und Enthüllung umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-07",
+          "title": "Leibwächter mit Abwehr oder Selbstopfer simulieren",
+          "status": "done"
+        },
+        {
+          "id": "We-03-08",
+          "title": "Magier und seine zwei Zauber umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-09",
+          "title": "Gerber mit wählbarer Siegbedingung umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-10",
+          "title": "Schutzamulett mit Schutz und nächtlicher Weitergabe umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-11",
+          "title": "Zulässige Wolfszahlen, Rollen und Gegenstände je Spielerzahl festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-12",
+          "title": "Wolfssiegquoten für zwei Zehnerbesetzungen simulieren",
+          "status": "done"
+        },
+        {
+          "id": "We-03-13",
+          "title": "Wolfssiegquoten für vier Aufstellungen mit sechs Spielern simulieren",
+          "status": "done"
+        },
+        {
+          "id": "We-03-14",
+          "title": "Übrige Sonderrollen und Schutzamulett bei sechs Spielern bewerten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-15",
+          "title": "Hexe mit Dorftrottel und Leibwächter bei sechs Spielern prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-16",
+          "title": "Vorsichtige Abstimmungen in der Sechser-Simulation prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-17",
+          "title": "Aussetzen am ersten Tag ohne Opfer simulieren",
+          "status": "done"
+        },
+        {
+          "id": "We-03-18",
+          "title": "Zurückhaltenden Trankeinsatz der Hexe simulieren",
+          "status": "done"
+        },
+        {
+          "id": "We-03-19",
+          "title": "Wissen von Seherin und Hexe bei Nominierung und Abstimmung simulieren",
+          "status": "done"
+        },
+        {
+          "id": "We-03-20",
+          "title": "Ersten Wolfsangriff und abstimmungsarmen zweiten Tag simulieren",
+          "status": "done"
+        },
+        {
+          "id": "We-03-21",
+          "title": "Werwolf-Besetzung für sechs Spieler festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-22",
+          "title": "Werwolf-Besetzung für 7 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-23",
+          "title": "Werwolf-Besetzung für 8 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-24",
+          "title": "Werwolf-Besetzung für 9 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-25",
+          "title": "Werwolf-Besetzung für 10 Spieler festlegen, Hammer und Ermittler prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-26",
+          "title": "Werwolf-Besetzung für 11 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-27",
+          "title": "Werwolf-Besetzung für 12 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-28",
+          "title": "Werwolf-Besetzung für 13 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-29",
+          "title": "Werwolf-Besetzung für 14 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-30",
+          "title": "Werwolf-Besetzung für 15 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-31",
+          "title": "Jäger mit allen freigegebenen Sonderrollen bei sechs Spielern prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-32",
+          "title": "Leibwächter und Dorfmatratze getrennt umsetzen und bei sechs Spielern vergleichen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-33",
+          "title": "Werwolf-Überzahl bei gemischtem Liebespaar als Sieg werten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-34",
+          "title": "Jeden Gleichstand als Wolfssieg werten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-35",
+          "title": "Rollenpunkte, Wolfszahl-Empfehlung und Wertetabelle umsetzen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-36",
+          "title": "Punkteempfehlung von Freigabegrenzen lösen und Fünfzehner-Besetzung prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-37",
+          "title": "Punkteberechnung ohne gewöhnliche Dorfbewohner bei 15 Spielern prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-38",
+          "title": "Dynamische Rollenverfügbarkeit für die spätere Einrichtung festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-39",
+          "title": "Bestehende Wolfsgrenzen bis 16 Spieler festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-40",
+          "title": "Werwolf-Besetzung für 16 Spieler prüfen und festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-41",
+          "title": "Wolfszahlen und Besetzung für 17 Spieler prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-42",
+          "title": "Vier Wölfe als Standard für 17 Spieler festlegen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-43",
+          "title": "Allgemeinen Standard und rollenabhängigen UI-Hinweis trennen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-44",
+          "title": "Allgemeinen Standard für 16 anhand der Archive prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-45",
+          "title": "Wolfszahlen und Besetzung für 18 Spieler prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-46",
+          "title": "Wolfszahlen und Besetzung für 19 Spieler prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-47",
+          "title": "Wolfszahlen und Besetzung für 20 Spieler prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-48",
+          "title": "Originalregel-Abgleich und Grenzen rollenabhängiger Empfehlungen festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-49",
+          "title": "Verbindliche automatische Wolfszahl statt manueller Auswahl festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-50",
+          "title": "Automatische Wolfszuteilung innerhalb geprüfter Grenzen validieren",
+          "status": "done"
+        },
+        {
+          "id": "We-03-51",
+          "title": "Feste und variable Einrichtung mit Bereichen sowie Hammerfolge festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-52",
+          "title": "Variable Rollen- und Itempools mit Mindest- und Höchstzahl umsetzen und prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-53",
+          "title": "Maximale Todesfolge einer Nacht samt Morgenauflösung prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-54",
+          "title": "Freiwilligen oder verpflichtenden Jägerschuss konfigurieren und prüfen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-55",
+          "title": "Rollen, Items und Wolfszahlen für 6–20 Spieler im Dashboard gegenüberstellen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-56",
+          "title": "Rollenübersicht in regulärer und gemeinsamer Dashboard-Datei bereitstellen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-57",
+          "title": "Ein und zwei Werwölfe bei acht Spielern erneut mit gleichen Besetzungen vergleichen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-58",
+          "title": "Wolfszahlen für 7, 9–11 nachprüfen und bestätigte Achter-Regel übernehmen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-59",
+          "title": "Genau zwei Wölfe bei 9 und 10 Spielern verbindlich festhalten",
+          "status": "done"
+        },
+        {
+          "id": "We-03-60",
+          "title": "Zusatzoptionen für 7 und 11 Spieler verbindlich übernehmen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-61",
+          "title": "Wolfszahl erst nach konkreter Rollen- und Itemziehung berechnen",
+          "status": "done"
+        },
+        {
+          "id": "We-03-62",
+          "title": "Festen Spieleinstieg mit manueller erlaubter Wolfszahl und separater Empfehlung ergänzen",
+          "status": "done",
+          "validation": "253 gezielte Tests bestanden; geprüfte Logik 99,54 % Zeilen / 97,48 % Zweige, fester Einstieg 100 %; Typprüfung, ESLint und Schichtprüfung erfolgreich."
         }
       ]
     },
@@ -1574,6 +1992,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-19",
+      "summary": "Werwolf: manuellen festen Spieleinstieg mit getrennter Wolfsempfehlung abgeschlossen (253 Tests). Gewinneransicht als benötigten Abschluss mit späterer Gestaltung festgehalten. Technische Claude-Code-Übergabe ergänzt; sämtliche Werwolf-Aufgaben und Phasen in beiden tatsächlichen HTML-Kopien abgeglichen, übrige Spiele bewahrt."
+    },
     {
       "date": "2026-11-18",
       "summary": "Spielergruppen (Al-09-08): Die Spielerliste besteht nur noch aus Gruppen; jeder Spieler ist in mindestens einer Gruppe und wird nur in einer Gruppe hinzugefügt; Auflistung der Gruppen, Klick zeigt die Spieler; Fenster in allen Ansichten gleich groß."
@@ -2305,7 +2727,7 @@
   },
   "werewolfUiPlan": {
     "title": "UI-Planung für Werwolf",
-    "stage": "Zentrale Erzähleransicht und erster Entwurf der erweiterten Live-Kreisübersicht sind dokumentiert. Symbolik und Zustandsdetails bleiben offen; vollständiger Spielverlauf erst ganz zum Schluss.",
+    "stage": "UI-Grundlagen und technische Übergabe dokumentiert; fester manueller Spieleinstieg geprüft. Oberfläche noch umzusetzen, einzelne Bedien- und Logikdetails offen.",
     "views": [
       {
         "name": "Hauptansicht",
@@ -2321,11 +2743,16 @@
         "name": "Spielablauf",
         "status": "Zentrale Ansicht und Live-Kreis-Entwurf festgehalten",
         "purpose": "Eine zentrale Spielansicht mit Tag-/Nachtanzeige, Rollenpresets, Aktionsaufnahme und phasenabhängiger Navigation; zusätzliche Übersichten separat."
+      },
+      {
+        "name": "Spielabschluss",
+        "status": "Benötigt; Gestaltung ausdrücklich später",
+        "purpose": "Gewinneransicht an den vorhandenen Endzustand anbinden; Gestaltung am Ende mit Claude Code."
       }
     ],
-    "proposal": "Erweiterter Kreis als Livezustandsbild: Spielerkachel mit Anfangsbuchstabe, drei Symbolslots links (Rolle/eigene Ressourcen) und drei rechts (erhaltene Effekte, Herz oben). Entwurf: tot schwarz, lebend blau/Wölfe grau, angegriffen rot, verwundeter Harter Bursche dunkelrot; Amulett goldener und Trunkenbold grüner Rahmen, grün außen. Kreis ungefähr untere 60–70 % als flexibler Richtwert, gehaltene Spielerinfos darüber; Legende in extra Fenster. Nur dokumentiert.",
-    "open": "Offen: vollständige Symbole, verbrauchte Ressourcen, rechte Effekt-Slots, Farbprioritäten/Rettung, Trunkenbold-Rolle und Sonderfall Jäger-Enthüllung, genaue Detailfelder und Zugang zur Übersicht. Grüner Rahmen bei Tod als Trunkenbold bis Spielende. Spielverlaufsansicht ist optionale Erweiterung ausdrücklich ganz zuletzt.",
-    "document": "GAMEHUB_WERWOLF_UI.md"
+    "proposal": "Bestätigte drei Bereiche: Hauptansicht, Konfiguration und zentraler Spielablauf mit abschließender Gewinneransicht. Technische Übergabe enthält Dateipfade, feste/variable Einstiege, Fachereignisse, Zustandsfelder, Prüfungen und offene Grenzen. Live-Kreis bleibt erster Entwurf mit ungefähr 60–70 % Platz, gehaltenen Details und separater Legende. Aufgabenliste auf aktuellen Stand abgeglichen.",
+    "open": "Vor Umsetzung betroffener Teile klären: Zurück/Undo, Abbruch, einheitliche Tarnaufrufe, variable Bedienung, Sitz-/Auswahlkonflikte und Live-Kreis-Symbole/Statusprioritäten/historische Daten. Gewinneransicht erforderlich; Gestaltung später. Vollständiger Spielverlauf ganz zuletzt.",
+    "document": "GAMEHUB_WERWOLF_HANDOFF.md"
   }
 };
       const REFRESH_INTERVAL_MS = 20_000;

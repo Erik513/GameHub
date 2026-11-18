@@ -655,7 +655,7 @@ Ziel: Die Rückmeldungen des Auftraggebers zur Oberfläche von Tabu (eine Seite 
 - **Ta-10-06:** Endansicht mit Gewinnerblock, Reitern, Konfetti und neuen Knopftexten („Erneut spielen“, „Zurück zum Hauptmenü“). Status: done
 - **Ta-10-07:** Neuer Einstieg: Aufstellung zuerst, Spieleinstellungen als eigener Bildschirm (Symbolknopf links neben „Spiel starten“, „Fertig“). Status: done
 - **Ta-10-08:** Aufstellung überarbeitet: Teamreihenfolge (Platznummer außerhalb der Box, Symbolknöpfe für Standard und Zufall), „Spieler leeren“, „Spieler entfernen“, Info-Knopf an jeder Überschrift neben dem Text (`HeadingLegend`). Status: done
-- **Ta-10-09:** Spieler-Reiter aus Tabu entfernen: lokal sind Spieler nicht relevant, online reicht der Teams-Reiter mit den Namen aller, die der Lobby beigetreten sind (fest, nicht eingetippt). Bleibt im Kit für andere Spiele. Hängt vom Online-Tabu ab. Status: planned
+- **Ta-10-09:** Spieler-Reiter aus Tabu entfernen: lokal sind Spieler nicht relevant, online reicht der Teams-Reiter mit den Namen aller, die der Lobby beigetreten sind (fest, nicht eingetippt). Bleibt im Kit für andere Spiele. Hängt vom Online-Tabu ab. **Entscheidung des Auftraggebers (2026-11-19): Der Spieler-Reiter bleibt vorerst in Tabu; die Aufgabe ist nur noch optional und wird nicht ohne neue Freigabe begonnen.** Status: planned
 
 ### Phase Al-08 – PC-Layout für alle Spiele
 
@@ -927,3 +927,7 @@ Die Spieltabs zeigen zuerst die Regeln und danach die Spiellogik mit ihren Prüf
 ## 8. Aktueller Freigabepunkt
 
 Die Projektvorbereitung ist abgeschlossen. Die eigentliche Implementierung beginnt erst nach ausdrücklicher Freigabe mit `Al-02-01`.
+
+## Aktuelle Werwolf-Übergabe (19.11.2026)
+
+Für Werwolf sind GAMEHUB_WERWOLF_HANDOFF.md und GAMEHUB_WERWOLF_UI.md der aktuelle Einstieg; ihre bestätigten Anforderungen ersetzen ältere Darstellungsannahmen. Technische Übergabe enthält Arbeitsordner/Branch, unversionierten Stand, APIs, Fachereignisse und offene Grenzen. We-03-62 (manuelle erlaubte Wolfszahl mit separater Empfehlung) ist geprüft abgeschlossen. Nacht/Morgen/Tag/Abstimmung sind Inhalte einer zentralen Erzähleransicht. Gewinneransicht We-01-30 bleibt umzusetzen; Gestaltung ausdrücklich erst am Ende mit Claude Code. Aktuelle Aufgaben in GAMEHUB_STATUS.json und GAMEHUB_DEVELOPMENT.html beachten. Keine Produkt-UI in diesem Übergabeschritt umgesetzt.
