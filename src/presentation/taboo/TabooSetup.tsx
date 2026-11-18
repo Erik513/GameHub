@@ -11,7 +11,7 @@ import { initialTeamSetup, type TeamSetupValue } from "../../business/shared/tea
 import type { SupportedLanguage } from "../../i18n";
 import { useNotice } from "../components";
 import { useGameBack, useGameExit } from "../GameChrome";
-import { focusIsLost } from "../game-kit";
+import { focusIsLost, useIsDesktop } from "../game-kit";
 import { TabooClassicScreens } from "./TabooClassicScreens";
 import type { TabooGenerators } from "./TabooGeneration";
 import { TabooLineup } from "./TabooLineup";
@@ -167,20 +167,24 @@ export function TabooSetup({
       : undefined,
   );
 
-  const lineupVisible =
-    !settings.settingsOpen && !session && !round && !raceSession && !countdownSession;
-  const settingsVisible =
-    settings.settingsOpen && !session && !round && !raceSession && !countdownSession;
+  // At the PC the line-up and the settings are side by side; on a phone the settings are a view of
+  // their own above the line-up.
+  const desktop = useIsDesktop();
+  const noGame = !session && !round && !raceSession && !countdownSession;
+  const lineupVisible = (desktop || !settings.settingsOpen) && noGame;
+  const splitVisible = desktop && noGame;
+  const settingsOnItsOwn = !desktop && settings.settingsOpen && noGame;
+  const settingsVisible = settingsOnItsOwn || splitVisible;
   // When the settings open, the line-up goes away with the button that was pressed: the focus goes to
   // the chosen tab of the settings, so the keyboard and screen readers start there.
   const settingsScreen = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!settingsVisible) return;
+    if (!settingsOnItsOwn) return;
     if (!focusIsLost()) return;
     settingsScreen.current
       ?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
       ?.focus({ preventScroll: true });
-  }, [settingsVisible]);
+  }, [settingsOnItsOwn]);
 
   const screen: TabooScreen = lineupVisible
     ? "lineup"
@@ -195,7 +199,7 @@ export function TabooSetup({
             : "menu";
   useEffect(() => onScreenChange?.(screen), [onScreenChange, screen]);
   // In the settings the header offers a way back to the line-up.
-  useGameBack(settingsVisible, () => {
+  useGameBack(settingsOnItsOwn, () => {
     start.abort();
     settings.setSettingsOpen(false);
   });
@@ -223,7 +227,7 @@ export function TabooSetup({
   }
 
   return (
-    <div className="taboo-setup">
+    <div className="taboo-setup" data-split={splitVisible}>
       <TabooClassicScreens
         game={game}
         generationEmpty={start.generationEmpty}
@@ -289,7 +293,7 @@ export function TabooSetup({
         <TabooSetupForm
           attempt={attempt}
           formRef={settings.formRef}
-          messagesVisible={settingsVisible}
+          messagesVisible={settingsOnItsOwn}
           rulesActive={!(round ?? session ?? raceSession ?? countdownSession)}
           cardLanguage={cardLanguage}
           categoryIds={categoryIds}

@@ -30,3 +30,7 @@ export { usePlayerDrag } from "./usePlayerDrag";
 export { useScreenScroll } from "./useScreenScroll";
 export { useStopwatch } from "./useStopwatch";
 export { focusIsLost, useFocusOnShow } from "./useFocusOnShow";
+export { desktopMediaQuery, useIsDesktop } from "./desktopLayout";
+export { ShortcutHint } from "./ShortcutHint";
+export { SplitScreen } from "./SplitScreen";
+export { duplicateShortcutKeys, useShortcuts, type Shortcut } from "./useShortcuts";

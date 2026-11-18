@@ -1,4 +1,5 @@
 import { test, type Page } from "@playwright/test";
+import { closeSettings, openSettings } from "./setupSteps";
 import { snapshotStyles } from "./styleSnapshot";
 
 /**
@@ -28,7 +29,7 @@ for (const [width, height] of [
     await snapshotStyles(page, `wide ${width} library`);
     await press("Play");
     await snapshotStyles(page, `wide ${width} lineup`);
-    await press("Game settings");
+    await openSettings(page, "Game settings");
     for (const mode of ["Classic", "Against the clock", "Race"]) {
       await page.getByRole("radio", { name: mode }).check({ force: true });
       await snapshotStyles(page, `wide ${width} settings ${mode}`);
@@ -37,7 +38,7 @@ for (const [width, height] of [
     await snapshotStyles(page, `wide ${width} cards tab`);
     await page.getByRole("tab", { name: "Game settings" }).click();
     await page.getByRole("radio", { name: "Classic" }).check({ force: true });
-    await press("Done");
+    await closeSettings(page, "Done");
     await press("Start game");
     await snapshotStyles(page, `wide ${width} round overview`);
     await press("Start round");

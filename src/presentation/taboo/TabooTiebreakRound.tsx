@@ -14,13 +14,8 @@ import { TimerHud, useStopwatch } from "../game-kit";
 import { formatSeconds } from "./formatTime";
 import { monotonicNow } from "../monotonicClock";
 import { useFocusOnShow } from "../game-kit/useFocusOnShow";
+import { TabooTurnActions } from "./TabooTurnActions";
 
-const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
-const outcomeVariants = {
-  correct: "success",
-  skipped: "secondary",
-  forbiddenWord: "danger",
-} as const;
 const limitMs = TIEBREAK_LIMIT_SECONDS * 1000;
 
 interface TabooTiebreakRoundProps {
@@ -137,27 +132,17 @@ export function TabooTiebreakRound({
           </ul>
         </div>
       )}
-      <div className="taboo-round__actions" data-skip-hidden={active.skipUsed}>
-        {outcomes
-          .filter((outcome) => outcome !== "skipped" || !active.skipUsed)
-          .map((outcome) => (
-            <Button
-              key={outcome}
-              data-outcome={outcome}
-              disabled={paused}
-              variant={outcomeVariants[outcome]}
-              onClick={() => answer(outcome)}
-            >
-              {t(`tabooRound.${outcome}`)}
-              {outcome === "forbiddenWord" && (
-                <small aria-hidden="true">{t("tabooTiebreak.forbiddenHint")}</small>
-              )}
-              {outcome === "skipped" && (
-                <small aria-hidden="true">{t("tabooRound.skipOnce")}</small>
-              )}
-            </Button>
-          ))}
-      </div>
+      <TabooTurnActions
+        disabled={() => false}
+        hints={{
+          forbiddenWord: t("tabooTiebreak.forbiddenHint"),
+          skipped: t("tabooRound.skipOnce"),
+        }}
+        onPress={answer}
+        onTogglePause={onResume}
+        paused={paused}
+        skipHidden={active.skipUsed}
+      />
     </section>
   );
 }

@@ -162,16 +162,13 @@ export function TabooCountdownGame({
           skipUsed={account?.skipUsed ?? false}
           startedAt={clock.startedAt}
           teamName={teamName(active.teamIndex)}
-          {...(configuration.autoSwitch === true
-            ? {
-                teams: configuration.teams.map((team, index) => ({
-                  eliminated: running.teams[index]?.eliminated ?? false,
-                  id: team.id,
-                  name: team.name,
-                  remainingMs: running.teams[index]?.remainingMs ?? 0,
-                })),
-              }
-            : {})}
+          showRow={configuration.autoSwitch === true}
+          teams={configuration.teams.map((team, index) => ({
+            eliminated: running.teams[index]?.eliminated ?? false,
+            id: team.id,
+            name: team.name,
+            remainingMs: running.teams[index]?.remainingMs ?? 0,
+          }))}
         />
         {dropped && (
           <Toast key={dropped.id} tone="info">

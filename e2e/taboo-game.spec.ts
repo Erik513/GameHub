@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { closeSettings, openSettings } from "./setupSteps";
 
 const cases = [
   {
@@ -56,12 +57,12 @@ for (const labels of cases) {
     await page.getByRole("button", { name: labels.open, exact: true }).first().click();
     if (labels.language === "de") {
       // The German game ends in a tie; switch the tiebreak off to check the shared win.
-      await page.getByRole("button", { name: labels.settings, exact: true }).click();
+      await openSettings(page, labels.settings);
       await page
         .getByRole("group", { name: "Stechen bei Gleichstand" })
         .getByRole("radio", { name: "Aus" })
         .check();
-      await page.getByRole("button", { name: labels.done, exact: true }).click();
+      await closeSettings(page, labels.done);
     }
     await page.getByRole("button", { name: labels.lineup, exact: true }).click();
     await page.getByRole("button", { name: labels.start, exact: true }).click();
@@ -95,7 +96,9 @@ for (const labels of cases) {
     await expect(points("Team 1")).toHaveText(/1$/);
     await expect(round).toHaveCount(0);
     await page.getByRole("button", { name: labels.start, exact: true }).click();
-    await expect(round.getByText("Team 2", { exact: true })).toBeVisible();
+    await expect(
+      round.locator(".kit-hud__title").getByText("Team 2", { exact: true }),
+    ).toBeVisible();
     if (labels.language === "de") await round.getByRole("button", { name: labels.correct }).click();
     await page.clock.fastForward(60_000);
     // The short game has three rounds for two teams: play the remaining four turns without points.
@@ -114,7 +117,7 @@ for (const labels of cases) {
     await page.reload();
     await expect(round).toHaveCount(0);
     await expect(page.getByRole("button", { name: labels.lineup, exact: true })).toBeVisible();
-    await page.getByRole("button", { name: labels.settings, exact: true }).click();
+    await openSettings(page, labels.settings);
     await expect(
       page.getByRole("group", { name: labels.rounds }).getByRole("radio", { name: /3/ }),
     ).toBeChecked();

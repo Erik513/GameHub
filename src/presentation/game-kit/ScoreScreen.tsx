@@ -84,52 +84,54 @@ export function ScoreScreen({
       tabIndex={-1}
     >
       {celebrate && <Confetti />}
-      {progress && (
-        <div
-          aria-label={eyebrow ?? ariaLabel}
-          aria-valuemax={progress.max}
-          aria-valuemin={0}
-          aria-valuenow={progress.value}
-          className="kit-progress"
-          role="progressbar"
-        >
-          <span style={{ width: `${Math.min(100, (progress.value / progress.max) * 100)}%` }} />
-        </div>
-      )}
-      {eyebrow && <p className="kit-score-screen__eyebrow">{eyebrow}</p>}
-      {winner && (
-        <div className="kit-winner" role="status">
-          <span>{winner.label}</span>
-          <span className="visually-hidden">: </span>
-          <strong>{winner.names}</strong>
-        </div>
-      )}
-      {intro}
-      {extraTab ? (
-        <SetupTabs
-          ariaLabel={tabLabel ?? standings?.title ?? ariaLabel}
-          initial={extraTabFirst ? "extra" : "standings"}
-          tabs={[
-            {
-              id: "standings",
-              label: tabLabel ?? standings?.tabLabel ?? standings?.title ?? ariaLabel,
-              content: (
-                <>
-                  {board}
-                  {children}
-                </>
-              ),
-            },
-            { id: "extra", label: extraTab.label, content: extraTab.content },
-          ]}
-        />
-      ) : (
-        <div className="kit-score-box">
-          {standings && <h2>{standings.title}</h2>}
-          {board}
-          {children}
-        </div>
-      )}
+      <div className="kit-score-screen__main">
+        {progress && (
+          <div
+            aria-label={eyebrow ?? ariaLabel}
+            aria-valuemax={progress.max}
+            aria-valuemin={0}
+            aria-valuenow={progress.value}
+            className="kit-progress"
+            role="progressbar"
+          >
+            <span style={{ width: `${Math.min(100, (progress.value / progress.max) * 100)}%` }} />
+          </div>
+        )}
+        {eyebrow && <p className="kit-score-screen__eyebrow">{eyebrow}</p>}
+        {winner && (
+          <div className="kit-winner" role="status">
+            <span>{winner.label}</span>
+            <span className="visually-hidden">: </span>
+            <strong>{winner.names}</strong>
+          </div>
+        )}
+        {intro}
+        {extraTab ? (
+          <SetupTabs
+            ariaLabel={tabLabel ?? standings?.title ?? ariaLabel}
+            initial={extraTabFirst ? "extra" : "standings"}
+            tabs={[
+              {
+                id: "standings",
+                label: tabLabel ?? standings?.tabLabel ?? standings?.title ?? ariaLabel,
+                content: (
+                  <>
+                    {board}
+                    {children}
+                  </>
+                ),
+              },
+              { id: "extra", label: extraTab.label, content: extraTab.content },
+            ]}
+          />
+        ) : (
+          <div className="kit-score-box">
+            {standings && <h2>{standings.title}</h2>}
+            {board}
+            {children}
+          </div>
+        )}
+      </div>
       <StartBar stacked={stackedActions}>{actions}</StartBar>
     </section>
   );

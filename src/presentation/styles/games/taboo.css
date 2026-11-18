@@ -834,3 +834,221 @@
     font-size: var(--text-sm);
   }
 }
+
+/*
+ * A low window at the PC (a laptop, about 1024 x 768): the row with the accounts of all teams takes
+ * room from the card, so it is made more compact there. The phones are not touched. The side panel of
+ * the PC layout (`Al-08-02-01`) will replace this row.
+ */
+@media (min-width: 64rem) and (max-height: 50rem) {
+  .taboo-round--running.taboo-round--with-row {
+    gap: var(--space-1);
+  }
+
+  .taboo-countdown-strip li {
+    padding: 0 var(--space-1);
+  }
+
+  .taboo-countdown-strip__time {
+    font-size: var(--text-sm);
+  }
+}
+
+/*
+ * The setup at the PC (from 64 rem): the line-up on the left, the settings on the right, the start
+ * button below both over the whole width. The structure of the page is the one of the phone; the line-up
+ * view only gives its parts to the grid (`display: contents`).
+ */
+@media (min-width: 64rem) {
+  .taboo-setup[data-split="true"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: var(--space-5);
+    min-height: 0;
+  }
+
+  .taboo-setup[data-split="true"] > .kit-lineup {
+    display: contents;
+  }
+
+  .taboo-setup[data-split="true"] > .kit-lineup > form {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 0;
+  }
+
+  .taboo-setup[data-split="true"] > .kit-lineup > .kit-start-bar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .taboo-setup[data-split="true"] > .taboo-setup__screen {
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 0;
+  }
+
+  /* "Done" and the button to the settings are not needed: both are in view. */
+  .taboo-setup[data-split="true"] > .taboo-setup__screen .kit-start-bar,
+  .taboo-setup[data-split="true"] .kit-start-bar__side {
+    display: none;
+  }
+}
+
+/* The setup at the PC is wider than the phone column. */
+@media (min-width: 64rem) {
+  .app-shell:has(.taboo-setup[data-split="true"]) .site-header,
+  .app-shell:has(.taboo-setup[data-split="true"]) .main-content {
+    width: min(100%, var(--desktop-width));
+  }
+}
+
+@media (min-width: 64rem) {
+  .app-shell:has(.taboo-setup[data-split="true"]) .game-preview--playable {
+    max-width: none;
+  }
+}
+
+/* The line with the key of the pause is for the PC only; a phone has no keyboard. */
+.taboo-round__keys {
+  display: none;
+}
+
+/*
+ * The turn at the PC (from 64 rem): the card in the middle with the clock above and the three buttons
+ * below, the standing of every team in a side panel on the right. The structure is the one of the phone;
+ * the side panel is only shown here.
+ */
+.taboo-turn-sidebar {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .app-shell:has(.taboo-round--with-sidebar) .site-header,
+  .app-shell:has(.taboo-round--with-sidebar) .main-content {
+    width: min(100%, var(--desktop-width));
+  }
+
+  .app-shell:has(.taboo-round--with-sidebar) .game-preview--playable {
+    max-width: none;
+  }
+
+  .taboo-round--running.taboo-round--with-sidebar {
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    column-gap: var(--space-5);
+    width: min(100%, 64rem);
+    margin-inline: auto;
+  }
+
+  .taboo-round--with-sidebar > .kit-hud-wrap,
+  .taboo-round--with-sidebar > .taboo-round__card,
+  .taboo-round--with-sidebar > .taboo-round__actions {
+    grid-column: 1;
+  }
+
+  /* The row of the accounts above the card is replaced by the side panel. */
+  .taboo-round--with-sidebar > .taboo-countdown-strip {
+    display: none;
+  }
+
+  .taboo-round--with-sidebar > .taboo-turn-sidebar {
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / -1;
+    padding: var(--space-3);
+    overflow-y: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+  }
+
+  .taboo-turn-sidebar__title {
+    margin: 0 0 var(--space-2);
+    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .taboo-turn-sidebar ol {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .taboo-turn-sidebar li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+  }
+
+  .taboo-turn-sidebar li[data-active="true"] {
+    border-color: var(--game-accent, var(--color-accent));
+    background: var(--color-surface-muted);
+  }
+
+  .taboo-turn-sidebar li[data-out="true"] {
+    color: var(--color-ink-muted);
+    text-decoration: line-through;
+  }
+
+  .taboo-turn-sidebar__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .taboo-turn-sidebar__value {
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--weight-bold);
+  }
+
+  /* The three buttons side by side: forbidden word, skip, and the larger "correct". */
+  .taboo-round--with-sidebar .taboo-round__actions {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr);
+    grid-template-rows: 4.5rem auto;
+  }
+
+  .taboo-round--with-sidebar .taboo-round__actions .button[data-outcome="forbiddenWord"] {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .taboo-round--with-sidebar .taboo-round__actions .button[data-outcome="skipped"] {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .taboo-round--with-sidebar .taboo-round__actions .button[data-outcome="correct"] {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .taboo-round--with-sidebar
+    .taboo-round__actions[data-skip-hidden="true"]
+    .button[data-outcome="correct"] {
+    grid-column: 2 / span 2;
+  }
+
+  .taboo-round__keys {
+    display: block;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+    text-align: center;
+  }
+
+  .taboo-round__keys .kit-shortcut-hint {
+    margin-right: var(--space-2);
+    margin-left: 0;
+  }
+}

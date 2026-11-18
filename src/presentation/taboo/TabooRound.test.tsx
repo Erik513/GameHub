@@ -112,7 +112,8 @@ it("plays cards without resetting the countdown and ends the round on time", asy
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     fireEvent.click(screen.getByRole("button", { name: "Start round" }));
     const round = screen.getByRole("region", { name: "Active round" });
-    expect(within(round).getAllByRole("listitem")).toHaveLength(4);
+    // The four forbidden words are the items of the card; the side panel (PC) lists the teams besides.
+    expect(round.querySelectorAll(".taboo-round__card li")).toHaveLength(4);
     expect(within(round).getByRole("timer")).toHaveTextContent(/^60$/);
     expect(round).toHaveTextContent("Team 1");
     void act(() => {

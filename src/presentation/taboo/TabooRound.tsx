@@ -9,13 +9,9 @@ import { Button, ConfirmButton } from "../components";
 import { TimerHud, useCountdown } from "../game-kit";
 import { monotonicNow } from "../monotonicClock";
 import { useFocusOnShow } from "../game-kit/useFocusOnShow";
+import { TabooTurnActions } from "./TabooTurnActions";
+import { TabooTurnSidebar } from "./TabooTurnSidebar";
 
-const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
-const outcomeVariants = {
-  correct: "success",
-  skipped: "secondary",
-  forbiddenWord: "danger",
-} as const;
 type RunningRound = Extract<TabooState, { status: "roundRunning" }>;
 
 interface TabooRoundProps {
@@ -65,7 +61,7 @@ export function TabooRound({
 
   return (
     <section
-      className="taboo-round taboo-round--running focus-target"
+      className="taboo-round taboo-round--running taboo-round--with-sidebar focus-target"
       aria-label={t("tabooRound.title")}
       ref={focus}
       tabIndex={-1}
@@ -121,29 +117,29 @@ export function TabooRound({
           </ul>
         </div>
       )}
-      <div className="taboo-round__actions" data-skip-hidden={skipsUsedUp}>
-        {outcomes
-          .filter((outcome) => outcome !== "skipped" || !skipsUsedUp)
-          .map((outcome) => (
-            <Button
-              key={outcome}
-              data-outcome={outcome}
-              title={outcome === "skipped" ? skipHint : undefined}
-              disabled={paused || seconds === 0 || (outcome === "skipped" && skipsUsedUp)}
-              variant={outcomeVariants[outcome]}
-              onClick={() => {
-                dispatch(
-                  monotonicNow() >= deadline
-                    ? { type: "endRound", turn }
-                    : { type: "resolveCard", turn, cardId: card.id, outcome },
-                );
-              }}
-            >
-              {t(`tabooRound.${outcome}`)}
-              {outcome === "skipped" && skipHint && <small aria-hidden="true">{skipHint}</small>}
-            </Button>
-          ))}
-      </div>
+      <TabooTurnSidebar
+        rows={configuration.teams.map((team, index) => ({
+          active: index === teamIndex,
+          id: team.id,
+          name: team.name,
+          value: String(state.scores[index] ?? 0),
+        }))}
+        title={t("tabooSidebar.points")}
+      />
+      <TabooTurnActions
+        disabled={(outcome) => seconds === 0 || (outcome === "skipped" && skipsUsedUp)}
+        hints={skipHint ? { skipped: skipHint } : {}}
+        onPress={(outcome) =>
+          dispatch(
+            monotonicNow() >= deadline
+              ? { type: "endRound", turn }
+              : { type: "resolveCard", turn, cardId: card.id, outcome },
+          )
+        }
+        onTogglePause={onResume}
+        paused={paused}
+        skipHidden={skipsUsedUp}
+      />
     </section>
   );
 }

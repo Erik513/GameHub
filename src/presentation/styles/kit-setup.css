@@ -184,7 +184,12 @@
   white-space: nowrap;
 }
 
-.kit-score-screen > p {
+/* The parts of the screen are one block; on a phone it only groups them (the screen lays them out). */
+.kit-score-screen__main {
+  display: contents;
+}
+
+.kit-score-screen__main > p {
   margin: 0;
 }
 

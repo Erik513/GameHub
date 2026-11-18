@@ -13,7 +13,10 @@ const status = JSON.parse(statusSource);
 normalizeStatus(status);
 const lineBreak = statusSource.includes("\r\n") ? "\r\n" : "\n";
 const normalizedSource = (JSON.stringify(status, null, 2) + "\n").replace(/\n/g, lineBreak);
-const html = await readFile(dashboardPath, "utf8");
+// The dashboard may have Windows line breaks (a checkout can change them); the marker and the end are searched in a text with plain ones.
+const dashboardSource = await readFile(dashboardPath, "utf8");
+const dashboardLineBreak = dashboardSource.includes("\r\n") ? "\r\n" : "\n";
+const html = dashboardSource.replace(/\r\n/g, "\n");
 const start = html.indexOf(marker);
 if (start === -1) throw new Error("EMBEDDED_STATUS marker not found in the dashboard.");
 const bodyStart = start + marker.length;
@@ -29,7 +32,7 @@ if (next === html && normalizedSource === statusSource) {
   process.exitCode = 1;
 } else {
   await writeFile(statusPath, normalizedSource, "utf8");
-  await writeFile(dashboardPath, next, "utf8");
+  await writeFile(dashboardPath, next.replace(/\n/g, dashboardLineBreak), "utf8");
   console.log("Status file and dashboard snapshot updated.");
 }
 

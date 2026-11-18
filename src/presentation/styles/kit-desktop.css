@@ -1,0 +1,121 @@
+/*
+ * Game kit blocks for the PC layout. It starts at a window width of 64 rem (1024 px); below that the
+ * phone layout stays, also on tablets (`desktopMediaQuery` in `game-kit/desktopLayout.ts`).
+ */
+
+/* The key of a shortcut next to its button: there is no keyboard on a phone. */
+.kit-shortcut-hint {
+  display: none;
+}
+
+/* Two areas side by side with the main action below them (`SplitScreen`). */
+@media (min-width: 64rem) {
+  .kit-shortcut-hint {
+    display: inline-block;
+    margin-left: var(--space-2);
+    padding: 0 0.4em;
+    border: 1px solid currentColor;
+    border-radius: var(--radius-sm);
+    font: inherit;
+    font-size: var(--text-xs);
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
+  .kit-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: var(--space-2) var(--space-5);
+  }
+
+  .kit-split__area {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .kit-split__footer {
+    grid-column: 1 / -1;
+  }
+}
+
+/*
+ * The screens between and after the turns at the PC: the standings on the left, the actions on the
+ * right in a column of their own (`ScoreScreen`). Wide enough to read, not wider than 64 rem.
+ */
+@media (min-width: 64rem) {
+  .app-shell:has(.kit-score-screen) .site-header,
+  .app-shell:has(.kit-score-screen) .main-content {
+    width: min(100%, 64rem);
+  }
+
+  .app-shell:has(.kit-score-screen) .game-preview--playable {
+    max-width: none;
+  }
+
+  .kit-score-screen {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: var(--space-5);
+  }
+
+  .kit-score-screen__main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-height: 0;
+  }
+
+  .kit-score-screen > .kit-start-bar {
+    position: static;
+    align-self: start;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
+  /* The actions stand one below the other, the person up next above them. */
+  .kit-score-screen > .kit-start-bar .button {
+    margin-top: var(--space-2);
+  }
+}
+
+/*
+ * The editor of a game at the PC: the two parts (for Taboo the categories with their cards and the form
+ * to add a card) stand side by side instead of in two tabs, so everything is in view at once.
+ */
+@media (min-width: 64rem) {
+  .app-shell:has(.kit-manage) .site-header,
+  .app-shell:has(.kit-manage) .main-content {
+    width: min(100%, var(--desktop-width));
+  }
+
+  .app-shell:has(.kit-manage) .game-preview--playable {
+    max-width: none;
+  }
+
+  .kit-manage .kit-tabs {
+    display: grid;
+    flex: 1;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: var(--space-5);
+    min-height: 0;
+  }
+
+  /* The panels are the two columns; the tab buttons are not needed (their names still label the panels). */
+  .kit-manage .kit-tabs__list {
+    display: none;
+  }
+
+  .kit-manage .kit-tabpanel,
+  .kit-manage .kit-tabpanel[data-active="false"] {
+    display: block;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}

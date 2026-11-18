@@ -9,13 +9,8 @@ import { TimerHud, useStopwatch } from "../game-kit";
 import { formatSeconds } from "./formatTime";
 import { monotonicNow } from "../monotonicClock";
 import { useFocusOnShow } from "../game-kit/useFocusOnShow";
-
-const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
-const outcomeVariants = {
-  correct: "success",
-  skipped: "secondary",
-  forbiddenWord: "danger",
-} as const;
+import { TabooTurnActions } from "./TabooTurnActions";
+import { TabooTurnSidebar, type SidebarRow } from "./TabooTurnSidebar";
 
 interface TabooRaceRunProps {
   active: RaceActive;
@@ -30,6 +25,8 @@ interface TabooRaceRunProps {
   pausedMs: number;
   /** Finds a new card for a skipped or wrong one; nothing when the cards are used up. */
   pickReplacement: (card: TabooCard) => TabooCard | undefined;
+  /** The total times of all teams so far, for the side panel at the PC. */
+  standings: readonly SidebarRow[];
   startedAt: number;
   target: number;
   teamName: string;
@@ -45,6 +42,7 @@ export function TabooRaceRun({
   pausedAt,
   pausedMs,
   pickReplacement,
+  standings,
   startedAt,
   target,
   teamName,
@@ -73,7 +71,7 @@ export function TabooRaceRun({
 
   return (
     <section
-      className="taboo-round taboo-round--running focus-target"
+      className="taboo-round taboo-round--running taboo-round--with-sidebar focus-target"
       aria-label={t("tabooRace.run")}
       ref={focus}
       tabIndex={-1}
@@ -120,24 +118,15 @@ export function TabooRaceRun({
           </ul>
         </div>
       )}
-      <div className="taboo-round__actions" data-skip-hidden={active.skipUsed}>
-        {outcomes
-          .filter((outcome) => outcome !== "skipped" || !active.skipUsed)
-          .map((outcome) => (
-            <Button
-              key={outcome}
-              data-outcome={outcome}
-              disabled={paused || (outcome !== "correct" && !canReplace)}
-              variant={outcomeVariants[outcome]}
-              onClick={() => answer(outcome)}
-            >
-              {t(`tabooRound.${outcome}`)}
-              {outcome === "skipped" && (
-                <small aria-hidden="true">{t("tabooRound.skipOnce")}</small>
-              )}
-            </Button>
-          ))}
-      </div>
+      <TabooTurnSidebar rows={standings} title={t("tabooSidebar.times")} />
+      <TabooTurnActions
+        disabled={(outcome) => outcome !== "correct" && !canReplace}
+        hints={{ skipped: t("tabooRound.skipOnce") }}
+        onPress={answer}
+        onTogglePause={onResume}
+        paused={paused}
+        skipHidden={active.skipUsed}
+      />
     </section>
   );
 }

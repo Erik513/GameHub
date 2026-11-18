@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T19:31:48.755Z",
+    "updatedAt": "2026-11-18T20:18:27.061Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 124,
-      "totalTasks": 193,
-      "percent": 64.2
+      "completedTasks": 132,
+      "totalTasks": 196,
+      "percent": 67.3
     }
   },
   "environment": {
@@ -85,10 +85,10 @@
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-18T17:34:59.107Z",
+      "lastRunAt": "2026-11-18T20:18:27.061Z",
       "passed": 675,
       "failed": 0,
-      "details": "821 Unit- und Komponententests bestanden, darunter Gegen die Zeit mit automatischem Teamwechsel."
+      "details": "867 Unit- und Komponententests bestanden, darunter die Bausteine und Tastenkürzel des PC-Layouts."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,10 +99,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-18T17:34:59.107Z",
+      "lastRunAt": "2026-11-18T20:18:27.061Z",
       "passed": 31,
       "failed": 0,
-      "details": "39 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 9 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen."
+      "details": "64 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, darunter die neue PC-Layoutprüfung bei 1024, 1280 und 1920 Pixel in beiden Sprachen; 40 Handy-Prüfungen werden auf dem Desktop-Projekt (und umgekehrt) bewusst übersprungen."
     },
     "renameValidation": {
       "status": "passed",
@@ -368,32 +368,47 @@
       "id": "Al-08",
       "name": "PC-Layout für alle Spiele",
       "area": "general",
-      "status": "planned",
+      "status": "done",
       "tasks": [
         {
           "id": "Al-08-01",
           "title": "Anforderungen und Entwurf: Handy- und PC-Layout je Spiel, Bausteine im game-kit",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-08-02",
           "title": "Tabu-Einrichtung im Desktop-Layout",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-08-02-01",
           "title": "Laufende Tabu-Runde im Desktop-Layout",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-08-02-02",
           "title": "Tabu-Ergebnis im Desktop-Layout",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Al-08-02-03",
           "title": "Tabu-Kartenverwaltung im Desktop-Layout",
-          "status": "planned"
+          "status": "done"
+        },
+        {
+          "id": "Al-08-03",
+          "title": "Tastenkürzel der laufenden Runde (PC): Richtig, Überspringen, Verbotenes Wort, Pause",
+          "status": "done"
+        },
+        {
+          "id": "Al-08-04",
+          "title": "Bausteine im game-kit für das PC-Layout: Breiten, zwei Bereiche, Kürzel-Hinweis, useShortcuts",
+          "status": "done"
+        },
+        {
+          "id": "Al-08-05",
+          "title": "Layoutprüfung für den PC bei 1024, 1280 und 1920 Pixel in beiden Sprachen",
+          "status": "done"
         }
       ]
     },
@@ -1328,6 +1343,30 @@
   "recentChanges": [
     {
       "date": "2026-11-18",
+      "summary": "PC-Layout für Tabu fertig (Al-08-01 bis Al-08-05): Einrichtung nebeneinander, Runde mit Seitenfeld und Tastenkürzeln, Übersichten und Ergebnis in zwei Spalten, Kartenverwaltung mit beiden Teilen nebeneinander, PC-Layoutprüfung; Handy unverändert."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Runde am PC (Al-08-02-01) und Tastenkürzel (Al-08-03): Karte mit Seitenfeld der Teamstände und drei Knöpfen nebeneinander, Kürzel Leertaste/Enter, S, V und P mit Anzeige an den Knöpfen; am Handy unverändert."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Tabu-Einrichtung am PC (Al-08-02): ab 1024 px Aufstellung links und Einstellungen rechts, darunter ein breiter Startknopf; am Handy unverändert."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Bausteine für das PC-Layout (Al-08-04): useIsDesktop, SplitScreen, ShortcutHint und useShortcuts im game-kit mit Tests; noch von keinem Spiel verwendet."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "PC-Layoutprüfung (Al-08-05): neue Prüfung bei 1024, 1280 und 1920 Pixel in beiden Sprachen (18 Prüfungen); sie fand und behob einen Überlauf der Karte bei Gegen die Zeit auf niedrigen PC-Fenstern."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "PC-Layout (Al-08-01 in Arbeit): Entwurf in docs/GAMEHUB_PC_LAYOUT.md mit den Entscheidungen des Auftraggebers (ab 1024 px, Einrichtung nebeneinander, Tastenkürzel, Spielauswahl bleibt die Spalte); neue Aufgaben Al-08-03 bis Al-08-05."
+    },
+    {
+      "date": "2026-11-18",
       "summary": "Regelfenster Tabu (Ta-10-11): Das Stechen hat einen eigenen Abschnitt in der Ansicht statt eines separaten Fensters."
     },
     {
@@ -2029,7 +2068,7 @@
   },
   "werewolfUiPlan": {
     "title": "UI-Planung für Werwolf",
-    "stage": "Hauptansicht und feste Rollenkonfiguration werden gemeinsam konkretisiert. Der variable Modus und die Spielphasen folgen danach.",
+    "stage": "Der Grundaufbau der festen Rollenansicht ist abgestimmt. Die variable Ansicht orientiert sich daran; ihre Details werden später gemeinsam festgelegt. Die Spielansichten stehen noch zur Planung an.",
     "views": [
       {
         "name": "Hauptansicht",
@@ -2038,7 +2077,7 @@
       },
       {
         "name": "Konfiguration",
-        "status": "Feste Rollen werden jetzt geplant",
+        "status": "Fester Grundaufbau abgestimmt; variable Details später",
         "purpose": "Rollen, Items und Partieeinstellungen festlegen."
       },
       {
@@ -2047,8 +2086,8 @@
         "purpose": "Rollenverteilung sowie Nacht, Morgen, Tag, Abstimmung und Ergebnis."
       }
     ],
-    "proposal": "Bestätigt: Fest/Variabel-Umschalter, Rollenbuttons und Freigabezeilen, Pflicht-/Füllrollen sowie getrennte Zusätze. Feste Wolfswahl mit kompakter Empfehlung, variable Wolfszahl automatisch. Jäger, Gerber, Bürgermeister und Alte Vettel je über optionalen Variantenbutton: leer = Rolle aus, Variante gewählt = Rolle an. Erster Wolfsangriff und Rollen nach Ausscheiden sind allgemeine Einstellungen. Nur dokumentiert.",
-    "open": "Noch zu gestalten: konkrete Öffnungs-/Wechsel-/Leerbedienung der Auswahlbuttons, Infofenster, Position des allgemeinen Einstellungsblocks sowie Konfliktbedienung. Hauptansicht: Sitzsortierung/Teilnehmeränderungen, Erzählerwechsel und Namensfenster. Variable Konfiguration folgt später. Trennung der allgemeinen und rollenbezogenen Einstellungen ist bestätigt.",
+    "proposal": "Bestätigt: Gleichmäßiges Rollenraster in zwei Blöcken, verfügbar oben und noch nicht verfügbar darunter. In beiden Blöcken bleiben Rollen derselben Mindestspielerzahl zusammen; Gruppen aufsteigend, ohne Vermischung früher/später Freigaben. Unten Gruppen mit Trennstrichen trennen. Spätere Freigaben stehen zur Orientierung weiter unten; kein verbindliches Stärke-Ranking. Bisherige Controls und Regeln bleiben erhalten. Nur dokumentiert.",
+    "open": "Freigabegruppierung auch oben ist geklärt. Offen bleiben konkrete Spaltenzahl/Umbruch innerhalb einer Gruppe sowie weitere Bedien-/Konfliktfeinheiten. Variable Konfigurationsdetails ausdrücklich später.",
     "document": "GAMEHUB_WERWOLF_UI.md"
   }
 }

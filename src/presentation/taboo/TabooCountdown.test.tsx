@@ -210,3 +210,36 @@ it.each(["en", "de"] as const)(
     expect(within(result).getByRole("status")).toHaveTextContent(text.winner);
   },
 );
+
+it("is played with the keyboard: V and S bring a new card, Space gives the card to the next team, P pauses", async () => {
+  vi.spyOn(Date, "now").mockImplementation(() => 5_000_000);
+  const { text, user } = await startCountdown("en");
+  closeGameSettings();
+  await user.click(screen.getByRole("button", { name: text.startGame }));
+  await user.click(await screen.findByRole("button", { name: text.start }));
+  const run = () => screen.getByRole("region", { name: text.run });
+  const term = () => within(run()).getByRole("heading", { level: 2 }).textContent;
+
+  const first = term();
+  await user.keyboard("v");
+  expect(term()).not.toBe(first);
+  const second = term();
+  await user.keyboard("s");
+  expect(term()).not.toBe(second);
+  // The skip is used up; the key does nothing more.
+  const third = term();
+  await user.keyboard("s");
+  expect(term()).toBe(third);
+
+  // P pauses: the card is hidden and the answer keys rest.
+  await user.keyboard("p");
+  expect(screen.getByRole("heading", { name: text.paused })).toBeVisible();
+  await user.keyboard("v");
+  expect(screen.getByRole("heading", { name: text.paused })).toBeVisible();
+  await user.keyboard("p");
+  expect(term()).toBe(third);
+
+  // The space bar is "correct": the turn ends and the other team is up (overview in the manual change).
+  await user.keyboard(" ");
+  expect(await screen.findByRole("region", { name: text.overview })).toBeVisible();
+});

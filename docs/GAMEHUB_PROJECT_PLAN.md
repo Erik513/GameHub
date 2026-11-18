@@ -661,8 +661,11 @@ Ziel: Die Rückmeldungen des Auftraggebers zur Oberfläche von Tabu (eine Seite 
 
 Anforderung des Auftraggebers (2026-11-12): **Jedes Spiel bekommt ein Handy-Layout und ein PC-Layout**, damit man auch am PC spielen kann. Bisher gibt es nur das Handy-Layout (eine schmale Spalte, Bedienung unten, Prüfung über `e2e/mobile-layout.spec.ts`). Der Leitfaden für neue Spiele (`docs/GAMEHUB_NEW_GAME_GUIDE.md`) und die Bausteine im `game-kit` sollen beide Größen berücksichtigen. Noch nicht begonnen; Reihenfolge und Zeitpunkt gegenüber den anderen Aufgaben legt der Auftraggeber fest.
 
-- **Al-08-01:** Anforderungen und Entwurf: Breakpoints, Aufteilung (zum Beispiel Einstellungen neben dem Spielbereich), was am PC anders ist (Tastatur, Maus), Bausteine im `game-kit`. Status: planned
-- **Al-08-02:** PC-Layout für Tabu mit Layoutprüfung im Desktop-Format neben der Handy-Prüfung. Status: planned
+- **Al-08-01:** Anforderungen und Entwurf: Breakpoints, Aufteilung (zum Beispiel Einstellungen neben dem Spielbereich), was am PC anders ist (Tastatur, Maus), Bausteine im `game-kit`. **Entwurf:** `docs/GAMEHUB_PC_LAYOUT.md` (2026-11-18). **Entscheidungen des Auftraggebers:** PC-Layout **ab 1024 px**, darunter die Handy-Spalte (auch auf Tablets); Einrichtung am PC **nebeneinander** (links Aufstellung, rechts Einstellungen, unten breiter Startknopf, keine Reiter zum Umschalten); die Runde ist am PC mit **Tastenkürzeln** bedienbar (Leertaste oder Enter = Richtig, S = Überspringen, V = Verbotenes Wort, P = Pause); die **Spielauswahl bleibt die schmale Spalte**. Die Annahmen aus Abschnitt 8 des Entwurfs wurden mit dem Start der Umsetzung bestätigt. Status: done
+- **Al-08-02:** PC-Layout für Tabu mit Layoutprüfung im Desktop-Format neben der Handy-Prüfung. Status: done
+- **Al-08-03:** Tastenkürzel der laufenden Runde in allen drei Modi und im Stechen (Entwurf Abschnitt 6.2) mit Tests. Status: done
+- **Al-08-04:** Bausteine im `game-kit` für das PC-Layout: Breiten (Tokens), Baustein für zwei Bereiche nebeneinander, `ShortcutHint`, `useShortcuts`, mit Tests. Status: done
+- **Al-08-05:** Layoutprüfung für den PC (`e2e/desktop-layout.spec.ts`) bei 1024 × 768, 1280 × 800 und 1920 × 1080 in beiden Sprachen, zuerst für die vorhandenen Ansichten. Status: done
 
 ### Phase Al-09 – Gemeinsame Bausteine für Teams, Spieler und Spieleinstellungen
 
@@ -835,6 +838,9 @@ Die Spieltabs zeigen zuerst die Regeln und danach die Spiellogik mit ihren Prüf
 | `Ta-06-07-D-01` – Laufende Runde für Gegen die Zeit | Aktives Team und verbleibende Zeit sind sichtbar. Die erlaubten Aktionen funktionieren. |
 | `Ta-06-07-D-02` – Rundenübersicht für Gegen die Zeit | Nach der Runde zeigt die Übersicht den Zwischenstand und ermöglicht den nächsten Lauf. |
 | `Ta-06-07-D-03` – Ergebnis für Gegen die Zeit | Nach dem letzten Lauf zeigt die Ansicht das Ergebnis des Modus. |
+| `Al-08-03` – Tastenkürzel der laufenden Runde | Jedes Kürzel löst genau ein Ereignis aus; nicht in Eingabefeldern, bei offenem Fenster oder in der Pause; die Kürzel stehen an den Knöpfen. |
+| `Al-08-04` – Bausteine im `game-kit` für das PC-Layout | Unter 1024 px ändert sich keine Ansicht (Stilvergleich); ab 1024 px ordnen die Bausteine zwei Bereiche nebeneinander an. |
+| `Al-08-05` – Layoutprüfung für den PC | Die Prüfung läuft in drei Größen und beiden Sprachen und findet keine waagerechte Scrollleiste, keine verdeckten Knöpfe und keine Seite, die als Ganzes scrollt. |
 | `Al-08-02` – Tabu-Einrichtung im Desktop-Layout | Die Spieleinstellungen bleiben bei typischer Desktopbreite erreichbar. |
 | `Al-08-02-01` – Laufende Tabu-Runde im Desktop-Layout | Karte, Zeit und Spielaktionen bleiben gemeinsam sichtbar. |
 | `Al-08-02-02` – Tabu-Ergebnis im Desktop-Layout | Teamstände und Abschlussaktionen sind am Desktop lesbar und erreichbar. |

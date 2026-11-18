@@ -21,6 +21,7 @@ import "./presentation/styles/kit-choice.css";
 import "./presentation/styles/kit-result.css";
 import "./presentation/styles/kit-info.css";
 import "./presentation/styles/kit-setup.css";
+import "./presentation/styles/kit-desktop.css";
 import "./presentation/styles/games/taboo.css";
 
 const rootElement = document.getElementById("root");

@@ -157,6 +157,18 @@ export const tabooTexts = {
     noCards: "Für den nächsten Zug sind nicht genug Karten vorhanden.",
     inGame: "{{count}} Teams im Spiel",
   },
+  tabooSidebar: {
+    points: "Punkte",
+    times: "Zeiten",
+  },
+  tabooShortcuts: {
+    correct: "Leertaste",
+    skipped: "S",
+    forbiddenWord: "V",
+    pause: "P",
+    pauseHint: "Pause",
+    pauseResume: "Fortsetzen",
+  },
   tabooRace: {
     overview: "Übersicht Auf Zeit",
     run: "Lauf Auf Zeit",

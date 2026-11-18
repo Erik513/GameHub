@@ -22,6 +22,7 @@ import { TabooRaceRun } from "./TabooRaceRun";
 import { TabooRaceTiebreak } from "./TabooRaceTiebreak";
 import { TabooTiebreakResults } from "./TabooTiebreakResults";
 import { monotonicNow } from "../monotonicClock";
+import { formatSeconds } from "./formatTime";
 
 interface Clock {
   readonly pausedAt?: number | undefined;
@@ -61,7 +62,7 @@ export function TabooRaceGame({
   onSameSetup,
   pool,
 }: TabooRaceGameProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [state, setState] = useState<RaceState>(initial);
   const [clock, setClock] = useState<Clock>();
   const [noCards, notifyNoCards] = useNotice<true>();
@@ -142,6 +143,12 @@ export function TabooRaceGame({
         }
         startedAt={clock.startedAt}
         target={configuration.target}
+        standings={raceTotals(configuration, state.attempts).map((total, index) => ({
+          active: index === running.active.teamIndex,
+          id: configuration.teams[index]?.id ?? String(index),
+          name: teamName(index),
+          value: total.runs === 0 ? "–" : `${formatSeconds(total.tenths * 100, i18n.language)} s`,
+        }))}
         teamName={teamName(running.active.teamIndex)}
       />
     );

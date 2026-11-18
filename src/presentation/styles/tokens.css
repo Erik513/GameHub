@@ -45,4 +45,6 @@
   --safe-right: env(safe-area-inset-right, 0px);
   --content-width: 68rem;
   --phone-width: 30rem;
+  /* The widest the content gets at the PC (from 64 rem); on a wider screen only the margin grows. */
+  --desktop-width: 80rem;
 }

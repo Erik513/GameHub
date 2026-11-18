@@ -26,6 +26,10 @@ const allowedIdenticalValues = [
   "tabooSetup.skipOptions.2",
   "tabooSetup.skipOptions.3",
   "tabooSetup.skipOptions.unlimited",
+  "tabooShortcuts.forbiddenWord",
+  "tabooShortcuts.pause",
+  "tabooShortcuts.pauseHint",
+  "tabooShortcuts.skipped",
 ];
 
 /** Keys that are only read by tests or kept for the project foundation. */

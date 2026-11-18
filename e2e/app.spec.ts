@@ -1,13 +1,16 @@
 import { expect, test } from "@playwright/test";
+import { closeSettings, openSettings } from "./setupSteps";
 
 test("plays a Taboo card from the game selection", async ({ page }) => {
   await page.goto("/#/games/taboo");
   const setupWidth = await page
     .getByRole("main")
     .evaluate((main) => main.getBoundingClientRect().width);
-  expect(setupWidth).toBeLessThanOrEqual(480);
+  // A phone has one narrow column; at the PC (from 1024 px) the setup is wider, but never wider than 80 rem.
+  const wide = (page.viewportSize()?.width ?? 0) >= 1024;
+  expect(setupWidth).toBeLessThanOrEqual(wide ? 1280 : 480);
   // The game opens on its line-up; the settings (with the cards) are their own screen.
-  await page.getByRole("button", { name: "Game settings", exact: true }).click();
+  await openSettings(page, "Game settings");
   await page.getByRole("tab", { name: "Categories", exact: true }).click();
   await expect(page.getByRole("group", { name: "Difficulty (several possible)" })).toBeVisible();
   const nature = page.getByRole("checkbox", { name: "Nature" });
@@ -18,13 +21,13 @@ test("plays a Taboo card from the game selection", async ({ page }) => {
   await expect(nature).not.toBeChecked();
   await nature.press("Space");
   await expect(nature).toBeChecked();
-  await page.getByRole("button", { name: "Done", exact: true }).click();
+  await closeSettings(page, "Done");
   await page.getByRole("button", { name: "Start game", exact: true }).click();
   await page.getByRole("button", { name: "Start round" }).click();
   const round = page.getByRole("region", { name: "Active round" });
   await expect(round.getByRole("timer")).toHaveText(/^\d+$/);
   await expect(page.getByText("Taboo cards", { exact: true })).toBeHidden();
-  await expect(round.getByRole("listitem")).toHaveCount(4);
+  await expect(round.locator(".taboo-round__card li")).toHaveCount(4);
   await round.getByRole("button", { name: "Correct" }).click();
   await expect(round).not.toContainText("Score");
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
@@ -94,7 +97,7 @@ test("persists the UI language and the card language of Taboo independently", as
 
   // The card language is a setting of Taboo.
   await page.getByRole("button", { name: "Spielen", exact: true }).first().click();
-  await page.getByRole("button", { name: "Spieleinstellungen", exact: true }).click();
+  await openSettings(page, "Spieleinstellungen");
   await page.getByRole("tab", { name: "Kategorien", exact: true }).click();
   const cardLanguage = page.getByRole("group", { name: "Kartensprache" });
   await expect(cardLanguage.getByRole("radio", { name: "Englisch" })).toBeChecked();
@@ -105,13 +108,15 @@ test("persists the UI language and the card language of Taboo independently", as
 
   await page.reload();
 
-  await page.getByRole("button", { name: "Spieleinstellungen", exact: true }).click();
+  await openSettings(page, "Spieleinstellungen");
   await page.getByRole("tab", { name: "Kategorien", exact: true }).click();
   await expect(
     page.getByRole("group", { name: "Kartensprache" }).getByRole("radio", { name: "Deutsch" }),
   ).toBeChecked();
-  // In the game's settings the header offers the way back to the line-up first.
-  await page.getByRole("button", { name: "Zurück" }).click();
+  // On a phone the settings are a view of their own: the header offers the way back to the line-up
+  // first. At the PC they stand beside the line-up and there is no way back to take.
+  const backToLineup = page.getByRole("button", { name: "Zurück" });
+  if (await backToLineup.isVisible()) await backToLineup.click();
   await page.getByRole("button", { name: "Spiel schließen" }).click();
   await page.getByRole("button", { name: "Einstellungen" }).click();
   await expect(
@@ -177,11 +182,15 @@ for (const language of ["en", "de"] as const) {
     await back();
     await question.getByRole("button", { name: t.end, exact: true }).click();
     await expect(page.getByRole("button", { name: t.start, exact: true })).toBeVisible();
-    // The Back key in the settings only goes back to the line-up.
-    await page.getByRole("button", { name: t.settings, exact: true }).click();
-    await back();
-    await expect(page.getByRole("button", { name: t.start, exact: true })).toBeVisible();
-    expect(new URL(page.url()).hash).toBe("#/games/taboo");
+    // The Back key in the settings only goes back to the line-up (on a phone; at the PC there is no
+    // view for the settings).
+    const settingsButton = page.getByRole("button", { name: t.settings, exact: true });
+    if (await settingsButton.isVisible()) {
+      await settingsButton.click();
+      await back();
+      await expect(page.getByRole("button", { name: t.start, exact: true })).toBeVisible();
+      expect(new URL(page.url()).hash).toBe("#/games/taboo");
+    }
 
     // On the line-up one Back leaves the game for the game selection.
     await back();

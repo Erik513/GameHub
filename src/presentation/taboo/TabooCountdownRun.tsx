@@ -10,13 +10,8 @@ import { TabooCountdownStrip, type CountdownStripTeam } from "./TabooCountdownSt
 import { formatMinutes } from "./formatTime";
 import { monotonicNow } from "../monotonicClock";
 import { useFocusOnShow } from "../game-kit/useFocusOnShow";
-
-const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
-const outcomeVariants = {
-  correct: "success",
-  skipped: "secondary",
-  forbiddenWord: "danger",
-} as const;
+import { TabooTurnActions } from "./TabooTurnActions";
+import { TabooTurnSidebar } from "./TabooTurnSidebar";
 
 interface TabooCountdownRunProps {
   active: CountdownActive;
@@ -36,8 +31,10 @@ interface TabooCountdownRunProps {
   skipUsed: boolean;
   startedAt: number;
   teamName: string;
-  /** All accounts for the row above the card; without them (manual change) there is no row. */
-  teams?: readonly CountdownStripTeam[];
+  /** All accounts, for the side panel at the PC and for the row above the card. */
+  teams: readonly CountdownStripTeam[];
+  /** Whether the row above the card is shown on a phone (the automatic change of teams). */
+  showRow: boolean;
 }
 
 /** One turn of the mode "Gegen die Zeit": the team explains and guesses, its account runs down. */
@@ -53,6 +50,7 @@ export function TabooCountdownRun({
   remainingAtStartMs,
   skipUsed,
   startedAt,
+  showRow,
   teamName,
   teams,
 }: TabooCountdownRunProps) {
@@ -86,9 +84,9 @@ export function TabooCountdownRun({
   return (
     <section
       className={
-        teams
-          ? "taboo-round taboo-round--running taboo-round--with-row focus-target"
-          : "taboo-round taboo-round--running focus-target"
+        showRow
+          ? "taboo-round taboo-round--running taboo-round--with-row taboo-round--with-sidebar focus-target"
+          : "taboo-round taboo-round--running taboo-round--with-sidebar focus-target"
       }
       aria-label={t("tabooCountdown.run")}
       ref={focus}
@@ -101,7 +99,7 @@ export function TabooCountdownRun({
         timerLabel={t("tabooCountdown.timer", { time })}
         title={teamName}
       />
-      {teams && (
+      {showRow && (
         <TabooCountdownStrip
           active={active.teamIndex}
           // The team on the move shows what is left right now.
@@ -138,24 +136,28 @@ export function TabooCountdownRun({
           </ul>
         </div>
       )}
-      <div className="taboo-round__actions" data-skip-hidden={skipUsed}>
-        {outcomes
-          .filter((outcome) => outcome !== "skipped" || !skipUsed)
-          .map((outcome) => (
-            <Button
-              key={outcome}
-              data-outcome={outcome}
-              disabled={paused || (outcome !== "correct" && !canReplace)}
-              variant={outcomeVariants[outcome]}
-              onClick={() => answer(outcome)}
-            >
-              {t(`tabooRound.${outcome}`)}
-              {outcome === "skipped" && (
-                <small aria-hidden="true">{t("tabooCountdown.skipOnce")}</small>
-              )}
-            </Button>
-          ))}
-      </div>
+      <TabooTurnSidebar
+        rows={teams.map((team, index) => ({
+          active: index === active.teamIndex,
+          id: team.id,
+          name: team.name,
+          out: team.eliminated,
+          value: team.eliminated
+            ? t("tabooCountdown.outShort")
+            : formatMinutes(
+                (index === active.teamIndex ? seconds * 1000 : team.remainingMs) / 1000,
+              ),
+        }))}
+        title={t("tabooCountdown.accounts")}
+      />
+      <TabooTurnActions
+        disabled={(outcome) => outcome !== "correct" && !canReplace}
+        hints={{ skipped: t("tabooCountdown.skipOnce") }}
+        onPress={answer}
+        onTogglePause={onResume}
+        paused={paused}
+        skipHidden={skipUsed}
+      />
     </section>
   );
 }

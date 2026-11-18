@@ -156,6 +156,18 @@ export const tabooTexts = {
     noCards: "Not enough cards are available for the next turn.",
     inGame: "{{count}} teams in the game",
   },
+  tabooSidebar: {
+    points: "Points",
+    times: "Times",
+  },
+  tabooShortcuts: {
+    correct: "Space",
+    skipped: "S",
+    forbiddenWord: "V",
+    pause: "P",
+    pauseHint: "Pause",
+    pauseResume: "Resume",
+  },
   tabooRace: {
     overview: "Race overview",
     run: "Race run",

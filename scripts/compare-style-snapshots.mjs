@@ -34,7 +34,8 @@ function describe(rowA, rowB) {
   if (a.path !== b.path) changes.push(`element ${a.path} -> ${b.path}`);
   if (a.box !== b.box) changes.push(`box ${a.box} -> ${b.box}`);
   a.values.forEach((value, index) => {
-    if (value !== b.values[index]) changes.push(`${properties[index]}: ${value} -> ${b.values[index]}`);
+    if (value !== b.values[index])
+      changes.push(`${properties[index]}: ${value} -> ${b.values[index]}`);
   });
   return `${a.classes} ${a.path.slice(-40)}\n    ${changes.join("\n    ")}`;
 }
@@ -63,5 +64,9 @@ for (const name of [...names].sort()) {
   }
   if (shown > 3) console.log(`${name}: ${shown - 3} more differences`);
 }
-console.log(differences === 0 ? `Equal: ${names.size} screens.` : `${differences} differences in ${names.size} screens.`);
+console.log(
+  differences === 0
+    ? `Equal: ${names.size} screens.`
+    : `${differences} differences in ${names.size} screens.`,
+);
 process.exit(differences === 0 ? 0 : 1);
