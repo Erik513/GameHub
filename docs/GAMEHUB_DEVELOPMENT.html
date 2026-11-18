@@ -78,6 +78,19 @@
 
       .phase-list { display: grid; gap: 12px; }
       .stage-note { margin: 0 16px 16px; color: var(--muted); }
+      .lineup-note { margin: 0 0 14px; color: var(--muted); line-height: 1.6; }
+      .lineup-table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+      .lineup-table-scroll:focus-visible { outline: 2px solid var(--secondary); outline-offset: 3px; }
+      .lineup-table { width: 100%; min-width: 760px; border-collapse: collapse; line-height: 1.5; font-size: 0.88rem; }
+      .lineup-table th, .lineup-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+      .lineup-table thead { background: var(--surface-strong); }
+      .lineup-table thead th { font-size: 0.78rem; color: var(--muted); }
+      .lineup-table tbody th { color: var(--secondary); }
+      .lineup-table td:nth-child(2) { width: 30%; }
+      .lineup-table td:nth-child(3) { width: 40%; color: var(--muted); }
+      .lineup-table td:last-child strong { display: inline-block; min-width: 28px; text-align: center; color: var(--done); background: rgba(85, 220, 154, 0.11); border-radius: 6px; }
+      .lineup-table tr:last-child > * { border-bottom: 0; }
+      .lineup-table-caption { text-align: left; padding: 12px 14px; color: var(--muted); }
       .stage-note a { color: var(--secondary); }
       .dashboard-tabs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
       .dashboard-tabs button { min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--text); background: var(--surface); font: inherit; cursor: pointer; }
@@ -159,6 +172,20 @@
         <section class="grid" aria-label="Projektübersicht">
           <nav id="dashboard-tabs" class="dashboard-tabs" aria-label="Aufgabenbereiche"></nav>
 
+          <article id="werewolf-lineup-overview" class="card full" aria-labelledby="werewolf-lineup-heading" hidden>
+            <h2 id="werewolf-lineup-heading">Rollen und Wolfszahlen · 6–20 Spieler</h2>
+            <p id="werewolf-lineup-note" class="lineup-note"></p>
+            <div class="lineup-table-scroll" role="region" aria-label="Rollenübersicht, seitlich scrollbar" tabindex="0">
+              <table class="lineup-table">
+                <caption class="lineup-table-caption">Spielerzahlen ohne Erzähler · Grün: allgemeine Wolfsempfehlung</caption>
+                <thead><tr><th scope="col">Spieler</th><th scope="col">Neu verfügbare Rollen / Zusätze</th><th scope="col">Umstellungen und Bedingungen</th><th scope="col">Erlaubte Wölfe</th><th scope="col">Allgemeine Empfehlung</th></tr></thead>
+                <tbody id="werewolf-lineup-rows"></tbody>
+              </table>
+            </div>
+            <p id="werewolf-lineup-constraints" class="lineup-note" style="margin-top: 14px"></p>
+            <p id="werewolf-wolf-policy" class="lineup-note"></p>
+          </article>
+
           <article class="card full">
             <h2 id="tasks-heading">Allgemeine Aufgaben</h2>
             <div id="phases" class="phase-list"><p class="empty">Status wird geladen …</p></div>
@@ -201,7 +228,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T14:26:46.053Z",
+    "updatedAt": "2026-11-18T17:02:02.733Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -210,9 +237,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 106,
+      "completedTasks": 111,
       "totalTasks": 189,
-      "percent": 56.1
+      "percent": 58.7
     }
   },
   "environment": {
@@ -282,10 +309,10 @@
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-18T14:26:46.053Z",
+      "lastRunAt": "2026-11-18T17:00:33.076Z",
       "passed": 675,
       "failed": 0,
-      "details": "725 Unit- und Komponententests bestanden (77 Dateien)."
+      "details": "Alle Unit- und Komponententests bestanden, darunter der Modus Gegen die Zeit (Logik, Zufallsprüfung, Oberfläche)."
     },
     "integrationTests": {
       "status": "passed",
@@ -296,10 +323,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-18T14:26:46.053Z",
+      "lastRunAt": "2026-11-18T17:00:33.076Z",
       "passed": 31,
       "failed": 0,
-      "details": "37 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 7 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen."
+      "details": "38 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 8 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Neu: Layout aller Ansichten von Gegen die Zeit."
     },
     "renameValidation": {
       "status": "passed",
@@ -907,27 +934,27 @@
         {
           "id": "Ta-06-07-C",
           "title": "Spiellogik für Gegen die Zeit",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Ta-06-07-D",
           "title": "Einrichtung für Gegen die Zeit",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Ta-06-07-D-01",
           "title": "Laufende Runde für Gegen die Zeit",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Ta-06-07-D-02",
           "title": "Rundenübersicht für Gegen die Zeit",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Ta-06-07-D-03",
           "title": "Ergebnis für Gegen die Zeit",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "Ta-06-07-E",
@@ -1505,6 +1532,18 @@
   "recentChanges": [
     {
       "date": "2026-11-18",
+      "summary": "Gegen die Zeit, Oberfläche (Ta-06-07-D): Spielmodus mit Zeit pro Team (2, 3, 5 Minuten), Übersicht der Zeitkonten, Zug mit Pause und Endstand, Texte, Regelabschnitt, Tests und Handy-Layoutprüfung. Regeln und Abschlusstest (E) folgen."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Gegen die Zeit, Spiellogik (Ta-06-07-C): Zustandsmaschine countdown.ts mit Zeitkonto je Team, Ausscheiden und Platzierung nach der Reihenfolge, dazu Kartenhelfer und Zufallsprüfung. Die Oberfläche (D) folgt."
+    },
+    {
+      "date": "2026-11-18",
+      "summary": "Werwolf: Rollenübersicht für 6–20 Spieler im Werwolf-Tab sichtbar ergänzt, einschließlich neuer Rollen/Items, Umstellungen, erlaubter Wolfszahlen und allgemeiner Empfehlung. Tabelle aus dem geprüften Werwolf-Arbeitsordner übernommen; übriger Aufgaben- und Projektstand dieser Dashboard-Kopie bleibt erhalten."
+    },
+    {
+      "date": "2026-11-18",
       "summary": "Startseite (Al-04-04): Knopf „Spielen“, die wirklich geplanten Spiele im Stil von Tabu, Kartenzahl und Knopf „Spiele“ in der Kopfleiste entfernt."
     },
     {
@@ -1905,7 +1944,238 @@
       "id": "schwimmen",
       "name": "Schwimmen"
     }
-  ]
+  ],
+  "werewolfLineupOverview": {
+    "note": "Eine Seherin ist immer Pflicht. Die Zeilen bauen aufeinander auf: Bereits freigegebene Rollen und Zusätze bleiben verfügbar. Alle weiteren Rollen sind optional; gewöhnliche Dorfbewohner füllen freie Plätze.",
+    "constraints": "Leibwächter und Dorfmatratze sind immer Alternativen. Beim Bürgermeister gilt entweder doppelte Stimme oder Hammer. Trunkenbold und Schutzamulett belegen keinen zusätzlichen Rollenplatz; beide sind standardmäßig aus. Alle Auswahlen müssen in die freien Spielerplätze passen.",
+    "wolfPolicy": "Die erlaubten Wolfszahlen sind die Grenzen für die spätere automatische Festlegung durch das System. Die allgemeine Empfehlung ist der Ausgangswert; die konkrete Rollenbesetzung kann einen anderen erlaubten Wert erfordern. Die Validierung dieser Automatik ist noch offen.",
+    "rows": [
+      {
+        "players": 6,
+        "newRoles": [
+          {
+            "id": "witch",
+            "label": "Hexe"
+          },
+          {
+            "id": "hunter",
+            "label": "Jäger"
+          },
+          {
+            "id": "idiot",
+            "label": "Dorftrottel"
+          },
+          {
+            "id": "bodyguard",
+            "label": "Leibwächter"
+          },
+          {
+            "id": "nightGuest",
+            "label": "Dorfmatratze"
+          }
+        ],
+        "newItems": [],
+        "changes": "Grundauswahl. Leibwächter oder Dorfmatratze; eine Seherin und ein Wolf sind fest.",
+        "wolfCounts": [
+          1
+        ],
+        "recommendedWolves": 1
+      },
+      {
+        "players": 7,
+        "newRoles": [
+          {
+            "id": "cupid",
+            "label": "Amor"
+          },
+          {
+            "id": "toughGuy",
+            "label": "Harter Bursche"
+          }
+        ],
+        "newItems": [],
+        "changes": "Keine weitere Umstellung.",
+        "wolfCounts": [
+          1
+        ],
+        "recommendedWolves": 1
+      },
+      {
+        "players": 8,
+        "newRoles": [
+          {
+            "id": "tanner",
+            "label": "Gerber"
+          },
+          {
+            "id": "apprenticeSeer",
+            "label": "Seher-Lehrling"
+          }
+        ],
+        "newItems": [],
+        "changes": "Gerber: Sieg bei jedem Tod (Standard) oder nur durch Abstimmung. Nachprüfung: Zwei Wölfe sind bei starken Dorfrollen passender; Vorschlag 1–2, allgemeine Empfehlung 2. Aktuelle Freigabe noch 1.",
+        "wolfCounts": [
+          1
+        ],
+        "recommendedWolves": 1
+      },
+      {
+        "players": 9,
+        "newRoles": [
+          {
+            "id": "spellcaster",
+            "label": "Alte Vettel (Spellcaster)"
+          },
+          {
+            "id": "mayor",
+            "label": "Bürgermeister: doppelte Stimme"
+          }
+        ],
+        "newItems": [
+          "Trunkenbold"
+        ],
+        "changes": "Zwei Wölfe werden Pflicht. Trunkenbold ist ein Zusatz zu einer Rolle, keine weitere Rollenkarte.",
+        "wolfCounts": [
+          2
+        ],
+        "recommendedWolves": 2
+      },
+      {
+        "players": 10,
+        "newRoles": [
+          {
+            "id": "paranormalInvestigator",
+            "label": "Paranormaler Ermittler"
+          }
+        ],
+        "newItems": [
+          "Schutzamulett"
+        ],
+        "changes": "Bürgermeister zusätzlich als Hammer-Variante verfügbar; niemals beide Varianten gleichzeitig.",
+        "wolfCounts": [
+          2
+        ],
+        "recommendedWolves": 2
+      },
+      {
+        "players": 11,
+        "newRoles": [
+          {
+            "id": "magician",
+            "label": "Magier"
+          }
+        ],
+        "newItems": [],
+        "changes": "Hexe oder Magier; beide zusammen noch ausgeschlossen.",
+        "wolfCounts": [
+          2
+        ],
+        "recommendedWolves": 2
+      },
+      {
+        "players": 12,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Drei Wölfe werden allgemeiner Standard; zwei bleiben erlaubt. Hexe und Magier bleiben Alternativen.",
+        "wolfCounts": [
+          2,
+          3
+        ],
+        "recommendedWolves": 3
+      },
+      {
+        "players": 13,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Nur drei Wölfe erlaubt; zwei entfallen. Hexe und Magier bleiben Alternativen.",
+        "wolfCounts": [
+          3
+        ],
+        "recommendedWolves": 3
+      },
+      {
+        "players": 14,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Vier Wölfe kommen hinzu. Bei vier Wölfen dürfen Hexe und Magier gemeinsam spielen; bei drei bleiben sie Alternativen.",
+        "wolfCounts": [
+          3,
+          4
+        ],
+        "recommendedWolves": 3
+      },
+      {
+        "players": 15,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Keine Umstellung: gemeinsame Heiler nur bei vier Wölfen.",
+        "wolfCounts": [
+          3,
+          4
+        ],
+        "recommendedWolves": 3
+      },
+      {
+        "players": 16,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Vier Wölfe werden allgemeiner Standard. Gemeinsame Heiler weiterhin nur bei vier Wölfen.",
+        "wolfCounts": [
+          3,
+          4
+        ],
+        "recommendedWolves": 4
+      },
+      {
+        "players": 17,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Fünf Wölfe kommen hinzu. Hexe und Magier gemeinsam bei vier oder fünf; bei drei bleiben sie Alternativen.",
+        "wolfCounts": [
+          3,
+          4,
+          5
+        ],
+        "recommendedWolves": 4
+      },
+      {
+        "players": 18,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Keine Umstellung. Gemeinsame Heiler bei vier oder fünf Wölfen; sechs Wölfe ausgeschlossen.",
+        "wolfCounts": [
+          3,
+          4,
+          5
+        ],
+        "recommendedWolves": 4
+      },
+      {
+        "players": 19,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Keine Umstellung; durch Stichproben bestätigt.",
+        "wolfCounts": [
+          3,
+          4,
+          5
+        ],
+        "recommendedWolves": 4
+      },
+      {
+        "players": 20,
+        "newRoles": [],
+        "newItems": [],
+        "changes": "Keine Umstellung; durch Stichproben bestätigt. Obergrenze: 20 Spieler plus Erzähler.",
+        "wolfCounts": [
+          3,
+          4,
+          5
+        ],
+        "recommendedWolves": 4
+      }
+    ]
+  }
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
@@ -2089,10 +2359,25 @@
         document.querySelector(selector).innerHTML = items.length ? items.map(template).join("") : `<li class="empty">${escapeHtml(emptyText)}</li>`;
       }
 
+      function renderWerewolfLineup(data) {
+        const overview = data.werewolfLineupOverview;
+        const panel = document.querySelector("#werewolf-lineup-overview");
+        panel.hidden = activeView !== "werewolf" || !overview;
+        if (panel.hidden) return;
+        document.querySelector("#werewolf-lineup-note").textContent = overview.note;
+        document.querySelector("#werewolf-lineup-constraints").textContent = overview.constraints;
+        document.querySelector("#werewolf-wolf-policy").textContent = overview.wolfPolicy;
+        document.querySelector("#werewolf-lineup-rows").innerHTML = overview.rows.map((row) => {
+          const additions = [...row.newRoles.map((role) => role.label), ...row.newItems];
+          return `<tr><th scope="row">${escapeHtml(row.players)}</th><td>${additions.length ? additions.map(escapeHtml).join(" · ") : "—"}</td><td>${escapeHtml(row.changes)}</td><td>${row.wolfCounts.map(escapeHtml).join(" / ")}</td><td><strong>${escapeHtml(row.recommendedWolves)}</strong></td></tr>`;
+        }).join("");
+      }
+
       function renderTaskView(data) {
         const views = [{ id: "general", name: "Allgemein" }, ...(data.games ?? [])];
         const view = views.find(({ id }) => id === activeView) ?? views[0];
         activeView = view.id;
+        renderWerewolfLineup(data);
         const isGeneral = activeView === "general";
         for (const element of document.querySelectorAll("[data-general-only]")) {
           element.hidden = !isGeneral;

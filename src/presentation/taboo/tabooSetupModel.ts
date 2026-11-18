@@ -1,5 +1,6 @@
 import type { useTranslation } from "react-i18next";
 import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
+import { defaultCountdownBudgetMs } from "../../business/games/taboo/countdown";
 import { defaultRaceRounds } from "../../business/games/taboo/race";
 import {
   TIEBREAK_CARD_COUNT,
@@ -12,12 +13,12 @@ import type { AttemptReview } from "./TabooAttemptReviews";
 import type { TiebreakRow } from "./TabooTiebreakResults";
 
 /** The screens of a Taboo game that the host cares about: the menu is the one to come back to. */
-export type TabooScreen = "menu" | "lineup" | "preparing" | "game" | "race";
+export type TabooScreen = "menu" | "lineup" | "preparing" | "game" | "race" | "countdown";
 
 export const difficulties = ["easy", "medium", "hard"] as const;
 export const cardSources = ["both", "local", "ai"] as const;
 /** The game modes the player can choose in the setup. */
-export const tabooModes = ["classic", "race"] as const;
+export const tabooModes = ["classic", "race", "countdown"] as const;
 export type TabooMode = (typeof tabooModes)[number];
 export type RoundChoice = number | "unlimited";
 export const defaultRoundChoices: readonly RoundChoice[] = [3, 5, 10, "unlimited"];
@@ -136,6 +137,8 @@ export function raceRoundOption(
 /** The settings of the main menu, read once when "Start" is pressed. */
 export interface TabooSettings {
   readonly cardSource: (typeof cardSources)[number];
+  /** The time account of every team in the mode "Gegen die Zeit", in milliseconds. */
+  readonly countdownBudgetMs: number;
   /** The chosen categories; never empty. */
   readonly categories: readonly string[];
   /** The chosen difficulties; empty means every difficulty. */
@@ -162,10 +165,15 @@ export function readTabooSettings(
   const rounds = data.get("rounds");
   const skips = data.get("skips");
   const raceRounds = Number(data.get("raceRounds"));
+  const countdownBudget = Number(data.get("countdownBudget"));
   return {
     cardSource: options.hasGenerators
       ? (cardSources.find((candidate) => candidate === source) ?? "both")
       : "local",
+    countdownBudgetMs:
+      Number.isSafeInteger(countdownBudget) && countdownBudget >= 1
+        ? countdownBudget
+        : defaultCountdownBudgetMs,
     categories: options.categoryIds.filter((category) =>
       data.getAll("category").includes(category),
     ),

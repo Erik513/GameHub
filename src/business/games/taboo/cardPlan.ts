@@ -11,7 +11,7 @@ export const refillThreshold = 8;
 export const raceSpareCardsPerTeam = 2;
 
 interface RequiredCardsInput {
-  readonly mode: "classic" | "race";
+  readonly mode: "classic" | "race" | "countdown";
   readonly raceTarget: number;
   /** Rounds in which every team plays once; with "unlimited" one card per team is enough to start. */
   readonly roundsPerTeam: number | "unlimited";
@@ -30,6 +30,8 @@ export function requiredCards({
   teamCount,
 }: RequiredCardsInput): number {
   if (mode === "race") return teamCount * (raceTarget + raceSpareCardsPerTeam);
+  // A countdown game has no fixed length; cards may come back, so a few per team are enough.
+  if (mode === "countdown") return teamCount * 4;
   return teamCount * (roundsPerTeam === "unlimited" ? 1 : roundsPerTeam);
 }
 
@@ -37,7 +39,7 @@ interface GenerationPlanInput {
   readonly categories: readonly string[];
   readonly difficulties: readonly Difficulty[];
   readonly language: TabooGenerationRequest["language"];
-  readonly mode: "classic" | "race";
+  readonly mode: "classic" | "race" | "countdown";
   /** From where the cards come: "ai" makes the whole deck, "both" only adds a few extra cards. */
   readonly source: "ai" | "both";
   readonly required: number;
@@ -60,7 +62,7 @@ export function planGenerationRequests({
     source === "ai"
       ? Math.max(
           2,
-          Math.ceil((required * (mode === "race" ? 2 : aiCardsPerTurn)) / categories.length),
+          Math.ceil((required * (mode === "classic" ? aiCardsPerTurn : 2)) / categories.length),
         )
       : 2;
   return categories.flatMap((categoryId) =>

@@ -6,6 +6,8 @@ import type {
   TabooCard,
   ValidationIssue,
 } from "../../business/games/taboo/model";
+import { createCountdownGame, type CountdownState } from "../../business/games/taboo/countdown";
+import { countdownCardShortage } from "../../business/games/taboo/countdownCards";
 import { createRaceGame, type RaceState } from "../../business/games/taboo/race";
 import { raceCardShortage } from "../../business/games/taboo/raceCards";
 import { createTabooGame } from "../../business/games/taboo/stateMachine";
@@ -29,14 +31,25 @@ export interface TabooRaceSession {
   readonly state: RaceState;
 }
 
+/** The game of the mode "Gegen die Zeit" as the container keeps it. */
+export interface TabooCountdownSession {
+  /** The difficulties of the game; every team gets the same difficulty in its n-th turn. */
+  readonly difficulties: readonly Difficulty[];
+  /** Starts the game anew when the same setup is played again. */
+  readonly key: number;
+  readonly pool: readonly TabooCard[];
+  readonly state: CountdownState;
+}
+
 /** What a start needs to know before the cards are prepared. */
 export interface TabooStartPlan {
   readonly cardSource: TabooSettings["cardSource"];
   readonly chosenDifficulties: readonly Difficulty[];
-  /** The prepared game of the mode "Klassisch" (exactly one of `classic` and `race` is set). */
+  /** The prepared game of the mode "Klassisch" (exactly one of `classic`, `race` and `countdown` is set). */
   readonly classic?: SetupState;
+  readonly countdown?: CountdownState;
   readonly filters: DeckCriteria;
-  readonly mode: "classic" | "race";
+  readonly mode: "classic" | "race" | "countdown";
   readonly race?: RaceState;
   readonly raceTarget: number;
   /** How many cards the game needs to start (see `requiredCards`). */
@@ -88,12 +101,16 @@ export function planTabooStart({
           ...(settings.raceTiebreak ? { tiebreak: true } : {}),
         })
       : undefined;
-  const checked = classic ?? race;
+  const countdown =
+    settings.mode === "countdown"
+      ? createCountdownGame({ teams, cardLanguage, budgetMs: settings.countdownBudgetMs })
+      : undefined;
+  const checked = classic ?? race ?? countdown;
   if (!checked?.valid) return { valid: false, issues: checked?.issues ?? [] };
 
   const selectedCategories = settings.categories;
   const teamCount = checked.value.configuration.teams.length;
-  const mode = race?.valid ? "race" : "classic";
+  const mode = race?.valid ? "race" : countdown?.valid ? "countdown" : "classic";
   const required = requiredCards({
     mode,
     raceTarget,
@@ -112,6 +129,7 @@ export function planTabooStart({
       cardSource: settings.cardSource,
       chosenDifficulties: filters.difficulties?.length ? filters.difficulties : difficulties,
       ...(classic?.valid ? { classic: classic.value } : {}),
+      ...(countdown?.valid ? { countdown: countdown.value } : {}),
       filters,
       mode,
       ...(race?.valid ? { race: race.value } : {}),
@@ -133,6 +151,9 @@ export function cardShortageFor(
 ): CardShortage | undefined {
   if (plan.mode === "race") {
     return raceCardShortage(candidate, plan.teamCount, plan.raceTarget, plan.chosenDifficulties);
+  }
+  if (plan.mode === "countdown") {
+    return countdownCardShortage(candidate, plan.teamCount, plan.chosenDifficulties);
   }
   return candidate.length < plan.required
     ? { available: candidate.length, required: plan.required }

@@ -35,6 +35,8 @@ export const tabooTexts = {
     classicText: "Die Teams spielen abwechselnd Runden. Die meisten Punkte gewinnen.",
     raceText:
       "Jedes Team spielt pro Runde einen Lauf, leichte Karten zuerst. Kürzeste Gesamtzeit gewinnt.",
+    countdownText:
+      "Jedes Team hat ein Zeitkonto, das nur im eigenen Zug läuft. Das letzte Team mit Zeit gewinnt.",
     settingsTitle: "Einstellungen",
     settingsRounds: "wie oft jedes Team dran ist.",
     settingsDuration: "so lange dauert ein Zug.",
@@ -130,6 +132,22 @@ export const tabooTexts = {
     legend: "Spielmodus",
     classic: "Klassisch",
     race: "Auf Zeit",
+    countdown: "Gegen die Zeit",
+    countdownInfo:
+      "Jedes Team hat ein Zeitkonto, das im eigenen Zug abläuft. Wer keine Zeit mehr hat, verliert.",
+  },
+  tabooCountdown: {
+    overview: "Übersicht der Zeitkonten",
+    run: "Zug Gegen die Zeit",
+    accounts: "Verbleibende Zeit",
+    finalRanking: "Endplatzierung",
+    start: "Zug starten",
+    timer: "{{time}} übrig",
+    out: "ausgeschieden",
+    solved: "{{count}} gelöst",
+    skipOnce: "nur 1× pro Spiel",
+    noCards: "Für den nächsten Zug sind nicht genug Karten vorhanden.",
+    inGame: "{{count}} Teams im Spiel",
   },
   tabooRace: {
     overview: "Übersicht Auf Zeit",
@@ -225,6 +243,8 @@ export const tabooTexts = {
     raceCardShortage:
       "Zu wenige Karten der Schwierigkeit {{difficulty}}: {{available}} vorhanden, {{required}} nötig, damit jedes Team dieselbe Mischung bekommt.",
     raceTarget: "Karten pro Team pro Runde",
+    countdownBudget: "Zeit pro Team",
+    countdownBudgetUnit: "Min.",
     cardsSection: "Kategorien",
     cardSource: "Kartenquelle",
     cardSources: { local: "Nur lokal", ai: "Nur KI", both: "Beides" },

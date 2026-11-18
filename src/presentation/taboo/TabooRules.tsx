@@ -92,6 +92,9 @@ export function TabooRulesDialog({ onClose, onOpenTiebreak, open }: TabooRulesDi
           <li>
             <strong>{t("tabooMode.race")}:</strong> {t("tabooRules.raceText")}
           </li>
+          <li>
+            <strong>{t("tabooMode.countdown")}:</strong> {t("tabooRules.countdownText")}
+          </li>
         </ul>
       </RulesSection>
 

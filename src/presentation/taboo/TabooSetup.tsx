@@ -14,10 +14,11 @@ import { useGameBack, useGameExit } from "../GameChrome";
 import { TabooClassicScreens } from "./TabooClassicScreens";
 import type { TabooGenerators } from "./TabooGeneration";
 import { TabooLineup } from "./TabooLineup";
+import { TabooCountdownGame } from "./TabooCountdownGame";
 import { TabooRaceGame } from "./TabooRaceGame";
 import { TabooSetupForm } from "./TabooSetupForm";
 import { defaultRoundChoices, type RoundChoice, type TabooScreen } from "./tabooSetupModel";
-import type { TabooRaceSession } from "./tabooStartPlan";
+import type { TabooCountdownSession, TabooRaceSession } from "./tabooStartPlan";
 import { useTabooClassicGame } from "./useTabooClassicGame";
 import { useTabooSettingsView } from "./useTabooSettingsView";
 import { useTabooStart } from "./useTabooStart";
@@ -69,6 +70,7 @@ export function TabooSetup({
   const [lineupNotice, notifyLineup] = useNotice<LineupIssue>();
   // The game of the mode "Auf Zeit"; the key starts it anew when the same setup is played again.
   const [raceSession, setRaceSession] = useState<TabooRaceSession>();
+  const [countdownSession, setCountdownSession] = useState<TabooCountdownSession>();
 
   const settings = useTabooSettingsView({
     categoryIds,
@@ -87,6 +89,7 @@ export function TabooSetup({
     notifyLineup,
     readSettings: settings.readSettings,
     setIssues,
+    setCountdownSession,
     setRaceSession,
     teamSetup,
   });
@@ -123,6 +126,18 @@ export function TabooSetup({
     setRaceSession(undefined);
   }
 
+  function restartCountdown(keepConfiguration: boolean) {
+    if (!countdownSession) return;
+    if (!keepConfiguration) {
+      setCountdownSession(undefined);
+      startOver();
+      return;
+    }
+    // Same settings: back to the line-up, the cards of the game are reused.
+    start.rememberDeck(countdownSession.pool);
+    setCountdownSession(undefined);
+  }
+
   // Leaving a game returns to the main window with the previous setup still filled in.
   useGameExit(
     Boolean(round) || Boolean(session),
@@ -136,17 +151,21 @@ export function TabooSetup({
       : undefined,
   );
 
-  const lineupVisible = !settings.settingsOpen && !session && !round && !raceSession;
-  const settingsVisible = settings.settingsOpen && !session && !round && !raceSession;
+  const lineupVisible =
+    !settings.settingsOpen && !session && !round && !raceSession && !countdownSession;
+  const settingsVisible =
+    settings.settingsOpen && !session && !round && !raceSession && !countdownSession;
   const screen: TabooScreen = lineupVisible
     ? "lineup"
-    : raceSession
-      ? "race"
-      : round
-        ? "game"
-        : session
-          ? "preparing"
-          : "menu";
+    : countdownSession
+      ? "countdown"
+      : raceSession
+        ? "race"
+        : round
+          ? "game"
+          : session
+            ? "preparing"
+            : "menu";
   useEffect(() => onScreenChange?.(screen), [onScreenChange, screen]);
   // In the settings the header offers a way back to the line-up.
   useGameBack(settingsVisible, () => {
@@ -172,6 +191,7 @@ export function TabooSetup({
     start.setShortage(undefined);
     setSession(undefined);
     setRaceSession(undefined);
+    setCountdownSession(undefined);
     game.setDeckEmpty(false);
   }
 
@@ -207,6 +227,17 @@ export function TabooSetup({
           value={teamSetup}
         />
       )}
+      {countdownSession && (
+        <TabooCountdownGame
+          difficulties={countdownSession.difficulties}
+          initial={countdownSession.state}
+          key={`countdown-${countdownSession.key}`}
+          onExit={() => setCountdownSession(undefined)}
+          onNewSetup={() => restartCountdown(false)}
+          onSameSetup={() => restartCountdown(true)}
+          pool={countdownSession.pool}
+        />
+      )}
       {raceSession && (
         <TabooRaceGame
           cards={cards}
@@ -228,7 +259,7 @@ export function TabooSetup({
           attempt={attempt}
           formRef={settings.formRef}
           messagesVisible={settingsVisible}
-          rulesActive={!(round ?? session ?? raceSession)}
+          rulesActive={!(round ?? session ?? raceSession ?? countdownSession)}
           cardLanguage={cardLanguage}
           categoryIds={categoryIds}
           categoryInfos={categoryInfos}

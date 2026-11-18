@@ -3,6 +3,10 @@ import { useTranslation } from "react-i18next";
 import type { TabooCategoryInfo } from "../../business/games/taboo/categories";
 import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
 import {
+  countdownBudgetChoices,
+  defaultCountdownBudgetMs,
+} from "../../business/games/taboo/countdown";
+import {
   defaultRaceRounds,
   defaultRaceTarget,
   raceRoundChoices,
@@ -171,7 +175,9 @@ export function TabooSetupForm({
                   initial={mode}
                   legend={t("tabooMode.legend")}
                   name="mode"
-                  onChange={(next) => onModeChange(next === "race" ? "race" : "classic")}
+                  onChange={(next) =>
+                    onModeChange(tabooModes.find((candidate) => candidate === next) ?? "classic")
+                  }
                   options={tabooModes.map((value) => ({
                     value,
                     label: t(`tabooMode.${value}`),
@@ -211,6 +217,18 @@ export function TabooSetupForm({
                       value,
                       label: t(`tabooSetup.tiebreakOptions.${value}`),
                       ...(value === "on" ? { info: raceTiebreakInfo } : {}),
+                    }))}
+                  />
+                </div>
+                <div className="taboo-mode-settings" hidden={mode !== "countdown"}>
+                  <ChoiceGroup
+                    legend={t("tabooSetup.countdownBudget")}
+                    name="countdownBudget"
+                    initial={String(defaultCountdownBudgetMs)}
+                    options={countdownBudgetChoices.map((value) => ({
+                      value: String(value),
+                      label: String(value / 60_000),
+                      hint: t("tabooSetup.countdownBudgetUnit"),
                     }))}
                   />
                 </div>

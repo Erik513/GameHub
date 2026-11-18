@@ -520,7 +520,7 @@ it.each(["en", "de"] as const)(
     const group = screen.getByRole("group", { name: text.legend });
     const mode = (tab: string) => within(group).getByRole("radio", { name: new RegExp(`^${tab}`) });
     // One info button per game mode, inside the mode group.
-    expect(within(group).getAllByRole("button")).toHaveLength(2);
+    expect(within(group).getAllByRole("button")).toHaveLength(3);
     expect(mode(text.classic.tab)).toBeChecked();
 
     // The info button explains only this game mode, in a sentence or two, without choosing it.

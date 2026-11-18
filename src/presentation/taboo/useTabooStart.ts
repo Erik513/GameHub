@@ -15,6 +15,7 @@ import {
   cardShortageFor,
   planTabooStart,
   type CardShortage,
+  type TabooCountdownSession,
   type TabooRaceSession,
 } from "./tabooStartPlan";
 import type { TabooSettings } from "./tabooSetupModel";
@@ -34,6 +35,7 @@ interface StartOptions {
   /** The settings as the form holds them; nothing when they are incomplete (the form says why). */
   readonly readSettings: () => TabooSettings | undefined;
   readonly setIssues: (issues: readonly ValidationIssue[]) => void;
+  readonly setCountdownSession: (session: TabooCountdownSession) => void;
   readonly setRaceSession: (session: TabooRaceSession) => void;
   readonly teamSetup: TeamSetupValue;
 }
@@ -54,6 +56,7 @@ export function useTabooStart({
   notifyLineup,
   readSettings,
   setIssues,
+  setCountdownSession,
   setRaceSession,
   teamSetup,
 }: StartOptions) {
@@ -145,6 +148,15 @@ export function useTabooStart({
     const missing = cardShortageFor(plan, deck);
     if (missing) {
       setShortage(missing);
+      return;
+    }
+    if (plan.countdown) {
+      setCountdownSession({
+        difficulties: plan.chosenDifficulties,
+        key: 0,
+        pool: deck,
+        state: plan.countdown,
+      });
       return;
     }
     if (plan.race) {

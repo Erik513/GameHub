@@ -34,6 +34,8 @@ export const tabooTexts = {
     modesTitle: "Game modes",
     classicText: "The teams take turns playing rounds. The most points win.",
     raceText: "Each round every team plays a run, easy cards first. The shortest total time wins.",
+    countdownText:
+      "Every team has a time account that only runs on its own turn. The last team with time left wins.",
     settingsTitle: "Settings",
     settingsRounds: "how many rounds each team plays.",
     settingsDuration: "how long a turn lasts.",
@@ -129,6 +131,22 @@ export const tabooTexts = {
     legend: "Game mode",
     classic: "Classic",
     race: "Race",
+    countdown: "Against the clock",
+    countdownInfo:
+      "Every team has a time account that runs down in its own turn. Whoever runs out of time loses.",
+  },
+  tabooCountdown: {
+    overview: "Time accounts overview",
+    run: "Countdown turn",
+    accounts: "Time left",
+    finalRanking: "Final ranking",
+    start: "Start turn",
+    timer: "{{time}} left",
+    out: "out",
+    solved: "{{count}} solved",
+    skipOnce: "once per game",
+    noCards: "Not enough cards are available for the next turn.",
+    inGame: "{{count}} teams in the game",
   },
   tabooRace: {
     overview: "Race overview",
@@ -224,6 +242,8 @@ export const tabooTexts = {
     raceCardShortage:
       "Not enough {{difficulty}} cards: {{available}} available, {{required}} needed so that every team gets the same mix.",
     raceTarget: "Cards per team per round",
+    countdownBudget: "Time per team",
+    countdownBudgetUnit: "min",
     cardsSection: "Categories",
     cardSource: "Card source",
     cardSources: { local: "Local only", ai: "AI only", both: "Both" },

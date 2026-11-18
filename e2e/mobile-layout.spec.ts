@@ -450,3 +450,59 @@ test("the card editor is one page with two tabs on a small phone in both languag
   }
   expect(problems, problems.join("\n")).toEqual([]);
 });
+
+const countdownLabels = {
+  en: { mode: "Game mode", countdown: "Against the clock", start: "Start turn" },
+  de: { mode: "Spielmodus", countdown: "Gegen die Zeit", start: "Zug starten" },
+} as const;
+
+test("the countdown screens fit a small phone in both languages", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+  const problems: string[] = [];
+  for (const language of ["en", "de"] as const) {
+    const t = labels[language];
+    const countdown = countdownLabels[language];
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.clock.install();
+    await page.addInitScript(() => {
+      Math.random = () => 0.99;
+    });
+    await page.goto("/");
+    if (language === "de") {
+      await page.getByRole("button", { name: labels.en.settings }).click();
+      await page
+        .getByRole("group", { name: labels.en.interfaceLanguage })
+        .getByRole("radio", { name: "German" })
+        .check({ force: true });
+      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+    }
+    const check = async (screen: string) =>
+      problems.push(...(await audit(page, `${language} ${screen}`)));
+    const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
+
+    await press(t.open);
+    await press(t.settingsTab);
+    const mode = page.getByRole("group", { name: countdown.mode });
+    await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
+    await mode.getByRole("radio", { name: countdown.countdown }).check({ force: true });
+    await check("countdown setup");
+    await press(t.done);
+    await press(t.startGame);
+    await check("countdown overview before the first turn");
+
+    await press(countdown.start);
+    await check("running countdown");
+    await press(t.pause);
+    await check("paused countdown");
+    await press(t.resume);
+    await press(t.correct);
+    await check("countdown overview with a time");
+
+    // The second team lets its whole account run out, so the first team wins.
+    await press(countdown.start);
+    await page.clock.fastForward(400_000);
+    await page.getByRole("status").first().waitFor();
+    await check("countdown result");
+  }
+  expect(problems, problems.join("\n")).toEqual([]);
+});

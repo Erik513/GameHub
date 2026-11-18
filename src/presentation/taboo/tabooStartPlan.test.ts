@@ -12,6 +12,7 @@ const categoryIds = ["everyday", "culture", "nature"];
 const classic: TabooSettings = {
   cardSource: "local",
   categories: categoryIds,
+  countdownBudgetMs: 180_000,
   difficulties: [],
   duration: 60,
   mode: "classic",
@@ -35,6 +36,35 @@ function card(id: string, difficulty: TabooCard["difficulty"]): TabooCard {
 }
 
 describe("planTabooStart", () => {
+  it('plans a game of the mode "Gegen die Zeit" with its account and a few cards per team', () => {
+    const planned = planTabooStart({
+      categoryIds,
+      cardLanguage: "en",
+      settings: { ...classic, mode: "countdown", countdownBudgetMs: 120_000 },
+      teams,
+    });
+    if (!planned.valid) throw new Error("expected a valid plan");
+    expect(planned.plan.mode).toBe("countdown");
+    expect(planned.plan.countdown?.configuration.budgetMs).toBe(120_000);
+    expect(planned.plan.classic).toBeUndefined();
+    expect(planned.plan.race).toBeUndefined();
+    expect(planned.plan.required).toBe(8);
+  });
+
+  it("names the difficulty that is short in a countdown game", () => {
+    const planned = planTabooStart({
+      categoryIds,
+      cardLanguage: "en",
+      settings: { ...classic, mode: "countdown", difficulties: ["easy", "hard"] },
+      teams,
+    });
+    if (!planned.valid) throw new Error("expected a valid plan");
+    const easy = Array.from({ length: 8 }, (_, index) => card(`e${index}`, "easy"));
+    expect(cardShortageFor(planned.plan, easy)).toMatchObject({ difficulty: "hard" });
+    const both = [...easy, ...Array.from({ length: 8 }, (_, index) => card(`h${index}`, "hard"))];
+    expect(cardShortageFor(planned.plan, both)).toBeUndefined();
+  });
+
   it("plans a classic game with its settings and the number of cards it needs", () => {
     const planned = planTabooStart({ categoryIds, cardLanguage: "en", settings: classic, teams });
     if (!planned.valid) throw new Error("expected a valid plan");
