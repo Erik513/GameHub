@@ -40,6 +40,7 @@ export const tabooTexts = {
     settingsRounds: "how many rounds each team plays.",
     settingsDuration: "how long a turn lasts.",
     settingsSkips: "how often you may move on without a point.",
+    settingsCountdownBudget: "how much time each team has against the clock.",
     settingsTiebreak: "decides a tie.",
     settingsCards: "which cards are played: language, difficulty, categories.",
   },

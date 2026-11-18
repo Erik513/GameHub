@@ -1,6 +1,6 @@
 # Entwurf: Tabu-Spielmodi „Auf Zeit“ und „Gegen die Zeit“
 
-Dieses Dokument gehört zu `Ta-06-07`. Die **Regeln** sind laut Akzeptanzkriterium vor der Umsetzung mit dem Auftraggeber abzustimmen. Der Auftraggeber hat am 2026-11-12 die Abläufe festgelegt (Abschnitt 1); alles, was er nicht ausdrücklich beantwortet hat, ist als **Annahme** gekennzeichnet und wartet auf Bestätigung (Abschnitt 6). Stand: Teilaufgaben A (Spiellogik „Auf Zeit“), B (Oberfläche „Auf Zeit“) und C (Spiellogik „Gegen die Zeit“) und D (Oberfläche „Gegen die Zeit“) sind gebaut, E noch nicht.
+Dieses Dokument gehört zu `Ta-06-07`. Die **Regeln** sind laut Akzeptanzkriterium vor der Umsetzung mit dem Auftraggeber abzustimmen. Der Auftraggeber hat am 2026-11-12 die Abläufe festgelegt (Abschnitt 1); alles, was er nicht ausdrücklich beantwortet hat, ist als **Annahme** gekennzeichnet und wartet auf Bestätigung (Abschnitt 6). Stand: Teilaufgaben A (Spiellogik „Auf Zeit“), B (Oberfläche „Auf Zeit“) und C, D und E (Regeln, Leitfaden, Abschlusstest) sind erledigt.
 
 Bezug: `docs/GAMEHUB_TABOO_LOGIC.md` (klassischer Modus), `docs/GAMEHUB_UI_RULES.md` (Ansichten und Knöpfe), `ADR-017` (Spielbausteine).
 
@@ -40,7 +40,7 @@ Kurz: Wer die Zielzahl Karten am schnellsten löst, gewinnt.
 
 Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. Wer zuerst keine Zeit mehr hat, verliert.
 
-**Einstellungen:** Zeitkonto 2, 3 oder 5 Minuten.
+**Einstellungen (Stand 2026-11-18):** Zeit pro Team 2, 3 oder 5 Minuten, **Standard 2**.
 
 **Ablauf:**
 
@@ -53,7 +53,11 @@ Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. W
 
 **Sieg:** Es gewinnt das letzte verbleibende Team; sein Konto zeigt die Restzeit. Bei mehr als zwei Teams entsteht die Platzierung aus der Reihenfolge des Ausscheidens (früher ausgeschieden ist schlechter platziert).
 
-**Pause:** Die Uhr des aktiven Teams lässt sich anhalten.
+**Pause:** Die Uhr des aktiven Teams lässt sich anhalten und fortsetzen; einen Neustart des Zuges gibt es nicht (er würde Zeit verschenken).
+
+**Karten (Entscheidung beim Bau, Annahme):** Im n-ten Zug haben alle Teams dieselbe Schwierigkeit (leicht, mittel, schwer, dann wieder leicht; nur aus den gewählten Schwierigkeiten). Neue Karten werden bevorzugt, in einem langen Spiel dürfen Karten wiederkehren.
+
+**Korrektur:** Es gibt keine nachträgliche Korrektur eines Ergebnisses (Ausnahme zur Regel „alle Modi“, siehe `docs/GAMEHUB_UI_RULES.md`): Die Uhr lässt sich nicht zurückdrehen, und die gelösten Karten ändern weder Rang noch Sieger.
 
 **Warum das aktive Team selbst erklärt:** Läge das Erklären beim Gegner, könnte er Zeit des ratenden Teams verbrauchen, ohne selbst etwas zu verlieren. Erklärt das eigene Team, verbraucht jedes Team nur seine eigene Zeit.
 
@@ -82,7 +86,7 @@ Die Umsetzung ist groß (der Container `TabooSetup.tsx` hat rund 470 Zeilen). Na
 2. **Ta-06-07-B (erledigt):** Oberfläche „Auf Zeit“: Knopfgruppe „Spielmodus“ (Klassisch, Auf Zeit) und „Karten pro Team“ im Setup (die Gruppen des klassischen Modus sind im Rennen ausgeblendet, ihre Werte bleiben erhalten); die Einstellungen, die nicht vom Modus abhängen, stehen im eigenen Feld „Karten“, `TabooRaceGame` (Übersicht vor jedem Lauf, Endstand mit `ScoreScreen`), `TabooRaceRun` (Stoppuhr mit `TimerHud`, Richtig, Überspringen einmal, Verbotenes Wort, Pause mit Neustart des Laufs), `TabooRaceResults`, Regeln im Fenster „Spielregeln“, Texte in Deutsch und Englisch. Für das Rennen sind je Team Zielzahl plus zwei Ersatzkarten nötig (die Kartenprüfung im Setup meldet es). Tests: Komponentenläufe in beiden Sprachen und eine Handy-Layoutprüfung aller Ansichten.
 3. **Ta-06-07-C (erledigt):** Business „Gegen die Zeit“: `countdown.ts` (Zustände `overview`, `running`, `finished`; Ereignisse `beginTurn`, `answerCard`, `timeUp`), `countdownCards.ts` (Schwierigkeit je Zug für alle Teams gleich, Kartenwahl, Kartenprüfung), Tests und Zufallsprüfung mit 60 Spielen.
 4. **Ta-06-07-D (erledigt):** Oberfläche „Gegen die Zeit“: Knopfgruppe „Zeit pro Team“ (2, 3, 5 Minuten, Standard 2), `TabooCountdownGame` (Übersicht der Zeitkonten, Endstand), `TabooCountdownRun` (Zug mit `useCountdown`, Pause ohne Neustart), `TabooCountdownResults`, Texte, Regelabschnitt, Tests und Handy-Layoutprüfung. In einem langen Spiel dürfen Karten wiederkommen (neue werden bevorzugt).
-5. **Ta-06-07-E:** Regeln und Leitfaden aktualisieren, beide Zeitmodi abschließend testen.
+5. **Ta-06-07-E (erledigt):** Regeln und Leitfaden aktualisiert: Regelfenster mit Modus und Einstellung, `GAMEHUB_TABOO_LOGIC.md` mit Abschnitt „Gegen die Zeit“, Ausnahme zur Korrektur in `GAMEHUB_UI_RULES.md`, beide Zeitmodi abschließend getestet.
 
 Nach jedem Schritt gilt: alle Tests, Typen, ESLint, Prettier, Schichtprüfung und e2e grün, Commit nur auf Zuruf.
 
@@ -97,3 +101,4 @@ Diese Punkte hat der Auftraggeber nicht ausdrücklich entschieden:
 5. **Mehr als zwei Teams bei Gegen die Zeit:** Ausgeschiedene Teams fallen aus dem Reihum, die Platzierung folgt der Reihenfolge des Ausscheidens?
 6. **Kartengerechtigkeit bei Auf Zeit (vom Auftraggeber bestätigt, gehärtet):** Jedes Team bekommt **genau dieselbe Schwierigkeitsmischung** (Zielzahl möglichst gleichmäßig auf die gewählten Schwierigkeiten verteilt, der Rest zuerst auf leicht, dann mittel; bei 5 Karten also 2 leichte, 2 mittlere, 1 schwere). Es gibt **kein Auffüllen aus einer anderen Schwierigkeit**: Fehlt eine Schwierigkeit, meldet das Setup den Kartenmangel, statt den Teams ungleiche Karten zu geben. Ersatzkarten haben genau dieselbe Schwierigkeit; ist keine mehr da, sind „Überspringen“ und „Verbotenes Wort“ gesperrt. Wählt der Spieler nur bestimmte Schwierigkeiten, wird die Mischung nur darauf verteilt. Pro verwendeter Schwierigkeit braucht das Spiel die Karten aller Läufe plus zwei Ersatzkarten je Team.
 7. **Reihenfolge der Modi in der Auswahl:** Klassisch, Auf Zeit, Gegen die Zeit?
+8. **Gegen die Zeit ohne Korrektur und mit gleicher Schwierigkeit im n-ten Zug:** Ist es richtig, dass es hier keine Ergebniskorrektur gibt und alle Teams im selben Zug dieselbe Schwierigkeit haben?

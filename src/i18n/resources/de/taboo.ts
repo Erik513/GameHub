@@ -41,6 +41,7 @@ export const tabooTexts = {
     settingsRounds: "wie oft jedes Team dran ist.",
     settingsDuration: "so lange dauert ein Zug.",
     settingsSkips: "so oft darfst du ohne Punkt weiterspringen.",
+    settingsCountdownBudget: "wie viel Zeit jedes Team bei Gegen die Zeit hat.",
     settingsTiebreak: "entscheidet ein Unentschieden.",
     settingsCards: "welche Karten gespielt werden: Sprache, Schwierigkeit, Kategorien.",
   },

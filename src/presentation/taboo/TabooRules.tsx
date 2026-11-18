@@ -105,6 +105,7 @@ export function TabooRulesDialog({ onClose, onOpenTiebreak, open }: TabooRulesDi
               ["tabooSetup.rounds", "tabooRules.settingsRounds"],
               ["tabooSetup.duration", "tabooRules.settingsDuration"],
               ["tabooSetup.skips", "tabooRules.settingsSkips"],
+              ["tabooSetup.countdownBudget", "tabooRules.settingsCountdownBudget"],
               ["tabooSetup.tiebreak", "tabooRules.settingsTiebreak"],
               ["tabooSetup.cardsSection", "tabooRules.settingsCards"],
             ] as const

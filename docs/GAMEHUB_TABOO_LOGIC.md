@@ -41,6 +41,24 @@ Eigene Zustandsmaschine neben der klassischen (Regeln: `docs/GAMEHUB_TABOO_MODES
 | Sieg | Kürzeste Zeit, verglichen in Zehntelsekunden; gleiche Zeit ist gemeinsamer Sieg. `finished` ist endgültig. |
 | Karten | `raceCards.ts`: genau dieselbe Schwierigkeitsmischung für jedes Team, nur aus den gewählten Schwierigkeiten, ohne Auffüllen aus anderen; Ersatz derselben Schwierigkeit oder nichts; nie eine Karte doppelt. `raceCardShortage` prüft vor dem Start, ob jede Schwierigkeit genug Karten hat (alle Läufe plus zwei Ersatzkarten je Team). |
 
+## Modus „Gegen die Zeit“ (`countdown.ts`)
+
+Eigene Zustandsmaschine (Regeln: `docs/GAMEHUB_TABOO_MODES.md`). Zustände: `overview` (vor jedem Zug) → `running` → `overview` … → `finished`.
+
+| Bereich | Regel |
+|---|---|
+| Start | `createCountdownGame` prüft Teams, Kartensprache und das Konto (`budgetMs`, ganze Zahl von 1 bis `maxCountdownBudgetMs`); angeboten werden 2, 3 und 5 Minuten, Standard 2. Jedes Team beginnt mit demselben Konto. |
+| Zug | `beginTurn` startet den Zug des nächsten Teams mit einer gültigen Karte der Kartensprache. Nur das Konto des spielenden Teams sinkt, und erst am Ende des Zuges um die Zeit des ganzen Zuges. |
+| Richtig | Beendet den Zug; das nächste Team, das noch im Spiel ist, folgt in der Reihenfolge der Teams. Die gelösten Karten zählen nur als Information. |
+| Überspringen | Einmal pro Team im ganzen Spiel; die Karte wird durch eine gültige Karte **derselben Schwierigkeit** ersetzt, die Uhr läuft weiter. Ohne Ersatz oder beim zweiten Mal keine Änderung. |
+| Verbotenes Wort | Die Karte wird ersetzt, die Uhr läuft weiter; es gibt keine zusätzliche Strafe (Annahme, Abschnitt 6 der Moduswahl). |
+| Ausscheiden | `timeUp` (die Uhr erreicht null) oder jedes Ereignis mit `elapsedMs` ab dem Konto beendet den Zug und scheidet das Team aus; es kommt nie wieder dran. `NaN`, unendliche und negative Zeiten werden ignoriert. |
+| Sieg | Sobald höchstens ein Team übrig ist, endet das Spiel (`finished`, endgültig). Platzierung: Teams im Spiel nach der meisten Restzeit, danach die ausgeschiedenen Teams, das zuletzt ausgeschiedene zuerst (`rankCountdownTeams`). |
+| Karten | `countdownCards.ts`: Im n-ten Zug haben alle Teams dieselbe Schwierigkeit (leicht, mittel, schwer, … nur aus den gewählten); neue Karten werden bevorzugt, **Karten dürfen wiederkehren** (ein Spiel kann länger dauern als der Kartensatz), nur nicht direkt nach sich selbst. `countdownCardShortage` prüft vor dem Start vier Karten je Team und Schwierigkeit. |
+| Korrektur | Es gibt **keine** nachträgliche Korrektur: Die Uhr lässt sich nicht zurückdrehen, und die gelösten Karten ändern weder Rang noch Sieger (Ausnahme zu `docs/GAMEHUB_UI_RULES.md` 3, vom Auftraggeber zu bestätigen). |
+
+Absicherung: `countdown.test.ts` (Regeln und Randfälle), `countdown.invariants.test.ts` (60 Zufallsspiele: Konten nie negativ und nie größer, nur das spielende Team wird belastet, Ausgeschiedene nie wieder dran, ein Sieger), `TabooCountdown.test.tsx` (Oberfläche in beiden Sprachen) und eine Layoutprüfung bei 360 × 640.
+
 ## Geprüfte Randfälle
 
 - Ereignisse für den falschen Zug, die falsche Karte oder den falschen Zustand ändern nichts.
