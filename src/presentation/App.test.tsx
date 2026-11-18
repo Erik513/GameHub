@@ -68,7 +68,8 @@ describe("App", () => {
 
     expect(screen.getAllByRole("button", { name: "Play" })).toHaveLength(6);
     expect(screen.getAllByRole("button", { name: "Play" })[0]).toBeEnabled();
-    expect(screen.getAllByRole("button", { name: "Play" })[1]).toBeDisabled();
+    expect(screen.getAllByRole("button", { name: "Play" })[1]).toBeEnabled();
+    expect(screen.getAllByRole("button", { name: "Play" })[2]).toBeDisabled();
 
     await user.click(screen.getAllByRole("button", { name: "Play" }).at(0)!);
 

@@ -16,7 +16,7 @@ export const gameCatalog = [
     id: "taboo",
     route: "/games/taboo",
     translationKey: "taboo",
-    availability: "preview",
+    availability: "available",
     accent: "coral",
   },
   {
@@ -37,7 +37,7 @@ export const gameCatalog = [
     id: "werewolf",
     route: "/games/werewolf",
     translationKey: "werewolf",
-    availability: "planned",
+    availability: "preview",
     accent: "coral",
   },
   {

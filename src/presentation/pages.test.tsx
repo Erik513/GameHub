@@ -41,7 +41,7 @@ describe("GameSelectionPage", () => {
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
   });
 
-  it("sorts the games: in development first, planned last, alphabetical in each group", async () => {
+  it("sorts the games: ready first, then in development, planned last, alphabetical in each group", async () => {
     await renderWithI18n(
       "en",
       <GameSelectionPage games={[...gameCatalog].reverse()} onSelect={vi.fn()} />,
@@ -51,10 +51,10 @@ describe("GameSelectionPage", () => {
       .map((heading) => heading.textContent);
     expect(titles).toEqual([
       "Taboo",
+      "Werewolf",
       "Imposter",
       "Liar’s Bar",
       "Schwimmen",
-      "Werewolf",
       "Word bomb",
     ]);
   });
@@ -62,7 +62,7 @@ describe("GameSelectionPage", () => {
   it("only lets players open games that are not merely planned", async () => {
     const onSelect = vi.fn();
     await renderWithI18n("en", <GameSelectionPage games={gameCatalog} onSelect={onSelect} />);
-    for (const planned of screen.getAllByRole("button", { name: "Play" }).slice(1)) {
+    for (const planned of screen.getAllByRole("button", { name: "Play" }).slice(2)) {
       expect(planned).toBeDisabled();
       fireEvent.click(planned);
     }
