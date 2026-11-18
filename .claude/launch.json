@@ -1,6 +1,7 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "gamehub-dev", "runtimeExecutable": "C:/Users/Kosta/.lmstudio/.internal/utils/node.exe", "runtimeArgs": ["node_modules/vite/bin/vite.js", "--port", "5173"], "port": 5173 }
+    { "name": "gamehub-dev", "runtimeExecutable": "C:/Users/Kosta/.lmstudio/.internal/utils/node.exe", "runtimeArgs": ["node_modules/vite/bin/vite.js", "--port", "5173"], "port": 5173 },
+    { "name": "gamehub-docs", "runtimeExecutable": "C:/Users/Kosta/.lmstudio/.internal/utils/node.exe", "runtimeArgs": ["scripts/serve-docs.mjs"], "port": 5174 }
   ]
 }
