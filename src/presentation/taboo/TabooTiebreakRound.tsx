@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { TabooEndGameButton } from "./TabooEndGameButton";
 import { useTranslation } from "react-i18next";
 import type { TabooCard } from "../../business/games/taboo/model";
 import {
@@ -23,6 +24,8 @@ const limitMs = TIEBREAK_LIMIT_SECONDS * 1000;
 interface TabooTiebreakRoundProps {
   active: TiebreakActive;
   dispatch: (event: TiebreakEvent) => void;
+  /** Gives the game up and returns to the main menu. */
+  onEndGame: () => void;
   onResume: () => void;
   /** Start of the attempt and the time spent paused, so pauses do not count. */
   pausedAt: number | undefined;
@@ -36,6 +39,7 @@ interface TabooTiebreakRoundProps {
 export function TabooTiebreakRound({
   active,
   dispatch,
+  onEndGame,
   onResume,
   pausedAt,
   pausedMs,
@@ -104,6 +108,7 @@ export function TabooTiebreakRound({
           >
             {t("tabooTiebreak.endAttempt")}
           </ConfirmButton>
+          <TabooEndGameButton onConfirm={onEndGame} />
         </div>
       ) : (
         <div

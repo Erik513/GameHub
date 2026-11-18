@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T17:13:36.704Z",
+    "updatedAt": "2026-11-18T17:25:55.701Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 113,
-      "totalTasks": 189,
-      "percent": 59.8
+      "completedTasks": 114,
+      "totalTasks": 190,
+      "percent": 60
     }
   },
   "environment": {
@@ -928,6 +928,11 @@
           "id": "Ta-10-09",
           "title": "Spieler-Reiter aus Tabu entfernen (lokal ohne Spieler; online nur Teams-Reiter mit den Namen der Lobby)",
           "status": "planned"
+        },
+        {
+          "id": "Ta-10-10",
+          "title": "Spiel aus der Pause beenden: Knopf „Spiel beenden“ auf der Pause-Karte aller Modi",
+          "status": "done"
         }
       ]
     },
@@ -1306,6 +1311,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-18",
+      "summary": "Spiel aus der Pause beenden (Ta-10-10): Auf der Pause-Karte aller Modi steht der Knopf „Spiel beenden“ mit Bestätigung; auf kleinen Handys passen alle Knöpfe ohne Scrollen."
+    },
     {
       "date": "2026-11-18",
       "summary": "Gegen die Zeit, Regeln und Abschluss (Ta-06-07-E, damit Ta-06-07 erledigt): Regelfenster, Logik- und Modus-Doku, Ausnahme zur Korrektur dokumentiert; beide Zeitmodi abschließend getestet."
@@ -1726,7 +1735,7 @@
     }
   ],
   "werewolfLineupOverview": {
-    "note": "Eine Seherin ist immer Pflicht. Die Zeilen bauen aufeinander auf: Bereits freigegebene Rollen und Zusätze bleiben verfügbar. Alle weiteren Rollen sind optional; gewöhnliche Dorfbewohner füllen freie Plätze. Nachprüfung für 7 sowie 9–11 abgeschlossen. Bei 8 ist die bestätigte Änderung übernommen: 1–2 Wölfe, allgemeine Empfehlung 2. Weitere Vorschläge stehen in der jeweiligen Zeile; noch nicht freigegebene Werte sind nicht als erlaubt aufgeführt.",
+    "note": "Eine Seherin ist immer Pflicht. Die Zeilen bauen aufeinander auf: Bereits freigegebene Rollen und Zusätze bleiben verfügbar. Alle weiteren Rollen sind optional; gewöhnliche Dorfbewohner füllen freie Plätze. Nachprüfungen übernommen: 7 Spieler mit 1–2 Wölfen (Standard 1), 8 mit 1–2 (Standard 2), 9 und 10 immer mit genau 2, 11 mit 2–3 (Standard 2).",
     "constraints": "Leibwächter und Dorfmatratze sind immer Alternativen. Beim Bürgermeister gilt entweder doppelte Stimme oder Hammer. Trunkenbold und Schutzamulett belegen keinen zusätzlichen Rollenplatz; beide sind standardmäßig aus. Alle Auswahlen müssen in die freien Spielerplätze passen.",
     "wolfPolicy": "Die erlaubten Wolfszahlen sind die Grenzen für die spätere automatische Festlegung durch das System. Die allgemeine Empfehlung ist der Ausgangswert; die konkrete Rollenbesetzung kann einen anderen erlaubten Wert erfordern. Die Validierung dieser Automatik ist noch offen.",
     "rows": [
@@ -1774,9 +1783,10 @@
           }
         ],
         "newItems": [],
-        "changes": "Nachprüfung: Ein Wolf bleibt konservativer Standard. Zwei passen mit starken Dorfrollen, sind aber noch nicht regulär freigegeben; die Modelle sind beim allgemeinen Standard uneinig.",
+        "changes": "Ein oder zwei Wölfe erlaubt; allgemeiner Standard bleibt einer. Zwei sind für starke Dorfbesetzungen vorgesehen. Höchstens fünf optionale Rollen mit einem Wolf, vier mit zwei Wölfen. Trunkenbold weiterhin erst ab neun Spielern.",
         "wolfCounts": [
-          1
+          1,
+          2
         ],
         "recommendedWolves": 1
       },
@@ -1793,7 +1803,7 @@
           }
         ],
         "newItems": [],
-        "changes": "Ein oder zwei Wölfe erlaubt; zwei sind der allgemeine Standard, einer bleibt für schwächere Dorfbesetzungen. Mit zwei Wölfen passen höchstens fünf optionale Rollen. Trunkenbold bleibt erst ab neun Spielern verfügbar.",
+        "changes": "Ein oder zwei Wölfe bleiben erlaubt. Zwei werden allgemeiner Standard; einer bleibt für schwächere Dorfbesetzungen. Höchstens fünf optionale Rollen mit zwei Wölfen. Trunkenbold bleibt erst ab neun Spielern verfügbar.",
         "wolfCounts": [
           1,
           2
@@ -1815,7 +1825,7 @@
         "newItems": [
           "Trunkenbold"
         ],
-        "changes": "Zwei Wölfe bleiben Pflicht und sind durch die Nachprüfung bestätigt. Drei sind meist zu stark. Trunkenbold kommt als Zusatz ohne weiteren Rollenplatz hinzu.",
+        "changes": "Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Trunkenbold kommt als Zusatz ohne weiteren Rollenplatz hinzu.",
         "wolfCounts": [
           2
         ],
@@ -1832,7 +1842,7 @@
         "newItems": [
           "Schutzamulett"
         ],
-        "changes": "Zwei Wölfe durch Nachprüfung als Standard bestätigt. Bürgermeister zusätzlich mit Hammer statt doppelter Stimme verfügbar; niemals beides.",
+        "changes": "Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Bürgermeister mit doppelter Stimme oder Hammer, niemals beides.",
         "wolfCounts": [
           2
         ],
@@ -1847,9 +1857,10 @@
           }
         ],
         "newItems": [],
-        "changes": "Hexe oder Magier, niemals gemeinsam. Zwei Wölfe bleiben Standard. Vorschlag aus Nachprüfung: drei für starke Magier-Besetzungen; noch nicht regulär freigegeben.",
+        "changes": "Zwei oder drei Wölfe erlaubt; allgemeiner Standard bleibt zwei. Drei sind für starke Dorfbesetzungen, insbesondere mit Magier, vorgesehen. Hexe und Magier bleiben Alternativen. Höchstens acht optionale Rollen mit zwei Wölfen, sieben mit drei.",
         "wolfCounts": [
-          2
+          2,
+          3
         ],
         "recommendedWolves": 2
       },
@@ -1857,7 +1868,7 @@
         "players": 12,
         "newRoles": [],
         "newItems": [],
-        "changes": "Drei Wölfe werden allgemeiner Standard; zwei bleiben erlaubt. Hexe und Magier bleiben Alternativen.",
+        "changes": "Zwei oder drei Wölfe bleiben erlaubt; drei werden allgemeiner Standard. Hexe und Magier bleiben Alternativen.",
         "wolfCounts": [
           2,
           3

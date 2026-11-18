@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { TabooEndGameButton } from "./TabooEndGameButton";
 import {
   countSkips,
   type TabooEvent,
@@ -18,6 +19,8 @@ type RunningRound = Extract<TabooState, { status: "roundRunning" }>;
 interface TabooRoundProps {
   deadline: number;
   dispatch: (event: TabooEvent) => void;
+  /** Gives the game up and returns to the main menu. */
+  onEndGame: () => void;
   onResume: () => void;
   onRestart: () => void;
   paused: boolean;
@@ -28,6 +31,7 @@ interface TabooRoundProps {
 export function TabooRound({
   deadline,
   dispatch,
+  onEndGame,
   onResume,
   onRestart,
   paused,
@@ -88,6 +92,7 @@ export function TabooRound({
           >
             {t("tabooRound.endRound")}
           </ConfirmButton>
+          <TabooEndGameButton onConfirm={onEndGame} />
         </div>
       ) : (
         <div

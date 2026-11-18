@@ -10,6 +10,8 @@ interface TabooClassicScreensProps {
   readonly game: TabooClassicGame;
   /** Whether the next turn found no cards or the generation brought none (shown on the overview). */
   readonly generationEmpty: boolean;
+  /** Gives the running game up and returns to the main menu (from the pause card). */
+  readonly onEndGame: () => void;
   /** Back to the main menu with an empty setup. */
   readonly onNewSetup: () => void;
   /** The same setup again: back to the line-up, the cards are reused. */
@@ -24,6 +26,7 @@ interface TabooClassicScreensProps {
 export function TabooClassicScreens({
   game,
   generationEmpty,
+  onEndGame,
   onNewSetup,
   onSameSetup,
 }: TabooClassicScreensProps) {
@@ -43,6 +46,7 @@ export function TabooClassicScreens({
         <TabooTiebreakRound
           active={tiebreakState.active}
           dispatch={dispatch}
+          onEndGame={onEndGame}
           onResume={game.togglePause}
           pausedAt={round.pausedAt}
           pausedMs={round.pausedMs ?? 0}
@@ -65,6 +69,7 @@ export function TabooClassicScreens({
         <TabooRound
           deadline={round.deadline}
           dispatch={dispatch}
+          onEndGame={onEndGame}
           onResume={game.togglePause}
           onRestart={game.restartTurn}
           restartUnavailable={game.restartUnavailable}

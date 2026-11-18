@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { TabooEndGameButton } from "./TabooEndGameButton";
 import { useTranslation } from "react-i18next";
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { RaceActive, RaceEvent } from "../../business/games/taboo/race";
@@ -19,6 +20,8 @@ interface TabooRaceRunProps {
   /** False when no card of the same difficulty is left; skipping and wrong cards are blocked then. */
   canReplace: boolean;
   dispatch: (event: RaceEvent) => void;
+  /** Gives the game up and returns to the main menu. */
+  onEndGame: () => void;
   onResume: () => void;
   /** When the run is paused, and how long it was paused before, so pauses do not count. */
   pausedAt: number | undefined;
@@ -35,6 +38,7 @@ export function TabooRaceRun({
   active,
   canReplace,
   dispatch,
+  onEndGame,
   onResume,
   pausedAt,
   pausedMs,
@@ -87,6 +91,7 @@ export function TabooRaceRun({
           >
             {t("tabooRace.restartRun")}
           </ConfirmButton>
+          <TabooEndGameButton onConfirm={onEndGame} />
         </div>
       ) : (
         <div

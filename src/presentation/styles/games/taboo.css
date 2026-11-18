@@ -768,10 +768,19 @@
     padding-top: var(--space-2);
   }
 
-  /* The pause card has three buttons below each other; they all have to fit without scrolling. */
+  /* The pause card has up to four buttons below each other; they all have to fit without scrolling. */
   .taboo-round .taboo-round__card--paused {
     gap: var(--space-2);
     padding-block: var(--space-2);
+  }
+
+  .game-preview .taboo-round .taboo-round__card--paused .button {
+    margin-top: 0;
+  }
+
+  /* On a small screen the hint goes; the title says it is paused and the buttons say the rest. */
+  .taboo-round .taboo-round__card--paused p {
+    display: none;
   }
 
   .taboo-round .taboo-round__card--paused h2 {

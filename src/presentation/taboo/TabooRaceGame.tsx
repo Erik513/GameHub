@@ -125,6 +125,7 @@ export function TabooRaceGame({
         active={running.active}
         canReplace={canReplace}
         dispatch={dispatch}
+        onEndGame={onExit}
         onResume={togglePause}
         pausedAt={clock.pausedAt}
         pausedMs={clock.pausedMs}
@@ -148,6 +149,7 @@ export function TabooRaceGame({
         cards={cards}
         clock={clock}
         dispatch={dispatch}
+        onEndGame={onExit}
         onNewSetup={onNewSetup}
         onResume={togglePause}
         onShowResult={() => setResultShown(true)}

@@ -139,13 +139,14 @@ export function TabooSetup({
   }
 
   // Leaving a game returns to the main window with the previous setup still filled in.
+  function leaveClassicGame() {
+    game.clearRound();
+    setSession(undefined);
+    setIssues([]);
+  }
   useGameExit(
     Boolean(round) || Boolean(session),
-    () => {
-      game.clearRound();
-      setSession(undefined);
-      setIssues([]);
-    },
+    leaveClassicGame,
     (game.runningTurn || game.tiebreakActive) && round
       ? { paused: round.pausedAt !== undefined, onToggle: game.togglePause }
       : undefined,
@@ -200,6 +201,7 @@ export function TabooSetup({
       <TabooClassicScreens
         game={game}
         generationEmpty={start.generationEmpty}
+        onEndGame={leaveClassicGame}
         onNewSetup={() => restart(false)}
         onSameSetup={() => restart(true)}
       />

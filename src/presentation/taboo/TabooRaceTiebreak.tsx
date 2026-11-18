@@ -24,6 +24,8 @@ interface TabooRaceTiebreakProps {
   cards: readonly TabooCard[];
   clock: TiebreakClock | undefined;
   dispatch: (event: RaceEvent) => void;
+  /** Gives the game up and returns to the main menu. */
+  onEndGame: () => void;
   /** Back to the main menu with an empty setup (offered when the cards are not enough). */
   onNewSetup: () => void;
   onResume: () => void;
@@ -45,6 +47,7 @@ export function TabooRaceTiebreak({
   cards,
   clock,
   dispatch,
+  onEndGame,
   onNewSetup,
   onResume,
   onShowResult,
@@ -80,6 +83,7 @@ export function TabooRaceTiebreak({
       <TabooTiebreakRound
         active={part.active}
         dispatch={dispatch}
+        onEndGame={onEndGame}
         onResume={onResume}
         pausedAt={clock.pausedAt}
         pausedMs={clock.pausedMs}

@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { TabooEndGameButton } from "./TabooEndGameButton";
 import { useTranslation } from "react-i18next";
 import type { CountdownActive, CountdownEvent } from "../../business/games/taboo/countdown";
 import type { TabooCard } from "../../business/games/taboo/model";
@@ -19,6 +20,8 @@ interface TabooCountdownRunProps {
   /** The whole account of every team, for the bar. */
   budgetMs: number;
   dispatch: (event: CountdownEvent) => void;
+  /** Gives the game up and returns to the main menu. */
+  onEndGame: () => void;
   onResume: () => void;
   /** When the turn is paused, and how long it was paused before, so pauses do not count. */
   pausedAt: number | undefined;
@@ -37,6 +40,7 @@ export function TabooCountdownRun({
   active,
   budgetMs,
   dispatch,
+  onEndGame,
   onResume,
   pausedAt,
   pausedMs,
@@ -88,6 +92,7 @@ export function TabooCountdownRun({
           <Button variant="success" onClick={onResume}>
             {t("navigation.resume")}
           </Button>
+          <TabooEndGameButton onConfirm={onEndGame} />
         </div>
       ) : (
         <div

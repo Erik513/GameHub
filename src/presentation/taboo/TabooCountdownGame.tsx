@@ -102,6 +102,7 @@ export function TabooCountdownGame({
         budgetMs={configuration.budgetMs}
         dispatch={dispatch}
         key={`${active.teamIndex}-${account?.turns ?? 0}`}
+        onEndGame={onExit}
         onResume={togglePause}
         pausedAt={clock.pausedAt}
         pausedMs={clock.pausedMs}
