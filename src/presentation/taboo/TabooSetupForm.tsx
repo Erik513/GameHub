@@ -231,6 +231,15 @@ export function TabooSetupForm({
                       hint: t("tabooSetup.countdownBudgetUnit"),
                     }))}
                   />
+                  <ChoiceGroup
+                    legend={t("tabooSetup.countdownSwitch")}
+                    name="countdownSwitch"
+                    initial="manual"
+                    options={(["manual", "auto"] as const).map((value) => ({
+                      value,
+                      label: t(`tabooSetup.countdownSwitchOptions.${value}`),
+                    }))}
+                  />
                 </div>
                 <div className="taboo-mode-settings" hidden={mode !== "classic"}>
                   <ChoiceGroup

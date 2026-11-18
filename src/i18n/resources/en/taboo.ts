@@ -36,10 +36,12 @@ export const tabooTexts = {
     raceText: "Each round every team plays a run, easy cards first. The shortest total time wins.",
     countdownText:
       "Every team has a time account that only runs on its own turn. The last team with time left wins.",
+    countdownSkipText: "Each team may skip one card per game.",
     settingsTitle: "Settings",
     settingsRounds: "how many rounds each team plays.",
     settingsDuration: "how long a turn lasts.",
     settingsSkips: "how often you may move on without a point.",
+    settingsCountdownSwitch: "whether the next team starts by itself or after a tap.",
     settingsCountdownBudget: "how much time each team has against the clock.",
     settingsTiebreak: "decides a tie.",
     settingsCards: "which cards are played: language, difficulty, categories.",
@@ -134,7 +136,7 @@ export const tabooTexts = {
     race: "Race",
     countdown: "Against the clock",
     countdownInfo:
-      "Every team has a time account that runs down in its own turn. Whoever runs out of time loses.",
+      "Every team has a time account that runs down in its own turn. Whoever runs out of time loses. Each team may skip one card per game.",
   },
   tabooCountdown: {
     overview: "Time accounts overview",
@@ -146,6 +148,8 @@ export const tabooTexts = {
     out: "out",
     solved: "{{count}} solved",
     skipOnce: "once per game",
+    outShort: "out",
+    dropped: "{{team}} is out",
     noCards: "Not enough cards are available for the next turn.",
     inGame: "{{count}} teams in the game",
   },
@@ -245,6 +249,11 @@ export const tabooTexts = {
     raceTarget: "Cards per team per round",
     countdownBudget: "Time per team",
     countdownBudgetUnit: "min",
+    countdownSwitch: "Team change",
+    countdownSwitchOptions: {
+      manual: "Manual",
+      auto: "Automatic",
+    },
     cardsSection: "Categories",
     cardSource: "Card source",
     cardSources: { local: "Local only", ai: "AI only", both: "Both" },

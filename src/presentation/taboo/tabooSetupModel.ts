@@ -139,6 +139,8 @@ export interface TabooSettings {
   readonly cardSource: (typeof cardSources)[number];
   /** The time account of every team in the mode "Gegen die Zeit", in milliseconds. */
   readonly countdownBudgetMs: number;
+  /** Whether the next team of the mode "Gegen die Zeit" starts by itself when a turn ends. */
+  readonly countdownAutoSwitch: boolean;
   /** The chosen categories; never empty. */
   readonly categories: readonly string[];
   /** The chosen difficulties; empty means every difficulty. */
@@ -170,6 +172,7 @@ export function readTabooSettings(
     cardSource: options.hasGenerators
       ? (cardSources.find((candidate) => candidate === source) ?? "both")
       : "local",
+    countdownAutoSwitch: data.get("countdownSwitch") === "auto",
     countdownBudgetMs:
       Number.isSafeInteger(countdownBudget) && countdownBudget >= 1
         ? countdownBudget

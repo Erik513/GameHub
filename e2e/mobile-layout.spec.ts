@@ -506,3 +506,58 @@ test("the countdown screens fit a small phone in both languages", async ({ page 
   }
   expect(problems, problems.join("\n")).toEqual([]);
 });
+
+const switchLabels = {
+  en: { change: "Team change", auto: "Automatic" },
+  de: { change: "Teamwechsel", auto: "Automatisch" },
+} as const;
+
+test("the countdown with the automatic team change fits a small phone", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile-chromium", "The layout audit runs on mobile only.");
+  const problems: string[] = [];
+  for (const language of ["en", "de"] as const) {
+    const t = labels[language];
+    const countdown = countdownLabels[language];
+    const change = switchLabels[language];
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.clock.install();
+    await page.addInitScript(() => {
+      Math.random = () => 0.99;
+    });
+    await page.goto("/");
+    if (language === "de") {
+      await page.getByRole("button", { name: labels.en.settings }).click();
+      await page
+        .getByRole("group", { name: labels.en.interfaceLanguage })
+        .getByRole("radio", { name: "German" })
+        .check({ force: true });
+      await page.getByRole("dialog").getByRole("button", { name: labels.de.close }).click();
+    }
+    const check = async (screen: string) =>
+      problems.push(...(await audit(page, `${language} ${screen}`)));
+    const press = (name: string) => page.getByRole("button", { name, exact: true }).first().click();
+
+    await press(t.open);
+    await press(t.settingsTab);
+    const mode = page.getByRole("group", { name: countdown.mode });
+    await mode.evaluate((element) => element.scrollIntoView({ block: "center" }));
+    await mode.getByRole("radio", { name: countdown.countdown }).check({ force: true });
+    await page
+      .getByRole("group", { name: change.change })
+      .getByRole("radio", { name: change.auto })
+      .check({ force: true });
+    await check("countdown setup with the team change");
+    await press(t.done);
+    await press(t.startGame);
+    await press(countdown.start);
+    await check("running countdown with all accounts");
+    await press(t.pause);
+    await check("paused countdown with all accounts");
+    await press(t.resume);
+    await press(t.correct);
+    await check("countdown after the automatic change");
+  }
+  expect(problems, problems.join("\n")).toEqual([]);
+});

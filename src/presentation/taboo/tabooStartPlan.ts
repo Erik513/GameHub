@@ -103,7 +103,12 @@ export function planTabooStart({
       : undefined;
   const countdown =
     settings.mode === "countdown"
-      ? createCountdownGame({ teams, cardLanguage, budgetMs: settings.countdownBudgetMs })
+      ? createCountdownGame({
+          teams,
+          cardLanguage,
+          budgetMs: settings.countdownBudgetMs,
+          ...(settings.countdownAutoSwitch ? { autoSwitch: true } : {}),
+        })
       : undefined;
   const checked = classic ?? race ?? countdown;
   if (!checked?.valid) return { valid: false, issues: checked?.issues ?? [] };

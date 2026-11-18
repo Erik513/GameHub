@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-18T17:25:55.701Z",
+    "updatedAt": "2026-11-18T18:01:34.950Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 114,
-      "totalTasks": 190,
-      "percent": 60
+      "completedTasks": 115,
+      "totalTasks": 191,
+      "percent": 60.2
     }
   },
   "environment": {
@@ -85,10 +85,10 @@
     },
     "unitTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-18T17:00:33.076Z",
+      "lastRunAt": "2026-11-18T17:34:59.107Z",
       "passed": 675,
       "failed": 0,
-      "details": "Alle Unit- und Komponententests bestanden, darunter der Modus Gegen die Zeit (Logik, Zufallsprüfung, Oberfläche)."
+      "details": "821 Unit- und Komponententests bestanden, darunter Gegen die Zeit mit automatischem Teamwechsel."
     },
     "integrationTests": {
       "status": "passed",
@@ -99,10 +99,10 @@
     },
     "e2eTests": {
       "status": "passed",
-      "lastRunAt": "2026-11-18T17:00:33.076Z",
+      "lastRunAt": "2026-11-18T17:34:59.107Z",
       "passed": 31,
       "failed": 0,
-      "details": "38 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 8 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen. Neu: Layout aller Ansichten von Gegen die Zeit."
+      "details": "39 Browserprüfungen (Chrome, Desktop und Mobil) bestanden, 9 mobile Layout-Prüfungen werden auf dem Desktop-Projekt bewusst übersprungen."
     },
     "renameValidation": {
       "status": "passed",
@@ -781,6 +781,11 @@
           "id": "Ta-06-09-C",
           "title": "Einstellungen und Ansichten: Runden 1/3/5 mit Namen, Karten 3/5/7, Stechen einstellbar, Stechen-Ansichten bei Auf Zeit",
           "status": "done"
+        },
+        {
+          "id": "Ta-06-10",
+          "title": "Gegen die Zeit: automatischer Teamwechsel mit Zeitleiste aller Teams (Einstellung Teamwechsel)",
+          "status": "done"
         }
       ]
     },
@@ -1313,6 +1318,10 @@
   "recentChanges": [
     {
       "date": "2026-11-18",
+      "summary": "Gegen die Zeit: automatischer Teamwechsel (Ta-06-10): neue Einstellung Teamwechsel (Manuell, Automatisch; Standard Manuell), sofort die nächste Karte für das nächste Team und eine Leiste mit den Restzeiten aller Teams."
+    },
+    {
+      "date": "2026-11-18",
       "summary": "Spiel aus der Pause beenden (Ta-10-10): Auf der Pause-Karte aller Modi steht der Knopf „Spiel beenden“ mit Bestätigung; auf kleinen Handys passen alle Knöpfe ohne Scrollen."
     },
     {
@@ -1737,7 +1746,7 @@
   "werewolfLineupOverview": {
     "note": "Eine Seherin ist immer Pflicht. Die Zeilen bauen aufeinander auf: Bereits freigegebene Rollen und Zusätze bleiben verfügbar. Alle weiteren Rollen sind optional; gewöhnliche Dorfbewohner füllen freie Plätze. Nachprüfungen übernommen: 7 Spieler mit 1–2 Wölfen (Standard 1), 8 mit 1–2 (Standard 2), 9 und 10 immer mit genau 2, 11 mit 2–3 (Standard 2).",
     "constraints": "Leibwächter und Dorfmatratze sind immer Alternativen. Beim Bürgermeister gilt entweder doppelte Stimme oder Hammer. Trunkenbold und Schutzamulett belegen keinen zusätzlichen Rollenplatz; beide sind standardmäßig aus. Alle Auswahlen müssen in die freien Spielerplätze passen.",
-    "wolfPolicy": "Die erlaubten Wolfszahlen sind die Grenzen für die spätere automatische Festlegung durch das System. Die allgemeine Empfehlung ist der Ausgangswert; die konkrete Rollenbesetzung kann einen anderen erlaubten Wert erfordern. Die Validierung dieser Automatik ist noch offen.",
+    "wolfPolicy": "Einrichtungslogik abgeschlossen. Variabel: zuerst konkrete Sonderrollen und Items auslosen → dafür die Wolfszahl berechnen → mit Dorfbewohnern auffüllen → Rollen verteilen. Vorher wird nur die Machbarkeit geprüft, ohne Punktebewertung. Es gelten ausschließlich die freigegebenen Wolfszahlen; bei 9 und 10 immer genau zwei.",
     "rows": [
       {
         "players": 6,

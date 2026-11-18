@@ -158,3 +158,41 @@ it("allows one skip per team, replaces a card with a forbidden word and can be p
   // Neither a skip nor a forbidden word ends the turn.
   expect(screen.getByRole("region", { name: text.run })).toBeVisible();
 });
+
+it.each(["en", "de"] as const)(
+  "changes the team by itself, shows all accounts above the card and ends with the last team in %s",
+  async (language) => {
+    let now = 1_000_000;
+    vi.spyOn(Date, "now").mockImplementation(() => now);
+    const text = texts[language];
+    const labels =
+      language === "en"
+        ? { change: "Team change", auto: "Automatic", manual: "Manual" }
+        : { change: "Teamwechsel", auto: "Automatisch", manual: "Manuell" };
+    const { user } = await startCountdown(language);
+    const change = screen.getByRole("group", { name: labels.change });
+    // The change is manual at first.
+    expect(within(change).getByRole("radio", { name: labels.manual })).toBeChecked();
+    await user.click(within(change).getByRole("radio", { name: labels.auto }));
+    closeGameSettings();
+    await user.click(screen.getByRole("button", { name: text.startGame }));
+    // Nothing to tap between turns: the first team starts after its tap, the others follow by themselves.
+    await user.click(screen.getByRole("button", { name: text.start }));
+
+    const row = () => within(screen.getByRole("list", { name: text.accounts }));
+    expect(row().getAllByRole("listitem")).toHaveLength(2);
+    now += 30_000;
+    await user.click(screen.getByRole("button", { name: new RegExp(`^${text.correct}`) }));
+    // At once the next team is on the move, the first one keeps what is left.
+    const run = screen.getByRole("region", { name: text.run });
+    expect(within(run).getByText("Team 2", { selector: ".kit-hud__title" })).toBeVisible();
+    expect(row().getByText("1:30")).toBeVisible();
+    expect(row().getByText("2:00")).toBeVisible();
+
+    // The second team lets its whole account run out: it is out and the first team wins.
+    now += 130_000;
+    await user.click(screen.getByRole("button", { name: new RegExp(`^${text.correct}`) }));
+    const result = await screen.findByRole("region", { name: text.result });
+    expect(within(result).getByRole("status")).toHaveTextContent(text.winner);
+  },
+);

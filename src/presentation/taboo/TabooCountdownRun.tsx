@@ -6,6 +6,7 @@ import type { TabooCard } from "../../business/games/taboo/model";
 import type { TabooOutcome } from "../../business/games/taboo/stateMachine";
 import { Button } from "../components";
 import { TimerHud, useCountdown } from "../game-kit";
+import { TabooCountdownStrip, type CountdownStripTeam } from "./TabooCountdownStrip";
 import { formatMinutes } from "./formatTime";
 
 const outcomes = ["correct", "skipped", "forbiddenWord"] as const;
@@ -33,6 +34,8 @@ interface TabooCountdownRunProps {
   skipUsed: boolean;
   startedAt: number;
   teamName: string;
+  /** All accounts for the row above the card; without them (manual change) there is no row. */
+  teams?: readonly CountdownStripTeam[];
 }
 
 /** One turn of the mode "Gegen die Zeit": the team explains and guesses, its account runs down. */
@@ -49,6 +52,7 @@ export function TabooCountdownRun({
   skipUsed,
   startedAt,
   teamName,
+  teams,
 }: TabooCountdownRunProps) {
   const { t } = useTranslation();
   const paused = pausedAt !== undefined;
@@ -77,7 +81,14 @@ export function TabooCountdownRun({
   const canReplace = pickReplacement(card) !== undefined;
 
   return (
-    <section className="taboo-round taboo-round--running" aria-label={t("tabooCountdown.run")}>
+    <section
+      className={
+        teams
+          ? "taboo-round taboo-round--running taboo-round--with-row"
+          : "taboo-round taboo-round--running"
+      }
+      aria-label={t("tabooCountdown.run")}
+    >
       <TimerHud
         fraction={Math.min(1, (seconds * 1000) / budgetMs)}
         remainingSeconds={seconds}
@@ -85,6 +96,15 @@ export function TabooCountdownRun({
         timerLabel={t("tabooCountdown.timer", { time })}
         title={teamName}
       />
+      {teams && (
+        <TabooCountdownStrip
+          active={active.teamIndex}
+          // The team on the move shows what is left right now.
+          teams={teams.map((team, index) =>
+            index === active.teamIndex ? { ...team, remainingMs: seconds * 1000 } : team,
+          )}
+        />
+      )}
       {paused ? (
         <div className="taboo-round__card taboo-round__card--paused">
           <h2>{t("tabooRound.paused")}</h2>

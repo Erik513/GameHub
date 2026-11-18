@@ -37,10 +37,12 @@ export const tabooTexts = {
       "Jedes Team spielt pro Runde einen Lauf, leichte Karten zuerst. Kürzeste Gesamtzeit gewinnt.",
     countdownText:
       "Jedes Team hat ein Zeitkonto, das nur im eigenen Zug läuft. Das letzte Team mit Zeit gewinnt.",
+    countdownSkipText: "Jedes Team darf pro Spiel einmal eine Karte überspringen.",
     settingsTitle: "Einstellungen",
     settingsRounds: "wie oft jedes Team dran ist.",
     settingsDuration: "so lange dauert ein Zug.",
     settingsSkips: "so oft darfst du ohne Punkt weiterspringen.",
+    settingsCountdownSwitch: "ob das nächste Team von selbst oder nach einem Tipp startet.",
     settingsCountdownBudget: "wie viel Zeit jedes Team bei Gegen die Zeit hat.",
     settingsTiebreak: "entscheidet ein Unentschieden.",
     settingsCards: "welche Karten gespielt werden: Sprache, Schwierigkeit, Kategorien.",
@@ -135,7 +137,7 @@ export const tabooTexts = {
     race: "Auf Zeit",
     countdown: "Gegen die Zeit",
     countdownInfo:
-      "Jedes Team hat ein Zeitkonto, das im eigenen Zug abläuft. Wer keine Zeit mehr hat, verliert.",
+      "Jedes Team hat ein Zeitkonto, das im eigenen Zug abläuft. Wer keine Zeit mehr hat, verliert. Jedes Team darf pro Spiel einmal eine Karte überspringen.",
   },
   tabooCountdown: {
     overview: "Übersicht der Zeitkonten",
@@ -147,6 +149,8 @@ export const tabooTexts = {
     out: "ausgeschieden",
     solved: "{{count}} gelöst",
     skipOnce: "nur 1× pro Spiel",
+    outShort: "raus",
+    dropped: "{{team}} ist ausgeschieden",
     noCards: "Für den nächsten Zug sind nicht genug Karten vorhanden.",
     inGame: "{{count}} Teams im Spiel",
   },
@@ -246,6 +250,11 @@ export const tabooTexts = {
     raceTarget: "Karten pro Team pro Runde",
     countdownBudget: "Zeit pro Team",
     countdownBudgetUnit: "Min.",
+    countdownSwitch: "Teamwechsel",
+    countdownSwitchOptions: {
+      manual: "Manuell",
+      auto: "Automatisch",
+    },
     cardsSection: "Kategorien",
     cardSource: "Kartenquelle",
     cardSources: { local: "Nur lokal", ai: "Nur KI", both: "Beides" },

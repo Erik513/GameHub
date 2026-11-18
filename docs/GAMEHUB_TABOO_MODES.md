@@ -40,7 +40,7 @@ Kurz: Wer die Zielzahl Karten am schnellsten löst, gewinnt.
 
 Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. Wer zuerst keine Zeit mehr hat, verliert.
 
-**Einstellungen (Stand 2026-11-18):** Zeit pro Team 2, 3 oder 5 Minuten, **Standard 2**.
+**Einstellungen (Stand 2026-11-18):** Zeit pro Team 2, 3 oder 5 Minuten, **Standard 2**; **Teamwechsel Manuell (Standard) oder Automatisch** (Wunsch des Auftraggebers vom 2026-11-18).
 
 **Ablauf:**
 
@@ -52,6 +52,8 @@ Kurz: Jedes Team hat ein Zeitkonto, das nur beim eigenen Raten herunterläuft. W
 6. **Ausscheiden:** Erreicht ein Konto 0, ist das Team ausgeschieden und scheidet aus dem Reihum aus.
 
 **Sieg:** Es gewinnt das letzte verbleibende Team; sein Konto zeigt die Restzeit. Bei mehr als zwei Teams entsteht die Platzierung aus der Reihenfolge des Ausscheidens (früher ausgeschieden ist schlechter platziert).
+
+**Automatischer Teamwechsel:** Nach „Richtig“ (oder wenn ein Konto abläuft) erscheint sofort die nächste Karte für das nächste Team, ohne Übersicht dazwischen; über der Karte stehen die Restzeiten aller Teams, das Team am Zug ist markiert. Ein Team, das dabei ausscheidet, wird kurz angesagt. Beim manuellen Wechsel bleibt die Übersicht zwischen den Zügen.
 
 **Pause:** Die Uhr des aktiven Teams lässt sich anhalten und fortsetzen; einen Neustart des Zuges gibt es nicht (er würde Zeit verschenken).
 

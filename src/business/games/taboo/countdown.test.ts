@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   countdownBudgetChoices,
   countdownRemainingTeams,
+  countdownTeamAfter,
   createCountdownGame,
   getCountdownNextTeam,
   maxCountdownBudgetMs,
@@ -253,5 +254,113 @@ describe("countdown cards", () => {
     });
     const many = Array.from({ length: 8 }, (_, index) => card(`x${index}`));
     expect(countdownCardShortage(many, 2, ["easy"])).toBeUndefined();
+  });
+});
+
+describe("the automatic change of teams", () => {
+  const auto = (): CountdownState => setup({ autoSwitch: true });
+  const nextOn = (id: string, elapsedMs: number): CountdownEvent => ({
+    type: "answerCard",
+    outcome: "correct",
+    elapsedMs,
+    nextCard: card(id),
+  });
+
+  it("starts the next team at once with the card that comes with the event", () => {
+    const state = play(auto(), [begin("a"), nextOn("b", 3_000)]);
+    expect(state.status).toBe("running");
+    expect(state.status === "running" && state.active).toMatchObject({ teamIndex: 1 });
+    expect(state.status === "running" && state.active.card.id).toBe("b");
+    expect(state.teams[0]?.remainingMs).toBe(7_000);
+    expect(state.teams[1]?.remainingMs).toBe(10_000);
+  });
+
+  it("goes on after a team ran out of time and skips it afterwards", () => {
+    const state = play(auto(), [
+      begin("a"),
+      { type: "timeUp", nextCard: card("b") },
+      nextOn("c", 1_000),
+      nextOn("d", 1_000),
+    ]);
+    expect(state.eliminationOrder).toEqual([0]);
+    // Blue and green take turns, red never comes back.
+    expect(state.status === "running" && state.active.teamIndex).toBe(1);
+  });
+
+  it("also goes on when a button is pressed after the account was used up", () => {
+    const state = play(auto(), [begin("a"), nextOn("b", 10_000)]);
+    expect(state.teams[0]?.eliminated).toBe(true);
+    expect(state.status === "running" && state.active.teamIndex).toBe(1);
+  });
+
+  it("waits in the overview without a card, with a wrong card and when it is off", () => {
+    expect(play(auto(), [begin("a"), correct(1_000)]).status).toBe("overview");
+    const wrongLanguage: CountdownEvent = {
+      type: "answerCard",
+      outcome: "correct",
+      elapsedMs: 1_000,
+      nextCard: card("b", "easy", "de"),
+    };
+    expect(play(auto(), [begin("a"), wrongLanguage]).status).toBe("overview");
+    expect(play(setup(), [begin("a"), nextOn("b", 1_000)]).status).toBe("overview");
+  });
+
+  it("ends the game instead of starting a turn when only one team is left", () => {
+    const state = play(setup({ autoSwitch: true, teams: teams.slice(0, 2) }), [
+      begin("a"),
+      { type: "timeUp", nextCard: card("b") },
+    ]);
+    expect(state.status).toBe("finished");
+    expect(state.status === "finished" && state.winnerIds).toEqual(["blue"]);
+  });
+
+  it("rejects a setting that is not true or false", () => {
+    expect(
+      createCountdownGame({ ...configuration, autoSwitch: "yes" as unknown as boolean }).valid,
+    ).toBe(false);
+  });
+
+  it("names the team that plays after the running team", () => {
+    expect(countdownTeamAfter(setup())).toBe(1);
+    const out = play(setup(), [begin("a"), { type: "timeUp" }]);
+    expect(countdownTeamAfter(out)).toBe(2);
+    const last = play(setup({ teams: teams.slice(0, 2) }), [begin("a"), { type: "timeUp" }]);
+    expect(countdownTeamAfter(last)).toBeUndefined();
+  });
+
+  it("plays random games to the end without a break", () => {
+    for (let seed = 1; seed <= 40; seed += 1) {
+      let value = seed;
+      const random = () => {
+        value = (value * 1_664_525 + 1_013_904_223) % 4_294_967_296;
+        return value / 4_294_967_296;
+      };
+      let state = play(setup({ autoSwitch: true, budgetMs: 8_000 }), [begin("start")]);
+      let elapsedMs = 0;
+      for (let step = 0; step < 2_000 && state.status !== "finished"; step += 1) {
+        expect(state.status).toBe("running");
+        const before = state;
+        elapsedMs += Math.floor(random() * 3_000);
+        state = transitionCountdown(
+          state,
+          random() < 0.1
+            ? { type: "timeUp", nextCard: card(`n${seed}-${step}`) }
+            : {
+                type: "answerCard",
+                outcome: "correct",
+                elapsedMs,
+                nextCard: card(`n${seed}-${step}`),
+              },
+        );
+        // A new turn starts: the clock of the turn starts at zero again.
+        elapsedMs = 0;
+        state.teams.forEach((team, index) => {
+          expect(team.remainingMs).toBeGreaterThanOrEqual(0);
+          expect(team.remainingMs).toBeLessThanOrEqual(before.teams[index]?.remainingMs ?? 0);
+        });
+      }
+      expect(state.status).toBe("finished");
+      expect(countdownRemainingTeams(state)).toHaveLength(1);
+    }
   });
 });

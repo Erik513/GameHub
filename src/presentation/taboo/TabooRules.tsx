@@ -93,7 +93,8 @@ export function TabooRulesDialog({ onClose, onOpenTiebreak, open }: TabooRulesDi
             <strong>{t("tabooMode.race")}:</strong> {t("tabooRules.raceText")}
           </li>
           <li>
-            <strong>{t("tabooMode.countdown")}:</strong> {t("tabooRules.countdownText")}
+            <strong>{t("tabooMode.countdown")}:</strong> {t("tabooRules.countdownText")}{" "}
+            {t("tabooRules.countdownSkipText")}
           </li>
         </ul>
       </RulesSection>
@@ -106,6 +107,7 @@ export function TabooRulesDialog({ onClose, onOpenTiebreak, open }: TabooRulesDi
               ["tabooSetup.duration", "tabooRules.settingsDuration"],
               ["tabooSetup.skips", "tabooRules.settingsSkips"],
               ["tabooSetup.countdownBudget", "tabooRules.settingsCountdownBudget"],
+              ["tabooSetup.countdownSwitch", "tabooRules.settingsCountdownSwitch"],
               ["tabooSetup.tiebreak", "tabooRules.settingsTiebreak"],
               ["tabooSetup.cardsSection", "tabooRules.settingsCards"],
             ] as const

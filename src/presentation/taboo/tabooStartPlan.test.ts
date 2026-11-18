@@ -12,6 +12,7 @@ const categoryIds = ["everyday", "culture", "nature"];
 const classic: TabooSettings = {
   cardSource: "local",
   categories: categoryIds,
+  countdownAutoSwitch: false,
   countdownBudgetMs: 180_000,
   difficulties: [],
   duration: 60,

@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   countdownRemainingTeams,
+  countdownTeamAfter,
   transitionCountdown,
   type CountdownEvent,
   type CountdownState,
@@ -53,12 +54,50 @@ export function TabooCountdownGame({
   const [state, setState] = useState<CountdownState>(initial);
   const [clock, setClock] = useState<Clock>();
   const [noCards, notifyNoCards] = useNotice<true>();
+  const [dropped, notifyDropped] = useNotice<string>();
+  // The latest state, so events that follow each other quickly always build on the one before.
+  const latest = useRef(initial);
   const { configuration } = state;
   const running = state.status === "running" ? state : undefined;
 
-  const dispatch = useCallback((event: CountdownEvent) => {
-    setState((current) => transitionCountdown(current, event));
-  }, []);
+  /** Plays an event; with the automatic change of teams it brings the card of the next team along. */
+  function dispatch(event: CountdownEvent) {
+    const current = latest.current;
+    let sent = event;
+    const endsTurn =
+      event.type === "timeUp" || (event.type === "answerCard" && event.outcome === "correct");
+    if (current.configuration.autoSwitch === true && current.status === "running" && endsTurn) {
+      const after = countdownTeamAfter(current);
+      const account = after === undefined ? undefined : current.teams[after];
+      const card =
+        account &&
+        pickCountdownCard(
+          pool,
+          countdownDifficultyForTurn(account.turns, difficulties),
+          new Set(),
+          new Set(current.usedCardIds),
+        );
+      if (card) sent = { ...event, nextCard: card };
+    }
+    const next = transitionCountdown(current, sent);
+    if (next === current) return;
+    latest.current = next;
+    setState(next);
+    // The next team starts at once: its clock begins when the turn before ended.
+    if (next.status === "running" && current.status === "running") {
+      if (next.active.teamIndex !== current.active.teamIndex) {
+        setClock({ pausedMs: 0, startedAt: Date.now() });
+      }
+    }
+    // A team that dropped out while the game goes on is announced; the final screen tells the rest.
+    if (
+      next.status !== "finished" &&
+      next.eliminationOrder.length > current.eliminationOrder.length
+    ) {
+      const out = next.eliminationOrder.at(-1);
+      notifyDropped(out === undefined ? "" : (next.configuration.teams[out]?.name ?? ""));
+    }
+  }
 
   const togglePause = useCallback(() => {
     setClock((current) => {
@@ -90,6 +129,7 @@ export function TabooCountdownGame({
       return;
     }
     setClock({ pausedMs: 0, startedAt: Date.now() });
+    latest.current = next;
     setState(next);
   }
 
@@ -97,23 +137,40 @@ export function TabooCountdownGame({
     const { active } = running;
     const account = running.teams[active.teamIndex];
     return (
-      <TabooCountdownRun
-        active={active}
-        budgetMs={configuration.budgetMs}
-        dispatch={dispatch}
-        key={`${active.teamIndex}-${account?.turns ?? 0}`}
-        onEndGame={onExit}
-        onResume={togglePause}
-        pausedAt={clock.pausedAt}
-        pausedMs={clock.pausedMs}
-        pickReplacement={(card) =>
-          pickCountdownCard(pool, card.difficulty, new Set([card.id]), played)
-        }
-        remainingAtStartMs={account?.remainingMs ?? 0}
-        skipUsed={account?.skipUsed ?? false}
-        startedAt={clock.startedAt}
-        teamName={teamName(active.teamIndex)}
-      />
+      <>
+        <TabooCountdownRun
+          active={active}
+          budgetMs={configuration.budgetMs}
+          dispatch={dispatch}
+          key={`${active.teamIndex}-${account?.turns ?? 0}`}
+          onEndGame={onExit}
+          onResume={togglePause}
+          pausedAt={clock.pausedAt}
+          pausedMs={clock.pausedMs}
+          pickReplacement={(card) =>
+            pickCountdownCard(pool, card.difficulty, new Set([card.id]), played)
+          }
+          remainingAtStartMs={account?.remainingMs ?? 0}
+          skipUsed={account?.skipUsed ?? false}
+          startedAt={clock.startedAt}
+          teamName={teamName(active.teamIndex)}
+          {...(configuration.autoSwitch === true
+            ? {
+                teams: configuration.teams.map((team, index) => ({
+                  eliminated: running.teams[index]?.eliminated ?? false,
+                  id: team.id,
+                  name: team.name,
+                  remainingMs: running.teams[index]?.remainingMs ?? 0,
+                })),
+              }
+            : {})}
+        />
+        {dropped && (
+          <Toast key={dropped.id} tone="info">
+            {t("tabooCountdown.dropped", { team: dropped.value })}
+          </Toast>
+        )}
+      </>
     );
   }
 

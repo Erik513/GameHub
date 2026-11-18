@@ -39,6 +39,11 @@
   -webkit-user-select: none;
 }
 
+/* A turn with one more row (the accounts of all teams) between the clock and the card. */
+.taboo-round--running.taboo-round--with-row {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+
 .taboo-round__card {
   display: flex;
   flex-direction: column;
@@ -319,6 +324,15 @@
   width: 100%;
   min-height: var(--touch-target);
   margin-top: var(--space-3);
+}
+
+/* The pause card only needs the room of its content; the gap between the items is the spacing. */
+.taboo-round .taboo-round__card--paused h2 {
+  min-height: 0;
+}
+
+.game-preview .taboo-round .taboo-round__card--paused .button {
+  margin-top: 0;
 }
 
 /* Difficulty shown on the card during play. */
@@ -788,4 +802,57 @@
     min-height: 0;
     font-size: var(--text-xl, 1.5rem);
   }
+}
+
+/* The time accounts of all teams in one row above the card (automatic change of teams). */
+.taboo-countdown-strip {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.taboo-countdown-strip li {
+  display: grid;
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  text-align: center;
+}
+
+.taboo-countdown-strip li[data-active="true"] {
+  border-color: var(--game-accent, var(--color-accent));
+  background: var(--color-surface-muted);
+}
+
+.taboo-countdown-strip li[data-out="true"] {
+  color: var(--color-ink-muted);
+  text-decoration: line-through;
+}
+
+.taboo-countdown-strip__name {
+  overflow: hidden;
+  color: var(--color-ink-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taboo-countdown-strip__time[data-warn="true"] {
+  color: var(--color-warning);
+}
+
+.taboo-countdown-strip__time[data-low="true"] {
+  color: var(--color-danger-fill);
+}
+
+.taboo-countdown-strip__time {
+  font-size: var(--text-lg);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
 }

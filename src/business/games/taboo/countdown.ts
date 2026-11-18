@@ -26,6 +26,12 @@ export interface CountdownConfiguration {
   /** The time account every team starts with, in milliseconds. */
   readonly budgetMs: number;
   readonly teams: readonly Team[];
+  /**
+   * With the automatic change of teams the next team starts at once when a turn ends, with the card
+   * that comes with the event (`nextCard`), without an overview in between. Without it (the default)
+   * every turn begins with `beginTurn`.
+   */
+  readonly autoSwitch?: boolean;
 }
 
 /** What a team has in the game right now. */
@@ -81,9 +87,11 @@ export type CountdownEvent =
       readonly outcome: TabooOutcome;
       readonly elapsedMs: number;
       readonly replacement?: TabooCard;
+      /** The card for the team that plays next; only used with the automatic change of teams. */
+      readonly nextCard?: TabooCard;
     }
   /** The clock of the account reached zero: the team is out. */
-  | { readonly type: "timeUp" };
+  | { readonly type: "timeUp"; readonly nextCard?: TabooCard };
 
 export function createCountdownGame(
   input: CountdownConfiguration,
@@ -99,6 +107,9 @@ export function createCountdownGame(
     input.budgetMs > maxCountdownBudgetMs
   ) {
     issues.push({ field: "budgetMs", code: "positive_integer_required" });
+  }
+  if (input.autoSwitch !== undefined && typeof input.autoSwitch !== "boolean") {
+    issues.push({ field: "autoSwitch", code: "boolean_required" });
   }
   if (issues.length > 0) return { valid: false, issues };
   return {
@@ -202,6 +213,17 @@ function endTurn(
   return { ...base, status: "overview", teamIndex: next };
 }
 
+/**
+ * With the automatic change of teams the next turn starts at once with the given card; without it,
+ * or without a valid card, the game waits in the overview.
+ */
+function continueAutomatically(state: CountdownState, nextCard: TabooCard | undefined) {
+  if (state.status !== "overview" || state.configuration.autoSwitch !== true || !nextCard) {
+    return state;
+  }
+  return transitionCountdown(state, { type: "beginTurn", card: nextCard });
+}
+
 export function transitionCountdown(state: CountdownState, event: CountdownEvent): CountdownState {
   const { configuration } = state;
 
@@ -222,14 +244,20 @@ export function transitionCountdown(state: CountdownState, event: CountdownEvent
   const team = state.teams[active.teamIndex];
   if (!team) return state;
 
-  if (event.type === "timeUp") return endTurn(state, team.remainingMs, false);
+  if (event.type === "timeUp") {
+    return continueAutomatically(endTurn(state, team.remainingMs, false), event.nextCard);
+  }
 
   // A broken clock value must never reach the accounts.
   if (!Number.isFinite(event.elapsedMs) || event.elapsedMs < 0) return state;
   // An account that is used up ends the turn whatever button was pressed.
-  if (event.elapsedMs >= team.remainingMs) return endTurn(state, team.remainingMs, false);
+  if (event.elapsedMs >= team.remainingMs) {
+    return continueAutomatically(endTurn(state, team.remainingMs, false), event.nextCard);
+  }
 
-  if (event.outcome === "correct") return endTurn(state, event.elapsedMs, true);
+  if (event.outcome === "correct") {
+    return continueAutomatically(endTurn(state, event.elapsedMs, true), event.nextCard);
+  }
 
   // A skip is allowed once per team and a forbidden word is simply wrong; both get a new card of
   // the same difficulty and the clock keeps running.
@@ -250,4 +278,19 @@ export function transitionCountdown(state: CountdownState, event: CountdownEvent
     ),
     active: { ...active, card: replacement },
   };
+}
+
+/**
+ * The team that plays after the team on the move: the next team in the order that is still in the game.
+ * It is the same whether the running team survives its turn or runs out of time, so a caller can
+ * pick the next card before the turn ends. Nothing when no other team is left.
+ */
+export function countdownTeamAfter(state: CountdownState): number | undefined {
+  if (state.status === "finished") return undefined;
+  const count = state.teams.length;
+  for (let step = 1; step < count; step += 1) {
+    const index = (state.teamIndex + step) % count;
+    if (!state.teams[index]?.eliminated) return index;
+  }
+  return undefined;
 }
