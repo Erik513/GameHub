@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { WerewolfLineup } from "../../business/games/werewolf/lineup";
-import { Icon } from "../components";
+import { Button, Dialog } from "../components";
+import { InfoButton, OrderList, TabPane } from "../game-kit";
 import { SeatCircle } from "./SeatCircle";
-import { useSeatReorder } from "./useSeatReorder";
 
 interface SeatsTabProps {
   readonly lineup: WerewolfLineup;
@@ -11,57 +11,48 @@ interface SeatsTabProps {
 }
 
 /**
- * The tab "Seats": the circle of all players with the narrator below it, and under it the list in
- * which the order is set. A name is dragged by its handle (or moved with the arrow keys on the handle)
- * to the place where the person really sits; the first sits at the left, the others clockwise.
+ * The tab "Seats": at the top (it stays there while the list scrolls) a button that opens the seat
+ * circle in a window and an info button for the explanation, and under them the list of the names
+ * in which the order is set (the same reorder list as the playing order of the teams). Seat 1 is right
+ * next to the narrator on the left, the others follow clockwise.
  */
 export function SeatsTab({ lineup, onMove }: SeatsTabProps) {
   const { t } = useTranslation();
-  const [announcement, setAnnouncement] = useState("");
-  const { dragging, handleProps } = useSeatReorder({
-    onMove: (name, toIndex) => {
-      const target = Math.min(Math.max(toIndex, 0), lineup.seats.length - 1);
-      if (target === lineup.seats.indexOf(name)) return;
-      onMove(name, target);
-      setAnnouncement(t("werewolfLineup.moved", { number: target + 1, player: name }));
-    },
-  });
+  const [circleOpen, setCircleOpen] = useState(false);
 
   if (lineup.seats.length === 0) return <p>{t("werewolfLineup.seatsEmpty")}</p>;
   return (
-    <>
-      <p className="ww-hint">{t("werewolfLineup.seatsHint")}</p>
-      <SeatCircle narrator={lineup.narrator} seats={lineup.seats} />
-      <p className="ww-hint">{t("werewolfLineup.holdHint")}</p>
-      <ol aria-label={t("werewolfLineup.seatsLabel")} className="ww-seats">
-        {lineup.seats.map((name, index) => (
-          <li
-            className="ww-seat"
-            data-dragging={dragging === name || undefined}
-            data-seat-row=""
-            key={name}
-          >
-            <span className="ww-seat__number">
-              <span className="visually-hidden">
-                {t("werewolfLineup.seat", { number: index + 1 })}:{" "}
-              </span>
-              <span aria-hidden="true">{index + 1}</span>
-            </span>
-            <span className="ww-seat__name">{name}</span>
-            <button
-              aria-label={t("werewolfLineup.move", { player: name })}
-              className="ww-seat__handle"
-              type="button"
-              {...handleProps(name, index)}
-            >
-              <Icon name="grip" />
-            </button>
-          </li>
-        ))}
-      </ol>
-      <p aria-live="polite" className="visually-hidden" role="status">
-        {announcement}
-      </p>
-    </>
+    <TabPane
+      header={
+        <div className="ww-seats-header">
+          <Button onClick={() => setCircleOpen(true)} variant="secondary">
+            {t("werewolfLineup.circleOpen")}
+          </Button>
+          <InfoButton
+            closeLabel={t("settings.close")}
+            label={t("werewolfLineup.seatsInfoLabel")}
+            text={t("werewolfLineup.seatsHint")}
+            title={t("werewolfLineup.seatsInfoTitle")}
+          />
+        </div>
+      }
+    >
+      <OrderList
+        items={lineup.seats.map((name) => ({ key: name, label: name }))}
+        moveLabel={(_place, name) => t("werewolfLineup.move", { player: name })}
+        onMove={(name, toIndex) => {
+          const target = Math.min(Math.max(toIndex, 0), lineup.seats.length - 1);
+          if (target !== lineup.seats.indexOf(name)) onMove(name, target);
+        }}
+      />
+      <Dialog
+        closeLabel={t("settings.close")}
+        onClose={() => setCircleOpen(false)}
+        open={circleOpen}
+        title={t("werewolfLineup.circleTitle")}
+      >
+        <SeatCircle narrator={lineup.narrator} seats={lineup.seats} />
+      </Dialog>
+    </TabPane>
   );
 }

@@ -60,9 +60,9 @@ interface SeatCircleProps {
 }
 
 /**
- * The seat circle: every player is a tile with the first letter of the name, the first one at the left
- * and the others clockwise. The narrator has a fixed place below the circle (it is not a seat). A tile
- * that is held shows the full name in the line above. The circle is a picture; the list of the seats
+ * The seat circle: every player is a tile with the first letter of the name, seat 1 right next to the
+ * narrator on the left and the others clockwise. The narrator has a fixed place below the circle (it is not a seat). A tile
+ * that is held shows the full name in the box above. The circle is a picture; the list of the seats
  * next to it is the accessible version, so the tiles are hidden from screen readers.
  */
 export function SeatCircle({ narrator, seats }: SeatCircleProps) {
@@ -70,12 +70,19 @@ export function SeatCircle({ narrator, seats }: SeatCircleProps) {
   const [held, setHeld] = useState<string>();
 
   return (
-    <div aria-hidden="true" className="ww-circle">
-      <p className="ww-circle__name">{held ?? " "}</p>
-      <div className="ww-circle__ring" style={{ "--seat-count": seats.length } as CSSProperties}>
+    <div className="ww-circle">
+      <p className="ww-circle__name" data-held={held === undefined ? undefined : true}>
+        {held ?? t("werewolfLineup.holdHint")}
+      </p>
+      <div
+        aria-hidden="true"
+        className="ww-circle__ring"
+        style={{ "--seat-count": seats.length + 1 } as CSSProperties}
+      >
         {seats.map((name, index) => {
-          // The first seat is at the left; going on, the angle grows (clockwise on the screen).
-          const angle = Math.PI + (index * 2 * Math.PI) / seats.length;
+          // The narrator is the place at the bottom; seat 1 is right next to it on the left, and the
+          // angle grows clockwise on the screen from there.
+          const angle = Math.PI / 2 + ((index + 1) * 2 * Math.PI) / (seats.length + 1);
           return (
             <HoldTile
               held={held === name}
@@ -90,18 +97,19 @@ export function SeatCircle({ narrator, seats }: SeatCircleProps) {
             />
           );
         })}
-      </div>
-      <div className="ww-circle__narrator">
         <HoldTile
           className="ww-tile--narrator"
           empty={narrator === null}
           held={narrator !== null && held === narrator}
           letter={narrator === null ? "?" : initial(narrator)}
           onHold={setHeld}
+          style={{ left: "50%", top: `${50 + ringRadius}%` }}
           {...(narrator === null ? {} : { name: narrator })}
         />
-        <span className="ww-circle__narrator-label">{t("werewolfLineup.narratorSeat")}</span>
       </div>
+      <p aria-hidden="true" className="ww-circle__narrator-label">
+        {t("werewolfLineup.narratorSeat")}
+      </p>
     </div>
   );
 }

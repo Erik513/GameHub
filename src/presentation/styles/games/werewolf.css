@@ -1,34 +1,9 @@
 /* Werewolf: the line-up with the tabs "Players" and "Seats". */
 
-/* The short summary above the tabs: how many players, who narrates, and whether the game can start. */
-.ww-summary {
-  display: grid;
-  gap: var(--space-1);
-  margin-bottom: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-}
-
-.ww-summary p {
-  margin: 0;
-  font-size: var(--text-sm);
-}
-
-.ww-summary__state {
-  color: var(--color-ink-muted);
-}
-
-.ww-summary__state[data-ready] {
-  color: var(--color-success);
-  font-weight: var(--weight-bold);
-}
-
 /* The narrator: a box with the name and the button to choose. */
 .ww-narrator {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-2);
   align-items: stretch;
 }
@@ -56,6 +31,32 @@
 .ww-narrator__name[data-empty] {
   color: var(--color-ink-muted);
   font-weight: var(--weight-regular, 400);
+}
+
+/* The button is as big as the box and has two lines (the text carries the line break). */
+.ww-narrator > .ww-narrator__button {
+  height: auto;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* The button for the seat circle takes the width, the info button stands right next to it. */
+.ww-seats-header {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.ww-seats-header > .button:first-child {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+}
+
+.ww-seats-header > .kit-info-button {
+  position: static;
+  flex: none;
+  margin: 0;
+  border: 1px solid var(--color-line);
 }
 
 .ww-choices {
@@ -96,11 +97,30 @@
   gap: var(--space-2);
 }
 
+/* The name of the held tile in a box that is easy to see. */
 .ww-circle__name {
-  min-height: 1.5rem;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 3rem;
   margin: 0;
-  font-weight: var(--weight-bold);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  color: var(--color-ink-muted);
+  background: var(--color-surface-muted);
+  font-size: var(--text-sm);
   text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.ww-circle__name[data-held] {
+  border-color: var(--color-accent);
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-accent) 18%, var(--color-surface-muted));
+  font-size: var(--text-lg, 1.25rem);
+  font-weight: var(--weight-bold);
 }
 
 .ww-circle__ring {
@@ -136,20 +156,11 @@
   background: color-mix(in srgb, var(--color-accent) 30%, var(--color-surface-muted));
 }
 
-.ww-circle__narrator {
-  display: grid;
-  justify-items: center;
-  gap: var(--space-1);
-}
-
-.ww-tile--narrator {
-  width: 2.75rem;
-  aspect-ratio: 1;
+.ww-circle__ring .ww-tile--narrator {
   border-color: var(--color-accent);
-  font-size: 1.25rem;
 }
 
-.ww-tile--narrator[data-empty] {
+.ww-circle__ring .ww-tile--narrator[data-empty] {
   border-style: dashed;
   border-color: var(--color-line);
   color: var(--color-ink-muted);
@@ -158,56 +169,4 @@
 .ww-circle__narrator-label {
   color: var(--color-ink-muted);
   font-size: var(--text-xs);
-}
-
-/* The list of the seats: the number, the name and the handle to move it. */
-.ww-seats {
-  display: grid;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ww-seat {
-  display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr) var(--touch-target);
-  align-items: center;
-  gap: var(--space-2);
-  min-height: var(--touch-target);
-  padding-left: var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-}
-
-.ww-seat[data-dragging] {
-  border-color: var(--color-accent);
-}
-
-.ww-seat__number {
-  color: var(--color-accent);
-  font-weight: var(--weight-bold);
-}
-
-.ww-seat__name {
-  overflow-wrap: anywhere;
-}
-
-.ww-seat__handle {
-  width: var(--touch-target);
-  min-width: var(--touch-target);
-  height: 100%;
-  min-height: var(--touch-target);
-  padding: 0;
-  border: 1px solid var(--color-line);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  color: var(--color-ink-muted);
-  background: transparent;
-  cursor: grab;
-  touch-action: none;
-}
-
-.ww-seat__handle:focus-visible {
-  color: var(--color-ink);
 }

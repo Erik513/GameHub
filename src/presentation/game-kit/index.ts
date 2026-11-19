@@ -21,6 +21,7 @@ export { SetupSection } from "./SetupSection";
 export { SetupTabs, type SetupTab } from "./SetupTabs";
 export { StartBar, TurnStrip } from "./StartBar";
 export { TabPane } from "./TabPane";
+export { OrderList, type OrderItem } from "./OrderList";
 export { TeamOrder } from "./TeamOrder";
 export { TeamsSetup } from "./TeamsSetup";
 export { TeamSetupMemoryProvider } from "./TeamSetupMemoryProvider";

@@ -32,6 +32,7 @@ export function NarratorPicker({ narrator, onChoose, participants }: NarratorPic
         </span>
       </div>
       <Button
+        className="ww-narrator__button"
         disabled={participants.length === 0}
         onClick={() => setOpen(true)}
         variant="secondary"

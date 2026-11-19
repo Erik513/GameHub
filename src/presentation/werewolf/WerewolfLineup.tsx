@@ -17,8 +17,8 @@ interface WerewolfLineupProps {
 
 /**
  * The first view of Werewolf: who takes part, who narrates, and where everybody sits. Two tabs ("Players"
- * and "Seats"), a short summary above them that says whether the game can start, and the start button
- * at the bottom. The start asks for a narrator and six to twenty players besides the narrator.
+ * and "Seats") and the start button at the bottom. The start is blocked until a narrator is chosen; it
+ * then asks for six to twenty players besides the narrator.
  */
 export function WerewolfLineup({ lineup, onChange }: WerewolfLineupProps) {
   const { t } = useTranslation();
@@ -47,19 +47,9 @@ export function WerewolfLineup({ lineup, onChange }: WerewolfLineupProps) {
         )
       }
       onSubmit={submit}
+      startDisabled={lineup.narrator === null}
       startLabel={t("werewolfLineup.start")}
     >
-      <div className="ww-summary">
-        <p>
-          {t("werewolfLineup.summaryPlayers", { count: lineup.seats.length })} ·{" "}
-          {lineup.narrator === null
-            ? t("werewolfLineup.summaryNoNarrator")
-            : t("werewolfLineup.summaryNarrator", { name: lineup.narrator })}
-        </p>
-        <p className="ww-summary__state" data-ready={first === undefined || undefined}>
-          {first ? issueText(first) : t("werewolfLineup.ready")}
-        </p>
-      </div>
       <SetupTabs
         ariaLabel={t("werewolfLineup.label")}
         tabs={[
