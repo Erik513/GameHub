@@ -4,6 +4,7 @@ export const werewolfTexts = {
     label: "Line-up",
     playersTab: "Players ({{count}})",
     seatsTab: "Seats",
+    noPlayers: "Add players first.",
     noNarrator: "Choose a narrator among the participants.",
     tooFew: "At least {{minimum}} players are needed besides the narrator ({{count}} so far).",
     tooMany: "At most {{maximum}} players can take part besides the narrator ({{count}} so far).",
@@ -18,7 +19,7 @@ export const werewolfTexts = {
     listLabel: "Participants ({{count}})",
     seatsHint:
       "Drag the names into the order the players really sit: seat 1 is right next to the narrator on the left, then clockwise.",
-    seatsEmpty: "Add players first.",
+    seatsEmpty: "Add players first and choose a narrator.",
     narratorSeat: "Narrator",
     holdHint: "Hold a tile to see the full name.",
     seatsInfoLabel: "Info about the seats",

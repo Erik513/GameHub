@@ -20,7 +20,9 @@ export function SeatsTab({ lineup, onMove }: SeatsTabProps) {
   const { t } = useTranslation();
   const [circleOpen, setCircleOpen] = useState(false);
 
-  if (lineup.seats.length === 0) return <p>{t("werewolfLineup.seatsEmpty")}</p>;
+  // The seats only make sense with the narrator (who has the fixed place) and the players.
+  if (lineup.seats.length === 0 || lineup.narrator === null)
+    return <p>{t("werewolfLineup.seatsEmpty")}</p>;
   return (
     <TabPane
       header={

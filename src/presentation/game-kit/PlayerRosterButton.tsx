@@ -9,8 +9,8 @@ import { useWholeRows } from "./useWholeRows";
 
 type Problem = "empty" | "invalid" | "duplicate" | "full";
 
-/** The lists of the windows show this many rows, so every view of a window is equally big. */
-export const rosterRows = 8;
+/** The lists of the large windows fill their (fixed) height with as many whole rows as fit. */
+export const rosterRows = 99;
 
 /**
  * A field with its add button and the line for a problem (the line is always there, so the window keeps

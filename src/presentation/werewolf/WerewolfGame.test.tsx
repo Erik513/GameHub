@@ -41,15 +41,27 @@ async function chooseNarrator(
   await user.click(within(await screen.findByRole("dialog")).getByRole("button", { name }));
 }
 
+const startProblems = {
+  de: { narrator: /Wähle einen Erzähler/, players: "Füge zuerst Spieler hinzu." },
+  en: { narrator: /Choose a narrator/, players: "Add players first." },
+} as const;
+
 it.each(["en", "de"] as const)(
-  "blocks the start until a narrator is chosen in %s",
+  "can always be started, and says what is missing in %s",
   async (language) => {
     const user = await renderGame(language);
+    const start = () => screen.getByRole("button", { name: startName[language] });
+    expect(start()).toBeEnabled();
+    // Without players.
+    await user.click(start());
+    expect(await screen.findByText(startProblems[language].players)).toBeInTheDocument();
+    // Without a narrator.
     await addPlayers(user, language);
-    expect(screen.getByRole("button", { name: startName[language] })).toBeDisabled();
+    await user.click(start());
+    expect(await screen.findByText(startProblems[language].narrator)).toBeInTheDocument();
+    // Ready: a note that more follows.
     await chooseNarrator(user, "Anna", chooseName[language]);
-    expect(screen.getByRole("button", { name: startName[language] })).toBeEnabled();
-    await user.click(screen.getByRole("button", { name: startName[language] }));
+    await user.click(start());
     expect(await screen.findByText(/role assignment|Rollenverteilung/)).toBeInTheDocument();
   },
 );
@@ -65,7 +77,6 @@ it("tells how many players are missing and takes the narrator away again", async
     within(await screen.findByRole("dialog")).getByRole("button", { name: "No narrator" }),
   );
   expect(screen.getByText("Not chosen yet")).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Start game" })).toBeDisabled();
 });
 
 it("puts the narrator out of the seats and seats the former narrator last", async () => {
@@ -84,20 +95,22 @@ it("puts the narrator out of the seats and seats the former narrator last", asyn
 it("moves a seat with the arrow keys", async () => {
   const user = await renderGame("en");
   await addPlayers(user, "en");
+  await chooseNarrator(user, "Anna", chooseName.en);
   await user.click(screen.getByRole("tab", { name: "Seats" }));
-  expect(seatRows()[0]).toHaveTextContent("Anna");
-  screen.getByRole("button", { name: "Move Anna" }).focus();
-  await user.keyboard("{ArrowDown}");
-  expect(seatRows()[1]).toHaveTextContent("Anna");
-  // The first seat cannot move up.
-  screen.getByRole("button", { name: "Move Ben" }).focus();
-  await user.keyboard("{ArrowUp}");
   expect(seatRows()[0]).toHaveTextContent("Ben");
+  screen.getByRole("button", { name: "Move Ben" }).focus();
+  await user.keyboard("{ArrowDown}");
+  expect(seatRows()[1]).toHaveTextContent("Ben");
+  // The first seat cannot move up.
+  screen.getByRole("button", { name: "Move Cleo" }).focus();
+  await user.keyboard("{ArrowUp}");
+  expect(seatRows()[0]).toHaveTextContent("Cleo");
 });
 
 it("shows the full name of a held tile in a box and the hint again when let go", async () => {
   const user = await renderGame("en");
   await addPlayers(user, "en");
+  await chooseNarrator(user, "Anna", chooseName.en);
   await user.click(screen.getByRole("tab", { name: "Seats" }));
   await user.click(screen.getByRole("button", { name: "Show seat circle" }));
   const dialog = await screen.findByRole("dialog");
@@ -107,7 +120,7 @@ it("shows the full name of a held tile in a box and the hint again when let go",
   expect(tile).not.toBeNull();
   if (!tile) return;
   fireEvent.pointerDown(tile);
-  await waitFor(() => expect(box()).toHaveTextContent("Anna"));
+  await waitFor(() => expect(box()).toHaveTextContent("Ben"));
   fireEvent.pointerUp(tile);
   expect(box()).toHaveTextContent("Hold a tile");
 });
@@ -140,6 +153,7 @@ it.each([
   async (language, label, text) => {
     const user = await renderGame(language);
     await addPlayers(user, language);
+    await chooseNarrator(user, "Anna", chooseName[language]);
     await user.click(screen.getByRole("tab", { name: language === "en" ? "Seats" : "Sitzplätze" }));
     // The explanation is not in the tab itself.
     expect(screen.queryByText(text, { exact: false })).not.toBeInTheDocument();
@@ -147,3 +161,23 @@ it.each([
     expect(await screen.findByText(text, { exact: false })).toBeInTheDocument();
   },
 );
+
+it.each([
+  ["en", "Add players first and choose a narrator."],
+  ["de", "Füge zuerst Spieler hinzu und lege einen Erzähler fest."],
+] as const)("shows the seats only with players and a narrator in %s", async (language, hint) => {
+  const user = await renderGame(language);
+  const tab = () => screen.getByRole("tab", { name: language === "en" ? "Seats" : "Sitzplätze" });
+  await user.click(tab());
+  expect(screen.getByText(hint)).toBeInTheDocument();
+  await addPlayers(user, language);
+  // Players alone are not enough.
+  await user.click(tab());
+  expect(screen.getByText(hint)).toBeInTheDocument();
+  expect(document.querySelector(".kit-order")).toBeNull();
+  await user.click(screen.getByRole("tab", { name: /^(Players|Spieler)/ }));
+  await chooseNarrator(user, "Anna", chooseName[language]);
+  await user.click(tab());
+  expect(screen.queryByText(hint)).not.toBeInTheDocument();
+  expect(document.querySelector(".kit-order")).not.toBeNull();
+});

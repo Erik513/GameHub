@@ -4,6 +4,7 @@ export const werewolfTexts = {
     label: "Aufstellung",
     playersTab: "Spieler ({{count}})",
     seatsTab: "Sitzplätze",
+    noPlayers: "Füge zuerst Spieler hinzu.",
     noNarrator: "Wähle einen Erzähler unter den Teilnehmern.",
     tooFew: "Es braucht mindestens {{minimum}} Spieler neben dem Erzähler (bisher {{count}}).",
     tooMany:
@@ -19,7 +20,7 @@ export const werewolfTexts = {
     listLabel: "Teilnehmer ({{count}})",
     seatsHint:
       "Ziehe die Namen in die Reihenfolge, in der die Spieler wirklich sitzen: Sitz 1 ist direkt links neben dem Erzähler, dann im Uhrzeigersinn.",
-    seatsEmpty: "Füge zuerst Spieler hinzu.",
+    seatsEmpty: "Füge zuerst Spieler hinzu und lege einen Erzähler fest.",
     narratorSeat: "Erzähler",
     holdHint: "Halte eine Kachel gedrückt, um den ganzen Namen zu sehen.",
     seatsInfoLabel: "Info zu den Sitzplätzen",

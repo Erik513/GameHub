@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
+import { useToastLift } from "./useToastLift";
 
 interface StartBarProps {
   readonly children: ReactNode;
@@ -8,18 +9,23 @@ interface StartBarProps {
   readonly sideAction?: ReactNode;
 }
 
-/** The main action of a screen, pinned to the bottom edge within thumb reach. */
+/**
+ * The main action of a screen, pinned to the bottom edge within thumb reach. Notifications stand right
+ * above it.
+ */
 export function StartBar({ children, stacked = false, sideAction }: StartBarProps) {
+  const bar = useRef<HTMLDivElement>(null);
+  useToastLift(bar);
   if (sideAction) {
     return (
-      <div className="kit-start-bar kit-start-bar--row">
+      <div className="kit-start-bar kit-start-bar--row" ref={bar}>
         <span className="kit-start-bar__side">{sideAction}</span>
         {children}
       </div>
     );
   }
   return (
-    <div className={stacked ? "kit-start-bar kit-start-bar--stack" : "kit-start-bar"}>
+    <div className={stacked ? "kit-start-bar kit-start-bar--stack" : "kit-start-bar"} ref={bar}>
       {children}
     </div>
   );
