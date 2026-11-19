@@ -15,6 +15,7 @@ export const werewolfConfigTexts = {
     recommended: "empfohlen",
     seer: "Seherin",
     villagers: "Dorfbewohner",
+    villagersTitle: "Dorf­bewohner",
     availableHeading: "Verfügbare Rollen",
     unavailableHeading: "Noch nicht verfügbar",
     row: "Ab {{count}} Spielern",

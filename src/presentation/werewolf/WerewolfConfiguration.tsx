@@ -187,9 +187,9 @@ export function WerewolfConfiguration({
         <>
           <section className="ww-box ww-core">
             <h3 className="ww-box__title">{t("werewolfConfig.coreHeading")}</h3>
-            <div className="ww-core__row">
-              <div className="ww-core__cell">
-                <div className="ww-head">
+            <div className="ww-core__grid">
+              <section className="ww-mini ww-mini--wolves">
+                <div className="ww-mini__head">
                   <h4>{t("werewolfConfig.wolves")}</h4>
                   <ConfigInfo id="wolves" name={t("werewolfConfig.wolves")} />
                 </div>
@@ -213,36 +213,27 @@ export function WerewolfConfiguration({
                     </div>
                   ))}
                 </div>
-              </div>
-              <div className="ww-core__cell">
-                <div className="ww-head">
-                  <h4>{t("werewolfConfig.seer")}</h4>
-                  <ConfigInfo id="seer" name={t("werewolfConfig.seer")} />
-                </div>
-                {/* The seer is always in the game: the button stays pressed. */}
-                <div className="ww-wolves__option">
-                  <button
-                    aria-label={t("werewolfConfig.seer")}
-                    aria-pressed="true"
-                    className="ww-wolves__button"
-                    data-fixed
-                    type="button"
-                  >
-                    1
-                  </button>
-                  <small> </small>
-                </div>
-              </div>
-              <div className="ww-core__cell">
-                <div className="ww-head">
-                  <h4>{t("werewolfConfig.villagers")}</h4>
-                  <ConfigInfo id="villagers" name={t("werewolfConfig.villagers")} />
-                </div>
-                {/* The villagers are a result, not a choice: a box with the number. */}
-                <div className="ww-villagers__box">
+              </section>
+              {/* The villagers are a result, not a choice: the name on top, below it the number with its "i". */}
+              <section aria-label={t("werewolfConfig.villagers")} className="ww-mini ww-mini--tile">
+                <h4>{t("werewolfConfig.villagersTitle")}</h4>
+                <div className="ww-chip">
                   <strong className="ww-villagers__number">{view.villagers ?? 0}</strong>
+                  <ConfigInfo
+                    className="ww-chip__info"
+                    id="villagers"
+                    name={t("werewolfConfig.villagers")}
+                  />
                 </div>
-              </div>
+              </section>
+              {/* The seer is always in the game: the name on top, below it a filled count button with its "i". */}
+              <section aria-label={t("werewolfConfig.seer")} className="ww-mini ww-mini--tile">
+                <h4>{t("werewolfConfig.seer")}</h4>
+                <div className="ww-chip ww-chip--on">
+                  <strong>1</strong>
+                  <ConfigInfo className="ww-chip__info" id="seer" name={t("werewolfConfig.seer")} />
+                </div>
+              </section>
             </div>
             <div className="ww-row">
               <h4 className="ww-row__title">{t("werewolfConfig.extrasHeading")}</h4>
@@ -291,7 +282,7 @@ export function WerewolfConfiguration({
             false,
             t("werewolfConfig.variantHint"),
           )}
-          {locked.length > 0 && renderBox(t("werewolfConfig.unavailableHeading"), locked, true)}
+          {locked.length > 0 && renderBox(t("werewolfConfig.unavailableHeading"), locked, false)}
         </>
       )}
     </>

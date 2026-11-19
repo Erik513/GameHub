@@ -77,8 +77,10 @@ export function VariantTile({
       data-selected={value === null ? undefined : true}
     >
       <div className="ww-variant__head">
-        <span className="ww-variant__name">{name}</span>
-        {hint && <small>{hint}</small>}
+        <span className="ww-variant__title">
+          <span className="ww-variant__name">{name}</span>
+          {hint && <small>{hint}</small>}
+        </span>
         <ConfigInfo
           className="kit-info-button--option"
           id={infoId}

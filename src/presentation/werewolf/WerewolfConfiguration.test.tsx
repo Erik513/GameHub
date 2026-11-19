@@ -61,8 +61,14 @@ it.each(["en", "de"] as const)(
     expect(wolves()).toBe("2");
     expect(villagers()).toBe("6");
     // The seer is always in the game: her tile is chosen and stays so.
-    const seer = screen.getByRole("button", { name: language === "en" ? "Seer" : "Seherin" });
-    expect(seer).toHaveAttribute("aria-pressed", "true");
+    const seer = screen.getByRole("region", { name: language === "en" ? "Seer" : "Seherin" });
+    expect(seer.querySelector(".ww-chip--on")).not.toBeNull();
+    // Its "i" button is inside the tile and explains the seer.
+    expect(
+      within(seer).getByRole("button", {
+        name: language === "en" ? "Info about Seer" : "Info zu Seherin",
+      }),
+    ).toBeInTheDocument();
     // Nothing is wrong, so no box of issues is shown.
     expect(document.querySelector(".ww-issues")).toBeNull();
   },
@@ -164,12 +170,14 @@ it("has three boxes with a main heading each, and sets the roles in rows by the 
   // Available roles: the rows of 6, 7 and 8 players, set apart by lines but without titles.
   expect(available.querySelectorAll(".ww-row")).toHaveLength(3);
   expect(available.querySelectorAll(".ww-row__title")).toHaveLength(0);
-  // Locked roles: every row says from how many players it is available.
-  expect([...locked.querySelectorAll(".ww-row__title")].map((row) => row.textContent)).toEqual([
-    "From 9 players",
-    "From 10 players",
-    "From 11 players",
-  ]);
+  // Locked roles: the rows are set apart by lines only; every tile says in its second line from how
+  // many players it is available.
+  expect(locked.querySelectorAll(".ww-row")).toHaveLength(3);
+  expect(locked.querySelectorAll(".ww-row__title")).toHaveLength(0);
+  const hints = [...locked.querySelectorAll(".ww-tile-wrap small, .ww-variant__title small")].map(
+    (hint) => hint.textContent,
+  );
+  expect(hints).toEqual(["from 9", "from 9", "from 10", "from 11"]);
 });
 
 it("offers the wolf counts, keeps the pick, and marks the recommendation once", async () => {

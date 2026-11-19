@@ -638,3 +638,407 @@
   justify-content: center;
   min-width: 3rem;
 }
+
+.ww-variant__head .kit-info-button--option {
+  right: 0;
+  color: inherit;
+}
+
+/* The wolves, the seer and the villagers: three boxes, the title with its "i" on top, the choice or the
+   number below. The wolves take the first row (room for three counts and the word "recommended"), the
+   seer and the villagers share the second. */
+.ww-core__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.ww-mini {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.ww-mini--wolves {
+  grid-column: 1 / -1;
+}
+
+.ww-mini__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2rem;
+}
+
+.ww-mini__head h4 {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.ww-mini__head > button.kit-info-button.icon-button {
+  position: static;
+  width: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+  min-height: 2rem;
+  margin: 0 calc(-1 * var(--space-1)) 0 0;
+}
+
+.ww-mini .ww-wolves {
+  min-height: 3rem;
+}
+
+.ww-mini .ww-wolves__option small {
+  margin-inline: -1rem;
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+/* Every role looks the same: a card with the name and its "i", a second line for the reason of a lock,
+   and, when the role is in, a filled name bar. */
+.ww-tile-wrap .kit-choice span {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.1rem;
+}
+
+.ww-tile-wrap .kit-choice small,
+.ww-variant__title small {
+  display: block;
+  color: inherit;
+  font-size: 0.65rem;
+  font-weight: var(--weight-regular, 400);
+  opacity: 0.85;
+}
+
+.ww-variant {
+  padding: 0;
+  overflow: hidden;
+}
+
+.ww-variant[data-selected] {
+  border-color: var(--color-accent);
+}
+
+.ww-variant__head {
+  padding: 0 0 0 var(--space-2);
+  min-height: 2.5rem;
+}
+
+.ww-variant__title {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.ww-variant[data-selected] .ww-variant__head {
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+}
+
+.ww-variant__choices {
+  margin: var(--space-1) var(--space-2) var(--space-2);
+}
+
+/* The villagers: a box of the size of the buttons, the number in it. */
+.ww-mini .ww-villagers__box {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  min-width: 3rem;
+  min-height: 2.5rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.ww-mini .ww-villagers__number {
+  min-width: 0;
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+.ww-mini .ww-wolves__button {
+  min-width: 3rem;
+  min-height: 2.5rem;
+  background: var(--color-surface-muted);
+}
+
+.ww-mini .ww-wolves__button[aria-pressed="true"] {
+  background: var(--color-accent);
+}
+
+/* One row: the wolves take half, the seer and the villagers a quarter each. */
+.ww-core__grid {
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--space-1);
+}
+
+.ww-mini--wolves {
+  grid-column: auto;
+}
+
+/* The wolves: the "i" stands right next to the heading. */
+.ww-mini--wolves .ww-mini__head {
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.ww-mini--wolves .ww-wolves {
+  gap: var(--space-1);
+}
+
+.ww-mini--wolves .ww-wolves__button {
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0 var(--space-1);
+}
+
+/* The seer and the villagers: a tile with the "i" inside (in the corner), the value at the bottom. */
+.ww-mini--tile {
+  position: relative;
+  align-content: space-between;
+  padding: var(--space-1) var(--space-1) var(--space-2) var(--space-2);
+}
+
+.ww-mini--tile h4 {
+  margin: 0;
+  padding-right: 1.25rem;
+  font-size: 0.65rem;
+  line-height: 1.15;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.ww-mini--tile .ww-mini__corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.ww-mini--tile > button.kit-info-button.icon-button {
+  width: 1.5rem;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  min-height: 1.5rem;
+  margin: 0;
+  color: inherit;
+}
+
+.ww-mini--tile > button.kit-info-button.icon-button svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.ww-mini__value {
+  display: grid;
+  place-items: center;
+  min-height: 2.25rem;
+  margin-right: var(--space-1);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+}
+
+/* The seer is always in: the tile is filled like a chosen role. */
+.ww-mini--on {
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+}
+
+.ww-mini--on .ww-mini__value {
+  border-color: transparent;
+  color: var(--color-accent-contrast);
+  background: transparent;
+}
+
+/* The titles of the small tiles are short: only the villagers break, at the soft hyphen. */
+.ww-mini--tile {
+  padding: var(--space-1) var(--space-1) var(--space-2) var(--space-1);
+}
+
+.ww-mini--tile h4 {
+  padding-right: 1.25rem;
+  hyphens: manual;
+  overflow-wrap: normal;
+}
+
+.ww-mini--tile > button.kit-info-button.icon-button {
+  width: 1.25rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  min-height: 1.25rem;
+}
+
+.ww-mini--tile > button.kit-info-button.icon-button svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.ww-mini__value {
+  margin-right: 0;
+}
+
+.ww-mini--tile .ww-mini__value {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+
+/* The small tiles stack their parts, so the value box always has the width of the tile. */
+.ww-mini--tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ww-mini--tile .ww-mini__value {
+  align-self: stretch;
+  width: auto;
+}
+
+/* Seer and villagers: the name on top, below it one button-like chip with the value and, inside it, the "i". */
+.ww-mini--tile h4 {
+  padding-right: 0;
+}
+
+.ww-chip {
+  position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding: 0 1.5rem 0 var(--space-1);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+}
+
+.ww-chip--on {
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+}
+
+.ww-chip > strong {
+  font-size: var(--text-sm);
+}
+
+.ww-chip > button.ww-chip__info.kit-info-button.icon-button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 1.5rem;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  min-height: 1.5rem;
+  margin: 0;
+  color: var(--color-ink);
+  transform: translateY(-50%);
+}
+
+.ww-chip--on > button.ww-chip__info.kit-info-button.icon-button {
+  color: var(--color-accent-contrast);
+}
+
+.ww-chip > button.ww-chip__info svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* The wolves on the left (the whole height), the villagers above the seer on the right. */
+.ww-core__grid {
+  grid-template-columns: 3fr 2fr;
+  grid-auto-flow: row;
+}
+
+.ww-mini--wolves {
+  grid-row: 1 / span 2;
+  align-content: start;
+}
+
+.ww-mini--tile {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2) var(--space-2);
+}
+
+.ww-mini--tile h4 {
+  font-size: var(--text-xs);
+  hyphens: manual;
+}
+
+/* The wolf buttons share the width evenly, so "recommended" fits under its button. */
+.ww-mini--wolves .ww-wolves {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-1);
+}
+
+.ww-mini--wolves .ww-wolves__option {
+  display: grid;
+  justify-items: stretch;
+}
+
+.ww-mini--wolves .ww-wolves__button {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+
+.ww-mini--wolves .ww-wolves__option small {
+  margin-inline: 0;
+  font-size: 0.65rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Every "i" button is grey; on a filled (chosen) tile it takes the dark colour of the fill. */
+.ww-config .kit-info-button,
+.ww-config .kit-info-button.kit-info-button--option {
+  color: var(--color-ink-muted);
+}
+
+.ww-tile-wrap:has(input:checked) .kit-info-button,
+.ww-variant[data-selected] .ww-variant__head .kit-info-button {
+  color: var(--color-accent-contrast);
+}
+
+.ww-chip > button.ww-chip__info.kit-info-button.icon-button {
+  color: var(--color-ink-muted);
+}
+
+.ww-chip--on > button.ww-chip__info.kit-info-button.icon-button {
+  color: var(--color-accent-contrast);
+}
+
+/* The chips of the seer and the villagers have the width of their tile. */
+.ww-mini--tile {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ww-mini--tile .ww-chip {
+  width: 100%;
+}
+
+/* The number of villagers is white. */
+.ww-mini .ww-villagers__number,
+.ww-chip .ww-villagers__number {
+  color: var(--color-ink);
+}
