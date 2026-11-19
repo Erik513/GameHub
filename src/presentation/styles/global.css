@@ -142,10 +142,13 @@ textarea {
   justify-self: end;
 }
 
-/* A button with a name in the header has the same width in every language (the longest name fits). */
+/*
+ * A button with a name in the header has the same width in every language. The width fits the longest
+ * name in the widest fonts a device may use instead of the font of the app (it is not on every device).
+ */
 .site-header__actions .button:not(.icon-button),
 .site-header > .button:not(.icon-button) {
-  min-width: 8rem;
+  min-width: 9rem;
 }
 
 .settings-fields {

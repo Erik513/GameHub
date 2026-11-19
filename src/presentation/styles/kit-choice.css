@@ -20,7 +20,8 @@
 }
 
 /* A name of one line and a name of two lines make equally high buttons (the German names are longer). */
-.kit-choice-grid--categories .kit-choice span {
+.kit-choice-grid--categories .kit-choice span,
+.kit-choice-wrap .kit-choice span {
   min-height: 4.125rem;
 }
 
