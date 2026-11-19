@@ -187,8 +187,8 @@ it.each([
 });
 
 it.each([
-  ["en", "Configuration", "Done", "Hunter", "No duty to shoot", "Players (7)"],
-  ["de", "Konfiguration", "Fertig", "Jäger", "Keine Schusspflicht", "Spieler (7)"],
+  ["en", "Configuration", "Done", "Hunter", "Duty to shoot", "Players (7)"],
+  ["de", "Konfiguration", "Fertig", "Jäger", "Schusspflicht", "Spieler (7)"],
 ] as const)(
   "opens the configuration from the line-up and keeps both when going back in %s",
   async (language, open, done, hunter, shot, playersTab) => {
@@ -196,7 +196,9 @@ it.each([
     await addPlayers(user, language);
     await user.click(screen.getByRole("button", { name: open }));
     await user.click(
-      within(screen.getByRole("group", { name: hunter })).getByRole("button", { name: shot }),
+      within(screen.getByRole("group", { name: hunter })).getByRole("checkbox", {
+        name: `${hunter}, ${shot}`,
+      }),
     );
     await user.click(screen.getByRole("button", { name: done }));
     // The line-up is back with its players.
@@ -204,8 +206,10 @@ it.each([
     // The choice of the configuration is still there.
     await user.click(screen.getByRole("button", { name: open }));
     expect(
-      within(screen.getByRole("group", { name: hunter })).getByRole("button", { name: shot }),
-    ).toHaveAttribute("aria-pressed", "true");
+      within(screen.getByRole("group", { name: hunter })).getByRole("checkbox", {
+        name: `${hunter}, ${shot}`,
+      }),
+    ).toBeChecked();
   },
 );
 
@@ -218,19 +222,16 @@ it("takes back the roles that no longer fit when a player is removed", async () 
   await chooseNarrator(user, "Anna", chooseName.en);
   // Eight players besides the narrator: the tanner (from eight players) can be chosen.
   await user.click(screen.getByRole("button", { name: "Configuration" }));
-  const tanner = () => screen.getByRole("group", { name: "Tanner" });
-  await user.click(within(tanner()).getByRole("button", { name: "Win by vote only" }));
-  expect(within(tanner()).getByRole("button", { name: "Win by vote only" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  const tanner = () =>
+    within(screen.getByRole("group", { name: "Tanner" })).getByRole("checkbox", {
+      name: /Win by vote only/,
+    });
+  await user.click(tanner());
+  expect(tanner()).toBeChecked();
   await user.click(screen.getByRole("button", { name: "Done" }));
   // One player less: seven players, the tanner is taken back, and nothing has to be fixed by hand.
   await user.click(screen.getByRole("button", { name: /Remove Ida/ }));
   await user.click(screen.getByRole("button", { name: "Configuration" }));
-  expect(within(tanner()).getByRole("button", { name: "Win by vote only" })).toHaveAttribute(
-    "aria-pressed",
-    "false",
-  );
+  expect(tanner()).not.toBeChecked();
   expect(document.querySelector(".ww-issues")).toBeNull();
 });

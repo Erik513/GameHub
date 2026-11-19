@@ -60,10 +60,16 @@ it.each(["en", "de"] as const)(
     await renderConfiguration(language, 9);
     expect(wolves()).toBe("2");
     expect(villagers()).toBe("6");
-    // The seer is always in the game: her tile is chosen and stays so.
-    const seer = screen.getByRole("region", { name: language === "en" ? "Seer" : "Seherin" });
-    expect(seer.querySelector(".ww-chip--on")).not.toBeNull();
-    // Its "i" button is inside the tile and explains the seer.
+    // To read only: the seer (always one) and the villagers, no buttons to set them.
+    const stat = (name: string) =>
+      screen.getByRole("group", { name }).querySelector(".ww-stat__value");
+    // The number of players is not shown here any more.
+    expect(
+      screen.queryByRole("group", { name: language === "en" ? "Players" : "Spieler" }),
+    ).toBeNull();
+    expect(stat(language === "en" ? "Seer" : "Seherin")?.textContent).toBe("1");
+    const seer = screen.getByRole("group", { name: language === "en" ? "Seer" : "Seherin" });
+    // Its "i" button explains the seer.
     expect(
       within(seer).getByRole("button", {
         name: language === "en" ? "Info about Seer" : "Info zu Seherin",
@@ -97,45 +103,46 @@ it("takes a role and shows one villager less", async () => {
   expect(villagers()).toBe("6");
 });
 
-it("takes the hunter by picking a variant and drops him with a second tap", async () => {
+/** A role with options: one joined button, a half for every option (each half is a checkbox). */
+const split = (role: string) => within(screen.getByRole("group", { name: role }));
+
+it("takes the hunter with one joined button that shows both options and leaves him out with a second tap", async () => {
   const { latest, user } = await renderConfiguration("en", 9);
-  const group = screen.getByRole("group", { name: "Hunter" });
-  await user.click(within(group).getByRole("button", { name: "Duty to shoot" }));
+  const halves = split("Hunter").getAllByRole("checkbox");
+  // Both halves carry the name of the role as the main text and their option as the second line.
+  expect(halves).toHaveLength(2);
+  expect(halves.map((half) => half.closest("label")?.textContent)).toEqual([
+    "HunterDuty to shoot",
+    "HunterNo duty to shoot",
+  ]);
+  await user.click(halves[0]!);
   expect(latest.draft.roles).toEqual(["hunter"]);
   expect(latest.draft.settings.hunterShot).toBe("required");
-  expect(within(group).getByRole("button", { name: "Duty to shoot" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
-  await user.click(within(group).getByRole("button", { name: "No duty to shoot" }));
+  expect(halves[0]).toBeChecked();
+  await user.click(halves[1]!);
   expect(latest.draft.settings.hunterShot).toBe("optional");
-  await user.click(within(group).getByRole("button", { name: "No duty to shoot" }));
+  expect(halves[0]).not.toBeChecked();
+  await user.click(halves[1]!);
   expect(latest.draft.roles).toEqual([]);
 });
 
-it("holds at most one of the bodyguard and the night guest", async () => {
+it("holds at most one of the bodyguard and the night guest in one joined button", async () => {
   const { latest, user } = await renderConfiguration("en", 9);
-  const group = screen.getByRole("group", { name: "Bodyguard / night guest" });
-  await user.click(within(group).getByRole("button", { name: "Bodyguard" }));
-  await user.click(within(group).getByRole("button", { name: "Night guest" }));
+  const guard = split("Bodyguard / night guest");
+  await user.click(guard.getByRole("checkbox", { name: /Bodyguard$/ }));
+  await user.click(guard.getByRole("checkbox", { name: /Night guest$/ }));
   expect(latest.draft.roles).toEqual(["nightGuest"]);
+  await user.click(guard.getByRole("checkbox", { name: /Night guest$/ }));
+  expect(latest.draft.roles).toEqual([]);
 });
 
-it("sets the variant of the tanner, the mayor and the old hag, and the hammer is locked below ten", async () => {
+it("sets the option of the tanner, the mayor and the old hag, and the hammer is locked below ten", async () => {
   const { latest, user } = await renderConfiguration("en", 9);
-  const mayor = screen.getByRole("group", { name: "Mayor" });
-  expect(within(mayor).getByRole("button", { name: "Hammer" })).toBeDisabled();
-  await user.click(within(mayor).getByRole("button", { name: "Double vote" }));
-  await user.click(
-    within(screen.getByRole("group", { name: "Tanner" })).getByRole("button", {
-      name: "Win by vote only",
-    }),
-  );
-  await user.click(
-    within(screen.getByRole("group", { name: "Old hag" })).getByRole("button", {
-      name: "Self-pick allowed",
-    }),
-  );
+  const hammer = split("Mayor").getByRole("checkbox", { name: /Hammer/ });
+  expect(hammer).toBeDisabled();
+  await user.click(split("Mayor").getByRole("checkbox", { name: /Double vote/ }));
+  await user.click(split("Tanner").getByRole("checkbox", { name: /Win by vote only/ }));
+  await user.click(split("Old hag").getByRole("checkbox", { name: /Self-pick allowed/ }));
   expect(latest.draft.settings).toMatchObject({
     allowSelfSilence: true,
     mayor: "doubleVote",
@@ -147,10 +154,10 @@ it("locks a role that needs more players, says why, and keeps its info reachable
   const { user } = await renderConfiguration("en", 6);
   const cupid = screen.getByRole("checkbox", { name: /^Cupid/ });
   expect(cupid).toBeDisabled();
-  expect(screen.getByText("Not yet available")).toBeInTheDocument();
+  expect(screen.getByText("Not available (more players needed)")).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "Info about Cupid" }));
   const dialog = await screen.findByRole("dialog");
-  expect(within(dialog).getByText(/switched on from 7 players/)).toBeInTheDocument();
+  expect(within(dialog).getByText("From 7 players")).toBeInTheDocument();
   // The info does not take the role.
   expect(cupid).not.toBeChecked();
 });
@@ -161,7 +168,7 @@ it("has three boxes with a main heading each, and sets the roles in rows by the 
   expect(boxes.map((box) => box.querySelector(".ww-box__title")?.textContent)).toEqual([
     "Basic roles and extras",
     "Available roles",
-    "Not yet available",
+    "Not available (more players needed)",
   ]);
   const [core, available, locked] = boxes as [Element, Element, Element];
   // The extras are the second row of the first box.
@@ -171,13 +178,12 @@ it("has three boxes with a main heading each, and sets the roles in rows by the 
   expect(available.querySelectorAll(".ww-row")).toHaveLength(3);
   expect(available.querySelectorAll(".ww-row__title")).toHaveLength(0);
   // Locked roles: the rows are set apart by lines only; every tile says in its second line from how
-  // many players it is available.
+  // many players it is available (a role with options has two halves).
   expect(locked.querySelectorAll(".ww-row")).toHaveLength(3);
   expect(locked.querySelectorAll(".ww-row__title")).toHaveLength(0);
-  const hints = [...locked.querySelectorAll(".ww-tile-wrap small, .ww-variant__title small")].map(
-    (hint) => hint.textContent,
-  );
-  expect(hints).toEqual(["from 9", "from 9", "from 10", "from 11"]);
+  // The buttons do not tell it any more (the window of the role does), and the text of the role stays.
+  expect(locked.querySelectorAll(".ww-tile__lock")).toHaveLength(0);
+  expect(locked.querySelector(".ww-tile-wrap small")?.textContent).toBe("Self-pick allowed");
 });
 
 it("offers the wolf counts, keeps the pick, and marks the recommendation once", async () => {
@@ -243,16 +249,42 @@ it("locks the other roles when all places are used and frees them when one is dr
   };
   const { user } = await renderConfiguration("en", 7, full);
   // The rest of the roles stay in the box of the available ones, dimmed, with the reason.
-  const guard = screen.getByRole("group", { name: "Bodyguard / night guest" });
-  expect(
-    within(guard)
-      .getAllByRole("button")
-      .every((button) => button.hasAttribute("disabled")),
-  ).toBe(true);
+  const guard = split("Bodyguard / night guest");
+  expect(guard.getAllByRole("checkbox").every((half) => (half as HTMLInputElement).disabled)).toBe(
+    true,
+  );
+  expect(guard.getAllByText(/no place free/)).toHaveLength(2);
   // The second wolf would leave no place for the chosen roles.
   const wolves = within(screen.getByRole("group", { name: "Werewolves" }));
   expect(wolves.getByRole("button", { name: "2" })).toBeDisabled();
   await user.click(screen.getByRole("checkbox", { name: /^Witch/ }));
   expect(wolves.getByRole("button", { name: "2" })).toBeEnabled();
-  expect(within(guard).getByRole("button", { name: "Bodyguard" })).toBeEnabled();
+  expect(guard.getByRole("checkbox", { name: /Bodyguard$/ })).toBeEnabled();
 });
+
+it("gives every role one row with one info button outside of the button, also a role with options", async () => {
+  await renderConfiguration("en", 9);
+  // A role with options has one "i" for both options, and it is outside of the joined button.
+  const hunter = screen.getAllByRole("button", { name: "Info about Hunter" });
+  expect(hunter).toHaveLength(1);
+  expect(screen.getByRole("group", { name: "Hunter" })).not.toContainElement(hunter[0]!);
+  expect(screen.getAllByRole("button", { name: /^Info about Bodyguard/ })).toHaveLength(1);
+  // Every role is one row of the list.
+  expect(document.querySelectorAll(".ww-list > .ww-role").length).toBeGreaterThan(8);
+});
+
+it.each([
+  [6, "Cupid", "From 7 players", "locked"],
+  [9, "Witch", "From 6 players", "ok"],
+] as const)(
+  "shows in the window of a role from how many players it is available (%s players, %s)",
+  async (players, role, text, state) => {
+    const { user } = await renderConfiguration("en", players);
+    await user.click(screen.getByRole("button", { name: `Info about ${role}` }));
+    const dialog = await screen.findByRole("dialog");
+    const box = dialog.querySelector(".ww-available");
+    expect(box).toHaveTextContent(text);
+    // Red while the role is not available, green while it is.
+    expect(box).toHaveAttribute("data-state", state);
+  },
+);

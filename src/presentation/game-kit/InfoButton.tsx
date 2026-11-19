@@ -9,6 +9,8 @@ export interface InfoContent {
   /** Explanation shown in the dialog. A text with several lines is shown as bullet points. */
   readonly text: ReactNode;
   readonly title: string;
+  /** Something next to the title in the window, for example a small box with a status. */
+  readonly titleExtra?: ReactNode;
   /** Controls the dialog from outside; without it the button manages the dialog itself. */
   readonly open?: boolean | undefined;
   readonly onOpenChange?: ((open: boolean) => void) | undefined;
@@ -65,6 +67,7 @@ export function InfoButton(props: InfoButtonProps) {
           onClose={() => setOpen(false)}
           open={open}
           title={content.title}
+          {...(content.titleExtra === undefined ? {} : { titleExtra: content.titleExtra })}
         >
           {typeof content.text === "string" && content.text.includes("\n") ? (
             <ul className="kit-info-list">

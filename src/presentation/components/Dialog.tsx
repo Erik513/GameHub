@@ -11,6 +11,8 @@ interface DialogProps {
   /** A large window for lists: wider and as high as the screen allows. */
   size?: "large";
   title: string;
+  /** Something next to the title, for example a small box with a status. */
+  titleExtra?: ReactNode;
 }
 
 export function Dialog({
@@ -21,6 +23,7 @@ export function Dialog({
   open,
   size,
   title,
+  titleExtra,
 }: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
@@ -70,7 +73,14 @@ export function Dialog({
         role="dialog"
       >
         <div className="dialog__header">
-          <h2 id={titleId}>{title}</h2>
+          {titleExtra ? (
+            <div className="dialog__title">
+              <h2 id={titleId}>{title}</h2>
+              {titleExtra}
+            </div>
+          ) : (
+            <h2 id={titleId}>{title}</h2>
+          )}
           <Button
             ref={closeButtonRef}
             aria-label={closeLabel}

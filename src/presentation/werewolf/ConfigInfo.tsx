@@ -28,16 +28,15 @@ interface ConfigInfoProps {
 export function ConfigInfo({ className, id, lock = null, minimum = 0, name }: ConfigInfoProps) {
   const { t } = useTranslation();
   const lines = t(`werewolfConfig.info.${id}`).split("\n");
+  // Not enough players is shown by the box next to the name; the other reasons stand first in the text.
   const reason =
-    lock === "minimumPlayers"
-      ? t("werewolfConfig.lockMinimumPlayers", { count: minimum })
-      : lock === "noSeat"
-        ? t("werewolfConfig.lockNoSeat")
-        : lock === "combination"
-          ? t("werewolfConfig.lockCombination")
-          : lock === "wolves"
-            ? t("werewolfConfig.lockWolves")
-            : null;
+    lock === "noSeat"
+      ? t("werewolfConfig.lockNoSeat")
+      : lock === "combination"
+        ? t("werewolfConfig.lockCombination")
+        : lock === "wolves"
+          ? t("werewolfConfig.lockWolves")
+          : null;
   return (
     <InfoButton
       {...(className === undefined ? {} : { className })}
@@ -54,6 +53,19 @@ export function ConfigInfo({ className, id, lock = null, minimum = 0, name }: Co
         </>
       }
       title={name}
+      // From how many players the role can be taken: a green box while it can, a red one while it cannot.
+      {...(minimum > 0
+        ? {
+            titleExtra: (
+              <span
+                className="ww-available"
+                data-state={lock === "minimumPlayers" ? "locked" : "ok"}
+              >
+                {t("werewolfConfig.availableFrom", { count: minimum })}
+              </span>
+            ),
+          }
+        : {})}
     />
   );
 }

@@ -15,7 +15,7 @@ import type { WerewolfSpecialRole } from "../../business/games/werewolf/configur
 import { Button } from "../components";
 import { ChoiceGroup, SetupTabs, StartBar, useFocusOnShow } from "../game-kit";
 import { ConfigInfo } from "./ConfigInfo";
-import { RoleTile, VariantTile } from "./ConfigTiles";
+import { RoleRow, RoleTile } from "./ConfigTiles";
 
 interface WerewolfConfigurationProps {
   readonly draft: FixedDraft;
@@ -83,46 +83,85 @@ export function WerewolfConfiguration({
     }
   };
 
+  /**
+   * The tile of a role. A role with options is one joined, optional selection button: a half for every option, each
+   * with the name of the role and its option; a tap picks one, a tap on the chosen one leaves the role out.
+   */
   function renderItem(entry: FixedItemView) {
     const name = t(`werewolfConfig.items.${entry.id}`);
     if (entry.kind === "toggle") {
       return (
-        <RoleTile
+        <RoleRow
           infoId={entry.id}
           key={entry.id}
           lock={entry.lock}
           minimum={entry.minimum}
           name={name}
-          onToggle={() => onChange(toggleFixedRole(draft, entry.roles[0]!))}
-          selected={entry.selected}
-        />
+        >
+          <RoleTile
+            infoId={entry.id}
+            lock={entry.lock}
+            minimum={entry.minimum}
+            name={name}
+            onToggle={() => onChange(toggleFixedRole(draft, entry.roles[0]!))}
+            selected={entry.selected}
+            showInfo={false}
+          />
+        </RoleRow>
       );
     }
+    const chosen = entry.kind === "alternative" ? entry.chosenRole : entry.variant;
     const choices =
       entry.kind === "alternative"
-        ? entry.roles.map((role) => ({ label: roleName(role), value: role }))
+        ? entry.roles.map((role) => ({
+            label: undefined,
+            name: roleName(role),
+            value: role,
+          }))
         : variantValues[entry.id as keyof typeof variantValues].map((value) => ({
             label: t(`werewolfConfig.variants.${value}`),
-            locked: entry.lockedVariants.includes(value),
+            name,
             value,
           }));
+    const pick = (value: string | null) =>
+      onChange(
+        entry.kind === "alternative"
+          ? chooseFixedAlternative(draft, entry.roles, value as WerewolfSpecialRole | null)
+          : chooseFixedVariant(draft, entry.id as keyof typeof variantValues, value),
+      );
+    // One joined button with one half for every option; each half shows the name of the role and its option.
+    // Both halves together are one optional choice: a tap picks the option, a tap on the chosen one leaves
+    // the role out.
     return (
-      <VariantTile
-        choices={choices}
+      <RoleRow
         infoId={entry.id}
         key={entry.id}
         lock={entry.lock}
         minimum={entry.minimum}
         name={name}
-        onPick={(value) =>
-          onChange(
-            entry.kind === "alternative"
-              ? chooseFixedAlternative(draft, entry.roles, value as WerewolfSpecialRole | null)
-              : chooseFixedVariant(draft, entry.id as keyof typeof variantValues, value),
-          )
-        }
-        value={entry.kind === "alternative" ? entry.chosenRole : entry.variant}
-      />
+      >
+        <div aria-label={name} className="ww-split" role="group">
+          {choices.map((choice) => {
+            const selected = chosen === choice.value;
+            // An option that needs more players than the role itself (the hammer) is locked on its own.
+            const optionLocked =
+              entry.lock === null && !selected && entry.lockedVariants.includes(choice.value);
+            return (
+              <RoleTile
+                infoId={entry.id}
+                key={choice.value}
+                lock={optionLocked ? "minimumPlayers" : entry.lock}
+                minimum={optionLocked ? 10 : entry.minimum}
+                name={choice.name}
+                onToggle={() => pick(selected ? null : choice.value)}
+                selected={selected}
+                showInfo={false}
+                {...(choice.label === undefined ? {} : { sub: choice.label })}
+              />
+            );
+          })}
+        </div>
+      </RoleRow>
     );
   }
 
@@ -146,14 +185,8 @@ export function WerewolfConfiguration({
             {titles && (
               <h4 className="ww-row__title">{t("werewolfConfig.row", { count: minimum })}</h4>
             )}
-            <div className="ww-grid">
-              {entries
-                .filter((entry) => entry.minimum === minimum)
-                // The plain tiles come first, two to a row; the roles with variants follow, one to a row.
-                .sort(
-                  (left, right) => Number(left.kind !== "toggle") - Number(right.kind !== "toggle"),
-                )
-                .map(renderItem)}
+            <div className="ww-list">
+              {entries.filter((entry) => entry.minimum === minimum).map(renderItem)}
             </div>
           </div>
         ))}
@@ -187,68 +220,81 @@ export function WerewolfConfiguration({
         <>
           <section className="ww-box ww-core">
             <h3 className="ww-box__title">{t("werewolfConfig.coreHeading")}</h3>
-            <div className="ww-core__grid">
-              <section className="ww-mini ww-mini--wolves">
-                <div className="ww-mini__head">
-                  <h4>{t("werewolfConfig.wolves")}</h4>
-                  <ConfigInfo id="wolves" name={t("werewolfConfig.wolves")} />
+            {/* Every basic role is a card like the other roles: the name with its "i" on the first line, the value or the choice on the second. */}
+            <section className="ww-card ww-card--wolves">
+              <div className="ww-card__head">
+                <h4>{t("werewolfConfig.wolves")}</h4>
+                <ConfigInfo id="wolves" name={t("werewolfConfig.wolves")} />
+              </div>
+              <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
+                {view.wolf.options.map((option) => (
+                  <div className="ww-wolves__option" key={option.count}>
+                    <button
+                      aria-pressed={option.selected}
+                      className="ww-wolves__button"
+                      data-fixed={view.wolf.fixed || undefined}
+                      data-recommended={option.recommended || undefined}
+                      disabled={!option.selectable && !option.selected}
+                      onClick={() => {
+                        if (!view.wolf.fixed) onChange(setFixedWolfCount(draft, option.count));
+                      }}
+                      type="button"
+                    >
+                      {option.count}
+                    </button>
+                    <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
+                  </div>
+                ))}
+              </div>
+            </section>
+            {/* Only to read, nothing to set: the same cards with a plain number on the second line. */}
+            <div className="ww-cards">
+              <div aria-label={t("werewolfConfig.seer")} className="ww-card ww-stat" role="group">
+                <div className="ww-card__head">
+                  <h4>{t("werewolfConfig.seer")}</h4>
+                  <ConfigInfo id="seer" name={t("werewolfConfig.seer")} />
                 </div>
-                <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
-                  {view.wolf.options.map((option) => (
-                    <div className="ww-wolves__option" key={option.count}>
-                      <button
-                        aria-pressed={option.selected}
-                        className="ww-wolves__button"
-                        data-fixed={view.wolf.fixed || undefined}
-                        data-recommended={option.recommended || undefined}
-                        disabled={!option.selectable && !option.selected}
-                        onClick={() => {
-                          if (!view.wolf.fixed) onChange(setFixedWolfCount(draft, option.count));
-                        }}
-                        type="button"
-                      >
-                        {option.count}
-                      </button>
-                      <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
-                    </div>
-                  ))}
+                <strong className="ww-stat__value">1</strong>
+              </div>
+              <div
+                aria-label={t("werewolfConfig.villagers")}
+                className="ww-card ww-stat"
+                role="group"
+              >
+                <div className="ww-card__head">
+                  <h4>{t("werewolfConfig.villagersTitle")}</h4>
+                  <ConfigInfo id="villagers" name={t("werewolfConfig.villagers")} />
                 </div>
-              </section>
-              {/* The villagers are a result, not a choice: the name on top, below it the number with its "i". */}
-              <section aria-label={t("werewolfConfig.villagers")} className="ww-mini ww-mini--tile">
-                <h4>{t("werewolfConfig.villagersTitle")}</h4>
-                <div className="ww-chip">
-                  <strong className="ww-villagers__number">{view.villagers ?? 0}</strong>
-                  <ConfigInfo
-                    className="ww-chip__info"
-                    id="villagers"
-                    name={t("werewolfConfig.villagers")}
-                  />
-                </div>
-              </section>
-              {/* The seer is always in the game: the name on top, below it a filled count button with its "i". */}
-              <section aria-label={t("werewolfConfig.seer")} className="ww-mini ww-mini--tile">
-                <h4>{t("werewolfConfig.seer")}</h4>
-                <div className="ww-chip ww-chip--on">
-                  <strong>1</strong>
-                  <ConfigInfo className="ww-chip__info" id="seer" name={t("werewolfConfig.seer")} />
-                </div>
-              </section>
+                <strong className="ww-stat__value ww-villagers__number">
+                  {view.villagers ?? 0}
+                </strong>
+              </div>
             </div>
             <div className="ww-row">
               <h4 className="ww-row__title">{t("werewolfConfig.extrasHeading")}</h4>
-              <div className="ww-grid">
-                {view.addons.map((addon) => (
-                  <RoleTile
-                    infoId={addon.id}
-                    key={addon.id}
-                    lock={addon.lock}
-                    minimum={addon.minimum}
-                    name={t(`werewolfConfig.addons.${addon.id}`)}
-                    onToggle={() => onChange(setFixedSetting(draft, addon.id, !addon.selected))}
-                    selected={addon.selected}
-                  />
-                ))}
+              <div className="ww-list">
+                {view.addons.map((addon) => {
+                  const name = t(`werewolfConfig.addons.${addon.id}`);
+                  return (
+                    <RoleRow
+                      infoId={addon.id}
+                      key={addon.id}
+                      lock={addon.lock}
+                      minimum={addon.minimum}
+                      name={name}
+                    >
+                      <RoleTile
+                        infoId={addon.id}
+                        lock={addon.lock}
+                        minimum={addon.minimum}
+                        name={name}
+                        onToggle={() => onChange(setFixedSetting(draft, addon.id, !addon.selected))}
+                        selected={addon.selected}
+                        showInfo={false}
+                      />
+                    </RoleRow>
+                  );
+                })}
               </div>
             </div>
           </section>

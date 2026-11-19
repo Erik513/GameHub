@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { FixedItemView } from "../../business/games/werewolf/fixedConfiguration";
 import { ConfigInfo, type ConfigInfoId } from "./ConfigInfo";
 import { useLockHint } from "./useLockHint";
@@ -6,81 +7,58 @@ interface RoleTileProps {
   readonly infoId: ConfigInfoId;
   readonly lock: FixedItemView["lock"] | "wolves";
   readonly minimum: number;
+  /** The role (or the extra): the main text of the tile. */
   readonly name: string;
   readonly onToggle: () => void;
   readonly selected: boolean;
+  /** Without it the tile has no "i" inside (a role in a list has its "i" outside, see RoleRow). */
+  readonly showInfo?: boolean;
+  /** The second line: the special text, for example the option of the role. */
+  readonly sub?: string;
 }
 
 /**
- * A role (or an extra) as one button that is chosen or not, with its "i" button beside it. A locked
- * tile cannot be chosen but still explains why.
+ * Every role (and every extra) looks the same: one button with the name of the role as the main text and,
+ * in a second line, the special text of the role (its option). While the role cannot be chosen because of the
+ * chosen roles, the reason ("no place free", "not together") stands in brackets next to the name.
+ * The "i" button stands inside the tile; a locked tile cannot be chosen but still explains why.
+ * A role with options is one split tile (see `ww-split`): a row of such tiles joined into one button, one
+ * for every option, each with the name of the role and its option.
  */
-export function RoleTile({ infoId, lock, minimum, name, onToggle, selected }: RoleTileProps) {
-  const lockHint = useLockHint();
-  const hint = lockHint(lock, minimum);
-  return (
-    <div className="kit-choice-wrap ww-tile-wrap" data-locked={lock === null ? undefined : true}>
-      <label className="kit-choice">
-        <input checked={selected} disabled={lock !== null} onChange={onToggle} type="checkbox" />
-        <span>
-          {name}
-          {hint && <small>{hint}</small>}
-        </span>
-      </label>
-      <ConfigInfo
-        className="kit-info-button--option"
-        id={infoId}
-        lock={lock}
-        minimum={minimum}
-        name={name}
-      />
-    </div>
-  );
-}
-
-interface VariantTileProps {
-  /** The choices; the chosen one is pressed. */
-  readonly choices: readonly {
-    readonly label: string;
-    readonly locked?: boolean;
-    readonly value: string;
-  }[];
-  readonly infoId: ConfigInfoId;
-  readonly lock: FixedItemView["lock"];
-  readonly minimum: number;
-  readonly name: string;
-  /** A tap on a choice; the chosen one is tapped again to leave the role out. */
-  readonly onPick: (value: string | null) => void;
-  readonly value: string | null;
-}
-
-/**
- * A role that is taken by picking one of its variants (for example the hunter with a free shot or
- * with the duty to shoot). Nothing picked means no role; tapping the picked variant again leaves
- * the role out. There is no switch besides the variants.
- */
-export function VariantTile({
-  choices,
+export function RoleTile({
   infoId,
   lock,
   minimum,
   name,
-  onPick,
-  value,
-}: VariantTileProps) {
+  onToggle,
+  selected,
+  showInfo = true,
+  sub,
+}: RoleTileProps) {
   const lockHint = useLockHint();
-  const hint = lockHint(lock, minimum);
+  // Not enough players is told in the window of the role (a box next to its name); the button only names the
+  // reasons that depend on the chosen roles.
+  const hint = lock === "minimumPlayers" ? undefined : lockHint(lock);
   return (
-    <div
-      className="ww-variant"
-      data-locked={lock === null ? undefined : true}
-      data-selected={value === null ? undefined : true}
-    >
-      <div className="ww-variant__head">
-        <span className="ww-variant__title">
-          <span className="ww-variant__name">{name}</span>
-          {hint && <small>{hint}</small>}
+    <div className="kit-choice-wrap ww-tile-wrap" data-locked={lock === null ? undefined : true}>
+      <label className="kit-choice">
+        <input
+          aria-label={sub === undefined ? name : `${name}, ${sub}`}
+          checked={selected}
+          disabled={lock !== null}
+          onChange={onToggle}
+          type="checkbox"
+        />
+        <span>
+          <strong className="ww-tile__main">
+            {name}
+            {/* Why the role is locked stands in brackets next to the name; the second line stays for the text of the role. */}
+            {hint && <em className="ww-tile__lock"> ({hint})</em>}
+          </strong>
+          {sub && <small>{sub}</small>}
         </span>
+      </label>
+      {showInfo && (
         <ConfigInfo
           className="kit-info-button--option"
           id={infoId}
@@ -88,21 +66,30 @@ export function VariantTile({
           minimum={minimum}
           name={name}
         />
-      </div>
-      <div aria-label={name} className="ww-variant__choices" role="group">
-        {choices.map((choice) => (
-          <button
-            aria-pressed={value === choice.value}
-            className="ww-variant__button"
-            disabled={lock !== null || (choice.locked === true && value !== choice.value)}
-            key={choice.value}
-            onClick={() => onPick(value === choice.value ? null : choice.value)}
-            type="button"
-          >
-            {choice.label}
-          </button>
-        ))}
-      </div>
+      )}
+    </div>
+  );
+}
+
+interface RoleRowProps {
+  readonly children: ReactNode;
+  readonly infoId: ConfigInfoId;
+  readonly lock: FixedItemView["lock"] | "wolves";
+  readonly minimum: number;
+  /** The name of the role, for the "i" button. */
+  readonly name: string;
+}
+
+/**
+ * A role in the list takes one row: the button (a single tile, or the joined halves of a role with options) over the
+ * whole width and, outside of it on the right, the one "i" button. For a role with options the explanation
+ * describes every option.
+ */
+export function RoleRow({ children, infoId, lock, minimum, name }: RoleRowProps) {
+  return (
+    <div className="ww-role">
+      <div className="ww-role__control">{children}</div>
+      <ConfigInfo className="ww-role__info" id={infoId} lock={lock} minimum={minimum} name={name} />
     </div>
   );
 }
