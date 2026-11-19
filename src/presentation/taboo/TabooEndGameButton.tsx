@@ -11,6 +11,7 @@ export function TabooEndGameButton({ onConfirm }: { readonly onConfirm: () => vo
     <ConfirmButton
       armedLabel={t("navigation.exitGameConfirm")}
       idleLabel={t("navigation.exitGame")}
+      idleVariant="danger"
       onConfirm={onConfirm}
     >
       {t("navigation.exitGame")}

@@ -174,6 +174,7 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
                   armedLabel={t("navigation.exitGameConfirm")}
                   className="icon-button"
                   idleLabel={t("navigation.exitGame")}
+                  idleVariant="danger"
                   onConfirm={() => gameExit.run()}
                 >
                   <svg

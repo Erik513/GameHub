@@ -123,3 +123,26 @@ for (const labels of cases) {
     ).toBeChecked();
   });
 }
+
+test("the team strip and the start button press as one control", async ({ page }) => {
+  await page.goto("/#/games/taboo");
+  await page.getByRole("button", { name: "Start game", exact: true }).click();
+  const strip = page.locator(".kit-turn-strip").first();
+  await expect(strip).toBeVisible();
+  const box = (await strip.boundingBox())!;
+  // Pressing the strip (not the button): the whole bar shrinks and the button does not shrink once more.
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const bar = document.querySelector(".kit-start-bar")!;
+        const button = bar.querySelector(".button")!;
+        return [getComputedStyle(bar).transform, getComputedStyle(button).transform];
+      }),
+    )
+    .toEqual([expect.stringMatching(/^matrix\(0\.97/), "none"]);
+  // Letting go on the strip is a tap on the button: the round starts.
+  await page.mouse.up();
+  await expect(page.getByRole("region", { name: "Active round" })).toBeVisible();
+});

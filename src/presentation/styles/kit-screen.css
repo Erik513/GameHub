@@ -36,8 +36,37 @@
 /* The team name sits on top of the start button and extends it upwards. */
 
 .kit-start-bar .kit-turn-strip + .button {
+  position: relative;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+/*
+ * The strip and the button are one control: a tap on the strip is a tap on the button (the strip takes
+ * no taps itself; the button reaches up over it), and while the button is pressed both shrink together.
+ */
+.kit-start-bar .kit-turn-strip {
+  pointer-events: none;
+}
+
+.kit-start-bar .kit-turn-strip + .button::before {
+  position: absolute;
+  inset: auto 0 100%;
+  height: 3.5rem;
+  content: "";
+}
+
+.kit-start-bar {
+  transition: transform 80ms ease-out;
+}
+
+.kit-start-bar:has(.kit-turn-strip + .button:active:not(:disabled)) {
+  transform: scale(0.97);
+}
+
+/* The bar shrinks as a whole, so the button does not shrink once more on its own. */
+.kit-start-bar .kit-turn-strip + .button:active:not(:disabled) {
+  transform: none;
 }
 
 .kit-start-bar--stack {

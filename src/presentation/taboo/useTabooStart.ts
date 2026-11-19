@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { planGenerationRequests } from "../../business/games/taboo/cardPlan";
-import { buildDeck } from "../../business/games/taboo/deck";
+import { buildDeck, interleaveByDifficulty } from "../../business/games/taboo/deck";
 import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
 import { tabooLineup } from "../../business/games/taboo/lineup";
 import { resolveLineup, validateLineup, type LineupIssue } from "../../business/shared/lineup";
@@ -148,10 +148,13 @@ export function useTabooStart({
         setGenerationEmpty(additions.length === 0);
       }
       const pool = plan.cardSource === "ai" ? additions : [...cards, ...additions];
-      // Cards that were not played yet come first; when they are not enough the cards start anew.
-      deck = played.choose(
-        buildDeck(pool, plan.filters, Math.random).cards,
-        (candidates) => !cardShortageFor(plan, candidates),
+      // Cards that were not played yet come first; when they are not enough the cards start anew. The
+      // difficulties alternate evenly, also when most of the cards left are of one difficulty.
+      const matching = buildDeck(pool, plan.filters, Math.random).cards;
+      deck = interleaveByDifficulty(
+        played.choose(matching, (candidates) => !cardShortageFor(plan, candidates)),
+        matching,
+        Math.random,
       );
     }
     const missing = cardShortageFor(plan, deck);

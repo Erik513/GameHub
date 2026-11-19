@@ -1034,31 +1034,32 @@ body:has(.kit-onepage) {
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  /* The shower never changes the layout or the paint of the rest of the page. */
+  contain: strict;
 }
 
+/*
+ * Only the position of a piece is animated (it runs on the graphics chip); it starts above the screen
+ * and leaves it at the bottom, so it needs no fading. `will-change` gives every piece its own layer
+ * from the start instead of during the shower.
+ */
 .kit-confetti__piece {
   position: absolute;
   top: -2rem;
   border-radius: 2px;
-  opacity: 0;
   animation-name: kit-confetti-fall;
-  animation-fill-mode: forwards;
-  animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+  animation-fill-mode: backwards;
+  animation-timing-function: linear;
+  will-change: transform;
 }
 
 @keyframes kit-confetti-fall {
   0% {
-    opacity: 1;
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
 
-  85% {
-    opacity: 1;
-  }
-
   100% {
-    opacity: 0;
-    transform: translate3d(var(--confetti-drift), 110vh, 0) rotate(var(--confetti-spin));
+    transform: translate3d(var(--confetti-drift), 115vh, 0) rotate(var(--confetti-spin));
   }
 }
 

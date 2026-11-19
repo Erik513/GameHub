@@ -23,7 +23,7 @@ const colors = [
  * The shower lasts about seven seconds: the pieces start one after another over two and a half
  * seconds and each one falls for three to four and a half seconds.
  */
-const pieceCount = 110;
+const pieceCount = 70;
 const maxDelay = 2.5;
 const maxDuration = 4.5;
 /** A little longer than the longest fall (delay plus duration), then the pieces are removed. */
