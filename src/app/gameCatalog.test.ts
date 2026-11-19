@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { findGameByRoute, gameCatalog } from "./gameCatalog";
+import { findGameByRoute, gameCatalog, isGameOpenable } from "./gameCatalog";
 
 describe("game catalog", () => {
   it("contains unique IDs and routes", () => {
@@ -16,6 +16,16 @@ describe("game catalog", () => {
       expect(game.route).toBe(`/games/${game.id}`);
       expect(["available", "preview", "planned"]).toContain(game.availability);
     }
+  });
+
+  it("opens finished games always, games in development only while developing, planned never", () => {
+    for (const development of [true, false]) {
+      expect(isGameOpenable({ availability: "available" }, development)).toBe(true);
+      expect(isGameOpenable({ availability: "planned" }, development)).toBe(false);
+    }
+    expect(isGameOpenable({ availability: "preview" }, true)).toBe(true);
+    // The published app does not open a game that is not finished.
+    expect(isGameOpenable({ availability: "preview" }, false)).toBe(false);
   });
 
   it("finds registered games by route", () => {

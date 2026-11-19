@@ -46,7 +46,6 @@ export const common = {
     title: "Choose a game",
     intro: "Pick what fits the table. New games join the same library as they become ready.",
     status: {
-      available: "Ready to play",
       preview: "In development",
       planned: "Planned",
     },

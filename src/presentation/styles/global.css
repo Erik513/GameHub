@@ -219,6 +219,12 @@ h1 {
   overflow: hidden;
 }
 
+/* A game that can be played is tinted in the color of its game. */
+.game-card[data-playable="true"] {
+  border-color: color-mix(in srgb, var(--game-accent) 45%, var(--color-line));
+  background: color-mix(in srgb, var(--game-accent) 9%, var(--color-surface));
+}
+
 .game-card__body {
   display: contents;
 }

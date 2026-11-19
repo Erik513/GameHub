@@ -43,8 +43,9 @@ test("renders the GameHub game selection", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Choose a game" })).toBeVisible();
   await expect(page.getByRole("list", { name: "Choose a game" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Play", exact: true }).first()).toBeEnabled();
-  // Taboo is ready, Werewolf is in development (can be opened), the other games are planned.
-  await expect(page.getByRole("button", { name: "Play", exact: true }).nth(1)).toBeEnabled();
+  // Taboo is finished. Werewolf is in development and the other games are planned: the published app
+  // does not open them.
+  await expect(page.getByRole("button", { name: "Play", exact: true }).nth(1)).toBeDisabled();
   await expect(page.getByRole("button", { name: "Play", exact: true }).nth(2)).toBeDisabled();
 });
 

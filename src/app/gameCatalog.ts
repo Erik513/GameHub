@@ -17,7 +17,7 @@ export const gameCatalog = [
     route: "/games/taboo",
     translationKey: "taboo",
     availability: "available",
-    accent: "coral",
+    accent: "blue",
   },
   {
     id: "word-bomb",
@@ -55,6 +55,19 @@ export const gameCatalog = [
     accent: "coral",
   },
 ] as const satisfies readonly GameModuleDescriptor[];
+
+/**
+ * Whether the game can be opened. A finished game (`available`) can always be opened. A game in
+ * development (`preview`) can only be opened while developing (the development server), never in the
+ * published app: it becomes playable when it is finished and published as `available`. A planned game
+ * cannot be opened.
+ */
+export function isGameOpenable(
+  game: Pick<GameModuleDescriptor, "availability">,
+  development: boolean = import.meta.env.DEV,
+): boolean {
+  return game.availability === "available" || (game.availability === "preview" && development);
+}
 
 export function findGameByRoute(route: string): GameModuleDescriptor | undefined {
   return gameCatalog.find((game) => game.route === route);

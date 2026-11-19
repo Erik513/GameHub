@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { findGameByRoute, gameCatalog, type GameModuleDescriptor } from "../app/gameCatalog";
+import {
+  findGameByRoute,
+  gameCatalog,
+  isGameOpenable,
+  type GameModuleDescriptor,
+} from "../app/gameCatalog";
 import { createRouteHash, homeRoute, parseHashRoute } from "../app/hashRoute";
 import type { SupportedLanguage } from "../i18n";
 import { AppShell } from "./AppShell";
@@ -42,7 +47,7 @@ export function App({
   }
 
   function handleGameSelection(game: GameModuleDescriptor) {
-    if (game.availability !== "planned") {
+    if (isGameOpenable(game)) {
       navigate(game.route);
     }
   }
@@ -50,18 +55,16 @@ export function App({
   return (
     <AppShell
       gameTitle={
-        selectedGame && selectedGame.availability !== "planned"
+        selectedGame && isGameOpenable(selectedGame)
           ? t(`games.${selectedGame.translationKey}.title`)
           : undefined
       }
       onCloseGame={
-        selectedGame && selectedGame.availability !== "planned"
-          ? () => navigate(homeRoute)
-          : undefined
+        selectedGame && isGameOpenable(selectedGame) ? () => navigate(homeRoute) : undefined
       }
       onLanguageChange={(language) => onLanguageChange?.(language)}
     >
-      {selectedGame && selectedGame.availability !== "planned" ? (
+      {selectedGame && isGameOpenable(selectedGame) ? (
         <GamePreviewPage game={selectedGame}>
           {GameScreen && (
             <GameScreen cardLanguage={cardLanguage} onCardLanguageChange={onCardLanguageChange} />

@@ -59,6 +59,29 @@ describe("GameSelectionPage", () => {
     ]);
   });
 
+  it("has no label on a game that can be played and tints its box", async () => {
+    await renderWithI18n("en", <GameSelectionPage games={gameCatalog} onSelect={vi.fn()} />);
+    const tabooCard = screen.getByRole("heading", { name: "Taboo" }).closest("section")!;
+    expect(tabooCard.querySelector(".game-status")).toBeNull();
+    expect(tabooCard).toHaveAttribute("data-playable", "true");
+    expect(tabooCard).toHaveAttribute("data-accent", "blue");
+    const werewolfCard = screen.getByRole("heading", { name: "Werewolf" }).closest("section")!;
+    expect(werewolfCard.querySelector(".game-status")).toHaveTextContent("In development");
+    expect(werewolfCard).not.toHaveAttribute("data-playable");
+  });
+
+  it("does not open a game in development in the published app", async () => {
+    vi.stubEnv("DEV", false);
+    try {
+      await renderWithI18n("en", <GameSelectionPage games={gameCatalog} onSelect={vi.fn()} />);
+      const buttons = screen.getAllByRole("button", { name: "Play" });
+      expect(buttons[0]).toBeEnabled();
+      for (const closed of buttons.slice(1)) expect(closed).toBeDisabled();
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
   it("only lets players open games that are not merely planned", async () => {
     const onSelect = vi.fn();
     await renderWithI18n("en", <GameSelectionPage games={gameCatalog} onSelect={onSelect} />);

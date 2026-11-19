@@ -47,7 +47,6 @@ export const common = {
     intro:
       "Wähle, was zu eurer Runde passt. Neue Spiele kommen in dieselbe Sammlung, sobald sie bereit sind.",
     status: {
-      available: "Spielbereit",
       preview: "In Entwicklung",
       planned: "Geplant",
     },

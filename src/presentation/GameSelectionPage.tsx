@@ -1,5 +1,9 @@
 import { useTranslation } from "react-i18next";
-import type { GameAvailability, GameModuleDescriptor } from "../app/gameCatalog";
+import {
+  isGameOpenable,
+  type GameAvailability,
+  type GameModuleDescriptor,
+} from "../app/gameCatalog";
 import { Button, Card, EmptyState } from "./components";
 import { useFocusOnShow } from "./game-kit/useFocusOnShow";
 
@@ -48,21 +52,28 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
       ) : null}
       <ul className="game-grid" aria-label={t("gameSelection.title")}>
         {sortedGames.map((game) => {
-          const isPlanned = game.availability === "planned";
+          const openable = isGameOpenable(game);
 
           return (
             <li key={game.id}>
-              <Card className="game-card" data-accent={game.accent}>
+              <Card
+                className="game-card"
+                data-accent={game.accent}
+                data-playable={game.availability === "available" || undefined}
+              >
                 <div className="game-card__body">
-                  <span className="game-status" data-status={game.availability}>
-                    {t(`gameSelection.status.${game.availability}`)}
-                  </span>
+                  {/* A finished game has no label; only games in development and planned games have one. */}
+                  {game.availability !== "available" && (
+                    <span className="game-status" data-status={game.availability}>
+                      {t(`gameSelection.status.${game.availability}`)}
+                    </span>
+                  )}
                   <h2>{t(`games.${game.translationKey}.title`)}</h2>
                   <p>{t(`games.${game.translationKey}.description`)}</p>
                 </div>
                 <Button
-                  disabled={isPlanned}
-                  variant={isPlanned ? "secondary" : "primary"}
+                  disabled={!openable}
+                  variant={openable ? "primary" : "secondary"}
                   onClick={() => onSelect(game)}
                 >
                   {t("gameSelection.action.play")}
