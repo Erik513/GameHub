@@ -1,11 +1,13 @@
 import { kitTexts } from "./kit";
 import { tabooTexts } from "./taboo";
 import { werewolfTexts } from "./werewolf";
+import { werewolfConfigTexts } from "./werewolfConfig";
 
 export const common = {
   ...kitTexts,
   ...tabooTexts,
   ...werewolfTexts,
+  ...werewolfConfigTexts,
   app: {
     eyebrow: "Projektgrundlage",
     title: "GameHub",

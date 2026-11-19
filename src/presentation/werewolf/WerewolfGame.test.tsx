@@ -185,3 +185,26 @@ it.each([
   expect(screen.queryByText(hint)).not.toBeInTheDocument();
   expect(document.querySelector(".kit-order")).not.toBeNull();
 });
+
+it.each([
+  ["en", "Configuration", "Done", "Hunter", "No duty to shoot", "Players (7)"],
+  ["de", "Konfiguration", "Fertig", "Jäger", "Keine Schusspflicht", "Spieler (7)"],
+] as const)(
+  "opens the configuration from the line-up and keeps both when going back in %s",
+  async (language, open, done, hunter, shot, playersTab) => {
+    const user = await renderGame(language);
+    await addPlayers(user, language);
+    await user.click(screen.getByRole("button", { name: open }));
+    await user.click(
+      within(screen.getByRole("group", { name: hunter })).getByRole("button", { name: shot }),
+    );
+    await user.click(screen.getByRole("button", { name: done }));
+    // The line-up is back with its players.
+    expect(screen.getByRole("tab", { name: playersTab })).toBeInTheDocument();
+    // The choice of the configuration is still there.
+    await user.click(screen.getByRole("button", { name: open }));
+    expect(
+      within(screen.getByRole("group", { name: hunter })).getByRole("button", { name: shot }),
+    ).toHaveAttribute("aria-pressed", "true");
+  },
+);

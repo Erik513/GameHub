@@ -103,6 +103,15 @@ Reihenfolge-Begründung: 1 und 2 sind unabhängig vom Spielablauf und bringen di
 9. **Heller Tag (4):** Empfehlung: hell nur in der Spielansicht, eigene Farbwerte.
 10. **Infotexte (2):** Empfehlung: ich entwerfe, du prüfst in einem Durchgang.
 
+## 6a. Umsetzungsentscheidungen Schritt 2 (von Claude Code getroffen, bitte prüfen)
+
+1. **Leeren einer Variante:** Ein zweiter Tipp auf die gewählte Variante lässt die Rolle weg (keine Rolle = nichts gewählt).
+2. **Sperrgründe:** "zu wenige Spieler", "kein Platz frei" und "nicht zusammen" (zum Beispiel Magier mit Hexe bei elf bis dreizehn Spielern); Kombinationen, die mit einer anderen erlaubten Wolfszahl gehen (Hexe und Magier ab 14), bleiben wählbar und lösen bei falscher Wolfszahl einen Konflikt mit Vorschlagsknopf aus.
+3. **Spielerzahl:** Die Konfiguration verlangt 6 bis 20 Spieler neben dem Erzähler und folgt der Spielerzahl der Aufstellung; ein bereits gewählter Wert wird bei Änderungen nie still geändert.
+6. **Immer spielbar (Wunsch des Auftraggebers):** Rollen und Wolfszahlen, die die Aufstellung unspielbar machen würden, sind gesperrt statt als Konflikt wählbar; nur eine durch geänderte Spielerzahl ungültig gewordene Wahl wird als Konflikt mit Vorschlagsknopf angezeigt.
+4. **Umschalter fest/variabel:** oben vorhanden; "Variable Rollen" zeigt nur den Hinweis, dass die Konfiguration später folgt.
+5. **Trunkenbold** ist zusätzlich ab zwei Werwölfen wählbar (folgt der Logik); **Hammer** des Bürgermeisters ab zehn Spielern.
+
 ## 7. Nächste Schritte nach deiner Rückmeldung
 
 1. Entscheidungen 1–10 (die Mehrheit ist mit „ja, Empfehlung“ erledigt).

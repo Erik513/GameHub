@@ -5,7 +5,7 @@ import {
   werewolfLineupIssues,
   type WerewolfLineup as Lineup,
 } from "../../business/games/werewolf/lineup";
-import { Toast } from "../components";
+import { Button, Icon, Toast } from "../components";
 import { LineupScreen, SetupTabs } from "../game-kit";
 import { PlayersTab } from "./PlayersTab";
 import { SeatsTab } from "./SeatsTab";
@@ -13,6 +13,7 @@ import { SeatsTab } from "./SeatsTab";
 interface WerewolfLineupProps {
   readonly lineup: Lineup;
   readonly onChange: (lineup: Lineup) => void;
+  readonly onOpenConfiguration: () => void;
 }
 
 /**
@@ -20,7 +21,7 @@ interface WerewolfLineupProps {
  * and "Seats") and the start button at the bottom. The start can always be pressed; when something is missing (players,
  * a narrator, six to twenty players besides the narrator) a notification above the bar says what.
  */
-export function WerewolfLineup({ lineup, onChange }: WerewolfLineupProps) {
+export function WerewolfLineup({ lineup, onChange, onOpenConfiguration }: WerewolfLineupProps) {
   const { t } = useTranslation();
   const [notice, setNotice] = useState<{ readonly id: number; readonly text: string }>();
   const issues = werewolfLineupIssues(lineup);
@@ -53,6 +54,17 @@ export function WerewolfLineup({ lineup, onChange }: WerewolfLineupProps) {
         )
       }
       onSubmit={submit}
+      sideAction={
+        <Button
+          aria-label={t("werewolfConfig.open")}
+          className="kit-lineup__settings"
+          onClick={onOpenConfiguration}
+          title={t("werewolfConfig.open")}
+          variant="secondary"
+        >
+          <Icon name="sliders" />
+        </Button>
+      }
       startLabel={t("werewolfLineup.start")}
     >
       <SetupTabs
