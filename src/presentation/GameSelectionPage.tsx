@@ -59,6 +59,7 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
               <Card
                 className="game-card"
                 data-accent={game.accent}
+                data-locked={!openable || undefined}
                 data-playable={game.availability === "available" || undefined}
               >
                 <div className="game-card__body">

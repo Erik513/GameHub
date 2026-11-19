@@ -4,6 +4,7 @@ import { maxPlayerNameLength } from "../../business/shared/playerRoster";
 import { Button, ConfirmButton, Dialog, Icon } from "../components";
 import { GroupButtons } from "./GroupBox";
 import { usePlayerRoster } from "./PlayerRosterContext";
+import { useScrollbarWidth } from "./useScrollbarWidth";
 import { useWholeRows } from "./useWholeRows";
 
 type Problem = "empty" | "invalid" | "duplicate" | "full";
@@ -12,19 +13,22 @@ type Problem = "empty" | "invalid" | "duplicate" | "full";
 export const rosterRows = 8;
 
 /**
- * A field with its add button and the line for a problem below it (the line is always there, so the
- * window keeps its size when a problem is shown).
+ * A field with its add button and the line for a problem (the line is always there, so the window keeps
+ * its size when a problem is shown). The line is above the field, or below it with `problemBelow`.
  */
 function NameForm({
   label,
   onSubmit,
   placeholder,
+  problemBelow = false,
   problemText,
 }: {
   readonly label: string;
   /** Adds the name; returns the problem, or nothing when it worked. */
   readonly onSubmit: (name: string) => Problem | undefined;
   readonly placeholder: string;
+  /** Puts the line for a problem below the field instead of above it. */
+  readonly problemBelow?: boolean;
   /** The text of a problem. */
   readonly problemText: (problem: Problem) => string;
 }) {
@@ -39,33 +43,45 @@ function NameForm({
     if (!result) setName("");
   }
 
-  return (
+  const line = (
+    <p className="kit-roster__problem" {...(problem ? { role: "alert" } : {})}>
+      {problem ? problemText(problem) : " "}
+    </p>
+  );
+  const form = (
+    <form className="kit-roster__add" noValidate onSubmit={submit}>
+      <input
+        aria-invalid={problem ? true : undefined}
+        aria-label={label}
+        autoCapitalize="words"
+        autoComplete="off"
+        className="field__input"
+        maxLength={maxPlayerNameLength}
+        onChange={(event) => setName(event.target.value)}
+        placeholder={placeholder}
+        value={name}
+      />
+      <Button
+        aria-label={t("kitRoster.add")}
+        className="kit-roster__plus"
+        title={t("kitRoster.add")}
+        type="submit"
+        variant="success"
+      >
+        <Icon name="plus" />
+      </Button>
+    </form>
+  );
+
+  return problemBelow ? (
     <>
-      <p className="kit-roster__problem" {...(problem ? { role: "alert" } : {})}>
-        {problem ? problemText(problem) : " "}
-      </p>
-      <form className="kit-roster__add" noValidate onSubmit={submit}>
-        <input
-          aria-invalid={problem ? true : undefined}
-          aria-label={label}
-          autoCapitalize="words"
-          autoComplete="off"
-          className="field__input"
-          maxLength={maxPlayerNameLength}
-          onChange={(event) => setName(event.target.value)}
-          placeholder={placeholder}
-          value={name}
-        />
-        <Button
-          aria-label={t("kitRoster.add")}
-          className="kit-roster__plus"
-          title={t("kitRoster.add")}
-          type="submit"
-          variant="success"
-        >
-          <Icon name="plus" />
-        </Button>
-      </form>
+      {form}
+      {line}
+    </>
+  ) : (
+    <>
+      {line}
+      {form}
     </>
   );
 }
@@ -91,6 +107,8 @@ export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; ope
     rosterRows,
     openGroup ?? "",
   );
+
+  const scrollbarWidth = useScrollbarWidth(listRef, open, openGroup ?? "");
 
   if (!roster) return null;
 
@@ -135,6 +153,17 @@ export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; ope
                 <Icon name="trash" />
               </ConfirmButton>
             </div>
+            {/* The player is added here, right below the way back (the list below scrolls). */}
+            <NameForm
+              label={t("kitRoster.nameLabel")}
+              onSubmit={(name) => {
+                const result = roster.addPlayerToGroup(shownGroup.name, name);
+                return result.ok ? undefined : result.reason;
+              }}
+              placeholder={t("kitRoster.namePlaceholder")}
+              problemBelow
+              problemText={(problem) => t(`kitRoster.problems.${problem}`)}
+            />
           </>
         ) : (
           <h3 className="kit-roster__heading">{t("kitRoster.groupsTitle")}</h3>
@@ -142,7 +171,16 @@ export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; ope
         <div
           className="kit-roster__scroll"
           ref={listRef}
-          {...(listHeight === undefined ? {} : { style: { height: listHeight } })}
+          {...(listHeight === undefined && scrollbarWidth === undefined
+            ? {}
+            : {
+                style: {
+                  ...(listHeight === undefined ? {} : { height: listHeight }),
+                  ...(scrollbarWidth === undefined
+                    ? {}
+                    : { "--roster-scrollbar": `${scrollbarWidth}px` }),
+                },
+              })}
         >
           {shownGroup ? (
             shownGroup.members.length === 0 ? (
@@ -183,18 +221,8 @@ export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; ope
             />
           )}
         </div>
-        {/* The bottom row: add a player to the group, or add a group. */}
-        {shownGroup ? (
-          <NameForm
-            label={t("kitRoster.nameLabel")}
-            onSubmit={(name) => {
-              const result = roster.addPlayerToGroup(shownGroup.name, name);
-              return result.ok ? undefined : result.reason;
-            }}
-            placeholder={t("kitRoster.namePlaceholder")}
-            problemText={(problem) => t(`kitRoster.problems.${problem}`)}
-          />
-        ) : naming ? (
+        {/* The bottom row of the list of groups: add a group. */}
+        {shownGroup ? null : naming ? (
           <NameForm
             label={t("kitRoster.groupNameLabel")}
             onSubmit={(name) => {

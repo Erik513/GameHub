@@ -225,6 +225,17 @@ h1 {
   background: color-mix(in srgb, var(--game-accent) 9%, var(--color-surface));
 }
 
+/* A game that cannot be opened (planned, or in development in the published app) is darker and dashed. */
+.game-card[data-locked="true"] {
+  border-style: dashed;
+  background: color-mix(in srgb, var(--color-canvas) 60%, var(--color-surface));
+}
+
+.game-card[data-locked="true"] .game-card__body h2,
+.game-card[data-locked="true"] .game-card__body p {
+  opacity: 0.55;
+}
+
 .game-card__body {
   display: contents;
 }
@@ -793,11 +804,21 @@ h1 {
  * (The desktop layout is part of the task for the PC layout.)
  */
 @media (max-width: 47.99rem) {
+  /* Fixed to the visible screen, the page does not scroll (see the setup screens in kit-setup.css). */
+  html:has(.game-library) {
+    overflow: hidden;
+  }
+
+  body:has(.game-library) {
+    min-height: 0;
+  }
+
   .app-shell:has(.game-library) {
+    position: fixed;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    height: 100dvh;
+    min-height: 0;
     overflow: hidden;
   }
 
@@ -817,10 +838,13 @@ h1 {
     min-height: 0;
   }
 
+  /* The scrollbar sits at the edge of the screen, in the margin beside the cards, not on top of them. */
   .game-library .game-grid {
     flex: 1;
     align-content: start;
     min-height: 0;
+    margin-inline-end: calc(-1 * (var(--space-4) + var(--safe-right)));
+    padding-inline-end: calc(var(--space-4) + var(--safe-right));
     overflow-y: auto;
     overscroll-behavior: contain;
   }

@@ -7,6 +7,7 @@ import { ActionRow } from "./ActionRow";
 import { GroupButtons, PlayerChecklist } from "./GroupBox";
 import { usePlayerRoster } from "./PlayerRosterContext";
 import { PlayerRosterDialog, rosterRows } from "./PlayerRosterButton";
+import { useScrollbarWidth } from "./useScrollbarWidth";
 import { useWholeRows } from "./useWholeRows";
 
 interface RosterPickerProps {
@@ -88,6 +89,8 @@ function PickerBody({
   const listRef = useRef<HTMLDivElement>(null);
   const listHeight = useWholeRows(listRef, players.length, true, rosterRows, openGroup ?? "");
 
+  const scrollbarWidth = useScrollbarWidth(listRef, true, openGroup ?? "");
+
   if (players.length === 0) return null;
 
   const toggle = (name: string, checked: boolean) => {
@@ -138,7 +141,16 @@ function PickerBody({
       <div
         className="kit-roster__scroll"
         ref={listRef}
-        {...(listHeight === undefined ? {} : { style: { height: listHeight } })}
+        {...(listHeight === undefined && scrollbarWidth === undefined
+          ? {}
+          : {
+              style: {
+                ...(listHeight === undefined ? {} : { height: listHeight }),
+                ...(scrollbarWidth === undefined
+                  ? {}
+                  : { "--roster-scrollbar": `${scrollbarWidth}px` }),
+              },
+            })}
       >
         {shown ? (
           shown.members.length === 0 ? (

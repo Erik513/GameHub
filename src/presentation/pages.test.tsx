@@ -77,6 +77,10 @@ describe("GameSelectionPage", () => {
       const buttons = screen.getAllByRole("button", { name: "Play" });
       expect(buttons[0]).toBeEnabled();
       for (const closed of buttons.slice(1)) expect(closed).toBeDisabled();
+      // Games that cannot be opened are darker; the finished game is not.
+      const cards = screen.getAllByRole("heading", { level: 2 }).map((h) => h.closest("section")!);
+      expect(cards[0]).not.toHaveAttribute("data-locked");
+      for (const card of cards.slice(1)) expect(card).toHaveAttribute("data-locked", "true");
     } finally {
       vi.unstubAllEnvs();
     }

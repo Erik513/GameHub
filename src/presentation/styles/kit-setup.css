@@ -285,12 +285,15 @@
    players or as many as fit on the screen, so no player is ever cut off. */
 .kit-roster__scroll {
   height: calc(8 * var(--roster-button) + 7 * var(--space-2));
-  /* The scrollbar has a fixed width and its place is always reserved. It sits in the margin of the
-     window, right of the delete buttons: the buttons end at the edge of the add button and the
-     scrollbar keeps a gap to them. */
-  margin-right: calc((var(--roster-scrollbar) + var(--roster-gap)) * -1);
-  padding-right: var(--roster-gap);
+  /* The place of the scrollbar is always reserved (`--roster-scrollbar` is its measured width, 0 where
+     it lies over the content). It sits in the margin of the window, right of the delete buttons: the
+     buttons end at the edge of the add button and the scrollbar keeps a gap to them. The gap shrinks when
+     a wide bar would otherwise stick out of the window (it has 1rem of room at the right). */
+  --roster-gap-fit: min(var(--roster-gap), max(0px, calc(1rem - var(--roster-scrollbar))));
+  margin-right: calc((var(--roster-scrollbar) + var(--roster-gap-fit)) * -1);
+  padding-right: var(--roster-gap-fit);
   overflow-y: auto;
+  scrollbar-width: thin;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
   /* Scrolling stops at whole rows. */
@@ -746,9 +749,23 @@
  * One page: the setup screens never scroll as a page. The tab bar and the start button stay in
  * place, the content of the chosen tab scrolls inside its box. All tabs have the same height.
  */
+/*
+ * The shell is fixed to the visible screen (not sized with vh/dvh, which differ from the visible area
+ * when the browser bars are shown or the browser does not know dvh), and the page itself cannot scroll.
+ * So the header at the top and the buttons at the bottom are always in view.
+ */
+html:has(.kit-onepage) {
+  overflow: hidden;
+}
+
+body:has(.kit-onepage) {
+  min-height: 0;
+}
+
 .app-shell:has(.kit-onepage) {
-  height: 100vh;
-  height: 100dvh;
+  position: fixed;
+  inset: 0;
+  min-height: 0;
   overflow: hidden;
 }
 

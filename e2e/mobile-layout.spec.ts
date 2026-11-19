@@ -77,6 +77,24 @@ async function audit(page: Page, screen: string): Promise<string[]> {
       }
     }
 
+    // A one-page screen (and the game selection) is as high as the visible screen: the page cannot scroll,
+    // so the header stays at the top and the buttons stay at the bottom.
+    const shell = document.querySelector<HTMLElement>(".app-shell");
+    if (shell && document.querySelector(".kit-onepage, .game-library")) {
+      window.scrollTo(0, 1000);
+      const header = document.querySelector(".site-header")?.getBoundingClientRect();
+      if (window.scrollY > 0 || (header && header.top < -0.5)) {
+        found.push({ kind: "the page scrolls", detail: `scrollY ${window.scrollY}` });
+      }
+      window.scrollTo(0, 0);
+      if (shell.scrollHeight > shell.clientHeight + 1) {
+        found.push({
+          kind: "the content is taller than the screen",
+          detail: `${shell.scrollHeight} > ${shell.clientHeight}`,
+        });
+      }
+    }
+
     // A card with its forbidden words is never covered by the buttons and never cut off.
     const turnCard = document.querySelector(".taboo-round__card");
     if (turnCard && turnCard.scrollHeight > turnCard.clientHeight + 1) {

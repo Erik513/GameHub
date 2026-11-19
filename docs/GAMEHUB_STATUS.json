@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-19T00:11:53.088Z",
+    "updatedAt": "2026-11-19T00:39:11.416Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -1759,6 +1759,14 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-19",
+      "summary": "Spielerliste: Papierkörbe aller Zeilen auf einer Linie (Scrollleistenbreite wird gemessen), „Neuer Spieler“ steht in einer Gruppe oben unter Zurück."
+    },
+    {
+      "date": "2026-11-19",
+      "summary": "Handy: Seite an den sichtbaren Bildschirm geheftet (kein Seitenscrollen mehr), Scrollleiste der Spielliste im Rand, gesperrte Spiele dunkler; neues Logo in Auswahl."
+    },
     {
       "date": "2026-11-19",
       "summary": "CI: Die Zurück-Taste-Tests warten auf den Schutzeintrag im Verlauf (Wettlauf auf dem langsameren Linux-Rechner behoben)."
