@@ -1,0 +1,145 @@
+import { expect, it } from "vitest";
+import {
+  createWerewolf,
+  transitionWerewolf,
+  wakingPlayers,
+  werewolfAnnouncement,
+  werewolfDrunkReveal,
+  type WerewolfEvent,
+  type WerewolfSettings,
+  type WerewolfSpecialRole,
+  type WerewolfState,
+} from "./stateMachine";
+
+const names = Array.from({ length: 12 }, (_, index) => `P${index + 1}`);
+const play = (state: WerewolfState, ...events: WerewolfEvent[]) =>
+  events.reduce(transitionWerewolf, state);
+
+function deal(extraRoles: WerewolfSpecialRole[] = [], settings: Partial<WerewolfSettings> = {}) {
+  let draws = 0;
+  const setup = createWerewolf(
+    names.join(","),
+    "Narrator",
+    () => (++draws < names.length ? 0.99 : 4 / names.length),
+    ["magician", ...extraRoles],
+    settings,
+  )!;
+  return play(setup, ...names.map((player) => ({ type: "roleSeen", player }) as const));
+}
+
+const vision = (state: WerewolfState) =>
+  play(
+    state,
+    { type: "inspect", night: state.night, target: "P1" },
+    { type: "closeVision", night: state.night },
+  );
+const firstNight = (state = deal()) => vision(play(state, { type: "wolvesReady", night: 1 }));
+const afterMorning = (state: WerewolfState) =>
+  play(
+    state,
+    { type: "announceMorning", night: state.night },
+    { type: "endDay", night: state.night },
+  );
+const attack = (state: WerewolfState, target: string | null) =>
+  vision(play(state, { type: "attack", night: state.night, target }));
+const cast = (state: WerewolfState, heal = false, ...kill: string[]) =>
+  play(state, { type: "castSpells", night: state.night, heal, kill });
+
+it("allows the magician from eleven players and excludes the witch", () => {
+  const seats = names.slice(0, 11);
+  expect(createWerewolf(seats.slice(1).join(","), "Narrator", () => 0.99, ["magician"])).toBeNull();
+  expect(createWerewolf(seats.join(","), "Narrator", () => 0.99, ["magician", "witch"])).toBeNull();
+  const setup = createWerewolf(seats.join(","), "Narrator", () => 0.99, ["magician"]);
+  expect(setup).not.toBeNull();
+  if (!setup) throw new Error("Expected valid eleven-player magician setup");
+  const state = firstNight(
+    play(setup, ...seats.map((player) => ({ type: "roleSeen", player }) as const)),
+  );
+  expect(wakingPlayers(state)).toEqual(["P4"]);
+  expect(state).toMatchObject({
+    status: "magician",
+    spellsRemaining: 2,
+    victim: null,
+    settings: { wolfCount: 2 },
+  });
+});
+
+it("can spend both spells on distinct living targets including the magician", () => {
+  const state = firstNight();
+  expect(cast(state, true)).toBe(state);
+  expect(cast(state, false, "P1", "P1")).toBe(state);
+  expect(cast(state, false, "P1", "Nobody")).toBe(state);
+  expect(cast(state, false, "P1", "P2", "P3")).toBe(state);
+  const resolved = cast(state, false, "P5", "P1");
+  expect(resolved.spellsRemaining).toBe(0);
+  expect(werewolfAnnouncement(resolved)).toEqual([
+    { name: "P1", role: "wolf" },
+    { name: "P5", role: "magician" },
+  ]);
+});
+
+it("can heal the magician and a different wolf victim over two nights", () => {
+  const secondNight = afterMorning(cast(firstNight()));
+  const danger = attack(secondNight, "P5");
+  expect(danger).toMatchObject({ victim: { name: "P5" } });
+  const healed = cast(danger, true);
+  expect(werewolfAnnouncement(healed)).toEqual([]);
+  const thirdNight = afterMorning(healed);
+  const otherVictim = attack(thirdNight, "P6");
+  expect(cast(otherVictim, true, "P1")).toBe(otherVictim);
+  const secondHeal = cast(otherVictim, true);
+  expect(werewolfAnnouncement(secondHeal)).toEqual([]);
+  const spent = attack(afterMorning(secondHeal), "P7");
+  expect(cast(spent, true)).toBe(spent);
+  expect(cast(spent, false, "P1")).toBe(spent);
+  expect(cast(spent).status).toBe("morning");
+});
+
+it("can target the wolf victim and resolves the death only once", () => {
+  const danger = attack(afterMorning(cast(firstNight())), "P6");
+  for (const heal of [false, true]) {
+    const resolved = cast(danger, heal, "P6");
+    expect(werewolfAnnouncement(resolved)).toEqual([{ name: "P6", role: "villager" }]);
+    expect(resolved.spellsRemaining).toBe(heal ? 0 : 1);
+  }
+});
+
+it("can kill the tough guy immediately or heal only his fresh wolf attack", () => {
+  const danger = attack(afterMorning(cast(firstNight(deal(["toughGuy"])))), "P6");
+  expect(werewolfAnnouncement(cast(danger, false, "P6"))).toEqual([
+    { name: "P6", role: "toughGuy" },
+  ]);
+  const pending = cast(danger);
+  expect(werewolfAnnouncement(pending)).toEqual([]);
+  const late = attack(afterMorning(pending), null);
+  expect(cast(late, true)).toBe(late);
+  expect(werewolfAnnouncement(cast(late))).toEqual([{ name: "P6", role: "toughGuy" }]);
+});
+
+it("can heal the night guest and cast a death spell on the host", () => {
+  const first = firstNight(
+    play(deal(["nightGuest"]), {
+      type: "stayWith",
+      night: 1,
+      target: "P7",
+    }),
+  );
+  const wolves = play(afterMorning(cast(first)), { type: "stayWith", night: 2, target: "P8" });
+  const danger = attack(wolves, "P8");
+  expect(danger).toMatchObject({ victim: { name: "P6" } });
+  const resolved = cast(danger, true, "P8");
+  expect(werewolfAnnouncement(resolved)).toEqual([{ name: "P8", role: "villager" }]);
+  expect(resolved.spellsRemaining).toBe(0);
+});
+
+it("wakes a masked magician only after the third-night reveal", () => {
+  const first = firstNight(deal([], { drunk: true }));
+  expect(first.status).toBe("morning");
+  const second = attack(afterMorning(first), null);
+  expect(second.status).toBe("morning");
+  const reveal = afterMorning(second);
+  expect(werewolfDrunkReveal(reveal)).toEqual({ name: "P5", role: "magician" });
+  const third = attack(play(reveal, { type: "drunkReady", night: 3 }), null);
+  expect(wakingPlayers(third)).toEqual(["P5"]);
+  expect(third.spellsRemaining).toBe(2);
+});

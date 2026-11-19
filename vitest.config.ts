@@ -1,5 +1,10 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
+
+const werewolfSimulationTests = [
+  "src/business/games/werewolf/balance.test.ts",
+  "src/business/games/werewolf/simulation.test.ts",
+];
 
 export default defineConfig({
   plugins: [react()],
@@ -57,6 +62,12 @@ export default defineConfig({
     },
     environment: "jsdom",
     include: ["src/**/*.test.{ts,tsx}"],
+    // The Werewolf simulations run for more than ten minutes. They are not part of the normal run (and
+    // not of the CI); `pnpm test:werewolf-simulation` runs them on demand.
+    exclude: [
+      ...configDefaults.exclude,
+      ...(process.env.WEREWOLF_SIMULATION ? [] : werewolfSimulationTests),
+    ],
     restoreMocks: true,
     // Typing tests of the card forms take about two seconds alone and need more under parallel load.
     testTimeout: 20000,

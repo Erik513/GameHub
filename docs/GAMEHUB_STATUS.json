@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-19T15:32:16.705Z",
+    "updatedAt": "2026-11-19T15:34:25.354Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 213,
-      "totalTasks": 277,
-      "percent": 76.9
+      "completedTasks": 215,
+      "totalTasks": 279,
+      "percent": 77.1
     }
   },
   "environment": {
@@ -1252,6 +1252,18 @@
           "id": "We-01-45",
           "title": "Ganz zuletzt: optionale Spielverlaufsansicht nach Partieende prüfen",
           "status": "planned"
+        },
+        {
+          "id": "We-01-46",
+          "title": "Oberflächen-Grundlage: Logik in den Spiel-Branch übernehmen, Simulationstests aus dem Standardlauf nehmen",
+          "status": "done",
+          "validation": "1148 Tests bestanden (1 übersprungen), Coverage-Schwellen erfüllt, tsc, eslint, Format und Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-47",
+          "title": "Planung und Spiellogik prüfen, Umsetzungsplan in Schritten und Entscheidungen festhalten",
+          "status": "done",
+          "validation": "Zufallsprüfstand mit 2559 Partien ohne Fehler; Entscheidungen des Auftraggebers vom 19.11.2026 dokumentiert in GAMEHUB_WERWOLF_UI_PLAN.md."
         }
       ]
     },
@@ -1773,6 +1785,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-19",
+      "summary": "Werwolf: Planung und Logik geprüft (2559 Zufallspartien ohne Fehler), Umsetzungsplan in neun Schritten mit allen Entscheidungen des Auftraggebers, Grundlage im Branch game/werewolf-ui (Logik übernommen, Simulationstests aus dem Standardlauf)."
+    },
     {
       "date": "2026-11-19",
       "summary": "Anleitung zur Installation als App in den Einstellungen (Android, iPhone/iPad, Computer; automatischer Knopf, wo der Browser es anbietet); Prüfung der gleichen Größen auf die Linux-Schrift abgestimmt."

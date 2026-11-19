@@ -23,6 +23,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"e2e/**/*.{ts,tsx}\" \"scripts/**/*.mjs\" \".github/workflows/*.{yml,yaml}\" \"*.{json,js,ts,yaml}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"e2e/**/*.{ts,tsx}\" \"scripts/**/*.mjs\" \".github/workflows/*.{yml,yaml}\" \"*.{json,js,ts,yaml}\"",
     "test": "vitest run",
+    "test:werewolf-simulation": "node scripts/run-werewolf-simulation.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
