@@ -185,8 +185,6 @@ export function WerewolfConfiguration({
         <p className="ww-hint">{t("werewolfConfig.variableLater")}</p>
       ) : (
         <>
-          <p className="ww-hint">{t("werewolfConfig.forPlayers", { count: players })}</p>
-
           <section className="ww-box ww-core">
             <h3 className="ww-box__title">{t("werewolfConfig.coreHeading")}</h3>
             <div className="ww-core__row">
@@ -240,9 +238,13 @@ export function WerewolfConfiguration({
                   <h4>{t("werewolfConfig.villagers")}</h4>
                   <ConfigInfo id="villagers" name={t("werewolfConfig.villagers")} />
                 </div>
-                <strong className="ww-villagers__number">
-                  {view.villagers ?? t("werewolfConfig.villagersNone")}
-                </strong>
+                {/* The villagers are a result, not a choice: a box with the number and the number of players. */}
+                <div className="ww-villagers__box">
+                  <strong className="ww-villagers__number">
+                    {view.villagers ?? t("werewolfConfig.villagersNone")}
+                  </strong>
+                  <small>{t("werewolfConfig.villagersOf", { count: players })}</small>
+                </div>
               </div>
             </div>
             <div className="ww-row">
