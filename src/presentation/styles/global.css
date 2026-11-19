@@ -103,6 +103,13 @@ textarea {
   text-decoration: none;
 }
 
+/* The logo of GameHub stands left of its name. */
+.brand-mark {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
 /* The name of the app or game at the left; a name that is too long is shortened. */
 .site-header .brand {
   min-width: 0;

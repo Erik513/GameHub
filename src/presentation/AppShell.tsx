@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
-import { Button, ConfirmButton, Dialog, Icon } from "./components";
+import { BrandMark, Button, ConfirmButton, Dialog, Icon } from "./components";
 import {
   GameChromeContext,
   GameRulesContext,
@@ -94,6 +94,7 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
           </p>
         ) : (
           <a className="brand" href="#/" aria-label="GameHub">
+            <BrandMark />
             <span>GameHub</span>
           </a>
         )}
