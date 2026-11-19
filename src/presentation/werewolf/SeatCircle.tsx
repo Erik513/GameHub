@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
+import { narratorPosition, seatPosition } from "./seatPosition";
 
 /** How long a tile is held before the full name shows. */
 const holdMs = 250;
-/** The tiles sit on a circle that is this share (in percent) of the width, from the middle. */
-const ringRadius = 38;
-
 function initial(name: string): string {
   const [first = ""] = Array.from(name.trim());
   return first.toLocaleUpperCase();
@@ -80,9 +78,6 @@ export function SeatCircle({ narrator, seats }: SeatCircleProps) {
         style={{ "--seat-count": seats.length + 1 } as CSSProperties}
       >
         {seats.map((name, index) => {
-          // The narrator is the place at the bottom; seat 1 is right next to it on the left, and the
-          // angle grows clockwise on the screen from there.
-          const angle = Math.PI / 2 + ((index + 1) * 2 * Math.PI) / (seats.length + 1);
           return (
             <HoldTile
               held={held === name}
@@ -90,10 +85,7 @@ export function SeatCircle({ narrator, seats }: SeatCircleProps) {
               letter={initial(name)}
               name={name}
               onHold={setHeld}
-              style={{
-                left: `${50 + ringRadius * Math.cos(angle)}%`,
-                top: `${50 + ringRadius * Math.sin(angle)}%`,
-              }}
+              style={seatPosition(index, seats.length)}
             />
           );
         })}
@@ -103,7 +95,7 @@ export function SeatCircle({ narrator, seats }: SeatCircleProps) {
           held={narrator !== null && held === narrator}
           letter={narrator === null ? "?" : initial(narrator)}
           onHold={setHeld}
-          style={{ left: "50%", top: `${50 + ringRadius}%` }}
+          style={narratorPosition}
           {...(narrator === null ? {} : { name: narrator })}
         />
       </div>

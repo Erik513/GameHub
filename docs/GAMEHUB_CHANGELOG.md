@@ -10,6 +10,7 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Zweite Korrekturrunde: Erzählerfeld und -knopf sind jetzt auch gleich hoch (ein Außenabstand der Reiterfläche verschob den Knopf); "Sitzkreis anzeigen" bleibt oben fest (nur die Namensliste scrollt, über den Baustein `TabPane`); der Hinweistext steht in einem Info-Fenster hinter einem i-Knopf rechts neben "Sitzkreis anzeigen".
 - Dritte Korrekturrunde: Die großen Fenster "Spielerliste" und "Spieler wählen" haben jetzt dieselbe feste Größe (die Liste füllt sie mit ganzen Zeilen); der Sitzplatzreiter zeigt seinen Inhalt erst mit Spielern und Erzähler, sonst den Hinweis "Füge zuerst Spieler hinzu und lege einen Erzähler fest.". Geprüft: Unit-Tests, tsc, eslint, 68 e2e-Tests.
 - Meldungen (Toasts) stehen in allen Spielen direkt über der Startleiste statt am Bildschirmrand, damit sie den Startknopf nicht verdecken (Startleiste meldet ihre Höhe über `--toast-lift`). Werwolf: "Spiel starten" ist immer drückbar; fehlen Spieler oder Erzähler, weist eine Meldung darauf hin.
+- Das Info-Fenster der Sitzplätze zeigt zusätzlich ein Beispiel mit Zahlen (sechs Plätze und der Erzähler), damit sofort klar ist, wo Sitz 1 liegt und wohin die Zahlen laufen.
 - Kopfzeile auf dem Handy: Knöpfe ohne Symbol und etwas kleinere Titelschrift, damit längere Spieltitel wie "Werwolf" nicht abgeschnitten werden.
 - Geprüft: neue Tests für Logik und Oberfläche (de/en), Typen, Lint, Übersetzungsparität.
 

@@ -22,6 +22,7 @@ export const werewolfTexts = {
     seatsEmpty: "Add players first and choose a narrator.",
     narratorSeat: "Narrator",
     holdHint: "Hold a tile to see the full name.",
+    exampleCaption: "Example with six players; N is the narrator.",
     seatsInfoLabel: "Info about the seats",
     seatsInfoTitle: "Seat order",
     circleOpen: "Show seat circle",

@@ -159,6 +159,10 @@ it.each([
     expect(screen.queryByText(text, { exact: false })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: label }));
     expect(await screen.findByText(text, { exact: false })).toBeInTheDocument();
+    // The example circle shows the numbers of six seats and the narrator.
+    const example = document.querySelector(".ww-example");
+    expect(example?.querySelectorAll(".ww-tile")).toHaveLength(7);
+    expect(example?.textContent).toContain("123456");
   },
 );
 

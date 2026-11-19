@@ -4,6 +4,7 @@ import type { WerewolfLineup } from "../../business/games/werewolf/lineup";
 import { Button, Dialog } from "../components";
 import { InfoButton, OrderList, TabPane } from "../game-kit";
 import { SeatCircle } from "./SeatCircle";
+import { SeatExample } from "./SeatExample";
 
 interface SeatsTabProps {
   readonly lineup: WerewolfLineup;
@@ -33,7 +34,12 @@ export function SeatsTab({ lineup, onMove }: SeatsTabProps) {
           <InfoButton
             closeLabel={t("settings.close")}
             label={t("werewolfLineup.seatsInfoLabel")}
-            text={t("werewolfLineup.seatsHint")}
+            text={
+              <>
+                <p>{t("werewolfLineup.seatsHint")}</p>
+                <SeatExample />
+              </>
+            }
             title={t("werewolfLineup.seatsInfoTitle")}
           />
         </div>

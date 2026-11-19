@@ -23,6 +23,7 @@ export const werewolfTexts = {
     seatsEmpty: "Füge zuerst Spieler hinzu und lege einen Erzähler fest.",
     narratorSeat: "Erzähler",
     holdHint: "Halte eine Kachel gedrückt, um den ganzen Namen zu sehen.",
+    exampleCaption: "Beispiel mit sechs Spielern; E ist der Erzähler.",
     seatsInfoLabel: "Info zu den Sitzplätzen",
     seatsInfoTitle: "Sitzreihenfolge",
     circleOpen: "Sitzkreis anzeigen",
