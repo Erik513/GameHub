@@ -45,12 +45,14 @@ const names = {
     back: /^Back to the groups/,
     close: "Close",
     group: /^Family/,
+    install: "Install app",
     playerList: "Player list",
   },
   de: {
     back: /^Zurück zu den Gruppen/,
     close: "Schließen",
     group: /^Family/,
+    install: "App installieren",
     playerList: "Spielerliste",
   },
 } as const;
@@ -81,7 +83,14 @@ async function visit(page: Page, language: "en" | "de"): Promise<Map<string, Siz
   }
   await take("game selection");
 
-  // The player list: the groups, a group, and the settings window.
+  // The settings of the app with the guide to install it as an app.
+  await page.getByRole("button", { name: t.settings, exact: true }).click();
+  await take("app settings");
+  await page.getByRole("button", { name: n.install, exact: true }).click();
+  await take("install guide");
+  await page.keyboard.press("Escape");
+
+  // The player list: the groups and a group.
   await page.getByRole("button", { name: n.playerList, exact: true }).click();
   await take("player list: groups");
   await page.getByRole("button", { name: n.group }).click();

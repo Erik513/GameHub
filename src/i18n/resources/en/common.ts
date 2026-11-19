@@ -35,6 +35,29 @@ export const common = {
     description: "Choose the language of the interface.",
     close: "Close",
   },
+  install: {
+    open: "Install app",
+    title: "Install app",
+    intro:
+      "With the app you start GameHub right from your home screen, even offline. Choose your device:",
+    tabAndroid: "Android",
+    tabIos: "iPhone / iPad",
+    tabDesktop: "Computer",
+    androidOpen: "Open this page in Chrome.",
+    androidMenu: "Tap the menu",
+    androidMenuEnd: "(three dots) at the top right.",
+    androidInstall: 'Tap "Install app".',
+    or: "or",
+    auto: "Install automatically",
+    unavailable:
+      "Your browser does not offer the installation right now. Use the steps above or open this page in Chrome.",
+    iosOpen: "Open this page in Safari.",
+    iosShare: 'Tap "Share"',
+    iosAdd: 'Tap "Add to Home Screen".',
+    iosTip: "Only as an app on the home screen your data is kept for good.",
+    desktopInstall: "In Chrome or Edge, click the install icon in the address bar.",
+    tip: 'Tip: from WhatsApp first choose "Open in browser".',
+  },
   feedback: {
     emptyGames: {
       title: "No games available",

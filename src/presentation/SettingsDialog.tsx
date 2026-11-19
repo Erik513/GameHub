@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
 import { Dialog } from "./components";
 import { ChoiceGroup } from "./game-kit";
+import { InstallGuide } from "./install/InstallGuide";
 
 interface SettingsDialogProps {
   onClose: () => void;
@@ -42,6 +43,7 @@ export function SettingsDialog({ onClose, onLanguageChange, open }: SettingsDial
           options={languageOptions}
           value={selectedLanguage}
         />
+        <InstallGuide />
       </div>
     </Dialog>
   );

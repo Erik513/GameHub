@@ -35,6 +35,29 @@ export const common = {
     description: "Wähle die Sprache der Oberfläche.",
     close: "Schließen",
   },
+  install: {
+    open: "App installieren",
+    title: "App installieren",
+    intro:
+      "Mit der App startest du GameHub direkt vom Startbildschirm, auch offline. Wähle dein Gerät:",
+    tabAndroid: "Android",
+    tabIos: "iPhone / iPad",
+    tabDesktop: "Computer",
+    androidOpen: "Öffne die Seite in Chrome.",
+    androidMenu: "Tippe oben rechts auf das Menü",
+    androidMenuEnd: "(drei Punkte).",
+    androidInstall: "Tippe auf „App installieren“.",
+    or: "oder",
+    auto: "Automatisch installieren",
+    unavailable:
+      "Dein Browser bietet die Installation gerade nicht an. Nutze die Schritte oben oder öffne die Seite in Chrome.",
+    iosOpen: "Öffne die Seite in Safari.",
+    iosShare: "Tippe auf „Teilen“",
+    iosAdd: "Tippe auf „Zum Home-Bildschirm“.",
+    iosTip: "Nur als App auf dem Home-Bildschirm bleiben deine Daten dauerhaft gespeichert.",
+    desktopInstall: "Klicke in Chrome oder Edge in der Adressleiste auf das Installieren-Symbol.",
+    tip: "Tipp: Aus WhatsApp zuerst „Im Browser öffnen“ wählen.",
+  },
   feedback: {
     emptyGames: {
       title: "Keine Spiele verfügbar",

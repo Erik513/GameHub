@@ -10,6 +10,7 @@ import {
   createLocalStorageCardLanguagePreferenceStore,
   createLocalStorageLanguagePreferenceStore,
 } from "./infrastructure/localStorageLanguagePreferenceStore";
+import { createInstallPrompt } from "./infrastructure/installPrompt";
 import { createLocalStoragePlayerGroupStore } from "./infrastructure/localStoragePlayerGroupStore";
 import { createLocalStoragePlayerRosterStore } from "./infrastructure/localStoragePlayerRosterStore";
 import { createLocalStoragePlayedCardsStore } from "./infrastructure/localStoragePlayedCardsStore";
@@ -39,6 +40,8 @@ const cardLanguagePreferenceStore = createLocalStorageCardLanguagePreferenceStor
 const initialCardLanguage =
   parseSupportedLanguage(cardLanguagePreferenceStore.read()) ?? initialLanguage;
 const playerRosterStore = createLocalStoragePlayerRosterStore(window.localStorage);
+// The browser offers the installation once and early: it is caught here, before the first screen.
+const installPrompt = createInstallPrompt(window);
 await gameHubI18n.changeLanguage(initialLanguage);
 
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
@@ -63,6 +66,7 @@ createRoot(rootElement).render(
       ]}
       cardLanguagePreferenceStore={cardLanguagePreferenceStore}
       initialCardLanguage={initialCardLanguage}
+      installPrompt={installPrompt}
       languagePreferenceStore={languagePreferenceStore}
       playerGroupStore={createLocalStoragePlayerGroupStore(window.localStorage, playerRosterStore)}
       playerRosterStore={playerRosterStore}

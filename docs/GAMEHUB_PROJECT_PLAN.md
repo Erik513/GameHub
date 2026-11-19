@@ -705,6 +705,12 @@ Ziel: Vor der Ansicht für Teams und Spieler und vor dem nächsten Spielmodus pr
 - **Al-10-09:** Fokusführung beim Ansichtswechsel. Status: done
 - **Al-10-10:** Layout für Telefone mit 320 Pixel Breite. Status: done
 
+### Phase Al-11 – Installation als App erklären
+
+Ziel: Im GameHub steht eine kurze Anleitung, wie man die Webseite als App installiert (Wunsch des Auftraggebers vom 2026-11-19). Vorlage ist die Umsetzung im Projekt `trip-planner`.
+
+- **Al-11-01:** Anleitung zur Installation im GameHub. **Ergebnis:** Knopf „App installieren“ in den Einstellungen; Fenster mit den Reitern Android, iPhone / iPad und Computer (der Reiter des Geräts ist vorgewählt) und kurzen Schritten; wo der Browser es anbietet, zusätzlich „Automatisch installieren“; der Knopf verschwindet, wenn die App installiert läuft. Texte in Deutsch und Englisch. Beschreibung im Änderungsprotokoll. Status: done
+
 ### Phase Al-06: Spätere Erweiterungen
 
 #### Tabu-Spielmodi für später
