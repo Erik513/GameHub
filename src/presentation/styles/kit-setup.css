@@ -16,9 +16,9 @@
   z-index: 1;
 }
 
-/* The tabs share the width by the length of their names, so a long name does not break. */
+/* The tabs are equally wide, so they look the same in every language (a long name wraps). */
 .kit-tab {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   min-height: var(--touch-target);
   margin: 0;

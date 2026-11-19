@@ -29,6 +29,11 @@ export type AddGroupResult =
   | { readonly ok: true; readonly groups: readonly PlayerGroup[] }
   | { readonly ok: false; readonly reason: "empty" | "invalid" | "duplicate" | "full" };
 
+/** The names of a group stay in alphabetical order (ignoring case), like the player list. */
+function sortNames(names: readonly string[]): string[] {
+  return [...names].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+}
+
 function sameName(a: string, b: string): boolean {
   return a.toLocaleLowerCase() === b.toLocaleLowerCase();
 }
@@ -92,7 +97,9 @@ export function addPlayerToGroup(
   if (group.members.includes(name)) return { ok: false, reason: "duplicate" };
   const member = name;
   const groups = book.groups.map((candidate) =>
-    candidate === group ? { ...candidate, members: [...candidate.members, member] } : candidate,
+    candidate === group
+      ? { ...candidate, members: sortNames([...candidate.members, member]) }
+      : candidate,
   );
   return { ok: true, book: { groups, players } };
 }
@@ -138,7 +145,7 @@ export function adoptUngroupedPlayers(book: PlayerBook, groupName: string): Play
   const [first, ...others] = book.groups;
   return first
     ? {
-        groups: [{ ...first, members: [...first.members, ...loose] }, ...others],
+        groups: [{ ...first, members: sortNames([...first.members, ...loose]) }, ...others],
         players: book.players,
       }
     : book;
