@@ -1,0 +1,38 @@
+/** Alle Texte des Spiels Werwolf; die gemeinsamen Texte der App stehen in `common.ts`. */
+export const werewolfTexts = {
+  werewolfLineup: {
+    label: "Aufstellung",
+    playersTab: "Spieler ({{count}})",
+    seatsTab: "Sitzplätze",
+    summaryPlayers_one: "{{count}} Spieler",
+    summaryPlayers_other: "{{count}} Spieler",
+    summaryNarrator: "Erzähler: {{name}}",
+    summaryNoNarrator: "Erzähler: noch nicht gewählt",
+    ready: "Bereit zum Start.",
+    noNarrator: "Wähle einen Erzähler unter den Teilnehmern.",
+    tooFew: "Es braucht mindestens {{minimum}} Spieler neben dem Erzähler (bisher {{count}}).",
+    tooMany:
+      "Es können höchstens {{maximum}} Spieler neben dem Erzähler mitspielen (bisher {{count}}).",
+    narratorLabel: "Erzähler",
+    narratorNotChosen: "Noch nicht gewählt",
+    narratorHint: "Der Erzähler leitet das Spiel und hat keine Rolle.",
+    narratorChoose: "Erzähler wählen",
+    narratorChange: "Erzähler wechseln",
+    narratorTitle: "Erzähler wählen",
+    narratorNone: "Kein Erzähler",
+    narratorBadge: "Erzähler",
+    listLabel: "Teilnehmer ({{count}})",
+    seatsHint:
+      "Ziehe die Namen in die Reihenfolge, in der die Spieler wirklich sitzen: Der Erste sitzt links, dann im Uhrzeigersinn.",
+    seatsEmpty: "Füge zuerst Spieler hinzu.",
+    seatsLabel: "Sitzreihenfolge",
+    circleLabel: "Sitzkreis",
+    narratorSeat: "Erzähler",
+    holdHint: "Halte eine Kachel gedrückt, um den Namen zu sehen.",
+    seat: "Sitz {{number}}",
+    move: "{{player}} verschieben",
+    moved: "{{player}} sitzt jetzt auf Sitz {{number}}.",
+    start: "Spiel starten",
+    startSoon: "Die Rollenverteilung folgt im nächsten Entwicklungsschritt.",
+  },
+};

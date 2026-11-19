@@ -713,6 +713,22 @@ h1 {
   font-size: var(--text-md);
 }
 
+/*
+ * On a phone the header has little room: the buttons with a name drop their symbol (the name stays) and
+ * keep one width, so the name of a game with a longer title (for example "Werewolf") is not cut off.
+ */
+@media (max-width: 26rem) {
+  .site-header__actions .button:not(.icon-button) svg,
+  .site-header > .button:not(.icon-button) svg {
+    display: none;
+  }
+
+  .site-header__actions .button:not(.icon-button),
+  .site-header > .button:not(.icon-button) {
+    min-width: 8rem;
+  }
+}
+
 .site-header .icon-button {
   width: 2.75rem;
   padding: 0;
@@ -886,4 +902,11 @@ h1 {
 .install-guide__or {
   margin: 0;
   color: var(--color-ink-muted);
+}
+
+/* A game title in the header of a phone is a little smaller, so longer names fit next to the buttons. */
+@media (max-width: 26rem) {
+  .site-header p.brand {
+    font-size: 1.375rem;
+  }
 }

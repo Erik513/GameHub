@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-19T15:34:25.354Z",
+    "updatedAt": "2026-11-19T15:39:35.335Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 215,
+      "completedTasks": 216,
       "totalTasks": 279,
-      "percent": 77.1
+      "percent": 77.4
     }
   },
   "environment": {
@@ -1196,7 +1196,7 @@
         {
           "id": "We-01-34",
           "title": "Hauptansicht mit Spieler-/Sitzplatzreitern, Erzählerplatz und Startaktionen umsetzen",
-          "status": "planned"
+          "status": "done"
         },
         {
           "id": "We-01-35",

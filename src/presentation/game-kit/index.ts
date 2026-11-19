@@ -11,6 +11,7 @@ export { usePlayerRoster } from "./PlayerRosterContext";
 export { PlayerRosterProvider } from "./PlayerRosterProvider";
 export { PlayersSetup } from "./PlayersSetup";
 export { Scoreboard } from "./Scoreboard";
+export { PlayerAdder } from "./PlayerAdder";
 export { RosterPicker } from "./RosterPicker";
 export { ResultList, type ResultRow } from "./ResultList";
 export { RulesSection } from "./RulesSection";

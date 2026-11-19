@@ -16,6 +16,7 @@ import { createLocalStoragePlayerRosterStore } from "./infrastructure/localStora
 import { createLocalStoragePlayedCardsStore } from "./infrastructure/localStoragePlayedCardsStore";
 import { createLocalStorageTeamSetupMemory } from "./infrastructure/localStorageTeamSetupMemory";
 import { createTabooModule } from "./presentation/taboo/tabooModule";
+import { createWerewolfModule } from "./presentation/werewolf/werewolfModule";
 import "./presentation/styles/global.css";
 import "./presentation/styles/kit-screen.css";
 import "./presentation/styles/kit-hud.css";
@@ -25,6 +26,7 @@ import "./presentation/styles/kit-info.css";
 import "./presentation/styles/kit-setup.css";
 import "./presentation/styles/kit-desktop.css";
 import "./presentation/styles/games/taboo.css";
+import "./presentation/styles/games/werewolf.css";
 
 const rootElement = document.getElementById("root");
 
@@ -63,6 +65,7 @@ createRoot(rootElement).render(
           // come with the app and the player's own cards can be played (docs ADR-024).
           repository: new IndexedDbTabooCardRepository(),
         }),
+        createWerewolfModule(),
       ]}
       cardLanguagePreferenceStore={cardLanguagePreferenceStore}
       initialCardLanguage={initialCardLanguage}

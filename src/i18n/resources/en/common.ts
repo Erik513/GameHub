@@ -1,9 +1,11 @@
 import { kitTexts } from "./kit";
 import { tabooTexts } from "./taboo";
+import { werewolfTexts } from "./werewolf";
 
 export const common = {
   ...kitTexts,
   ...tabooTexts,
+  ...werewolfTexts,
   app: {
     eyebrow: "Project foundation",
     title: "GameHub",

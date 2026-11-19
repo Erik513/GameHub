@@ -3,6 +3,12 @@
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 
+### Werwolf Schritt 1: Hauptansicht (19.11.2026)
+
+- Neue Werwolf-Hauptansicht mit den Reitern Spieler und Sitzplätze: Spieler hinzufügen oder aus Gruppen wählen, Erzähler in einem Fenster wählen (der bisherige Erzähler setzt sich ans Ende der Sitzreihenfolge), Sitzreihenfolge per Ziehen am Griff oder mit den Pfeiltasten, Kreisübersicht mit festem Erzählerplatz unten mittig und Namensanzeige durch Gedrückthalten. Kurze Zusammenfassung mit Startbereitschaft (Erzähler, 6 bis 20 Spieler). Reine Logik in `business/games/werewolf/lineup.ts`, Texte auf Deutsch und Englisch. Der Startknopf zeigt vorerst nur einen Hinweis auf den nächsten Schritt.
+- Kopfzeile auf dem Handy: Knöpfe ohne Symbol und etwas kleinere Titelschrift, damit längere Spieltitel wie "Werwolf" nicht abgeschnitten werden.
+- Geprüft: neue Tests für Logik und Oberfläche (de/en), Typen, Lint, Übersetzungsparität.
+
 ### Werwolf-Übergabe und Aufgabenabgleich (19.11.2026)
 
 - Sämtliche Werwolf-Phasen/Aufgaben aus dem geprüften Spiel-Arbeitsordner übernommen; andere Spiele bewahrt. Fester manueller Einstieg We-03-62 abgeschlossen, 253 Tests bestanden. Gewinneransicht mit späterer Gestaltung festgehalten; aktuelle UI- und technische Übergabedokumente übernommen. Logikdateien sind dadurch nicht automatisch in diesen Checkout integriert.
