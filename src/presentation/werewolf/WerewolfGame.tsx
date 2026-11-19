@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { emptyFixedDraft } from "../../business/games/werewolf/fixedConfiguration";
+import {
+  emptyFixedDraft,
+  normalizeFixedDraft,
+} from "../../business/games/werewolf/fixedConfiguration";
 import {
   chooseNarrator,
   emptyWerewolfLineup,
@@ -41,7 +44,11 @@ export function WerewolfGame() {
   return (
     <WerewolfLineup
       lineup={lineup}
-      onChange={setLineup}
+      onChange={(next) => {
+        setLineup(next);
+        // Fewer players take back the roles that no longer fit, so the configuration stays playable.
+        setDraft((current) => normalizeFixedDraft(next.seats.length, current));
+      }}
       onOpenConfiguration={() => setConfiguring(true)}
     />
   );

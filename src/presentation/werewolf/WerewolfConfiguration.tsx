@@ -238,12 +238,9 @@ export function WerewolfConfiguration({
                   <h4>{t("werewolfConfig.villagers")}</h4>
                   <ConfigInfo id="villagers" name={t("werewolfConfig.villagers")} />
                 </div>
-                {/* The villagers are a result, not a choice: a box with the number and the number of players. */}
+                {/* The villagers are a result, not a choice: a box with the number. */}
                 <div className="ww-villagers__box">
-                  <strong className="ww-villagers__number">
-                    {view.villagers ?? t("werewolfConfig.villagersNone")}
-                  </strong>
-                  <small>{t("werewolfConfig.villagersOf", { count: players })}</small>
+                  <strong className="ww-villagers__number">{view.villagers ?? 0}</strong>
                 </div>
               </div>
             </div>

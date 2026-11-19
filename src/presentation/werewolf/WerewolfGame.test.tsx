@@ -208,3 +208,29 @@ it.each([
     ).toHaveAttribute("aria-pressed", "true");
   },
 );
+
+it("takes back the roles that no longer fit when a player is removed", async () => {
+  const user = await renderGame("en");
+  await user.type(
+    screen.getByLabelText("Add player"),
+    "Anna, Ben, Cleo, Dora, Emil, Finn, Gina, Hans, Ida{enter}",
+  );
+  await chooseNarrator(user, "Anna", chooseName.en);
+  // Eight players besides the narrator: the tanner (from eight players) can be chosen.
+  await user.click(screen.getByRole("button", { name: "Configuration" }));
+  const tanner = () => screen.getByRole("group", { name: "Tanner" });
+  await user.click(within(tanner()).getByRole("button", { name: "Win by vote only" }));
+  expect(within(tanner()).getByRole("button", { name: "Win by vote only" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await user.click(screen.getByRole("button", { name: "Done" }));
+  // One player less: seven players, the tanner is taken back, and nothing has to be fixed by hand.
+  await user.click(screen.getByRole("button", { name: /Remove Ida/ }));
+  await user.click(screen.getByRole("button", { name: "Configuration" }));
+  expect(within(tanner()).getByRole("button", { name: "Win by vote only" })).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+  expect(document.querySelector(".ww-issues")).toBeNull();
+});

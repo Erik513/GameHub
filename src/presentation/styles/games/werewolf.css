@@ -633,3 +633,8 @@
   font-size: var(--text-xs);
   white-space: nowrap;
 }
+
+.ww-core__cell .ww-villagers__box {
+  justify-content: center;
+  min-width: 3rem;
+}

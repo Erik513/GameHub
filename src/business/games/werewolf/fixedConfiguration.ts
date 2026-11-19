@@ -453,3 +453,50 @@ export function setFixedSetting<
 export function setFixedWolfCount(draft: FixedDraft, count: number): FixedDraft {
   return { ...draft, wolfCount: count };
 }
+
+/**
+ * Corrects the draft for a new number of players, so it is always playable and nothing has to be fixed by
+ * hand. Adding players needs no correction (the villagers fill the places). Removing players takes
+ * back, from the bottom up (the roles that unlock last first): the roles and extras that need more
+ * players than there are, the hammer of the mayor below ten players, a wolf count that is not allowed
+ * any more, and then, while the roles do not fit the places or the wolf count, one role after the other.
+ * It returns the same draft when nothing has to change. Below six players there is nothing to correct
+ * against, so the draft is kept.
+ */
+export function normalizeFixedDraft(players: number, draft: FixedDraft): FixedDraft {
+  if (!isConfigurablePlayerCount(players)) return draft;
+  let roles = draft.roles.filter((role) => players >= werewolfRoleMinimums[role]);
+  let settings: FixedSettings = {
+    ...draft.settings,
+    amulet: draft.settings.amulet && players >= 10,
+    drunk: draft.settings.drunk && players >= 9,
+    mayor: players < 10 ? "doubleVote" : draft.settings.mayor,
+  };
+  const counts = availableWerewolfCounts(players);
+  let wolfCount =
+    draft.wolfCount !== null && counts.includes(draft.wolfCount) ? draft.wolfCount : null;
+
+  const order = (role: WerewolfSpecialRole) =>
+    fixedItems.findIndex((entry) => entry.roles.includes(role));
+  while (!playable(players, roles, wolfCount ?? standardWerewolfCount(players), settings)) {
+    if (roles.length > 0) {
+      // The role that unlocks last goes first.
+      const last = roles.reduce((a, b) => (order(b) > order(a) ? b : a));
+      roles = withoutRoles(roles, [last]);
+    } else if (settings.drunk && (wolfCount ?? standardWerewolfCount(players)) < 2) {
+      settings = { ...settings, drunk: false };
+    } else if (wolfCount !== null) {
+      wolfCount = null;
+    } else {
+      break;
+    }
+  }
+
+  const unchanged =
+    roles.length === draft.roles.length &&
+    wolfCount === draft.wolfCount &&
+    (Object.keys(settings) as (keyof FixedSettings)[]).every(
+      (key) => settings[key] === draft.settings[key],
+    );
+  return unchanged ? draft : { roles, settings, wolfCount };
+}

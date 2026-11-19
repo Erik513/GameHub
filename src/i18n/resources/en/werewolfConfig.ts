@@ -15,8 +15,6 @@ export const werewolfConfigTexts = {
     recommended: "recommended",
     seer: "Seer",
     villagers: "Villagers",
-    villagersNone: "none yet",
-    villagersOf: "of {{count}}",
     availableHeading: "Available roles",
     unavailableHeading: "Not yet available",
     row: "From {{count}} players",

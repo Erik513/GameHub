@@ -2,11 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   chooseFixedAlternative,
   chooseFixedVariant,
+  defaultFixedSettings,
   describeFixedConfiguration,
   emptyFixedDraft,
   fixedConfigurationSettings,
   fixedItems,
   isConfigurablePlayerCount,
+  normalizeFixedDraft,
   selectedWolfCount,
   setFixedSetting,
   setFixedWolfCount,
@@ -347,6 +349,92 @@ describe("the draft stays playable", () => {
           expect(view(players, draft).ready).toBe(true);
         }
       }
+    }
+  });
+});
+
+describe("the draft follows the number of players", () => {
+  it("keeps the draft when players are added or nothing has to change", () => {
+    const draft: FixedDraft = { ...emptyFixedDraft, roles: ["witch", "tanner"] };
+    expect(normalizeFixedDraft(8, draft)).toBe(draft);
+    expect(normalizeFixedDraft(12, draft)).toBe(draft);
+    // Below six players there is nothing to correct against.
+    expect(normalizeFixedDraft(5, draft)).toBe(draft);
+  });
+
+  it("takes back the roles that unlock at the number of players that left", () => {
+    const draft: FixedDraft = {
+      ...emptyFixedDraft,
+      roles: ["witch", "cupid", "tanner", "apprenticeSeer"],
+    };
+    // Eight players become seven: the roles from eight players go, the others stay.
+    expect(normalizeFixedDraft(7, draft).roles).toEqual(["witch", "cupid"]);
+    expect(normalizeFixedDraft(6, draft).roles).toEqual(["witch"]);
+  });
+
+  it("takes back the extras and the hammer below their minimum", () => {
+    const draft = setFixedSetting(
+      setFixedSetting(chooseFixedVariant(emptyFixedDraft, "mayor", "hammer"), "drunk", true),
+      "amulet",
+      true,
+    );
+    const ten = normalizeFixedDraft(10, draft);
+    expect(ten).toBe(draft);
+    const nine = normalizeFixedDraft(9, draft);
+    expect(nine.settings).toMatchObject({ amulet: false, drunk: true, mayor: "doubleVote" });
+    expect(nine.roles).toEqual(["mayor"]);
+    const eight = normalizeFixedDraft(8, draft);
+    expect(eight.roles).toEqual([]);
+    expect(eight.settings.drunk).toBe(false);
+  });
+
+  it("resets a wolf count that is not allowed any more", () => {
+    const draft = setFixedWolfCount(emptyFixedDraft, 4);
+    expect(normalizeFixedDraft(14, draft).wolfCount).toBe(4);
+    expect(normalizeFixedDraft(9, draft).wolfCount).toBeNull();
+  });
+
+  it("takes back roles from the bottom up while the places run out", () => {
+    // Seven players with one wolf and five roles use every place; the narrator with six players
+    // leaves four places, so the last roles go first.
+    const full: FixedDraft = {
+      ...emptyFixedDraft,
+      roles: ["witch", "hunter", "idiot", "bodyguard"],
+    };
+    expect(normalizeFixedDraft(6, full).roles).toEqual(["witch", "hunter", "idiot", "bodyguard"]);
+    const two = setFixedWolfCount({ ...full, roles: ["witch", "hunter", "idiot"] }, 2);
+    // Six players allow one wolf only: the wolf count is reset, the roles stay.
+    const six = normalizeFixedDraft(6, two);
+    expect(six.wolfCount).toBeNull();
+    expect(six.roles).toEqual(["witch", "hunter", "idiot"]);
+  });
+
+  it("always leaves a playable draft, whatever is taken away", () => {
+    const everything: FixedDraft = {
+      roles: [
+        "witch",
+        "hunter",
+        "idiot",
+        "bodyguard",
+        "cupid",
+        "toughGuy",
+        "tanner",
+        "apprenticeSeer",
+        "spellcaster",
+        "mayor",
+        "paranormalInvestigator",
+        "magician",
+      ],
+      settings: { ...defaultFixedSettings, amulet: true, drunk: true, mayor: "hammer" },
+      wolfCount: 4,
+    };
+    for (let players = 20; players >= 6; players--) {
+      const fixed = normalizeFixedDraft(players, everything);
+      expect(view(players, fixed).issues).toEqual([]);
+      // Taking players away step by step gives a playable draft every time.
+      let draft = everything;
+      for (let count = 20; count >= players; count--) draft = normalizeFixedDraft(count, draft);
+      expect(view(players, draft).ready).toBe(true);
     }
   });
 });
