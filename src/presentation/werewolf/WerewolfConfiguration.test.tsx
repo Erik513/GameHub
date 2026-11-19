@@ -288,3 +288,31 @@ it.each([
     expect(box).toHaveAttribute("data-state", state);
   },
 );
+
+it.each([
+  ["en", "Info about Hunter", "Options", "Special notes", "Duty to shoot"],
+  ["de", "Info zu Jäger", "Optionen", "Besonderheiten", "Schusspflicht"],
+] as const)(
+  "explains a role in three parts: what it does, its options, special notes (%s)",
+  async (language, label, optionsHeading, notesHeading, option) => {
+    const { user } = await renderConfiguration(language, 9);
+    await user.click(screen.getByRole("button", { name: label }));
+    const dialog = await screen.findByRole("dialog");
+    const headings = [...dialog.querySelectorAll(".ww-info__heading")].map((h) => h.textContent);
+    // The text first, then the options, then the notes.
+    expect(headings).toEqual([optionsHeading, notesHeading]);
+    expect(dialog.querySelector(".kit-info-text")).not.toBeNull();
+    // Every option is explained on its own line with its name in bold.
+    const names = [...dialog.querySelectorAll(".kit-info-list strong")].map((n) => n.textContent);
+    expect(names).toHaveLength(2);
+    expect(names[0]).toBe(option);
+  },
+);
+
+it("shows no heading for options when a role has none", async () => {
+  const { user } = await renderConfiguration("en", 9);
+  await user.click(screen.getByRole("button", { name: "Info about Witch" }));
+  const dialog = await screen.findByRole("dialog");
+  const headings = [...dialog.querySelectorAll(".ww-info__heading")].map((h) => h.textContent);
+  expect(headings).toEqual(["Special notes"]);
+});

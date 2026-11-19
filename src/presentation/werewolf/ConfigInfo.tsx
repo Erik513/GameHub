@@ -26,8 +26,19 @@ interface ConfigInfoProps {
  * choice itself.
  */
 export function ConfigInfo({ className, id, lock = null, minimum = 0, name }: ConfigInfoProps) {
-  const { t } = useTranslation();
-  const lines = t(`werewolfConfig.info.${id}`).split("\n");
+  const { i18n, t } = useTranslation();
+  // The window has three parts: what the role can do and what is special about it, the options (when it has
+  // any) explained briefly, and the special notes (when there are any).
+  const part = (name: "notes" | "options" | "what"): string => {
+    const key = `werewolfConfig.info.${id}.${name}`;
+    return i18n.exists(key) ? t(key as "werewolfConfig.info.hunter.what") : "";
+  };
+  const lines = (name: "notes" | "options") =>
+    part(name)
+      .split("\n")
+      .filter((line) => line !== "");
+  const options = lines("options");
+  const notes = lines("notes");
   // Not enough players is shown by the box next to the name; the other reasons stand first in the text.
   const reason =
     lock === "noSeat"
@@ -45,11 +56,40 @@ export function ConfigInfo({ className, id, lock = null, minimum = 0, name }: Co
       text={
         <>
           {reason && <p className="ww-lock-reason">{reason}</p>}
-          <ul className="kit-info-list">
-            {lines.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
+          <p className="kit-info-text">{part("what")}</p>
+          {options.length > 0 && (
+            <>
+              <h3 className="ww-info__heading">{t("werewolfConfig.infoOptions")}</h3>
+              <ul className="kit-info-list">
+                {options.map((line) => {
+                  // An option is "Name: explanation".
+                  const colon = line.indexOf(": ");
+                  return (
+                    <li key={line}>
+                      {colon < 0 ? (
+                        line
+                      ) : (
+                        <>
+                          <strong>{line.slice(0, colon)}</strong>
+                          {line.slice(colon)}
+                        </>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+          {notes.length > 0 && (
+            <>
+              <h3 className="ww-info__heading">{t("werewolfConfig.infoNotes")}</h3>
+              <ul className="kit-info-list">
+                {notes.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </>
+          )}
         </>
       }
       title={name}

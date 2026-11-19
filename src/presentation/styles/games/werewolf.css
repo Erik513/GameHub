@@ -562,3 +562,10 @@
   min-height: 1.75rem;
   line-height: 1;
 }
+
+/* The parts of the window of a role: the text, the options, the special notes. */
+.ww-info__heading {
+  margin: var(--space-3) 0 var(--space-1);
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}

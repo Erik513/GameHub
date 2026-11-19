@@ -30,6 +30,8 @@ export const werewolfConfigTexts = {
     useWolves: "Use wolf count {{count}}",
     infoLabel: "Info about {{name}}",
     infoClose: "Close",
+    infoOptions: "Options",
+    infoNotes: "Special notes",
     availableFrom: "From {{count}} players",
     lockNoSeat: "No place free: the wolves, the seer and the chosen roles fill all places.",
     lockCombination:
@@ -99,36 +101,94 @@ export const werewolfConfigTexts = {
     variantHint:
       "Tap a role to take it. A role with options has a half for every option; tap the chosen half again to leave the role out.",
     info: {
-      amulet:
-        "An item, not a role card: it takes no place.\nThe game draws the first holder among the players who are not wolves.\nIt stops one deadly action against the holder, for example the wolf attack, poison or the vote.\nThe holder passes it on every day.",
-      apprenticeSeer:
-        "Has no action of its own while the seer lives.\nTakes over the visions when the seer is out.",
-      cupid: "Chooses two lovers in the first night.\nIf one lover dies, the other dies too.",
-      drunk:
-        "An extra: one player starts as the drunk and sees only that.\nAt the start of the third night the narrator shows the real role.\nUntil then the role does nothing.\nIt needs at least two wolves.",
-      guard:
-        "At most one of the two, or none.\nThe bodyguard protects one player each night, never the same one twice in a row.\nThe night guest stays with one player each night: a wolf attack on the host hits the night guest instead.",
-      hunter:
-        "When the hunter dies he may shoot one living player.\nNo duty to shoot: he may also decide not to shoot.\nDuty to shoot: he has to choose a target.",
-      idiot: "In the vote after a nomination the village idiot has to vote yes.",
-      magician:
-        "Has two spells for the whole game: one heals the wolf victim, one kills a player.\nUsually the magician replaces the witch. Both play together only at 14 or more players with four (or five) wolves.",
-      mayor:
-        "A secret role. The ability is chosen with the role:\nDouble vote: the narrator counts the vote of the mayor twice.\nHammer: one night action that kills a wolf; on a wrong target the mayor dies himself. The hammer is available from 10 players.",
-      paranormalInvestigator:
-        "Once per game the investigator picks a player. The narrator says whether that player or one of the two nearest neighbours is a wolf.",
-      seer: "The seer looks at one player each night and learns whether that player is a wolf.\nThere is always exactly one seer.",
-      spellcaster:
-        "Each night the old hag silences one player for the next day: no speaking, no voting. Never the same player twice in a row.\nSelf-pick allowed: she may also silence herself.\nSelf-pick forbidden: she must choose another player.",
-      tanner:
-        "Has no night action. He wins personally when he dies, and the game goes on.\nWin on any death: every death counts.\nWin by vote only: only a death by the vote counts.",
-      toughGuy: "A wolf attack only wounds him. He dies at the end of the next night.",
-      villagers:
-        "Plain villagers fill every free place.\nThe number is: players minus wolves, minus the seer, minus the chosen roles.\nYou cannot set it by hand.",
-      witch:
-        "Has one healing potion and one poison for the whole game.\nWakes after the wolves and the seer, also in the first night.",
-      wolves:
-        "The wolves choose a victim every night.\nPick how many play. When there is only one possible number it is fixed.\nThe recommendation fits the roles you chose; it never changes your choice by itself.",
+      amulet: {
+        what: "An item, not a role card, so it takes no place. It stops one deadly action against the holder.",
+        notes:
+          "The first holder is drawn among the players who are not wolves.\nIt stops, for example, the wolf attack, poison, a death spell, a hunter shot and the vote.\nThe holder passes it on every day; after it caught an action, to another player.",
+      },
+      apprenticeSeer: {
+        what: "Has no action while the seer lives. When the seer is out, the apprentice takes over her visions.",
+        notes:
+          "The narrator tells him secretly when he is first called for the seer.\nA seer who is attacked at night still has her vision before she leaves in the morning.",
+      },
+      cupid: {
+        what: "Chooses two lovers in the first night. They know each other, keep their roles and die together.",
+        notes: "A mixed couple as the last two survivors lets the wolves win at one against one.",
+      },
+      drunk: {
+        what: "An extra: one player starts as the drunk and sees only that. At the start of the third night the narrator shows the real role.",
+        notes:
+          "Until then the role does nothing.\nIt needs at least two wolves.\nA hunter who dies before learns the real role before the last shot.",
+      },
+      guard: {
+        what: "At most one of the two roles is in the game, or none.",
+        options:
+          "Bodyguard: protects one player each night against the wolf attack, poison and death spells.\nNight guest: stays with one player each night; a wolf attack on the host hits the night guest instead.",
+        notes:
+          "Neither may choose the same player twice in a row.\nA direct attack on the bodyguard still hits him; a direct attack on the visiting night guest misses.",
+      },
+      hunter: {
+        what: "When the hunter dies, in the night or by the vote, he may shoot one living player before the game goes on.",
+        options:
+          "Duty to shoot: he has to choose a target.\nNo duty to shoot: he may also decide not to shoot.",
+        notes: "The win check comes after the shot.",
+      },
+      idiot: {
+        what: "In the vote after a nomination the village idiot has to vote yes.",
+        notes: "A silenced village idiot gives no vote at all.",
+      },
+      magician: {
+        what: "Has two spells for the whole game: a healing spell for the wolf victim and a death spell for any player.",
+        notes:
+          "Usually the magician replaces the witch; both play together only from 14 players with four (or five) wolves.\nBoth spells can be used in one night (two different targets) or be kept for later.\nA bodyguard blocks a death spell on his protected player; the spell is used up anyway.",
+      },
+      mayor: {
+        what: "A secret role with one ability that is chosen with the role.",
+        options:
+          "Double vote: the narrator counts the vote of the mayor twice.\nHammer: one night action that kills a wolf.",
+        notes:
+          "On a wrong target the hammer kills the mayor himself, and the target survives.\nThe hammer is available from 10 players.",
+      },
+      paranormalInvestigator: {
+        what: "Once per game he picks a player; the narrator says whether that player or one of the two nearest living neighbours is a wolf.",
+        notes:
+          "He may wait for a later night; waiting does not use the ability.\nThe seating order counts as a circle.",
+      },
+      seer: {
+        what: "Looks at one player each night and learns whether that player is a wolf.",
+        notes: "There is always exactly one seer.",
+      },
+      spellcaster: {
+        what: "Each night she silences one player for the next day: no speaking, no nominating, no voting.",
+        options:
+          "Self-pick allowed: she may also silence herself.\nSelf-pick forbidden: she must choose another player.",
+        notes: "Never the same player twice in a row.\nA silenced player can still be nominated.",
+      },
+      tanner: {
+        what: "Has no night action. He wins personally when he dies, and the game goes on until the village or the wolves win.",
+        options:
+          "Win on any death: every death counts, also the wolves, a shot or heartbreak.\nWin by vote only: only a death by the vote of the day counts.",
+        notes: "With the vote only: if he leaves because his lover was voted out, he does not win.",
+      },
+      toughGuy: {
+        what: "An unprotected wolf attack only wounds him. He takes part normally the next day and dies at the end of the next night.",
+        notes:
+          "Poison, the vote, a hunter shot or the death of a lover can kill him earlier.\nThe witch can heal the original attack in the night of the attack.",
+      },
+      villagers: {
+        what: "Plain villagers have no special ability. They play with the village and look for the wolves together.",
+        notes: "The number is set automatically from your choice.",
+      },
+      witch: {
+        what: "Wakes after the wolves and the seer, also in the first night. Has one healing potion and one poison for the whole game.",
+        notes:
+          "Both potions can be used in the same night.\nPoison on a protected player is used up anyway.",
+      },
+      wolves: {
+        what: "The wolves choose a victim every night.",
+        notes:
+          "Pick how many play; with only one possible number it is fixed.\nThe recommendation fits the roles you chose; it never changes your choice by itself.",
+      },
     },
   },
 };
