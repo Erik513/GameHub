@@ -554,3 +554,11 @@
 .ww-available[data-state="locked"] {
   border-color: var(--color-danger-fill);
 }
+
+/* The text in the box is centred in the height: a flex box with a fixed height and a line of its own height. */
+.ww-available {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  line-height: 1;
+}
