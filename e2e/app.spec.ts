@@ -140,6 +140,16 @@ for (const language of ["en", "de"] as const) {
   test(`asks before the Back key leaves a running Taboo game in ${language}`, async ({ page }) => {
     // The Back key of the system: the history moves back one entry (page.goBack waits for a navigation).
     const back = () => page.evaluate(() => window.history.back());
+    // The app puts a guard entry on top of the history while a game or a view is open and takes it away a
+    // moment after the view is left. A Back pressed in between would hit that entry, so the test waits.
+    const guardOnTop = () =>
+      page.waitForFunction(() =>
+        Boolean((window.history.state as { gamehubGuard?: true } | null)?.gamehubGuard),
+      );
+    const guardGone = () =>
+      page.waitForFunction(
+        () => !(window.history.state as { gamehubGuard?: true } | null)?.gamehubGuard,
+      );
     const t =
       language === "en"
         ? {
@@ -174,6 +184,7 @@ for (const language of ["en", "de"] as const) {
     await page.getByRole("button", { name: t.round, exact: true }).click();
 
     // The Back key does not leave the game: it asks, and the round waits.
+    await guardOnTop();
     await back();
     const question = page.getByRole("dialog", { name: t.title });
     await expect(question).toBeVisible();
@@ -182,17 +193,21 @@ for (const language of ["en", "de"] as const) {
     await expect(question).toBeHidden();
 
     // Asked again, the game can be ended: it returns to the line-up of the game.
+    await guardOnTop();
     await back();
     await question.getByRole("button", { name: t.end, exact: true }).click();
     await expect(page.getByRole("button", { name: t.start, exact: true })).toBeVisible();
+    await guardGone();
     // The Back key in the settings only goes back to the line-up (on a phone; at the PC there is no
     // view for the settings).
     const settingsButton = page.getByRole("button", { name: t.settings, exact: true });
     if (await settingsButton.isVisible()) {
       await settingsButton.click();
+      await guardOnTop();
       await back();
       await expect(page.getByRole("button", { name: t.start, exact: true })).toBeVisible();
       expect(new URL(page.url()).hash).toBe("#/games/taboo");
+      await guardGone();
     }
 
     // On the line-up one Back leaves the game for the game selection.
