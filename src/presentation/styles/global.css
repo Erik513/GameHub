@@ -142,6 +142,12 @@ textarea {
   justify-self: end;
 }
 
+/* A button with a name in the header has the same width in every language (the longest name fits). */
+.site-header__actions .button:not(.icon-button),
+.site-header > .button:not(.icon-button) {
+  min-width: 8rem;
+}
+
 .settings-fields {
   display: grid;
   gap: var(--space-5);

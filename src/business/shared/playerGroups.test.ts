@@ -60,6 +60,14 @@ describe("addPlayerToGroup", () => {
     expect(book.groups).toEqual([{ name: "Family", members: ["Anna"] }]);
   });
 
+  it("keeps the names of a group in alphabetical order, whatever the order of adding", () => {
+    let book = add(bookWith("Family"), "Family", "zoe");
+    book = add(book, "Family", "Anna");
+    book = add(book, "Family", "ben");
+    expect(book.groups[0]?.members).toEqual(["Anna", "Ben", "Zoe"]);
+    expect(book.players).toEqual(["Anna", "Ben", "Zoe"]);
+  });
+
   it("treats an existing name as the same person, also with other capital letters", () => {
     let book = add(bookWith("Family", "Work"), "Family", "Anna");
     book = add(book, "Work", "ANNA");
