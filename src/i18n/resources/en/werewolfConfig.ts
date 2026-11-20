@@ -105,21 +105,21 @@ export const werewolfConfigTexts = {
     info: {
       amulet: {
         general:
-          "An extra. The holder is drawn randomly at the start among the players who are not wolves.\nIt stops direct attacks and a vote.",
+          "An extra. The holder is drawn randomly at the start among the players who are not wolves.\nIt stops direct attacks and a vote: if the holder is attacked at night, he survives, whoever attacks him.",
         tasks:
-          "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf it has stopped an attack, he has to pass it on.",
+          "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf he was attacked in the night, he has to pass it on.",
         notes:
-          "The amulet is lost if the holder:\ndies of heartbreak\ndies as the mayor from a wrong hammer shot\ndies of his wound as the tough guy",
+          "The holder can still die:\nby the hammer\nwhen his lover dies (at night he passes the amulet on first, by day it is lost)\nas the tough guy, if he got the amulet only after the attack",
       },
       apprenticeSeer: {
         general: "A village role. He has no action while the seer lives.",
         tasks:
-          "When the seer is dead, the narrator calls him openly every night: he looks at one player and learns whether that player is a wolf.",
+          "When the seer is dead, he wakes up every night and takes over her role, chooses a player and learns whether that player is a wolf.",
       },
       cupid: {
         general: "A village role.",
         tasks:
-          "In the first night he chooses two lovers, he may pick himself. If one of them dies, the other dies too.\nLovers never kill each other and try to win as a pair.",
+          "In the first night he chooses two lovers; he may be one of them himself. If one of them dies, the other dies too.\nLovers never kill each other and try to win as a pair.",
       },
       drunk: {
         general:
@@ -134,7 +134,7 @@ export const werewolfConfigTexts = {
         tasks:
           "Each night the role chooses one player to spend the night with.\nChoosing the same player twice in a row is forbidden.",
         options:
-          "Bodyguard: Stays with the chosen player and protects him from direct attacks, but not from the hammer. He himself is not protected.\nNight guest: Stays with the chosen player and protects him from the wolf attack, but dies in his place. A direct attack on the night guest misses, since he sleeps elsewhere.",
+          "Bodyguard: Stays with the chosen player and protects him from the wolf attack, poison and death spells, but not from the hammer. He himself is not protected.\nNight guest: Stays with the chosen player and protects him only from the wolf attack, not from poison and spells. He dies in the player's place; a direct attack on him misses, since he sleeps elsewhere.",
       },
       hunter: {
         general: "A village role.",

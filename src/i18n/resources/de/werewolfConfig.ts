@@ -106,21 +106,21 @@ export const werewolfConfigTexts = {
     info: {
       amulet: {
         general:
-          "Ein Zusatz: Der Träger wird zu Beginn zufällig unter den Spielern, die keine Werwölfe sind, ausgelost.\nEs fängt direkte Angriffe und eine Abstimmung ab.",
+          "Ein Zusatz: Der Träger wird zu Beginn zufällig unter den Spielern, die keine Werwölfe sind, ausgelost.\nEs fängt direkte Angriffe und eine Abstimmung ab: Wird der Träger in der Nacht angegriffen, überlebt er, egal von wem.",
         tasks:
-          "Der Träger wird jede Nacht als Letzter geweckt und gefragt: Amulett behalten oder weitergeben.\nHat es einen Angriff abgefangen, muss er es weitergeben.",
+          "Der Träger wird jede Nacht als Letzter geweckt und gefragt: Amulett behalten oder weitergeben.\nWurde er in der Nacht angegriffen, muss er es weitergeben.",
         notes:
-          "Das Amulett geht verloren, wenn der Träger:\naus Liebeskummer stirbt\nals Bürgermeister an einem Hammer-Fehlschuss stirbt\nals Harter Bursche seiner Wunde erliegt",
+          "Der Träger kann trotzdem sterben:\ndurch den Hammer\nwenn sein Liebespartner stirbt (nachts gibt er das Amulett vorher weiter, am Tag geht es verloren)\nals Harter Bursche, wenn er das Amulett erst nach dem Angriff bekam",
       },
       apprenticeSeer: {
         general: "Eine Dorfrolle. Er hat keine Aktion, solange die Seherin lebt.",
         tasks:
-          "Ist die Seherin tot, ruft der Erzähler ihn jede Nacht offen auf: Er sieht sich eine Person an und erfährt, ob sie ein Werwolf ist.",
+          "Ist die Seherin tot, wacht er jede Nacht auf und übernimmt ihre Rolle, wählt eine Person und erfährt, ob sie ein Werwolf ist.",
       },
       cupid: {
         general: "Eine Dorfrolle.",
         tasks:
-          "Er wählt in der ersten Nacht zwei Verliebte, auch sich selbst. Stirbt einer von ihnen, stirbt der andere mit.\nVerliebte töten sich nie gegenseitig und versuchen, als Paar zu gewinnen.",
+          "In der ersten Nacht wählt er zwei Verliebte; er selbst darf einer davon sein. Stirbt einer von ihnen, stirbt der andere mit.\nVerliebte töten sich nie gegenseitig und versuchen, als Paar zu gewinnen.",
       },
       drunk: {
         general:
@@ -135,7 +135,7 @@ export const werewolfConfigTexts = {
         tasks:
           "Jede Nacht wählt die Rolle eine Person, bei der sie die Nacht verbringt.\nDieselbe Person zweimal hintereinander wählen ist verboten.",
         options:
-          "Leibwächter: Übernachtet bei der gewählten Person und schützt sie vor direkten Angriffen, nur nicht vor dem Hammer. Er selbst ist nicht geschützt.\nDorfmatratze: Übernachtet bei der gewählten Person und schützt sie vor dem Wolfsangriff, stirbt aber an ihrer Stelle. Ein direkter Angriff auf sie geht ins Leere, denn sie schläft woanders.",
+          "Leibwächter: Übernachtet bei der gewählten Person und schützt sie vor Wolfsangriff, Gift und Todeszauber, nicht vor dem Hammer. Er selbst ist nicht geschützt.\nDorfmatratze: Übernachtet bei der gewählten Person und schützt sie nur vor dem Wolfsangriff, nicht vor Gift und Zauber. Sie stirbt an der Stelle der Person; ein direkter Angriff auf sie geht ins Leere, denn sie schläft woanders.",
       },
       hunter: {
         general: "Eine Dorfrolle.",

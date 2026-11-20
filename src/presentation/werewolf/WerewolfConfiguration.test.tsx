@@ -326,8 +326,8 @@ it("shows only the box of the players in the window of an extra", async () => {
 });
 
 it.each([
-  ["en", "Info about Protective amulet", /drawn randomly/, /pass it/, /lost if the holder/],
-  ["de", "Info zu Schutzamulett", /zufällig/, /weitergeben/, /geht verloren, wenn der Träger/],
+  ["en", "Info about Protective amulet", /drawn randomly/, /pass it/, /can still die/],
+  ["de", "Info zu Schutzamulett", /zufällig/, /weitergeben/, /kann trotzdem sterben/],
 ] as const)(
   "explains the amulet in general, tasks and special cases (%s)",
   async (language, label, general, task, note) => {
