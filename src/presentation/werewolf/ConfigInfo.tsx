@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type {
   FixedAddonId,
@@ -20,6 +21,9 @@ interface ConfigInfoProps {
   readonly className?: string;
   /** Only for the mayor: a second box says from how many players the hammer works, green while it does. */
   readonly hammerOk?: boolean;
+  /** Controls the window from outside (for the heading of a card, which opens it too). */
+  readonly open?: boolean;
+  readonly onOpenChange?: (open: boolean) => void;
 }
 
 /**
@@ -34,6 +38,8 @@ export function ConfigInfo({
   lock = null,
   minimum = 0,
   name,
+  onOpenChange,
+  open,
 }: ConfigInfoProps) {
   const { i18n, t } = useTranslation();
   // The window has four parts, each only when there is something to say: the general information (team,
@@ -41,7 +47,7 @@ export function ConfigInfo({
   const part = (name: "general" | "notes" | "options" | "tasks"): readonly string[] => {
     const key = `werewolfConfig.info.${id}.${name}`;
     return i18n.exists(key)
-      ? t(key as "werewolfConfig.info.hunter.general")
+      ? t(key as "werewolfConfig.info.seer.general")
           .split("\n")
           .filter((line) => line !== "")
       : [];
@@ -64,6 +70,16 @@ export function ConfigInfo({
             })
           : t("werewolfConfig.lockCombination")
         : null;
+  // The line right under the name: whose side the role is on (the witch and the magician exclude each other).
+  const teamKey =
+    id === "wolves"
+      ? "teamWolves"
+      : id === "tanner"
+        ? "teamOwnGoal"
+        : id === "amulet" || id === "drunk"
+          ? "teamExtra"
+          : "teamVillage";
+  const team = t(`werewolfConfig.${teamKey}`);
   return (
     <InfoButton
       {...(className === undefined ? {} : { className })}
@@ -102,7 +118,9 @@ export function ConfigInfo({
           })}
         </>
       }
+      subtitle={team}
       title={name}
+      {...(open === undefined ? {} : { onOpenChange, open })}
       // From how many players the role can be taken: a green box while it can, a red one while it cannot.
       {...(minimum > 0
         ? {
@@ -124,5 +142,33 @@ export function ConfigInfo({
           }
         : {})}
     />
+  );
+}
+
+/**
+ * The head of a card of the basic roles: the name and, directly next to it, its "i" button. The name opens
+ * the same window as the button (as the headings of the groups do in every game).
+ */
+export function ConfigCardHead({
+  id,
+  name,
+  title,
+}: {
+  readonly id: ConfigInfoId;
+  /** The name for the "i" button and the window. */
+  readonly name: string;
+  /** The text of the heading (it may be shorter than the name). */
+  readonly title: string;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="ww-card__head">
+      <h4>
+        <button className="ww-card__title" onClick={() => setOpen(true)} type="button">
+          {title}
+        </button>
+      </h4>
+      <ConfigInfo id={id} name={name} onOpenChange={setOpen} open={open} />
+    </div>
   );
 }

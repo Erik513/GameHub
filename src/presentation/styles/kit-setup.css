@@ -707,6 +707,13 @@
 }
 
 /* "Add player": the field and the plus button side by side, both as high as a field. */
+.kit-adder__notice,
+.kit-roster__limit {
+  margin: 0;
+  color: var(--color-warning);
+  font-size: var(--text-xs);
+}
+
 .kit-adder {
   display: flex;
   align-items: center;

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import {
   addParticipants,
   chooseNarrator,
+  maxWerewolfParticipants,
   removeParticipant,
   setParticipants,
   type WerewolfLineup,
@@ -31,13 +32,22 @@ export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
         onChoose={(name) => onChange(chooseNarrator(lineup, name))}
         participants={lineup.participants}
       />
-      <PlayerAdder onAdd={(input) => onChange(addParticipants(lineup, parsePlayers(input)))} />
+      <PlayerAdder
+        onAdd={(input) => onChange(addParticipants(lineup, parsePlayers(input)))}
+        room={maxWerewolfParticipants - lineup.participants.length}
+      />
       <div className="kit-players__actions">
         <RosterPicker
+          limit={maxWerewolfParticipants}
           onChange={(text) => onChange(setParticipants(lineup, parsePlayers(text)))}
           value={lineup.participants.join(", ")}
         />
       </div>
+      {lineup.participants.length >= maxWerewolfParticipants && (
+        <p className="ww-hint">
+          {t("werewolfLineup.full", { maximum: maxWerewolfParticipants - 1 })}
+        </p>
+      )}
       {sorted.length > 0 && (
         <ul
           aria-label={t("werewolfLineup.listLabel", { count: sorted.length })}

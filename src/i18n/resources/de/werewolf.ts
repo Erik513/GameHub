@@ -18,6 +18,7 @@ export const werewolfTexts = {
     narratorNone: "Kein Erzähler",
     narratorBadge: "Erzähler",
     listLabel: "Teilnehmer ({{count}})",
+    full: "Mehr geht nicht: höchstens {{maximum}} Spieler und der Erzähler.",
     seatsHint:
       "Ziehe die Namen in die Reihenfolge, in der die Spieler wirklich sitzen: Sitz 1 ist direkt links neben dem Erzähler, dann im Uhrzeigersinn.",
     seatsEmpty: "Füge zuerst Spieler hinzu und lege einen Erzähler fest.",

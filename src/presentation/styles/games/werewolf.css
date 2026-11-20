@@ -417,6 +417,18 @@
   hyphens: manual;
 }
 
+/* The name of a card opens the window of its "i" button, too; it still looks like a heading. */
+.ww-card__title {
+  min-height: 2rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
 .ww-card--wolves .ww-card__head h4 {
   font-size: var(--text-sm);
 }
@@ -442,10 +454,19 @@
   gap: var(--space-1);
 }
 
+/* The read-only cards are one low row: the name with its "i" on the left, the number on the right. */
+.ww-card.ww-stat {
+  padding-block: var(--space-1);
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  align-content: center;
+  gap: var(--space-2);
+}
+
 .ww-stat__value {
   display: grid;
   place-items: center;
-  min-height: 2.5rem;
+  min-height: 0;
   color: var(--color-ink);
   font-size: var(--text-lg, 1.25rem);
   font-variant-numeric: tabular-nums;

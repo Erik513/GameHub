@@ -30,6 +30,11 @@ export const werewolfConfigTexts = {
     useWolves: "Use wolf count {{count}}",
     infoLabel: "Info about {{name}}",
     infoClose: "Close",
+    teamVillage: "Village role",
+    teamWolves: "Enemy of the village",
+    teamOwnGoal: "Village role with a goal of its own",
+    teamExtra: "Extra",
+    notTogether: "not together with {{role}}",
     infoGeneral: "General",
     infoTasks: "Tasks",
     infoOptions: "Options",
@@ -43,6 +48,7 @@ export const werewolfConfigTexts = {
     lockedCombination: "not together",
     lockedWolves: "2+ wolves",
     tooFewPlayers: "Add at least 6 players first (now {{count}}).",
+    tooManyPlayers: "Too many players: at most {{maximum}} (now {{count}}). Remove players first.",
     issues: {
       players: "The configuration needs 6 to 20 players besides the narrator (now {{count}}).",
       wolfCount: "{{count}} wolves are not allowed for this number of players.",
@@ -105,71 +111,66 @@ export const werewolfConfigTexts = {
     info: {
       amulet: {
         general:
-          "An extra. The holder is drawn randomly at the start among the players who are not wolves.\nIt stops direct attacks and a vote: if the holder is attacked at night, he survives, whoever attacks him.",
+          "The holder is drawn randomly at the start among the players who are not wolves.\nIt stops direct attacks and a vote: if the holder is attacked at night, he survives, whoever attacks him.",
         tasks:
           "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf he was attacked in the night, he has to pass it on.",
         notes:
           "The holder can still die:\nby the hammer\nwhen his lover dies (at night he passes the amulet on first, by day it is lost)\nas the tough guy, if he got the amulet only after the attack",
       },
       apprenticeSeer: {
-        general: "A village role. He has no action while the seer lives.",
+        general: "He has no action while the seer lives.",
         tasks:
-          "When the seer is dead, he wakes up every night and takes over her role, chooses a player and learns whether that player is a wolf.",
+          "When the seer is dead, he wakes up every night, chooses a player and learns whether that player is a wolf.",
       },
       cupid: {
-        general: "A village role.",
         tasks:
           "In the first night he chooses two lovers; he may be one of them himself. If one of them dies, the other dies too.\nLovers never kill each other and try to win as a pair.",
       },
       drunk: {
         general:
-          "An extra. One player starts as the drunk and cannot remember his real role.\nThe real role is drawn among all roles except Cupid.",
+          "One player starts as the drunk and cannot remember his real role.\nThe real role is drawn among all roles except Cupid.",
         tasks:
           "At the start of the third night he sobers up and remembers his real role.\nUntil then his ability rests.",
         notes:
           "The seer and the investigator can find out the real role before.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.",
       },
       guard: {
-        general: "A village role. At most one of the two is in the game, or none.",
+        general: "At most one of the two is in the game, or none.",
         tasks:
           "Each night the role chooses one player to spend the night with.\nChoosing the same player twice in a row is forbidden.",
         options:
           "Bodyguard: Stays with the chosen player and protects him from the wolf attack, poison and death spells, but not from the hammer. He himself is not protected.\nNight guest: Stays with the chosen player and protects him only from the wolf attack, not from poison and spells. He dies in the player's place; a direct attack on him misses, since he sleeps elsewhere.",
       },
       hunter: {
-        general: "A village role.",
         tasks: "When he dies, he may or must (depending on the option) shoot one living player.",
         options:
           "Duty to shoot: He has to pick a target.\nNo duty to shoot: He may shoot if he wants.",
       },
       idiot: {
-        general: "A village role.",
         tasks: "In the vote after a nomination (yes or no) the village idiot has to vote yes.",
         notes: "A silenced village idiot may not vote.",
       },
       magician: {
-        general: "A village role.",
         tasks:
           "He has two spells and decides for each one: heal the wolf victim or kill any player.\nHe may use both in one night, also the same twice.",
       },
       mayor: {
-        general: "A village role. He must not reveal his role.",
+        general: "He must not reveal his role.",
         options:
           "Double vote: The narrator counts his vote twice in votes.\nHammer: If he suspects a wolf, he may try once per game, from the second night on, to kill one living player. A wolf dies; if he picked a village role, he dies himself.",
         notes:
           "The witch and the magician cannot heal deaths by the hammer.\nNothing protects from the hammer, not even the amulet.",
       },
       paranormalInvestigator: {
-        general: "A village role. He can use his ability once per game.",
+        general: "He can use his ability once per game.",
         tasks:
           "At night he picks a player. Then he learns whether that player or one of the two nearest living neighbours is a wolf.",
       },
       seer: {
-        general: "A village role. There is always exactly one seer.",
+        general: "There is always exactly one seer.",
         tasks: "Each night she looks at one player and learns whether that player is a wolf.",
       },
       spellcaster: {
-        general: "A village role.",
         tasks:
           "Each night she silences one player for the next day.\nChoosing the same player twice in a row is forbidden.",
         options:
@@ -178,12 +179,11 @@ export const werewolfConfigTexts = {
           "A silenced player may neither speak nor nominate nor vote, but can still be nominated.",
       },
       tanner: {
-        general: "A village role.",
         tasks: "To die is his own goal: then he wins for himself.",
         options: "Win on any death: Every death counts.\nWin by vote only: He has to be voted out.",
       },
       toughGuy: {
-        general: "A village role. After a wolf attack he takes part normally the next day.",
+        general: "After a wolf attack he takes part normally the next day.",
         tasks:
           "A wolf attack does not kill him at once: that night he can still be saved, in the night after he dies of his wound.",
         notes: "Any other cause of death kills him at once.",
@@ -194,14 +194,12 @@ export const werewolfConfigTexts = {
         notes: "The number is set automatically from your choice.",
       },
       witch: {
-        general: "A village role.",
         tasks:
           "For the whole game she has one healing potion for the wolf victim and one poison for any player.",
         notes:
           "Both potions can be used in the same night.\nPoison on a protected player is used up anyway.",
       },
       wolves: {
-        general: "The wolves are the enemies of the village.",
         tasks: "Each night the wolves choose a victim.",
         notes:
           "In the first night they only get to know each other, unless the attack from night 1 is switched on.\nPick how many play; with only one possible number it is fixed.\nThe recommendation fits the roles you chose; it never changes your choice by itself.",

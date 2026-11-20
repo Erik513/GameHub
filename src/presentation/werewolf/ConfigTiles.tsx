@@ -9,6 +9,8 @@ interface RoleTileProps {
   readonly minimum: number;
   /** The role (or the extra): the main text of the tile. */
   readonly name: string;
+  /** A short note in the second line that is no option of the role, for example "(not together with …)". */
+  readonly note?: string | undefined;
   readonly onToggle: () => void;
   readonly selected: boolean;
   /** Without it the tile has no "i" inside (a role in a list has its "i" outside, see RoleRow). */
@@ -30,6 +32,7 @@ export function RoleTile({
   lock,
   minimum,
   name,
+  note,
   onToggle,
   selected,
   showInfo = true,
@@ -38,7 +41,11 @@ export function RoleTile({
   const lockHint = useLockHint();
   // Not enough players is told in the window of the role (a box next to its name); the button only names the
   // reasons that depend on the chosen roles.
-  const hint = lock === "minimumPlayers" ? undefined : lockHint(lock);
+  // A role with a note says "not together" itself, so the bracket for that reason is left out.
+  const hint =
+    lock === "minimumPlayers" || (lock === "combination" && note !== undefined)
+      ? undefined
+      : lockHint(lock);
   return (
     <div className="kit-choice-wrap ww-tile-wrap" data-locked={lock === null ? undefined : true}>
       <label className="kit-choice">
@@ -55,7 +62,7 @@ export function RoleTile({
             {/* Why the role is locked stands in brackets next to the name; the second line stays for the text of the role. */}
             {hint && <em className="ww-tile__lock"> ({hint})</em>}
           </strong>
-          {sub && <small>{sub}</small>}
+          {(sub ?? note) && <small>{sub ?? note}</small>}
         </span>
       </label>
       {showInfo && (

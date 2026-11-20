@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { PlayerGroup } from "../../business/shared/playerGroups";
 import { applyRosterSelection, rosterPlayersIn } from "../../business/shared/playerRoster";
+import { parsePlayers } from "../../business/shared/players";
 import { Button, Dialog, Icon } from "../components";
 import { ActionRow } from "./ActionRow";
 import { GroupButtons, PlayerChecklist } from "./GroupBox";
@@ -15,6 +16,8 @@ interface RosterPickerProps {
   readonly onChange: (text: string) => void;
   /** The text of the players field as it is now. */
   readonly value: string;
+  /** The most names the players field can hold; the window then allows no more ticks than that. */
+  readonly limit?: number;
 }
 
 /**
@@ -22,7 +25,7 @@ interface RosterPickerProps {
  * its players to tick who plays today. Chosen players are added to the players field, deselected ones
  * are removed; names typed by hand stay.
  */
-export function RosterPicker({ onChange, value }: RosterPickerProps) {
+export function RosterPicker({ limit, onChange, value }: RosterPickerProps) {
   const { t } = useTranslation();
   const roster = usePlayerRoster();
   const [open, setOpen] = useState(false);
@@ -51,6 +54,7 @@ export function RosterPicker({ onChange, value }: RosterPickerProps) {
             setOpen(false);
           }}
           groups={roster.groups}
+          {...(limit === undefined ? {} : { limit })}
           onCancel={() => setOpen(false)}
           players={roster.players}
           value={value}
@@ -67,12 +71,14 @@ export function RosterPicker({ onChange, value }: RosterPickerProps) {
 /** The content of the window; it is created anew on every opening, so the choice starts fresh. */
 function PickerBody({
   groups,
+  limit,
   onApply,
   onCancel,
   players,
   value,
 }: {
   readonly groups: readonly PlayerGroup[];
+  readonly limit?: number;
   readonly onApply: (text: string) => void;
   readonly onCancel: () => void;
   readonly players: readonly string[];
@@ -93,10 +99,17 @@ function PickerBody({
 
   if (players.length === 0) return null;
 
+  // Names typed by hand stay, so they use up room of the limit; the rest is for the chosen players.
+  const known = new Set(players.map((player) => player.toLocaleLowerCase()));
+  const byHand = parsePlayers(value).filter((name) => !known.has(name.toLocaleLowerCase())).length;
+  const capacity = limit === undefined ? Number.POSITIVE_INFINITY : Math.max(0, limit - byHand);
+  const atLimit = selected.size >= capacity;
   const toggle = (name: string, checked: boolean) => {
     const next = new Set(selected);
-    if (checked) next.add(name);
-    else next.delete(name);
+    if (checked) {
+      if (next.size >= capacity) return;
+      next.add(name);
+    } else next.delete(name);
     setSelected(next);
   };
   const count = (list: readonly string[]) =>
@@ -128,7 +141,7 @@ function PickerBody({
             const next = new Set(selected);
             for (const player of visible) {
               if (allVisible) next.delete(player);
-              else next.add(player);
+              else if (next.size < capacity) next.add(player);
             }
             setSelected(next);
           }}
@@ -158,6 +171,7 @@ function PickerBody({
           ) : (
             <PlayerChecklist
               isChecked={(player) => selected.has(player)}
+              isDisabled={(player) => atLimit && !selected.has(player)}
               label={t("kitRoster.groupMembers", { name: shown.name })}
               onToggle={toggle}
               players={shown.members}
@@ -175,6 +189,11 @@ function PickerBody({
           />
         )}
       </div>
+      {atLimit && limit !== undefined && (
+        <p className="kit-roster__limit" role="status">
+          {t("kitRoster.pickLimit", { count: limit })}
+        </p>
+      )}
       <ActionRow>
         <Button
           onClick={() => onApply(applyRosterSelection(value, players, selected))}

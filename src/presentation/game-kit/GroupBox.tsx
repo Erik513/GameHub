@@ -29,11 +29,14 @@ export function GroupButtons({
 /** The players of a list as ticked or unticked rows; `isChecked` and `onToggle` decide the state. */
 export function PlayerChecklist({
   isChecked,
+  isDisabled,
   label,
   onToggle,
   players,
 }: {
   readonly isChecked: (player: string) => boolean;
+  /** A row that cannot be ticked now (the limit is reached). */
+  readonly isDisabled?: (player: string) => boolean;
   readonly label: string;
   readonly onToggle: (player: string, checked: boolean) => void;
   readonly players: readonly string[];
@@ -45,6 +48,7 @@ export function PlayerChecklist({
           <label>
             <input
               checked={isChecked(player)}
+              disabled={isDisabled?.(player) ?? false}
               onChange={(event) => onToggle(player, event.target.checked)}
               type="checkbox"
             />

@@ -3,6 +3,7 @@ import {
   addParticipants,
   chooseNarrator,
   emptyWerewolfLineup,
+  maxWerewolfParticipants,
   moveSeat,
   removeParticipant,
   setParticipants,
@@ -18,6 +19,18 @@ describe("participants and seats", () => {
     expect(lineup.participants).toEqual(["Anna", "Ben", "Cem", "Dora"]);
     expect(lineup.seats).toEqual(["Anna", "Ben", "Cem", "Dora"]);
     expect(lineup.narrator).toBeNull();
+  });
+
+  it("makes the first letter of a name a capital letter", () => {
+    const lineup = addParticipants(emptyWerewolfLineup, ["anna", "ben meier", "émile"]);
+    expect(lineup.participants).toEqual(["Anna", "Ben meier", "Émile"]);
+  });
+
+  it("takes at most the players of a match and the narrator", () => {
+    const lineup = addParticipants(emptyWerewolfLineup, names(30));
+    expect(lineup.participants).toHaveLength(maxWerewolfParticipants);
+    expect(lineup.participants).toHaveLength(21);
+    expect(setParticipants(lineup, names(40)).participants).toHaveLength(21);
   });
 
   it("keeps the seat order when the participants change", () => {
@@ -89,10 +102,12 @@ describe("werewolfLineupIssues", () => {
   });
 
   it("refuses more than twenty players", () => {
-    const lineup = chooseNarrator(addParticipants(emptyWerewolfLineup, names(22)), "P1");
-    expect(werewolfLineupIssues(lineup)).toEqual([{ code: "tooMany", count: 21, maximum: 20 }]);
-    expect(werewolfLineupIssues(chooseNarrator(lineup, "P2"))).toHaveLength(1);
-    const twenty = chooseNarrator(addParticipants(emptyWerewolfLineup, names(21)), "P1");
-    expect(werewolfLineupIssues(twenty)).toEqual([]);
+    // Nobody can add more than twenty players and the narrator; without a narrator all of them are players.
+    const lineup = addParticipants(emptyWerewolfLineup, names(30));
+    expect(werewolfLineupIssues(lineup)).toEqual([
+      { code: "noNarrator" },
+      { code: "tooMany", count: 21, maximum: 20 },
+    ]);
+    expect(werewolfLineupIssues(chooseNarrator(lineup, "P1"))).toEqual([]);
   });
 });

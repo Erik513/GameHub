@@ -1,3 +1,4 @@
+import { capitalizePlayerName } from "../../shared/playerRoster";
 import { werewolfPlayerLimits } from "./configuration";
 
 /**
@@ -17,6 +18,9 @@ export type WerewolfLineupIssue =
   | { readonly code: "noNarrator" }
   | { readonly code: "tooFew"; readonly count: number; readonly minimum: number }
   | { readonly code: "tooMany"; readonly count: number; readonly maximum: number };
+
+/** The most people who can take part: the most players and the narrator. */
+export const maxWerewolfParticipants = werewolfPlayerLimits.targetMaximum + 1;
 
 export const emptyWerewolfLineup: WerewolfLineup = { narrator: null, participants: [], seats: [] };
 
@@ -40,14 +44,18 @@ export function setParticipants(
   lineup: WerewolfLineup,
   participants: readonly string[],
 ): WerewolfLineup {
-  return normalize(participants, lineup.narrator, lineup.seats);
+  return normalize(participants.slice(0, maxWerewolfParticipants), lineup.narrator, lineup.seats);
 }
 
-/** Adds names that are not there yet; they take the last seats. */
+/**
+ * Adds names that are not there yet; they take the last seats. The first letter of a name becomes a capital
+ * letter; names beyond the most people who can take part are left out.
+ */
 export function addParticipants(lineup: WerewolfLineup, names: readonly string[]): WerewolfLineup {
   const known = new Set(lineup.participants.map((name) => name.toLocaleLowerCase()));
   const added: string[] = [];
-  for (const name of names) {
+  for (const raw of names) {
+    const name = capitalizePlayerName(raw);
     if (known.has(name.toLocaleLowerCase())) continue;
     known.add(name.toLocaleLowerCase());
     added.push(name);

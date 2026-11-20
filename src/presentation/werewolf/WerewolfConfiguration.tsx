@@ -11,10 +11,13 @@ import {
   type FixedIssue,
   type FixedItemView,
 } from "../../business/games/werewolf/fixedConfiguration";
-import type { WerewolfSpecialRole } from "../../business/games/werewolf/configuration";
+import {
+  werewolfPlayerLimits,
+  type WerewolfSpecialRole,
+} from "../../business/games/werewolf/configuration";
 import { Button } from "../components";
 import { ChoiceGroup, SetupTabs, StartBar, useFocusOnShow } from "../game-kit";
-import { ConfigInfo } from "./ConfigInfo";
+import { ConfigCardHead } from "./ConfigInfo";
 import { RoleRow, RoleTile } from "./ConfigTiles";
 
 interface WerewolfConfigurationProps {
@@ -87,6 +90,14 @@ export function WerewolfConfiguration({
    * The tile of a role. A role with options is one joined, optional selection button: a half for every option, each
    * with the name of the role and its option; a tap picks one, a tap on the chosen one leaves the role out.
    */
+  // The witch and the magician exclude each other (in most line-ups): the second line of the button says so.
+  const exclusiveNote = (id: string) =>
+    id === "witch" || id === "magician"
+      ? `(${t("werewolfConfig.notTogether", {
+          role: t(`werewolfConfig.items.${id === "witch" ? "magician" : "witch"}`),
+        })})`
+      : undefined;
+
   function renderItem(entry: FixedItemView) {
     const name = t(`werewolfConfig.items.${entry.id}`);
     if (entry.kind === "toggle") {
@@ -103,6 +114,7 @@ export function WerewolfConfiguration({
             lock={entry.lock}
             minimum={entry.minimum}
             name={name}
+            note={exclusiveNote(entry.id)}
             onToggle={() => onChange(toggleFixedRole(draft, entry.roles[0]!))}
             selected={entry.selected}
             showInfo={false}
@@ -223,10 +235,11 @@ export function WerewolfConfiguration({
             <h3 className="ww-box__title">{t("werewolfConfig.coreHeading")}</h3>
             {/* Every basic role is a card like the other roles: the name with its "i" on the first line, the value or the choice on the second. */}
             <section className="ww-card ww-card--wolves">
-              <div className="ww-card__head">
-                <h4>{t("werewolfConfig.wolves")}</h4>
-                <ConfigInfo id="wolves" name={t("werewolfConfig.wolves")} />
-              </div>
+              <ConfigCardHead
+                id="wolves"
+                name={t("werewolfConfig.wolves")}
+                title={t("werewolfConfig.wolves")}
+              />
               <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
                 {view.wolf.options.map((option) => (
                   <div className="ww-wolves__option" key={option.count}>
@@ -251,10 +264,11 @@ export function WerewolfConfiguration({
             {/* Only to read, nothing to set: the same cards with a plain number on the second line. */}
             <div className="ww-cards">
               <div aria-label={t("werewolfConfig.seer")} className="ww-card ww-stat" role="group">
-                <div className="ww-card__head">
-                  <h4>{t("werewolfConfig.seer")}</h4>
-                  <ConfigInfo id="seer" name={t("werewolfConfig.seer")} />
-                </div>
+                <ConfigCardHead
+                  id="seer"
+                  name={t("werewolfConfig.seer")}
+                  title={t("werewolfConfig.seer")}
+                />
                 <strong className="ww-stat__value">1</strong>
               </div>
               <div
@@ -262,10 +276,11 @@ export function WerewolfConfiguration({
                 className="ww-card ww-stat"
                 role="group"
               >
-                <div className="ww-card__head">
-                  <h4>{t("werewolfConfig.villagersTitle")}</h4>
-                  <ConfigInfo id="villagers" name={t("werewolfConfig.villagers")} />
-                </div>
+                <ConfigCardHead
+                  id="villagers"
+                  name={t("werewolfConfig.villagers")}
+                  title={t("werewolfConfig.villagersTitle")}
+                />
                 <strong className="ww-stat__value ww-villagers__number">
                   {view.villagers ?? 0}
                 </strong>
@@ -372,7 +387,14 @@ export function WerewolfConfiguration({
       tabIndex={-1}
     >
       {!view.supported ? (
-        <p className="ww-hint">{t("werewolfConfig.tooFewPlayers", { count: players })}</p>
+        <p className="ww-hint">
+          {players > werewolfPlayerLimits.targetMaximum
+            ? t("werewolfConfig.tooManyPlayers", {
+                count: players,
+                maximum: werewolfPlayerLimits.targetMaximum,
+              })
+            : t("werewolfConfig.tooFewPlayers", { count: players })}
+        </p>
       ) : (
         <SetupTabs
           ariaLabel={t("werewolfConfig.label")}

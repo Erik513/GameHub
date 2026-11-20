@@ -10,6 +10,8 @@ interface DialogProps {
   open: boolean;
   /** A large window for lists: wider and as high as the screen allows. */
   size?: "large";
+  /** A small line right under the title, for example the kind of a role. */
+  subtitle?: string;
   title: string;
   /** Something next to the title, for example a small box with a status. */
   titleExtra?: ReactNode;
@@ -22,6 +24,7 @@ export function Dialog({
   onClose,
   open,
   size,
+  subtitle,
   title,
   titleExtra,
 }: DialogProps) {
@@ -73,14 +76,17 @@ export function Dialog({
         role="dialog"
       >
         <div className="dialog__header">
-          {titleExtra ? (
-            <div className="dialog__title">
+          <div className={subtitle ? "dialog__heading" : "dialog__heading dialog__heading--plain"}>
+            {titleExtra ? (
+              <div className="dialog__title">
+                <h2 id={titleId}>{title}</h2>
+                {titleExtra}
+              </div>
+            ) : (
               <h2 id={titleId}>{title}</h2>
-              {titleExtra}
-            </div>
-          ) : (
-            <h2 id={titleId}>{title}</h2>
-          )}
+            )}
+            {subtitle && <p className="dialog__subtitle">{subtitle}</p>}
+          </div>
           <Button
             ref={closeButtonRef}
             aria-label={closeLabel}

@@ -293,8 +293,8 @@ const headingsOf = (dialog: HTMLElement) =>
   [...dialog.querySelectorAll(".ww-info__heading")].map((heading) => heading.textContent);
 
 it.each([
-  ["en", "Info about Hunter", ["General", "Tasks", "Options"], "Duty to shoot"],
-  ["de", "Info zu Jäger", ["Allgemein", "Aufgaben", "Optionen"], "Schusspflicht"],
+  ["en", "Info about Hunter", ["Tasks", "Options"], "Duty to shoot"],
+  ["de", "Info zu Jäger", ["Aufgaben", "Optionen"], "Schusspflicht"],
 ] as const)(
   "explains a role in parts: general, tasks, options (%s)",
   async (language, label, headings, option) => {
@@ -314,7 +314,7 @@ it("has a part of special notes only for a role that has some", async () => {
   const { user } = await renderConfiguration("en", 9);
   await user.click(screen.getByRole("button", { name: "Info about Witch" }));
   const dialog = await screen.findByRole("dialog");
-  expect(headingsOf(dialog)).toEqual(["General", "Tasks", "Special notes"]);
+  expect(headingsOf(dialog)).toEqual(["Tasks", "Special notes"]);
 });
 
 it("shows only the box of the players in the window of an extra", async () => {
@@ -361,3 +361,55 @@ it.each([
     expect(boxes.map((box) => box.getAttribute("data-state"))).toEqual(states);
   },
 );
+
+it.each([
+  ["en", 21, /Too many players: at most 20 \(now 21\)/],
+  ["de", 21, /Zu viele Spieler: höchstens 20 \(bisher 21\)/],
+  ["en", 5, /Add at least 6 players first \(now 5\)/],
+  ["de", 4, /Füge zuerst mindestens 6 Spieler hinzu \(bisher 4\)/],
+] as const)(
+  "tells what is wrong with the number of players (%s, %s)",
+  async (language, players, text) => {
+    await renderConfiguration(language, players);
+    expect(screen.getByText(text)).toBeInTheDocument();
+  },
+);
+
+it.each([
+  ["en", "Info about Hunter", "Village role"],
+  ["en", "Info about Werewolves", "Enemy of the village"],
+  ["en", "Info about Tanner", "Village role with a goal of its own"],
+  ["en", "Info about Drunk", "Extra"],
+  ["en", "Info about Magician", "Village role"],
+  ["en", "Info about Witch", "Village role"],
+  ["de", "Info zu Jäger", "Dorfrolle"],
+  ["de", "Info zu Werwölfe", "Gegner des Dorfes"],
+  ["de", "Info zu Gerber", "Dorfrolle mit eigenem Ziel"],
+  ["de", "Info zu Magier", "Dorfrolle"],
+] as const)("names the side right under the role (%s: %s)", async (language, label, team) => {
+  const { user } = await renderConfiguration(language, 12);
+  await user.click(screen.getByRole("button", { name: label }));
+  const dialog = await screen.findByRole("dialog");
+  expect(dialog.querySelector(".dialog__subtitle")).toHaveTextContent(team);
+});
+
+it.each([
+  ["en", "Witch", "(not together with Magician)"],
+  ["en", "Magician", "(not together with Witch)"],
+  ["de", "Hexe", "(nicht zusammen mit Magier)"],
+  ["de", "Magier", "(nicht zusammen mit Hexe)"],
+] as const)(
+  "says in the button of the %s that it does not play with the other (%s)",
+  async (language, name, note) => {
+    await renderConfiguration(language, 12);
+    const box = screen.getByRole("checkbox", { name }).closest("label");
+    expect(box).toHaveTextContent(note);
+  },
+);
+
+it("opens the window of a card with its name, like the button does", async () => {
+  const { user } = await renderConfiguration("en", 12);
+  await user.click(screen.getByRole("button", { name: "Seer" }));
+  const dialog = await screen.findByRole("dialog");
+  expect(dialog).toHaveTextContent("Village role");
+});

@@ -322,3 +322,47 @@ it.each(["en", "de"] as const)(
     expect(within(dialogs[0]!).getByRole("checkbox", { name: "Anna" })).toBeInTheDocument();
   },
 );
+
+it("allows no more ticks than the limit of the field and says so", async () => {
+  const setup = stores(
+    ["Anna", "Ben", "Cleo", "Dora"],
+    [{ name: "Family", members: ["Anna", "Ben", "Cleo", "Dora"] }],
+  );
+  const user = await renderWith(
+    "en",
+    setup,
+    <RosterPicker limit={2} onChange={() => undefined} value="" />,
+  );
+  await user.click(screen.getByRole("button", { name: texts.en.pick }));
+  const dialog = screen.getByRole("dialog");
+  await user.click(within(dialog).getByRole("button", { name: /^Family/ }));
+  await user.click(within(dialog).getByRole("checkbox", { name: "Anna" }));
+  expect(within(dialog).queryByRole("status")).not.toBeInTheDocument();
+  await user.click(within(dialog).getByRole("checkbox", { name: "Ben" }));
+  // Two are ticked: the others cannot be ticked any more, and the window tells why.
+  expect(within(dialog).getByRole("checkbox", { name: "Cleo" })).toBeDisabled();
+  expect(within(dialog).getByRole("status")).toHaveTextContent("at most 2 people");
+  // Unticking one makes room again.
+  await user.click(within(dialog).getByRole("checkbox", { name: "Ben" }));
+  expect(within(dialog).getByRole("checkbox", { name: "Cleo" })).toBeEnabled();
+});
+
+it('takes only as many players with "Choose all" as the limit allows, names typed by hand included', async () => {
+  const setup = stores(
+    ["Anna", "Ben", "Cleo"],
+    [{ name: "Family", members: ["Anna", "Ben", "Cleo"] }],
+  );
+  let applied = "";
+  const user = await renderWith(
+    "en",
+    setup,
+    <RosterPicker limit={3} onChange={(text) => (applied = text)} value="Zoe" />,
+  );
+  await user.click(screen.getByRole("button", { name: texts.en.pick }));
+  const dialog = screen.getByRole("dialog");
+  await user.click(within(dialog).getByRole("button", { name: texts.en.chooseAll }));
+  await user.click(within(dialog).getByRole("button", { name: texts.en.apply }));
+  // Zoe stays (typed by hand), so only two of the three fit.
+  expect(applied.split(", ")).toHaveLength(3);
+  expect(applied).toContain("Zoe");
+});
