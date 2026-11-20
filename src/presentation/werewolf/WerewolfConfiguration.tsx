@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   chooseFixedAlternative,
@@ -26,10 +26,15 @@ import { WakeOrderButton } from "./WakeOrderButton";
 import { RoleRow, RoleTile } from "./ConfigTiles";
 import { VariableRoles } from "./VariableRoles";
 
+/** The kind of roles: the narrator picks them (fixed) or the system draws among the allowed ones (variable). */
+export type RolesMode = "fixed" | "variable";
+
 interface WerewolfConfigurationProps {
   readonly draft: FixedDraft;
+  readonly mode: RolesMode;
   readonly onChange: (draft: FixedDraft) => void;
   readonly onDone: () => void;
+  readonly onModeChange: (mode: RolesMode) => void;
   /** The draft of the variable roles; it is kept apart from the fixed one. */
   readonly onVariableChange: (draft: VariableDraft) => void;
   readonly variableDraft: VariableDraft;
@@ -56,8 +61,10 @@ const variantValues = {
  */
 export function WerewolfConfiguration({
   draft,
+  mode,
   onChange,
   onDone,
+  onModeChange,
   onVariableChange,
   players,
   variableDraft,
@@ -65,7 +72,6 @@ export function WerewolfConfiguration({
   const { t } = useTranslation();
   const focus = useFocusOnShow<HTMLElement>();
   const view = describeFixedConfiguration(players, draft);
-  const [mode, setMode] = useState<"fixed" | "variable">("fixed");
 
   const roleName = (role: WerewolfSpecialRole) => t(`werewolfConfig.roles.${role}`);
   const issueText = (issue: FixedIssue): string => {
@@ -227,10 +233,10 @@ export function WerewolfConfiguration({
   const modeSwitch = (
     <ChoiceGroup
       hideLegend
-      initial="fixed"
+      initial={mode}
       legend={t("werewolfConfig.modeLabel")}
       name="mode"
-      onChange={(value) => setMode(value === "variable" ? "variable" : "fixed")}
+      onChange={(value) => onModeChange(value === "variable" ? "variable" : "fixed")}
       options={[
         { label: t("werewolfConfig.modeFixed"), value: "fixed" },
         { label: t("werewolfConfig.modeVariable"), value: "variable" },

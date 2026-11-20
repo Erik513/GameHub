@@ -284,3 +284,53 @@ it("names the count of the people in German", async () => {
     screen.getByRole("status", { name: "0 von 21 Personen (mit Erzähler)" }),
   ).toBeInTheDocument();
 });
+
+it("keeps the fixed and the variable roles apart, and the kind of roles", async () => {
+  const data = new Map<string, unknown>();
+  const memory: GameSettingsMemory = {
+    read: (key) => data.get(key),
+    write: (key, value) => void data.set(key, value),
+  };
+  const i18n = await createGameHubI18n("en");
+  const { Screen } = createWerewolfModule();
+  const view = () => (
+    <I18nextProvider i18n={i18n}>
+      <GameSettingsMemoryProvider memory={memory}>
+        <Screen />
+      </GameSettingsMemoryProvider>
+    </I18nextProvider>
+  );
+  const first = render(view());
+  const user = userEvent.setup();
+  await user.type(
+    screen.getByLabelText("Add player"),
+    "Anna, Ben, Cleo, Dora, Emil, Finn, Gina, Hans, Ida, Jan, Kim, Lea{enter}",
+  );
+  await user.click(screen.getByRole("button", { name: "Configuration" }));
+  // A fixed choice first.
+  await user.click(screen.getByRole("checkbox", { name: "Cupid" }));
+  // Then the variable roles: a role to the box for "may".
+  await user.click(screen.getByRole("radio", { name: "Variable roles" }));
+  await user.click(screen.getByRole("button", { name: "Witch" }));
+  await user.click(
+    within(await screen.findByRole("dialog", { name: "Witch" })).getByRole("button", {
+      name: "May be in the game",
+    }),
+  );
+  expect(data.get("werewolf.rolesMode")).toBe("variable");
+  expect(data.get("werewolf.variableConfiguration")).toMatchObject({ states: { witch: "may" } });
+  expect(data.get("werewolf.configuration")).toMatchObject({ roles: ["cupid"] });
+  first.unmount();
+
+  // The next game starts with the kind of roles and both drafts as they were.
+  render(view());
+  await user.click(screen.getByRole("button", { name: "Configuration" }));
+  expect(screen.getByRole("radio", { name: "Variable roles" })).toBeChecked();
+  expect(
+    [...document.querySelectorAll('.ww-vbox[data-kind="role"][data-state="may"] .ww-chip')].map(
+      (chip) => chip.textContent,
+    ),
+  ).toEqual(["Witch"]);
+  await user.click(screen.getByRole("radio", { name: "Fixed roles" }));
+  expect(screen.getByRole("checkbox", { name: "Cupid" })).toBeChecked();
+});

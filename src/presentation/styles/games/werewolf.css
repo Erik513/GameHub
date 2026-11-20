@@ -828,3 +828,13 @@
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
 }
+
+/* The "i" of an entry in the window of its choice, at the right end above the three choices. */
+.ww-pick-info {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ww-pick-info .kit-info-button {
+  position: static;
+}

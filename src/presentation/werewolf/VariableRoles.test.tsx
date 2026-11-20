@@ -12,7 +12,7 @@ import {
   type VariableState,
 } from "../../business/games/werewolf/variableConfiguration";
 import { createGameHubI18n } from "../../i18n";
-import { WerewolfConfiguration } from "./WerewolfConfiguration";
+import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
 
 type Language = "de" | "en";
 
@@ -36,12 +36,15 @@ async function renderVariable(language: Language, players: number, start = empty
   const latest = { variable: start };
   function Host() {
     const [variable, setVariable] = useState(start);
+    const [mode, setMode] = useState<RolesMode>("fixed");
     latest.variable = variable;
     return (
       <WerewolfConfiguration
         draft={emptyFixedDraft}
+        mode={mode}
         onChange={() => undefined}
         onDone={() => undefined}
+        onModeChange={setMode}
         onVariableChange={setVariable}
         players={players}
         variableDraft={variable}
@@ -292,4 +295,26 @@ it("shows the role that is dragged under the pointer", async () => {
   expect(boxOf("role", "may")).toHaveAttribute("data-over");
   fireEvent.pointerUp(window, { clientX: 60, clientY: 60 });
   expect(document.querySelector(".ww-chip--ghost")).toBeNull();
+});
+
+it("explains the role in the window of its choice", async () => {
+  const { user } = await renderVariable("en", 12);
+  await user.click(screen.getByRole("button", { name: "Hunter · Duty to shoot" }));
+  const dialog = await screen.findByRole("dialog", { name: "Hunter · Duty to shoot" });
+  await user.click(
+    within(dialog).getByRole("button", { name: "Info about Hunter · Duty to shoot" }),
+  );
+  // The explanation opens on top of the choice and tells what the hunter does.
+  const dialogs = screen.getAllByRole("dialog");
+  expect(dialogs).toHaveLength(2);
+  expect(dialogs[1]).toHaveTextContent("Tasks");
+});
+
+it("explains an extra in the window of its choice", async () => {
+  const { user } = await renderVariable("en", 12);
+  await user.click(screen.getByRole("button", { name: "Protective amulet" }));
+  const dialog = await screen.findByRole("dialog", { name: "Protective amulet" });
+  expect(
+    within(dialog).getByRole("button", { name: "Info about Protective amulet" }),
+  ).toBeInTheDocument();
 });

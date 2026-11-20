@@ -13,7 +13,7 @@ import {
 } from "../../business/games/werewolf/variableConfiguration";
 import { Button, Dialog } from "../components";
 import { TabPane, dropAttribute, usePlayerDrag } from "../game-kit";
-import { ConfigCardHead } from "./ConfigInfo";
+import { ConfigCardHead, ConfigInfo, type ConfigInfoId } from "./ConfigInfo";
 
 interface VariableRolesProps {
   readonly draft: VariableDraft;
@@ -90,6 +90,14 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
     }
     const entry = view.entries.find((candidate) => candidate.entry.id === id);
     return entry ? roleLabel(entry) : "";
+  };
+  // The explanation that belongs to an entry (the options of a role share the explanation of the role).
+  const infoIdOf = (id: string): ConfigInfoId => {
+    if (id.startsWith("item:")) return id.slice(5) as ConfigInfoId;
+    const role = view.entries.find((candidate) => candidate.entry.id === id)?.entry.role;
+    return role === "bodyguard" || role === "nightGuest"
+      ? "guard"
+      : ((role ?? "seer"));
   };
   const chip = (id: string, label: string, lock: VariableEntryView["lock"]) => (
     <button
@@ -270,6 +278,9 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
       >
         {picking !== undefined && (
           <div className="kit-pick">
+            <div className="ww-pick-info">
+              <ConfigInfo id={infoIdOf(picking)} name={labelOf(picking)} />
+            </div>
             {(() => {
               const isItem = picking.startsWith("item:");
               const current = isItem

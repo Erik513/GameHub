@@ -9,7 +9,7 @@ import {
   type VariableDraft,
 } from "../../business/games/werewolf/variableConfiguration";
 import { createGameHubI18n } from "../../i18n";
-import { WerewolfConfiguration } from "./WerewolfConfiguration";
+import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
 
 type Language = "de" | "en";
 
@@ -28,13 +28,16 @@ async function renderConfiguration(
   function Host() {
     const [draft, setDraft] = useState(start);
     const [variable, setVariable] = useState(startVariable);
+    const [mode, setMode] = useState<RolesMode>("fixed");
     latest.draft = draft;
     latest.variable = variable;
     return (
       <WerewolfConfiguration
         draft={draft}
+        mode={mode}
         onChange={setDraft}
         onDone={onDone}
+        onModeChange={setMode}
         onVariableChange={setVariable}
         players={players}
         variableDraft={variable}

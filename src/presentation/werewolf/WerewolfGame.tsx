@@ -13,9 +13,10 @@ import {
 import {
   emptyVariableDraft,
   normalizeVariableDraft,
+  parseSavedVariableDraft,
 } from "../../business/games/werewolf/variableConfiguration";
 import { usePersistentState } from "../game-kit";
-import { WerewolfConfiguration } from "./WerewolfConfiguration";
+import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
 import { WerewolfLineup } from "./WerewolfLineup";
 
 /**
@@ -47,8 +48,17 @@ export function WerewolfGame() {
   );
   // What was saved may not fit the players of today: the roles that no longer fit are taken back.
   const draft = normalizeFixedDraft(lineup.seats.length, savedDraft);
-  // The draft of the variable roles is kept apart from the fixed one (it is saved apart in a later step).
-  const [variableDraft, setVariableDraft] = useState(emptyVariableDraft);
+  // The draft of the variable roles is kept apart from the fixed one and saved apart; so is the kind of roles.
+  const [variableDraft, setVariableDraft] = usePersistentState(
+    "werewolf.variableConfiguration",
+    () => emptyVariableDraft,
+    parseSavedVariableDraft,
+  );
+  const [mode, setMode] = usePersistentState<RolesMode>(
+    "werewolf.rolesMode",
+    () => "fixed",
+    (raw) => (raw === "fixed" || raw === "variable" ? raw : undefined),
+  );
   const [configuring, setConfiguring] = useState(false);
 
   if (configuring) {
@@ -56,7 +66,9 @@ export function WerewolfGame() {
       <WerewolfConfiguration
         draft={draft}
         onChange={setDraft}
+        mode={mode}
         onDone={() => setConfiguring(false)}
+        onModeChange={setMode}
         onVariableChange={setVariableDraft}
         players={lineup.seats.length}
         variableDraft={normalizeVariableDraft(lineup.seats.length, variableDraft)}
