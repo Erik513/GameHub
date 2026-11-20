@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { werewolfPlayerLimits } from "../../business/games/werewolf/configuration";
 import {
   moveSeat,
   werewolfLineupIssues,
@@ -73,7 +74,11 @@ export function WerewolfLineup({ lineup, onChange, onOpenConfiguration }: Werewo
           {
             content: <PlayersTab lineup={lineup} onChange={onChange} />,
             id: "players",
-            label: t("werewolfLineup.playersTab", { count: lineup.participants.length }),
+            // The tab names how many players the game is made for; the count of the people is in the tab itself.
+            label: t("werewolfLineup.playersTab", {
+              maximum: werewolfPlayerLimits.targetMaximum,
+              minimum: werewolfPlayerLimits.minimum,
+            }),
           },
           {
             content: (

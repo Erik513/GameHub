@@ -189,8 +189,8 @@ it.each([
 });
 
 it.each([
-  ["en", "Configuration", "Done", "Hunter", "Duty to shoot", "Players (7)"],
-  ["de", "Konfiguration", "Fertig", "Jäger", "Schusspflicht", "Spieler (7)"],
+  ["en", "Configuration", "Done", "Hunter", "Duty to shoot", "Players (6-20)"],
+  ["de", "Konfiguration", "Fertig", "Jäger", "Schusspflicht", "Spieler (6-20)"],
 ] as const)(
   "opens the configuration from the line-up and keeps both when going back in %s",
   async (language, open, done, hunter, shot, playersTab) => {
@@ -263,17 +263,6 @@ it("keeps the line-up for the next game", async () => {
   expect(screen.getByText("Anna")).toBeInTheDocument();
   expect(screen.getByText("Ben")).toBeInTheDocument();
 });
-
-it.each([
-  ["en", /Werewolf is made for 6 to 20 players and a narrator/],
-  ["de", /Werwolf ist für 6 bis 20 Spieler und einen Erzähler ausgelegt/],
-] as const)(
-  "tells in the players tab how many people the game is made for (%s)",
-  async (language, text) => {
-    await renderGame(language);
-    expect(screen.getByText(text)).toBeInTheDocument();
-  },
-);
 
 it("counts the people in the players tab: red until a match is possible, then green", async () => {
   const user = await renderGame("en");

@@ -76,7 +76,13 @@ it("keeps a masked wolf detectable, skips a hunt without an active wolf and wake
     { type: "vote", night: 1, nomination: 1, yes: 9 },
     { type: "announceExile", night: 1 },
   );
-  expect(secondNight).toMatchObject({ status: "nightCall", night: 2, call: "wolves" });
+  expect(secondNight).toMatchObject({
+    status: "nightCall",
+    night: 2,
+    call: "wolves",
+    drunk: { player: "Ada", revealed: false },
+  });
+  expect(wakingPlayers(secondNight)).toEqual([]);
   const actual = play(secondNight, { type: "acknowledgeCall", night: 2 });
   expect(actual).toMatchObject({ status: "seer", victim: null });
   const reveal = dusk(dawn(vision(actual)));

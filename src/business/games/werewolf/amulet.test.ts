@@ -106,7 +106,7 @@ it("preserves protection for the former holder after they pass it on", () => {
   expect(dawn(morning).alive.map((p) => p.name)).toContain("Eva");
 });
 
-it("passes the amulet before nighttime heartbreak but loses it for a daytime death", () => {
+it("does not force a transfer for heartbreak and loses a kept amulet at death", () => {
   const bonded = apply(
     open(deal("Cam", ["cupid"])),
     { type: "bond", night: 1, players: ["Cam", "Eva"] },
@@ -115,8 +115,13 @@ it("passes the amulet before nighttime heartbreak but loses it for a daytime dea
   const day = resolve(firstNight(bonded));
   const night = dusk(day);
   const broken = attack(night, "Eva");
-  expect(broken).toMatchObject({ status: "amuletPass", amulet: { holder: "Cam", mustPass: true } });
-  expect(pass(broken, "Cam")).toBe(broken);
+  expect(broken).toMatchObject({
+    status: "amuletPass",
+    amulet: { holder: "Cam", mustPass: false },
+  });
+  const kept = transfer(broken, "Cam");
+  expect(kept.status).toBe("morning");
+  expect(dawn(kept).amulet).toBeNull();
   const morning = transfer(broken, "Dan");
   expect(werewolfAnnouncement(morning).map((p) => p.name)).toEqual(["Cam", "Eva"]);
   expect(dawn(morning)).toMatchObject({ status: "day", amulet: { holder: "Dan" } });
@@ -200,15 +205,14 @@ it.each([false, true])(
   },
 );
 
-it("protects the new holder from a hunter shot and requires passing at the next night end", () => {
+it("cannot shield the new holder from a hunter shot and removes the amulet", () => {
   const night = nightTwo(deal("Eva", ["hunter"]));
   const hunter = dawn(transfer(attack(night, "Cam"), "Dan"));
   const shot = apply(hunter, { type: "shot", night: 2, target: "Dan" });
-  expect(shot).toMatchObject({ status: "day", amulet: { holder: "Dan", mustPass: true } });
-  expect(werewolfAnnouncement(shot)).toEqual([]);
-  const next = attack(dusk(shot), null);
-  expect(next.status).toBe("amuletPass");
-  expect(pass(next, "Dan")).toBe(next);
+  expect(shot).toMatchObject({ status: "day", amulet: null });
+  expect(shot.alive.map((p) => p.name)).not.toContain("Dan");
+  expect(werewolfAnnouncement(shot)).toEqual([{ name: "Dan", role: "villager" }]);
+  expect(attack(dusk(shot), null).status).toBe("morning");
 });
 
 it("cannot block a correct hammer strike or the mayor penalty", () => {
@@ -243,4 +247,47 @@ it("cannot heal an existing tough-guy wound when acquired after the attack", () 
   const morning = transfer(attack(dusk(day), null), "Cam");
   expect(werewolfAnnouncement(morning)).toEqual([{ name: "Cam", role: "toughGuy" }]);
   expect(dawn(morning).amulet).toBeNull();
+});
+
+it.each([false, true])(
+  "executes a voted-out carrier and awards the tanner win (reveal=%s)",
+  (revealRoles) => {
+    const day = resolve(
+      firstNight(open(deal("Cam", ["tanner"], { tanner: "voteOnly", revealRoles }))),
+    );
+    const exile = apply(
+      day,
+      { type: "nominate", night: 1, target: "Cam", nominator: "Ada", seconder: "Bea" },
+      { type: "vote", night: 1, nomination: 1, yesVoters: names },
+    );
+    expect(exile.status).toBe("exile");
+    expect(werewolfAnnouncement(exile)).toEqual([
+      { name: "Cam", role: revealRoles ? "tanner" : null },
+    ]);
+    const next = apply(exile, { type: "announceExile", night: 1 });
+    expect(next.amulet).toBeNull();
+    expect(next.alive.map((p) => p.name)).not.toContain("Cam");
+    expect(next.tannerWinner).toBe("Cam");
+    expect(next.history.find((e) => e.kind === "death" && e.player === "Cam")).toMatchObject({
+      kind: "death",
+      sources: [{ cause: "vote", actors: names }],
+    });
+  },
+);
+
+it("delays a shot at the tough-guy carrier without activating amulet protection", () => {
+  const night = nightTwo(deal("Dan", ["hunter", "toughGuy"], { toughGuy: "anyAttack" }));
+  const hunter = dawn(transfer(attack(night, "Cam"), "Dan"));
+  const wounded = apply(hunter, { type: "shot", night: 2, target: "Dan" });
+  expect(wounded).toMatchObject({
+    status: "day",
+    toughGuyDiesOn: 3,
+    amulet: { holder: "Dan", mustPass: false },
+    toughGuyWound: { cause: "hunter", actors: ["Cam"] },
+  });
+  expect(wounded.alive.map((p) => p.name)).toContain("Dan");
+  expect(werewolfAnnouncement(wounded)).toEqual([]);
+  const end = attack(dusk(wounded), null);
+  expect(pass(end, "Dan").status).toBe("morning");
+  expect(resolve(end)).toMatchObject({ amulet: null });
 });

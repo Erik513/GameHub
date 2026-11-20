@@ -435,16 +435,7 @@ function afterHammer(state: Match, victim: Player | null, poisoned: Player | nul
 function endNight(state: Match, victim: Player | null, poisoned: Player | null): WerewolfState {
   const morning = { ...state, status: "morning" as const, victim, poisoned };
   if (!state.amulet) return morning;
-  const partner = state.lovers?.includes(state.amulet.holder)
-    ? state.lovers.find((name) => name !== state.amulet!.holder)
-    : undefined;
-  const partnerDies =
-    partner !== undefined && morningDeaths(morning).some((p) => p.name === partner);
-  return {
-    ...morning,
-    status: "amuletPass",
-    amulet: { ...state.amulet, mustPass: state.amulet.mustPass || partnerDies },
-  };
+  return { ...morning, status: "amuletPass", amulet: state.amulet };
 }
 
 function finishResolution(state: Match, next: "day" | "wolves"): WerewolfState {
@@ -454,7 +445,7 @@ function finishResolution(state: Match, next: "day" | "wolves"): WerewolfState {
   return { ...state, status: "day", nomination: 0 };
 }
 
-function absorbWithAmulet(state: Match, target: Player | undefined): Match | null {
+function absorbNightAttackWithAmulet(state: Match, target: Player | undefined): Match | null {
   return target && target.name === state.amulet?.holder
     ? { ...state, amulet: { holder: target.name, mustPass: true } }
     : null;
@@ -524,9 +515,7 @@ export function werewolfAnnouncement(
     state.status === "morning"
       ? morningDeaths(state)
       : state.status === "exile"
-        ? state.victim.name === state.amulet?.holder
-          ? []
-          : relatedDeaths(state, [state.victim])
+        ? relatedDeaths(state, [state.victim])
         : (state.shotDeaths ?? []);
   const names = new Set(deaths.map((player) => player.name));
   return state.players
@@ -678,12 +667,12 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       const victim = state.alive.find((p) => p.name === event.target && p.role !== "wolf");
       if (!victim) return state;
       if (state.hostPlayer && victim.role === "nightGuest") return afterWolves(state, null);
-      const saved = absorbWithAmulet(state, victim);
+      const saved = absorbNightAttackWithAmulet(state, victim);
       if (saved) return afterWolves(saved, null);
       if (victim.name === state.protectedPlayer) return afterWolves(state, null);
       if (victim.name !== state.hostPlayer) return afterWolves(state, victim);
       const guest = findActiveRole(state, "nightGuest");
-      const savedGuest = absorbWithAmulet(state, guest);
+      const savedGuest = absorbNightAttackWithAmulet(state, guest);
       return savedGuest ? afterWolves(savedGuest, null) : afterWolves(state, guest ?? null);
     }
     case "seer": {
@@ -723,7 +712,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
           ? undefined
           : state.alive.find((player) => player.name === event.poison);
       if (event.poison !== null && (!target || !state.potions.poison)) return state;
-      const saved = absorbWithAmulet(state, target);
+      const saved = absorbNightAttackWithAmulet(state, target);
       const poisoned = saved || target?.name === state.protectedPlayer ? null : (target ?? null);
       const next = {
         ...(saved ?? state),
@@ -747,7 +736,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
         return state;
       const targets = state.alive.filter((player) => picks.has(player.name));
       if (targets.length !== picks.size) return state;
-      const saved = absorbWithAmulet(
+      const saved = absorbNightAttackWithAmulet(
         state,
         targets.find((player) => player.name === state.amulet?.holder),
       );
@@ -808,10 +797,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
     }
     case "exile": {
       if (event.type !== "announceExile") return state;
-      const saved = absorbWithAmulet(state, state.victim);
-      return saved
-        ? finishResolution(saved, "wolves")
-        : announce(state, relatedDeaths(state, [state.victim]), "wolves", state.victim);
+      return announce(state, relatedDeaths(state, [state.victim]), "wolves", state.victim);
     }
     case "hunter": {
       if (event.type !== "shot") return state;
@@ -821,8 +807,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
           : finishResolution(state, state.next);
       const target = state.alive.find((player) => player.name === event.target);
       if (!target) return state;
-      const saved = absorbWithAmulet(state, target);
-      if (saved) return finishResolution(saved, state.next);
+
       if (delaysToughGuyAttack(state, target, "hunter"))
         return finishResolution(woundToughGuy(state, "hunter", [state.hunter.name]), state.next);
       const shotDeaths = relatedDeaths(state, [target]);

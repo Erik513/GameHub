@@ -2,7 +2,7 @@
 export const werewolfTexts = {
   werewolfLineup: {
     label: "Line-up",
-    playersTab: "Players ({{count}})",
+    playersTab: "Players ({{minimum}}-{{maximum}})",
     seatsTab: "Seats",
     noPlayers: "Add players first.",
     noNarrator: "Choose a narrator among the participants.",
@@ -18,8 +18,6 @@ export const werewolfTexts = {
     narratorBadge: "Narrator",
     listLabel: "Participants ({{count}})",
     countLabel: "{{count}} of {{maximum}} people (with the narrator)",
-    range: "Werewolf is made for {{minimum}} to {{maximum}} players and a narrator.",
-    full: "That is the limit: at most {{maximum}} players and the narrator.",
     seatsHint:
       "Drag the names into the order the players really sit: seat 1 is right next to the narrator on the left, then clockwise.",
     seatsEmpty: "Add players first and choose a narrator.",

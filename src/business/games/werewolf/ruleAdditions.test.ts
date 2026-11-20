@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import {
   createWerewolf,
+  getWerewolfWinner,
   transitionWerewolf,
   type WerewolfEvent,
   type WerewolfSettings,
@@ -178,3 +179,36 @@ it.each([false, true])(
     });
   },
 );
+
+it("does not force lovers to spare one another and preserves the original winning sides", () => {
+  let s = setup(["cupid"]);
+  const wolf = who(s, "wolf");
+  const partner = who(s, "villager");
+  s = act(
+    s,
+    { type: "bond", night: 1, players: [wolf, partner] },
+    { type: "loversReady", night: 1 },
+  );
+  expect(validTargets(s, "attack")).toContain(partner);
+  const attacked = act(s, { type: "attack", night: 1, target: partner });
+  expect(attacked).not.toBe(s);
+  const day = dawn(attack(s, null));
+  const seconder = day.alive.find((p) => p.name !== wolf && p.name !== partner)!.name;
+  const nominated = act(day, {
+    type: "nominate",
+    night: 1,
+    target: partner,
+    nominator: wolf,
+    seconder,
+  });
+  expect(nominated.status).toBe("vote");
+  const voted = act(nominated, { type: "vote", night: 1, nomination: 1, yesVoters: [wolf] });
+  expect(voted.status).toBe("day");
+  expect(voted.history[voted.history.length - 1]).toMatchObject({
+    kind: "action",
+    event: { type: "vote", yesVoters: [wolf] },
+  });
+  expect(getWerewolfWinner(s.alive.filter((p) => p.name === wolf || p.name === partner))).toBe(
+    "wolves",
+  );
+});

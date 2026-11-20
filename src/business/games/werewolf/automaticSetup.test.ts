@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
 import { createBalancedWerewolf, createRandomWerewolf } from "./balancedSetup";
 import {
@@ -125,100 +125,89 @@ interface ArchiveRow {
   gamesPerLineup: number;
   stats: ArchiveStat[];
 }
-// The simulation archive (docs/simulations, about 80 MB) is not part of the repository; the audit only runs
-// where the archive is present (for example in the working folder of the game logic).
-const archiveAvailable = existsSync("docs/simulations/werewolf-eight-player-wolf-recheck.jsonl.gz");
-it.skipIf(!archiveAvailable)(
-  "audits the automatic policy against stored paired evidence without starting games",
-  () => {
-    const files = [
-      "werewolf-eight-player-wolf-recheck.jsonl.gz",
-      "werewolf-small-fixed-count-rechecks.jsonl.gz",
-      "werewolf-nineteen-player-samples.jsonl.gz",
-      "werewolf-twenty-player-samples.jsonl.gz",
-    ];
-    const results: unknown[] = [];
-    for (const file of files) {
-      const rows = gunzipSync(readFileSync(`docs/simulations/${file}`))
-        .toString()
-        .trim()
-        .split("\n")
-        .map((line) => JSON.parse(line) as ArchiveRow)
-        .filter(
-          (row) =>
-            row.model === "sharedKnowledgeAndIdiot" || row.model === "earlyAttackQuietSecondDay",
-        );
-      const groups = new Map<
-        string,
-        {
-          roles: WerewolfSpecialRole[];
-          settings: Partial<WerewolfSettings>;
-          counts: Map<number, number>;
-          players: number;
-        }
-      >();
-      for (const row of rows)
-        for (const stat of row.stats) {
-          const wolfCount = Number(row.comparison.split("-").at(-1));
-          if (!availableWerewolfCounts(row.players).includes(wolfCount)) continue;
-          const settings = {
-            ...stat.settings,
-            attackOnFirstNight: row.model === "earlyAttackQuietSecondDay",
-          };
-          const key = JSON.stringify([
-            row.players,
-            row.comparison.split("-")[0],
-            row.model,
-            stat.id,
-          ]);
-          let group = groups.get(key);
-          if (!group) {
-            group = { players: row.players, roles: stat.roles, settings, counts: new Map() };
-            groups.set(key, group);
-          }
-          group.counts.set(wolfCount, stat.wolves / row.gamesPerLineup);
-        }
-      let checked = 0,
-        comparable = 0,
-        absoluteLoss = 0,
-        regret = 0;
-      for (const group of groups.values()) {
-        const resolved = resolveAutomaticWerewolfLineup(group.players, group.roles, group.settings);
-        expect(resolved).not.toBeNull();
-        const wolfCount = resolved!.balance.recommendedWolfCount;
-        expect(availableWerewolfCounts(group.players)).toContain(wolfCount);
-        checked++;
-        const probability = group.counts.get(wolfCount);
-        if (probability === undefined) continue;
-        const loss = Math.abs(probability - 0.5);
-        absoluteLoss += loss;
-        regret += loss - Math.min(...[...group.counts.values()].map((p) => Math.abs(p - 0.5)));
-        comparable++;
+it("audits the automatic policy against stored paired evidence without starting games", () => {
+  const files = [
+    "werewolf-eight-player-wolf-recheck.jsonl.gz",
+    "werewolf-small-fixed-count-rechecks.jsonl.gz",
+    "werewolf-nineteen-player-samples.jsonl.gz",
+    "werewolf-twenty-player-samples.jsonl.gz",
+  ];
+  const results: unknown[] = [];
+  for (const file of files) {
+    const rows = gunzipSync(readFileSync(`docs/simulations/${file}`))
+      .toString()
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line) as ArchiveRow)
+      .filter(
+        (row) =>
+          row.model === "sharedKnowledgeAndIdiot" || row.model === "earlyAttackQuietSecondDay",
+      );
+    const groups = new Map<
+      string,
+      {
+        roles: WerewolfSpecialRole[];
+        settings: Partial<WerewolfSettings>;
+        counts: Map<number, number>;
+        players: number;
       }
-      expect(checked).toBeGreaterThan(0);
-      results.push({
-        file,
-        checked,
-        comparable,
-        meanDistanceFromHalf: absoluteLoss / comparable,
-        meanRegret: regret / comparable,
-      });
+    >();
+    for (const row of rows)
+      for (const stat of row.stats) {
+        const wolfCount = Number(row.comparison.split("-").at(-1));
+        if (!availableWerewolfCounts(row.players).includes(wolfCount)) continue;
+        const settings = {
+          ...stat.settings,
+          attackOnFirstNight: row.model === "earlyAttackQuietSecondDay",
+        };
+        const key = JSON.stringify([row.players, row.comparison.split("-")[0], row.model, stat.id]);
+        let group = groups.get(key);
+        if (!group) {
+          group = { players: row.players, roles: stat.roles, settings, counts: new Map() };
+          groups.set(key, group);
+        }
+        group.counts.set(wolfCount, stat.wolves / row.gamesPerLineup);
+      }
+    let checked = 0,
+      comparable = 0,
+      absoluteLoss = 0,
+      regret = 0;
+    for (const group of groups.values()) {
+      const resolved = resolveAutomaticWerewolfLineup(group.players, group.roles, group.settings);
+      expect(resolved).not.toBeNull();
+      const wolfCount = resolved!.balance.recommendedWolfCount;
+      expect(availableWerewolfCounts(group.players)).toContain(wolfCount);
+      checked++;
+      const probability = group.counts.get(wolfCount);
+      if (probability === undefined) continue;
+      const loss = Math.abs(probability - 0.5);
+      absoluteLoss += loss;
+      regret += loss - Math.min(...[...group.counts.values()].map((p) => Math.abs(p - 0.5)));
+      comparable++;
     }
-    writeFileSync(
-      "docs/simulations/werewolf-automatic-policy-audit.json",
-      JSON.stringify(
-        {
-          method:
-            "Offline audit of archived paired model outcomes. No new games. Descriptive in-sample diagnostics; no guarantee of 50% human wins. Equal weight per archived configuration/model group; groups with no selected-count observation excluded from loss metrics.",
-          targets: { 7: -4, 8: -4, 11: -7 },
-          results,
-        },
-        null,
-        2,
-      ) + "\n",
-    );
-  },
-);
+    expect(checked).toBeGreaterThan(0);
+    results.push({
+      file,
+      checked,
+      comparable,
+      meanDistanceFromHalf: absoluteLoss / comparable,
+      meanRegret: regret / comparable,
+    });
+  }
+  writeFileSync(
+    "docs/simulations/werewolf-automatic-policy-audit.json",
+    JSON.stringify(
+      {
+        method:
+          "Offline audit of archived paired model outcomes. No new games. Descriptive in-sample diagnostics; no guarantee of 50% human wins. Equal weight per archived configuration/model group; groups with no selected-count observation excluded from loss metrics.",
+        targets: { 7: -4, 8: -4, 11: -7 },
+        results,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+});
 
 it("rejects invalid options and random values throughout normal game creation", () => {
   expect(resolveAutomaticWerewolfLineup(8, [], { mayor: "bad" as "hammer" })).toBeNull();

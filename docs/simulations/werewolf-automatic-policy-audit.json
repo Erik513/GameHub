@@ -1,0 +1,38 @@
+{
+  "method": "Offline audit of archived paired model outcomes. No new games. Descriptive in-sample diagnostics; no guarantee of 50% human wins. Equal weight per archived configuration/model group; groups with no selected-count observation excluded from loss metrics.",
+  "targets": {
+    "7": -4,
+    "8": -4,
+    "11": -7
+  },
+  "results": [
+    {
+      "file": "werewolf-eight-player-wolf-recheck.jsonl.gz",
+      "checked": 938,
+      "comparable": 938,
+      "meanDistanceFromHalf": 0.10618996535181234,
+      "meanRegret": 0.010513459488272921
+    },
+    {
+      "file": "werewolf-small-fixed-count-rechecks.jsonl.gz",
+      "checked": 1848,
+      "comparable": 1848,
+      "meanDistanceFromHalf": 0.08522405979437225,
+      "meanRegret": 0.003950453192640692
+    },
+    {
+      "file": "werewolf-nineteen-player-samples.jsonl.gz",
+      "checked": 180,
+      "comparable": 178,
+      "meanDistanceFromHalf": 0.062261587078651676,
+      "meanRegret": 0.01952808988764045
+    },
+    {
+      "file": "werewolf-twenty-player-samples.jsonl.gz",
+      "checked": 180,
+      "comparable": 178,
+      "meanDistanceFromHalf": 0.06853054775280899,
+      "meanRegret": 0.025313202247191007
+    }
+  ]
+}
