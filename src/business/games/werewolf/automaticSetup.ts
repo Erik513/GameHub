@@ -21,6 +21,7 @@ export function automaticWerewolfSettings(
   const result = {
     mayor: settings.mayor ?? "doubleVote",
     hunterShot: settings.hunterShot ?? "optional",
+    toughGuy: settings.toughGuy ?? "wolfOnly",
     allowSelfSilence: settings.allowSelfSilence ?? false,
     revealRoles: settings.revealRoles ?? true,
     drunk: settings.drunk ?? false,
@@ -31,6 +32,7 @@ export function automaticWerewolfSettings(
   if (
     !["doubleVote", "hammer"].includes(result.mayor) ||
     !["optional", "required"].includes(result.hunterShot) ||
+    !["wolfOnly", "anyAttack"].includes(result.toughGuy) ||
     !["anyDeath", "voteOnly"].includes(result.tanner) ||
     [
       result.allowSelfSilence,

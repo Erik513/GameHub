@@ -482,3 +482,36 @@ describe("a saved draft", () => {
     expect(parseSavedFixedDraft(raw)).toBeUndefined();
   });
 });
+
+describe("the options of the tough guy", () => {
+  it("is a role with two options, the usual one is the wolf attack only", () => {
+    expect(defaultFixedSettings.toughGuy).toBe("wolfOnly");
+    expect(itemOf(12, "toughGuy").kind).toBe("variant");
+  });
+
+  it("takes the role with the option that is picked, and leaves it out with nothing", () => {
+    const every = chooseFixedVariant(emptyFixedDraft, "toughGuy", "anyAttack");
+    expect(every.roles).toContain("toughGuy");
+    expect(every.settings.toughGuy).toBe("anyAttack");
+    expect(itemOf(12, "toughGuy", every).variant).toBe("anyAttack");
+    const wolves = chooseFixedVariant(every, "toughGuy", "wolfOnly");
+    expect(wolves.settings.toughGuy).toBe("wolfOnly");
+    expect(chooseFixedVariant(wolves, "toughGuy", null).roles).not.toContain("toughGuy");
+  });
+
+  it("is handed to the game logic", () => {
+    const every = chooseFixedVariant(emptyFixedDraft, "toughGuy", "anyAttack");
+    expect(fixedConfigurationSettings(every, 12).toughGuy).toBe("anyAttack");
+  });
+
+  it("is read from a save; an older save without it gets the usual option", () => {
+    const saved = JSON.parse(
+      JSON.stringify(chooseFixedVariant(emptyFixedDraft, "toughGuy", "anyAttack")),
+    ) as { settings: Record<string, unknown> };
+    expect(parseSavedFixedDraft(saved)?.settings.toughGuy).toBe("anyAttack");
+    delete saved.settings.toughGuy;
+    expect(parseSavedFixedDraft(saved)?.settings.toughGuy).toBe("wolfOnly");
+    saved.settings.toughGuy = "everything";
+    expect(parseSavedFixedDraft(saved)).toBeUndefined();
+  });
+});

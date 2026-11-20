@@ -202,5 +202,14 @@ export function createVariableWerewolf(
   const draw = drawVariableWerewolfLineup(players.length, selection, random, settings);
   if (!draw.ok) return draw;
   const game = createResolvedWerewolf(playersText, narrator, random, draw.lineup);
-  return game ? { ok: true, game } : fail("invalidRandom");
+  return game
+    ? {
+        ok: true,
+        game: {
+          ...game,
+          nightRolePool: [...selection.rolePool],
+          nightItemPool: [...selection.itemPool],
+        },
+      }
+    : fail("invalidRandom");
 }

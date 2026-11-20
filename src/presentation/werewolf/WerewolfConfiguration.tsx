@@ -35,6 +35,7 @@ const variantValues = {
   mayor: ["doubleVote", "hammer"],
   spellcaster: ["allowed", "forbidden"],
   tanner: ["anyDeath", "voteOnly"],
+  toughGuy: ["wolfOnly", "anyAttack"],
 } as const;
 
 /**

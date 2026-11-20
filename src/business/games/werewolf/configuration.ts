@@ -26,6 +26,7 @@ export interface WerewolfSettings {
   readonly wolfCountMode?: "standard" | "balanced";
   readonly mayor: "doubleVote" | "hammer";
   readonly hunterShot: "optional" | "required";
+  readonly toughGuy: "wolfOnly" | "anyAttack";
   readonly allowSelfSilence: boolean;
   readonly revealRoles: boolean;
   readonly drunk: boolean;

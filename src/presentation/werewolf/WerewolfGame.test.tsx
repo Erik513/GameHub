@@ -263,3 +263,14 @@ it("keeps the line-up for the next game", async () => {
   expect(screen.getByText("Anna")).toBeInTheDocument();
   expect(screen.getByText("Ben")).toBeInTheDocument();
 });
+
+it.each([
+  ["en", /Werewolf is made for 6 to 20 players and a narrator/],
+  ["de", /Werwolf ist für 6 bis 20 Spieler und einen Erzähler ausgelegt/],
+] as const)(
+  "tells in the players tab how many people the game is made for (%s)",
+  async (language, text) => {
+    await renderGame(language);
+    expect(screen.getByText(text)).toBeInTheDocument();
+  },
+);

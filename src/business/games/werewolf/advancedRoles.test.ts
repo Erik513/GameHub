@@ -31,7 +31,7 @@ function see(state: WerewolfState, target = "Ada") {
 const wolves = (state: WerewolfState) => act(state, { type: "wolvesReady", night: 1 });
 const day = (state: WerewolfState) => act(state, { type: "announceMorning", night: state.night });
 const dusk = (state: WerewolfState) => act(state, { type: "endDay", night: state.night });
-const attack = (state: WerewolfState, target: string) =>
+const attack = (state: WerewolfState, target: string | null) =>
   act(state, { type: "attack", night: state.night, target });
 const silence = (state: WerewolfState, target: string | null) =>
   act(state, { type: "silence", night: state.night, target });
@@ -155,78 +155,67 @@ it("applies silence to nominations and voting, including the village idiot's man
   expect(day(silence(self, "Cam")).silencedPlayer).toBe("Cam");
 });
 
-it("keeps the hammer private and allows it after a skipped day", () => {
-  const config = { mayor: "hammer", revealRoles: false } as const;
-  const first = deal(["mayor"], config);
-  expect(first.status).toBe("wolves");
-  const next = dusk(day(see(wolves(first))));
+it("places the private hammer after all attacks and permits a dying mayor to act", () => {
+  const first = deal(["mayor"], { mayor: "hammer", revealRoles: false });
+  const next = see(attack(dusk(day(see(wolves(first)))), "Cam"));
+  expect(next.status).toBe("mayor");
   expect(wakingPlayers(next)).toEqual(["Cam"]);
   expect(hammer(next, "Cam")).toBe(next);
   expect(hammer(next, "Unknown")).toBe(next);
-  const waiting = hammer(next, null);
-  expect(waiting).toMatchObject({ status: "wolves", hammerUsed: false });
-  expect(dusk(day(see(attack(waiting, "Flo")))).status).toBe("mayor");
+  expect(hammer(next, null)).toMatchObject({ status: "morning", hammerUsed: false });
   const hit = hammer(next, "Ada");
-  expect(hit).toMatchObject({ status: "morning", hammerUsed: true });
-  expect(werewolfAnnouncement(hit)).toEqual([{ name: "Ada", role: null }]);
-  expect(day(hit)).toMatchObject({ status: "finished", winner: "village" });
-
-  let miss = hammer(next, "Dan");
-  expect(miss.alive.map((player) => player.name)).toContain("Dan");
-  expect(wakingPlayers(miss)).toEqual(["Ada"]);
-  miss = see(attack(miss, "Flo"));
-  expect(werewolfAnnouncement(miss)).toEqual([
+  expect(hit.alive).toHaveLength(6);
+  expect(werewolfAnnouncement(hit)).toEqual([
+    { name: "Ada", role: null },
     { name: "Cam", role: null },
-    { name: "Flo", role: null },
   ]);
-  const nextNight = dusk(day(miss));
-  expect(nextNight.status).toBe("mayor");
+  expect(day(hit)).toMatchObject({ status: "finished", winner: "village" });
+  const miss = hammer(next, "Dan");
+  expect(werewolfAnnouncement(miss)).toEqual([{ name: "Cam", role: null }]);
+  const nextNight = see(attack(dusk(day(miss)), null));
+  expect(nextNight.status).toBe("nightCall");
   expect(wakingPlayers(nextNight)).toEqual([]);
-  expect(hammer(nextNight, null).status).toBe("wolves");
+  expect(hammer(nextNight, "Ada")).toBe(nextNight);
+  expect(act(nextNight, { type: "acknowledgeCall", night: 3 }).status).toBe("morning");
 });
 
-it("withdraws a hit wolf before the other wolves act and keeps the empty mayor phase", () => {
+it("resolves the hammer only at morning and keeps spent living calls as cover", () => {
   const table = [...names, "Gia", "Hugo", "Ira"];
   let state = createWerewolf(table.join(","), "Narrator", () => 0.99, ["mayor"], {
     mayor: "hammer",
   })!;
   state = act(state, ...table.map((player) => ({ type: "roleSeen", player }) as const));
-  state = dusk(day(see(wolves(state))));
-  state = hammer(state, "Ada");
-  expect(wakingPlayers(state)).toEqual(["Bea"]);
-  expect(hammer(state, "Bea")).toBe(state);
-  state = see(attack(state, "Ira"), "Bea");
-  expect(werewolfAnnouncement(state)).toEqual([
+  state = see(attack(dusk(day(see(wolves(state)))), "Ira"));
+  const hit = hammer(state, "Ada");
+  expect(hit.alive.map((p) => p.name)).toContain("Ada");
+  expect(werewolfAnnouncement(hit)).toEqual([
     { name: "Ada", role: "wolf" },
     { name: "Ira", role: "villager" },
   ]);
-  const nextNight = dusk(day(state));
-  expect(nextNight.status).toBe("mayor");
-  expect(wakingPlayers(nextNight)).toEqual([]);
+  const nextNight = see(attack(dusk(day(hit)), null), "Bea");
+  expect(nextNight.status).toBe("nightCall");
   expect(hammer(nextNight, "Bea")).toBe(nextNight);
-  expect(hammer(nextNight, null).status).toBe("wolves");
 });
 
-it("defers a hunter linked to a hammer victim until the morning", () => {
+it("defers a hunter linked to a failed hammer until morning", () => {
   let state = dusk(
     day(
       see(wolves(couple(deal(["cupid", "mayor", "hunter"], { mayor: "hammer" }), ["Dan", "Eva"]))),
     ),
   );
-  state = hammer(state, "Flo");
-  expect(state.status).toBe("wolves");
-  state = day(see(attack(state, "Flo")));
+  state = hammer(see(attack(state, "Flo")), "Flo");
+  expect(state.status).toBe("morning");
+  state = day(state);
   expect(state).toMatchObject({ status: "hunter", hunter: { name: "Eva" } });
   expect(act(state, { type: "shot", night: 2, target: "Ada" })).toMatchObject({
     winner: "village",
   });
 });
 
-it("orders simultaneous morning announcements by seating so their order hides the cause", () => {
+it("orders simultaneous announcements by seats rather than cause", () => {
   const first = deal(["mayor"], { mayor: "hammer", revealRoles: false });
-  const next = dusk(day(see(wolves(first))));
-  const morning = see(attack(hammer(next, "Flo"), "Bea"));
-  expect(werewolfAnnouncement(morning)).toEqual([
+  const next = see(attack(dusk(day(see(wolves(first)))), "Bea"));
+  expect(werewolfAnnouncement(hammer(next, "Flo"))).toEqual([
     { name: "Bea", role: null },
     { name: "Cam", role: null },
   ]);
@@ -260,26 +249,24 @@ it("resolves eight distinct deaths in one night including the morning hunter sho
   state = day(passHealers(see(wolves(state), named("wolf"))));
   expect(state.alive).toHaveLength(18);
 
-  state = hammer(dusk(state), null);
-  state = day(passHealers(see(attack(state, named("toughGuy")), named("wolf"))));
+  state = day(
+    hammer(passHealers(see(attack(dusk(state), named("toughGuy")), named("wolf"))), null),
+  );
   expect(state).toMatchObject({ status: "day", night: 2, toughGuyDiesOn: 3 });
   expect(state.alive).toHaveLength(18);
   expect(state.spellsRemaining).toBe(2);
   expect(state.potions.poison).toBe(true);
 
-  state = hammer(dusk(state), wrongTarget);
+  state = dusk(state);
   expect(state.night).toBe(3);
-  expect(state.alive).toHaveLength(16);
-  expect(state.alive.map((player) => player.name)).not.toContain(named("mayor"));
-  expect(state.alive.map((player) => player.name)).not.toContain(partner);
-  expect(state.alive.map((player) => player.name)).toContain(wrongTarget);
-
   state = see(attack(state, named("hunter")), named("wolf"));
   expect(state).toMatchObject({ status: "witch", victim: { name: named("hunter") } });
   state = act(state, { type: "potions", night: 3, heal: false, poison: poisoned });
   expect(state).toMatchObject({ status: "magician", spellsRemaining: 2 });
   state = act(state, { type: "castSpells", night: 3, heal: false, kill: spellTargets });
-  expect(state.status).toBe("morning");
+  expect(state.status).toBe("mayor");
+  state = hammer(state, wrongTarget);
+  expect(state.alive).toHaveLength(18);
   const morningNames = werewolfAnnouncement(state).map((player) => player.name);
   expect(new Set(morningNames).size).toBe(7);
 

@@ -1,0 +1,506 @@
+import { describe, expect, it } from "vitest";
+import {
+  createWerewolf,
+  transitionWerewolf,
+  wakingPlayers,
+  werewolfAnnouncement,
+  type WerewolfEvent,
+  type WerewolfSettings,
+  type WerewolfSpecialRole,
+  type WerewolfState,
+} from "./stateMachine";
+import {
+  describePlayers,
+  validTargets,
+  validNominators,
+  validSeconders,
+  votingPlayers,
+} from "./selectors";
+import { nightScript } from "./nightScript";
+import { createVariableWerewolf } from "./variableSetup";
+import { advanceWerewolfSession, createWerewolfSession, undoWerewolfSession } from "./session";
+
+const act = (s: WerewolfState, ...events: WerewolfEvent[]) => events.reduce(transitionWerewolf, s);
+function game(
+  roles: readonly WerewolfSpecialRole[] = [],
+  settings: Partial<WerewolfSettings> = {},
+) {
+  const s = createWerewolf(
+    Array.from({ length: 18 }, (_, i) => "P" + i).join(","),
+    "Narrator",
+    () => 0.99,
+    roles,
+    { wolfCount: 4, ...settings },
+  )!;
+  return act(s, ...s.players.map((p) => ({ type: "roleSeen", player: p.name }) as const));
+}
+function vision(s: WerewolfState) {
+  if (s.status !== "seer") return s;
+  return act(
+    s,
+    { type: "inspect", night: s.night, target: validTargets(s)[0]! },
+    { type: "closeVision", night: s.night },
+  );
+}
+const morning = (s: WerewolfState) => act(s, { type: "announceMorning", night: s.night });
+function nextNight(s: WerewolfState) {
+  return act(morning(s), { type: "endDay", night: s.night });
+}
+function skipCover(s: WerewolfState): WerewolfState {
+  return s.status === "nightCall"
+    ? skipCover(act(s, { type: "acknowledgeCall", night: s.night }))
+    : s;
+}
+function noAttack(s: WerewolfState) {
+  return vision(
+    act(s, {
+      type: s.night === 1 && !s.settings.attackOnFirstNight ? "wolvesReady" : "attack",
+      night: s.night,
+      target: null,
+    }),
+  );
+}
+
+describe("narrator business contract", () => {
+  it("orders roles deterministically and keeps time-specific calls in their assigned nights", () => {
+    const initial = game(
+      [
+        "cupid",
+        "mayor",
+        "witch",
+        "magician",
+        "spellcaster",
+        "hunter",
+        "bodyguard",
+        "paranormalInvestigator",
+      ],
+      { mayor: "hammer" },
+    );
+    expect(nightScript(initial).map((c) => c.id)).toEqual([
+      "cupid",
+      "lovers",
+      "drunkReveal",
+      "bodyguard",
+      "nightGuest",
+      "wolves",
+      "seer",
+      "investigator",
+      "witch",
+      "magician",
+      "mayor",
+      "spellcaster",
+      "amuletPass",
+    ]);
+    expect(nightScript(initial).find((c) => c.id === "mayor")?.mode).toBe("skip");
+    expect(nightScript({ ...initial, night: 2 }).find((c) => c.id === "mayor")?.mode).toBe(
+      "active",
+    );
+    const dead = { ...initial, alive: initial.alive.filter((p) => p.role !== "witch") };
+    expect(nightScript(dead).find((c) => c.id === "witch")?.mode).toBe("skip");
+    expect(
+      nightScript({ ...dead, settings: { ...dead.settings, revealRoles: false } }).find(
+        (c) => c.id === "witch",
+      )?.mode,
+    ).toBe("cover");
+    const spent = {
+      ...initial,
+      potions: { heal: false, poison: false },
+      spellsRemaining: 0,
+      investigationUsed: true,
+      hammerUsed: true,
+      night: 2,
+    };
+    for (const role of ["witch", "magician", "investigator", "mayor"])
+      expect(nightScript(spent).find((c) => c.id === role)?.mode).toBe("cover");
+  });
+
+  it("makes undrawn variable roles cover calls and prevents actions or stale acknowledgments", () => {
+    const result = createVariableWerewolf(
+      Array.from({ length: 10 }, (_, i) => "P" + i).join(","),
+      "Narrator",
+      () => 0.99,
+      {
+        rolePool: ["cupid", "witch", "nightGuest"],
+        roleRange: { minimum: 0, maximum: 0 },
+        itemPool: ["drunk"],
+        itemRange: { minimum: 0, maximum: 0 },
+      },
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw Error("setup");
+    let s = act(
+      result.game,
+      ...result.game.players.map((p) => ({ type: "roleSeen", player: p.name }) as const),
+    );
+    expect(s).toMatchObject({ status: "nightCall", call: "cupid" });
+    expect(validTargets(s)).toEqual([]);
+    expect(wakingPlayers(s)).toEqual([]);
+    expect(act(s, { type: "bond", night: 1, players: ["P0", "P1"] })).toBe(s);
+    expect(act(s, { type: "acknowledgeCall", night: 2 })).toBe(s);
+    s = skipCover(s);
+    expect(s.status).toBe("wolves");
+    const end = skipCover(noAttack(s));
+    expect(end.status).toBe("morning");
+    expect(
+      end.history.filter((e) => e.kind === "action" && e.event.type === "acknowledgeCall"),
+    ).toHaveLength(4);
+    expect(nightScript({ ...end, night: 3 }).find((c) => c.id === "drunkReveal")?.mode).toBe(
+      "cover",
+    );
+  });
+
+  it("resolves hammer overlaps once and records every effective cause with its actor", () => {
+    let s = game(["mayor", "witch", "magician", "spellcaster"], { mayor: "hammer" });
+    s = noAttack(s);
+    s = act(
+      s,
+      { type: "potions", night: 1, heal: false, poison: null },
+      { type: "castSpells", night: 1, heal: false, kill: [] },
+      { type: "silence", night: 1, target: null },
+    );
+    s = nextNight(s);
+    const mayor = s.players.find((p) => p.role === "mayor")!.name;
+    const witch = s.players.find((p) => p.role === "witch")!.name;
+    const magician = s.players.find((p) => p.role === "magician")!.name;
+    s = vision(act(s, { type: "attack", night: 2, target: mayor }));
+    s = act(
+      s,
+      { type: "potions", night: 2, heal: false, poison: mayor },
+      { type: "castSpells", night: 2, heal: false, kill: [mayor] },
+    );
+    expect(s.status).toBe("mayor");
+    expect(validTargets(s)).not.toContain(mayor);
+    const wrong = s.players.find((p) => p.role === "villager")!.name;
+    s = act(s, { type: "hammer", night: 2, target: wrong });
+    expect(s.alive.some((p) => p.name === mayor)).toBe(true);
+    s = act(s, { type: "silence", night: 2, target: wrong });
+    s = morning(s);
+    const death = s.history.filter((e) => e.kind === "death");
+    expect(death).toHaveLength(1);
+    expect(death[0]).toMatchObject({
+      kind: "death",
+      player: mayor,
+      sources: [
+        { cause: "wolves" },
+        { cause: "witchPoison", actors: [witch] },
+        { cause: "magicianKill", actors: [magician] },
+        { cause: "hammerBackfire", actors: [mayor] },
+      ],
+    });
+    expect(describePlayers(s).find((p) => p.name === mayor)).toMatchObject({
+      alive: false,
+      death: death[0],
+    });
+    expect(s.history.map((e) => e.id)).toEqual(s.history.map((_, i) => i + 1));
+  });
+
+  it("validates multi-target selections using remaining spell cost and immutable reducer probes", () => {
+    let s = noAttack(game(["magician"]));
+    const frozen = JSON.stringify(s);
+    const choices = validTargets(s);
+    expect(choices).toHaveLength(18);
+    expect(validTargets(s, "kill", { selected: [choices[0]!], heal: true })).toEqual([]);
+    expect(validTargets(s, "kill", { selected: [choices[0]!] })).not.toContain(choices[0]);
+    expect(validTargets(s, "poison")).toEqual([]);
+    expect(JSON.stringify(s)).toBe(frozen);
+    s = act(s, { type: "castSpells", night: 1, heal: false, kill: [choices[0]!, choices[1]!] });
+    expect(validTargets(s)).toEqual([]);
+  });
+
+  it("preserves state and log on rejected actions, and undo restores both without randomness", () => {
+    const start = game();
+    const empty = createWerewolfSession(start);
+    expect(undoWerewolfSession(empty)).toEqual({ ok: false, reason: "emptyHistory" });
+    expect(advanceWerewolfSession(empty, { type: "endDay", night: 1 })).toBe(empty);
+    const passed = advanceWerewolfSession(empty, { type: "wolvesReady", night: 1 });
+    const restored = undoWerewolfSession(passed);
+    expect(restored.ok).toBe(true);
+    if (restored.ok) expect(restored.session.present).toBe(start);
+    const dawn = createWerewolfSession(noAttack(start));
+    const day = advanceWerewolfSession(dawn, { type: "announceMorning", night: 1 });
+    expect(undoWerewolfSession(day)).toEqual({ ok: false, reason: "confirmationRequired" });
+    const confirmed = undoWerewolfSession(day, true);
+    if (!confirmed.ok) throw Error("undo");
+    expect(confirmed.session.present).toBe(dawn.present);
+    const stale = act(day.present, { type: "endDay", night: 0 });
+    expect(stale).toBe(day.present);
+  });
+});
+
+function choices(s: WerewolfState): WerewolfEvent[] {
+  const night = s.night;
+  const targets = validTargets(s);
+  const choose = (
+    type:
+      | "attack"
+      | "protect"
+      | "stayWith"
+      | "hammer"
+      | "inspect"
+      | "investigate"
+      | "silence"
+      | "shot"
+      | "passAmulet",
+  ) => targets.map((target) => ({ type, night, target }));
+  switch (s.status) {
+    case "roles":
+      return [{ type: "roleSeen", player: s.players[s.index]!.name }];
+    case "nightCall":
+      return [{ type: "acknowledgeCall", night }];
+    case "amuletIntro":
+      return [{ type: "amuletReady", night }];
+    case "amuletPass":
+      return choose("passAmulet");
+    case "cupid":
+      return targets.flatMap((a) =>
+        validTargets(s, "bond", { selected: [a] }).map(
+          (b) => ({ type: "bond", night, players: [a, b] }) as const,
+        ),
+      );
+    case "lovers":
+      return [{ type: "loversReady", night }];
+    case "drunkReveal":
+    case "drunkHunter":
+      return [{ type: "drunkReady", night }];
+    case "mayor":
+      return [...choose("hammer"), { type: "hammer", night, target: null }];
+    case "bodyguard":
+      return choose("protect");
+    case "nightGuest":
+      return choose("stayWith");
+    case "wolves":
+      return night === 1 && !s.settings.attackOnFirstNight
+        ? [{ type: "wolvesReady", night }]
+        : [...choose("attack"), { type: "attack", night, target: null }];
+    case "seer":
+      return choose("inspect");
+    case "vision":
+      return [{ type: "closeVision", night }];
+    case "investigator":
+      return [...choose("investigate"), { type: "investigate", night, target: null }];
+    case "investigation":
+      return [{ type: "closeInvestigation", night }];
+    case "witch":
+      return [false, true]
+        .flatMap((heal) =>
+          [null, ...validTargets(s, "poison", { heal })].map(
+            (poison) => ({ type: "potions", night, heal, poison }) as const,
+          ),
+        )
+        .filter((e) => transitionWerewolf(s, e) !== s);
+    case "magician":
+      return [false, true]
+        .flatMap((heal) =>
+          [
+            [],
+            ...validTargets(s, "kill", { heal }).flatMap((a) => [
+              [a],
+              ...validTargets(s, "kill", { heal, selected: [a] }).map((b) => [a, b]),
+            ]),
+          ].map((kill) => ({ type: "castSpells", night, heal, kill }) as const),
+        )
+        .filter((e) => transitionWerewolf(s, e) !== s);
+    case "spellcaster":
+      return [...choose("silence"), { type: "silence", night, target: null }];
+    case "morning":
+      return [{ type: "announceMorning", night }];
+    case "day":
+      return [
+        ...targets.map((target) => {
+          const voters = s.alive.filter((p) => p.name !== target && p.name !== s.silencedPlayer);
+          return {
+            type: "nominate",
+            night,
+            target,
+            nominator: voters[0]!.name,
+            seconder: voters[1]!.name,
+          } as const;
+        }),
+        { type: "endDay", night },
+      ];
+    case "vote":
+      return [[], s.alive.filter((p) => p.name !== s.silencedPlayer).map((p) => p.name)].map(
+        (yesVoters) => ({ type: "vote", night, nomination: s.nomination, yesVoters }),
+      );
+    case "exile":
+      return [{ type: "announceExile", night }];
+    case "hunter":
+      return [
+        ...choose("shot"),
+        ...(s.settings.hunterShot === "optional" || !s.alive.length
+          ? [{ type: "shot", night, target: null } as const]
+          : []),
+      ];
+    case "finished":
+      return [];
+  }
+}
+
+it("plays reproducible complete games across all roles, privacy modes and attack settings", () => {
+  const all: WerewolfSpecialRole[] = [
+    "cupid",
+    "bodyguard",
+    "witch",
+    "magician",
+    "mayor",
+    "hunter",
+    "spellcaster",
+    "idiot",
+    "toughGuy",
+    "apprenticeSeer",
+    "paranormalInvestigator",
+    "tanner",
+  ];
+  const visited = new Set<string>();
+  const causes = new Set<string>();
+  for (let seed = 1; seed <= 100; seed++) {
+    let word = seed;
+    const random = () => {
+      word = (Math.imul(word, 1664525) + 1013904223) >>> 0;
+      return word / 2 ** 32;
+    };
+    const roles = all.map((r) => (r === "bodyguard" && seed % 2 === 0 ? "nightGuest" : r));
+    let s = createWerewolf(
+      Array.from({ length: 20 }, (_, i) => "P" + i).join(","),
+      "Narrator",
+      random,
+      roles,
+      {
+        wolfCount: 4,
+        mayor: seed % 2 ? "hammer" : "doubleVote",
+        revealRoles: seed % 3 === 0,
+        drunk: true,
+        amulet: true,
+        attackOnFirstNight: seed % 2 === 0,
+        hunterShot: seed % 2 ? "required" : "optional",
+        toughGuy: seed % 2 ? "wolfOnly" : "anyAttack",
+        allowSelfSilence: seed % 2 === 0,
+        tanner: seed % 2 ? "anyDeath" : "voteOnly",
+      },
+    )!;
+    for (let step = 0; s.status !== "finished"; step++) {
+      expect(step).toBeLessThan(500);
+      visited.add(s.status);
+      const events = choices(s);
+      expect(events.length, s.status).toBeGreaterThan(0);
+      const event = events[Math.floor(random() * events.length)]!;
+      const next = transitionWerewolf(s, event);
+      expect(next, event.type).not.toBe(s);
+      expect(new Set(next.alive.map((p) => p.name)).size).toBe(next.alive.length);
+      expect(transitionWerewolf(s, { type: "endDay", night: s.night - 1 })).toBe(s);
+      const died = s.alive.filter((p) => !next.alive.some((q) => p.name === q.name));
+      const deaths = next.history.slice(s.history.length).filter((e) => e.kind === "death");
+      expect(deaths).toHaveLength(died.length);
+      for (const death of deaths) {
+        if (death.kind !== "death") continue;
+        expect(death.sources.length, death.player).toBeGreaterThan(0);
+        for (const source of death.sources) causes.add(source.cause);
+      }
+      const description = describePlayers(next);
+      expect(description.filter((p) => p.alive)).toHaveLength(next.alive.length);
+      expect(description.filter((p) => p.amulet).length).toBe(next.amulet ? 1 : 0);
+      s = next;
+    }
+    expect(
+      new Set(
+        s.history
+          .filter((e) => e.kind === "death")
+          .map((e) => (e.kind === "death" ? e.player : "")),
+      ).size,
+    ).toBe(s.players.length - s.alive.length);
+  }
+  for (const status of [
+    "nightCall",
+    "hunter",
+    "witch",
+    "magician",
+    "mayor",
+    "amuletPass",
+    "drunkReveal",
+  ])
+    expect(visited.has(status), status).toBe(true);
+  for (const cause of [
+    "wolves",
+    "witchPoison",
+    "magicianKill",
+    "hammer",
+    "hammerBackfire",
+    "heartbreak",
+    "vote",
+    "hunter",
+    "toughGuy",
+  ])
+    expect(causes.has(cause), cause).toBe(true);
+}, 20000);
+
+it("provides valid nomination participants and mandatory weighted voters", () => {
+  let s = morning(noAttack(game(["idiot", "mayor"])));
+  const target = s.alive.find((p) => p.role === "wolf")!.name;
+  expect(validNominators(s, target)).not.toContain(target);
+  const nominator = validNominators(s, target)[0]!;
+  const seconders = validSeconders(s, target, nominator);
+  expect(seconders).not.toContain(target);
+  expect(seconders).not.toContain(nominator);
+  expect(votingPlayers(s)).toEqual([]);
+  s = act(s, { type: "nominate", night: 1, target, nominator, seconder: seconders[0]! });
+  const voters = votingPlayers(s);
+  expect(voters.find((p) => p.requiredYes)?.name).toBe(
+    s.players.find((p) => p.role === "idiot")!.name,
+  );
+  expect(voters.find((p) => p.weight === 2)?.name).toBe(
+    s.players.find((p) => p.role === "mayor")!.name,
+  );
+  const mayor = s.players.find((p) => p.role === "mayor")!.name;
+  const disabled = { ...s, silencedPlayer: mayor };
+  expect(votingPlayers(disabled).map((p) => p.name)).not.toContain(mayor);
+  expect(validTargets({ ...s, status: "day", nomination: 0, alive: s.alive.slice(0, 2) })).toEqual(
+    [],
+  );
+});
+
+it("conceals an undrawn or masked apprentice after the public seer dies", () => {
+  const s = game();
+  const noSeer = {
+    ...s,
+    alive: s.alive.filter((p) => p.role !== "seer"),
+    nightRolePool: ["apprenticeSeer"] as const,
+  };
+  expect(nightScript(noSeer).find((p) => p.id === "seer")?.mode).toBe("cover");
+  const withApprentice = game(["apprenticeSeer"]);
+  const name = withApprentice.players.find((p) => p.role === "apprenticeSeer")!.name;
+  const masked = {
+    ...withApprentice,
+    alive: withApprentice.alive.filter((p) => p.role !== "seer"),
+    drunk: { player: name, revealed: false },
+  };
+  expect(nightScript(masked).find((p) => p.id === "seer")?.mode).toBe("cover");
+  expect(
+    nightScript({ ...masked, drunk: null, alive: [] }).find((p) => p.id === "seer")?.mode,
+  ).toBe("skip");
+});
+
+it("does not resurrect a hunter announcement from a queued cover continuation", () => {
+  const initial = game(["hunter"]);
+  const hunter = initial.players.find((p) => p.role === "hunter")!;
+  const s: WerewolfState = {
+    ...initial,
+    status: "hunter",
+    hunter,
+    next: "wolves",
+    alive: initial.alive.filter((p) => p !== hunter),
+    nightRolePool: ["bodyguard", "nightGuest"],
+  };
+  const shot = act(s, {
+    type: "shot",
+    night: 1,
+    target: initial.players.find((p) => p.role === "wolf")!.name,
+  });
+  expect(shot.status).toBe("nightCall");
+  expect(werewolfAnnouncement(shot)).toHaveLength(1);
+  const first = act(shot, { type: "acknowledgeCall", night: 2 });
+  expect(first.status).toBe("nightCall");
+  expect(werewolfAnnouncement(first)).toEqual([]);
+  const next = act(first, { type: "acknowledgeCall", night: 2 });
+  expect(next.status).toBe("wolves");
+  expect(werewolfAnnouncement(next)).toEqual([]);
+});

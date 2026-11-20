@@ -76,8 +76,10 @@ it("keeps a masked wolf detectable, skips a hunt without an active wolf and wake
     { type: "vote", night: 1, nomination: 1, yes: 9 },
     { type: "announceExile", night: 1 },
   );
-  expect(secondNight).toMatchObject({ status: "seer", night: 2, victim: null });
-  const reveal = dusk(dawn(vision(secondNight)));
+  expect(secondNight).toMatchObject({ status: "nightCall", night: 2, call: "wolves" });
+  const actual = play(secondNight, { type: "acknowledgeCall", night: 2 });
+  expect(actual).toMatchObject({ status: "seer", victim: null });
+  const reveal = dusk(dawn(vision(actual)));
   expect(reveal.status).toBe("drunkReveal");
   expect(werewolfDrunkReveal(reveal)).toEqual({ name: "Ada", role: "wolf" });
   expect(play(reveal, { type: "attack", night: 3, target: "Dan" })).toBe(reveal);
@@ -87,7 +89,9 @@ it("keeps a masked wolf detectable, skips a hunt without an active wolf and wake
 it("does not promote the apprentice while the masked seer is alive", () => {
   const wolves = openNight(deal(2 / 9, ["apprenticeSeer"]));
   const noVision = play(wolves, { type: "wolvesReady", night: 1 });
-  expect(noVision.status).toBe("morning");
+  expect(noVision.status).toBe("nightCall");
+  expect(wakingPlayers(noVision)).toEqual([]);
+  expect(play(noVision, { type: "acknowledgeCall", night: 1 }).status).toBe("morning");
 });
 
 it.each([

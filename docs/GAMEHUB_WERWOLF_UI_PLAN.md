@@ -1,5 +1,7 @@
 # Werwolf – Prüfung der Planung und Umsetzungsplan der Oberfläche
 
+Aktueller Logikstand vom 20.11.2026: Hammer-Neuordnung, Zielkatalog, Tarnskript, Ereignisprotokoll, Spielerprojektion und Rücknahme sind implementiert. Verbindlicher Anschluss für Claude: [Erzähler-API](GAMEHUB_WERWOLF_NARRATOR_API.md). Ältere Planungs-/Prüfabschnitte beschreiben ihren damaligen Stand. Browser-Speicherung, Navigation und UI bleiben gesonderte Integrationsarbeit.
+
 Stand: 19.11.2026, erstellt von Claude Code vor Beginn der Oberflächenarbeit (Branch `game/werewolf-ui`). Grundlage: [UI-Spezifikation](GAMEHUB_WERWOLF_UI.md), [technische Übergabe](GAMEHUB_WERWOLF_HANDOFF.md), [Spielregeln](GAMEHUB_WERWOLF.md) und der Quelltext von `src/business/games/werewolf`. **Dieses Dokument ändert weder Logik noch Oberfläche; es enthält Rückmeldung, Prüfergebnis, einen Schrittplan und offene Entscheidungen.**
 
 ## 1. Kurzfassung
@@ -117,3 +119,8 @@ Reihenfolge-Begründung: 1 und 2 sind unabhängig vom Spielablauf und bringen di
 1. Entscheidungen 1–10 (die Mehrheit ist mit „ja, Empfehlung“ erledigt).
 2. Ich lege `game/werewolf-ui` auf `main` neu an, übernehme die Logik und führe Schritt 0 aus.
 3. Wünsche an Codex (Abschnitt 3) gebe ich dir als Auftragsliste, damit sie bis Schritt 4 vorliegen.
+
+## 8. Noch offen (notiert am 20.11.2026)
+
+- **Spielanleitung in der Kopfleiste der Hauptansicht.** Wie bei Tabu ("Spielregeln" über `useGameRulesButton`) soll die Hauptansicht des Werwolfs oben in der Leiste einen Knopf für die Spielanleitung bekommen; die Spielerliste ist dort bewusst nicht mehr (sie gibt es nur im GameHub). Inhalt der Anleitung und Darstellung sind noch festzulegen; die Existenz des Knopfes ist bestätigt (siehe `docs/GAMEHUB_WERWOLF_UI.md`). Noch nicht umgesetzt.
+- Die Standardaktion "Spieleinstellungen" der Hauptansicht ist durch den Schieberegler-Knopf neben "Spiel starten" abgedeckt.

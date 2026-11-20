@@ -92,7 +92,8 @@ it("can heal the magician and a different wolf victim over two nights", () => {
   const spent = attack(afterMorning(secondHeal), "P7");
   expect(cast(spent, true)).toBe(spent);
   expect(cast(spent, false, "P1")).toBe(spent);
-  expect(cast(spent).status).toBe("morning");
+  expect(spent.status).toBe("nightCall");
+  expect(play(spent, { type: "acknowledgeCall", night: spent.night }).status).toBe("morning");
 });
 
 it("can target the wolf victim and resolves the death only once", () => {
@@ -133,10 +134,12 @@ it("can heal the night guest and cast a death spell on the host", () => {
 });
 
 it("wakes a masked magician only after the third-night reveal", () => {
-  const first = firstNight(deal([], { drunk: true }));
-  expect(first.status).toBe("morning");
-  const second = attack(afterMorning(first), null);
-  expect(second.status).toBe("morning");
+  let first = firstNight(deal([], { drunk: true }));
+  expect(first.status).toBe("nightCall");
+  first = play(first, { type: "acknowledgeCall", night: 1 });
+  let second = attack(afterMorning(first), null);
+  expect(second.status).toBe("nightCall");
+  second = play(second, { type: "acknowledgeCall", night: 2 });
   const reveal = afterMorning(second);
   expect(werewolfDrunkReveal(reveal)).toEqual({ name: "P5", role: "magician" });
   const third = attack(play(reveal, { type: "drunkReady", night: 3 }), null);

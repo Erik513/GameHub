@@ -90,11 +90,12 @@ it("resolves the delayed death together with a linked lover, even during a decis
       ),
     ),
   );
-  state = act(endDay(state), { type: "hammer", night: 2, target: null });
-  state = morning(sight(attack(state, "Cam")));
-  state = act(endDay(state), { type: "hammer", night: 3, target: "Ada" });
+  state = act(sight(attack(endDay(state), "Cam")), { type: "hammer", night: 2, target: null });
+  state = morning(state);
+  state = act(sight(attack(endDay(state), "Bea")), { type: "hammer", night: 3, target: "Ada" });
   expect(werewolfAnnouncement(state)).toEqual([
     { name: "Ada", role: "wolf" },
+    { name: "Bea", role: "seer" },
     { name: "Cam", role: "toughGuy" },
     { name: "Flo", role: "villager" },
   ]);
@@ -131,7 +132,9 @@ it("lets the investigator wait, skips dead neighbors, wraps the circle and spend
   expect(wakingPlayers(state)).toEqual(["Cam"]);
   expect(werewolfAnnouncement(state)).toEqual([]);
   state = morning(act(state, { type: "closeInvestigation", night: 3 }));
-  expect(sight(attack(endDay(state), null)).status).toBe("morning");
+  const cover = sight(attack(endDay(state), null));
+  expect(cover.status).toBe("nightCall");
+  expect(act(cover, { type: "acknowledgeCall", night: 4 }).status).toBe("morning");
 });
 
 it("fills optional roles once and rejects duplicate selections", () => {
@@ -233,7 +236,8 @@ it("lets the witch heal and poison in one night and consumes both potions exactl
   state = sight(act(state, { type: "attack", night: 3, target: "Eva" }));
   expect(act(state, { type: "potions", night: 3, heal: true, poison: null })).toBe(state);
   expect(act(state, { type: "potions", night: 3, heal: false, poison: "Dan" })).toBe(state);
-  state = act(state, { type: "potions", night: 3, heal: false, poison: null });
+  expect(state.status).toBe("nightCall");
+  state = act(state, { type: "acknowledgeCall", night: 3 });
   expect(state).toMatchObject({ status: "morning", poisoned: null });
   expect(morning(state).alive.map((player) => player.name)).toEqual(["Ada", "Bea", "Cam", "Dan"]);
 });

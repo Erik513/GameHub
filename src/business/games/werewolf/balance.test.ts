@@ -165,6 +165,8 @@ function decision(
 ): WerewolfEvent {
   const { night, alive } = state;
   switch (state.status) {
+    case "nightCall":
+      return { type: "acknowledgeCall", night };
     case "roles":
       return { type: "roleSeen", player: state.players[state.index]!.name };
     case "amuletIntro":

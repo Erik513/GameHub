@@ -98,6 +98,7 @@ export const werewolfConfigTexts = {
     },
     variants: {
       allowed: "Selbstwahl erlaubt",
+      anyAttack: "Jeder Angriff",
       anyDeath: "Sieg bei jedem Ausscheiden",
       bodyguard: "Leibwächter",
       doubleVote: "Doppelte Stimme",
@@ -107,6 +108,7 @@ export const werewolfConfigTexts = {
       optional: "Keine Schusspflicht",
       required: "Schusspflicht",
       voteOnly: "Sieg nur bei Abstimmung",
+      wolfOnly: "Nur Wolfsangriff",
     },
     variantHint:
       "Tippe eine Rolle an, um sie ins Spiel zu nehmen. Eine Rolle mit Optionen hat für jede Option eine Hälfte; tippe die gewählte Hälfte erneut an, um die Rolle wegzulassen.",
@@ -214,10 +216,12 @@ export const werewolfConfigTexts = {
           "Sieg bei jedem Ausscheiden: Jeder Tod zählt.\nSieg nur bei Abstimmung: Er muss rausgewählt werden.",
       },
       toughGuy: {
-        general: "Nach einem Wolfsangriff nimmt er am nächsten Tag normal teil.",
         tasks:
-          "Ein Wolfsangriff tötet ihn nicht sofort: In der Angriffsnacht kann er noch gerettet werden, in der Nacht darauf erliegt er seiner Wunde.",
-        notes: "Jede andere Todesursache tötet ihn sofort.",
+          "Ein Angriff tötet ihn nicht sofort: Er nimmt am nächsten Tag normal teil und erliegt in der Nacht darauf seiner Wunde.",
+        options:
+          "Nur Wolfsangriff: Nur ein Wolfsangriff wirkt so.\nJeder Angriff: Auch Gift, Todeszauber und Jägerschuss wirken so.",
+        notes:
+          "Ein Wolfsangriff lässt sich in der Angriffsnacht noch heilen.\nHammer, Abstimmung und der Tod des Liebespartners töten ihn sofort.",
       },
       villagers: {
         general:

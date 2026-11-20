@@ -97,6 +97,8 @@ function decisions(state: WerewolfState): Decision[] {
       .map((player) => player.role)
       .find((role) => role === "bodyguard" || role === "nightGuest") ?? "wolves";
   switch (state.status) {
+    case "nightCall":
+      return [[{ type: "acknowledgeCall", night }, state.resume.status]];
     case "roles":
       return names.map((name) => [
         { type: "roleSeen", player: name },
@@ -115,7 +117,9 @@ function decisions(state: WerewolfState): Decision[] {
     case "amuletPass":
       return names.map((target) => [
         { type: "passAmulet", night, target },
-        player(target) && (!state.amulet.mustPass || target !== state.amulet.holder) ? "day" : null,
+        player(target) && (!state.amulet.mustPass || target !== state.amulet.holder)
+          ? "morning"
+          : null,
       ]);
     case "cupid":
       return names.flatMap((first, index) =>
@@ -229,7 +233,9 @@ function decisions(state: WerewolfState): Decision[] {
         (target !== state.silencedPlayer &&
           player(target) &&
           (state.settings.allowSelfSilence || player(target)?.role !== "spellcaster"))
-          ? "morning"
+          ? state.amulet
+            ? "amuletPass"
+            : "morning"
           : null,
       ]);
     case "morning":
@@ -287,7 +293,11 @@ function checkTransition(state: WerewolfState, [event, expected]: Decision) {
     return null;
   }
   assert.notEqual(next, state, "Rejected a legal decision");
-  if (expected !== state.status) assert.equal(next.status, expected);
+  if (expected !== state.status) {
+    let actual = next;
+    while (actual.status === "nightCall" && actual.call !== expected) actual = actual.resume;
+    assert.equal(actual.status === "nightCall" ? actual.call : actual.status, expected);
+  }
   assert.equal(next.players, state.players);
   assert(next.night === state.night || next.night === state.night + 1);
   assert.equal(new Set(next.alive).size, next.alive.length);

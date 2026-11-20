@@ -1,3 +1,6 @@
+import { recordWerewolfTransition, type WerewolfLogEntry } from "./eventLog";
+import { delaysToughGuyAttack, type WoundCause } from "./wounds";
+import { nightScript, type NightRole } from "./nightScript";
 import { parsePlayers } from "../../shared/players";
 import { shuffle } from "../../shared/shuffle";
 
@@ -22,6 +25,10 @@ interface Amulet {
   readonly mustPass: boolean;
 }
 interface Match {
+  readonly history: readonly WerewolfLogEntry[];
+  readonly hammerVictim: string | null;
+  readonly nightRolePool?: readonly WerewolfSpecialRole[];
+  readonly nightItemPool?: readonly ("drunk" | "amulet")[];
   readonly narrator: string;
   readonly players: readonly Player[];
   readonly alive: readonly Player[];
@@ -38,6 +45,11 @@ interface Match {
   readonly nightDeaths: readonly Player[];
   readonly shotDeaths?: readonly Player[];
   readonly toughGuyDiesOn: number | null;
+  readonly toughGuyWound: {
+    readonly cause: "wolves" | "witchPoison" | "magicianKill" | "hunter";
+    readonly actors: readonly string[];
+    readonly night: number;
+  } | null;
   readonly investigationUsed: boolean;
   readonly drunk: { readonly player: string; readonly revealed: boolean } | null;
   readonly tannerWinner: string | null;
@@ -52,11 +64,18 @@ interface HunterTurn {
 export type WerewolfState = Match &
   (
     | { readonly status: "roles"; readonly index: number }
-    | { readonly status: "amuletIntro" | "amuletPass"; readonly amulet: Amulet }
+    | { readonly status: "nightCall"; readonly call: NightRole; readonly resume: WerewolfState }
+    | { readonly status: "amuletIntro"; readonly amulet: Amulet }
+    | {
+        readonly status: "amuletPass";
+        readonly amulet: Amulet;
+        readonly victim: Player | null;
+        readonly poisoned: Player | null;
+      }
     | { readonly status: "cupid" }
     | { readonly status: "lovers"; readonly lovers: Lovers }
     | { readonly status: "drunkReveal" }
-    | { readonly status: "mayor" }
+    | { readonly status: "mayor"; readonly victim: Player | null; readonly poisoned: Player | null }
     | { readonly status: "bodyguard" | "nightGuest" }
     | { readonly status: "wolves" }
     | { readonly status: "seer"; readonly victim: Player | null }
@@ -100,6 +119,7 @@ export type WerewolfEvent =
   | { readonly type: "roleSeen"; readonly player: string }
   | {
       readonly type:
+        | "acknowledgeCall"
         | "wolvesReady"
         | "loversReady"
         | "closeVision"
@@ -182,6 +202,8 @@ export function createWerewolf(
     : undefined;
   return {
     status: "roles",
+    history: [],
+    hammerVictim: null,
     index: 0,
     narrator: moderator,
     players,
@@ -196,6 +218,7 @@ export function createWerewolf(
       ...(settings.wolfCountMode ? { wolfCountMode: settings.wolfCountMode } : {}),
       mayor: settings.mayor ?? "doubleVote",
       hunterShot: settings.hunterShot ?? "optional",
+      toughGuy: settings.toughGuy ?? "wolfOnly",
       allowSelfSilence: settings.allowSelfSilence ?? false,
       revealRoles: settings.revealRoles ?? true,
       drunk: settings.drunk ?? false,
@@ -209,6 +232,7 @@ export function createWerewolf(
     hammerUsed: false,
     nightDeaths: [],
     toughGuyDiesOn: null,
+    toughGuyWound: null,
     investigationUsed: false,
     drunk: drunk ? { player: drunk.name, revealed: false } : null,
     tannerWinner: null,
@@ -296,68 +320,138 @@ function actingSeer(state: Match): Player | undefined {
   return seer ? findActiveRole(state, "seer") : findActiveRole(state, "apprenticeSeer");
 }
 
-function startNight(state: Match, night: number): WerewolfState {
-  const next = { ...state, night, nightDeaths: [], spellVictims: [] };
-  if (night === 1 && playersWithRole(state, "cupid").length) return { ...next, status: "cupid" };
-  if (night === 3 && state.alive.some((player) => isMasked(state, player)))
-    return { ...next, status: "drunkReveal" };
-  return afterDrunkReveal(next);
+function enterCall(
+  state: Match,
+  role: NightRole,
+  active: () => WerewolfState,
+  next: () => WerewolfState,
+): WerewolfState {
+  const call = nightScript({ ...state, status: "morning", victim: null, poisoned: null }).find(
+    (c) => c.id === role,
+  )!;
+  if (call.mode === "active") return active();
+  const resume = next();
+  return call.mode === "cover" ? { ...resume, status: "nightCall", call: role, resume } : resume;
 }
 
+function startNight(state: Match, night: number): WerewolfState {
+  const next = { ...state, night, nightDeaths: [], spellVictims: [], hammerVictim: null };
+  return enterCall(
+    next,
+    "cupid",
+    () => ({ ...next, status: "cupid" }),
+    () =>
+      enterCall(
+        next,
+        "lovers",
+        () => ({ ...next, status: "lovers", lovers: next.lovers! }),
+        () => afterLovers(next),
+      ),
+  );
+}
+function afterLovers(state: Match): WerewolfState {
+  return enterCall(
+    state,
+    "drunkReveal",
+    () => ({ ...state, status: "drunkReveal" }),
+    () => afterDrunkReveal(state),
+  );
+}
 function afterDrunkReveal(state: Match): WerewolfState {
-  if (
-    state.night > 1 &&
-    state.settings.mayor === "hammer" &&
-    state.players.some((player) => player.role === "mayor")
-  )
-    return { ...state, status: "mayor" };
   return beforeWolves(state);
 }
-
 function beforeWolves(state: Match): WerewolfState {
-  if (findActiveRole(state, "bodyguard")) return { ...state, status: "bodyguard" };
-  const guest = findActiveRole(state, "nightGuest");
-  if (guest && state.alive.some((player) => player !== guest && player.name !== state.hostPlayer))
-    return { ...state, status: "nightGuest" };
-  return wolvesPhase({ ...state, protectedPlayer: null, hostPlayer: null });
+  return enterCall(
+    state,
+    "bodyguard",
+    () => ({ ...state, status: "bodyguard" }),
+    () =>
+      enterCall(
+        state,
+        "nightGuest",
+        () => ({ ...state, status: "nightGuest" }),
+        () => wolvesPhase({ ...state, protectedPlayer: null, hostPlayer: null }),
+      ),
+  );
 }
-
 function wolvesPhase(state: Match): WerewolfState {
-  return playersWithRole(state, "wolf").length
-    ? { ...state, status: "wolves" }
-    : afterWolves(state, null);
+  return enterCall(
+    state,
+    "wolves",
+    () => ({ ...state, status: "wolves" }),
+    () => afterWolves(state, null),
+  );
 }
-
 function afterWolves(state: Match, victim: Player | null): WerewolfState {
-  return actingSeer(state) ? { ...state, status: "seer", victim } : afterVision(state, victim);
+  return enterCall(
+    state,
+    "seer",
+    () => ({ ...state, status: "seer", victim }),
+    () => afterVision(state, victim),
+  );
 }
-
 function afterVision(state: Match, victim: Player | null): WerewolfState {
-  if (!state.investigationUsed && playersWithRole(state, "paranormalInvestigator").length)
-    return { ...state, status: "investigator", victim };
-  return afterInvestigation(state, victim);
+  return enterCall(
+    state,
+    "investigator",
+    () => ({ ...state, status: "investigator", victim }),
+    () => afterInvestigation(state, victim),
+  );
 }
-
 function afterInvestigation(state: Match, victim: Player | null): WerewolfState {
-  if (playersWithRole(state, "witch").length) return { ...state, status: "witch", victim };
-  if (playersWithRole(state, "magician").length)
-    return { ...state, status: "magician", victim, poisoned: null };
-  return afterPotions(state, victim, null);
+  return enterCall(
+    state,
+    "witch",
+    () => ({ ...state, status: "witch", victim }),
+    () => afterWitch(state, victim, null),
+  );
+}
+function afterWitch(state: Match, victim: Player | null, poisoned: Player | null): WerewolfState {
+  return enterCall(
+    state,
+    "magician",
+    () => ({ ...state, status: "magician", victim, poisoned }),
+    () => afterPotions(state, victim, poisoned),
+  );
+}
+function afterPotions(state: Match, victim: Player | null, poisoned: Player | null): WerewolfState {
+  return enterCall(
+    state,
+    "mayor",
+    () => ({ ...state, status: "mayor", victim, poisoned }),
+    () => afterHammer(state, victim, poisoned),
+  );
+}
+function afterHammer(state: Match, victim: Player | null, poisoned: Player | null): WerewolfState {
+  return enterCall(
+    state,
+    "spellcaster",
+    () => ({ ...state, status: "spellcaster", victim, poisoned }),
+    () => endNight({ ...state, silencedPlayer: null }, victim, poisoned),
+  );
 }
 
-function afterPotions(state: Match, victim: Player | null, poisoned: Player | null): WerewolfState {
-  return playersWithRole(state, "spellcaster").length
-    ? { ...state, status: "spellcaster", victim, poisoned }
-    : { ...state, status: "morning", victim, poisoned, silencedPlayer: null };
+/** The current owner acts last, before any overnight deaths are announced. */
+function endNight(state: Match, victim: Player | null, poisoned: Player | null): WerewolfState {
+  const morning = { ...state, status: "morning" as const, victim, poisoned };
+  if (!state.amulet) return morning;
+  const partner = state.lovers?.includes(state.amulet.holder)
+    ? state.lovers.find((name) => name !== state.amulet!.holder)
+    : undefined;
+  const partnerDies =
+    partner !== undefined && morningDeaths(morning).some((p) => p.name === partner);
+  return {
+    ...morning,
+    status: "amuletPass",
+    amulet: { ...state.amulet, mustPass: state.amulet.mustPass || partnerDies },
+  };
 }
 
 function finishResolution(state: Match, next: "day" | "wolves"): WerewolfState {
   const winner = getWerewolfWinner(state.alive);
   if (winner) return { ...state, status: "finished", winner };
   if (next === "wolves") return startNight(state, state.night + 1);
-  return state.amulet
-    ? { ...state, status: "amuletPass", amulet: state.amulet }
-    : { ...state, status: "day", nomination: 0 };
+  return { ...state, status: "day", nomination: 0 };
 }
 
 function absorbWithAmulet(state: Match, target: Player | undefined): Match | null {
@@ -386,23 +480,41 @@ function applyDeaths(state: Match, deaths: readonly Player[], votedOut?: Player)
 }
 
 function morningDeaths(state: Extract<WerewolfState, { status: "morning" }>): readonly Player[] {
-  const victims = [...state.spellVictims];
-  if (state.victim && visibleRole(state, state.victim) !== "toughGuy") victims.push(state.victim);
-  if (state.poisoned) victims.push(state.poisoned);
+  const victims = state.spellVictims.filter((p) => !delaysToughGuyAttack(state, p, "magicianKill"));
+  if (state.victim && !delaysToughGuyAttack(state, state.victim, "wolves"))
+    victims.push(state.victim);
+  if (state.poisoned && !delaysToughGuyAttack(state, state.poisoned, "witchPoison"))
+    victims.push(state.poisoned);
   if (state.toughGuyDiesOn === state.night) {
     const toughGuy = state.alive.find((player) => player.role === "toughGuy");
     if (toughGuy) victims.push(toughGuy);
   }
-  return [...state.nightDeaths, ...relatedDeaths(state, victims)];
+  return relatedDeaths(state, [...state.nightDeaths, ...victims]);
+}
+
+function woundToughGuy(state: Match, cause: WoundCause, actors: readonly string[]): Match {
+  return state.toughGuyDiesOn !== null
+    ? state
+    : {
+        ...state,
+        toughGuyDiesOn: state.night + 1,
+        toughGuyWound: { cause, actors: [...actors], night: state.night },
+      };
 }
 
 function announceMorning(state: Extract<WerewolfState, { status: "morning" }>): WerewolfState {
   const deaths = morningDeaths(state);
-  const attacked = state.victim;
-  const wounded =
-    attacked && visibleRole(state, attacked) === "toughGuy" && !deaths.includes(attacked);
-  const toughGuyDiesOn = state.toughGuyDiesOn ?? (wounded ? state.night + 1 : null);
-  return announce({ ...state, toughGuyDiesOn }, deaths, "day");
+  const attacks: readonly (readonly [Player | null, WoundCause, readonly string[]])[] = [
+    [state.victim, "wolves", playersWithRole(state, "wolf")],
+    [state.poisoned, "witchPoison", playersWithRole(state, "witch")],
+    ...state.spellVictims.map(
+      (p) => [p, "magicianKill", playersWithRole(state, "magician")] as const,
+    ),
+  ];
+  const injury = attacks.find(
+    ([p, cause]) => p && delaysToughGuyAttack(state, p, cause) && !deaths.includes(p),
+  );
+  return announce(injury ? woundToughGuy(state, injury[1], injury[2]) : state, deaths, "day");
 }
 
 export function werewolfAnnouncement(
@@ -442,23 +554,21 @@ function resolveHammer(
   state: Extract<WerewolfState, { status: "mayor" }>,
   targetName: string | null,
 ): WerewolfState {
-  if (targetName === null) return beforeWolves(state);
+  if (targetName === null) return afterHammer(state, state.victim, state.poisoned);
   const mayor = findActiveRole(state, "mayor");
-  const target = state.alive.find((player) => player.name === targetName);
+  const target = state.alive.find((p) => p.name === targetName);
   if (state.hammerUsed || !mayor || !target || mayor === target) return state;
-  if (target.role === "wolf") {
-    const saved = absorbWithAmulet(state, target);
-    if (saved) return beforeWolves({ ...saved, hammerUsed: true });
-  }
   const nightDeaths = relatedDeaths(state, [target.role === "wolf" ? target : mayor]);
-  const next = { ...applyDeaths(state, nightDeaths), nightDeaths, hammerUsed: true };
-  const pendingHunter = nightDeaths.some((player) => player.role === "hunter");
-  if (
-    (!pendingHunter && getWerewolfWinner(next.alive)) ||
-    !next.alive.some((player) => player.role === "wolf")
-  )
-    return { ...next, status: "morning", victim: null, poisoned: null, silencedPlayer: null };
-  return beforeWolves(next);
+  return afterHammer(
+    {
+      ...state,
+      nightDeaths,
+      hammerUsed: true,
+      hammerVictim: target.role === "wolf" ? target.name : mayor.name,
+    },
+    state.victim,
+    state.poisoned,
+  );
 }
 
 function dayVotes(state: Match, event: Extract<WerewolfEvent, { type: "vote" }>) {
@@ -484,15 +594,26 @@ function dayVotes(state: Match, event: Extract<WerewolfEvent, { type: "vote" }>)
 
 export function transitionWerewolf(state: WerewolfState, event: WerewolfEvent): WerewolfState {
   if ("night" in event && event.night !== state.night) return state;
-  if (!state.shotDeaths) return applyEvent(state, event);
-  const cleared = { ...state };
-  delete cleared.shotDeaths;
-  const next = applyEvent(cleared, event);
-  return next === cleared ? state : next;
+  let input = state;
+  if (state.shotDeaths) {
+    const cleared = { ...state };
+    delete cleared.shotDeaths;
+    input = cleared;
+  }
+  const result = applyEvent(input, event);
+  return result === input
+    ? state
+    : recordWerewolfTransition(state, event, result, wakingPlayers(state));
 }
 
 function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
   switch (state.status) {
+    case "nightCall": {
+      if (event.type !== "acknowledgeCall") return state;
+      const resume = { ...state.resume };
+      delete resume.shotDeaths;
+      return resume;
+    }
     case "roles":
       if (event.type !== "roleSeen" || state.players[state.index]?.name !== event.player)
         return state;
@@ -511,8 +632,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
         return state;
       return {
         ...state,
-        status: "day",
-        nomination: 0,
+        status: "morning",
         amulet: { holder: event.target, mustPass: false },
       };
     case "cupid":
@@ -524,7 +644,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
         return state;
       return { ...state, status: "lovers", lovers: [...event.players] };
     case "lovers":
-      return event.type === "loversReady" ? beforeWolves(state) : state;
+      return event.type === "loversReady" ? afterLovers(state) : state;
     case "drunkReveal":
       return event.type === "drunkReady" && state.drunk
         ? afterDrunkReveal({ ...state, drunk: { ...state.drunk, revealed: true } })
@@ -613,9 +733,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
         },
       };
       const victim = event.heal ? null : state.victim;
-      return playersWithRole(next, "magician").length
-        ? { ...next, status: "magician", victim, poisoned }
-        : afterPotions(next, victim, poisoned);
+      return afterWitch(next, victim, poisoned);
     }
     case "magician": {
       if (event.type !== "castSpells") return state;
@@ -659,7 +777,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
           ))
       )
         return state;
-      return { ...state, status: "morning", silencedPlayer: target };
+      return endNight({ ...state, silencedPlayer: target }, state.victim, state.poisoned);
     }
     case "morning":
       return event.type === "announceMorning" ? announceMorning(state) : state;
@@ -705,6 +823,8 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       if (!target) return state;
       const saved = absorbWithAmulet(state, target);
       if (saved) return finishResolution(saved, state.next);
+      if (delaysToughGuyAttack(state, target, "hunter"))
+        return finishResolution(woundToughGuy(state, "hunter", [state.hunter.name]), state.next);
       const shotDeaths = relatedDeaths(state, [target]);
       return finishResolution({ ...applyDeaths(state, shotDeaths), shotDeaths }, state.next);
     }

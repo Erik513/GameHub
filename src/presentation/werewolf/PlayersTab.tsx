@@ -7,6 +7,7 @@ import {
   setParticipants,
   type WerewolfLineup,
 } from "../../business/games/werewolf/lineup";
+import { werewolfPlayerLimits } from "../../business/games/werewolf/configuration";
 import { parsePlayers } from "../../business/shared/players";
 import { Icon } from "../components";
 import { PlayerAdder, RosterPicker } from "../game-kit";
@@ -43,6 +44,13 @@ export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
           value={lineup.participants.join(", ")}
         />
       </div>
+      {/* What the game is made for, so nobody wonders why a match with few or many people cannot start. */}
+      <p className="ww-hint">
+        {t("werewolfLineup.range", {
+          maximum: werewolfPlayerLimits.targetMaximum,
+          minimum: werewolfPlayerLimits.minimum,
+        })}
+      </p>
       {lineup.participants.length >= maxWerewolfParticipants && (
         <p className="ww-hint">
           {t("werewolfLineup.full", { maximum: maxWerewolfParticipants - 1 })}

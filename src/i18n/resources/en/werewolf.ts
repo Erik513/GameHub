@@ -17,6 +17,7 @@ export const werewolfTexts = {
     narratorNone: "No narrator",
     narratorBadge: "Narrator",
     listLabel: "Participants ({{count}})",
+    range: "Werewolf is made for {{minimum}} to {{maximum}} players and a narrator.",
     full: "That is the limit: at most {{maximum}} players and the narrator.",
     seatsHint:
       "Drag the names into the order the players really sit: seat 1 is right next to the narrator on the left, then clockwise.",

@@ -96,6 +96,7 @@ export const werewolfConfigTexts = {
     },
     variants: {
       allowed: "Self-pick allowed",
+      anyAttack: "Every attack",
       anyDeath: "Win on any death",
       bodyguard: "Bodyguard",
       doubleVote: "Double vote",
@@ -105,6 +106,7 @@ export const werewolfConfigTexts = {
       optional: "No duty to shoot",
       required: "Duty to shoot",
       voteOnly: "Win by vote only",
+      wolfOnly: "Wolf attack only",
     },
     variantHint:
       "Tap a role to take it. A role with options has a half for every option; tap the chosen half again to leave the role out.",
@@ -209,10 +211,12 @@ export const werewolfConfigTexts = {
         options: "Win on any death: Every death counts.\nWin by vote only: He has to be voted out.",
       },
       toughGuy: {
-        general: "After a wolf attack he takes part normally the next day.",
         tasks:
-          "A wolf attack does not kill him at once: that night he can still be saved, in the night after he dies of his wound.",
-        notes: "Any other cause of death kills him at once.",
+          "An attack does not kill him at once: he takes part normally the next day and dies of his wound in the night after.",
+        options:
+          "Wolf attack only: Only a wolf attack works like this.\nEvery attack: Poison, a death spell and the hunter shot work like this, too.",
+        notes:
+          "A wolf attack can still be healed in the night of the attack.\nThe hammer, the vote and the death of his lover kill him at once.",
       },
       villagers: {
         general: "Plain villagers have no special ability. They play with the village.",

@@ -459,3 +459,32 @@ it("numbers the chosen roles in the order of the night", async () => {
   );
   expect(names).toEqual(["Cupid", "Werewolves", "Seer", "Witch"]);
 });
+
+it.each([
+  ["en", "Tough guy", "Every attack", "Wolf attack only"],
+  ["de", "Harter Bursche", "Jeder Angriff", "Nur Wolfsangriff"],
+] as const)(
+  "offers the tough guy with two options and takes the one that is tapped (%s)",
+  async (language, role, every, wolves) => {
+    const { latest, user } = await renderConfiguration(language, 12);
+    const half = (option: string) => screen.getByRole("checkbox", { name: `${role}, ${option}` });
+    expect(half(wolves)).not.toBeChecked();
+    await user.click(half(every));
+    expect(half(every)).toBeChecked();
+    expect(latest.draft.roles).toContain("toughGuy");
+    expect(latest.draft.settings.toughGuy).toBe("anyAttack");
+    // A tap on the other half changes the option, a tap on the chosen one leaves the role out.
+    await user.click(half(wolves));
+    expect(latest.draft.settings.toughGuy).toBe("wolfOnly");
+    await user.click(half(wolves));
+    expect(latest.draft.roles).not.toContain("toughGuy");
+  },
+);
+
+it("explains both options of the tough guy in its window", async () => {
+  const { user } = await renderConfiguration("en", 12);
+  await user.click(screen.getByRole("button", { name: "Info about Tough guy" }));
+  const dialog = await screen.findByRole("dialog");
+  const names = [...dialog.querySelectorAll(".kit-info-list strong")].map((n) => n.textContent);
+  expect(names).toEqual(["Wolf attack only", "Every attack"]);
+});

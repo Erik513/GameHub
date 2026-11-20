@@ -21,6 +21,7 @@ export type FixedSettings = Pick<
   | "mayor"
   | "revealRoles"
   | "tanner"
+  | "toughGuy"
 >;
 
 /**
@@ -43,6 +44,7 @@ export const defaultFixedSettings: FixedSettings = {
   mayor: "doubleVote",
   revealRoles: true,
   tanner: "anyDeath",
+  toughGuy: "wolfOnly",
 };
 
 export const emptyFixedDraft: FixedDraft = {
@@ -95,7 +97,7 @@ export const fixedItems: readonly FixedItemDefinition[] = [
   item("idiot", "toggle", "idiot"),
   item("guard", "alternative", "bodyguard", "nightGuest"),
   item("cupid", "toggle", "cupid"),
-  item("toughGuy", "toggle", "toughGuy"),
+  item("toughGuy", "variant", "toughGuy"),
   item("tanner", "variant", "tanner"),
   item("apprenticeSeer", "toggle", "apprenticeSeer"),
   item("spellcaster", "variant", "spellcaster"),
@@ -311,9 +313,11 @@ export function describeFixedConfiguration(
               ? settings.tanner
               : id === "mayor"
                 ? settings.mayor
-                : settings.allowSelfSilence
-                  ? "allowed"
-                  : "forbidden",
+                : id === "toughGuy"
+                  ? settings.toughGuy
+                  : settings.allowSelfSilence
+                    ? "allowed"
+                    : "forbidden",
     };
   });
 
@@ -432,7 +436,7 @@ export function chooseFixedAlternative(
  */
 export function chooseFixedVariant(
   draft: FixedDraft,
-  id: "hunter" | "mayor" | "spellcaster" | "tanner",
+  id: "hunter" | "mayor" | "spellcaster" | "tanner" | "toughGuy",
   variant: string | null,
 ): FixedDraft {
   const role: WerewolfSpecialRole = id;
@@ -465,6 +469,15 @@ export function chooseFixedVariant(
         ...draft,
         roles,
         settings: { ...draft.settings, allowSelfSilence: variant === "allowed" },
+      };
+    case "toughGuy":
+      return {
+        ...draft,
+        roles,
+        settings: {
+          ...draft.settings,
+          toughGuy: variant === "anyAttack" ? "anyAttack" : "wolfOnly",
+        },
       };
   }
 }
@@ -552,7 +565,9 @@ export function parseSavedFixedDraft(raw: unknown): FixedDraft | undefined {
     !bool(s.revealRoles) ||
     (s.hunterShot !== "optional" && s.hunterShot !== "required") ||
     (s.mayor !== "doubleVote" && s.mayor !== "hammer") ||
-    (s.tanner !== "anyDeath" && s.tanner !== "voteOnly")
+    (s.tanner !== "anyDeath" && s.tanner !== "voteOnly") ||
+    // An older save has no option for the tough guy: it gets the usual one.
+    (s.toughGuy !== undefined && s.toughGuy !== "wolfOnly" && s.toughGuy !== "anyAttack")
   ) {
     return undefined;
   }
@@ -570,6 +585,7 @@ export function parseSavedFixedDraft(raw: unknown): FixedDraft | undefined {
       mayor: s.mayor,
       revealRoles: s.revealRoles,
       tanner: s.tanner,
+      toughGuy: s.toughGuy === "anyAttack" ? "anyAttack" : "wolfOnly",
     },
     wolfCount: wolfCount ?? null,
   };
