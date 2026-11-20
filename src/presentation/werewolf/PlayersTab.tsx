@@ -3,6 +3,7 @@ import {
   addParticipants,
   chooseNarrator,
   maxWerewolfParticipants,
+  minWerewolfParticipants,
   removeParticipant,
   setParticipants,
   type WerewolfLineup,
@@ -43,6 +44,18 @@ export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
           onChange={(text) => onChange(setParticipants(lineup, parsePlayers(text)))}
           value={lineup.participants.join(", ")}
         />
+        {/* How many people take part (the narrator counts): red until there are enough for a match, then green. */}
+        <span
+          aria-label={t("werewolfLineup.countLabel", {
+            count: lineup.participants.length,
+            maximum: maxWerewolfParticipants,
+          })}
+          className="ww-count"
+          data-enough={lineup.participants.length >= minWerewolfParticipants}
+          role="status"
+        >
+          {lineup.participants.length}/{maxWerewolfParticipants}
+        </span>
       </div>
       {/* What the game is made for, so nobody wonders why a match with few or many people cannot start. */}
       <p className="ww-hint">

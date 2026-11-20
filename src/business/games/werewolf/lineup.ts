@@ -19,6 +19,9 @@ export type WerewolfLineupIssue =
   | { readonly code: "tooFew"; readonly count: number; readonly minimum: number }
   | { readonly code: "tooMany"; readonly count: number; readonly maximum: number };
 
+/** The fewest people a match needs: the fewest players and the narrator. */
+export const minWerewolfParticipants = werewolfPlayerLimits.minimum + 1;
+
 /** The most people who can take part: the most players and the narrator. */
 export const maxWerewolfParticipants = werewolfPlayerLimits.targetMaximum + 1;
 

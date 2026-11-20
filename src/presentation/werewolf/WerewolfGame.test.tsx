@@ -274,3 +274,24 @@ it.each([
     expect(screen.getByText(text)).toBeInTheDocument();
   },
 );
+
+it("counts the people in the players tab: red until a match is possible, then green", async () => {
+  const user = await renderGame("en");
+  const count = () => screen.getByRole("status", { name: /people \(with the narrator\)/ });
+  expect(count()).toHaveTextContent("0/21");
+  expect(count()).toHaveAttribute("data-enough", "false");
+  // Six people are not enough: six players need the narrator as the seventh.
+  await user.type(screen.getByLabelText("Add player"), "Anna, Ben, Cleo, Dora, Emil, Finn{enter}");
+  expect(count()).toHaveTextContent("6/21");
+  expect(count()).toHaveAttribute("data-enough", "false");
+  await user.type(screen.getByLabelText("Add player"), "Gina{enter}");
+  expect(count()).toHaveTextContent("7/21");
+  expect(count()).toHaveAttribute("data-enough", "true");
+});
+
+it("names the count of the people in German", async () => {
+  await renderGame("de");
+  expect(
+    screen.getByRole("status", { name: "0 von 21 Personen (mit Erzähler)" }),
+  ).toBeInTheDocument();
+});
