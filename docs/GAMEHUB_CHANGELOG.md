@@ -28,6 +28,7 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Die weiteren beschlossenen Regeländerungen (zwei Optionen des Harten Burschen, Amulett jede Nacht als Letzter und Hammer ohne Schutz, offener Aufruf des Seher-Lehrlings, Amor als Verliebter) stehen für Codex in `docs/GAMEHUB_WERWOLF_UI.md`.
 - Die Spielerliste im Kopf gibt es nur noch im GameHub (Spielübersicht), nie in einem Spiel; auch im Werwolf ist der Knopf weg (die Auswahl "Aus Spielerliste wählen" in der Aufstellung bleibt).
 - Spieleinstellungen werden gemerkt: neuer gemeinsamer Baustein `GameSettingsMemory` (Port in `business/shared`, Speicher im Browser unter `gamehub.settings.<Schlüssel>`, Kontext und Hook `usePersistentState` im game-kit). Ein Spiel hält seine Teile unter eigenen Schlüsseln und liest sie mit einem eigenen Parser, der kaputte Daten verwirft. Werwolf merkt sich Aufstellung (`werewolf.lineup`) und Konfiguration (`werewolf.configuration`; nicht mehr passende Rollen nimmt `normalizeFixedDraft` zurück), Tabu die Einstellungen des Hauptmenüs (`taboo.settings`: Modus, Runden, Dauer, Pässe, Gleichstand, Schwierigkeit, Kategorien, Kartenquelle und so weiter). Jede Änderung wird gespeichert, ein neues Spiel startet damit; ohne Speicher (Tests) gelten die üblichen Voreinstellungen. Jedes neue Spiel nutzt denselben Baustein.
+- Neu in der Werwolf-Konfiguration: Ein Mond-Knopf links neben "Fertig" öffnet ein Fenster mit der Aufwachreihenfolge der Nacht (Amor, Trunkenbold, Leibwächter/Dorfmatratze, Werwölfe, Seherin, Paranormaler Ermittler, Hexe, Magier, Bürgermeister mit Hammer, Alte Vettel, Amulettträger zuletzt). Die Rollen im Spiel sind der Reihe nach nummeriert, die übrigen abgeblendet ("nicht im Spiel"); Hinweise nennen, wann ein Schritt stattfindet (nur Nacht 1, Beginn von Nacht 3, ab Nacht 2) und dass die Wölfe sich in Nacht 1 nur kennenlernen. Die Reihenfolge steht als reine Daten in `wakeOrder.ts` (Business) und folgt `docs/GAMEHUB_WERWOLF_NARRATOR_API.md` plus den beschlossenen Änderungen (Amulett zuletzt); sie muss mit dem Nachtskript von Codex übereinstimmen.
 - Reine Logik in `business/games/werewolf/fixedConfiguration.ts` (Entwurf, Ansichtsmodell mit Sperrgründen "zu wenige Spieler / kein Platz / Kombination", Konfliktliste und Wolfsvorschlag; nichts wird still geändert). Ein Konflikt zeigt eine Meldung und einen Knopf "Wolfszahl N nehmen". Die Konfiguration braucht 6 bis 20 Spieler neben dem Erzähler.
 - Noch nicht enthalten: der Umschalter fest/variabel (variable Konfiguration kommt später, We-01-32).
 - Geprüft: 27 Logiktests, Oberflächentests (de/en), voller Testlauf (1233 Tests), tsc, eslint, Schichtenprüfung, Browserprüfung bei 375 px.
@@ -1127,6 +1128,12 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 Es wurden keine Spiele, keine KI-Anbindung und kein Multiplayer implementiert.
 
 ## 2026-11-20
+
+### Neue Rollenregeln und Amulett-Zeitfolge umgesetzt
+
+- Werwolf: Harter Bursche mit wolfOnly/anyAttack, öffentlicher Lehrlingsaufruf und Amors Selbstwahl geprüft; Amulett umgeht keinen Hammer mehr und wird als letzter Nachtschritt vor der Morgenauflösung weitergegeben. Schutz gilt beim jeweiligen Besitzer im Angriffszeitpunkt, nicht rückwirkend. Früherer Träger ist beim späteren Jägerschuss ungeschützt. 273 Tests, beide Sechser-Kombinationsprüfungen, Typ-/Lint-/Schichtprüfung erfolgreich; UI-Anbindung als We-01-48 vorgemerkt.
+- Log und Spielerprojektion erhalten toughGuyWound mit Ursache, handelnden Personen und ursprünglicher Nacht. Historische Balancewerte wurden nicht neu simuliert.
+
 
 ### Erzähler-Logikschnittstellen abgeschlossen
 

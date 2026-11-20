@@ -110,6 +110,32 @@ export const werewolfConfigTexts = {
     },
     variantHint:
       "Tippe eine Rolle an, um sie ins Spiel zu nehmen. Eine Rolle mit Optionen hat für jede Option eine Hälfte; tippe die gewählte Hälfte erneut an, um die Rolle wegzulassen.",
+    wake: {
+      open: "Aufwachreihenfolge",
+      title: "Aufwachreihenfolge",
+      hint: "Der Erzähler weckt die Rollen jede Nacht in dieser Reihenfolge. Rollen, die nicht im Spiel sind, sind abgeblendet.",
+      notInGame: "nicht im Spiel",
+      wolvesFirstNight: "In der ersten Nacht lernen sie sich nur kennen",
+      apprentice: "Der Seher-Lehrling übernimmt, wenn die Seherin tot ist",
+      amulet: "Zuletzt: Amulett behalten oder weitergeben",
+      timing: {
+        firstNight: "Nur in der ersten Nacht",
+        thirdNight: "Zu Beginn der dritten Nacht",
+        fromSecondNight: "Ab der zweiten Nacht, einmal pro Partie",
+      },
+      steps: {
+        amulet: "Amulettträger",
+        cupid: "Amor",
+        drunk: "Trunkenbold",
+        magician: "Magier",
+        mayor: "Bürgermeister mit Hammer",
+        paranormalInvestigator: "Paranormaler Ermittler",
+        seer: "Seherin",
+        spellcaster: "Alte Vettel",
+        witch: "Hexe",
+        wolves: "Werwölfe",
+      },
+    },
     info: {
       amulet: {
         general:

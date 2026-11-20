@@ -18,6 +18,7 @@ import {
 import { Button } from "../components";
 import { ChoiceGroup, SetupTabs, StartBar, useFocusOnShow } from "../game-kit";
 import { ConfigCardHead } from "./ConfigInfo";
+import { WakeOrderButton } from "./WakeOrderButton";
 import { RoleRow, RoleTile } from "./ConfigTiles";
 
 interface WerewolfConfigurationProps {
@@ -404,7 +405,7 @@ export function WerewolfConfiguration({
           ]}
         />
       )}
-      <StartBar>
+      <StartBar sideAction={<WakeOrderButton draft={draft} />}>
         <Button onClick={onDone} variant="success">
           {t("werewolfConfig.done")}
         </Button>

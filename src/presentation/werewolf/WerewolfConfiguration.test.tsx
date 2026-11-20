@@ -413,3 +413,43 @@ it("opens the window of a card with its name, like the button does", async () =>
   const dialog = await screen.findByRole("dialog");
   expect(dialog).toHaveTextContent("Village role");
 });
+
+const wakeSteps = (dialog: HTMLElement) =>
+  [...dialog.querySelectorAll(".ww-wake__step")].map((step) => ({
+    inGame: step.getAttribute("data-in-game") === "true",
+    text: step.textContent ?? "",
+  }));
+
+it.each([
+  ["en", "Wake-up order", "Werewolves", "Seer", "not in the game"],
+  ["de", "Aufwachreihenfolge", "Werwölfe", "Seherin", "nicht im Spiel"],
+] as const)(
+  "shows the order in which the roles wake up in a window (%s)",
+  async (language, label, wolves, seer, notIn) => {
+    const { user } = await renderConfiguration(language, 12);
+    await user.click(screen.getByRole("button", { name: label }));
+    const dialog = await screen.findByRole("dialog", { name: label });
+    const steps = wakeSteps(dialog);
+    // Without further roles only the wolves and the seer take part, numbered 1 and 2.
+    expect(steps.filter((step) => step.inGame).map((step) => step.text)).toEqual([
+      expect.stringContaining(wolves),
+      expect.stringContaining(seer),
+    ]);
+    expect(steps[steps.length - 1]?.text).toContain(notIn);
+    expect(
+      dialog.querySelector(".ww-wake__step[data-in-game='true'] .ww-wake__number"),
+    ).toHaveTextContent("1");
+  },
+);
+
+it("numbers the chosen roles in the order of the night", async () => {
+  const { user } = await renderConfiguration("en", 12);
+  await user.click(screen.getByRole("checkbox", { name: "Witch" }));
+  await user.click(screen.getByRole("checkbox", { name: "Cupid" }));
+  await user.click(screen.getByRole("button", { name: "Wake-up order" }));
+  const dialog = await screen.findByRole("dialog", { name: "Wake-up order" });
+  const names = [...dialog.querySelectorAll(".ww-wake__step[data-in-game='true'] strong")].map(
+    (name) => name.textContent,
+  );
+  expect(names).toEqual(["Cupid", "Werewolves", "Seer", "Witch"]);
+});

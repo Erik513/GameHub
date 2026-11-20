@@ -108,6 +108,32 @@ export const werewolfConfigTexts = {
     },
     variantHint:
       "Tap a role to take it. A role with options has a half for every option; tap the chosen half again to leave the role out.",
+    wake: {
+      open: "Wake-up order",
+      title: "Wake-up order",
+      hint: "Every night the narrator wakes the roles in this order. Roles that are not in the game are dimmed.",
+      notInGame: "not in the game",
+      wolvesFirstNight: "In the first night they only get to know each other",
+      apprentice: "The apprentice seer takes over when the seer is dead",
+      amulet: "Last: keep the amulet or pass it on",
+      timing: {
+        firstNight: "Only in the first night",
+        thirdNight: "At the start of the third night",
+        fromSecondNight: "From the second night, once per game",
+      },
+      steps: {
+        amulet: "Amulet holder",
+        cupid: "Cupid",
+        drunk: "Drunk",
+        magician: "Magician",
+        mayor: "Mayor with the hammer",
+        paranormalInvestigator: "Paranormal investigator",
+        seer: "Seer",
+        spellcaster: "Old hag",
+        witch: "Witch",
+        wolves: "Werewolves",
+      },
+    },
     info: {
       amulet: {
         general:
