@@ -5,6 +5,7 @@ import {
   emptyWerewolfLineup,
   maxWerewolfParticipants,
   moveSeat,
+  parseSavedLineup,
   removeParticipant,
   setParticipants,
   werewolfLineupIssues,
@@ -109,5 +110,36 @@ describe("werewolfLineupIssues", () => {
       { code: "tooMany", count: 21, maximum: 20 },
     ]);
     expect(werewolfLineupIssues(chooseNarrator(lineup, "P1"))).toEqual([]);
+  });
+});
+
+describe("a saved line-up", () => {
+  it("comes back as it was written to the storage", () => {
+    let lineup = addParticipants(emptyWerewolfLineup, ["Anna", "Ben", "Cem", "Dora"]);
+    lineup = chooseNarrator(lineup, "Cem");
+    lineup = moveSeat(lineup, "Dora", 0);
+    expect(parseSavedLineup(JSON.parse(JSON.stringify(lineup)))).toEqual(lineup);
+  });
+
+  it("is brought into line when the parts do not fit together", () => {
+    const lineup = parseSavedLineup({
+      narrator: "Nobody",
+      participants: ["Anna", "Ben", "Anna"],
+      seats: ["Ben", "Zoe"],
+    });
+    expect(lineup).toEqual({
+      narrator: null,
+      participants: ["Anna", "Ben"],
+      seats: ["Ben", "Anna"],
+    });
+  });
+
+  it.each([
+    ["nothing", undefined],
+    ["names that are no list", { narrator: null, participants: "Anna", seats: [] }],
+    ["a name that is no text", { narrator: null, participants: ["Anna", 2], seats: [] }],
+    ["a narrator that is no text", { narrator: 7, participants: ["Anna"], seats: [] }],
+  ])("is refused with %s", (_name, raw) => {
+    expect(parseSavedLineup(raw)).toBeUndefined();
   });
 });

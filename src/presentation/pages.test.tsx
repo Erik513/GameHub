@@ -150,7 +150,7 @@ describe("header of the app", () => {
     expect(document.querySelector(".brand__mark")).toBeNull();
   });
 
-  it("has the home button last at the top right in the main menu of a game, without a dot", async () => {
+  it("has the home button last at the top right in the main menu of a game, without a dot and without the player list", async () => {
     await renderWithI18n(
       "en",
       <PlayerRosterProvider store={store}>
@@ -160,7 +160,8 @@ describe("header of the app", () => {
       </PlayerRosterProvider>,
     );
     // The name is at the left; the buttons at the right end with the settings and then home.
-    expect(buttons()).toEqual(["Player list", "Settings", "Close game"]);
+    // The player list belongs to the GameHub; inside a game it is not offered.
+    expect(buttons()).toEqual(["Settings", "Close game"]);
     const header = document.querySelector<HTMLElement>("header")!;
     expect(within(header).getByText("Taboo").closest(".brand")).not.toBeNull();
     expect(document.querySelector(".brand__mark")).toBeNull();

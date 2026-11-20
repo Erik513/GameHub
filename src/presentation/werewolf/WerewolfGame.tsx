@@ -2,12 +2,15 @@ import { useState } from "react";
 import {
   emptyFixedDraft,
   normalizeFixedDraft,
+  parseSavedFixedDraft,
 } from "../../business/games/werewolf/fixedConfiguration";
 import {
   chooseNarrator,
   emptyWerewolfLineup,
+  parseSavedLineup,
   setParticipants,
 } from "../../business/games/werewolf/lineup";
+import { usePersistentState } from "../game-kit";
 import { WerewolfConfiguration } from "./WerewolfConfiguration";
 import { WerewolfLineup } from "./WerewolfLineup";
 
@@ -27,8 +30,19 @@ function initialLineup() {
  * development steps. Both are kept while the narrator goes back and forth.
  */
 export function WerewolfGame() {
-  const [lineup, setLineup] = useState(initialLineup);
-  const [draft, setDraft] = useState(emptyFixedDraft);
+  // Both are remembered between games, so a new game starts with the last line-up and configuration.
+  const [lineup, setLineup] = usePersistentState(
+    "werewolf.lineup",
+    initialLineup,
+    parseSavedLineup,
+  );
+  const [savedDraft, setDraft] = usePersistentState(
+    "werewolf.configuration",
+    () => emptyFixedDraft,
+    parseSavedFixedDraft,
+  );
+  // What was saved may not fit the players of today: the roles that no longer fit are taken back.
+  const draft = normalizeFixedDraft(lineup.seats.length, savedDraft);
   const [configuring, setConfiguring] = useState(false);
 
   if (configuring) {

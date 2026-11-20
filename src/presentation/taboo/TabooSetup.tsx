@@ -218,6 +218,7 @@ export function TabooSetup({
 
   /** Any change of the setup invalidates the prepared cards and a running preparation. */
   function handleFormChange() {
+    settings.remember();
     start.abort();
     start.setShortage(undefined);
     setSession(undefined);
@@ -313,6 +314,7 @@ export function TabooSetup({
           }}
           onSubmit={closeSettings}
           roundChoices={roundChoices}
+          saved={settings.saved}
           shortage={start.shortage}
         >
           {children}

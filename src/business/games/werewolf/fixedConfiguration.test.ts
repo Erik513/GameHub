@@ -9,6 +9,7 @@ import {
   fixedItems,
   isConfigurablePlayerCount,
   normalizeFixedDraft,
+  parseSavedFixedDraft,
   selectedWolfCount,
   setFixedSetting,
   setFixedWolfCount,
@@ -436,5 +437,32 @@ describe("the draft follows the number of players", () => {
       for (let count = 20; count >= players; count--) draft = normalizeFixedDraft(count, draft);
       expect(view(players, draft).ready).toBe(true);
     }
+  });
+});
+
+describe("a saved draft", () => {
+  const draft: FixedDraft = {
+    roles: ["witch", "hunter"],
+    settings: { ...defaultFixedSettings, hunterShot: "required", amulet: true },
+    wolfCount: 3,
+  };
+
+  it("comes back as it was written to the storage", () => {
+    expect(parseSavedFixedDraft(JSON.parse(JSON.stringify(draft)))).toEqual(draft);
+    expect(parseSavedFixedDraft(JSON.parse(JSON.stringify(emptyFixedDraft)))).toEqual(
+      emptyFixedDraft,
+    );
+  });
+
+  it.each([
+    ["nothing", undefined],
+    ["a text", "witch"],
+    ["an unknown role", { ...draft, roles: ["witch", "dragon"] }],
+    ["a role twice", { ...draft, roles: ["witch", "witch"] }],
+    ["a setting of the wrong kind", { ...draft, settings: { ...draft.settings, mayor: "king" } }],
+    ["a missing setting", { ...draft, settings: { amulet: true } }],
+    ["a wolf count that is no number", { ...draft, wolfCount: "3" }],
+  ])("is refused with %s", (_name, raw) => {
+    expect(parseSavedFixedDraft(raw)).toBeUndefined();
   });
 });

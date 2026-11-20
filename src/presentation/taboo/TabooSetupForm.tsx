@@ -28,6 +28,7 @@ import {
   tabooModes,
   type RoundChoice,
   type TabooMode,
+  type TabooSettings,
 } from "./tabooSetupModel";
 
 interface TabooSetupFormProps {
@@ -59,6 +60,8 @@ interface TabooSetupFormProps {
   onChange: (event: FormEvent<HTMLFormElement>) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   roundChoices: readonly RoundChoice[];
+  /** The settings of the last game: the form starts with them instead of its usual choices. */
+  saved?: TabooSettings | undefined;
   /** Too few cards; `difficulty` is set when a difficulty is short for a fair race. */
   shortage: { available: number; required: number; difficulty?: Difficulty } | undefined;
 }
@@ -85,9 +88,48 @@ export function TabooSetupForm({
   onModeChange,
   onSubmit,
   roundChoices,
+  saved,
   shortage,
 }: TabooSetupFormProps) {
   const { t } = useTranslation();
+  // What every choice starts with: the last settings where they are still possible, else the usual choice.
+  const toggle = (on: boolean | undefined) => (on === false ? "off" : "on");
+  const starts = {
+    countdownBudget: String(
+      saved && countdownBudgetChoices.includes(saved.countdownBudgetMs)
+        ? saved.countdownBudgetMs
+        : defaultCountdownBudgetMs,
+    ),
+    countdownSwitch: saved?.countdownAutoSwitch === false ? "manual" : "auto",
+    difficulty: saved ? [...saved.difficulties] : ["easy"],
+    duration: saved && [60, 90, 120].includes(saved.duration) ? String(saved.duration) : "60",
+    raceRounds: String(
+      saved && raceRoundChoices.includes(saved.raceRounds) ? saved.raceRounds : defaultRaceRounds,
+    ),
+    raceTarget: String(
+      saved && raceTargetChoices.includes(saved.raceTarget) ? saved.raceTarget : defaultRaceTarget,
+    ),
+    raceTiebreak: toggle(saved?.raceTiebreak),
+    rememberPlayed: toggle(saved?.rememberPlayed),
+    rounds: String(
+      saved && roundChoices.includes(saved.rounds)
+        ? saved.rounds
+        : roundChoices.includes(3)
+          ? 3
+          : roundChoices[0],
+    ),
+    skips:
+      saved && (saved.skips === undefined || [0, 1, 2, 3].includes(saved.skips))
+        ? saved.skips === undefined
+          ? "unlimited"
+          : String(saved.skips)
+        : "1",
+    tiebreak: toggle(saved?.tiebreak),
+  };
+  // The saved categories that still exist; none of them left means all of them, as at the first start.
+  const savedCategories = saved?.categories.filter((id) => categoryIds.includes(id)) ?? [];
+  const categoryChosen = (id: string) =>
+    savedCategories.length === 0 || savedCategories.includes(id);
   // All rules are in one window; the tiebreak has its own window that the rules of the classic mode
   // link to. A game mode has a short info window of its own that leads to all rules.
   const [rulesOpen, setRulesOpen] = useState(false);
@@ -196,14 +238,14 @@ export function TabooSetupForm({
                   <ChoiceGroup
                     legend={t("tabooSetup.rounds")}
                     name="raceRounds"
-                    initial={String(defaultRaceRounds)}
+                    initial={starts.raceRounds}
                     options={raceRoundChoices.map((value) => raceRoundOption(value, t))}
                   />
                   <ChoiceGroup
                     info={info("raceTarget", t("tabooSetup.raceTarget"))}
                     legend={t("tabooSetup.raceTarget")}
                     name="raceTarget"
-                    initial={String(defaultRaceTarget)}
+                    initial={starts.raceTarget}
                     options={raceTargetChoices.map((value) => ({
                       value: String(value),
                       label: String(value),
@@ -212,7 +254,7 @@ export function TabooSetupForm({
                   <ChoiceGroup
                     legend={t("tabooSetup.tiebreak")}
                     name="raceTiebreak"
-                    initial="on"
+                    initial={starts.raceTiebreak}
                     options={(["on", "off"] as const).map((value) => ({
                       value,
                       label: t(`tabooSetup.tiebreakOptions.${value}`),
@@ -224,7 +266,7 @@ export function TabooSetupForm({
                   <ChoiceGroup
                     legend={t("tabooSetup.countdownBudget")}
                     name="countdownBudget"
-                    initial={String(defaultCountdownBudgetMs)}
+                    initial={starts.countdownBudget}
                     options={countdownBudgetChoices.map((value) => ({
                       value: String(value),
                       label: String(value / 60_000),
@@ -234,7 +276,7 @@ export function TabooSetupForm({
                   <ChoiceGroup
                     legend={t("tabooSetup.countdownSwitch")}
                     name="countdownSwitch"
-                    initial="auto"
+                    initial={starts.countdownSwitch}
                     options={(["auto", "manual"] as const).map((value) => ({
                       value,
                       label: t(`tabooSetup.countdownSwitchOptions.${value}`),
@@ -245,20 +287,20 @@ export function TabooSetupForm({
                   <ChoiceGroup
                     legend={t("tabooSetup.rounds")}
                     name="rounds"
-                    initial={String(roundChoices.includes(3) ? 3 : roundChoices[0])}
+                    initial={starts.rounds}
                     options={roundChoices.map((value) => roundOption(value, t))}
                   />
                   <ChoiceGroup
                     legend={t("tabooSetup.duration")}
                     name="duration"
-                    initial="60"
+                    initial={starts.duration}
                     options={["60", "90", "120"].map((value) => ({ value, label: value }))}
                   />
                   <ChoiceGroup
                     info={info("skips", t("tabooSetup.skips"))}
                     legend={t("tabooSetup.skips")}
                     name="skips"
-                    initial="1"
+                    initial={starts.skips}
                     options={(["0", "1", "2", "3", "unlimited"] as const).map((value) => ({
                       value,
                       label: t(`tabooSetup.skipOptions.${value}`),
@@ -268,7 +310,7 @@ export function TabooSetupForm({
                   <ChoiceGroup
                     legend={t("tabooSetup.tiebreak")}
                     name="tiebreak"
-                    initial="on"
+                    initial={starts.tiebreak}
                     options={(["on", "off"] as const).map((value) => ({
                       value,
                       label: t(`tabooSetup.tiebreakOptions.${value}`),
@@ -302,7 +344,9 @@ export function TabooSetupForm({
                     info={info("cardSource", t("tabooSetup.cardSource"))}
                     legend={t("tabooSetup.cardSource")}
                     name="cardSource"
-                    initial="both"
+                    initial={
+                      saved && cardSources.includes(saved.cardSource) ? saved.cardSource : "both"
+                    }
                     options={cardSources.map((value) => ({
                       value,
                       label: t(`tabooSetup.cardSources.${value}`),
@@ -314,7 +358,7 @@ export function TabooSetupForm({
                   legend={t("tabooSetup.difficultyMultiple")}
                   multiple
                   name="difficulty"
-                  initial={["easy"]}
+                  initial={starts.difficulty}
                   options={difficulties.map((value) => ({
                     value,
                     label: t(`tabooSetup.difficulties.${value}`),
@@ -327,7 +371,7 @@ export function TabooSetupForm({
                       info={info("rememberPlayed", t("tabooSetup.rememberPlayed"))}
                       legend={t("tabooSetup.rememberPlayed")}
                       name="rememberPlayed"
-                      initial="on"
+                      initial={starts.rememberPlayed}
                       options={(["on", "off"] as const).map((value) => ({
                         value,
                         label: t(`tabooSetup.tiebreakOptions.${value}`),
@@ -366,7 +410,7 @@ export function TabooSetupForm({
                                 type="checkbox"
                                 name="category"
                                 value={category}
-                                defaultChecked
+                                defaultChecked={categoryChosen(category)}
                               />
                               <span>
                                 {categoryLabel(category)}

@@ -4,11 +4,16 @@ import { gameHubI18n, type SupportedLanguage } from "../i18n";
 import type { PlayerGroupStore } from "../business/shared/playerGroups";
 import type { InstallPrompt } from "../infrastructure/installPrompt";
 import type { PlayerRosterStore } from "../business/shared/playerRoster";
+import type { GameSettingsMemory } from "../business/shared/gameSettingsMemory";
 import type { TeamSetupMemory } from "../business/shared/savedTeamSetup";
 import type { LanguagePreferenceStore } from "../i18n/languagePreference";
 import { App } from "../presentation/App";
 import { InstallProvider } from "../presentation/install/InstallProvider";
-import { PlayerRosterProvider, TeamSetupMemoryProvider } from "../presentation/game-kit";
+import {
+  GameSettingsMemoryProvider,
+  PlayerRosterProvider,
+  TeamSetupMemoryProvider,
+} from "../presentation/game-kit";
 import { useDocumentLanguage } from "./useDocumentLanguage";
 import type { GameModule } from "../presentation/gameModule";
 
@@ -25,6 +30,8 @@ interface AppRootProps {
   playerGroupStore?: PlayerGroupStore;
   /** Remembers the last teams and players for all games. */
   teamSetupMemory?: TeamSetupMemory;
+  /** Remembers the settings of every game, so a new game starts with the last choices. */
+  gameSettingsMemory?: GameSettingsMemory;
 }
 
 function DocumentLanguage() {
@@ -35,6 +42,7 @@ function DocumentLanguage() {
 export function AppRoot({
   modules = [],
   cardLanguagePreferenceStore,
+  gameSettingsMemory,
   initialCardLanguage = "en",
   installPrompt,
   languagePreferenceStore,
@@ -59,12 +67,14 @@ export function AppRoot({
           store={playerRosterStore}
         >
           <TeamSetupMemoryProvider memory={teamSetupMemory}>
-            <App
-              modules={modules}
-              cardLanguage={cardLanguage}
-              onCardLanguageChange={handleCardLanguageChange}
-              onLanguageChange={(language) => languagePreferenceStore?.write(language)}
-            />
+            <GameSettingsMemoryProvider memory={gameSettingsMemory}>
+              <App
+                modules={modules}
+                cardLanguage={cardLanguage}
+                onCardLanguageChange={handleCardLanguageChange}
+                onLanguageChange={(language) => languagePreferenceStore?.write(language)}
+              />
+            </GameSettingsMemoryProvider>
           </TeamSetupMemoryProvider>
         </PlayerRosterProvider>
       </InstallProvider>

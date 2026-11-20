@@ -102,3 +102,18 @@ export function werewolfLineupIssues(lineup: WerewolfLineup): readonly WerewolfL
     issues.push({ code: "tooMany", count, maximum: werewolfPlayerLimits.targetMaximum });
   return issues;
 }
+
+/**
+ * Reads a saved line-up (storage can hold anything). Returns nothing unless the parts are lists of names;
+ * the narrator and the seats are brought into line with the participants like after any change.
+ */
+export function parseSavedLineup(raw: unknown): WerewolfLineup | undefined {
+  if (typeof raw !== "object" || raw === null) return undefined;
+  const { narrator, participants, seats } = raw as Record<string, unknown>;
+  const isNames = (value: unknown): value is string[] =>
+    Array.isArray(value) && value.every((name) => typeof name === "string" && name !== "");
+  if (!isNames(participants) || !isNames(seats)) return undefined;
+  if (narrator !== null && typeof narrator !== "string") return undefined;
+  const unique = [...new Set(participants)].slice(0, maxWerewolfParticipants);
+  return normalize(unique, narrator, seats);
+}

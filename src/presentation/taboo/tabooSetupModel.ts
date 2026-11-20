@@ -160,6 +160,59 @@ export interface TabooSettings {
   readonly tiebreak: boolean;
 }
 
+/**
+ * Reads saved settings (storage can hold anything). Returns nothing unless every field has the expected
+ * shape; the form then starts with its usual choices.
+ */
+export function parseSavedTabooSettings(raw: unknown): TabooSettings | undefined {
+  if (typeof raw !== "object" || raw === null) return undefined;
+  const r = raw as Record<string, unknown>;
+  const mode = tabooModes.find((candidate) => candidate === r.mode);
+  const cardSource = cardSources.find((candidate) => candidate === r.cardSource);
+  const integer = (value: unknown): value is number =>
+    typeof value === "number" && Number.isSafeInteger(value);
+  const strings = (value: unknown): value is string[] =>
+    Array.isArray(value) && value.every((entry) => typeof entry === "string");
+  if (
+    mode === undefined ||
+    cardSource === undefined ||
+    !integer(r.countdownBudgetMs) ||
+    r.countdownBudgetMs < 1 ||
+    typeof r.countdownAutoSwitch !== "boolean" ||
+    !strings(r.categories) ||
+    !strings(r.difficulties) ||
+    !integer(r.duration) ||
+    !integer(r.raceRounds) ||
+    r.raceRounds < 1 ||
+    !integer(r.raceTarget) ||
+    typeof r.raceTiebreak !== "boolean" ||
+    typeof r.rememberPlayed !== "boolean" ||
+    typeof r.tiebreak !== "boolean" ||
+    (r.rounds !== "unlimited" && !integer(r.rounds)) ||
+    (r.skips !== undefined && !integer(r.skips))
+  ) {
+    return undefined;
+  }
+  return {
+    cardSource,
+    categories: r.categories,
+    countdownAutoSwitch: r.countdownAutoSwitch,
+    countdownBudgetMs: r.countdownBudgetMs,
+    difficulties: difficulties.filter((difficulty) =>
+      (r.difficulties as string[]).includes(difficulty),
+    ),
+    duration: r.duration,
+    mode,
+    raceRounds: r.raceRounds,
+    raceTarget: r.raceTarget,
+    raceTiebreak: r.raceTiebreak,
+    rememberPlayed: r.rememberPlayed,
+    rounds: r.rounds,
+    skips: r.skips,
+    tiebreak: r.tiebreak,
+  };
+}
+
 /** Reads the form of the main menu. Settings of the mode that is not chosen are read too, but unused. */
 export function readTabooSettings(
   data: FormData,

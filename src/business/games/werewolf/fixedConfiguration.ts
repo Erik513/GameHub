@@ -500,3 +500,52 @@ export function normalizeFixedDraft(players: number, draft: FixedDraft): FixedDr
     );
   return unchanged ? draft : { roles, settings, wolfCount };
 }
+
+/**
+ * Reads a saved draft (storage can hold anything). Returns nothing unless every part has the expected
+ * shape, so a broken save never reaches the configuration; the roles that do not fit the players are
+ * taken back by `normalizeFixedDraft` afterwards.
+ */
+export function parseSavedFixedDraft(raw: unknown): FixedDraft | undefined {
+  if (typeof raw !== "object" || raw === null) return undefined;
+  const { roles, settings, wolfCount } = raw as Record<string, unknown>;
+  if (!Array.isArray(roles) || typeof settings !== "object" || settings === null) return undefined;
+  const known = Object.keys(werewolfRoleMinimums);
+  const savedRoles = roles.filter(
+    (role): role is WerewolfSpecialRole => typeof role === "string" && known.includes(role),
+  );
+  if (savedRoles.length !== roles.length || new Set(savedRoles).size !== savedRoles.length) {
+    return undefined;
+  }
+  const s = settings as Record<string, unknown>;
+  const bool = (value: unknown) => typeof value === "boolean";
+  if (
+    !bool(s.allowSelfSilence) ||
+    !bool(s.amulet) ||
+    !bool(s.attackOnFirstNight) ||
+    !bool(s.drunk) ||
+    !bool(s.revealRoles) ||
+    (s.hunterShot !== "optional" && s.hunterShot !== "required") ||
+    (s.mayor !== "doubleVote" && s.mayor !== "hammer") ||
+    (s.tanner !== "anyDeath" && s.tanner !== "voteOnly")
+  ) {
+    return undefined;
+  }
+  if (wolfCount !== null && !(typeof wolfCount === "number" && Number.isInteger(wolfCount))) {
+    return undefined;
+  }
+  return {
+    roles: savedRoles,
+    settings: {
+      allowSelfSilence: s.allowSelfSilence,
+      amulet: s.amulet,
+      attackOnFirstNight: s.attackOnFirstNight,
+      drunk: s.drunk,
+      hunterShot: s.hunterShot,
+      mayor: s.mayor,
+      revealRoles: s.revealRoles,
+      tanner: s.tanner,
+    },
+    wolfCount: wolfCount ?? null,
+  };
+}

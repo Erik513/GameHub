@@ -2,7 +2,9 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
+import type { GameSettingsMemory } from "../../business/shared/gameSettingsMemory";
 import { createGameHubI18n } from "../../i18n";
+import { GameSettingsMemoryProvider } from "../game-kit";
 import { createWerewolfModule } from "./werewolfModule";
 
 async function renderGame(language: "en" | "de") {
@@ -234,4 +236,30 @@ it("takes back the roles that no longer fit when a player is removed", async () 
   await user.click(screen.getByRole("button", { name: "Configuration" }));
   expect(tanner()).not.toBeChecked();
   expect(document.querySelector(".ww-issues")).toBeNull();
+});
+
+it("keeps the line-up for the next game", async () => {
+  const data = new Map<string, unknown>();
+  const memory: GameSettingsMemory = {
+    read: (key) => data.get(key),
+    write: (key, value) => void data.set(key, value),
+  };
+  const i18n = await createGameHubI18n("en");
+  const { Screen } = createWerewolfModule();
+  const view = () => (
+    <I18nextProvider i18n={i18n}>
+      <GameSettingsMemoryProvider memory={memory}>
+        <Screen />
+      </GameSettingsMemoryProvider>
+    </I18nextProvider>
+  );
+  const first = render(view());
+  const user = userEvent.setup();
+  await user.type(screen.getByLabelText("Add player"), "Anna, Ben{enter}");
+  expect(data.get("werewolf.lineup")).toMatchObject({ participants: ["Anna", "Ben"] });
+  first.unmount();
+
+  render(view());
+  expect(screen.getByText("Anna")).toBeInTheDocument();
+  expect(screen.getByText("Ben")).toBeInTheDocument();
 });

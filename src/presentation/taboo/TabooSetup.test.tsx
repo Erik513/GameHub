@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { expect, it, vi } from "vitest";
 import { createGameHubI18n } from "../../i18n";
-import { TeamSetupMemoryProvider } from "../game-kit";
+import type { GameSettingsMemory } from "../../business/shared/gameSettingsMemory";
+import { GameSettingsMemoryProvider, TeamSetupMemoryProvider } from "../game-kit";
 import { TabooSetup } from "./TabooSetup";
 import { tabooStandardCards } from "../../data/tabooStandardCards";
 import { rowText } from "../testing/scoreRows";
@@ -438,4 +439,55 @@ it("does not offer the card language without a way to change it", async () => {
   );
   openGameSettings();
   expect(screen.queryByRole("group", { name: "Card language" })).not.toBeInTheDocument();
+});
+
+it("starts the next game with the settings of the last one", async () => {
+  const user = userEvent.setup();
+  const i18n = await createGameHubI18n("en");
+  const data = new Map<string, unknown>();
+  const memory: GameSettingsMemory = {
+    read: (key) => data.get(key),
+    write: (key, value) => void data.set(key, value),
+  };
+  const view = () => (
+    <I18nextProvider i18n={i18n}>
+      <GameSettingsMemoryProvider memory={memory}>
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
+      </GameSettingsMemoryProvider>
+    </I18nextProvider>
+  );
+  const first = render(view());
+  openGameSettings();
+  // The usual choices first.
+  const duration = () => screen.getByRole("group", { name: /^Round duration/ });
+  expect(within(duration()).getByRole("radio", { name: "60" })).toBeChecked();
+  await user.click(within(duration()).getByRole("radio", { name: "120" }));
+  await user.click(
+    within(screen.getByRole("group", { name: /^Tiebreak/ })).getByRole("radio", { name: "Off" }),
+  );
+  expect(data.get("taboo.settings")).toMatchObject({ duration: 120, tiebreak: false });
+  first.unmount();
+
+  // A new game: the form starts with the last choices.
+  render(view());
+  openGameSettings();
+  expect(within(duration()).getByRole("radio", { name: "120" })).toBeChecked();
+  expect(
+    within(screen.getByRole("group", { name: /^Tiebreak/ })).getByRole("radio", { name: "Off" }),
+  ).toBeChecked();
+});
+
+it("starts with the usual settings when the saved ones are broken", async () => {
+  const i18n = await createGameHubI18n("en");
+  const memory: GameSettingsMemory = { read: () => ({ duration: "soon" }), write: () => undefined };
+  render(
+    <I18nextProvider i18n={i18n}>
+      <GameSettingsMemoryProvider memory={memory}>
+        <TabooSetup roundChoices={[1, 3]} cardLanguage="en" cards={tabooStandardCards} />
+      </GameSettingsMemoryProvider>
+    </I18nextProvider>,
+  );
+  openGameSettings();
+  const duration = screen.getByRole("group", { name: /^Round duration/ });
+  expect(within(duration).getByRole("radio", { name: "60" })).toBeChecked();
 });

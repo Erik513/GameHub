@@ -14,6 +14,7 @@ import { createInstallPrompt } from "./infrastructure/installPrompt";
 import { createLocalStoragePlayerGroupStore } from "./infrastructure/localStoragePlayerGroupStore";
 import { createLocalStoragePlayerRosterStore } from "./infrastructure/localStoragePlayerRosterStore";
 import { createLocalStoragePlayedCardsStore } from "./infrastructure/localStoragePlayedCardsStore";
+import { createLocalStorageGameSettingsMemory } from "./infrastructure/localStorageGameSettingsMemory";
 import { createLocalStorageTeamSetupMemory } from "./infrastructure/localStorageTeamSetupMemory";
 import { createTabooModule } from "./presentation/taboo/tabooModule";
 import { createWerewolfModule } from "./presentation/werewolf/werewolfModule";
@@ -73,6 +74,7 @@ createRoot(rootElement).render(
       languagePreferenceStore={languagePreferenceStore}
       playerGroupStore={createLocalStoragePlayerGroupStore(window.localStorage, playerRosterStore)}
       playerRosterStore={playerRosterStore}
+      gameSettingsMemory={createLocalStorageGameSettingsMemory(window.localStorage)}
       teamSetupMemory={createLocalStorageTeamSetupMemory(window.localStorage)}
     />
   </StrictMode>,

@@ -202,7 +202,8 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
                   <Icon name="book" />
                   {t("kitSetup.rulesButton")}
                 </Button>
-              ) : (
+              ) : gameTitle ? null : (
+                // The player list is managed in the GameHub only, never inside a game.
                 <PlayerRosterButton />
               )}
               <Button
