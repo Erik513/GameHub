@@ -30,14 +30,16 @@ export const werewolfConfigTexts = {
     useWolves: "Wolfszahl {{count}} nehmen",
     infoLabel: "Info zu {{name}}",
     infoClose: "Schließen",
+    infoGeneral: "Allgemein",
+    infoTasks: "Aufgaben",
     infoOptions: "Optionen",
     infoNotes: "Besonderheiten",
     availableFrom: "Ab {{count}} Spielern",
+    hammerFrom: "Hammer ab {{count}} Spielern",
     lockNoSeat:
       "Kein Platz frei: Die Werwölfe, die Seherin und die gewählten Rollen füllen alle Plätze.",
-    lockCombination:
-      "Sie spielt mit den gewählten Rollen bei dieser Spielerzahl und Wolfszahl nicht zusammen. Eine andere Wolfszahl kann sie freigeben.",
-    lockWolves: "Der Trunkenbold braucht mindestens zwei Werwölfe.",
+    lockCombination: "In der aktuellen Rollenauswahl zu stark.",
+    lockCombinationWith: "In der aktuellen Rollenauswahl zu stark mit {{role}}.",
     lockedNoSeat: "kein Platz frei",
     lockedCombination: "nicht zusammen",
     lockedWolves: "ab 2 Wölfen",
@@ -103,95 +105,110 @@ export const werewolfConfigTexts = {
       "Tippe eine Rolle an, um sie ins Spiel zu nehmen. Eine Rolle mit Optionen hat für jede Option eine Hälfte; tippe die gewählte Hälfte erneut an, um die Rolle wegzulassen.",
     info: {
       amulet: {
-        what: "Ein Gegenstand, keine Rollenkarte, er belegt also keinen Platz. Er fängt eine tödliche Aktion gegen den Träger ab.",
+        general:
+          "Ein Zusatz: Der Träger wird zu Beginn zufällig unter den Spielern ausgelost, die keine Werwölfe sind.\nEs fängt einen direkten Angriff auf den Träger ab: Wolfsangriff, Gift, Todeszauber, Jägerschuss, Hammer auf einen Werwolf oder die Abstimmung.",
+        tasks:
+          "Jeden Morgen entscheidet der Träger: Amulett behalten oder weitergeben.\nHat es einen Angriff abgefangen, muss er es danach weitergeben.",
         notes:
-          "Den ersten Träger lost die App unter den Spielern, die keine Werwölfe sind.\nEr fängt zum Beispiel den Wolfsangriff, Gift, einen Todeszauber, einen Jägerschuss und die Abstimmung ab.\nDer Träger gibt ihn jeden Tag weiter; hat er eine Aktion abgefangen, an eine andere Person.",
+          "Das Amulett geht verloren, wenn der Träger:\naus Liebeskummer stirbt\nals Bürgermeister an einem Hammer-Fehlschuss stirbt\nals Harter Bursche seiner Wunde erliegt",
       },
       apprenticeSeer: {
-        what: "Hat keine Aktion, solange die Seherin lebt. Ist die Seherin ausgeschieden, übernimmt der Lehrling ihre Visionen.",
-        notes:
-          "Der Erzähler sagt es ihm heimlich, sobald er erstmals für die Seherin aufgerufen wird.\nEine Seherin, die nachts angegriffen wird, hat ihre Vision noch, bevor sie am Morgen ausscheidet.",
+        general: "Eine Dorfrolle. Er hat keine Aktion, solange die Seherin lebt.",
+        tasks:
+          "Ist die Seherin tot, ruft der Erzähler ihn jede Nacht offen auf: Er sieht sich eine Person an und erfährt, ob sie ein Werwolf ist.\nSo erfahren alle, dass es keine Seherin mehr gibt.",
       },
       cupid: {
-        what: "Wählt in der ersten Nacht zwei Verliebte. Sie erkennen einander, behalten ihre Rollen und sterben gemeinsam.",
-        notes:
-          "Ein gemischtes Paar als letzte zwei Überlebende lässt die Werwölfe bei eins gegen eins gewinnen.",
+        general: "Eine Dorfrolle. Er handelt nur in der ersten Nacht.",
+        tasks:
+          "Er wählt zwei Verliebte. Stirbt einer von ihnen, stirbt der andere mit.\nVerliebte töten sich nie gegenseitig und versuchen, als Paar zu gewinnen.",
       },
       drunk: {
-        what: "Ein Zusatz: Eine Person startet als Trunkenbold und sieht nur das. Zu Beginn der dritten Nacht zeigt der Erzähler ihr die wahre Rolle.",
+        general:
+          "Ein Zusatz: Eine Person startet als Trunkenbold und kann sich nicht an ihre wahre Rolle erinnern.\nDie wahre Rolle wird unter allen Rollen außer Amor ausgelost.",
+        tasks:
+          "Zu Beginn der dritten Nacht nüchtert er aus: Der Erzähler zeigt ihm heimlich seine wahre Rolle.\nBis dahin ruht seine Fähigkeit.",
         notes:
-          "Bis dahin tut die Rolle nichts.\nEr braucht mindestens zwei Werwölfe.\nEin Jäger, der vorher stirbt, erfährt seine wahre Rolle vor dem letzten Schuss.",
+          "Seherin und Ermittler können die wahre Rolle schon vorher herausfinden.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf noch schießen.",
       },
       guard: {
-        what: "Höchstens eine der beiden Rollen ist im Spiel, oder keine.",
+        general: "Eine Dorfrolle. Höchstens eine der beiden ist im Spiel, oder keine.",
+        tasks:
+          "Jede Nacht wählt die Rolle eine Person, bei der sie die Nacht verbringt.\nDieselbe Person zweimal hintereinander ist verboten.",
         options:
-          "Leibwächter: schützt jede Nacht eine Person vor dem Wolfsangriff, vor Gift und vor Todeszaubern.\nDorfmatratze: übernachtet jede Nacht bei einer Person; ein Wolfsangriff auf den Gastgeber trifft stattdessen die Dorfmatratze.",
-        notes:
-          "Beide dürfen nie dieselbe Person zweimal hintereinander wählen.\nEin direkter Angriff auf den Leibwächter trifft ihn trotzdem; ein direkter Angriff auf die besuchende Dorfmatratze geht ins Leere.",
+          "Leibwächter: Übernachtet bei der gewählten Person und schützt sie vor direkten Angriffen, nur nicht vor dem Hammer. Er selbst ist nicht geschützt.\nDorfmatratze: Übernachtet bei der gewählten Person und schützt sie vor dem Wolfsangriff, stirbt aber an ihrer Stelle. Ein direkter Angriff auf sie geht ins Leere, denn sie schläft woanders.",
       },
       hunter: {
-        what: "Wenn der Jäger ausscheidet, nachts oder durch die Abstimmung, darf er auf eine lebende Person schießen, bevor das Spiel weitergeht.",
+        general: "Eine Dorfrolle.",
+        tasks: "Scheidet er aus, darf er auf eine lebende Person schießen.",
         options:
-          "Schusspflicht: Er muss ein Ziel wählen.\nKeine Schusspflicht: Er darf auch darauf verzichten.",
-        notes: "Die Siegprüfung folgt erst nach dem Schuss.",
+          "Schusspflicht: Er muss ein Ziel wählen.\nKeine Schusspflicht: Er darf schießen, wenn er will.",
       },
       idiot: {
-        what: "Bei der Abstimmung nach einer Nominierung muss der Dorftrottel mit Ja stimmen.",
-        notes: "Ein stummgeschalteter Dorftrottel gibt gar keine Stimme ab.",
+        general: "Eine Dorfrolle.",
+        tasks:
+          "Bei der Abstimmung nach einer Nominierung (Ja oder Nein) muss der Dorftrottel mit Ja stimmen.",
+        notes: "Ein stummgeschalteter Dorftrottel darf nicht abstimmen.",
       },
       magician: {
-        what: "Hat zwei Zauber für die ganze Partie: einen Heilzauber für das Wolfsopfer und einen Todeszauber für eine beliebige Person.",
-        notes:
-          "Meist ersetzt der Magier die Hexe; beide spielen nur ab 14 Spielern mit vier (oder fünf) Werwölfen zusammen.\nBeide Zauber lassen sich in einer Nacht einsetzen (zwei verschiedene Ziele) oder aufheben.\nEin Leibwächter blockiert einen Todeszauber auf seine geschützte Person; der Zauber ist trotzdem verbraucht.",
+        general: "Eine Dorfrolle.",
+        tasks:
+          "Nach dem Wolfsangriff zeigt der Erzähler ihm heimlich das Wolfsopfer.\nEr hat zwei Zauber, jeder heilt das Wolfsopfer oder tötet eine beliebige Person. Er darf beide in einer Nacht einsetzen, auch auf zwei Personen.",
       },
       mayor: {
-        what: "Eine geheime Rolle mit einer Fähigkeit, die mit der Rolle gewählt wird.",
+        general: "Eine Dorfrolle. Er darf seine Rolle nicht preisgeben.",
         options:
-          "Doppelte Stimme: Der Erzähler zählt die Stimme des Bürgermeisters zweifach.\nHammer: eine Nachtaktion, die einen Wolf tötet.",
+          "Doppelte Stimme: Der Erzähler zählt seine Stimme bei Abstimmungen doppelt.\nHammer: Hat er einen Werwolf im Verdacht, darf er ab der zweiten Nacht eine lebende Person damit töten wollen. Ist sie ein Werwolf, stirbt sie; hat er eine Dorfrolle gewählt, stirbt er selbst.",
         notes:
-          "Bei einem falschen Ziel tötet der Hammer den Bürgermeister selbst, das Ziel überlebt.\nDer Hammer ist ab 10 Spielern verfügbar.",
+          "Er erfährt nicht, wen die Wölfe angegriffen haben, und darf jede andere lebende Person wählen, auch wenn er selbst Opfer ist.\nTodesfälle durch den Hammer können Hexe und Magier nicht heilen.\nDas Amulett schützt einen getroffenen Werwolf, aber nicht den Bürgermeister bei einem Fehlschuss.",
       },
       paranormalInvestigator: {
-        what: "Einmal pro Partie wählt er eine Person; der Erzähler sagt, ob diese Person oder einer ihrer zwei nächsten lebenden Sitznachbarn ein Werwolf ist.",
-        notes:
-          "Er darf auf eine spätere Nacht warten; Warten verbraucht die Fähigkeit nicht.\nDie Sitzreihenfolge zählt als Kreis.",
+        general: "Eine Dorfrolle. Seine Fähigkeit hat er einmal pro Partie.",
+        tasks:
+          "Nachts wählt er eine Person. Der Erzähler sagt, ob diese Person oder einer ihrer zwei nächsten lebenden Sitznachbarn ein Werwolf ist.",
       },
       seer: {
-        what: "Sieht sich jede Nacht eine Person an und erfährt, ob sie ein Werwolf ist.",
-        notes: "Es gibt immer genau eine Seherin.",
+        general: "Eine Dorfrolle. Es gibt immer genau eine Seherin.",
+        tasks: "Jede Nacht sieht sie sich eine Person an und erfährt, ob sie ein Werwolf ist.",
       },
       spellcaster: {
-        what: "Schaltet jede Nacht eine Person für den nächsten Tag stumm: nicht sprechen, nicht nominieren, nicht abstimmen.",
+        general: "Eine Dorfrolle.",
+        tasks:
+          "Jede Nacht schaltet sie eine Person für den nächsten Tag stumm.\nDieselbe Person zweimal hintereinander ist verboten.",
         options:
           "Selbstwahl erlaubt: Sie darf auch sich selbst stummschalten.\nSelbstwahl verboten: Sie muss eine andere Person wählen.",
         notes:
-          "Nie dieselbe Person zweimal hintereinander.\nEine stummgeschaltete Person kann trotzdem nominiert werden.",
+          "Eine stumme Person darf weder sprechen noch nominieren oder abstimmen, kann aber nominiert werden.",
       },
       tanner: {
-        what: "Hat keine Nachtaktion. Er gewinnt persönlich, wenn er ausscheidet; die Partie läuft weiter, bis das Dorf oder die Werwölfe gewinnen.",
+        general: "Eine Dorfrolle.",
+        tasks: "Zu sterben ist sein eigenes Ziel: Dann gewinnt er für sich.",
         options:
-          "Sieg bei jedem Ausscheiden: Jeder Tod zählt, auch durch die Wölfe, einen Schuss oder Liebeskummer.\nSieg nur bei Abstimmung: Nur ein Tod durch die Abstimmung des Tages zählt.",
-        notes:
-          "Nur bei Abstimmung: Scheidet er aus, weil sein Liebespartner rausgewählt wurde, gewinnt er nicht.",
+          "Sieg bei jedem Ausscheiden: Jeder Tod zählt.\nSieg nur bei Abstimmung: Er muss rausgewählt werden.",
       },
       toughGuy: {
-        what: "Ein ungeschützter Wolfsangriff verwundet ihn nur. Er nimmt am nächsten Tag normal teil und stirbt am Ende der nächsten Nacht.",
-        notes:
-          "Gift, die Abstimmung, ein Jägerschuss oder der Tod eines Liebespartners können ihn früher töten.\nDie Hexe kann den ursprünglichen Angriff in der Angriffsnacht heilen.",
+        general: "Eine Dorfrolle. Nach einem Wolfsangriff nimmt er am nächsten Tag normal teil.",
+        tasks:
+          "Ein Wolfsangriff tötet ihn nicht sofort: In der Angriffsnacht kann er noch gerettet werden, in der Nacht darauf erliegt er seiner Wunde.",
+        notes: "Jede andere Todesursache tötet ihn sofort.",
       },
       villagers: {
-        what: "Gewöhnliche Dorfbewohner haben keine besondere Fähigkeit. Sie spielen mit dem Dorf und suchen gemeinsam die Werwölfe.",
+        general:
+          "Gewöhnliche Dorfbewohner haben keine besondere Fähigkeit. Sie spielen mit dem Dorf.",
+        tasks: "Sie reden, suchen gemeinsam die Werwölfe und stimmen ab.",
         notes: "Die Anzahl wird automatisch aus deiner Auswahl bestimmt.",
       },
       witch: {
-        what: "Wird nach den Werwölfen und der Seherin aufgerufen, auch in der ersten Nacht. Hat einen Heiltrank und einen Gifttrank für die ganze Partie.",
+        general: "Eine Dorfrolle.",
+        tasks:
+          "Für die ganze Partie hat sie einen Heiltrank für das Wolfsopfer und einen Gifttrank für eine beliebige Person.",
         notes:
           "Beide Tränke können in derselben Nacht eingesetzt werden.\nGift auf eine geschützte Person ist trotzdem verbraucht.",
       },
       wolves: {
-        what: "Die Werwölfe wählen jede Nacht ein Opfer.",
+        general: "Die Werwölfe sind die Gegner des Dorfs.",
+        tasks: "Jede Nacht wählen die Werwölfe ein Opfer.",
         notes:
-          "Wähle, wie viele mitspielen; gibt es nur eine mögliche Zahl, ist sie fest.\nDie Empfehlung passt zu den gewählten Rollen; sie ändert deine Wahl nie von selbst.",
+          "In der ersten Nacht lernen sie sich nur kennen, außer der Angriff ab Nacht 1 ist eingeschaltet.\nWähle, wie viele mitspielen; gibt es nur eine mögliche Zahl, ist sie fest.\nDie Empfehlung passt zu den gewählten Rollen; sie ändert deine Wahl nie von selbst.",
       },
     },
   },

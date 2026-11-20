@@ -569,3 +569,13 @@
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
 }
+
+.ww-info__part + .ww-info__part {
+  margin-top: var(--space-1);
+}
+
+/* A note that introduces the lines below it: no bullet, set back to the edge of the list. */
+.ww-info__lead {
+  list-style: none;
+  margin-left: -1.1em;
+}

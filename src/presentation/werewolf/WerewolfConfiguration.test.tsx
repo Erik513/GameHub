@@ -289,19 +289,20 @@ it.each([
   },
 );
 
+const headingsOf = (dialog: HTMLElement) =>
+  [...dialog.querySelectorAll(".ww-info__heading")].map((heading) => heading.textContent);
+
 it.each([
-  ["en", "Info about Hunter", "Options", "Special notes", "Duty to shoot"],
-  ["de", "Info zu Jäger", "Optionen", "Besonderheiten", "Schusspflicht"],
+  ["en", "Info about Hunter", ["General", "Tasks", "Options"], "Duty to shoot"],
+  ["de", "Info zu Jäger", ["Allgemein", "Aufgaben", "Optionen"], "Schusspflicht"],
 ] as const)(
-  "explains a role in three parts: what it does, its options, special notes (%s)",
-  async (language, label, optionsHeading, notesHeading, option) => {
+  "explains a role in parts: general, tasks, options (%s)",
+  async (language, label, headings, option) => {
     const { user } = await renderConfiguration(language, 9);
     await user.click(screen.getByRole("button", { name: label }));
     const dialog = await screen.findByRole("dialog");
-    const headings = [...dialog.querySelectorAll(".ww-info__heading")].map((h) => h.textContent);
-    // The text first, then the options, then the notes.
-    expect(headings).toEqual([optionsHeading, notesHeading]);
-    expect(dialog.querySelector(".kit-info-text")).not.toBeNull();
+    // In this order, and only the parts the role has (the hunter has no special notes).
+    expect(headingsOf(dialog)).toEqual(headings);
     // Every option is explained on its own line with its name in bold.
     const names = [...dialog.querySelectorAll(".kit-info-list strong")].map((n) => n.textContent);
     expect(names).toHaveLength(2);
@@ -309,10 +310,54 @@ it.each([
   },
 );
 
-it("shows no heading for options when a role has none", async () => {
+it("has a part of special notes only for a role that has some", async () => {
   const { user } = await renderConfiguration("en", 9);
   await user.click(screen.getByRole("button", { name: "Info about Witch" }));
   const dialog = await screen.findByRole("dialog");
-  const headings = [...dialog.querySelectorAll(".ww-info__heading")].map((h) => h.textContent);
-  expect(headings).toEqual(["Special notes"]);
+  expect(headingsOf(dialog)).toEqual(["General", "Tasks", "Special notes"]);
 });
+
+it("shows only the box of the players in the window of an extra", async () => {
+  const { user } = await renderConfiguration("en", 12);
+  await user.click(screen.getByRole("button", { name: "Info about Drunk" }));
+  const dialog = await screen.findByRole("dialog");
+  expect(dialog.querySelectorAll(".ww-available")).toHaveLength(1);
+  expect(dialog.querySelector(".ww-available")).toHaveTextContent("From 9 players");
+});
+
+it.each([
+  ["en", "Info about Protective amulet", /drawn randomly/, /pass it/, /lost if the holder/],
+  ["de", "Info zu Schutzamulett", /zufällig/, /weitergeben/, /geht verloren, wenn der Träger/],
+] as const)(
+  "explains the amulet in general, tasks and special cases (%s)",
+  async (language, label, general, task, note) => {
+    const { user } = await renderConfiguration(language, 12);
+    await user.click(screen.getByRole("button", { name: label }));
+    const dialog = await screen.findByRole("dialog");
+    const parts = [...dialog.querySelectorAll(".ww-info__part")];
+    expect(parts).toHaveLength(3);
+    expect(parts[0]).toHaveTextContent(general);
+    expect(parts[1]).toHaveTextContent(task);
+    expect(parts[2]).toHaveTextContent(note);
+    // The reasons the amulet is lost stand as single points below the introduction.
+    expect(parts[2]?.querySelectorAll("li")).toHaveLength(4);
+  },
+);
+
+it.each([
+  [9, ["ok", "locked"]],
+  [12, ["ok", "ok"]],
+] as const)(
+  "shows a second box for the hammer in the window of the mayor (%s players)",
+  async (players, states) => {
+    const { user } = await renderConfiguration("en", players);
+    await user.click(screen.getByRole("button", { name: "Info about Mayor" }));
+    const dialog = await screen.findByRole("dialog");
+    const boxes = [...dialog.querySelectorAll(".ww-available")];
+    expect(boxes.map((box) => box.textContent)).toEqual([
+      "From 9 players",
+      "Hammer from 10 players",
+    ]);
+    expect(boxes.map((box) => box.getAttribute("data-state"))).toEqual(states);
+  },
+);

@@ -73,6 +73,8 @@ export function RoleTile({
 
 interface RoleRowProps {
   readonly children: ReactNode;
+  /** Only for the mayor: whether the hammer is available (shown as a second box in the window). */
+  readonly hammerOk?: boolean;
   readonly infoId: ConfigInfoId;
   readonly lock: FixedItemView["lock"] | "wolves";
   readonly minimum: number;
@@ -85,11 +87,18 @@ interface RoleRowProps {
  * whole width and, outside of it on the right, the one "i" button. For a role with options the explanation
  * describes every option.
  */
-export function RoleRow({ children, infoId, lock, minimum, name }: RoleRowProps) {
+export function RoleRow({ children, hammerOk, infoId, lock, minimum, name }: RoleRowProps) {
   return (
     <div className="ww-role">
       <div className="ww-role__control">{children}</div>
-      <ConfigInfo className="ww-role__info" id={infoId} lock={lock} minimum={minimum} name={name} />
+      <ConfigInfo
+        className="ww-role__info"
+        id={infoId}
+        lock={lock}
+        minimum={minimum}
+        name={name}
+        {...(hammerOk === undefined ? {} : { hammerOk })}
+      />
     </div>
   );
 }

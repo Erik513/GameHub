@@ -139,6 +139,7 @@ export function WerewolfConfiguration({
         lock={entry.lock}
         minimum={entry.minimum}
         name={name}
+        {...(entry.id === "mayor" ? { hammerOk: !entry.lockedVariants.includes("hammer") } : {})}
       >
         <div aria-label={name} className="ww-split" role="group">
           {choices.map((choice) => {
