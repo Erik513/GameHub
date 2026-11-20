@@ -20,7 +20,7 @@ import {
   type VariableDraft,
 } from "../../business/games/werewolf/variableConfiguration";
 import { Button } from "../components";
-import { ChoiceGroup, SetupTabs, StartBar, useFocusOnShow } from "../game-kit";
+import { ChoiceGroup, SetupTabs, StartBar, TabPane, useFocusOnShow } from "../game-kit";
 import { ConfigCardHead } from "./ConfigInfo";
 import { WakeOrderButton } from "./WakeOrderButton";
 import { RoleRow, RoleTile } from "./ConfigTiles";
@@ -254,8 +254,8 @@ export function WerewolfConfiguration({
         players={players}
       />
     ) : (
-      <>
-        {modeSwitch}
+      // The switch stands in the header of the pane, so the scrollbar leaves it out.
+      <TabPane header={<div className="ww-players-head">{modeSwitch}</div>}>
         {
           <>
             <section className="ww-box ww-core">
@@ -376,7 +376,7 @@ export function WerewolfConfiguration({
             {locked.length > 0 && renderBox(t("werewolfConfig.unavailableHeading"), locked, false)}
           </>
         }
-      </>
+      </TabPane>
     );
 
   // The general rules belong to the draft of the mode that is shown.
