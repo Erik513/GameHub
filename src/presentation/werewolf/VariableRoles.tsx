@@ -129,13 +129,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
       key={state}
     >
       <h4 className="ww-vbox__title">{t(`werewolfConfig.variable.box.${state}`)}</h4>
-      <div className="ww-vbox__chips">
-        {chips.length > 0 ? (
-          chips
-        ) : (
-          <span className="ww-vbox__empty">{t("werewolfConfig.variable.empty")}</span>
-        )}
-      </div>
+      <div className="ww-vbox__chips">{chips}</div>
     </section>
   );
 
@@ -325,7 +319,20 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
           style={{ left: dragging.drag.x, top: dragging.drag.y }}
         >
           <span className="ww-chip__main">{labelOf(dragging.drag.player)}</span>
-          <span className="ww-chip__info-room" />
+          {/* A look-alike of the "i" of the chip, so it stays visible while the name is dragged. */}
+          <span className="ww-chip__info-room">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" />
+              <path
+                d="M12 11v5"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="2.2"
+              />
+              <circle cx="12" cy="7.8" r="1.3" fill="currentColor" />
+            </svg>
+          </span>
         </div>
       )}
     </TabPane>

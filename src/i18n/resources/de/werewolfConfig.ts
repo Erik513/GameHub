@@ -117,7 +117,6 @@ export const werewolfConfigTexts = {
         may: "Darf ins Spiel",
         not: "Soll nicht ins Spiel",
       },
-      empty: "Nichts hier",
       lock: {
         incompatibleRoles: "Sie spielt nicht zusammen mit den Rollen, die im Spiel sind.",
         insufficientSeats: "Es ist kein Platz mehr frei.",

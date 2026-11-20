@@ -725,12 +725,6 @@
   min-height: 1.75rem;
 }
 
-.ww-vbox__empty {
-  align-self: center;
-  color: var(--color-ink-muted);
-  font-size: var(--text-xs);
-}
-
 .ww-chip {
   display: inline-flex;
   align-items: center;
@@ -743,6 +737,8 @@
 
 .ww-chip .ww-chip__main {
   align-self: stretch;
+  display: inline-flex;
+  align-items: center;
   min-height: 0;
   min-width: 0;
   padding: 0 var(--space-1) 0 var(--space-2);
@@ -771,11 +767,22 @@
   height: 0.9rem;
 }
 
-/* The room of the "i" in the name that follows the pointer: it is as big as the chip it stands for. */
+/* The "i" in the name that follows the pointer: it is as big as the one of the chip it stands for. */
 .ww-chip__info-room {
+  display: inline-flex;
   flex: none;
+  align-items: center;
+  justify-content: center;
   width: 1.5rem;
+  height: 1.5rem;
   margin-right: var(--space-1);
+  /* The same color as the real "i" of the chip. */
+  color: var(--color-ink-muted);
+}
+
+.ww-chip__info-room svg {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .ww-chip[data-lock] {
