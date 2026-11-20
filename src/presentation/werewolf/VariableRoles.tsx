@@ -26,9 +26,8 @@ interface VariableRolesProps {
 
 const states: readonly VariableState[] = ["must", "may", "not"];
 
-/** The fields to drop on: the boxes of the roles are 0 to 2, the boxes of the extras 3 to 5. */
-const dropOf = (kind: "item" | "role", state: VariableState) =>
-  states.indexOf(state) + (kind === "item" ? 3 : 0);
+/** The fields to drop on: the three boxes (must, may, should not) take roles and extras alike. */
+const dropOf = (state: VariableState) => states.indexOf(state);
 
 /** The reasons an entry cannot be moved to "must" or "may" now. */
 const lockText = {
@@ -78,9 +77,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
   const dragging = usePlayerDrag({
     onDrop: (id, target) => {
       if (target === "none") return;
-      // A role goes into the boxes of the roles, an extra into the boxes of the extras.
-      const kind = id.startsWith("item:") ? "item" : "role";
-      const state = states.find((candidate) => dropOf(kind, candidate) === target);
+      const state = states.find((candidate) => dropOf(candidate) === target);
       if (state) place(id, state);
     },
     onTap: setPicking,
@@ -114,6 +111,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
     <span
       className="ww-chip"
       data-dragged={dragging.drag?.player === id || undefined}
+      data-kind={id.startsWith("item:") ? "item" : "role"}
       data-lock={lock ?? undefined}
       key={id}
     >
@@ -129,14 +127,13 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
     </span>
   );
 
-  const box = (kind: "item" | "role", state: VariableState, chips: readonly ReactNode[]) => (
+  const box = (state: VariableState, chips: readonly ReactNode[]) => (
     <section
-      aria-label={`${t(kind === "item" ? "werewolfConfig.extrasHeading" : "werewolfConfig.variable.rolesHeading")}: ${t(`werewolfConfig.variable.box.${state}`)}`}
+      aria-label={`${t("werewolfConfig.variable.rolesHeading")}: ${t(`werewolfConfig.variable.box.${state}`)}`}
       className="ww-vbox"
-      {...{ [dropAttribute]: String(dropOf(kind, state)) }}
-      data-kind={kind}
+      {...{ [dropAttribute]: String(dropOf(state)) }}
       data-over={
-        (dragging.over === dropOf(kind, state) &&
+        (dragging.over === dropOf(state) &&
           dragging.drag !== null &&
           accepts(dragging.drag.player, state)) ||
         undefined
@@ -151,7 +148,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
             className="ww-vbox__info"
             closeLabel={t("werewolfConfig.infoClose")}
             label={t("werewolfConfig.variable.mayInfo.label")}
-            text={t(`werewolfConfig.variable.mayInfo.${kind === "item" ? "items" : "roles"}`)}
+            text={`${t("werewolfConfig.variable.mayInfo.roles")}\n${t("werewolfConfig.variable.mayInfo.items")}`}
             title={t("werewolfConfig.variable.box.may")}
           />
         )}
@@ -178,7 +175,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
                   className="ww-wolves__button"
                   data-fixed={!view.wolf.choice || undefined}
                   data-recommended={option.recommended || undefined}
-                  disabled={!view.wolf.choice}
+                  disabled={!view.wolf.choice || (!option.selected && !option.canStart)}
                   onClick={() => onChange(toggleVariableWolfCount(draft, players, option.count))}
                   type="button"
                 >
@@ -231,7 +228,10 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
                     which === "maximum" ? next : view.range.maximum,
                   ),
                 );
-              const low = which === "minimum" ? possible.minimum : view.range.minimum;
+              const low =
+                which === "minimum"
+                  ? possible.minimum
+                  : Math.max(view.range.minimum, view.maximumFloor);
               const high =
                 which === "minimum"
                   ? Math.min(view.range.maximum, view.minimumCeiling)
@@ -277,31 +277,16 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
       <h3 className="ww-vheading">{t("werewolfConfig.variable.rolesHeading")}</h3>
       <div className="ww-vboxes">
         {states.map((state) =>
-          box(
-            "role",
-            state,
-            view.entries
+          box(state, [
+            ...view.entries
               .filter((entry) => entry.state === state)
               .map((entry) => chip(entry.entry.id, roleLabel(entry), entry.lock)),
-          ),
+            ...view.items
+              .filter((item) => item.state === state)
+              .map((item) => chip(`item:${item.item}`, itemLabel(item), item.lock)),
+          ]),
         )}
       </div>
-      {view.items.length > 0 && (
-        <>
-          <h3 className="ww-vheading">{t("werewolfConfig.extrasHeading")}</h3>
-          <div className="ww-vboxes">
-            {states.map((state) =>
-              box(
-                "item",
-                state,
-                view.items
-                  .filter((item) => item.state === state)
-                  .map((item) => chip(`item:${item.item}`, itemLabel(item), item.lock)),
-              ),
-            )}
-          </div>
-        </>
-      )}
       <Dialog
         closeLabel={t("werewolfConfig.infoClose")}
         onClose={() => setPicking(undefined)}
@@ -349,6 +334,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
         <div
           aria-hidden="true"
           className="ww-chip ww-chip--ghost"
+          data-kind={dragging.drag.player.startsWith("item:") ? "item" : "role"}
           style={{ left: dragging.drag.x, top: dragging.drag.y }}
         >
           <span className="ww-chip__main">{labelOf(dragging.drag.player)}</span>

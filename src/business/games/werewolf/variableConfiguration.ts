@@ -160,11 +160,57 @@ export function toggleVariableWolfCount(
   return { ...draft, wolfCounts: [...next].sort((a, b) => a - b) };
 }
 
-/** The draft in the form of the game logic for this number of players. */
+/** How many roles can be drawn from a pool: the bodyguard and the night guest are one role (one of them). */
+const roleFamilyCount = (roles: readonly WerewolfSpecialRole[]): number =>
+  new Set(roles.map((role) => (role === "nightGuest" ? "bodyguard" : role))).size;
+
+/**
+ * The draft in the form of the game logic for this number of players. The number of "may" roles is kept inside what
+ * the seats allow: a range that the musts and the wolves leave no room for would block the start, so it is cut to the
+ * possible range (the draft keeps what the player set).
+ */
 export function variableSelectionOf(
   players: number,
   draft: VariableDraft,
 ): VariableWerewolfSelection {
+  const selection = rawSelectionOf(players, draft);
+  const wide = {
+    ...selection,
+    roleRange: { maximum: roleFamilyCount(selection.rolePool), minimum: 0 },
+  };
+  const analysis = analyzeVariableWerewolfSelection(players, wide, { ...draft.rules });
+  const bounds = analysis.ok ? seatBounds(analysis) : null;
+  if (!bounds) return selection;
+  const maximum = Math.max(
+    Math.min(selection.roleRange.maximum, bounds.maximumTop),
+    bounds.maximumBottom,
+  );
+  const minimum = Math.min(selection.roleRange.minimum, bounds.minimumTop, maximum);
+  return { ...selection, roleRange: { maximum, minimum } };
+}
+
+/**
+ * What the seats allow for the number of "may" roles that are drawn. The draw takes one of the chosen wolf counts
+ * and needs a lineup with it, so every chosen wolf count must find a number of roles inside the range: the least may
+ * not exceed what the tightest wolf count allows at most, the most may not fall below what the widest one needs at
+ * least.
+ */
+function seatBounds(analysis: VariableWerewolfSummary): {
+  readonly maximumBottom: number;
+  readonly maximumTop: number;
+  readonly minimumTop: number;
+} | null {
+  const chosen = analysis.wolfCounts.filter((wolf) => wolf.selected);
+  if (chosen.length === 0 || chosen.some((wolf) => wolf.possibleRoleCounts.length === 0))
+    return null;
+  return {
+    maximumBottom: Math.max(...chosen.map((wolf) => Math.min(...wolf.possibleRoleCounts))),
+    maximumTop: Math.max(...chosen.map((wolf) => Math.max(...wolf.possibleRoleCounts))),
+    minimumTop: Math.min(...chosen.map((wolf) => Math.max(...wolf.possibleRoleCounts))),
+  };
+}
+
+function rawSelectionOf(players: number, draft: VariableDraft): VariableWerewolfSelection {
   const requiredRoles: WerewolfSpecialRole[] = [];
   const rolePool: WerewolfSpecialRole[] = [];
   const options: Record<string, (string | boolean)[]> = {};
@@ -185,7 +231,8 @@ export function variableSelectionOf(
   const wolfCounts = (draft.wolfCounts ?? [standardWerewolfCount(players)]).filter((count) =>
     availableWerewolfCounts(players).includes(count),
   );
-  const maximum = draft.roleRange.maximum ?? rolePool.length;
+  const poolSize = roleFamilyCount(rolePool);
+  const maximum = draft.roleRange.maximum ?? poolSize;
   return {
     itemPool: variableItems.filter((item) => draft.items[item] === "may"),
     requiredItems: variableItems.filter((item) => draft.items[item] === "must"),
@@ -193,9 +240,9 @@ export function variableSelectionOf(
     roleOptions: options,
     rolePool,
     roleRange: {
-      maximum: Math.min(maximum, rolePool.length),
+      maximum: Math.min(maximum, poolSize),
       // Drawing every role of the pool is the same as "must": at least one of them stays open.
-      minimum: Math.min(draft.roleRange.minimum, maximum, Math.max(0, rolePool.length - 1)),
+      minimum: Math.min(draft.roleRange.minimum, maximum, Math.max(0, poolSize - 1)),
     },
     wolfCounts: wolfCounts.length > 0 ? wolfCounts : [standardWerewolfCount(players)],
   };
@@ -237,6 +284,8 @@ export interface VariableConfigurationView {
   readonly mayRoleCount: number;
   /** The highest value of "at least": below the number of "may" roles, as all of them would be "must" roles. */
   readonly minimumCeiling: number;
+  /** The lowest value of "at most": the wolf counts need at least this many roles. */
+  readonly maximumFloor: number;
   readonly supported: boolean;
   readonly canStart: boolean;
   readonly wolf: {
@@ -252,6 +301,7 @@ const emptyView = (supported: boolean): VariableConfigurationView => ({
   entries: [],
   items: [],
   mayRoleCount: 0,
+  maximumFloor: 0,
   minimumCeiling: 0,
   possibleRange: null,
   problem: supported ? "invalid" : null,
@@ -282,7 +332,8 @@ function viewOf(
 ): VariableConfigurationView {
   // Whether the game can still be played when something moves to "must": the seats of the "must" roles are
   // limited by the number of players (the maximum of roles for the players).
-  const baseFits = analysis.wolfCounts.some((wolf) => wolf.selected && wolf.canStart);
+  // Every chosen wolf count must keep a possible lineup, as the draw refuses the game otherwise.
+  const baseFits = analysis.canStart;
   const fitsAsMust = (moved: VariableDraft): boolean => {
     if (!baseFits) return true;
     const moved2 = analyzeVariableWerewolfSelection(
@@ -290,7 +341,7 @@ function viewOf(
       variableSelectionOf(players, moved),
       settings,
     );
-    return moved2.ok && moved2.wolfCounts.some((wolf) => wolf.selected && wolf.canStart);
+    return moved2.ok && moved2.canStart;
   };
   const entries: VariableEntryView[] = [];
   for (const entry of variableEntries) {
@@ -337,19 +388,23 @@ function viewOf(
     selected: chosen.includes(count),
   }));
   const possible = analysis.possibleRoleRange;
-  const most = possible
-    ? Math.min(draft.roleRange.maximum ?? possible.maximum, possible.maximum)
-    : 0;
-  // The least number stays below the number of "may" roles: drawing all of them would make them "must" roles.
-  const ceiling = Math.max(possible?.minimum ?? 0, selection.rolePool.length - 1);
-  const least = possible
-    ? Math.min(Math.max(draft.roleRange.minimum, possible.minimum), most, ceiling)
-    : 0;
+  const bounds = seatBounds(analysis);
+  const top = bounds?.maximumTop ?? possible?.maximum ?? 0;
+  const bottom = bounds?.maximumBottom ?? 0;
+  const most = possible ? Math.max(Math.min(draft.roleRange.maximum ?? top, top), bottom) : 0;
+  // The least number stays below the number of "may" roles (drawing all of them would make them "must" roles) and
+  // below what the tightest wolf count allows.
+  const ceiling = Math.min(
+    bounds?.minimumTop ?? 0,
+    Math.max(possible?.minimum ?? 0, roleFamilyCount(selection.rolePool) - 1),
+  );
+  const least = possible ? Math.min(Math.max(draft.roleRange.minimum, 0), most, ceiling) : 0;
   return {
     canStart: analysis.canStart,
     entries,
     items,
-    mayRoleCount: selection.rolePool.length,
+    mayRoleCount: roleFamilyCount(selection.rolePool),
+    maximumFloor: bottom,
     minimumCeiling: ceiling,
     possibleRange: possible,
     problem: analysis.canStart ? null : "noLineup",

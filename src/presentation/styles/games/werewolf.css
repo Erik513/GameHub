@@ -708,10 +708,6 @@
   border-color: var(--color-danger);
 }
 
-.ww-vbox[data-kind="item"] {
-  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
-}
-
 .ww-vbox__head {
   display: flex;
   align-items: center;
@@ -805,6 +801,12 @@
 .ww-chip__info-room svg {
   width: 0.9rem;
   height: 0.9rem;
+}
+
+/* An extra belongs to the same boxes as the roles, but its chip has a bluish color. */
+.ww-chip[data-kind="item"] {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface-muted));
 }
 
 .ww-chip[data-lock] {

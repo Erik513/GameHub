@@ -123,7 +123,7 @@ export const werewolfConfigTexts = {
         requiredAlternative: "Die andere Rolle dieses Paars muss ins Spiel.",
         requiredOption: "Eine andere Option dieser Rolle muss ins Spiel.",
       },
-      rolesHeading: "Rollen",
+      rolesHeading: "Rollen und Zusätze",
       rangeTitle: "Sonderrollen aus Darf",
       minimum: "Mindestens",
       maximum: "Höchstens",

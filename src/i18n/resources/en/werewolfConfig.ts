@@ -121,7 +121,7 @@ export const werewolfConfigTexts = {
         requiredAlternative: "The other role of this pair must be in the game.",
         requiredOption: "Another option of this role must be in the game.",
       },
-      rolesHeading: "Roles",
+      rolesHeading: "Roles and extras",
       rangeTitle: "Special roles from May",
       minimum: "At least",
       maximum: "At most",

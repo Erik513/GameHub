@@ -327,7 +327,7 @@ it("keeps the fixed and the variable roles apart, and the kind of roles", async 
   await user.click(screen.getByRole("button", { name: "Configuration" }));
   expect(screen.getByRole("radio", { name: "Variable roles" })).toBeChecked();
   expect(
-    [...document.querySelectorAll('.ww-vbox[data-kind="role"][data-state="may"] .ww-chip')].map(
+    [...document.querySelectorAll('.ww-vbox[data-state="may"] .ww-chip')].map(
       (chip) => chip.textContent,
     ),
   ).toEqual(["Witch"]);

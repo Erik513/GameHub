@@ -65,7 +65,7 @@ async function renderVariable(language: Language, players: number, start = empty
   return { latest, user };
 }
 
-const roles = { de: "Rollen", en: "Roles" } as const;
+const roles = { de: "Rollen und Zusätze", en: "Roles and extras" } as const;
 const box = (name: string) => screen.getByRole("region", { name });
 const chips = (name: string) =>
   [...box(name).querySelectorAll(".ww-chip")].map((chip) => chip.textContent);
@@ -81,7 +81,7 @@ it.each([
     expect(chips(`${roles[language]}: ${may}`)).toEqual([]);
     // Every role that exists for twelve players waits in the box for the roles that should not be in the game.
     const waiting = [
-      ...document.querySelectorAll('.ww-vbox[data-kind="role"][data-state="not"] .ww-chip'),
+      ...document.querySelectorAll('.ww-vbox[data-state="not"] .ww-chip[data-kind="role"]'),
     ];
     expect(waiting.length).toBeGreaterThan(10);
   },
@@ -94,14 +94,14 @@ it("shows only the roles that exist for the number of players", async () => {
   expect(all).toContain("Tough guy · Wolf attack only");
   expect(all).not.toContain("Magician");
   expect(all).not.toContain("Paranormal investigator");
-  // No box of extras: there are none below nine players.
-  expect(document.querySelector('.ww-vbox[data-kind="item"]')).toBeNull();
+  // No extra: there are none below nine players.
+  expect(document.querySelector('.ww-chip[data-kind="item"]')).toBeNull();
 });
 
-it("puts every option of a role in its box on its own, and the extras in boxes of their own", async () => {
+it("puts every option of a role in its box on its own, and the extras in the same boxes with their own color", async () => {
   await renderVariable("en", 12, setVariableItemState(example, "amulet", "may"));
-  expect(chips("Roles: Must be in the game")).toContain("Tough guy · Wolf attack only");
-  expect(chips("Roles: May be in the game")).toEqual(
+  expect(chips("Roles and extras: Must be in the game")).toContain("Tough guy · Wolf attack only");
+  expect(chips("Roles and extras: May be in the game")).toEqual(
     expect.arrayContaining([
       "Hunter · Duty to shoot",
       "Hunter · No duty to shoot",
@@ -109,13 +109,17 @@ it("puts every option of a role in its box on its own, and the extras in boxes o
       "Cupid",
     ]),
   );
-  const extras = [...document.querySelectorAll('.ww-vbox[data-kind="item"]')];
-  expect(extras).toHaveLength(3);
+  // Three boxes only: an extra stands in the box of its state, and its chip is marked as an extra.
+  expect(document.querySelectorAll(".ww-vbox")).toHaveLength(3);
+  expect(chips("Roles and extras: May be in the game")).toContain("Protective amulet");
   expect(
-    [...document.querySelectorAll('.ww-vbox[data-kind="item"][data-state="may"] .ww-chip')].map(
+    [...document.querySelectorAll('.ww-chip[data-kind="item"]')].map((chip) => chip.textContent),
+  ).toEqual(["Protective amulet", "Drunk"]);
+  expect(
+    [...document.querySelectorAll('.ww-vbox[data-state="not"] .ww-chip[data-kind="item"]')].map(
       (chip) => chip.textContent,
     ),
-  ).toEqual(["Protective amulet"]);
+  ).toEqual(["Drunk"]);
 });
 
 it("shows the number of 'may' roles in a field at the bottom, and what is possible", async () => {
@@ -193,12 +197,12 @@ function dragTo(name: string, boxElement: Element | null) {
   fireEvent.pointerUp(window, { clientX: 60, clientY: 60 });
 }
 
-const boxOf = (kind: "item" | "role", state: VariableState) =>
-  document.querySelector(`.ww-vbox[data-kind="${kind}"][data-state="${state}"]`);
+const boxOf = (_kind: "item" | "role", state: VariableState) =>
+  document.querySelector(`.ww-vbox[data-state="${state}"]`);
 
 it.each([
-  ["en", "Witch", "May be in the game", "Roles: May be in the game"],
-  ["de", "Hexe", "Darf ins Spiel", "Rollen: Darf ins Spiel"],
+  ["en", "Witch", "May be in the game", "Roles and extras: May be in the game"],
+  ["de", "Hexe", "Darf ins Spiel", "Rollen und Zusätze: Darf ins Spiel"],
 ] as const)(
   "opens the choice with a tap and moves the role there (%s)",
   async (language, role, choice, area) => {
@@ -265,15 +269,16 @@ it("puts the other options of a role to 'not' when one is dragged to 'must'", as
   expect(latest.variable.states).toEqual({ "hunter:required": "must" });
 });
 
-it("moves an extra only among the boxes of the extras", async () => {
+it("moves an extra into the same boxes as the roles", async () => {
   const { latest } = await renderVariable("en", 12);
   dragTo("Protective amulet", boxOf("item", "may"));
   expect(latest.variable.items.amulet).toBe("may");
-  // An extra dropped into a box of the roles stays where it is, as does a role dropped into a box of the extras.
   dragTo("Protective amulet", boxOf("role", "must"));
-  expect(latest.variable.items.amulet).toBe("may");
-  dragTo("Cupid", boxOf("item", "must"));
-  expect(latest.variable.states).toEqual({});
+  expect(latest.variable.items.amulet).toBe("must");
+  // A role dropped there moves as well, and the extra stays where it is.
+  dragTo("Cupid", boxOf("item", "may"));
+  expect(latest.variable.states).toEqual({ cupid: "may" });
+  expect(latest.variable.items.amulet).toBe("must");
 });
 
 it("does nothing when a role is dropped outside the boxes, and ignores a locked one for 'must' and 'may'", async () => {
