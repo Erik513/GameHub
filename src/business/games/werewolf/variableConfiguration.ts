@@ -194,7 +194,8 @@ export function variableSelectionOf(
     rolePool,
     roleRange: {
       maximum: Math.min(maximum, rolePool.length),
-      minimum: Math.min(draft.roleRange.minimum, maximum, rolePool.length),
+      // Drawing every role of the pool is the same as "must": at least one of them stays open.
+      minimum: Math.min(draft.roleRange.minimum, maximum, Math.max(0, rolePool.length - 1)),
     },
     wolfCounts: wolfCounts.length > 0 ? wolfCounts : [standardWerewolfCount(players)],
   };
@@ -204,12 +205,16 @@ export interface VariableEntryView {
   readonly entry: VariableEntry;
   /** Why the entry cannot be moved to "must" or "may" now (it can always be moved to "not"). */
   readonly lock: VariableWerewolfBlockReason | null;
+  /** True when no seat is left for it as a "must" role, although it may stay or go to "may". */
+  readonly mustBlocked: boolean;
   readonly state: VariableState;
 }
 
 export interface VariableItemView {
   readonly item: WerewolfItem;
   readonly lock: VariableWerewolfBlockReason | null;
+  /** True when no seat is left for it as a "must" extra. */
+  readonly mustBlocked: boolean;
   readonly state: VariableState;
 }
 
@@ -230,6 +235,8 @@ export interface VariableConfigurationView {
   readonly range: WerewolfSelectionRange;
   /** The number of "may" roles (options of one role count once). */
   readonly mayRoleCount: number;
+  /** The highest value of "at least": below the number of "may" roles, as all of them would be "must" roles. */
+  readonly minimumCeiling: number;
   readonly supported: boolean;
   readonly canStart: boolean;
   readonly wolf: {
@@ -245,6 +252,7 @@ const emptyView = (supported: boolean): VariableConfigurationView => ({
   entries: [],
   items: [],
   mayRoleCount: 0,
+  minimumCeiling: 0,
   possibleRange: null,
   problem: supported ? "invalid" : null,
   range: { maximum: 0, minimum: 0 },
@@ -272,6 +280,18 @@ function viewOf(
   analysis: VariableWerewolfSummary,
   settings: VariableRules,
 ): VariableConfigurationView {
+  // Whether the game can still be played when something moves to "must": the seats of the "must" roles are
+  // limited by the number of players (the maximum of roles for the players).
+  const baseFits = analysis.wolfCounts.some((wolf) => wolf.selected && wolf.canStart);
+  const fitsAsMust = (moved: VariableDraft): boolean => {
+    if (!baseFits) return true;
+    const moved2 = analyzeVariableWerewolfSelection(
+      players,
+      variableSelectionOf(players, moved),
+      settings,
+    );
+    return moved2.ok && moved2.wolfCounts.some((wolf) => wolf.selected && wolf.canStart);
+  };
   const entries: VariableEntryView[] = [];
   for (const entry of variableEntries) {
     const role = analysis.roles.find((candidate) => candidate.role === entry.role);
@@ -284,19 +304,20 @@ function viewOf(
     const state = stateOf(draft, entry.id);
     // A role that is in the game already is not locked; the others are, when it cannot be added to what stands.
     const lock = state === "not" ? (option ? option.reason : role.reason) : null;
-    entries.push({ entry, lock, state });
+    const mustBlocked =
+      state !== "must" &&
+      lock === null &&
+      !fitsAsMust(setVariableEntryState(draft, entry.id, "must"));
+    entries.push({ entry, lock, mustBlocked, state });
   }
   const items = variableItems.flatMap((item): VariableItemView[] => {
     const info = analysis.items.find((candidate) => candidate.item === item);
     if (!info?.available) return [];
     const state = draft.items[item];
-    return [
-      {
-        item,
-        lock: state === "not" && !info.possible ? (info.reason ?? "incompatibleRoles") : null,
-        state,
-      },
-    ];
+    const lock = state === "not" && !info.possible ? (info.reason ?? "incompatibleRoles") : null;
+    const mustBlocked =
+      state !== "must" && lock === null && !fitsAsMust(setVariableItemState(draft, item, "must"));
+    return [{ item, lock, mustBlocked, state }];
   });
   const counts = availableWerewolfCounts(players);
   const recommended = recommendVariableWerewolfCount(
@@ -319,12 +340,17 @@ function viewOf(
   const most = possible
     ? Math.min(draft.roleRange.maximum ?? possible.maximum, possible.maximum)
     : 0;
-  const least = possible ? Math.min(Math.max(draft.roleRange.minimum, possible.minimum), most) : 0;
+  // The least number stays below the number of "may" roles: drawing all of them would make them "must" roles.
+  const ceiling = Math.max(possible?.minimum ?? 0, selection.rolePool.length - 1);
+  const least = possible
+    ? Math.min(Math.max(draft.roleRange.minimum, possible.minimum), most, ceiling)
+    : 0;
   return {
     canStart: analysis.canStart,
     entries,
     items,
     mayRoleCount: selection.rolePool.length,
+    minimumCeiling: ceiling,
     possibleRange: possible,
     problem: analysis.canStart ? null : "noLineup",
     range: { maximum: most, minimum: least },

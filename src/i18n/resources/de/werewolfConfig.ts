@@ -198,7 +198,7 @@ export const werewolfConfigTexts = {
           "Seherin und Ermittler erfahren die wahre Rolle schon vorher.\nIst er in Wahrheit ein Werwolf, wacht er erst nach der Enthüllung mit den Wölfen auf.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf oder muss noch schießen, je nach Option des Jägers.",
       },
       guard: {
-        general: "Höchstens eine der beiden ist im Spiel, oder keine.",
+        general: "Leibwächter und Dorfmatratze schließen sich aus: Höchstens eine von ihnen ist im Spiel, oder keine.",
         tasks:
           "Jede Nacht wählt die Rolle eine andere Person, bei der sie die Nacht verbringt.\nDieselbe Person zweimal hintereinander wählen ist verboten.",
         options:

@@ -234,3 +234,50 @@ describe("a saved draft", () => {
     expect(parseSavedVariableDraft(raw)).toBeUndefined();
   });
 });
+
+describe("the seats of the must roles", () => {
+  it("take no further role once the most roles for the players are set", () => {
+    // Two roles wait on "may"; every other entry moves to "must" one after the other as long as the view takes it.
+    let draft = put(emptyVariableDraft, { cupid: "may", witch: "may" });
+    for (let step = 0; step < 30; step += 1) {
+      const next = describeVariableConfiguration(8, draft).entries.find(
+        (view) =>
+          view.state === "not" &&
+          view.lock === null &&
+          !view.mustBlocked &&
+          !["cupid", "witch"].includes(view.entry.id),
+      );
+      if (!next) break;
+      draft = setVariableEntryState(draft, next.entry.id, "must");
+    }
+    const view = describeVariableConfiguration(8, draft);
+    expect(view.canStart).toBe(true);
+    // The roles on "may" cannot move to "must" any more (no seat), but they stay on "may" and can leave the game.
+    const waiting = view.entries.filter((entry) => entry.state === "may");
+    expect(waiting.length).toBeGreaterThan(0);
+    expect(waiting.every((entry) => entry.mustBlocked)).toBe(true);
+    const musts = view.entries.filter((entry) => entry.state === "must");
+    expect(musts.every((entry) => !entry.mustBlocked)).toBe(true);
+  });
+
+  it("do not block anything while seats are free", () => {
+    const draft = put(emptyVariableDraft, { witch: "may" });
+    const view = describeVariableConfiguration(8, draft);
+    expect(view.entries.some((entry) => entry.mustBlocked)).toBe(false);
+    expect(view.items.some((item) => item.mustBlocked)).toBe(false);
+  });
+});
+
+describe("the least number of may roles", () => {
+  it("stays below the number of may roles, as drawing all of them equals must", () => {
+    const one = setVariableRoleRange(put(emptyVariableDraft, { witch: "may" }), 1, 1);
+    const view = describeVariableConfiguration(8, one);
+    expect(view.range).toEqual({ maximum: 1, minimum: 0 });
+    expect(view.minimumCeiling).toBe(0);
+    expect(variableSelectionOf(8, one).roleRange.minimum).toBe(0);
+    const two = setVariableRoleRange(put(emptyVariableDraft, { cupid: "may", witch: "may" }), 2, 2);
+    const viewTwo = describeVariableConfiguration(8, two);
+    expect(viewTwo.range.minimum).toBe(1);
+    expect(viewTwo.minimumCeiling).toBe(1);
+  });
+});

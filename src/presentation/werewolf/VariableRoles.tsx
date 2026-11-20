@@ -51,16 +51,27 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
   // The entry whose box is being chosen after a tap (an extra is "item:" and its name).
   const [picking, setPicking] = useState<string>();
 
-  /** Moves an entry or an extra to a box; one that is locked can only leave the game. */
+  /**
+   * Whether a box takes an entry or an extra: one that is locked can only leave the game, and "must" takes
+   * nothing more once the seats are full (the most roles for this number of players).
+   */
+  function accepts(id: string, state: VariableState): boolean {
+    const current = id.startsWith("item:")
+      ? view.items.find((candidate) => `item:${candidate.item}` === id)
+      : view.entries.find((candidate) => candidate.entry.id === id);
+    if (!current) return false;
+    if (current.lock !== null && state !== "not") return false;
+    return !(state === "must" && current.mustBlocked);
+  }
+
+  /** Moves an entry or an extra to a box, when the box takes it. */
   function place(id: string, state: VariableState) {
+    if (!accepts(id, state)) return;
     if (id.startsWith("item:")) {
       const item = view.items.find((candidate) => `item:${candidate.item}` === id);
-      if (!item || (item.lock !== null && state !== "not")) return;
-      onChange(setVariableItemState(draft, item.item, state));
+      if (item) onChange(setVariableItemState(draft, item.item, state));
       return;
     }
-    const entry = view.entries.find((candidate) => candidate.entry.id === id);
-    if (!entry || (entry.lock !== null && state !== "not")) return;
     onChange(setVariableEntryState(draft, id, state));
   }
 
@@ -124,7 +135,12 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
       className="ww-vbox"
       {...{ [dropAttribute]: String(dropOf(kind, state)) }}
       data-kind={kind}
-      data-over={dragging.over === dropOf(kind, state) || undefined}
+      data-over={
+        (dragging.over === dropOf(kind, state) &&
+          dragging.drag !== null &&
+          accepts(dragging.drag.player, state)) ||
+        undefined
+      }
       data-state={state}
       key={state}
     >
@@ -216,7 +232,10 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
                   ),
                 );
               const low = which === "minimum" ? possible.minimum : view.range.minimum;
-              const high = which === "minimum" ? view.range.maximum : possible.maximum;
+              const high =
+                which === "minimum"
+                  ? Math.min(view.range.maximum, view.minimumCeiling)
+                  : possible.maximum;
               return (
                 <div className="ww-range__field" key={which}>
                   <span className="ww-range__label">{label}</span>
@@ -303,10 +322,13 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
               return (
                 <>
                   {lock !== null && <p className="ww-range__hint">{t(lockText[lock])}</p>}
+                  {lock === null && current?.mustBlocked === true && (
+                    <p className="ww-range__hint">{t(lockText.insufficientSeats)}</p>
+                  )}
                   {states.map((state) => (
                     <Button
                       aria-pressed={current?.state === state}
-                      disabled={lock !== null && state !== "not"}
+                      disabled={!accepts(picking, state)}
                       key={state}
                       onClick={() => {
                         place(picking, state);

@@ -196,7 +196,7 @@ export const werewolfConfigTexts = {
           "The seer and the investigator learn the real role before.\nIf he is really a wolf, he wakes up with the wolves only after the reveal.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.",
       },
       guard: {
-        general: "At most one of the two is in the game, or none.",
+        general: "The bodyguard and the night guest exclude each other: at most one of them is in the game, or none.",
         tasks:
           "Each night the role chooses another player to spend the night with.\nChoosing the same player twice in a row is forbidden.",
         options:

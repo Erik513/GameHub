@@ -5,6 +5,7 @@ import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
 import { emptyFixedDraft } from "../../business/games/werewolf/fixedConfiguration";
 import {
+  describeVariableConfiguration,
   emptyVariableDraft,
   setVariableEntryState,
   setVariableItemState,
@@ -336,7 +337,9 @@ it("shows the wake-up order of the variable roles, with the roles that may be in
     "Witch",
   ]);
   expect(steps.find((step) => step.name === "Cupid")?.presence).toBe("may");
-  expect(within(dialog).getByText("May be in the game: only woken if it is drawn")).toBeInTheDocument();
+  expect(
+    within(dialog).getByText("May be in the game: only woken if it is drawn"),
+  ).toBeInTheDocument();
   expect(dialog).toHaveTextContent("only if the draw took it");
 });
 
@@ -384,4 +387,29 @@ it("keeps the wolves and the seer side by side at the top", async () => {
   expect(seer).not.toBeNull();
   expect(seer).toHaveTextContent("Seer");
   expect(seer?.querySelector(".ww-stat__value")).toHaveTextContent("1");
+});
+
+it("takes no further role into 'must' once the seats are full, by dragging or by the choice", async () => {
+  // Witch and Cupid wait on "may"; the other roles move to "must" until no seat is left.
+  let draft = put(emptyVariableDraft, { cupid: "may", witch: "may" });
+  for (let step = 0; step < 30; step += 1) {
+    const next = describeVariableConfiguration(8, draft).entries.find(
+      (view) =>
+        view.state === "not" &&
+        view.lock === null &&
+        !view.mustBlocked &&
+        view.entry.id !== "cupid" &&
+        view.entry.id !== "witch",
+    );
+    if (!next) break;
+    draft = setVariableEntryState(draft, next.entry.id, "must");
+  }
+  const { latest, user } = await renderVariable("en", 8, draft);
+  dragTo("Witch", boxOf("role", "must"));
+  expect(latest.variable.states.witch).toBe("may");
+  await user.click(screen.getByRole("button", { name: "Witch" }));
+  const dialog = await screen.findByRole("dialog", { name: "Witch" });
+  expect(within(dialog).getByRole("button", { name: "Must be in the game" })).toBeDisabled();
+  expect(within(dialog).getByRole("button", { name: "Should not be in the game" })).toBeEnabled();
+  expect(dialog).toHaveTextContent("No place is free for it.");
 });
