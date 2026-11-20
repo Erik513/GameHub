@@ -337,7 +337,8 @@ it("allows no more ticks than the limit of the field and says so", async () => {
   const dialog = screen.getByRole("dialog");
   await user.click(within(dialog).getByRole("button", { name: /^Family/ }));
   await user.click(within(dialog).getByRole("checkbox", { name: "Anna" }));
-  expect(within(dialog).queryByRole("status")).not.toBeInTheDocument();
+  // The line for the limit is always there (so the buttons never move), but empty.
+  expect(within(dialog).getByRole("status")).toBeEmptyDOMElement();
   await user.click(within(dialog).getByRole("checkbox", { name: "Ben" }));
   // Two are ticked: the others cannot be ticked any more, and the window tells why.
   expect(within(dialog).getByRole("checkbox", { name: "Cleo" })).toBeDisabled();

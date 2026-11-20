@@ -707,8 +707,30 @@
 }
 
 /* "Add player": the field and the plus button side by side, both as high as a field. */
+/* The window to choose players: the list on top and the buttons as a footer pinned to the bottom edge. */
+.dialog__content:has(> .kit-roster--pick) {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog__content:has(> .kit-roster--pick) > * {
+  flex: none;
+}
+
+.kit-roster__footer {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: var(--space-3);
+}
+
+.kit-roster__footer > .button {
+  margin: 0;
+}
+
 .kit-adder__notice,
 .kit-roster__limit {
+  min-height: 1.25em;
   margin: 0;
   color: var(--color-warning);
   font-size: var(--text-xs);

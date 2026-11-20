@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { PlayerGroup } from "../../business/shared/playerGroups";
 import { applyRosterSelection, rosterPlayersIn } from "../../business/shared/playerRoster";
@@ -34,6 +34,12 @@ export function RosterPicker({ limit, onChange, value }: RosterPickerProps) {
 
   if (!roster) return null;
 
+  const manageButton = (
+    <Button onClick={() => setManaging(true)} variant="secondary">
+      {t("kitRoster.manage")}
+    </Button>
+  );
+
   return (
     <>
       <Button onClick={() => setOpen(true)} variant="secondary">
@@ -48,20 +54,22 @@ export function RosterPicker({ limit, onChange, value }: RosterPickerProps) {
         size="large"
         title={t("kitRoster.pickTitle")}
       >
-        <PickerBody
-          onApply={(text) => {
-            onChange(text);
-            setOpen(false);
-          }}
-          groups={roster.groups}
-          {...(limit === undefined ? {} : { limit })}
-          onCancel={() => setOpen(false)}
-          players={roster.players}
-          value={value}
-        />
-        <Button onClick={() => setManaging(true)} variant="secondary">
-          {t("kitRoster.manage")}
-        </Button>
+        {roster.players.length > 0 ? (
+          <PickerBody
+            groups={roster.groups}
+            {...(limit === undefined ? {} : { limit })}
+            manage={manageButton}
+            onApply={(text) => {
+              onChange(text);
+              setOpen(false);
+            }}
+            onCancel={() => setOpen(false)}
+            players={roster.players}
+            value={value}
+          />
+        ) : (
+          manageButton
+        )}
       </Dialog>
       <PlayerRosterDialog onClose={() => setManaging(false)} open={managing} />
     </>
@@ -72,6 +80,7 @@ export function RosterPicker({ limit, onChange, value }: RosterPickerProps) {
 function PickerBody({
   groups,
   limit,
+  manage,
   onApply,
   onCancel,
   players,
@@ -79,6 +88,8 @@ function PickerBody({
 }: {
   readonly groups: readonly PlayerGroup[];
   readonly limit?: number;
+  /** The button to manage the saved players; it stands in the footer with the other buttons. */
+  readonly manage: ReactNode;
   readonly onApply: (text: string) => void;
   readonly onCancel: () => void;
   readonly players: readonly string[];
@@ -120,91 +131,98 @@ function PickerBody({
   const allVisible = visible.length > 0 && visible.every((player) => selected.has(player));
 
   return (
-    <div className="kit-roster kit-roster--pick">
-      {/* Both views have the same build (buttons, a line of text, the list), so the window keeps its size. */}
-      <div className="kit-roster__pair" data-pair={shown ? "true" : "false"}>
-        {shown && (
+    <>
+      <div className="kit-roster kit-roster--pick">
+        {/* Both views have the same build (buttons, a line of text, the list), so the window keeps its size. */}
+        <div className="kit-roster__pair" data-pair={shown ? "true" : "false"}>
+          {shown && (
+            <Button
+              aria-label={t("kitRoster.groupBackTo", { name: shown.name })}
+              className="kit-roster__wide"
+              onClick={() => setOpenGroup(undefined)}
+              variant="secondary"
+            >
+              <Icon name="arrowLeft" />
+              <span className="kit-roster__wide-text">{shown.name}</span>
+            </Button>
+          )}
           <Button
-            aria-label={t("kitRoster.groupBackTo", { name: shown.name })}
             className="kit-roster__wide"
-            onClick={() => setOpenGroup(undefined)}
+            disabled={visible.length === 0}
+            onClick={() => {
+              const next = new Set(selected);
+              for (const player of visible) {
+                if (allVisible) next.delete(player);
+                else if (next.size < capacity) next.add(player);
+              }
+              setSelected(next);
+            }}
             variant="secondary"
           >
-            <Icon name="arrowLeft" />
-            <span className="kit-roster__wide-text">{shown.name}</span>
+            {t(allVisible ? "kitRoster.pickNone" : "kitRoster.pickAll")}
           </Button>
-        )}
-        <Button
-          className="kit-roster__wide"
-          disabled={visible.length === 0}
-          onClick={() => {
-            const next = new Set(selected);
-            for (const player of visible) {
-              if (allVisible) next.delete(player);
-              else if (next.size < capacity) next.add(player);
-            }
-            setSelected(next);
-          }}
-          variant="secondary"
+        </div>
+        <h3 className="kit-roster__line">{shown ? shown.name : t("kitRoster.groupsTitle")}</h3>
+        <div
+          className="kit-roster__scroll"
+          ref={listRef}
+          {...(listHeight === undefined && scrollbarWidth === undefined
+            ? {}
+            : {
+                style: {
+                  ...(listHeight === undefined ? {} : { height: listHeight }),
+                  ...(scrollbarWidth === undefined
+                    ? {}
+                    : { "--roster-scrollbar": `${scrollbarWidth}px` }),
+                },
+              })}
         >
-          {t(allVisible ? "kitRoster.pickNone" : "kitRoster.pickAll")}
-        </Button>
-      </div>
-      <h3 className="kit-roster__line">{shown ? shown.name : t("kitRoster.groupsTitle")}</h3>
-      <div
-        className="kit-roster__scroll"
-        ref={listRef}
-        {...(listHeight === undefined && scrollbarWidth === undefined
-          ? {}
-          : {
-              style: {
-                ...(listHeight === undefined ? {} : { height: listHeight }),
-                ...(scrollbarWidth === undefined
-                  ? {}
-                  : { "--roster-scrollbar": `${scrollbarWidth}px` }),
-              },
-            })}
-      >
-        {shown ? (
-          shown.members.length === 0 ? (
-            <p>{t("kitRoster.groupEmpty")}</p>
+          {shown ? (
+            shown.members.length === 0 ? (
+              <p>{t("kitRoster.groupEmpty")}</p>
+            ) : (
+              <PlayerChecklist
+                isChecked={(player) => selected.has(player)}
+                isDisabled={(player) => atLimit && !selected.has(player)}
+                label={t("kitRoster.groupMembers", { name: shown.name })}
+                onToggle={toggle}
+                players={shown.members}
+              />
+            )
           ) : (
-            <PlayerChecklist
-              isChecked={(player) => selected.has(player)}
-              isDisabled={(player) => atLimit && !selected.has(player)}
-              label={t("kitRoster.groupMembers", { name: shown.name })}
-              onToggle={toggle}
-              players={shown.members}
+            <GroupButtons
+              groups={groups.map((group) => ({
+                count: count(group.members),
+                key: group.name,
+                title: group.name,
+              }))}
+              label={t("kitRoster.groupsTitle")}
+              onOpen={setOpenGroup}
             />
-          )
-        ) : (
-          <GroupButtons
-            groups={groups.map((group) => ({
-              count: count(group.members),
-              key: group.name,
-              title: group.name,
-            }))}
-            label={t("kitRoster.groupsTitle")}
-            onOpen={setOpenGroup}
-          />
-        )}
+          )}
+        </div>
       </div>
-      {atLimit && limit !== undefined && (
-        <p className="kit-roster__limit" role="status">
-          {t("kitRoster.pickLimit", { count: limit })}
-        </p>
-      )}
-      <ActionRow>
-        <Button
-          onClick={() => onApply(applyRosterSelection(value, players, selected))}
-          variant="success"
-        >
-          {t("kitRoster.pickApply")}
-        </Button>
-        <Button onClick={onCancel} variant="danger">
-          {t("kitRoster.pickCancel")}
-        </Button>
-      </ActionRow>
-    </div>
+      {/* The buttons are a footer: they stay at the bottom edge of the window, whatever the list above shows. */}
+      <div className="kit-roster__footer">
+        {/* The line is always there (empty until the limit is reached), so nothing moves when it appears. */}
+        {limit !== undefined && (
+          <p className="kit-roster__limit" role="status">
+            {atLimit ? t("kitRoster.pickLimit", { count: limit }) : ""}
+          </p>
+        )}
+        <ActionRow>
+          <Button
+            onClick={() => onApply(applyRosterSelection(value, players, selected))}
+            variant="success"
+          >
+            {t("kitRoster.pickApply")}
+          </Button>
+          <Button onClick={onCancel} variant="danger">
+            {t("kitRoster.pickCancel")}
+          </Button>
+        </ActionRow>
+        {manage}
+      </div>
+    </>
   );
 }
