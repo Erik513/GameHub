@@ -77,9 +77,9 @@ const stronger = (...states: VariableState[]): WakePresence =>
   states.includes("must") ? "must" : states.includes("may") ? "may" : "not";
 
 /**
- * The order of the night for variable roles: a role on "must" is called, a role on "may" is called, too (the
- * narrator calls it whether or not the draw took it, so the silence of a step does not give the draw away), a
- * role on "not" is not. The mayor wakes only with the hammer.
+ * The order of the night for variable roles: a role on "must" is part of the order, a role on "may" is shown
+ * in it as a possible step (the narrator wakes it only if the draw took it), a role on "not" is not. The mayor
+ * wakes only with the hammer.
  */
 export function wakeOrderVariable(draft: VariableDraft): readonly WakeStep[] {
   const at = (id: string): VariableState => draft.states[id] ?? "not";

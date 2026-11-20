@@ -336,8 +336,8 @@ it("shows the wake-up order of the variable roles, with the roles that may be in
     "Witch",
   ]);
   expect(steps.find((step) => step.name === "Cupid")?.presence).toBe("may");
-  expect(within(dialog).getByText("May be in the game: called either way")).toBeInTheDocument();
-  expect(dialog).toHaveTextContent("nobody learns the draw");
+  expect(within(dialog).getByText("May be in the game: only woken if it is drawn")).toBeInTheDocument();
+  expect(dialog).toHaveTextContent("only if the draw took it");
 });
 
 it("shows the fixed order again when the fixed roles are chosen", async () => {

@@ -134,7 +134,7 @@ export const werewolfConfigTexts = {
       mayInfo: {
         label: "Was bedeutet \"Darf ins Spiel\"?",
         roles:
-          "Die Rollen in diesem Kasten sind nicht sicher: Das Spiel lost unter ihnen aus.\nWie viele davon gezogen werden, legst du unten mit \"Mindestens\" und \"Höchstens\" fest.\nDie gezogenen Rollen spielen mit, die anderen bleiben draußen. Niemand erfährt vorher, welche, auch der Erzähler nicht.\nDer Erzähler ruft in der Nacht jede Rolle aus diesem Kasten auf, ob sie gezogen wurde oder nicht, damit das Schweigen eines Schritts nichts verrät.",
+          "Die Rollen in diesem Kasten sind nicht sicher: Das Spiel lost unter ihnen aus.\nWie viele davon gezogen werden, legst du unten mit \"Mindestens\" und \"Höchstens\" fest.\nDie gezogenen Rollen spielen mit, die anderen bleiben draußen. Welche, wird beim Start des Spiels gelost.\nIn der Nacht weckt der Erzähler nur die Rollen, die im Spiel sind.",
         items:
           "Auch die Zusätze in diesem Kasten sind nicht sicher: Jeder wird für sich gelost, mit der gleichen Chance, dabei zu sein oder nicht.\nGelost wird beim Start des Spiels.\nDie Anzahl der Zusätze wird nicht von der Spanne unten begrenzt.",
       },
@@ -145,9 +145,9 @@ export const werewolfConfigTexts = {
       title: "Aufwachreihenfolge",
       hint: "Der Erzähler weckt die Rollen jede Nacht in dieser Reihenfolge. Rollen, die nicht im Spiel sind, sind abgeblendet. Bei geheimer Rollenaufdeckung werden auch ausgeschiedene Rollen zur Tarnung aufgerufen.",
       notInGame: "nicht im Spiel",
-      maybe: "Darf ins Spiel: wird so oder so gerufen",
+      maybe: "Darf ins Spiel: wird nur geweckt, wenn sie gezogen wird",
       hintVariable:
-        "Der Erzähler ruft die Rollen jede Nacht in dieser Reihenfolge. Eine Rolle, die ins Spiel darf, wird auch gerufen, wenn die Ziehung sie nicht genommen hat, damit niemand die Ziehung erfährt. Rollen, die nicht ins Spiel sollen, sind abgeblendet.",
+        "Der Erzähler ruft die Rollen jede Nacht in dieser Reihenfolge. Der Erzähler weckt nur die Rollen, die im Spiel sind: eine Rolle, die ins Spiel darf, wird nur geweckt, wenn die Ziehung sie genommen hat. Rollen, die nicht ins Spiel sollen, sind abgeblendet.",
       wolvesFirstNight: "In der ersten Nacht lernen sie sich nur kennen",
       apprentice: "Der Seher-Lehrling übernimmt, wenn die Seherin tot ist",
       amulet: "Zuletzt: Amulett behalten oder weitergeben",

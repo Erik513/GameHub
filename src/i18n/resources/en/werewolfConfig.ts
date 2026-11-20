@@ -132,7 +132,7 @@ export const werewolfConfigTexts = {
       mayInfo: {
         label: "What does \"May be in the game\" mean?",
         roles:
-          "The roles in this box are not certain: the game draws among them.\nHow many of them are drawn is set below with \"At least\" and \"At most\".\nThe roles that are drawn play, the others stay out. Nobody learns which, not even the narrator beforehand.\nThe narrator calls every role in this box at night, whether or not it was drawn, so the silence of a step gives nothing away.",
+          "The roles in this box are not certain: the game draws among them.\nHow many of them are drawn is set below with \"At least\" and \"At most\".\nThe roles that are drawn play, the others stay out. Which ones is decided when the game starts.\nAt night the narrator wakes only the roles that are in the game.",
         items:
           "The extras in this box are not certain either: each one is drawn on its own, with the same chance to be in the game as not.\nThe draw happens when the game starts.\nThe number of extras is not limited by the range below.",
       },
@@ -143,9 +143,9 @@ export const werewolfConfigTexts = {
       title: "Wake-up order",
       hint: "Every night the narrator wakes the roles in this order. Roles that are not in the game are dimmed. With secret roles, roles that are out are still called to keep them hidden.",
       notInGame: "not in the game",
-      maybe: "May be in the game: called either way",
+      maybe: "May be in the game: only woken if it is drawn",
       hintVariable:
-        "Every night the narrator calls the roles in this order. A role that may be in the game is called, too, whether or not the draw took it, so nobody learns the draw. Roles that are not in the game are dimmed.",
+        "Every night the narrator calls the roles in this order. The narrator wakes only the roles that are in the game: a role that may be in the game is woken only if the draw took it. Roles that are not in the game are dimmed.",
       wolvesFirstNight: "In the first night they only get to know each other",
       apprentice: "The apprentice seer takes over when the seer is dead",
       amulet: "Last: keep the amulet or pass it on",

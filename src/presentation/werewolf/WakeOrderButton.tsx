@@ -20,7 +20,7 @@ export function WakeOrderButton({
 }: {
   /** The fixed draft. */
   readonly draft: FixedDraft;
-  /** Which draft is shown: the fixed one, or the variable one (roles that may be in the game are called, too). */
+  /** Which draft is shown: the fixed one, or the variable one (roles that may be in the game are shown as possible steps). */
   readonly mode?: "fixed" | "variable";
   readonly variableDraft?: VariableDraft;
 }) {
