@@ -28,11 +28,13 @@ export function SeatsTab({ lineup, onMove }: SeatsTabProps) {
     <TabPane
       wholeRows
       header={
-        <div className="ww-seats-header">
+        // The "i" stands inside the button, at its right end: it opens the explanation, the button the circle.
+        <div className="ww-seats-open">
           <Button onClick={() => setCircleOpen(true)} variant="secondary">
             {t("werewolfLineup.circleOpen")}
           </Button>
           <InfoButton
+            className="kit-info-button--option"
             closeLabel={t("settings.close")}
             label={t("werewolfLineup.seatsInfoLabel")}
             text={
