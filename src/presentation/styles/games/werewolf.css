@@ -712,6 +712,28 @@
   background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
 }
 
+.ww-vbox__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* The "i" beside the title of a box is as small as the one of a chip. */
+.ww-vbox .ww-vbox__info.kit-info-button {
+  position: static;
+  flex: none;
+  width: 1.5rem;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  min-height: 1.5rem;
+  margin: -0.25rem 0;
+}
+
+.ww-vbox .ww-vbox__info svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
 .ww-vbox__title {
   margin: 0;
   font-size: var(--text-xs);

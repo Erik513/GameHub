@@ -131,6 +131,13 @@ export const werewolfConfigTexts = {
       more: "{{what}}: eine mehr",
       rangePossible: "Möglich: {{minimum}} bis {{maximum}}",
       rangeNone: "Noch keine Rolle auf Darf.",
+      mayInfo: {
+        label: "Was bedeutet \"Darf ins Spiel\"?",
+        roles:
+          "Die Rollen in diesem Kasten sind nicht sicher: Das Spiel lost unter ihnen aus.\nWie viele davon gezogen werden, legst du unten mit \"Mindestens\" und \"Höchstens\" fest.\nDie gezogenen Rollen spielen mit, die anderen bleiben draußen. Niemand erfährt vorher, welche, auch der Erzähler nicht.\nDer Erzähler ruft in der Nacht jede Rolle aus diesem Kasten auf, ob sie gezogen wurde oder nicht, damit das Schweigen eines Schritts nichts verrät.",
+        items:
+          "Auch die Zusätze in diesem Kasten sind nicht sicher: Jeder wird für sich gelost, mit der gleichen Chance, dabei zu sein oder nicht.\nGelost wird beim Start des Spiels.\nDie Anzahl der Zusätze wird nicht von der Spanne unten begrenzt.",
+      },
       cannotStart: "Mit {{count}} Spielern ist diese Auswahl nicht spielbar.",
     },
     wake: {

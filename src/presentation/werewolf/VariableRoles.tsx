@@ -12,7 +12,7 @@ import {
   type VariableState,
 } from "../../business/games/werewolf/variableConfiguration";
 import { Button, Dialog } from "../components";
-import { TabPane, dropAttribute, usePlayerDrag } from "../game-kit";
+import { InfoButton, TabPane, dropAttribute, usePlayerDrag } from "../game-kit";
 import { ConfigCardHead, ConfigInfo, type ConfigInfoId } from "./ConfigInfo";
 
 interface VariableRolesProps {
@@ -128,7 +128,18 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
       data-state={state}
       key={state}
     >
-      <h4 className="ww-vbox__title">{t(`werewolfConfig.variable.box.${state}`)}</h4>
+      <div className="ww-vbox__head">
+        <h4 className="ww-vbox__title">{t(`werewolfConfig.variable.box.${state}`)}</h4>
+        {state === "may" && (
+          <InfoButton
+            className="ww-vbox__info"
+            closeLabel={t("werewolfConfig.infoClose")}
+            label={t("werewolfConfig.variable.mayInfo.label")}
+            text={t(`werewolfConfig.variable.mayInfo.${kind === "item" ? "items" : "roles"}`)}
+            title={t("werewolfConfig.variable.box.may")}
+          />
+        )}
+      </div>
       <div className="ww-vbox__chips">{chips}</div>
     </section>
   );

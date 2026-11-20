@@ -129,6 +129,13 @@ export const werewolfConfigTexts = {
       more: "{{what}}: one more",
       rangePossible: "Possible: {{minimum}} to {{maximum}}",
       rangeNone: "No role on May yet.",
+      mayInfo: {
+        label: "What does \"May be in the game\" mean?",
+        roles:
+          "The roles in this box are not certain: the game draws among them.\nHow many of them are drawn is set below with \"At least\" and \"At most\".\nThe roles that are drawn play, the others stay out. Nobody learns which, not even the narrator beforehand.\nThe narrator calls every role in this box at night, whether or not it was drawn, so the silence of a step gives nothing away.",
+        items:
+          "The extras in this box are not certain either: each one is drawn on its own, with the same chance to be in the game as not.\nThe draw happens when the game starts.\nThe number of extras is not limited by the range below.",
+      },
       cannotStart: "This selection cannot be played with {{count}} players.",
     },
     wake: {
