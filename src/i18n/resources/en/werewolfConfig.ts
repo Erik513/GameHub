@@ -105,40 +105,40 @@ export const werewolfConfigTexts = {
     info: {
       amulet: {
         general:
-          "An extra. The holder is drawn randomly at the start among the players who are not wolves.\nIt stops a direct attack on the holder: wolf attack, poison, death spell, hunter shot, hammer on a wolf or the vote.",
+          "An extra. The holder is drawn randomly at the start among the players who are not wolves.\nIt stops direct attacks and a vote.",
         tasks:
-          "Every morning the holder decides: keep the amulet or pass it on.\nAfter it has stopped an attack, he has to pass it on.",
+          "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf it has stopped an attack, he has to pass it on.",
         notes:
           "The amulet is lost if the holder:\ndies of heartbreak\ndies as the mayor from a wrong hammer shot\ndies of his wound as the tough guy",
       },
       apprenticeSeer: {
         general: "A village role. He has no action while the seer lives.",
         tasks:
-          "When the seer is dead, the narrator calls him openly every night: he looks at one player and learns whether that player is a wolf.\nSo everyone learns that there is no seer any more.",
+          "When the seer is dead, the narrator calls him openly every night: he looks at one player and learns whether that player is a wolf.",
       },
       cupid: {
-        general: "A village role. He acts only in the first night.",
+        general: "A village role.",
         tasks:
-          "He chooses two lovers. If one of them dies, the other dies too.\nLovers never kill each other and try to win as a pair.",
+          "In the first night he chooses two lovers, he may pick himself. If one of them dies, the other dies too.\nLovers never kill each other and try to win as a pair.",
       },
       drunk: {
         general:
           "An extra. One player starts as the drunk and cannot remember his real role.\nThe real role is drawn among all roles except Cupid.",
         tasks:
-          "At the start of the third night he sobers up: the narrator secretly shows him his real role.\nUntil then his ability rests.",
+          "At the start of the third night he sobers up and remembers his real role.\nUntil then his ability rests.",
         notes:
-          "The seer and the investigator can find out the real role before.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may still shoot.",
+          "The seer and the investigator can find out the real role before.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.",
       },
       guard: {
         general: "A village role. At most one of the two is in the game, or none.",
         tasks:
-          "Each night the role chooses one player to spend the night with.\nThe same player twice in a row is forbidden.",
+          "Each night the role chooses one player to spend the night with.\nChoosing the same player twice in a row is forbidden.",
         options:
           "Bodyguard: Stays with the chosen player and protects him from direct attacks, but not from the hammer. He himself is not protected.\nNight guest: Stays with the chosen player and protects him from the wolf attack, but dies in his place. A direct attack on the night guest misses, since he sleeps elsewhere.",
       },
       hunter: {
         general: "A village role.",
-        tasks: "When he dies, he may shoot one living player.",
+        tasks: "When he dies, he may or must (depending on the option) shoot one living player.",
         options:
           "Duty to shoot: He has to pick a target.\nNo duty to shoot: He may shoot if he wants.",
       },
@@ -150,19 +150,19 @@ export const werewolfConfigTexts = {
       magician: {
         general: "A village role.",
         tasks:
-          "After the wolf attack the narrator secretly shows him the wolf victim.\nHe has two spells, each heals the wolf victim or kills any player. He may use both in one night, also on two players.",
+          "He has two spells and decides for each one: heal the wolf victim or kill any player.\nHe may use both in one night, also the same twice.",
       },
       mayor: {
         general: "A village role. He must not reveal his role.",
         options:
-          "Double vote: The narrator counts his vote twice in votes.\nHammer: If he suspects a wolf, he may try to kill one living player from the second night on. A wolf dies; if he picked a village role, he dies himself.",
+          "Double vote: The narrator counts his vote twice in votes.\nHammer: If he suspects a wolf, he may try once per game, from the second night on, to kill one living player. A wolf dies; if he picked a village role, he dies himself.",
         notes:
-          "He does not learn who the wolves attacked and may pick any other living player, even if he is the victim himself.\nThe witch and the magician cannot heal deaths by the hammer.\nThe amulet protects a wolf hit by the hammer, but not the mayor from a wrong shot.",
+          "The witch and the magician cannot heal deaths by the hammer.\nNothing protects from the hammer, not even the amulet.",
       },
       paranormalInvestigator: {
         general: "A village role. He can use his ability once per game.",
         tasks:
-          "At night he picks a player. The narrator says whether that player or one of the two nearest living neighbours is a wolf.",
+          "At night he picks a player. Then he learns whether that player or one of the two nearest living neighbours is a wolf.",
       },
       seer: {
         general: "A village role. There is always exactly one seer.",
@@ -171,7 +171,7 @@ export const werewolfConfigTexts = {
       spellcaster: {
         general: "A village role.",
         tasks:
-          "Each night she silences one player for the next day.\nThe same player twice in a row is forbidden.",
+          "Each night she silences one player for the next day.\nChoosing the same player twice in a row is forbidden.",
         options:
           "Self-pick allowed: She may also silence herself.\nSelf-pick forbidden: She must choose another player.",
         notes:

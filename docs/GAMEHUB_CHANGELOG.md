@@ -20,6 +20,7 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Werwölfe, Seherin und Dorfbewohner sind drei eigene Boxen (oben Titel und i-Knopf, unten die Auswahl beziehungsweise Anzeige; die Werwolfbox hat Platz für drei Zahlen und das Wort "empfohlen"). Alle Rollen sehen einheitlich aus: eine Kachel mit dem Namen, bei Rollen mit Optionen darunter die Optionsleiste; ist die Rolle dabei, ist der Namensbalken gefüllt. Der Grund einer Sperre ("ab 10", "kein Platz frei", "nicht zusammen") steht in der zweiten Zeile jeder Kachel; dadurch entfallen die Zeilentitel "Ab N Spielern" im Kasten "Noch nicht verfügbar".
 - Die Info-Fenster der Rollen, Zusätze und Grundrollen haben vier Teile, jeweils nur wenn es etwas zu sagen gibt: "Allgemein" (Seite, Bedingungen), "Aufgaben" (was die Rolle wann tut), "Optionen" (jede Option kurz mit fett gesetztem Namen) und "Besonderheiten" (Sonderfälle). Alle Texte auf Deutsch und Englisch nach den Spielregeln neu und kurz gefasst; beim Schutzamulett: Träger wird zu Beginn unter den Nicht-Werwölfen ausgelost, fängt einen direkten Angriff ab, wird jeden Morgen behalten oder weitergegeben (nach einem abgefangenen Angriff Pflicht), darunter die Sonderfälle. Beim Magier sind es zwei Zauber, die jeweils heilen oder töten. Der Hinweis "ab 2 Werwölfen" beim Trunkenbold entfällt.
 - Überarbeitung der Info-Texte nach Durchsicht: alle Texte deutlich kürzer; Schutzamulett mit Besonderheiten "Das Amulett geht verloren, wenn der Träger:" und drei Punkten (Liebeskummer, Hammer-Fehlschuss als Bürgermeister, Wunde als Harter Bursche); Leibwächter und Dorfmatratze mit Schutz gegen direkte Angriffe beziehungsweise nur gegen den Wolfsangriff und ohne Schutz vor dem Hammer; Harter Bursche erliegt nur nach einem Wolfsangriff in der Folgenacht; Bürgermeister mit zweiter Box "Hammer ab 10 Spielern" und den neuen Hammer-Regeln; roter Hinweistext bei Hexe und Magier nennt die Gegenrolle; Seher-Lehrling wird offen aufgerufen, sobald die Seherin tot ist (Logik noch anzupassen).
+- Zweite Durchsicht der Info-Texte: Trunkenbold erinnert sich an seine Rolle (Jäger darf oder muss schießen, je nach Option); Schutzamulett fängt "direkte Angriffe und eine Abstimmung" ab und wird jede Nacht als Letzter geweckt; Jäger darf oder muss je nach Option; Amor wählt zwei Verliebte, auch sich selbst; Bürgermeister-Hammer einmal pro Partie, nichts schützt davor (auch nicht das Amulett); Ermittler und Magier ohne Erzähler-Bezug, der Magier bestimmt für jeden Zauber selbst Heilung oder Tötung. Die Regeländerungen (Amulett-Aufruf, Hammer ohne Schutz, Lehrling) sind in der Logik noch nachzuziehen.
 - Reine Logik in `business/games/werewolf/fixedConfiguration.ts` (Entwurf, Ansichtsmodell mit Sperrgründen "zu wenige Spieler / kein Platz / Kombination", Konfliktliste und Wolfsvorschlag; nichts wird still geändert). Ein Konflikt zeigt eine Meldung und einen Knopf "Wolfszahl N nehmen". Die Konfiguration braucht 6 bis 20 Spieler neben dem Erzähler.
 - Noch nicht enthalten: der Umschalter fest/variabel (variable Konfiguration kommt später, We-01-32).
 - Geprüft: 27 Logiktests, Oberflächentests (de/en), voller Testlauf (1233 Tests), tsc, eslint, Schichtenprüfung, Browserprüfung bei 375 px.
@@ -39,6 +40,11 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 - Sämtliche Werwolf-Phasen/Aufgaben aus dem geprüften Spiel-Arbeitsordner übernommen; andere Spiele bewahrt. Fester manueller Einstieg We-03-62 abgeschlossen, 253 Tests bestanden. Gewinneransicht mit späterer Gestaltung festgehalten; aktuelle UI- und technische Übergabedokumente übernommen. Logikdateien sind dadurch nicht automatisch in diesen Checkout integriert.
 
+
+
+### Hammer-Neuordnung dokumentiert (20.11.2026)
+
+- Neue Vorgabe als We-03-63 geplant und technische Übergabe/Regeln/HTML aktualisiert. Umsetzung bleibt offen. Lokalen Werwolf-Logikstand für Commit vorbereitet; parallele UI-Arbeiten bewahrt.
 
 ## 2026-11-16
 
