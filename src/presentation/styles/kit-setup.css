@@ -708,12 +708,12 @@
 
 /* "Add player": the field and the plus button side by side, both as high as a field. */
 /* The window to choose players: the list on top and the buttons as a footer pinned to the bottom edge. */
-.dialog__content:has(> .kit-roster--pick) {
+.dialog__content:has(> .kit-roster--pick, > .kit-roster--manage) {
   display: flex;
   flex-direction: column;
 }
 
-.dialog__content:has(> .kit-roster--pick) > * {
+.dialog__content:has(> .kit-roster--pick, > .kit-roster--manage) > * {
   flex: none;
 }
 
@@ -726,6 +726,15 @@
 
 .kit-roster__footer > .button {
   margin: 0;
+}
+
+/* The wide button of the footer is as high as the buttons next to it in the other windows (44 px). */
+.kit-roster__footer .button.kit-roster__wide {
+  width: 100%;
+  min-height: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0 var(--space-3);
 }
 
 .kit-adder__notice,

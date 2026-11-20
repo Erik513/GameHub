@@ -221,28 +221,30 @@ export function PlayerRosterDialog({ onClose, open }: { onClose: () => void; ope
             />
           )}
         </div>
-        {/* The bottom row of the list of groups: add a group. */}
-        {shownGroup ? null : naming ? (
-          <NameForm
-            label={t("kitRoster.groupNameLabel")}
-            onSubmit={(name) => {
-              const result = roster.addGroup(name);
-              if (!result.ok) return result.reason;
-              setNaming(false);
-              return undefined;
-            }}
-            placeholder={t("kitRoster.groupNamePlaceholder")}
-            problemText={(problem) => t(`kitRoster.groupProblems.${problem}`)}
-          />
-        ) : (
-          <>
-            <p className="kit-roster__line">{" "}</p>
+      </div>
+      {/* The bottom row of the list of groups: add a group. It is a footer at the bottom edge of the window,
+          at the same height as the buttons of the window to choose players. */}
+      {shownGroup ? null : (
+        <div className="kit-roster__footer">
+          {naming ? (
+            <NameForm
+              label={t("kitRoster.groupNameLabel")}
+              onSubmit={(name) => {
+                const result = roster.addGroup(name);
+                if (!result.ok) return result.reason;
+                setNaming(false);
+                return undefined;
+              }}
+              placeholder={t("kitRoster.groupNamePlaceholder")}
+              problemText={(problem) => t(`kitRoster.groupProblems.${problem}`)}
+            />
+          ) : (
             <Button className="kit-roster__wide" onClick={() => setNaming(true)} variant="success">
               {t("kitRoster.groupAdd")}
             </Button>
-          </>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </Dialog>
   );
 }

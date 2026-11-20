@@ -44,7 +44,11 @@ export function useWholeRows(
       // allows for the list.
       const content = dialog.querySelector<HTMLElement>(".dialog__content");
       const chrome = dialog.getBoundingClientRect().height - (content?.clientHeight ?? 0);
-      // A window of a fixed height stretches its content, so the content is measured by its children.
+      // A window of a fixed height stretches its content, so the content is measured by its children. It is
+      // measured as a plain block for a moment: a footer pinned to the bottom (an auto margin) then counts as
+      // what it needs, not as the free room above it, so the list can use that room.
+      const displayBefore = content?.style.display ?? "";
+      if (content) content.style.display = "block";
       const natural = content
         ? [...content.children].reduce((sum, child) => {
             const style = getComputedStyle(child);
@@ -56,7 +60,9 @@ export function useWholeRows(
             );
           }, 0)
         : 0;
-      const wanted = chrome + Math.min(content?.scrollHeight ?? 0, natural || Infinity);
+      const scrollHeight = content?.scrollHeight ?? 0;
+      if (content) content.style.display = displayBefore;
+      const wanted = chrome + Math.min(scrollHeight, natural || Infinity);
       const others = wanted - element.getBoundingClientRect().height;
       const limit = Number.parseFloat(getComputedStyle(dialog).maxHeight);
       const room = Number.isFinite(limit) ? limit - others : Number.POSITIVE_INFINITY;
