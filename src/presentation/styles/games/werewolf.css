@@ -125,6 +125,8 @@
 
 .ww-circle__ring {
   position: relative;
+  /* A finger that stays down slides over the tiles instead of scrolling the page. */
+  touch-action: none;
   width: min(100%, 20rem);
   aspect-ratio: 1;
   container-type: inline-size;
