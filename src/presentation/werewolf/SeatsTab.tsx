@@ -26,6 +26,7 @@ export function SeatsTab({ lineup, onMove }: SeatsTabProps) {
     return <p>{t("werewolfLineup.seatsEmpty")}</p>;
   return (
     <TabPane
+      wholeRows
       header={
         <div className="ww-seats-header">
           <Button onClick={() => setCircleOpen(true)} variant="secondary">

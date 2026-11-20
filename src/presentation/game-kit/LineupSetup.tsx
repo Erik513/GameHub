@@ -80,33 +80,36 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
   if (hasPlayers) {
     tabs.push({
       content: (
-        <>
-          <div className="kit-players__actions">
-            <Button
-              disabled={!showLoadPlayers}
-              onClick={() =>
-                onChange({
-                  ...value,
-                  assignment: assignmentOf(value.assignment, savedPlayers),
-                  playersText: savedPlayers,
-                })
-              }
-              variant="secondary"
-            >
-              {t("kitPlayers.loadLast")}
-            </Button>
-            <ConfirmButton
-              armedContent={t("kitSetup.sure")}
-              armedLabel={t("kitPlayers.clearConfirm")}
-              disabled={playerCount === 0}
-              idleLabel={t("kitPlayers.clear")}
-              onConfirm={() => onChange({ ...value, assignment: {}, playersText: "" })}
-            >
-              {t("kitPlayers.clear")}
-            </ConfirmButton>
-          </div>
-          <PlayersSetup onChange={onChange} value={value} />
-        </>
+        <PlayersSetup
+          above={
+            <div className="kit-players__actions">
+              <Button
+                disabled={!showLoadPlayers}
+                onClick={() =>
+                  onChange({
+                    ...value,
+                    assignment: assignmentOf(value.assignment, savedPlayers),
+                    playersText: savedPlayers,
+                  })
+                }
+                variant="secondary"
+              >
+                {t("kitPlayers.loadLast")}
+              </Button>
+              <ConfirmButton
+                armedContent={t("kitSetup.sure")}
+                armedLabel={t("kitPlayers.clearConfirm")}
+                disabled={playerCount === 0}
+                idleLabel={t("kitPlayers.clear")}
+                onConfirm={() => onChange({ ...value, assignment: {}, playersText: "" })}
+              >
+                {t("kitPlayers.clear")}
+              </ConfirmButton>
+            </div>
+          }
+          onChange={onChange}
+          value={value}
+        />
       ),
       id: "players",
       // The tabs name what can be chosen, not what is chosen: a game that needs its players says how many

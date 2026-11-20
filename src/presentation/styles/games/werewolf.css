@@ -673,3 +673,9 @@
 .ww-count[data-enough="true"] {
   color: var(--color-success);
 }
+
+/* The controls above the list of the people: they stay in place, only the list scrolls. */
+.ww-players-head {
+  display: grid;
+  gap: var(--space-3);
+}

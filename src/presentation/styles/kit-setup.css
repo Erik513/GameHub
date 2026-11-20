@@ -897,6 +897,22 @@ body:has(.kit-onepage) {
   overscroll-behavior: contain;
 }
 
+/* Several controls in the header of a pane, one below the other. */
+.kit-pane__stack {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* A list of equal rows: scrolling stops at whole rows (the body is as high as whole rows, see TabPane). */
+/* While a row is dragged (the list scrolls by itself near the edge) nothing snaps. */
+.kit-pane__body[data-whole-rows]:not(:has([data-dragging])) {
+  scroll-snap-type: y mandatory;
+}
+
+.kit-pane__body[data-whole-rows] li {
+  scroll-snap-align: start;
+}
+
 /* One quiet, thin scrollbar everywhere (instead of the wide system bar). */
 .kit-tabpanel,
 .kit-pane__body,

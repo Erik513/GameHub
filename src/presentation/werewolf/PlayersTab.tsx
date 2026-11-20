@@ -10,7 +10,7 @@ import {
 } from "../../business/games/werewolf/lineup";
 import { parsePlayers } from "../../business/shared/players";
 import { Icon } from "../components";
-import { PlayerAdder, RosterPicker } from "../game-kit";
+import { PlayerAdder, RosterPicker, TabPane } from "../game-kit";
 import { NarratorPicker } from "./NarratorPicker";
 
 interface PlayersTabProps {
@@ -27,35 +27,41 @@ export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
   const sorted = [...lineup.participants].sort(new Intl.Collator(i18n.language).compare);
 
   return (
-    <>
-      <NarratorPicker
-        narrator={lineup.narrator}
-        onChoose={(name) => onChange(chooseNarrator(lineup, name))}
-        participants={lineup.participants}
-      />
-      <PlayerAdder
-        onAdd={(input) => onChange(addParticipants(lineup, parsePlayers(input)))}
-        room={maxWerewolfParticipants - lineup.participants.length}
-      />
-      <div className="kit-players__actions">
-        <RosterPicker
-          limit={maxWerewolfParticipants}
-          onChange={(text) => onChange(setParticipants(lineup, parsePlayers(text)))}
-          value={lineup.participants.join(", ")}
-        />
-        {/* How many people take part (the narrator counts): red until there are enough for a match, then green. */}
-        <span
-          aria-label={t("werewolfLineup.countLabel", {
-            count: lineup.participants.length,
-            maximum: maxWerewolfParticipants,
-          })}
-          className="ww-count"
-          data-enough={lineup.participants.length >= minWerewolfParticipants}
-          role="status"
-        >
-          {lineup.participants.length}/{maxWerewolfParticipants}
-        </span>
-      </div>
+    <TabPane
+      wholeRows
+      header={
+        <div className="ww-players-head">
+          <NarratorPicker
+            narrator={lineup.narrator}
+            onChoose={(name) => onChange(chooseNarrator(lineup, name))}
+            participants={lineup.participants}
+          />
+          <PlayerAdder
+            onAdd={(input) => onChange(addParticipants(lineup, parsePlayers(input)))}
+            room={maxWerewolfParticipants - lineup.participants.length}
+          />
+          <div className="kit-players__actions">
+            <RosterPicker
+              limit={maxWerewolfParticipants}
+              onChange={(text) => onChange(setParticipants(lineup, parsePlayers(text)))}
+              value={lineup.participants.join(", ")}
+            />
+            {/* How many people take part (the narrator counts): red until there are enough for a match, then green. */}
+            <span
+              aria-label={t("werewolfLineup.countLabel", {
+                count: lineup.participants.length,
+                maximum: maxWerewolfParticipants,
+              })}
+              className="ww-count"
+              data-enough={lineup.participants.length >= minWerewolfParticipants}
+              role="status"
+            >
+              {lineup.participants.length}/{maxWerewolfParticipants}
+            </span>
+          </div>
+        </div>
+      }
+    >
       {sorted.length > 0 && (
         <ul
           aria-label={t("werewolfLineup.listLabel", { count: sorted.length })}
@@ -79,6 +85,6 @@ export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
           ))}
         </ul>
       )}
-    </>
+    </TabPane>
   );
 }
