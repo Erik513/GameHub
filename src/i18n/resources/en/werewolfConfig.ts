@@ -116,6 +116,13 @@ export const werewolfConfigTexts = {
         not: "Should not be in the game",
       },
       empty: "Nothing here",
+      hint: "Tap a role to choose where it goes, or drag it into a box.",
+      lock: {
+        incompatibleRoles: "It does not play together with the roles that are in the game.",
+        insufficientSeats: "No place is free for it.",
+        requiredAlternative: "The other role of this pair must be in the game.",
+        requiredOption: "Another option of this role must be in the game.",
+      },
       rolesHeading: "Roles",
       rangeTitle: "Special roles from May",
       minimum: "At least",

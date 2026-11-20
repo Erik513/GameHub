@@ -1,7 +1,9 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   describeVariableConfiguration,
+  setVariableEntryState,
+  setVariableItemState,
   setVariableRoleRange,
   toggleVariableWolfCount,
   type VariableDraft,
@@ -9,8 +11,8 @@ import {
   type VariableItemView,
   type VariableState,
 } from "../../business/games/werewolf/variableConfiguration";
-import { Button } from "../components";
-import { TabPane } from "../game-kit";
+import { Button, Dialog } from "../components";
+import { TabPane, dropAttribute, usePlayerDrag } from "../game-kit";
 import { ConfigCardHead } from "./ConfigInfo";
 
 interface VariableRolesProps {
@@ -24,6 +26,19 @@ interface VariableRolesProps {
 
 const states: readonly VariableState[] = ["must", "may", "not"];
 
+/** The fields to drop on: the boxes of the roles are 0 to 2, the boxes of the extras 3 to 5. */
+const dropOf = (kind: "item" | "role", state: VariableState) =>
+  states.indexOf(state) + (kind === "item" ? 3 : 0);
+
+/** The reasons an entry cannot be moved to "must" or "may" now. */
+const lockText = {
+  incompatibleRoles: "werewolfConfig.variable.lock.incompatibleRoles",
+  insufficientSeats: "werewolfConfig.variable.lock.insufficientSeats",
+  minimumPlayers: "werewolfConfig.variable.lock.incompatibleRoles",
+  requiredAlternative: "werewolfConfig.variable.lock.requiredAlternative",
+  requiredOption: "werewolfConfig.variable.lock.requiredOption",
+} as const;
+
 /**
  * The variable roles: at the top (they stay in place) the switch, the wolves with the counts that can be
  * drawn and the seer, below them the roles in three boxes (must, may, should not be in the game) and the
@@ -33,6 +48,32 @@ const states: readonly VariableState[] = ["must", "may", "not"];
 export function VariableRoles({ draft, modeSwitch, onChange, players }: VariableRolesProps) {
   const { t } = useTranslation();
   const view = describeVariableConfiguration(players, draft);
+  // The entry whose box is being chosen after a tap (an extra is "item:" and its name).
+  const [picking, setPicking] = useState<string>();
+
+  /** Moves an entry or an extra to a box; one that is locked can only leave the game. */
+  function place(id: string, state: VariableState) {
+    if (id.startsWith("item:")) {
+      const item = view.items.find((candidate) => `item:${candidate.item}` === id);
+      if (!item || (item.lock !== null && state !== "not")) return;
+      onChange(setVariableItemState(draft, item.item, state));
+      return;
+    }
+    const entry = view.entries.find((candidate) => candidate.entry.id === id);
+    if (!entry || (entry.lock !== null && state !== "not")) return;
+    onChange(setVariableEntryState(draft, id, state));
+  }
+
+  const dragging = usePlayerDrag({
+    onDrop: (id, target) => {
+      if (target === "none") return;
+      // A role goes into the boxes of the roles, an extra into the boxes of the extras.
+      const kind = id.startsWith("item:") ? "item" : "role";
+      const state = states.find((candidate) => dropOf(kind, candidate) === target);
+      if (state) place(id, state);
+    },
+    onTap: setPicking,
+  });
 
   const roleLabel = (entry: VariableEntryView) => {
     const name = t(`werewolfConfig.roles.${entry.entry.role}`);
@@ -42,12 +83,35 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
       : `${name} · ${t(`werewolfConfig.variants.${option}` as "werewolfConfig.variants.hammer")}`;
   };
   const itemLabel = (item: VariableItemView) => t(`werewolfConfig.addons.${item.item}`);
+  const labelOf = (id: string): string => {
+    if (id.startsWith("item:")) {
+      const item = view.items.find((candidate) => `item:${candidate.item}` === id);
+      return item ? itemLabel(item) : "";
+    }
+    const entry = view.entries.find((candidate) => candidate.entry.id === id);
+    return entry ? roleLabel(entry) : "";
+  };
+  const chip = (id: string, label: string, lock: VariableEntryView["lock"]) => (
+    <button
+      className="ww-chip"
+      data-dragged={dragging.drag?.player === id || undefined}
+      data-lock={lock ?? undefined}
+      key={id}
+      onClick={dragging.tap(id)}
+      onPointerDown={dragging.startDrag(id)}
+      type="button"
+    >
+      {label}
+    </button>
+  );
 
   const box = (kind: "item" | "role", state: VariableState, chips: readonly ReactNode[]) => (
     <section
       aria-label={`${t(kind === "item" ? "werewolfConfig.extrasHeading" : "werewolfConfig.variable.rolesHeading")}: ${t(`werewolfConfig.variable.box.${state}`)}`}
       className="ww-vbox"
+      {...{ [dropAttribute]: String(dropOf(kind, state)) }}
       data-kind={kind}
+      data-over={dragging.over === dropOf(kind, state) || undefined}
       data-state={state}
       key={state}
     >
@@ -169,6 +233,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
 
   return (
     <TabPane footer={footer} header={header}>
+      <p className="ww-hint">{t("werewolfConfig.variable.hint")}</p>
       <h3 className="ww-vheading">{t("werewolfConfig.variable.rolesHeading")}</h3>
       <div className="ww-vboxes">
         {states.map((state) =>
@@ -177,11 +242,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
             state,
             view.entries
               .filter((entry) => entry.state === state)
-              .map((entry) => (
-                <span className="ww-chip" data-lock={entry.lock ?? undefined} key={entry.entry.id}>
-                  {roleLabel(entry)}
-                </span>
-              )),
+              .map((entry) => chip(entry.entry.id, roleLabel(entry), entry.lock)),
           ),
         )}
       </div>
@@ -195,15 +256,57 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
                 state,
                 view.items
                   .filter((item) => item.state === state)
-                  .map((item) => (
-                    <span className="ww-chip" data-lock={item.lock ?? undefined} key={item.item}>
-                      {itemLabel(item)}
-                    </span>
-                  )),
+                  .map((item) => chip(`item:${item.item}`, itemLabel(item), item.lock)),
               ),
             )}
           </div>
         </>
+      )}
+      <Dialog
+        closeLabel={t("werewolfConfig.infoClose")}
+        onClose={() => setPicking(undefined)}
+        open={picking !== undefined}
+        title={picking === undefined ? "" : labelOf(picking)}
+      >
+        {picking !== undefined && (
+          <div className="kit-pick">
+            {(() => {
+              const isItem = picking.startsWith("item:");
+              const current = isItem
+                ? view.items.find((item) => `item:${item.item}` === picking)
+                : view.entries.find((entry) => entry.entry.id === picking);
+              const lock = current?.lock ?? null;
+              return (
+                <>
+                  {lock !== null && <p className="ww-range__hint">{t(lockText[lock])}</p>}
+                  {states.map((state) => (
+                    <Button
+                      aria-pressed={current?.state === state}
+                      disabled={lock !== null && state !== "not"}
+                      key={state}
+                      onClick={() => {
+                        place(picking, state);
+                        setPicking(undefined);
+                      }}
+                      variant={current?.state === state ? "primary" : "secondary"}
+                    >
+                      {t(`werewolfConfig.variable.box.${state}`)}
+                    </Button>
+                  ))}
+                </>
+              );
+            })()}
+          </div>
+        )}
+      </Dialog>
+      {dragging.drag && (
+        <div
+          aria-hidden="true"
+          className="ww-chip ww-chip--ghost"
+          style={{ left: dragging.drag.x, top: dragging.drag.y }}
+        >
+          {labelOf(dragging.drag.player)}
+        </div>
       )}
     </TabPane>
   );

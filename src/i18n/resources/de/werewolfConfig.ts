@@ -118,6 +118,13 @@ export const werewolfConfigTexts = {
         not: "Soll nicht ins Spiel",
       },
       empty: "Nichts hier",
+      hint: "Tippe eine Rolle an, um zu wählen, wohin sie soll, oder ziehe sie in einen Kasten.",
+      lock: {
+        incompatibleRoles: "Sie spielt nicht zusammen mit den Rollen, die im Spiel sind.",
+        insufficientSeats: "Es ist kein Platz mehr frei.",
+        requiredAlternative: "Die andere Rolle dieses Paars muss ins Spiel.",
+        requiredOption: "Eine andere Option dieser Rolle muss ins Spiel.",
+      },
       rolesHeading: "Rollen",
       rangeTitle: "Sonderrollen aus Darf",
       minimum: "Mindestens",

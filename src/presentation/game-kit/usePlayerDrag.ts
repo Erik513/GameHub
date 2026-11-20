@@ -1,6 +1,9 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
-/** Where a dragged player can be dropped: into the team with this number, or out of any team. */
+/**
+ * Where a dragged name can be dropped: into the field with this number (a team, or a box of the variable roles),
+ * or out of any team.
+ */
 export type DropTarget = number | "none";
 
 /** A player that is being dragged and where the pointer is. */
@@ -60,10 +63,11 @@ export function usePlayerDrag({ onDrop, onTap }: PlayerDragOptions) {
       // Scrolls the page while the pointer is held near the top or the bottom, so teams that are
       // out of sight can be reached, and looks again which field is under the pointer.
       const scrollNearEdge = () => {
-        // On a one-page screen the box of the tab scrolls, otherwise the page does.
-        const panel = document.querySelector<HTMLElement>(
+        // On a one-page screen the box of the tab scrolls (or the body of its pane), otherwise the page does.
+        const tab = document.querySelector<HTMLElement>(
           '.kit-onepage .kit-tabpanel[data-active="true"]',
         );
+        const panel = tab?.querySelector<HTMLElement>(".kit-pane__body") ?? tab;
         const bounds = panel?.getBoundingClientRect();
         const top = bounds ? bounds.top + scrollEdge : scrollEdge;
         const bottom = bounds ? bounds.bottom - scrollEdge : window.innerHeight - scrollEdgeBottom;

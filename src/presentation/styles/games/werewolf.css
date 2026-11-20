@@ -738,7 +738,30 @@
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   background: var(--color-surface-muted);
+  color: inherit;
+  font: inherit;
   font-size: var(--text-sm);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.ww-chip[data-dragged] {
+  opacity: 0.35;
+}
+
+/* The name that follows the pointer while a role is dragged. */
+.ww-chip--ghost {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  border-color: var(--color-accent);
+}
+
+.ww-vbox[data-over] {
+  outline: 2px solid var(--color-accent);
 }
 
 .ww-chip[data-lock] {
@@ -761,17 +784,15 @@
 }
 
 .ww-range__row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-3);
 }
 
 .ww-range__field {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
+  display: grid;
+  gap: var(--space-1);
+  justify-items: start;
 }
 
 .ww-range__label,

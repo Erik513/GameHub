@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
@@ -175,4 +175,121 @@ it("keeps the general rules of the variable roles apart from the fixed ones", as
   await user.click(screen.getByRole("tab", { name: "Game rules" }));
   await user.click(screen.getByRole("radio", { name: "From night 1" }));
   expect(latest.variable.rules.attackOnFirstNight).toBe(true);
+});
+
+/** Pretends that the pointer is over the element, as jsdom has no layout. */
+function pointerOver(element: Element | null) {
+  Object.defineProperty(document, "elementFromPoint", { configurable: true, value: () => element });
+}
+
+/** Drags a chip into a box. */
+function dragTo(name: string, boxElement: Element | null) {
+  const chip = screen.getByRole("button", { name });
+  fireEvent.pointerDown(chip, { button: 0, clientX: 10, clientY: 10 });
+  pointerOver(boxElement);
+  fireEvent.pointerMove(window, { clientX: 60, clientY: 60 });
+  fireEvent.pointerUp(window, { clientX: 60, clientY: 60 });
+}
+
+const boxOf = (kind: "item" | "role", state: VariableState) =>
+  document.querySelector(`.ww-vbox[data-kind="${kind}"][data-state="${state}"]`);
+
+it.each([
+  ["en", "Witch", "May be in the game", "Roles: May be in the game"],
+  ["de", "Hexe", "Darf ins Spiel", "Rollen: Darf ins Spiel"],
+] as const)(
+  "opens the choice with a tap and moves the role there (%s)",
+  async (language, role, choice, area) => {
+    const { latest, user } = await renderVariable(language, 12);
+    await user.click(screen.getByRole("button", { name: role }));
+    const dialog = await screen.findByRole("dialog", { name: role });
+    expect(within(dialog).getAllByRole("button", { name: /./ }).length).toBeGreaterThanOrEqual(3);
+    await user.click(within(dialog).getByRole("button", { name: choice }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(latest.variable.states).toEqual({ witch: "may" });
+    expect(chips(area)).toEqual([role]);
+  },
+);
+
+it("marks the state of an entry in the choice", async () => {
+  const { user } = await renderVariable("en", 12, put(emptyVariableDraft, { witch: "must" }));
+  await user.click(screen.getByRole("button", { name: "Witch" }));
+  const dialog = await screen.findByRole("dialog", { name: "Witch" });
+  expect(within(dialog).getByRole("button", { name: "Must be in the game" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  expect(within(dialog).getByRole("button", { name: "Should not be in the game" })).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+});
+
+it("lets an entry that is locked only leave the game, and says why", async () => {
+  const { latest, user } = await renderVariable(
+    "en",
+    12,
+    put(emptyVariableDraft, { bodyguard: "must" }),
+  );
+  await user.click(screen.getByRole("button", { name: "Night guest" }));
+  const dialog = await screen.findByRole("dialog", { name: "Night guest" });
+  expect(
+    within(dialog).getByText("The other role of this pair must be in the game."),
+  ).toBeVisible();
+  expect(within(dialog).getByRole("button", { name: "Must be in the game" })).toBeDisabled();
+  expect(within(dialog).getByRole("button", { name: "May be in the game" })).toBeDisabled();
+  expect(within(dialog).getByRole("button", { name: "Should not be in the game" })).toBeEnabled();
+  await user.click(within(dialog).getByRole("button", { name: "Should not be in the game" }));
+  expect(latest.variable.states).toEqual({ bodyguard: "must" });
+});
+
+it("moves a role by dragging it into a box", async () => {
+  const { latest } = await renderVariable("en", 12);
+  dragTo("Cupid", boxOf("role", "must"));
+  expect(latest.variable.states).toEqual({ cupid: "must" });
+  dragTo("Cupid", boxOf("role", "may"));
+  expect(latest.variable.states).toEqual({ cupid: "may" });
+  dragTo("Cupid", boxOf("role", "not"));
+  expect(latest.variable.states).toEqual({});
+});
+
+it("puts the other options of a role to 'not' when one is dragged to 'must'", async () => {
+  const { latest } = await renderVariable(
+    "en",
+    12,
+    put(emptyVariableDraft, { "hunter:optional": "may", "hunter:required": "may" }),
+  );
+  dragTo("Hunter · Duty to shoot", boxOf("role", "must"));
+  expect(latest.variable.states).toEqual({ "hunter:required": "must" });
+});
+
+it("moves an extra only among the boxes of the extras", async () => {
+  const { latest } = await renderVariable("en", 12);
+  dragTo("Protective amulet", boxOf("item", "may"));
+  expect(latest.variable.items.amulet).toBe("may");
+  // An extra dropped into a box of the roles stays where it is, as does a role dropped into a box of the extras.
+  dragTo("Protective amulet", boxOf("role", "must"));
+  expect(latest.variable.items.amulet).toBe("may");
+  dragTo("Cupid", boxOf("item", "must"));
+  expect(latest.variable.states).toEqual({});
+});
+
+it("does nothing when a role is dropped outside the boxes, and ignores a locked one for 'must' and 'may'", async () => {
+  const { latest } = await renderVariable("en", 12, put(emptyVariableDraft, { bodyguard: "must" }));
+  dragTo("Cupid", null);
+  expect(latest.variable.states).toEqual({ bodyguard: "must" });
+  dragTo("Night guest", boxOf("role", "may"));
+  expect(latest.variable.states).toEqual({ bodyguard: "must" });
+});
+
+it("shows the role that is dragged under the pointer", async () => {
+  await renderVariable("en", 12);
+  const chip = screen.getByRole("button", { name: "Cupid" });
+  fireEvent.pointerDown(chip, { button: 0, clientX: 10, clientY: 10 });
+  pointerOver(boxOf("role", "may"));
+  fireEvent.pointerMove(window, { clientX: 60, clientY: 60 });
+  expect(document.querySelector(".ww-chip--ghost")).toHaveTextContent("Cupid");
+  expect(boxOf("role", "may")).toHaveAttribute("data-over");
+  fireEvent.pointerUp(window, { clientX: 60, clientY: 60 });
+  expect(document.querySelector(".ww-chip--ghost")).toBeNull();
 });

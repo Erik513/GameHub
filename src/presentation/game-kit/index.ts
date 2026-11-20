@@ -31,7 +31,7 @@ export { TeamSetupMemoryProvider } from "./TeamSetupMemoryProvider";
 export { useTeamSetupMemory } from "./TeamSetupMemoryContext";
 export { TimerHud } from "./TimerHud";
 export { useCountdown } from "./useCountdown";
-export { usePlayerDrag } from "./usePlayerDrag";
+export { dropAttribute, usePlayerDrag } from "./usePlayerDrag";
 export { useScreenScroll } from "./useScreenScroll";
 export { useStopwatch } from "./useStopwatch";
 export { focusIsLost, useFocusOnShow } from "./useFocusOnShow";
