@@ -7,7 +7,6 @@ export const werewolfConfigTexts = {
     modeLabel: "Art der Rollen",
     modeFixed: "Feste Rollen",
     modeVariable: "Variable Rollen",
-    variableLater: "Die variable Konfiguration folgt später.",
     label: "Konfiguration",
     done: "Fertig",
     coreHeading: "Grundrollen und Zusätze",
@@ -112,6 +111,23 @@ export const werewolfConfigTexts = {
     },
     variantHint:
       "Tippe eine Rolle an, um sie ins Spiel zu nehmen. Eine Rolle mit Optionen hat für jede Option eine Hälfte; tippe die gewählte Hälfte erneut an, um die Rolle wegzulassen.",
+    variable: {
+      box: {
+        must: "Muss ins Spiel",
+        may: "Darf ins Spiel",
+        not: "Soll nicht ins Spiel",
+      },
+      empty: "Nichts hier",
+      rolesHeading: "Rollen",
+      rangeTitle: "Sonderrollen aus Darf",
+      minimum: "Mindestens",
+      maximum: "Höchstens",
+      less: "{{what}}: eine weniger",
+      more: "{{what}}: eine mehr",
+      rangePossible: "Möglich: {{minimum}} bis {{maximum}}",
+      rangeNone: "Setze Rollen auf Darf, um festzulegen, wie viele gelost werden.",
+      cannotStart: "Mit {{count}} Spielern ist diese Auswahl nicht spielbar.",
+    },
     wake: {
       open: "Aufwachreihenfolge",
       title: "Aufwachreihenfolge",

@@ -672,3 +672,138 @@
   display: grid;
   gap: var(--space-3);
 }
+
+/* The variable roles: three boxes for the roles (must, may, should not) and three of another color for the extras. */
+.ww-vheading {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+}
+
+.ww-vboxes {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ww-vbox {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.ww-vbox[data-kind="role"][data-state="must"] {
+  border-color: var(--color-success);
+}
+
+.ww-vbox[data-kind="role"][data-state="may"] {
+  border-color: var(--color-warning);
+}
+
+.ww-vbox[data-kind="item"] {
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-line));
+}
+
+.ww-vbox[data-kind="item"][data-state="must"] {
+  border-color: var(--color-accent);
+}
+
+.ww-vbox__title {
+  margin: 0;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+.ww-vbox__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-height: 2rem;
+}
+
+.ww-vbox__empty {
+  align-self: center;
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+}
+
+.ww-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  font-size: var(--text-sm);
+}
+
+.ww-chip[data-lock] {
+  opacity: 0.55;
+}
+
+/* The number of "may" roles: fixed at the bottom of the tab. */
+.ww-range {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.ww-range__title {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.ww-range__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.ww-range__field {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.ww-range__label,
+.ww-range__hint {
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+}
+
+.ww-range__hint,
+.ww-range__problem {
+  margin: 0;
+}
+
+.ww-range__problem {
+  color: var(--color-danger);
+  font-size: var(--text-xs);
+}
+
+.ww-range__stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ww-range__stepper .button {
+  min-width: 2.25rem;
+  padding-inline: 0;
+}
+
+.ww-range__stepper output {
+  min-width: 1.5rem;
+  text-align: center;
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}

@@ -4,6 +4,10 @@ import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it, vi } from "vitest";
 import { emptyFixedDraft, type FixedDraft } from "../../business/games/werewolf/fixedConfiguration";
+import {
+  emptyVariableDraft,
+  type VariableDraft,
+} from "../../business/games/werewolf/variableConfiguration";
 import { createGameHubI18n } from "../../i18n";
 import { WerewolfConfiguration } from "./WerewolfConfiguration";
 
@@ -14,14 +18,27 @@ async function renderConfiguration(
   players: number,
   start: FixedDraft = emptyFixedDraft,
   onDone: () => void = () => undefined,
+  startVariable: VariableDraft = emptyVariableDraft,
 ) {
   const i18n = await createGameHubI18n(language);
-  const latest: { draft: FixedDraft } = { draft: start };
+  const latest: { draft: FixedDraft; variable: VariableDraft } = {
+    draft: start,
+    variable: startVariable,
+  };
   function Host() {
     const [draft, setDraft] = useState(start);
+    const [variable, setVariable] = useState(startVariable);
     latest.draft = draft;
+    latest.variable = variable;
     return (
-      <WerewolfConfiguration draft={draft} onChange={setDraft} onDone={onDone} players={players} />
+      <WerewolfConfiguration
+        draft={draft}
+        onChange={setDraft}
+        onDone={onDone}
+        onVariableChange={setVariable}
+        players={players}
+        variableDraft={variable}
+      />
     );
   }
   render(

@@ -10,6 +10,10 @@ import {
   parseSavedLineup,
   setParticipants,
 } from "../../business/games/werewolf/lineup";
+import {
+  emptyVariableDraft,
+  normalizeVariableDraft,
+} from "../../business/games/werewolf/variableConfiguration";
 import { usePersistentState } from "../game-kit";
 import { WerewolfConfiguration } from "./WerewolfConfiguration";
 import { WerewolfLineup } from "./WerewolfLineup";
@@ -43,6 +47,8 @@ export function WerewolfGame() {
   );
   // What was saved may not fit the players of today: the roles that no longer fit are taken back.
   const draft = normalizeFixedDraft(lineup.seats.length, savedDraft);
+  // The draft of the variable roles is kept apart from the fixed one (it is saved apart in a later step).
+  const [variableDraft, setVariableDraft] = useState(emptyVariableDraft);
   const [configuring, setConfiguring] = useState(false);
 
   if (configuring) {
@@ -51,7 +57,9 @@ export function WerewolfGame() {
         draft={draft}
         onChange={setDraft}
         onDone={() => setConfiguring(false)}
+        onVariableChange={setVariableDraft}
         players={lineup.seats.length}
+        variableDraft={normalizeVariableDraft(lineup.seats.length, variableDraft)}
       />
     );
   }

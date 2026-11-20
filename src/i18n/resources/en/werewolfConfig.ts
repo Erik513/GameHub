@@ -7,7 +7,6 @@ export const werewolfConfigTexts = {
     modeLabel: "Kind of roles",
     modeFixed: "Fixed roles",
     modeVariable: "Variable roles",
-    variableLater: "The variable configuration follows later.",
     label: "Configuration",
     done: "Done",
     coreHeading: "Basic roles and extras",
@@ -110,6 +109,23 @@ export const werewolfConfigTexts = {
     },
     variantHint:
       "Tap a role to take it. A role with options has a half for every option; tap the chosen half again to leave the role out.",
+    variable: {
+      box: {
+        must: "Must be in the game",
+        may: "May be in the game",
+        not: "Should not be in the game",
+      },
+      empty: "Nothing here",
+      rolesHeading: "Roles",
+      rangeTitle: "Special roles from May",
+      minimum: "At least",
+      maximum: "At most",
+      less: "{{what}}: one less",
+      more: "{{what}}: one more",
+      rangePossible: "Possible: {{minimum}} to {{maximum}}",
+      rangeNone: "Put roles on May to set how many are drawn.",
+      cannotStart: "This selection cannot be played with {{count}} players.",
+    },
     wake: {
       open: "Wake-up order",
       title: "Wake-up order",

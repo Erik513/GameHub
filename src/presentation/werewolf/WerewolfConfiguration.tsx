@@ -15,16 +15,24 @@ import {
   werewolfPlayerLimits,
   type WerewolfSpecialRole,
 } from "../../business/games/werewolf/configuration";
+import {
+  setVariableRule,
+  type VariableDraft,
+} from "../../business/games/werewolf/variableConfiguration";
 import { Button } from "../components";
 import { ChoiceGroup, SetupTabs, StartBar, useFocusOnShow } from "../game-kit";
 import { ConfigCardHead } from "./ConfigInfo";
 import { WakeOrderButton } from "./WakeOrderButton";
 import { RoleRow, RoleTile } from "./ConfigTiles";
+import { VariableRoles } from "./VariableRoles";
 
 interface WerewolfConfigurationProps {
   readonly draft: FixedDraft;
   readonly onChange: (draft: FixedDraft) => void;
   readonly onDone: () => void;
+  /** The draft of the variable roles; it is kept apart from the fixed one. */
+  readonly onVariableChange: (draft: VariableDraft) => void;
+  readonly variableDraft: VariableDraft;
   /** The number of players besides the narrator. */
   readonly players: number;
 }
@@ -50,12 +58,13 @@ export function WerewolfConfiguration({
   draft,
   onChange,
   onDone,
+  onVariableChange,
   players,
+  variableDraft,
 }: WerewolfConfigurationProps) {
   const { t } = useTranslation();
   const focus = useFocusOnShow<HTMLElement>();
   const view = describeFixedConfiguration(players, draft);
-  // Only the fixed roles are built; the variable configuration follows later.
   const [mode, setMode] = useState<"fixed" | "variable">("fixed");
 
   const roleName = (role: WerewolfSpecialRole) => t(`werewolfConfig.roles.${role}`);
@@ -215,168 +224,191 @@ export function WerewolfConfiguration({
   const locked = view.items.filter((entry) => entry.lock === "minimumPlayers");
   const hasIssues = view.issues.length > 0;
 
-  const rolesTab: ReactNode = (
-    <>
-      <ChoiceGroup
-        hideLegend
-        initial="fixed"
-        legend={t("werewolfConfig.modeLabel")}
-        name="mode"
-        onChange={(value) => setMode(value === "variable" ? "variable" : "fixed")}
-        options={[
-          { label: t("werewolfConfig.modeFixed"), value: "fixed" },
-          { label: t("werewolfConfig.modeVariable"), value: "variable" },
-        ]}
-        value={mode}
+  const modeSwitch = (
+    <ChoiceGroup
+      hideLegend
+      initial="fixed"
+      legend={t("werewolfConfig.modeLabel")}
+      name="mode"
+      onChange={(value) => setMode(value === "variable" ? "variable" : "fixed")}
+      options={[
+        { label: t("werewolfConfig.modeFixed"), value: "fixed" },
+        { label: t("werewolfConfig.modeVariable"), value: "variable" },
+      ]}
+      value={mode}
+    />
+  );
+
+  const rolesTab: ReactNode =
+    mode === "variable" ? (
+      <VariableRoles
+        draft={variableDraft}
+        modeSwitch={modeSwitch}
+        onChange={onVariableChange}
+        players={players}
       />
-      {mode === "variable" ? (
-        <p className="ww-hint">{t("werewolfConfig.variableLater")}</p>
-      ) : (
-        <>
-          <section className="ww-box ww-core">
-            <h3 className="ww-box__title">{t("werewolfConfig.coreHeading")}</h3>
-            {/* Every basic role is a card like the other roles: the name with its "i" on the first line, the value or the choice on the second. */}
-            <section className="ww-card ww-card--wolves">
-              <ConfigCardHead
-                id="wolves"
-                name={t("werewolfConfig.wolves")}
-                title={t("werewolfConfig.wolves")}
-              />
-              <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
-                {view.wolf.options.map((option) => (
-                  <div className="ww-wolves__option" key={option.count}>
-                    <button
-                      aria-pressed={option.selected}
-                      className="ww-wolves__button"
-                      data-fixed={view.wolf.fixed || undefined}
-                      data-recommended={option.recommended || undefined}
-                      disabled={!option.selectable && !option.selected}
-                      onClick={() => {
-                        if (!view.wolf.fixed) onChange(setFixedWolfCount(draft, option.count));
-                      }}
-                      type="button"
-                    >
-                      {option.count}
-                    </button>
-                    <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
-                  </div>
-                ))}
-              </div>
-            </section>
-            {/* Only to read, nothing to set: the same cards with a plain number on the second line. */}
-            <div className="ww-cards">
-              <div aria-label={t("werewolfConfig.seer")} className="ww-card ww-stat" role="group">
+    ) : (
+      <>
+        {modeSwitch}
+        {
+          <>
+            <section className="ww-box ww-core">
+              <h3 className="ww-box__title">{t("werewolfConfig.coreHeading")}</h3>
+              {/* Every basic role is a card like the other roles: the name with its "i" on the first line, the value or the choice on the second. */}
+              <section className="ww-card ww-card--wolves">
                 <ConfigCardHead
-                  id="seer"
-                  name={t("werewolfConfig.seer")}
-                  title={t("werewolfConfig.seer")}
+                  id="wolves"
+                  name={t("werewolfConfig.wolves")}
+                  title={t("werewolfConfig.wolves")}
                 />
-                <strong className="ww-stat__value">1</strong>
+                <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
+                  {view.wolf.options.map((option) => (
+                    <div className="ww-wolves__option" key={option.count}>
+                      <button
+                        aria-pressed={option.selected}
+                        className="ww-wolves__button"
+                        data-fixed={view.wolf.fixed || undefined}
+                        data-recommended={option.recommended || undefined}
+                        disabled={!option.selectable && !option.selected}
+                        onClick={() => {
+                          if (!view.wolf.fixed) onChange(setFixedWolfCount(draft, option.count));
+                        }}
+                        type="button"
+                      >
+                        {option.count}
+                      </button>
+                      <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
+                    </div>
+                  ))}
+                </div>
+              </section>
+              {/* Only to read, nothing to set: the same cards with a plain number on the second line. */}
+              <div className="ww-cards">
+                <div aria-label={t("werewolfConfig.seer")} className="ww-card ww-stat" role="group">
+                  <ConfigCardHead
+                    id="seer"
+                    name={t("werewolfConfig.seer")}
+                    title={t("werewolfConfig.seer")}
+                  />
+                  <strong className="ww-stat__value">1</strong>
+                </div>
+                <div
+                  aria-label={t("werewolfConfig.villagers")}
+                  className="ww-card ww-stat"
+                  role="group"
+                >
+                  <ConfigCardHead
+                    id="villagers"
+                    name={t("werewolfConfig.villagers")}
+                    title={t("werewolfConfig.villagersTitle")}
+                  />
+                  <strong className="ww-stat__value ww-villagers__number">
+                    {view.villagers ?? 0}
+                  </strong>
+                </div>
               </div>
-              <div
-                aria-label={t("werewolfConfig.villagers")}
-                className="ww-card ww-stat"
-                role="group"
-              >
-                <ConfigCardHead
-                  id="villagers"
-                  name={t("werewolfConfig.villagers")}
-                  title={t("werewolfConfig.villagersTitle")}
-                />
-                <strong className="ww-stat__value ww-villagers__number">
-                  {view.villagers ?? 0}
-                </strong>
-              </div>
-            </div>
-            <div className="ww-row">
-              <h4 className="ww-row__title">{t("werewolfConfig.extrasHeading")}</h4>
-              <div className="ww-list">
-                {view.addons.map((addon) => {
-                  const name = t(`werewolfConfig.addons.${addon.id}`);
-                  return (
-                    <RoleRow
-                      infoId={addon.id}
-                      key={addon.id}
-                      lock={addon.lock}
-                      minimum={addon.minimum}
-                      name={name}
-                    >
-                      <RoleTile
+              <div className="ww-row">
+                <h4 className="ww-row__title">{t("werewolfConfig.extrasHeading")}</h4>
+                <div className="ww-list">
+                  {view.addons.map((addon) => {
+                    const name = t(`werewolfConfig.addons.${addon.id}`);
+                    return (
+                      <RoleRow
                         infoId={addon.id}
+                        key={addon.id}
                         lock={addon.lock}
                         minimum={addon.minimum}
                         name={name}
-                        onToggle={() => onChange(setFixedSetting(draft, addon.id, !addon.selected))}
-                        selected={addon.selected}
-                        showInfo={false}
-                      />
-                    </RoleRow>
-                  );
-                })}
+                      >
+                        <RoleTile
+                          infoId={addon.id}
+                          lock={addon.lock}
+                          minimum={addon.minimum}
+                          name={name}
+                          onToggle={() =>
+                            onChange(setFixedSetting(draft, addon.id, !addon.selected))
+                          }
+                          selected={addon.selected}
+                          showInfo={false}
+                        />
+                      </RoleRow>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </section>
-
-          {hasIssues && (
-            <section aria-live="polite" className="ww-issues">
-              <h3>{t("werewolfConfig.issuesHeading")}</h3>
-              <ul>
-                {view.issues.map((issue) => (
-                  <li
-                    key={`${issue.code}-${"role" in issue ? issue.role : ""}-${"addon" in issue ? issue.addon : ""}`}
-                  >
-                    {issueText(issue)}
-                  </li>
-                ))}
-              </ul>
-              {view.suggestedWolfCount !== null && (
-                <Button
-                  onClick={() => onChange(setFixedWolfCount(draft, view.suggestedWolfCount!))}
-                  variant="secondary"
-                >
-                  {t("werewolfConfig.useWolves", { count: view.suggestedWolfCount })}
-                </Button>
-              )}
             </section>
-          )}
 
-          {renderBox(
-            t("werewolfConfig.availableHeading"),
-            available,
-            false,
-            t("werewolfConfig.variantHint"),
-          )}
-          {locked.length > 0 && renderBox(t("werewolfConfig.unavailableHeading"), locked, false)}
-        </>
-      )}
-    </>
-  );
+            {hasIssues && (
+              <section aria-live="polite" className="ww-issues">
+                <h3>{t("werewolfConfig.issuesHeading")}</h3>
+                <ul>
+                  {view.issues.map((issue) => (
+                    <li
+                      key={`${issue.code}-${"role" in issue ? issue.role : ""}-${"addon" in issue ? issue.addon : ""}`}
+                    >
+                      {issueText(issue)}
+                    </li>
+                  ))}
+                </ul>
+                {view.suggestedWolfCount !== null && (
+                  <Button
+                    onClick={() => onChange(setFixedWolfCount(draft, view.suggestedWolfCount!))}
+                    variant="secondary"
+                  >
+                    {t("werewolfConfig.useWolves", { count: view.suggestedWolfCount })}
+                  </Button>
+                )}
+              </section>
+            )}
+
+            {renderBox(
+              t("werewolfConfig.availableHeading"),
+              available,
+              false,
+              t("werewolfConfig.variantHint"),
+            )}
+            {locked.length > 0 && renderBox(t("werewolfConfig.unavailableHeading"), locked, false)}
+          </>
+        }
+      </>
+    );
+
+  // The general rules belong to the draft of the mode that is shown.
+  const rules =
+    mode === "variable"
+      ? variableDraft.rules
+      : {
+          attackOnFirstNight: draft.settings.attackOnFirstNight,
+          revealRoles: draft.settings.revealRoles,
+        };
+  const setRule = (key: "attackOnFirstNight" | "revealRoles", value: boolean) =>
+    mode === "variable"
+      ? onVariableChange(setVariableRule(variableDraft, key, value))
+      : onChange(setFixedSetting(draft, key, value));
 
   const rulesTab: ReactNode = (
     <>
       <ChoiceGroup
-        initial={draft.settings.attackOnFirstNight ? "night1" : "night2"}
+        initial={rules.attackOnFirstNight ? "night1" : "night2"}
         legend={t("werewolfConfig.attackLabel")}
         name="attack"
-        onChange={(value) =>
-          onChange(setFixedSetting(draft, "attackOnFirstNight", value === "night1"))
-        }
+        onChange={(value) => setRule("attackOnFirstNight", value === "night1")}
         options={[
           { label: t("werewolfConfig.attackNight2"), value: "night2" },
           { label: t("werewolfConfig.attackNight1"), value: "night1" },
         ]}
-        value={draft.settings.attackOnFirstNight ? "night1" : "night2"}
+        value={rules.attackOnFirstNight ? "night1" : "night2"}
       />
       <ChoiceGroup
-        initial={draft.settings.revealRoles ? "open" : "secret"}
+        initial={rules.revealRoles ? "open" : "secret"}
         legend={t("werewolfConfig.revealLabel")}
         name="reveal"
-        onChange={(value) => onChange(setFixedSetting(draft, "revealRoles", value === "open"))}
+        onChange={(value) => setRule("revealRoles", value === "open")}
         options={[
           { label: t("werewolfConfig.revealOpen"), value: "open" },
           { label: t("werewolfConfig.revealSecret"), value: "secret" },
         ]}
-        value={draft.settings.revealRoles ? "open" : "secret"}
+        value={rules.revealRoles ? "open" : "secret"}
       />
     </>
   );
