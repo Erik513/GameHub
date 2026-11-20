@@ -123,7 +123,7 @@ describe("narrator business contract", () => {
         rolePool: ["cupid", "witch", "nightGuest"],
         roleRange: { minimum: 0, maximum: 0 },
         itemPool: ["drunk"],
-        itemRange: { minimum: 0, maximum: 0 },
+        wolfCounts: [2],
       },
     );
     expect(result.ok).toBe(true);

@@ -2,16 +2,17 @@ import { parsePlayers } from "../../shared/players";
 import {
   automaticWerewolfSettings,
   resolveAutomaticWerewolfLineup,
-  hasFeasibleAutomaticWerewolfLineup,
   validAutomaticRolePool,
-  type AutomaticWerewolfLineup,
 } from "./automaticSetup";
-import { createResolvedWerewolf } from "./balancedSetup";
+import { createCheckedWerewolf } from "./balancedSetup";
 import {
   availableWerewolfCounts,
+  validWerewolfRoles,
+  werewolfRoleMinimums,
   type WerewolfSettings,
   type WerewolfSpecialRole,
 } from "./configuration";
+import type { WerewolfBalance } from "./lineupBalance";
 import type { WerewolfState } from "./stateMachine";
 
 export type WerewolfItem = "amulet" | "drunk";
@@ -19,18 +20,37 @@ export interface WerewolfSelectionRange {
   readonly minimum: number;
   readonly maximum: number;
 }
+const optionRules = [
+  { role: "hunter", key: "hunterShot", values: ["optional", "required"] },
+  { role: "mayor", key: "mayor", values: ["doubleVote", "hammer"] },
+  { role: "spellcaster", key: "allowSelfSilence", values: [false, true] },
+  { role: "tanner", key: "tanner", values: ["anyDeath", "voteOnly"] },
+  { role: "toughGuy", key: "toughGuy", values: ["wolfOnly", "anyAttack"] },
+] as const;
+export type VariableWerewolfOptionKey = (typeof optionRules)[number]["key"];
+type OptionValue = string | boolean;
+type OptionSets = Readonly<Record<VariableWerewolfOptionKey, readonly OptionValue[]>>;
+export type VariableWerewolfRoleOptions = {
+  readonly [K in VariableWerewolfOptionKey]?: readonly WerewolfSettings[K][];
+};
 export interface VariableWerewolfSelection {
+  readonly requiredRoles?: readonly WerewolfSpecialRole[];
+  readonly requiredItems?: readonly WerewolfItem[];
   readonly rolePool: readonly WerewolfSpecialRole[];
+  readonly roleOptions?: VariableWerewolfRoleOptions;
   readonly roleRange: WerewolfSelectionRange;
   readonly itemPool: readonly WerewolfItem[];
-  readonly itemRange: WerewolfSelectionRange;
+  readonly wolfCounts: readonly number[];
 }
 export type VariableWerewolfFailureReason =
+  | "invalidSelection"
   | "invalidPlayers"
   | "invalidRolePool"
   | "invalidItemPool"
   | "invalidRoleRange"
-  | "invalidItemRange"
+  | "invalidRoleOptions"
+  | "invalidWolfCounts"
+  | "obsoleteItemRange"
   | "invalidSettings"
   | "noFeasibleLineup"
   | "invalidRandom";
@@ -38,127 +58,435 @@ export interface VariableWerewolfFailure {
   readonly ok: false;
   readonly reason: VariableWerewolfFailureReason;
 }
-interface Candidate {
-  readonly roles: readonly WerewolfSpecialRole[];
-  readonly items: readonly WerewolfItem[];
-}
-interface ChoiceGroup {
-  readonly roleCount: number;
-  readonly itemCount: number;
-  readonly choices: Candidate[];
-}
-interface Choices {
-  readonly ok: true;
-  readonly groups: ChoiceGroup[];
-  readonly settings: Partial<WerewolfSettings>;
-}
 const fail = (reason: VariableWerewolfFailureReason): VariableWerewolfFailure => ({
   ok: false,
   reason,
 });
-const validRange = (range: WerewolfSelectionRange, size: number) =>
-  Number.isInteger(range.minimum) &&
-  Number.isInteger(range.maximum) &&
-  range.minimum >= 0 &&
-  range.maximum >= range.minimum &&
-  range.maximum <= size;
-
-/** Complete finite enumeration: at most 8192 role subsets and four item subsets. */
-function variableChoices(
+const familyOf = (role: WerewolfSpecialRole) => (role === "nightGuest" ? "bodyguard" : role);
+type RoleFamily = ReturnType<typeof familyOf>;
+interface Family {
+  readonly id: RoleFamily;
+  readonly variants: readonly WerewolfSpecialRole[];
+}
+interface NormalizedSelection {
+  readonly players: number;
+  readonly requiredRoles: readonly WerewolfSpecialRole[];
+  readonly requiredItems: readonly WerewolfItem[];
+  readonly rolePool: readonly WerewolfSpecialRole[];
+  readonly itemPool: readonly WerewolfItem[];
+  readonly roleRange: WerewolfSelectionRange;
+  readonly wolfCounts: readonly number[];
+  readonly options: OptionSets;
+  readonly families: readonly Family[];
+  readonly settings: Partial<WerewolfSettings>;
+}
+interface ChoiceGroup {
+  readonly roleCount: number;
+  readonly choices: readonly (readonly RoleFamily[])[];
+}
+interface WolfPlan {
+  readonly wolfCount: number;
+  readonly allGroups: readonly ChoiceGroup[];
+  readonly groups: readonly ChoiceGroup[];
+}
+interface Choices {
+  readonly ok: true;
+  readonly selection: NormalizedSelection;
+  readonly wolves: readonly WolfPlan[];
+}
+function isArray(value: unknown): boolean {
+  return Array.isArray(value);
+}
+function defaultEntries<T>(entries: readonly T[] | undefined): readonly T[] {
+  if (entries === undefined) return [];
+  return entries;
+}
+function validRange(range: WerewolfSelectionRange, size: number): boolean {
+  return (
+    Boolean(range) &&
+    Number.isInteger(range.minimum) &&
+    Number.isInteger(range.maximum) &&
+    range.minimum >= 0 &&
+    range.maximum >= range.minimum &&
+    range.maximum <= size
+  );
+}
+function validItems(players: number, items: readonly WerewolfItem[]): boolean {
+  return (
+    isArray(items) &&
+    new Set(items).size === items.length &&
+    items.every((item) => (item === "amulet" ? players >= 10 : item === "drunk" && players >= 9))
+  );
+}
+function normalizedOptions(
   players: number,
-  selection: VariableWerewolfSelection,
+  requiredRoles: readonly WerewolfSpecialRole[],
+  rolePool: readonly WerewolfSpecialRole[],
+  input: VariableWerewolfRoleOptions | undefined,
   settings: Partial<WerewolfSettings>,
-): Choices | VariableWerewolfFailure {
-  if (!availableWerewolfCounts(players).length) return fail("invalidPlayers");
-  if (!validAutomaticRolePool(players, selection.rolePool)) return fail("invalidRolePool");
+): OptionSets | null {
   if (
-    selection.itemPool.length > 2 ||
-    new Set(selection.itemPool).size !== selection.itemPool.length ||
-    selection.itemPool.some(
-      (item) =>
-        !["amulet", "drunk"].includes(item) || (item === "amulet" ? players < 10 : players < 9),
+    input !== undefined &&
+    (!input ||
+      typeof input !== "object" ||
+      isArray(input) ||
+      Object.keys(input).some((key) => !optionRules.some((rule) => rule.key === key)))
+  )
+    return null;
+  const result = {} as Record<VariableWerewolfOptionKey, readonly OptionValue[]>;
+  for (const rule of optionRules) {
+    const domain: readonly OptionValue[] = rule.values;
+    const supplied = input?.[rule.key];
+    if (
+      supplied !== undefined &&
+      (!isArray(supplied) ||
+        !supplied.length ||
+        new Set<OptionValue>(supplied).size !== supplied.length ||
+        supplied.some((value) => !domain.includes(value)))
     )
+      return null;
+    const values: readonly OptionValue[] = supplied ?? [settings[rule.key]!];
+    if (requiredRoles.includes(rule.role) && values.length !== 1) return null;
+    if (
+      (supplied !== undefined ||
+        requiredRoles.includes(rule.role) ||
+        rolePool.includes(rule.role)) &&
+      rule.role === "mayor" &&
+      players < 10 &&
+      values.includes("hammer")
+    )
+      return null;
+    result[rule.key] = domain.filter((value) => values.includes(value));
+  }
+  return result;
+}
+function normalizeSelection(
+  players: number,
+  input: VariableWerewolfSelection,
+  settings: Partial<WerewolfSettings>,
+): { readonly ok: true; readonly selection: NormalizedSelection } | VariableWerewolfFailure {
+  if (!availableWerewolfCounts(players).length) return fail("invalidPlayers");
+  if (!input || typeof input !== "object" || isArray(input)) return fail("invalidSelection");
+  if ("itemRange" in input) return fail("obsoleteItemRange");
+  const requiredRoles = defaultEntries(input.requiredRoles);
+  const requiredItems = defaultEntries(input.requiredItems);
+  if (
+    !isArray(requiredRoles) ||
+    !isArray(input.rolePool) ||
+    !validAutomaticRolePool(players, [...requiredRoles, ...input.rolePool])
+  )
+    return fail("invalidRolePool");
+  if (
+    !validItems(players, requiredItems) ||
+    !validItems(players, input.itemPool) ||
+    new Set([...requiredItems, ...input.itemPool]).size !==
+      requiredItems.length + input.itemPool.length
   )
     return fail("invalidItemPool");
-  if (!validRange(selection.roleRange, selection.rolePool.length)) return fail("invalidRoleRange");
-  if (!validRange(selection.itemRange, selection.itemPool.length)) return fail("invalidItemRange");
+  if (
+    !isArray(input.wolfCounts) ||
+    !input.wolfCounts.length ||
+    new Set(input.wolfCounts).size !== input.wolfCounts.length ||
+    input.wolfCounts.some((count) => !availableWerewolfCounts(players).includes(count))
+  )
+    return fail("invalidWolfCounts");
+  if (!validRange(input.roleRange, new Set(input.rolePool.map(familyOf)).size))
+    return fail("invalidRoleRange");
+  if (!settings || typeof settings !== "object" || isArray(settings))
+    return fail("invalidSettings");
   const normalized = automaticWerewolfSettings({ ...settings, amulet: false, drunk: false });
   if (!normalized) return fail("invalidSettings");
-  if (selection.rolePool.includes("mayor") && normalized.mayor === "hammer" && players < 10)
-    return fail("invalidRolePool");
-  const roles = [...selection.rolePool].sort();
-  const items = [...selection.itemPool].sort();
-  const itemChoices: { items: WerewolfItem[]; settings: Partial<WerewolfSettings> }[] = [];
-  for (let mask = 0; mask < 2 ** items.length; mask++) {
-    const chosen = items.filter((_, i) => Boolean(mask & (1 << i)));
-    if (chosen.length < selection.itemRange.minimum || chosen.length > selection.itemRange.maximum)
-      continue;
-    itemChoices.push({
-      items: chosen,
-      settings: {
-        ...normalized,
-        amulet: chosen.includes("amulet"),
-        drunk: chosen.includes("drunk"),
-      },
-    });
+  const options = normalizedOptions(
+    players,
+    requiredRoles,
+    input.rolePool,
+    input.roleOptions,
+    normalized,
+  );
+  if (!options) return fail("invalidRoleOptions");
+  const requiredFamilies = new Set(requiredRoles.map(familyOf));
+  const groups = new Map<RoleFamily, WerewolfSpecialRole[]>();
+  for (const role of [...input.rolePool].sort()) {
+    const family = familyOf(role);
+    if (requiredFamilies.has(family)) continue;
+    groups.set(family, [...(groups.get(family) ?? []), role]);
   }
-  const groups = new Map<string, ChoiceGroup>();
-  for (let mask = 0; mask < 2 ** roles.length; mask++) {
-    const chosen = roles.filter((_, i) => Boolean(mask & (1 << i)));
-    if (chosen.length < selection.roleRange.minimum || chosen.length > selection.roleRange.maximum)
-      continue;
-    for (const itemChoice of itemChoices) {
-      if (!hasFeasibleAutomaticWerewolfLineup(players, chosen, itemChoice.settings)) continue;
-      const key = chosen.length + ":" + itemChoice.items.length;
-      let group = groups.get(key);
-      if (!group) {
-        group = { roleCount: chosen.length, itemCount: itemChoice.items.length, choices: [] };
-        groups.set(key, group);
-      }
-      group.choices.push({ roles: chosen, items: itemChoice.items });
-    }
-  }
-  if (!groups.size) return fail("noFeasibleLineup");
   return {
     ok: true,
-    settings: normalized,
-    groups: [...groups.values()].sort(
-      (a, b) => a.roleCount - b.roleCount || a.itemCount - b.itemCount,
-    ),
+    selection: {
+      players,
+      requiredRoles: [...requiredRoles].sort(),
+      requiredItems: [...requiredItems].sort(),
+      rolePool: [...input.rolePool].sort(),
+      itemPool: [...input.itemPool].sort(),
+      roleRange: { ...input.roleRange },
+      wolfCounts: [...input.wolfCounts].sort((a, b) => a - b),
+      options,
+      families: [...groups.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([id, variants]) => ({ id, variants })),
+      settings: normalized,
+    },
   };
 }
-
-export interface VariableWerewolfSummary {
-  readonly ok: true;
-  readonly groups: readonly {
-    readonly roleCount: number;
-    readonly itemCount: number;
-    readonly choices: number;
+function fitsRoles(
+  plan: NormalizedSelection,
+  roles: readonly WerewolfSpecialRole[],
+  wolves: number,
+): boolean {
+  return (
+    (!(plan.requiredItems.includes("drunk") || plan.itemPool.includes("drunk")) || wolves >= 2) &&
+    validWerewolfRoles(plan.players, roles, wolves)
+  );
+}
+/** Enumerates role families only. Options and optional items never multiply a role's drawing weight. */
+function variableChoices(
+  players: number,
+  input: VariableWerewolfSelection,
+  settings: Partial<WerewolfSettings>,
+): Choices | VariableWerewolfFailure {
+  const result = normalizeSelection(players, input, settings);
+  if (!result.ok) return result;
+  const plan = result.selection;
+  const subsets = Array.from({ length: 2 ** plan.families.length }, (_, mask) =>
+    plan.families.filter((_, index) => Boolean(mask & (1 << index))),
+  );
+  const wolves = availableWerewolfCounts(players).map((wolfCount) => {
+    const groups = new Map<number, (readonly RoleFamily[])[]>();
+    for (const subset of subsets) {
+      const roles = [...plan.requiredRoles, ...subset.map((family) => family.variants[0]!)];
+      if (!fitsRoles(plan, roles, wolfCount)) continue;
+      const choice = subset.map((family) => family.id);
+      const existing = groups.get(subset.length);
+      if (existing) existing.push(choice);
+      else groups.set(subset.length, [choice]);
+    }
+    const allGroups = [...groups.entries()]
+      .sort(([a], [b]) => a - b)
+      .map(([roleCount, choices]) => ({ roleCount, choices }));
+    return {
+      wolfCount,
+      allGroups,
+      groups: allGroups.filter(
+        (group) =>
+          group.roleCount >= plan.roleRange.minimum && group.roleCount <= plan.roleRange.maximum,
+      ),
+    };
+  });
+  return { ok: true, selection: plan, wolves };
+}
+export type VariableWerewolfBlockReason =
+  | "minimumPlayers"
+  | "requiredAlternative"
+  | "requiredOption"
+  | "insufficientSeats"
+  | "incompatibleRoles";
+export interface VariableWerewolfRoleAvailability {
+  readonly role: WerewolfSpecialRole;
+  readonly family: RoleFamily;
+  readonly available: boolean;
+  readonly possible: boolean;
+  readonly required: boolean;
+  readonly optional: boolean;
+  readonly reason: VariableWerewolfBlockReason | null;
+  readonly options: readonly {
+    readonly value: OptionValue;
+    readonly possible: boolean;
+    readonly selected: boolean;
+    readonly reason: VariableWerewolfBlockReason | null;
   }[];
 }
-/** Public feasibility metadata contains no selected cards and never consumes randomness. */
+function roleAvailability(
+  plan: NormalizedSelection,
+  role: WerewolfSpecialRole,
+): VariableWerewolfRoleAvailability {
+  const required = plan.requiredRoles.includes(role);
+  const optional = plan.rolePool.includes(role);
+  const roles = required ? plan.requiredRoles : [...plan.requiredRoles, role];
+  let reason: VariableWerewolfBlockReason | null = null;
+  if (plan.players < werewolfRoleMinimums[role]) reason = "minimumPlayers";
+  else if (plan.requiredRoles.some((r) => r !== role && familyOf(r) === familyOf(role)))
+    reason = "requiredAlternative";
+  else if (plan.wolfCounts.every((count) => roles.length + count + 1 > plan.players))
+    reason = "insufficientSeats";
+  else if (!plan.wolfCounts.some((count) => fitsRoles(plan, roles, count)))
+    reason = "incompatibleRoles";
+  const rule = optionRules.find((r) => r.role === role);
+  const domain: readonly OptionValue[] = rule?.values ?? [];
+  const options = domain.map((value) => {
+    const blocked: VariableWerewolfBlockReason | null =
+      reason ??
+      (rule?.key === "mayor" && value === "hammer" && plan.players < 10
+        ? "minimumPlayers"
+        : required && rule && plan.options[rule.key][0] !== value
+          ? "requiredOption"
+          : null);
+    return {
+      value,
+      possible: blocked === null,
+      reason: blocked,
+      selected: Boolean(rule && (required || optional) && plan.options[rule.key].includes(value)),
+    };
+  });
+  return {
+    role,
+    family: familyOf(role),
+    available: plan.players >= werewolfRoleMinimums[role],
+    possible: reason === null,
+    required,
+    optional,
+    reason,
+    options,
+  };
+}
+export interface VariableWerewolfSummary {
+  readonly ok: true;
+  readonly canStart: boolean;
+  readonly possibleRoleRange: WerewolfSelectionRange | null;
+  readonly possibleRoleCounts: readonly number[];
+  readonly groups: readonly {
+    readonly wolfCount: number;
+    readonly roleCount: number;
+    readonly choices: number;
+  }[];
+  readonly wolfCounts: readonly {
+    readonly wolfCount: number;
+    readonly selected: boolean;
+    readonly possibleRoleCounts: readonly number[];
+    readonly canStart: boolean;
+  }[];
+  readonly roles: readonly VariableWerewolfRoleAvailability[];
+  readonly items: readonly {
+    readonly item: WerewolfItem;
+    readonly available: boolean;
+    readonly possible: boolean;
+    readonly required: boolean;
+    readonly optional: boolean;
+    readonly reason: VariableWerewolfBlockReason | null;
+  }[];
+}
+/** Public draft metadata: no randomness, scoring, selected roles or hidden draw. Bounds ignore the entered range. */
 export function analyzeVariableWerewolfSelection(
   players: number,
   selection: VariableWerewolfSelection,
   settings: Partial<WerewolfSettings> = {},
 ): VariableWerewolfSummary | VariableWerewolfFailure {
-  const plan = variableChoices(players, selection, settings);
-  if (!plan.ok) return plan;
+  const result = variableChoices(players, selection, settings);
+  if (!result.ok) return result;
+  const plan = result.selection;
+  const selected = result.wolves.filter((wolf) => plan.wolfCounts.includes(wolf.wolfCount));
+  const counts = [
+    ...new Set(selected.flatMap((wolf) => wolf.allGroups.map((group) => group.roleCount))),
+  ].sort((a, b) => a - b);
   return {
     ok: true,
-    groups: plan.groups.map((group) => ({
-      roleCount: group.roleCount,
-      itemCount: group.itemCount,
-      choices: group.choices.length,
+    canStart: selected.every((wolf) => wolf.groups.length > 0),
+    possibleRoleRange: counts.length
+      ? { minimum: counts[0]!, maximum: counts[counts.length - 1]! }
+      : null,
+    possibleRoleCounts: counts,
+    groups: selected.flatMap((wolf) =>
+      wolf.groups.map((group) => ({
+        wolfCount: wolf.wolfCount,
+        roleCount: group.roleCount,
+        choices: group.choices.length,
+      })),
+    ),
+    wolfCounts: result.wolves.map((wolf) => ({
+      wolfCount: wolf.wolfCount,
+      selected: plan.wolfCounts.includes(wolf.wolfCount),
+      possibleRoleCounts: wolf.allGroups.map((group) => group.roleCount),
+      canStart: wolf.groups.length > 0,
     })),
+    roles: (Object.keys(werewolfRoleMinimums) as WerewolfSpecialRole[]).map((role) =>
+      roleAvailability(plan, role),
+    ),
+    items: (["amulet", "drunk"] as const).map((item) => {
+      const available = players >= (item === "amulet" ? 10 : 9);
+      const possible =
+        available &&
+        plan.wolfCounts.some(
+          (wolves) =>
+            (item !== "drunk" || wolves >= 2) && fitsRoles(plan, plan.requiredRoles, wolves),
+        );
+      return {
+        item,
+        available,
+        possible,
+        required: plan.requiredItems.includes(item),
+        optional: plan.itemPool.includes(item),
+        reason: !available ? "minimumPlayers" : possible ? null : "incompatibleRoles",
+      };
+    }),
   };
+}
+export interface VariableWerewolfLineup {
+  readonly roles: readonly WerewolfSpecialRole[];
+  readonly settings: Partial<WerewolfSettings> & Pick<WerewolfSettings, "wolfCount">;
 }
 export interface VariableWerewolfDraw {
   readonly ok: true;
-  readonly lineup: AutomaticWerewolfLineup;
+  readonly lineup: VariableWerewolfLineup;
   readonly items: readonly WerewolfItem[];
 }
-/** Uniform feasible count-pair first, then uniform compatible role/item subset within that pair. */
+class InvalidRandom extends Error {}
+function randomValue(random: () => number): number {
+  const value = random();
+  if (!Number.isFinite(value) || value < 0 || value >= 1) throw new InvalidRandom();
+  return value;
+}
+function pick<T>(values: readonly T[], random: () => number): T {
+  return values.length === 1
+    ? values[0]!
+    : values[Math.floor(randomValue(random) * values.length)]!;
+}
+/** Uniform wolves, then feasible optional count and family subset; uniform variants and independent item coins. */
+function drawPlannedLineup(
+  plan: Choices,
+  random: () => number,
+): VariableWerewolfDraw | VariableWerewolfFailure {
+  const normalized = plan.selection;
+  const wolves = plan.wolves.filter((wolf) => normalized.wolfCounts.includes(wolf.wolfCount));
+  if (wolves.some((wolf) => !wolf.groups.length)) return fail("noFeasibleLineup");
+  try {
+    const wolf = pick(wolves, random);
+    const group = pick(wolf.groups, random);
+    const families = pick(group.choices, random);
+    const roles = [...normalized.requiredRoles];
+    for (const familyId of families)
+      roles.push(
+        pick(normalized.families.find((family) => family.id === familyId)!.variants, random),
+      );
+    roles.sort();
+    let settings: Partial<WerewolfSettings> = { ...normalized.settings };
+    for (const rule of optionRules)
+      settings = {
+        ...settings,
+        [rule.key]: roles.includes(rule.role)
+          ? pick(normalized.options[rule.key], random)
+          : normalized.options[rule.key][0],
+      };
+    const items = [...normalized.requiredItems];
+    for (const item of normalized.itemPool) if (randomValue(random) < 0.5) items.push(item);
+    items.sort();
+    return {
+      ok: true,
+      lineup: {
+        roles,
+        settings: {
+          ...settings,
+          wolfCount: wolf.wolfCount,
+          amulet: items.includes("amulet"),
+          drunk: items.includes("drunk"),
+        },
+      },
+      items,
+    };
+  } catch (error) {
+    if (error instanceof InvalidRandom) return fail("invalidRandom");
+    throw error;
+  }
+}
 export function drawVariableWerewolfLineup(
   players: number,
   selection: VariableWerewolfSelection,
@@ -166,26 +494,13 @@ export function drawVariableWerewolfLineup(
   settings: Partial<WerewolfSettings> = {},
 ): VariableWerewolfDraw | VariableWerewolfFailure {
   const plan = variableChoices(players, selection, settings);
-  if (!plan.ok) return plan;
-  const groupDraw = random();
-  if (!Number.isFinite(groupDraw) || groupDraw < 0 || groupDraw >= 1) return fail("invalidRandom");
-  const group = plan.groups[Math.floor(groupDraw * plan.groups.length)]!;
-  const choiceDraw = random();
-  if (!Number.isFinite(choiceDraw) || choiceDraw < 0 || choiceDraw >= 1)
-    return fail("invalidRandom");
-  const choice = group.choices[Math.floor(choiceDraw * group.choices.length)]!;
-  const lineup = resolveAutomaticWerewolfLineup(players, choice.roles, {
-    ...plan.settings,
-    amulet: choice.items.includes("amulet"),
-    drunk: choice.items.includes("drunk"),
-  })!;
-  return { ok: true, lineup, items: choice.items };
+  return plan.ok ? drawPlannedLineup(plan, random) : plan;
 }
 export interface VariableWerewolfGame {
   readonly ok: true;
   readonly game: WerewolfState;
 }
-/** The returned game is private narrator state; the actual draw is fixed before role reveal. */
+/** One private draw, then checked distribution. A manually chosen wolf count is never overwritten by a score. */
 export function createVariableWerewolf(
   playersText: string,
   narrator: string,
@@ -199,17 +514,82 @@ export function createVariableWerewolf(
     players.some((player) => player.toLocaleLowerCase() === narrator.trim().toLocaleLowerCase())
   )
     return fail("invalidPlayers");
-  const draw = drawVariableWerewolfLineup(players.length, selection, random, settings);
+  const plan = variableChoices(players.length, selection, settings);
+  if (!plan.ok) return plan;
+  const draw = drawPlannedLineup(plan, random);
   if (!draw.ok) return draw;
-  const game = createResolvedWerewolf(playersText, narrator, random, draw.lineup);
-  return game
+  const game = createCheckedWerewolf(
+    playersText,
+    narrator,
+    random,
+    draw.lineup.roles,
+    draw.lineup.settings,
+  );
+  if (!game) return fail("invalidRandom");
+  const optional = plan.selection.families.flatMap((family) => family.variants);
+  const nightRolePool = [...plan.selection.requiredRoles, ...optional].sort();
+  return {
+    ok: true,
+    game: {
+      ...game,
+      nightRolePool,
+      nightItemPool: [...plan.selection.requiredItems, ...plan.selection.itemPool].sort(),
+      nightMayUseHammer:
+        nightRolePool.includes("mayor") && plan.selection.options.mayor.includes("hammer"),
+    },
+  };
+}
+export interface VariableWerewolfRecommendation {
+  readonly ok: true;
+  readonly recommendedWolfCount: number;
+  readonly balance: WerewolfBalance;
+}
+/** Rates required entries only. Optional pools, ranges, item coins and selected wolf counts have no influence. */
+export function recommendVariableWerewolfCount(
+  players: number,
+  selection: Pick<VariableWerewolfSelection, "requiredRoles" | "requiredItems" | "roleOptions">,
+  settings: Partial<WerewolfSettings> = {},
+): VariableWerewolfRecommendation | VariableWerewolfFailure {
+  if (!availableWerewolfCounts(players).length) return fail("invalidPlayers");
+  if (!selection || typeof selection !== "object" || isArray(selection))
+    return fail("invalidSelection");
+  const roles = defaultEntries(selection.requiredRoles);
+  const items = defaultEntries(selection.requiredItems);
+  if (!isArray(roles) || !validAutomaticRolePool(players, roles)) return fail("invalidRolePool");
+  if (!validItems(players, items)) return fail("invalidItemPool");
+  if (!settings || typeof settings !== "object" || isArray(settings))
+    return fail("invalidSettings");
+  if (
+    selection.roleOptions !== undefined &&
+    (!selection.roleOptions ||
+      typeof selection.roleOptions !== "object" ||
+      isArray(selection.roleOptions))
+  )
+    return fail("invalidRoleOptions");
+  const normalized = automaticWerewolfSettings({
+    ...settings,
+    amulet: items.includes("amulet"),
+    drunk: items.includes("drunk"),
+  });
+  if (!normalized) return fail("invalidSettings");
+  const requested: VariableWerewolfRoleOptions = Object.fromEntries(
+    optionRules
+      .filter(
+        (rule) => roles.includes(rule.role) && selection.roleOptions?.[rule.key] !== undefined,
+      )
+      .map((rule) => [rule.key, selection.roleOptions![rule.key]]),
+  );
+  const options = normalizedOptions(players, roles, [], requested, normalized);
+  if (!options) return fail("invalidRoleOptions");
+  let evaluated = normalized;
+  for (const rule of optionRules)
+    if (roles.includes(rule.role)) evaluated = { ...evaluated, [rule.key]: options[rule.key][0] };
+  const rating = resolveAutomaticWerewolfLineup(players, roles, evaluated);
+  return rating
     ? {
         ok: true,
-        game: {
-          ...game,
-          nightRolePool: [...selection.rolePool],
-          nightItemPool: [...selection.itemPool],
-        },
+        recommendedWolfCount: rating.balance.recommendedWolfCount,
+        balance: rating.balance,
       }
-    : fail("invalidRandom");
+    : fail("noFeasibleLineup");
 }

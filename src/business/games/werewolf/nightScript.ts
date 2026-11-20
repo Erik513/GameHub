@@ -109,8 +109,8 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
     "mayor",
     "mayor",
     visible("mayor"),
-    state.night > 1 && state.settings.mayor === "hammer",
-    state.hammerUsed,
+    state.night > 1 && (state.settings.mayor === "hammer" || state.nightMayUseHammer === true),
+    state.hammerUsed || state.settings.mayor !== "hammer",
   );
   add("spellcaster", "spellcaster", visible("spellcaster"));
   calls.push({

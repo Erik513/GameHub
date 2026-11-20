@@ -1,302 +1,647 @@
 import { expect, it, vi } from "vitest";
 import * as balance from "./lineupBalance";
-import { drawAutomaticWerewolfLineup, hasFeasibleAutomaticWerewolfLineup } from "./automaticSetup";
 import {
   availableWerewolfCounts,
   availableWerewolfRoles,
+  standardWerewolfCount,
   type WerewolfSettings,
   type WerewolfSpecialRole,
 } from "./configuration";
-import { transitionWerewolf } from "./stateMachine";
+import { hasFeasibleAutomaticWerewolfLineup } from "./automaticSetup";
+import { transitionWerewolf, type WerewolfState } from "./stateMachine";
+import { nightScript } from "./nightScript";
 import {
   analyzeVariableWerewolfSelection,
   createVariableWerewolf,
   drawVariableWerewolfLineup,
+  recommendVariableWerewolfCount,
   type VariableWerewolfSelection,
+  type VariableWerewolfFailureReason,
   type WerewolfItem,
 } from "./variableSetup";
+
 const names = (players: number) =>
   Array.from({ length: players }, (_, i) => `Player ${i}`).join(",");
 const empty: VariableWerewolfSelection = {
   rolePool: [],
   roleRange: { minimum: 0, maximum: 0 },
   itemPool: [],
-  itemRange: { minimum: 0, maximum: 0 },
+  wolfCounts: [2],
 };
-const select = (
-  roles: readonly WerewolfSpecialRole[],
-  minimum: number,
-  maximum: number,
-  items: readonly WerewolfItem[] = [],
-  itemMin = 0,
-  itemMax = 0,
-): VariableWerewolfSelection => ({
-  rolePool: roles,
-  roleRange: { minimum, maximum },
-  itemPool: items,
-  itemRange: { minimum: itemMin, maximum: itemMax },
+const select = (overrides: Partial<VariableWerewolfSelection> = {}): VariableWerewolfSelection => ({
+  ...empty,
+  ...overrides,
 });
-const noDraw = () => {
+const noDraw = (): number => {
   throw Error("Unexpected randomness");
 };
+function analyze(
+  players: number,
+  selection: VariableWerewolfSelection,
+  settings: Partial<WerewolfSettings> = {},
+) {
+  const result = analyzeVariableWerewolfSelection(players, selection, settings);
+  if (!result.ok) throw Error(result.reason);
+  return result;
+}
+function draw(
+  players: number,
+  selection: VariableWerewolfSelection,
+  values: number[] = [],
+  settings: Partial<WerewolfSettings> = {},
+) {
+  const draws = [...values];
+  const result = drawVariableWerewolfLineup(
+    players,
+    selection,
+    () => {
+      if (!draws.length) throw Error("Unexpected extra draw");
+      return draws.shift()!;
+    },
+    settings,
+  );
+  if (!result.ok) throw Error(result.reason);
+  expect(draws).toHaveLength(0);
+  return result;
+}
 
-it("weights feasible role/item count pairs equally instead of preferring larger pools", () => {
-  const selection = select(["witch", "hunter"], 0, 2, ["amulet", "drunk"], 0, 2);
-  const summary = analyzeVariableWerewolfSelection(12, selection);
-  expect(summary.ok).toBe(true);
-  if (!summary.ok) throw Error("Invalid summary");
-  expect(summary.groups).toHaveLength(9);
-  expect(JSON.stringify(summary)).not.toMatch(/witch|hunter|amulet|drunk/);
-  let amuletProbability = 0,
-    drunkProbability = 0;
-  const roleProbability = [0, 0, 0],
-    itemProbability = [0, 0, 0];
-  for (const [groupIndex, group] of summary.groups.entries()) {
-    const seen = new Set<string>();
-    for (let choice = 0; choice < group.choices; choice++) {
-      const draws = [(groupIndex + 0.5) / 9, (choice + 0.5) / group.choices];
-      const result = drawVariableWerewolfLineup(12, selection, () => draws.shift()!);
-      expect(result.ok).toBe(true);
-      if (!result.ok) throw Error(result.reason);
-      const weight = 1 / 9 / group.choices;
-      roleProbability[result.lineup.roles.length]! += weight;
-      itemProbability[result.items.length]! += weight;
-      amuletProbability += Number(result.items.includes("amulet")) * weight;
-      drunkProbability += Number(result.items.includes("drunk")) * weight;
-      seen.add(JSON.stringify([result.lineup.roles, result.items]));
+it("weights wolves, optional counts and role families uniformly, independently of variant counts", () => {
+  const selection = select({
+    requiredRoles: ["idiot"],
+    requiredItems: ["amulet"],
+    rolePool: ["hunter", "witch"],
+    roleRange: { minimum: 0, maximum: 2 },
+    roleOptions: { hunterShot: ["optional", "required"] },
+    itemPool: ["drunk"],
+    wolfCounts: [2, 3],
+  });
+  const wolfWeight = [0, 0],
+    countWeight = [0, 0, 0];
+  let hunterWeight = 0,
+    optionalShotWeight = 0,
+    drunkWeight = 0;
+  for (let w = 0; w < 2; w++)
+    for (let count = 0; count <= 2; count++) {
+      const subsets =
+        count === 0 ? [[]] : count === 1 ? [["hunter"], ["witch"]] : [["hunter", "witch"]];
+      for (const [subsetIndex, subset] of subsets.entries())
+        for (let mode = 0; mode < (subset.includes("hunter") ? 2 : 1); mode++)
+          for (let item = 0; item < 2; item++) {
+            const values = [(w + 0.5) / 2, (count + 0.5) / 3];
+            if (subsets.length > 1) values.push((subsetIndex + 0.5) / subsets.length);
+            if (subset.includes("hunter")) values.push((mode + 0.5) / 2);
+            values.push((item + 0.5) / 2);
+            const result = draw(12, selection, values);
+            expect(result.lineup.roles).toEqual([...subset, "idiot"].sort());
+            expect(result.lineup.settings.wolfCount).toBe(w + 2);
+            expect(result.items).toContain("amulet");
+            const probability =
+              1 / 2 / 3 / subsets.length / (subset.includes("hunter") ? 2 : 1) / 2;
+            wolfWeight[w]! += probability;
+            countWeight[count]! += probability;
+            hunterWeight += Number(subset.includes("hunter")) * probability;
+            optionalShotWeight +=
+              Number(
+                subset.includes("hunter") && result.lineup.settings.hunterShot === "optional",
+              ) * probability;
+            drunkWeight += Number(result.items.includes("drunk")) * probability;
+          }
     }
-    expect(seen.size).toBe(group.choices);
-  }
-  for (const probability of [...roleProbability, ...itemProbability])
-    expect(probability).toBeCloseTo(1 / 3);
-  expect(amuletProbability).toBeCloseTo(0.5);
-  expect(drunkProbability).toBeCloseTo(0.5);
+  for (const weight of wolfWeight) expect(weight).toBeCloseTo(0.5);
+  for (const weight of countWeight) expect(weight).toBeCloseTo(1 / 3);
+  expect(hunterWeight).toBeCloseTo(0.5);
+  expect(optionalShotWeight).toBeCloseTo(0.25);
+  expect(drunkWeight).toBeCloseTo(0.5);
 });
 
-it("excludes impossible subsets while retaining feasible values in a configured range", () => {
-  const selection = select(["bodyguard", "nightGuest"], 0, 2);
-  expect(analyzeVariableWerewolfSelection(10, selection)).toEqual({
-    ok: true,
-    groups: [
-      { roleCount: 0, itemCount: 0, choices: 1 },
-      { roleCount: 1, itemCount: 0, choices: 2 },
-    ],
+it("draws optional items with independent fair coins instead of uniform item counts", () => {
+  const selection = select({ itemPool: ["drunk", "amulet"] });
+  const counts = [0, 0, 0];
+  const seen = new Set<string>();
+  for (const a of [0.25, 0.75])
+    for (const d of [0.25, 0.75]) {
+      const result = draw(10, selection, [a, d]);
+      expect(result.items.includes("amulet")).toBe(a < 0.5);
+      expect(result.items.includes("drunk")).toBe(d < 0.5);
+      counts[result.items.length]!++;
+      seen.add(result.items.join(","));
+    }
+  expect(counts).toEqual([1, 2, 1]);
+  expect(seen.size).toBe(4);
+  const required = draw(10, select({ requiredItems: ["amulet", "drunk"] }));
+  expect(required.items).toEqual(["amulet", "drunk"]);
+});
+
+it("groups bodyguard and night guest as one optional role with equally likely variants", () => {
+  const selection = select({
+    rolePool: ["hunter", "nightGuest", "bodyguard"],
+    roleRange: { minimum: 1, maximum: 1 },
   });
-  expect(drawVariableWerewolfLineup(10, select(["bodyguard", "nightGuest"], 2, 2), noDraw)).toEqual(
-    { ok: false, reason: "noFeasibleLineup" },
-  );
-  expect(drawVariableWerewolfLineup(11, select(["witch", "magician"], 2, 2), noDraw)).toEqual({
+  const summary = analyze(10, selection);
+  expect(summary.groups).toEqual([{ wolfCount: 2, roleCount: 1, choices: 2 }]);
+  expect(summary.possibleRoleRange).toEqual({ minimum: 0, maximum: 2 });
+  expect(draw(10, selection, [0.25, 0.25]).lineup.roles).toEqual(["bodyguard"]);
+  expect(draw(10, selection, [0.25, 0.75]).lineup.roles).toEqual(["nightGuest"]);
+  expect(draw(10, selection, [0.75]).lineup.roles).toEqual(["hunter"]);
+  const onlyGuard = select({
+    rolePool: ["bodyguard", "nightGuest"],
+    roleRange: { minimum: 0, maximum: 1 },
+  });
+  expect(analyze(10, onlyGuard).possibleRoleRange).toEqual({ minimum: 0, maximum: 1 });
+});
+
+it("counts required cards outside the optional range and reports locked alternatives", () => {
+  const selection = select({
+    requiredRoles: ["bodyguard", "hunter"],
+    rolePool: ["nightGuest", "witch"],
+    roleRange: { minimum: 0, maximum: 2 },
+    roleOptions: { hunterShot: ["required"] },
+  });
+  const summary = analyze(10, selection);
+  expect(summary.canStart).toBe(true);
+  expect(summary.possibleRoleRange).toEqual({ minimum: 0, maximum: 1 });
+  expect(summary.roles.find((r) => r.role === "nightGuest")).toMatchObject({
+    possible: false,
+    reason: "requiredAlternative",
+  });
+  expect(summary.roles.find((r) => r.role === "hunter")?.options).toEqual([
+    { value: "optional", possible: false, selected: false, reason: "requiredOption" },
+    { value: "required", possible: true, selected: true, reason: null },
+  ]);
+  const result = draw(10, selection, [0.75]);
+  expect(result.lineup.roles).toEqual(["bodyguard", "hunter", "witch"]);
+  expect(result.lineup.settings.hunterShot).toBe("required");
+});
+
+it("draws each role option independently without adding role cards", () => {
+  const selection = select({
+    rolePool: ["hunter", "mayor", "spellcaster", "tanner", "toughGuy"],
+    roleRange: { minimum: 5, maximum: 5 },
+    wolfCounts: [4],
+    roleOptions: {
+      hunterShot: ["optional", "required"],
+      mayor: ["doubleVote", "hammer"],
+      allowSelfSilence: [false, true],
+      tanner: ["anyDeath", "voteOnly"],
+      toughGuy: ["wolfOnly", "anyAttack"],
+    },
+  });
+  const seen = new Set<string>();
+  for (let mask = 0; mask < 32; mask++) {
+    const result = draw(
+      18,
+      selection,
+      Array.from({ length: 5 }, (_, i) => (mask & (1 << i) ? 0.75 : 0.25)),
+    );
+    expect(result.lineup.roles).toHaveLength(5);
+    expect(new Set(result.lineup.roles).size).toBe(5);
+    expect(result.lineup.settings).toMatchObject({
+      hunterShot: mask & 1 ? "required" : "optional",
+      mayor: mask & 2 ? "hammer" : "doubleVote",
+      allowSelfSilence: Boolean(mask & 4),
+      tanner: mask & 8 ? "voteOnly" : "anyDeath",
+      toughGuy: mask & 16 ? "anyAttack" : "wolfOnly",
+    });
+    seen.add(JSON.stringify(result.lineup.settings));
+  }
+  expect(seen.size).toBe(32);
+});
+
+it("samples wolves before feasible counts and rejects a selected wolf value that cannot start", () => {
+  const selection = select({
+    requiredRoles: ["witch"],
+    rolePool: ["magician"],
+    roleRange: { minimum: 0, maximum: 1 },
+    wolfCounts: [3, 4],
+  });
+  const summary = analyze(14, selection);
+  expect(summary.canStart).toBe(true);
+  expect(summary.wolfCounts).toMatchObject([
+    { wolfCount: 3, possibleRoleCounts: [0] },
+    { wolfCount: 4, possibleRoleCounts: [0, 1] },
+  ]);
+  expect(draw(14, selection, [0.25]).lineup).toMatchObject({
+    roles: ["witch"],
+    settings: { wolfCount: 3 },
+  });
+  expect(draw(14, selection, [0.75, 0.75]).lineup).toMatchObject({
+    roles: ["magician", "witch"],
+    settings: { wolfCount: 4 },
+  });
+  const impossibleRange = { ...selection, roleRange: { minimum: 1, maximum: 1 } };
+  expect(analyze(14, impossibleRange)).toMatchObject({
+    canStart: false,
+    possibleRoleRange: { minimum: 0, maximum: 1 },
+  });
+  expect(drawVariableWerewolfLineup(14, impossibleRange, noDraw)).toEqual({
     ok: false,
     reason: "noFeasibleLineup",
   });
-  const combined = drawVariableWerewolfLineup(14, select(["witch", "magician"], 2, 2), () => 0);
-  expect(combined.ok && combined.lineup.balance.recommendedWolfCount).toBe(4);
-});
-
-it.each([
-  [5, empty, {}, "invalidPlayers"],
-  [21, empty, {}, "invalidPlayers"],
-  [10, select(["witch", "witch"], 0, 1), {}, "invalidRolePool"],
-  [6, select(["cupid"], 0, 1), {}, "invalidRolePool"],
-  [9, select(["mayor"], 0, 1), { mayor: "hammer" }, "invalidRolePool"],
-  [9, select([], 0, 0, ["amulet"], 0, 1), {}, "invalidItemPool"],
-  [8, select([], 0, 0, ["drunk"], 0, 1), {}, "invalidItemPool"],
-  [12, select([], 0, 0, ["amulet", "amulet"], 0, 1), {}, "invalidItemPool"],
-  [12, select([], 0, 0, ["bad" as WerewolfItem], 0, 1), {}, "invalidItemPool"],
-  [12, select(["witch"], -1, 1), {}, "invalidRoleRange"],
-  [12, select(["witch"], 0, 2), {}, "invalidRoleRange"],
-  [12, select(["witch"], 1, 0), {}, "invalidRoleRange"],
-  [12, select(["witch"], 0.5, 1), {}, "invalidRoleRange"],
-  [12, select(["witch"], 0, Infinity), {}, "invalidRoleRange"],
-  [12, select([], 0, 0, [], 0, 1), {}, "invalidItemRange"],
-  [12, empty, { hunterShot: "bad" }, "invalidSettings"],
-] as const)("rejects invalid variable selection %s %s", (players, selection, settings, reason) => {
-  expect(
-    drawVariableWerewolfLineup(players, selection, noDraw, settings as Partial<WerewolfSettings>),
-  ).toEqual({ ok: false, reason });
-  expect(
-    analyzeVariableWerewolfSelection(players, selection, settings as Partial<WerewolfSettings>),
-  ).toEqual({ ok: false, reason });
-});
-
-it.each([NaN, Infinity, -0.1, 1])(
-  "rejects invalid random draw %s in either selection stage",
-  (value) => {
-    expect(drawVariableWerewolfLineup(10, empty, () => value)).toEqual({
-      ok: false,
-      reason: "invalidRandom",
-    });
-    const draws = [0, value];
-    expect(drawVariableWerewolfLineup(10, empty, () => draws.shift()!)).toEqual({
-      ok: false,
-      reason: "invalidRandom",
-    });
-  },
-);
-
-it("allows zero roles/items and ignores externally forced wolves or item flags", () => {
-  const result = drawVariableWerewolfLineup(10, empty, () => 0.99, {
-    wolfCount: 99,
-    wolfCountMode: "balanced",
-    amulet: true,
-    drunk: true,
+  const requiredBoth = select({ requiredRoles: ["witch", "magician"], wolfCounts: [3, 4] });
+  expect(analyze(14, requiredBoth).canStart).toBe(false);
+  expect(drawVariableWerewolfLineup(14, requiredBoth, noDraw)).toEqual({
+    ok: false,
+    reason: "noFeasibleLineup",
   });
-  expect(result.ok).toBe(true);
-  if (!result.ok) throw Error(result.reason);
-  expect(result.items).toEqual([]);
-  expect(result.lineup.roles).toEqual([]);
-  expect(result.lineup.settings).toMatchObject({ amulet: false, drunk: false });
-  expect(result.lineup.balance.recommendedWolfCount).toBe(2);
 });
 
-it("is deterministic for equivalent pools without mutating selections or settings", () => {
-  const selection = select(["witch", "hunter"], 0, 2, ["drunk", "amulet"], 0, 2);
-  const before = JSON.stringify(selection);
-  const settings = Object.freeze({ wolfCount: 99, hunterShot: "required" as const });
-  const first = drawVariableWerewolfLineup(12, selection, () => 0.45, settings);
-  const second = drawVariableWerewolfLineup(
-    12,
-    { ...selection, rolePool: ["hunter", "witch"], itemPool: ["amulet", "drunk"] },
-    () => 0.45,
-    settings,
+it("reports possible bounds before clamping the entered range and keeps excluded entries selectable", () => {
+  const summary = analyze(9, empty);
+  expect(summary.canStart).toBe(true);
+  expect(summary.roles.find((r) => r.role === "mayor")).toMatchObject({
+    available: true,
+    possible: true,
+    required: false,
+    optional: false,
+    options: [
+      { value: "doubleVote", possible: true },
+      { value: "hammer", possible: false, reason: "minimumPlayers" },
+    ],
+  });
+  expect(summary.roles.find((r) => r.role === "magician")).toMatchObject({
+    available: false,
+    possible: false,
+    reason: "minimumPlayers",
+  });
+  expect(summary.items.find((i) => i.item === "amulet")).toMatchObject({
+    available: false,
+    possible: false,
+    reason: "minimumPlayers",
+  });
+  expect(summary.items.find((i) => i.item === "drunk")).toMatchObject({
+    available: true,
+    possible: true,
+  });
+  const crowded = select({
+    requiredRoles: ["witch", "hunter", "idiot", "bodyguard"],
+    wolfCounts: [1],
+  });
+  expect(analyze(6, crowded).roles.find((r) => r.role === "nightGuest")?.reason).toBe(
+    "requiredAlternative",
   );
-  expect(first).toEqual(second);
-  expect(JSON.stringify(selection)).toBe(before);
+  const seven = analyze(7, { ...crowded, requiredRoles: [...crowded.requiredRoles!, "cupid"] });
+  expect(seven.roles.find((r) => r.role === "toughGuy")?.reason).toBe("insufficientSeats");
+  const conflict = analyze(11, select({ requiredRoles: ["witch"] }));
+  expect(conflict.roles.find((r) => r.role === "magician")?.reason).toBe("incompatibleRoles");
+  const invalidRequired = analyze(10, select({ requiredRoles: ["bodyguard", "nightGuest"] }));
+  expect(invalidRequired.canStart).toBe(false);
+  expect(invalidRequired.possibleRoleRange).toBeNull();
+  expect(invalidRequired.items.every((i) => i.possible === false)).toBe(true);
 });
 
-it("supports forced amulet participation and keeps the selected setup fixed through role reveal", () => {
-  let draws = 0;
-  const result = createVariableWerewolf(
-    names(10),
-    "Narrator",
-    () => {
-      draws++;
-      return 0.99;
-    },
-    select(["cupid"], 1, 1, ["amulet", "drunk"], 2, 2),
-  );
-  expect(result.ok).toBe(true);
-  if (!result.ok) throw Error(result.reason);
-  const game = result.game;
-  expect(game.amulet).not.toBeNull();
-  expect(game.drunk).not.toBeNull();
-  expect(game.players.find((p) => p.name === game.amulet?.holder)?.role).not.toBe("wolf");
-  expect(game.players.find((p) => p.name === game.drunk?.player)?.role).not.toBe("cupid");
-  let state = game;
-  const count = draws;
-  for (const player of game.players)
-    state = transitionWerewolf(state, { type: "roleSeen", player: player.name });
-  expect(state.players).toEqual(game.players);
-  expect(draws).toBe(count);
-  expect(state.settings.wolfCount).toBe(2);
+it("uses no randomness or score for feasibility and no score during drawing", () => {
+  const score = vi.spyOn(balance, "evaluateWerewolfLineup");
+  try {
+    const selection = select({
+      rolePool: ["hunter", "witch"],
+      roleRange: { minimum: 0, maximum: 2 },
+      wolfCounts: [2, 3],
+      itemPool: ["amulet", "drunk"],
+    });
+    expect(analyze(12, selection).canStart).toBe(true);
+    expect(score).not.toHaveBeenCalled();
+    expect(drawVariableWerewolfLineup(12, selection, () => 0.75).ok).toBe(true);
+    expect(score).not.toHaveBeenCalled();
+    expect(drawVariableWerewolfLineup(12, selection, () => NaN)).toEqual({
+      ok: false,
+      reason: "invalidRandom",
+    });
+    expect(score).not.toHaveBeenCalled();
+  } finally {
+    score.mockRestore();
+  }
+});
+
+it("recommends using only required entries and their fixed options, independently of the draw", () => {
+  const score = vi.spyOn(balance, "evaluateWerewolfLineup");
+  try {
+    const selection = select({
+      requiredRoles: ["hunter", "mayor"],
+      requiredItems: ["amulet"],
+      roleOptions: {
+        hunterShot: ["required"],
+        mayor: ["hammer"],
+        toughGuy: ["wolfOnly", "anyAttack"],
+      },
+      rolePool: ["witch", "toughGuy"],
+      roleRange: { minimum: 0, maximum: 2 },
+      itemPool: ["drunk"],
+      wolfCounts: [2, 3],
+    });
+    const recommendation = recommendVariableWerewolfCount(11, selection, { wolfCount: 99 });
+    expect(recommendation.ok).toBe(true);
+    for (const call of score.mock.calls) {
+      expect(call[1]).toEqual(["hunter", "mayor"]);
+      expect(call[2]).toMatchObject({
+        hunterShot: "required",
+        mayor: "hammer",
+        amulet: true,
+        drunk: false,
+      });
+    }
+    const same = recommendVariableWerewolfCount(11, {
+      requiredRoles: selection.requiredRoles ?? [],
+      requiredItems: selection.requiredItems ?? [],
+      roleOptions: { hunterShot: ["required"], mayor: ["hammer"] },
+    });
+    expect(same).toEqual(recommendation);
+    if (recommendation.ok) {
+      expect(availableWerewolfCounts(11)).toContain(recommendation.recommendedWolfCount);
+      expect(recommendation.balance.evidence).toBe("provisional");
+    }
+    const requiredHealers = recommendVariableWerewolfCount(14, {
+      requiredRoles: ["witch", "magician"],
+    });
+    expect(requiredHealers).toMatchObject({ ok: true, recommendedWolfCount: 4 });
+  } finally {
+    score.mockRestore();
+  }
 });
 
 it.each([6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])(
-  "creates a valid private variable game at %i players",
+  "creates valid private games and preserves selected wolf values at %i players",
   (players) => {
-    const pool = availableWerewolfRoles(players);
+    const roles = availableWerewolfRoles(players);
+    const familyCount = new Set(roles.map((r) => (r === "nightGuest" ? "bodyguard" : r))).size;
     const items: WerewolfItem[] =
       players >= 10 ? ["amulet", "drunk"] : players >= 9 ? ["drunk"] : [];
+    const selection = select({
+      rolePool: roles,
+      roleRange: { minimum: 0, maximum: familyCount },
+      wolfCounts: availableWerewolfCounts(players),
+      requiredItems: items,
+    });
+    let calls = 0;
     const result = createVariableWerewolf(
       names(players),
-      "Narrator",
-      () => 0.999,
-      select(pool, 0, pool.length, items, 0, items.length),
+      " Narrator ",
+      () => {
+        calls++;
+        return 0.999;
+      },
+      selection,
       { wolfCount: 99 },
     );
     expect(result.ok).toBe(true);
     if (!result.ok) throw Error(result.reason);
     const game = result.game;
+    expect(game.narrator).toBe("Narrator");
     expect(game.players).toHaveLength(players);
     expect(game.players.filter((p) => p.role === "seer")).toHaveLength(1);
-    expect(availableWerewolfCounts(players)).toContain(game.settings.wolfCount);
-    const specials = game.players.filter((p) => !["seer", "wolf", "villager"].includes(p.role));
-    expect(new Set(specials.map((p) => p.role)).size).toBe(specials.length);
+    expect(game.settings.wolfCount).toBe(Math.max(...availableWerewolfCounts(players)));
+    expect(game.players.filter((p) => p.role === "wolf")).toHaveLength(game.settings.wolfCount);
     expect(
       game.players.some((p) => p.role === "bodyguard") &&
         game.players.some((p) => p.role === "nightGuest"),
     ).toBe(false);
-    if (players === 9 || players === 10) expect(game.settings.wolfCount).toBe(2);
-    if (players === 11)
-      expect(
-        game.players.some((p) => p.role === "witch") &&
-          game.players.some((p) => p.role === "magician"),
-      ).toBe(false);
+    if (items.includes("amulet")) {
+      expect(game.amulet).not.toBeNull();
+      expect(game.players.find((p) => p.name === game.amulet?.holder)?.role).not.toBe("wolf");
+    }
+    if (items.includes("drunk")) {
+      expect(game.drunk).not.toBeNull();
+      expect(game.players.find((p) => p.name === game.drunk?.player)?.role).not.toBe("cupid");
+    }
+    const before = calls;
+    let s: WerewolfState = game;
+    for (const player of game.players)
+      s = transitionWerewolf(s, { type: "roleSeen", player: player.name });
+    expect(calls).toBe(before);
+    expect(s.players).toEqual(game.players);
   },
 );
 
-it("rejects invalid narrators, impossible selections and late invalid shuffle draws", () => {
-  expect(createVariableWerewolf(names(10), " ", noDraw, empty)).toEqual({
-    ok: false,
-    reason: "invalidPlayers",
-  });
-  expect(createVariableWerewolf(names(10), " PLAYER 0 ", noDraw, empty)).toEqual({
-    ok: false,
-    reason: "invalidPlayers",
-  });
+it("keeps a fixed default count and ignores external wolf/item settings without calculating fairness", () => {
+  const selection = select({ wolfCounts: [standardWerewolfCount(16)] });
   expect(
-    createVariableWerewolf(
-      names(10),
-      "Narrator",
-      noDraw,
-      select(["bodyguard", "nightGuest"], 2, 2),
-    ),
-  ).toEqual({ ok: false, reason: "noFeasibleLineup" });
-  let draws = 0;
-  expect(
-    createVariableWerewolf(names(10), "Narrator", () => (++draws <= 2 ? 0 : NaN), empty),
-  ).toEqual({ ok: false, reason: "invalidRandom" });
+    draw(16, selection, [], { wolfCount: 99, wolfCountMode: "balanced", amulet: true, drunk: true })
+      .lineup,
+  ).toMatchObject({ roles: [], settings: { wolfCount: 4, amulet: false, drunk: false } });
 });
 
-it("scores only the drawn roles and items after both random choices", () => {
-  const score = vi.spyOn(balance, "evaluateWerewolfLineup");
-  try {
-    const selection = select(["witch", "hunter", "bodyguard"], 0, 3, ["amulet", "drunk"], 0, 2);
-    expect(analyzeVariableWerewolfSelection(12, selection).ok).toBe(true);
-    expect(score).not.toHaveBeenCalled();
-    let draws = 0;
-    const result = drawVariableWerewolfLineup(12, selection, () => {
-      expect(score).not.toHaveBeenCalled();
-      draws++;
-      return 0.999;
-    });
-    expect(draws).toBe(2);
-    expect(result.ok).toBe(true);
-    if (!result.ok) throw Error(result.reason);
-    expect(score).toHaveBeenCalled();
-    for (const call of score.mock.calls) {
-      expect(call[1]).toEqual(result.lineup.roles);
-      expect(call[2]).toMatchObject({
-        amulet: result.items.includes("amulet"),
-        drunk: result.items.includes("drunk"),
-      });
+it("preserves deterministic draws across equivalent input orders without mutating input", () => {
+  const selection = select({
+    requiredRoles: ["cupid", "idiot"],
+    requiredItems: ["drunk", "amulet"],
+    rolePool: ["nightGuest", "hunter", "bodyguard"],
+    roleRange: { minimum: 0, maximum: 2 },
+    wolfCounts: [3, 2],
+    roleOptions: { hunterShot: ["required", "optional"] },
+  });
+  const before = JSON.stringify(selection);
+  const options = Object.freeze({ wolfCount: 99 });
+  const first = drawVariableWerewolfLineup(12, selection, () => 0.75, options);
+  const second = drawVariableWerewolfLineup(
+    12,
+    {
+      ...selection,
+      requiredRoles: ["idiot", "cupid"],
+      requiredItems: ["amulet", "drunk"],
+      rolePool: ["bodyguard", "hunter", "nightGuest"],
+      wolfCounts: [2, 3],
+      roleOptions: { hunterShot: ["optional", "required"] },
+    },
+    () => 0.75,
+    options,
+  );
+  expect(first).toEqual(second);
+  expect(JSON.stringify(selection)).toBe(before);
+  expect(options.wolfCount).toBe(99);
+});
+
+it("validates every used random draw and never returns a partial match", () => {
+  const selection = select({
+    rolePool: ["bodyguard", "nightGuest", "hunter", "mayor"],
+    roleRange: { minimum: 0, maximum: 3 },
+    roleOptions: { hunterShot: ["optional", "required"], mayor: ["doubleVote", "hammer"] },
+    itemPool: ["amulet", "drunk"],
+    wolfCounts: [3, 4],
+  });
+  let total = 0;
+  expect(
+    drawVariableWerewolfLineup(14, selection, () => {
+      total++;
+      return 0.25;
+    }).ok,
+  ).toBe(true);
+  for (const bad of [NaN, Infinity, -1, 1])
+    for (let index = 1; index <= total; index++) {
+      let calls = 0;
+      expect(
+        drawVariableWerewolfLineup(14, selection, () => (++calls === index ? bad : 0.25)),
+      ).toEqual({ ok: false, reason: "invalidRandom" });
     }
-    score.mockClear();
-    const exact = drawAutomaticWerewolfLineup(12, ["witch", "hunter", "bodyguard"], 1, () => {
-      expect(score).not.toHaveBeenCalled();
-      return 0.99;
-    });
-    expect(exact).not.toBeNull();
-    for (const call of score.mock.calls) expect(call[1]).toEqual(exact?.roles);
-  } finally {
-    score.mockRestore();
+  let draws = 0;
+  const game = createVariableWerewolf(
+    names(14),
+    "Narrator",
+    () => {
+      draws++;
+      return 0.75;
+    },
+    selection,
+  );
+  expect(game.ok).toBe(true);
+  for (let index = 1; index <= draws; index++) {
+    let calls = 0;
+    expect(
+      createVariableWerewolf(
+        names(14),
+        "Narrator",
+        () => (++calls === index ? NaN : 0.75),
+        selection,
+      ),
+    ).toEqual({ ok: false, reason: "invalidRandom" });
   }
+  expect(() =>
+    drawVariableWerewolfLineup(14, selection, () => {
+      throw Error("RNG unavailable");
+    }),
+  ).toThrow("RNG unavailable");
 });
 
-it("does not calculate a wolf score when the random choice is invalid", () => {
-  const score = vi.spyOn(balance, "evaluateWerewolfLineup");
-  try {
-    expect(drawVariableWerewolfLineup(12, select(["witch"], 0, 1), () => NaN)).toEqual({
+it("keeps a possible hammer variant hidden when the double-vote variant or no mayor is drawn", () => {
+  for (const range of [
+    { minimum: 0, maximum: 1 },
+    { minimum: 1, maximum: 1 },
+  ]) {
+    const selection = select({
+      rolePool: ["mayor"],
+      roleRange: range,
+      roleOptions: { mayor: ["doubleVote", "hammer"] },
+    });
+    const result = createVariableWerewolf(names(10), "Narrator", () => 0.25, selection);
+    if (!result.ok) throw Error(result.reason);
+    expect(result.game.settings.mayor).toBe("doubleVote");
+    expect(result.game.nightMayUseHammer).toBe(true);
+    const script = nightScript({ ...result.game, night: 2 });
+    expect(script.find((c) => c.id === "mayor")).toMatchObject({ mode: "cover", actors: [] });
+  }
+  const doubleOnly = createVariableWerewolf(
+    names(9),
+    "Narrator",
+    () => 0.75,
+    select({
+      rolePool: ["mayor"],
+      roleRange: { minimum: 1, maximum: 1 },
+      roleOptions: { mayor: ["doubleVote"] },
+    }),
+  );
+  if (!doubleOnly.ok) throw Error(doubleOnly.reason);
+  expect(doubleOnly.game.nightMayUseHammer).toBe(false);
+  expect(nightScript({ ...doubleOnly.game, night: 2 }).find((c) => c.id === "mayor")?.mode).toBe(
+    "skip",
+  );
+});
+
+it("rejects invalid narrators before drawing and impossible required combinations without RNG", () => {
+  for (const narrator of [" ", " PLAYER 0 "])
+    expect(createVariableWerewolf(names(10), narrator, noDraw, empty)).toEqual({
       ok: false,
-      reason: "invalidRandom",
+      reason: "invalidPlayers",
     });
-    expect(drawAutomaticWerewolfLineup(12, ["witch"], 1, () => NaN)).toBeNull();
-    expect(score).not.toHaveBeenCalled();
-  } finally {
-    score.mockRestore();
-  }
+  const invalid = select({ requiredRoles: ["bodyguard", "nightGuest"] });
+  expect(createVariableWerewolf(names(10), "Narrator", noDraw, invalid)).toEqual({
+    ok: false,
+    reason: "noFeasibleLineup",
+  });
 });
 
+const invalidSelections: readonly [
+  number,
+  unknown,
+  Partial<WerewolfSettings>,
+  VariableWerewolfFailureReason,
+][] = [
+  [5, empty, {}, "invalidPlayers"],
+  [21, empty, {}, "invalidPlayers"],
+  [10, null, {}, "invalidSelection"],
+  [10, [], {}, "invalidSelection"],
+  [10, { ...empty, itemRange: { minimum: 0, maximum: 0 } }, {}, "obsoleteItemRange"],
+  [10, select({ rolePool: ["witch", "witch"] }), {}, "invalidRolePool"],
+  [6, select({ rolePool: ["cupid"], wolfCounts: [1] }), {}, "invalidRolePool"],
+  [10, select({ requiredRoles: ["hunter"], rolePool: ["hunter"] }), {}, "invalidRolePool"],
+  [10, { ...empty, requiredRoles: null }, {}, "invalidRolePool"],
+  [10, { ...empty, rolePool: null }, {}, "invalidRolePool"],
+  [10, select({ requiredRoles: ["bad" as WerewolfSpecialRole] }), {}, "invalidRolePool"],
+  [9, select({ itemPool: ["amulet"] }), {}, "invalidItemPool"],
+  [8, select({ requiredItems: ["drunk"], wolfCounts: [1] }), {}, "invalidItemPool"],
+  [10, select({ requiredItems: ["amulet"], itemPool: ["amulet"] }), {}, "invalidItemPool"],
+  [10, select({ itemPool: ["amulet", "amulet"] }), {}, "invalidItemPool"],
+  [10, select({ itemPool: ["bad" as WerewolfItem] }), {}, "invalidItemPool"],
+  [10, { ...empty, itemPool: null }, {}, "invalidItemPool"],
+  [10, { ...empty, requiredItems: null }, {}, "invalidItemPool"],
+  [10, select({ wolfCounts: [] }), {}, "invalidWolfCounts"],
+  [10, select({ wolfCounts: [2, 2] }), {}, "invalidWolfCounts"],
+  [10, select({ wolfCounts: [3] }), {}, "invalidWolfCounts"],
+  [10, select({ wolfCounts: [NaN] }), {}, "invalidWolfCounts"],
+  [10, { ...empty, wolfCounts: null }, {}, "invalidWolfCounts"],
+  [10, select({ roleRange: { minimum: -1, maximum: 0 } }), {}, "invalidRoleRange"],
+  [10, select({ roleRange: { minimum: 1, maximum: 0 } }), {}, "invalidRoleRange"],
+  [10, select({ roleRange: { minimum: 0.5, maximum: 1 } }), {}, "invalidRoleRange"],
+  [10, select({ roleRange: { minimum: 0, maximum: 1 } }), {}, "invalidRoleRange"],
+  [10, { ...empty, roleRange: null }, {}, "invalidRoleRange"],
+  [10, empty, { hunterShot: "bad" as "optional" }, "invalidSettings"],
+  [10, empty, null as unknown as Partial<WerewolfSettings>, "invalidSettings"],
+  [10, empty, [] as unknown as Partial<WerewolfSettings>, "invalidSettings"],
+  [10, select({ roleOptions: { hunterShot: [] } }), {}, "invalidRoleOptions"],
+  [10, select({ roleOptions: { hunterShot: ["optional", "optional"] } }), {}, "invalidRoleOptions"],
+  [10, select({ roleOptions: { hunterShot: ["bad" as "optional"] } }), {}, "invalidRoleOptions"],
+  [
+    10,
+    select({ requiredRoles: ["hunter"], roleOptions: { hunterShot: ["optional", "required"] } }),
+    {},
+    "invalidRoleOptions",
+  ],
+  [
+    9,
+    select({ rolePool: ["mayor"], roleOptions: { mayor: ["doubleVote", "hammer"] } }),
+    {},
+    "invalidRoleOptions",
+  ],
+  [9, select({ requiredRoles: ["mayor"] }), { mayor: "hammer" }, "invalidRoleOptions"],
+  [10, { ...empty, roleOptions: null }, {}, "invalidRoleOptions"],
+  [10, { ...empty, roleOptions: [] }, {}, "invalidRoleOptions"],
+  [10, { ...empty, roleOptions: { unknown: true } }, {}, "invalidRoleOptions"],
+];
+it.each(invalidSelections)(
+  "rejects invalid selections without drawing (%s, %s)",
+  (players, input, settings, reason) => {
+    const selection = input as VariableWerewolfSelection;
+    expect(analyzeVariableWerewolfSelection(players, selection, settings)).toEqual({
+      ok: false,
+      reason,
+    });
+    expect(drawVariableWerewolfLineup(players, selection, noDraw, settings)).toEqual({
+      ok: false,
+      reason,
+    });
+  },
+);
+
+it.each([
+  [5, {}, {}, "invalidPlayers"],
+  [10, null, {}, "invalidSelection"],
+  [10, [], {}, "invalidSelection"],
+  [10, { requiredRoles: ["hunter", "hunter"] }, {}, "invalidRolePool"],
+  [9, { requiredItems: ["amulet"] }, {}, "invalidItemPool"],
+  [10, {}, { toughGuy: "bad" }, "invalidSettings"],
+  [10, {}, null, "invalidSettings"],
+  [10, { roleOptions: null }, {}, "invalidRoleOptions"],
+  [10, { requiredRoles: ["hunter"], roleOptions: { hunterShot: [] } }, {}, "invalidRoleOptions"],
+  [10, { requiredRoles: ["bodyguard", "nightGuest"] }, {}, "noFeasibleLineup"],
+] as const)(
+  "rejects invalid recommendation inputs (%s, %s)",
+  (players, input, settings, reason) => {
+    expect(
+      recommendVariableWerewolfCount(
+        players,
+        input as unknown as VariableWerewolfSelection,
+        settings as Partial<WerewolfSettings>,
+      ),
+    ).toEqual({ ok: false, reason });
+  },
+);
 it.each([
   [8, [], { mayor: "bad" }, false],
   [5, [], {}, false],

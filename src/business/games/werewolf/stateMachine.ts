@@ -29,6 +29,7 @@ interface Match {
   readonly hammerVictim: string | null;
   readonly nightRolePool?: readonly WerewolfSpecialRole[];
   readonly nightItemPool?: readonly ("drunk" | "amulet")[];
+  readonly nightMayUseHammer?: boolean;
   readonly narrator: string;
   readonly players: readonly Player[];
   readonly alive: readonly Player[];
