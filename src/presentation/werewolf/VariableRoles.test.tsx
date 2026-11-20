@@ -318,3 +318,35 @@ it("explains an extra in the window of its choice", async () => {
     within(dialog).getByRole("button", { name: "Info about Protective amulet" }),
   ).toBeInTheDocument();
 });
+
+it("shows the wake-up order of the variable roles, with the roles that may be in the game called as well", async () => {
+  const { user } = await renderVariable(
+    "en",
+    12,
+    put(emptyVariableDraft, { cupid: "may", witch: "must" }),
+  );
+  await user.click(screen.getByRole("button", { name: "Wake-up order" }));
+  const dialog = await screen.findByRole("dialog", { name: "Wake-up order" });
+  const steps = [...dialog.querySelectorAll(".ww-wake__step")].map((step) => ({
+    name: step.querySelector("strong")?.textContent,
+    presence: step.getAttribute("data-presence"),
+  }));
+  expect(steps.filter((step) => step.presence !== "not").map((step) => step.name)).toEqual([
+    "Cupid",
+    "Werewolves",
+    "Seer",
+    "Witch",
+  ]);
+  expect(steps.find((step) => step.name === "Cupid")?.presence).toBe("may");
+  expect(within(dialog).getByText("May be in the game: called either way")).toBeInTheDocument();
+  expect(dialog).toHaveTextContent("nobody learns the draw");
+});
+
+it("shows the fixed order again when the fixed roles are chosen", async () => {
+  const { user } = await renderVariable("en", 12, put(emptyVariableDraft, { cupid: "may" }));
+  await user.click(screen.getByRole("radio", { name: "Fixed roles" }));
+  await user.click(screen.getByRole("button", { name: "Wake-up order" }));
+  const dialog = await screen.findByRole("dialog", { name: "Wake-up order" });
+  // Nothing of the variable draft shows in the fixed order.
+  expect(dialog.querySelector('[data-presence="may"]')).toBeNull();
+});

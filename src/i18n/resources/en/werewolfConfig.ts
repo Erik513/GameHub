@@ -138,6 +138,9 @@ export const werewolfConfigTexts = {
       title: "Wake-up order",
       hint: "Every night the narrator wakes the roles in this order. Roles that are not in the game are dimmed. With secret roles, roles that are out are still called to keep them hidden.",
       notInGame: "not in the game",
+      maybe: "May be in the game: called either way",
+      hintVariable:
+        "Every night the narrator calls the roles in this order. A role that may be in the game is called, too, whether or not the draw took it, so nobody learns the draw. Roles that are not in the game are dimmed.",
       wolvesFirstNight: "In the first night they only get to know each other",
       apprentice: "The apprentice seer takes over when the seer is dead",
       amulet: "Last: keep the amulet or pass it on",

@@ -140,6 +140,9 @@ export const werewolfConfigTexts = {
       title: "Aufwachreihenfolge",
       hint: "Der Erzähler weckt die Rollen jede Nacht in dieser Reihenfolge. Rollen, die nicht im Spiel sind, sind abgeblendet. Bei geheimer Rollenaufdeckung werden auch ausgeschiedene Rollen zur Tarnung aufgerufen.",
       notInGame: "nicht im Spiel",
+      maybe: "Darf ins Spiel: wird so oder so gerufen",
+      hintVariable:
+        "Der Erzähler ruft die Rollen jede Nacht in dieser Reihenfolge. Eine Rolle, die ins Spiel darf, wird auch gerufen, wenn die Ziehung sie nicht genommen hat, damit niemand die Ziehung erfährt. Rollen, die nicht ins Spiel sollen, sind abgeblendet.",
       wolvesFirstNight: "In der ersten Nacht lernen sie sich nur kennen",
       apprentice: "Der Seher-Lehrling übernimmt, wenn die Seherin tot ist",
       amulet: "Zuletzt: Amulett behalten oder weitergeben",

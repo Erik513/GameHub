@@ -838,3 +838,10 @@
 .ww-pick-info .kit-info-button {
   position: static;
 }
+
+/* A step of a role that may be in the game: its number is only outlined. */
+.ww-wake__step[data-presence="may"] .ww-wake__number {
+  background: none;
+  border: 1px dashed var(--color-warning);
+  color: inherit;
+}

@@ -444,7 +444,9 @@ export function WerewolfConfiguration({
           ]}
         />
       )}
-      <StartBar sideAction={<WakeOrderButton draft={draft} />}>
+      <StartBar
+        sideAction={<WakeOrderButton draft={draft} mode={mode} variableDraft={variableDraft} />}
+      >
         <Button onClick={onDone} variant="success">
           {t("werewolfConfig.done")}
         </Button>
