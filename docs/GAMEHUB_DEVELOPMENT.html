@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-19T17:03:27.925Z",
+    "updatedAt": "2026-11-20T15:09:29.614Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 218,
-      "totalTasks": 279,
-      "percent": 78.1
+      "completedTasks": 223,
+      "totalTasks": 285,
+      "percent": 78.2
     }
   },
   "environment": {
@@ -1497,6 +1497,16 @@
           "title": "Planung und Spiellogik prüfen, Umsetzungsplan in Schritten und Entscheidungen festhalten",
           "status": "done",
           "validation": "Zufallsprüfstand mit 2559 Partien ohne Fehler; Entscheidungen des Auftraggebers vom 19.11.2026 dokumentiert in GAMEHUB_WERWOLF_UI_PLAN.md."
+        },
+        {
+          "id": "We-01-48",
+          "title": "Neue Harter-Bursche-Option (Nur Wolfsangriff / Jeder Angriff) in der Konfiguration der UI anbinden",
+          "status": "done"
+        },
+        {
+          "id": "We-01-49",
+          "title": "Amulett-Endschritt und öffentlichen Lehrlingsaufruf (announcementRole) in der Erzähleransicht anbinden",
+          "status": "planned"
         }
       ]
     },
@@ -1839,6 +1849,30 @@
           "title": "Festen Spieleinstieg mit manueller erlaubter Wolfszahl und separater Empfehlung ergänzen",
           "status": "done",
           "validation": "253 gezielte Tests bestanden; geprüfte Logik 99,54 % Zeilen / 97,48 % Zweige, fester Einstieg 100 %; Typprüfung, ESLint und Schichtprüfung erfolgreich."
+        },
+        {
+          "id": "We-03-63",
+          "title": "Hammer nach Magier verlegen: Nachtbeginn-Ziele und gemeinsame Todesauflösung umsetzen",
+          "status": "done",
+          "validation": "Neue Reihenfolge, gemeinsame Auflösung, Überlappungen und handelndes Nachtopfer geprüft; 259 Tests einschließlich 100 vollständiger Partien bestanden."
+        },
+        {
+          "id": "We-03-64",
+          "title": "Erzähler-Schnittstellen für Ziele, Tarnskript, Ereignisprotokoll, Spielerzustände und Rücknahme bereitstellen",
+          "status": "done",
+          "validation": "262 Tests einschließlich 100 vollständiger Partien plus gesonderte Sechser-Kombinationsprüfung bestanden; 99,83 % Zeilen / 98,04 % Zweige; Typprüfung, ESLint und Schichtprüfung erfolgreich."
+        },
+        {
+          "id": "We-03-65",
+          "title": "Neue Rollenregeln für Harten Burschen, Amulett, Seher-Lehrling und Amor umsetzen",
+          "status": "done",
+          "validation": "273 gezielte Tests einschließlich 100 vollständiger Partien mit beiden Harter-Bursche-Varianten bestanden; zusätzliche Sechser-Kombinationsprüfungen ohne/mit Amulett erfolgreich. 99,83 % Zeilen / 98,00 % Zweige; TypeScript, ESLint und Schichtprüfung erfolgreich."
+        },
+        {
+          "id": "We-03-66",
+          "title": "Amulett auf Nachtangriffe begrenzen und Regeln für Verliebte und Trunkenbold-Wolf bestätigen",
+          "status": "done",
+          "validation": "277 gezielte Tests einschließlich 100 kompletter Partien sowie zwei Sechser-Kombinationsprüfungen bestanden. Abstimmung/Jägerschuss trotz Amulett, freiwillige Weitergabe bei Liebeskummer, Harter-Bursche-Ausnahme, freie Paarentscheidungen und Trunkenbold-Wolf bis Nacht drei geprüft. 99,83 % Zeilen / 98,07 % Zweige; Typ-/Lint-/Schichtprüfung erfolgreich."
         }
       ]
     },
@@ -2018,6 +2052,22 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-20",
+      "summary": "Werwolf We-03-66 abgeschlossen: Amulett nur noch gegen Nachtangriffe; Abstimmung und Jägerschuss werden trotz Amulett aufgelöst. Keine künstliche Weitergabepflicht bei Liebeskummer. Freie Paarentscheidungen, Wolfsparität und unveränderte Trunkenbold-Enthüllung in Nacht drei geprüft. 277 gezielte Tests, 100 komplette Partien und zwei Sechser-Kombinationsprüfungen bestanden; 99,83 % Zeilen / 98,07 % Zweige. Historische Balancewerte nicht neu simuliert; UI-Anbindung bleibt We-01-48."
+    },
+    {
+      "date": "2026-11-20",
+      "summary": "Werwolf: Harter Bursche mit wolfOnly/anyAttack, öffentlicher Lehrlingsaufruf und Amors Selbstwahl geprüft; Amulett umgeht keinen Hammer mehr und wird als letzter Nachtschritt vor der Morgenauflösung weitergegeben. Schutz gilt beim jeweiligen Besitzer im Angriffszeitpunkt, nicht rückwirkend. Früherer Träger ist beim späteren Jägerschuss ungeschützt. 273 Tests, beide Sechser-Kombinationsprüfungen, Typ-/Lint-/Schichtprüfung erfolgreich; UI-Anbindung als We-01-48 vorgemerkt."
+    },
+    {
+      "date": "2026-11-20",
+      "summary": "Werwolf: neue Hammer-Reihenfolge, gültige Ziele, Nachtskript mit Tarnaufrufen, strukturierte Aktions-/Todesprotokolle, Spielerprojektion und reine Rücknahme umgesetzt. 262 Tests plus gezielte Sechser-Kombinationsprüfung bestanden; geprüfte Logik 99,83 % Zeilen / 98,04 % Zweige. Neue Erzähler-API für Claude dokumentiert; UI-Integration bleibt gesondert."
+    },
+    {
+      "date": "2026-11-20",
+      "summary": "Werwolf: neue Hammer-Regel dokumentiert und als We-03-63 geplant: nach Magier, Zielmenge vom Nachtbeginn, eigene Nachtopfer dürfen noch handeln, gemeinsame Auflösung. Noch nicht implementiert. Geprüften Logik- und Übergabestand für lokalen Commit vorbereitet."
+    },
     {
       "date": "2026-11-19",
       "summary": "Werwolf: Planung und Logik geprüft (2559 Zufallspartien ohne Fehler), Umsetzungsplan in neun Schritten mit allen Entscheidungen des Auftraggebers, Grundlage im Branch game/werewolf-ui (Logik übernommen, Simulationstests aus dem Standardlauf)."
@@ -2564,7 +2614,7 @@
   "werewolfLineupOverview": {
     "note": "Eine Seherin ist immer Pflicht. Die Zeilen bauen aufeinander auf: Bereits freigegebene Rollen und Zusätze bleiben verfügbar. Alle weiteren Rollen sind optional; gewöhnliche Dorfbewohner füllen freie Plätze. Nachprüfungen übernommen: 7 Spieler mit 1–2 Wölfen (Standard 1), 8 mit 1–2 (Standard 2), 9 und 10 immer mit genau 2, 11 mit 2–3 (Standard 2).",
     "constraints": "Leibwächter und Dorfmatratze sind immer Alternativen. Beim Bürgermeister gilt entweder doppelte Stimme oder Hammer. Trunkenbold und Schutzamulett belegen keinen zusätzlichen Rollenplatz; beide sind standardmäßig aus. Alle Auswahlen müssen in die freien Spielerplätze passen.",
-    "wolfPolicy": "Aktuelle UI-Vorgabe: Feste Rollen erlauben manuelle Wahl innerhalb dieser Wolfsgrenzen, mit separater Empfehlung. Variable Rollen bestimmen die Zahl automatisch nach der konkreten Ziehung. Bei mehreren auswählbaren Werten erhält der empfohlene Button einen Rand und darunter „empfohlen“; Einzelwerte bleiben ohne Empfehlungsmarkierung. Der bisher automatische feste Startpfad wird vor UI-Integration in We-03-62 angepasst.",
+    "wolfPolicy": "Aktuelle UI-Vorgabe: Feste Rollen erlauben manuelle Wahl innerhalb dieser Wolfsgrenzen, mit separater Empfehlung. Variable Rollen bestimmen die Zahl automatisch nach der konkreten Ziehung. Bei mehreren auswählbaren Werten erhält der empfohlene Button einen Rand und darunter „empfohlen“; Einzelwerte bleiben ohne Empfehlungsmarkierung. Fester manueller Startpfad We-03-62 ist implementiert und geprüft.",
     "rows": [
       {
         "players": 6,
@@ -2797,21 +2847,21 @@
   },
   "werewolfUiPlan": {
     "title": "UI-Planung für Werwolf",
-    "stage": "UI-Grundlagen und technische Übergabe dokumentiert; fester manueller Spieleinstieg geprüft. Oberfläche noch umzusetzen, einzelne Bedien- und Logikdetails offen.",
+    "stage": "Zweite Regelrunde logisch umgesetzt: Amulett schützt nur nachts, freie Paarentscheidungen und Trunkenbold-Wolf bis Nacht drei geprüft. UI-Anbindung weiterhin We-01-48.",
     "views": [
       {
         "name": "Hauptansicht",
-        "status": "Teilweise abgestimmt; Details offen",
+        "status": "Im parallelen UI-Arbeitsstand umgesetzt",
         "purpose": "Einstieg nach Auswahl von Werwolf und Ausgangspunkt zur Vorbereitung."
       },
       {
         "name": "Konfiguration",
-        "status": "Fester Grundaufbau abgestimmt; variable Details später",
+        "status": "Feste Ansicht im UI-Arbeitsstand umgesetzt; variabel später",
         "purpose": "Rollen, Items und Partieeinstellungen festlegen."
       },
       {
         "name": "Spielablauf",
-        "status": "Zentrale Ansicht und Live-Kreis-Entwurf festgehalten",
+        "status": "Logikschnittstellen fertig; UI-Integration offen",
         "purpose": "Eine zentrale Spielansicht mit Tag-/Nachtanzeige, Rollenpresets, Aktionsaufnahme und phasenabhängiger Navigation; zusätzliche Übersichten separat."
       },
       {
@@ -2821,8 +2871,8 @@
       }
     ],
     "proposal": "Bestätigte drei Bereiche: Hauptansicht, Konfiguration und zentraler Spielablauf mit abschließender Gewinneransicht. Technische Übergabe enthält Dateipfade, feste/variable Einstiege, Fachereignisse, Zustandsfelder, Prüfungen und offene Grenzen. Live-Kreis bleibt erster Entwurf mit ungefähr 60–70 % Platz, gehaltenen Details und separater Legende. Aufgabenliste auf aktuellen Stand abgeglichen.",
-    "open": "Vor Umsetzung betroffener Teile klären: Zurück/Undo, Abbruch, einheitliche Tarnaufrufe, variable Bedienung, Sitz-/Auswahlkonflikte und Live-Kreis-Symbole/Statusprioritäten/historische Daten. Gewinneransicht erforderlich; Gestaltung später. Vollständiger Spielverlauf ganz zuletzt.",
-    "document": "GAMEHUB_WERWOLF_HANDOFF.md"
+    "open": "UI-Anbindung laut We-01-48: Amulett nie als Abstimmungs-/Jägerschutz anzeigen, keine Pflichtweitergabe wegen Liebeskummer; neue Harter-Bursche-Option, öffentliche Lehrlingskennung und letzte Nachtphase anbinden. Weitere UI- und Speicherarbeit bleibt separat.",
+    "document": "GAMEHUB_WERWOLF_NARRATOR_API.md"
   }
 };
       const REFRESH_INTERVAL_MS = 20_000;

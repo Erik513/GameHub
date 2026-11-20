@@ -937,3 +937,31 @@ Die Projektvorbereitung ist abgeschlossen. Die eigentliche Implementierung begin
 ## Aktuelle Werwolf-Übergabe (19.11.2026)
 
 Für Werwolf sind GAMEHUB_WERWOLF_HANDOFF.md und GAMEHUB_WERWOLF_UI.md der aktuelle Einstieg; ihre bestätigten Anforderungen ersetzen ältere Darstellungsannahmen. Technische Übergabe enthält Arbeitsordner/Branch, unversionierten Stand, APIs, Fachereignisse und offene Grenzen. We-03-62 (manuelle erlaubte Wolfszahl mit separater Empfehlung) ist geprüft abgeschlossen. Nacht/Morgen/Tag/Abstimmung sind Inhalte einer zentralen Erzähleransicht. Gewinneransicht We-01-30 bleibt umzusetzen; Gestaltung ausdrücklich erst am Ende mit Claude Code. Aktuelle Aufgaben in GAMEHUB_STATUS.json und GAMEHUB_DEVELOPMENT.html beachten. Keine Produkt-UI in diesem Übergabeschritt umgesetzt.
+
+
+### We-03-63 – beschlossene Hammer-Neuordnung (erledigt)
+
+We-03-63 ist seit 20.11.2026 implementiert: Hammer nach Magier, Zielmenge vom Nachtbeginn, gemeinsame Todesauflösung und Überschneidungen geprüft. Magierheilung wurde nicht erweitert. Ziele, Tarnskript, Protokoll und Rücknahme siehe GAMEHUB_WERWOLF_NARRATOR_API.md.
+
+
+### We-03-64 – Erzähler-Logikschnittstellen (erledigt)
+
+Aktueller Logikstand vom 20.11.2026: Hammer-Neuordnung, Zielkatalog, Tarnskript, Ereignisprotokoll, Spielerprojektion und Rücknahme sind implementiert. Verbindlicher Anschluss für Claude: [Erzähler-API](GAMEHUB_WERWOLF_NARRATOR_API.md). Ältere Planungs-/Prüfabschnitte beschreiben ihren damaligen Stand. Browser-Speicherung, Navigation und UI bleiben gesonderte Integrationsarbeit.
+
+Werwolf: neue Hammer-Reihenfolge, gültige Ziele, Nachtskript mit Tarnaufrufen, strukturierte Aktions-/Todesprotokolle, Spielerprojektion und reine Rücknahme umgesetzt. 262 Tests plus gezielte Sechser-Kombinationsprüfung bestanden; geprüfte Logik 99,83 % Zeilen / 98,04 % Zweige. Neue Erzähler-API für Claude dokumentiert; UI-Integration bleibt gesondert.
+
+
+### We-03-65 – neue Rollenregeln umgesetzt
+
+Werwolf: Harter Bursche mit wolfOnly/anyAttack, öffentlicher Lehrlingsaufruf und Amors Selbstwahl geprüft; Amulett umgeht keinen Hammer mehr und wird als letzter Nachtschritt vor der Morgenauflösung weitergegeben. Schutz gilt beim jeweiligen Besitzer im Angriffszeitpunkt, nicht rückwirkend. Früherer Träger ist beim späteren Jägerschuss ungeschützt. 273 Tests, beide Sechser-Kombinationsprüfungen, Typ-/Lint-/Schichtprüfung erfolgreich; UI-Anbindung als We-01-48 vorgemerkt.
+
+Präzisierung des Auftraggebers zum Amulett: Es schützt ausschließlich den jeweiligen Besitzer im Moment des Angriffs. Eine frühere Abwehr bleibt nach der Weitergabe wirksam; der neue Besitzer wird nicht rückwirkend vor bereits erfolgten Angriffen geschützt. Nach der Übergabe schützt es ihn vor späteren Angriffen, etwa dem Jägerschuss am Morgen. Der frühere Träger ist dann ungeschützt. Hammer, Liebeskummer und bereits ausgelöste Verwundungen werden nicht geheilt oder abgewehrt.
+
+We-01-48 (geteilter Harter-Bursche-Button mit leerer Auswahl für keine Rolle) ist in der Konfiguration umgesetzt; die öffentliche Aufrufkennung und die neue Amulett-Phase werden mit der Erzähleransicht als We-01-49 verdrahtet.
+
+
+### We-03-66 – zweite Regelrunde umgesetzt
+
+Werwolf We-03-66 abgeschlossen: Amulett nur noch gegen Nachtangriffe; Abstimmung und Jägerschuss werden trotz Amulett aufgelöst. Keine künstliche Weitergabepflicht bei Liebeskummer. Freie Paarentscheidungen, Wolfsparität und unveränderte Trunkenbold-Enthüllung in Nacht drei geprüft. 277 gezielte Tests, 100 komplette Partien und zwei Sechser-Kombinationsprüfungen bestanden; 99,83 % Zeilen / 98,07 % Zweige. Historische Balancewerte nicht neu simuliert; UI-Anbindung bleibt We-01-48.
+
+Präzisierung des Auftraggebers zum Amulett (aktuelle zweite Regelrunde): Entscheidend ist der Besitzer im Moment eines nächtlichen Wolfsangriffs, Gifts oder Todeszaubers. Eine frühere Abwehr bleibt nach der Weitergabe wirksam; neue Besitzer werden nicht rückwirkend gerettet. Hammer, Tagesabstimmung und jeder Jägerschuss umgehen das Amulett unabhängig vom Besitzer. Liebeskummer und bereits ausgelöste Verwundungen werden ebenfalls nicht abgewehrt. Nur ein tatsächlich abgewehrter Nachtangriff erzwingt die Weitergabe; bei Liebeskummer bleibt Behalten oder Weitergeben freiwillig.
