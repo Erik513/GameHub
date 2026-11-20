@@ -115,7 +115,7 @@ export const werewolfConfigTexts = {
     wake: {
       open: "Aufwachreihenfolge",
       title: "Aufwachreihenfolge",
-      hint: "Der Erzähler weckt die Rollen jede Nacht in dieser Reihenfolge. Rollen, die nicht im Spiel sind, sind abgeblendet.",
+      hint: "Der Erzähler weckt die Rollen jede Nacht in dieser Reihenfolge. Rollen, die nicht im Spiel sind, sind abgeblendet. Bei geheimer Rollenaufdeckung werden auch ausgeschiedene Rollen zur Tarnung aufgerufen.",
       notInGame: "nicht im Spiel",
       wolvesFirstNight: "In der ersten Nacht lernen sie sich nur kennen",
       apprentice: "Der Seher-Lehrling übernimmt, wenn die Seherin tot ist",
@@ -141,11 +141,11 @@ export const werewolfConfigTexts = {
     info: {
       amulet: {
         general:
-          "Der Träger wird zu Beginn zufällig unter den Spielern, die keine Werwölfe sind, ausgelost.\nEs fängt direkte Angriffe und eine Abstimmung ab: Wird der Träger in der Nacht angegriffen, überlebt er, egal von wem.",
+          "Der Träger wird zu Beginn zufällig unter den Spielern, die keine Werwölfe sind, ausgelost.\nEs fängt die Angriffe der Nacht ab (Wolfsangriff, Gift, Todeszauber): Wird der Träger nachts angegriffen, überlebt er.",
         tasks:
-          "Der Träger wird jede Nacht als Letzter geweckt und gefragt: Amulett behalten oder weitergeben.\nWurde er in der Nacht angegriffen, muss er es weitergeben.",
+          "Der Träger wird jede Nacht als Letzter geweckt und gefragt: Amulett behalten oder weitergeben.\nHat es einen Angriff abgefangen, muss er es weitergeben.\nEr darf es jeder lebenden Person geben, auch einem Werwolf.",
         notes:
-          "Der Träger kann trotzdem sterben:\ndurch den Hammer\nwenn sein Liebespartner stirbt (nachts gibt er das Amulett vorher weiter, am Tag geht es verloren)\nals Harter Bursche, wenn er das Amulett erst nach dem Angriff bekam",
+          "Der Träger kann trotzdem sterben:\ndurch Hammer, Abstimmung oder Jägerschuss (so erfährt niemand, wer das Amulett hat)\nwenn sein Liebespartner stirbt (er stirbt aus Liebeskummer mit, das Amulett geht dann verloren)\nals Harter Bursche, wenn er das Amulett erst nach dem Angriff bekam",
       },
       apprenticeSeer: {
         general: "Er hat keine Aktion, solange die Seherin lebt.",
@@ -154,20 +154,22 @@ export const werewolfConfigTexts = {
       },
       cupid: {
         tasks:
-          "In der ersten Nacht wählt er zwei Verliebte; er selbst darf einer davon sein. Stirbt einer von ihnen, stirbt der andere mit.\nVerliebte töten sich nie gegenseitig und versuchen, als Paar zu gewinnen.",
+          "In der ersten Nacht wählt er zwei Verliebte; er selbst darf einer davon sein. Sie erkennen einander und behalten ihre Rollen. Stirbt einer von ihnen, stirbt der andere mit.",
+        notes:
+          "Verliebte versuchen, gemeinsam zu überleben: Als Werwolf greift man den Partner nicht an, als Dorfrolle stimmt man nicht gegen ihn. Zwingend ist das nicht.",
       },
       drunk: {
         general:
-          "Eine Person startet als Trunkenbold und kann sich nicht an ihre wahre Rolle erinnern.\nDie wahre Rolle wird unter allen Rollen außer Amor ausgelost.",
+          "Eine Person startet als Trunkenbold und kann sich nicht an ihre wahre Rolle erinnern.\nDie wahre Rolle wird unter allen Rollen im Spiel außer Amor ausgelost.",
         tasks:
           "Zu Beginn der dritten Nacht nüchtert er aus und erinnert sich an seine wahre Rolle.\nBis dahin ruht seine Fähigkeit.",
         notes:
-          "Seherin und Ermittler können die wahre Rolle schon vorher herausfinden.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf oder muss noch schießen, je nach Option des Jägers.",
+          "Seherin und Ermittler erfahren die wahre Rolle schon vorher.\nIst er in Wahrheit ein Werwolf, wacht er erst nach der Enthüllung mit den Wölfen auf.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf oder muss noch schießen, je nach Option des Jägers.",
       },
       guard: {
         general: "Höchstens eine der beiden ist im Spiel, oder keine.",
         tasks:
-          "Jede Nacht wählt die Rolle eine Person, bei der sie die Nacht verbringt.\nDieselbe Person zweimal hintereinander wählen ist verboten.",
+          "Jede Nacht wählt die Rolle eine andere Person, bei der sie die Nacht verbringt.\nDieselbe Person zweimal hintereinander wählen ist verboten.",
         options:
           "Leibwächter: Übernachtet bei der gewählten Person und schützt sie vor Wolfsangriff, Gift und Todeszauber, nicht vor dem Hammer. Er selbst ist nicht geschützt.\nDorfmatratze: Übernachtet bei der gewählten Person und schützt sie nur vor dem Wolfsangriff, nicht vor Gift und Zauber. Sie stirbt an der Stelle der Person; ein direkter Angriff auf sie geht ins Leere, denn sie schläft woanders.",
       },

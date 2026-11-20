@@ -113,7 +113,7 @@ export const werewolfConfigTexts = {
     wake: {
       open: "Wake-up order",
       title: "Wake-up order",
-      hint: "Every night the narrator wakes the roles in this order. Roles that are not in the game are dimmed.",
+      hint: "Every night the narrator wakes the roles in this order. Roles that are not in the game are dimmed. With secret roles, roles that are out are still called to keep them hidden.",
       notInGame: "not in the game",
       wolvesFirstNight: "In the first night they only get to know each other",
       apprentice: "The apprentice seer takes over when the seer is dead",
@@ -139,11 +139,11 @@ export const werewolfConfigTexts = {
     info: {
       amulet: {
         general:
-          "The holder is drawn randomly at the start among the players who are not wolves.\nIt stops direct attacks and a vote: if the holder is attacked at night, he survives, whoever attacks him.",
+          "The holder is drawn randomly at the start among the players who are not wolves.\nIt stops the attacks of the night (wolf attack, poison, death spell): if the holder is attacked at night, he survives.",
         tasks:
-          "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf he was attacked in the night, he has to pass it on.",
+          "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf it has stopped an attack, he has to pass it on.\nHe may give it to any living player, also to a wolf.",
         notes:
-          "The holder can still die:\nby the hammer\nwhen his lover dies (at night he passes the amulet on first, by day it is lost)\nas the tough guy, if he got the amulet only after the attack",
+          "The holder can still die:\nby the hammer, the vote or the hunter shot (so nobody learns who has the amulet)\nwhen his lover dies (he dies of heartbreak, too, and the amulet is lost)\nas the tough guy, if he got the amulet only after the attack",
       },
       apprenticeSeer: {
         general: "He has no action while the seer lives.",
@@ -152,20 +152,22 @@ export const werewolfConfigTexts = {
       },
       cupid: {
         tasks:
-          "In the first night he chooses two lovers; he may be one of them himself. If one of them dies, the other dies too.\nLovers never kill each other and try to win as a pair.",
+          "In the first night he chooses two lovers; he may be one of them himself. They get to know each other and keep their roles. If one of them dies, the other dies too.",
+        notes:
+          "Lovers try to survive together: as a wolf you do not attack your partner, as a villager you do not vote against him. This is not forced.",
       },
       drunk: {
         general:
-          "One player starts as the drunk and cannot remember his real role.\nThe real role is drawn among all roles except Cupid.",
+          "One player starts as the drunk and cannot remember his real role.\nThe real role is drawn among all roles in the game except Cupid.",
         tasks:
           "At the start of the third night he sobers up and remembers his real role.\nUntil then his ability rests.",
         notes:
-          "The seer and the investigator can find out the real role before.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.",
+          "The seer and the investigator learn the real role before.\nIf he is really a wolf, he wakes up with the wolves only after the reveal.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.",
       },
       guard: {
         general: "At most one of the two is in the game, or none.",
         tasks:
-          "Each night the role chooses one player to spend the night with.\nChoosing the same player twice in a row is forbidden.",
+          "Each night the role chooses another player to spend the night with.\nChoosing the same player twice in a row is forbidden.",
         options:
           "Bodyguard: Stays with the chosen player and protects him from the wolf attack, poison and death spells, but not from the hammer. He himself is not protected.\nNight guest: Stays with the chosen player and protects him only from the wolf attack, not from poison and spells. He dies in the player's place; a direct attack on him misses, since he sleeps elsewhere.",
       },
