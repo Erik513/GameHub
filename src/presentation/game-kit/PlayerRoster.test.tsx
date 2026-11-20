@@ -261,12 +261,20 @@ it("can choose none and cancel without changing the field", async () => {
   const user = await renderWith("en", setup, <Host />);
   await user.click(screen.getByRole("button", { name: texts.en.pick }));
   const dialog = screen.getByRole("dialog");
-  // In the list of groups "choose all" works on every player of the groups.
+  // The list of groups has no "choose all": it has the button to manage the player list instead.
+  expect(
+    within(dialog).queryByRole("button", { name: texts.en.chooseAll }),
+  ).not.toBeInTheDocument();
+  expect(within(dialog).getByRole("button", { name: texts.en.manage })).toBeInTheDocument();
+  // Inside a group "choose all" and "choose none" work on the players of the group.
+  await user.click(within(dialog).getByRole("button", { name: /^Family/ }));
   await user.click(within(dialog).getByRole("button", { name: texts.en.chooseAll }));
+  await user.click(within(dialog).getByRole("button", { name: texts.en.back("Family") }));
   expect(within(dialog).getByRole("button", { name: /^Family/ })).toHaveTextContent("2/2");
+  await user.click(within(dialog).getByRole("button", { name: /^Family/ }));
   await user.click(within(dialog).getByRole("button", { name: texts.en.chooseNone }));
+  await user.click(within(dialog).getByRole("button", { name: texts.en.back("Family") }));
   expect(within(dialog).getByRole("button", { name: /^Family/ })).toHaveTextContent("0/2");
-  await user.click(within(dialog).getByRole("button", { name: texts.en.chooseAll }));
   await user.click(within(dialog).getByRole("button", { name: texts.en.cancel }));
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   expect(screen.getByRole("status")).toBeEmptyDOMElement();
@@ -361,9 +369,29 @@ it('takes only as many players with "Choose all" as the limit allows, names type
   );
   await user.click(screen.getByRole("button", { name: texts.en.pick }));
   const dialog = screen.getByRole("dialog");
+  await user.click(within(dialog).getByRole("button", { name: /^Family/ }));
   await user.click(within(dialog).getByRole("button", { name: texts.en.chooseAll }));
+  await user.click(within(dialog).getByRole("button", { name: texts.en.back("Family") }));
   await user.click(within(dialog).getByRole("button", { name: texts.en.apply }));
   // Zoe stays (typed by hand), so only two of the three fit.
   expect(applied.split(", ")).toHaveLength(3);
   expect(applied).toContain("Zoe");
+});
+
+it("offers the button to manage the player list at the top of the list of groups only", async () => {
+  const setup = stores(["Anna"], [{ name: "Family", members: ["Anna"] }]);
+  const user = await renderWith("en", setup, <RosterPicker onChange={() => undefined} value="" />);
+  await user.click(screen.getByRole("button", { name: texts.en.pick }));
+  const dialog = screen.getByRole("dialog");
+  const manage = () => within(dialog).queryByRole("button", { name: texts.en.manage });
+  // In the list of groups: at the top, above the groups and the buttons to apply and cancel.
+  const before = (first: HTMLElement | null, second: HTMLElement) =>
+    Boolean(first && first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING);
+  expect(before(manage(), within(dialog).getByRole("button", { name: /^Family/ }))).toBe(true);
+  expect(before(manage(), within(dialog).getByRole("button", { name: texts.en.apply }))).toBe(true);
+  // Inside a group it is gone.
+  await user.click(within(dialog).getByRole("button", { name: /^Family/ }));
+  expect(manage()).not.toBeInTheDocument();
+  await user.click(within(dialog).getByRole("button", { name: texts.en.back("Family") }));
+  expect(manage()).toBeInTheDocument();
 });

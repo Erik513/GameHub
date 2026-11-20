@@ -216,7 +216,7 @@ export const werewolfConfigTexts = {
         options:
           "Wolf attack only: Only a wolf attack works like this.\nEvery attack: Poison, a death spell and the hunter shot work like this, too.",
         notes:
-          "A wolf attack can still be healed in the night of the attack.\nThe hammer, the vote and the death of his lover kill him at once.",
+          "In the night of the attack, only a wolf attack can still be healed.\nThe hammer, the vote and the death of his lover kill him at once.",
       },
       villagers: {
         general: "Plain villagers have no special ability. They play with the village.",

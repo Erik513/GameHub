@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { PlayerGroup } from "../../business/shared/playerGroups";
 import { applyRosterSelection, rosterPlayersIn } from "../../business/shared/playerRoster";
@@ -58,7 +58,7 @@ export function RosterPicker({ limit, onChange, value }: RosterPickerProps) {
           <PickerBody
             groups={roster.groups}
             {...(limit === undefined ? {} : { limit })}
-            manage={manageButton}
+            onManage={() => setManaging(true)}
             onApply={(text) => {
               onChange(text);
               setOpen(false);
@@ -80,18 +80,18 @@ export function RosterPicker({ limit, onChange, value }: RosterPickerProps) {
 function PickerBody({
   groups,
   limit,
-  manage,
   onApply,
   onCancel,
+  onManage,
   players,
   value,
 }: {
   readonly groups: readonly PlayerGroup[];
   readonly limit?: number;
-  /** The button to manage the saved players; it stands in the footer with the other buttons. */
-  readonly manage: ReactNode;
   readonly onApply: (text: string) => void;
   readonly onCancel: () => void;
+  /** Opens the window to manage the saved players (offered in the list of groups). */
+  readonly onManage: () => void;
   readonly players: readonly string[];
   readonly value: string;
 }) {
@@ -126,8 +126,8 @@ function PickerBody({
   const count = (list: readonly string[]) =>
     `${list.filter((player) => selected.has(player)).length}/${list.length}`;
   const shown = groups.find((group) => group.name === openGroup);
-  // "Choose all" and "Choose none" work on the players that are shown (all players in the list of groups).
-  const visible = shown ? shown.members : players;
+  // "Choose all" and "Choose none" are offered inside a group and work on the players that are shown.
+  const visible = shown ? shown.members : [];
   const allVisible = visible.length > 0 && visible.every((player) => selected.has(player));
 
   return (
@@ -135,32 +135,38 @@ function PickerBody({
       <div className="kit-roster kit-roster--pick">
         {/* Both views have the same build (buttons, a line of text, the list), so the window keeps its size. */}
         <div className="kit-roster__pair" data-pair={shown ? "true" : "false"}>
-          {shown && (
-            <Button
-              aria-label={t("kitRoster.groupBackTo", { name: shown.name })}
-              className="kit-roster__wide"
-              onClick={() => setOpenGroup(undefined)}
-              variant="secondary"
-            >
-              <Icon name="arrowLeft" />
-              <span className="kit-roster__wide-text">{shown.name}</span>
+          {shown ? (
+            <>
+              <Button
+                aria-label={t("kitRoster.groupBackTo", { name: shown.name })}
+                className="kit-roster__wide"
+                onClick={() => setOpenGroup(undefined)}
+                variant="secondary"
+              >
+                <Icon name="arrowLeft" />
+                <span className="kit-roster__wide-text">{shown.name}</span>
+              </Button>
+              <Button
+                className="kit-roster__wide"
+                disabled={visible.length === 0}
+                onClick={() => {
+                  const next = new Set(selected);
+                  for (const player of visible) {
+                    if (allVisible) next.delete(player);
+                    else if (next.size < capacity) next.add(player);
+                  }
+                  setSelected(next);
+                }}
+                variant="secondary"
+              >
+                {t(allVisible ? "kitRoster.pickNone" : "kitRoster.pickAll")}
+              </Button>
+            </>
+          ) : (
+            <Button className="kit-roster__wide" onClick={onManage} variant="secondary">
+              {t("kitRoster.manage")}
             </Button>
           )}
-          <Button
-            className="kit-roster__wide"
-            disabled={visible.length === 0}
-            onClick={() => {
-              const next = new Set(selected);
-              for (const player of visible) {
-                if (allVisible) next.delete(player);
-                else if (next.size < capacity) next.add(player);
-              }
-              setSelected(next);
-            }}
-            variant="secondary"
-          >
-            {t(allVisible ? "kitRoster.pickNone" : "kitRoster.pickAll")}
-          </Button>
         </div>
         <h3 className="kit-roster__line">{shown ? shown.name : t("kitRoster.groupsTitle")}</h3>
         <div
@@ -221,7 +227,6 @@ function PickerBody({
             {t("kitRoster.pickCancel")}
           </Button>
         </ActionRow>
-        {manage}
       </div>
     </>
   );

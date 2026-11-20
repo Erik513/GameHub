@@ -221,7 +221,7 @@ export const werewolfConfigTexts = {
         options:
           "Nur Wolfsangriff: Nur ein Wolfsangriff wirkt so.\nJeder Angriff: Auch Gift, Todeszauber und Jägerschuss wirken so.",
         notes:
-          "Ein Wolfsangriff lässt sich in der Angriffsnacht noch heilen.\nHammer, Abstimmung und der Tod des Liebespartners töten ihn sofort.",
+          "In der Angriffsnacht lässt sich nur ein Wolfsangriff noch heilen.\nHammer, Abstimmung und der Tod des Liebespartners töten ihn sofort.",
       },
       villagers: {
         general:
