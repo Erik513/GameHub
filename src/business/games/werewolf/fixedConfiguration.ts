@@ -128,6 +128,11 @@ export interface FixedItemView {
   readonly variant: string | null;
   /** The variants that cannot be picked now. */
   readonly lockedVariants: readonly string[];
+  /**
+   * The chosen role that keeps this one out (the witch and the magician exclude each other in most line-ups),
+   * or nothing. Only set when the role would be allowed without that other role.
+   */
+  readonly blockedBy: WerewolfSpecialRole | null;
 }
 
 export interface FixedAddonView {
@@ -267,7 +272,27 @@ export function describeFixedConfiguration(
     const everyLocked = locks.every((lock) => lock !== null);
     const lock = everyLocked ? (locks[0] ?? null) : null;
     const selected = chosen.length > 0;
+    // The witch and the magician: the other one is what locks this one, if it does.
+    const rival = id === "witch" ? "magician" : id === "magician" ? "witch" : null;
+    const blockedBy =
+      rival !== null &&
+      !selected &&
+      lock === "combination" &&
+      others.includes(rival) &&
+      own.every(
+        (role) =>
+          whyLocked(
+            players,
+            role,
+            others.filter((other) => other !== rival),
+            settings,
+            basis,
+          ) !== "combination",
+      )
+        ? rival
+        : null;
     return {
+      blockedBy,
       chosenRole: kind === "alternative" ? (chosen[0] ?? null) : null,
       id,
       kind,

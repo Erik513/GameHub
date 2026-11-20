@@ -394,16 +394,22 @@ it.each([
 });
 
 it.each([
-  ["en", "Witch", "(not together with Magician)"],
-  ["en", "Magician", "(not together with Witch)"],
-  ["de", "Hexe", "(nicht zusammen mit Magier)"],
-  ["de", "Magier", "(nicht zusammen mit Hexe)"],
+  ["en", "Magician", "Witch", "(not together with Witch)"],
+  ["en", "Witch", "Magician", "(not together with Magician)"],
+  ["de", "Magier", "Hexe", "(nicht zusammen mit Hexe)"],
+  ["de", "Hexe", "Magier", "(nicht zusammen mit Magier)"],
 ] as const)(
-  "says in the button of the %s that it does not play with the other (%s)",
-  async (language, name, note) => {
-    await renderConfiguration(language, 12);
-    const box = screen.getByRole("checkbox", { name }).closest("label");
-    expect(box).toHaveTextContent(note);
+  "says in the button of the %s that it does not play with the %s, but only while that is so",
+  async (language, name, other, note) => {
+    const { user } = await renderConfiguration(language, 12);
+    const box = () => screen.getByRole("checkbox", { name }).closest("label");
+    // Nothing chosen: the role is free, so there is nothing to warn about.
+    expect(box()).not.toHaveTextContent(/\(.*\)/);
+    await user.click(screen.getByRole("checkbox", { name: other }));
+    // The other one is chosen and keeps this one out.
+    expect(box()).toHaveTextContent(note);
+    await user.click(screen.getByRole("checkbox", { name: other }));
+    expect(box()).not.toHaveTextContent(/\(.*\)/);
   },
 );
 

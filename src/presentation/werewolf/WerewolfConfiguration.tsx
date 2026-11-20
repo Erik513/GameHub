@@ -91,13 +91,13 @@ export function WerewolfConfiguration({
    * The tile of a role. A role with options is one joined, optional selection button: a half for every option, each
    * with the name of the role and its option; a tap picks one, a tap on the chosen one leaves the role out.
    */
-  // The witch and the magician exclude each other (in most line-ups): the second line of the button says so.
-  const exclusiveNote = (id: string) =>
-    id === "witch" || id === "magician"
-      ? `(${t("werewolfConfig.notTogether", {
-          role: t(`werewolfConfig.items.${id === "witch" ? "magician" : "witch"}`),
-        })})`
-      : undefined;
+  // Only while the other one really keeps this role out, the second line of the button says so.
+  const exclusiveNote = (entry: FixedItemView) =>
+    entry.blockedBy === null
+      ? undefined
+      : `(${t("werewolfConfig.notTogether", {
+          role: t(`werewolfConfig.items.${entry.id === "witch" ? "magician" : "witch"}`),
+        })})`;
 
   function renderItem(entry: FixedItemView) {
     const name = t(`werewolfConfig.items.${entry.id}`);
@@ -115,7 +115,7 @@ export function WerewolfConfiguration({
             lock={entry.lock}
             minimum={entry.minimum}
             name={name}
-            note={exclusiveNote(entry.id)}
+            note={exclusiveNote(entry)}
             onToggle={() => onChange(toggleFixedRole(draft, entry.roles[0]!))}
             selected={entry.selected}
             showInfo={false}

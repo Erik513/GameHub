@@ -130,6 +130,22 @@ describe("the locks of the roles", () => {
     expect(itemOf(14, "magician", setFixedWolfCount(withWitch, 4)).lock).toBeNull();
   });
 
+  it("names the witch or the magician as the reason only while it really keeps the other out", () => {
+    const withWitch: FixedDraft = { ...emptyFixedDraft, roles: ["witch"] };
+    const withMagician: FixedDraft = { ...emptyFixedDraft, roles: ["magician"] };
+    // Where they never play together, the chosen one is the reason.
+    expect(itemOf(12, "magician", withWitch).blockedBy).toBe("witch");
+    expect(itemOf(12, "witch", withMagician).blockedBy).toBe("magician");
+    // With nothing chosen, or with another role chosen, nothing keeps them out.
+    expect(itemOf(12, "magician").blockedBy).toBeNull();
+    expect(itemOf(12, "magician", { ...emptyFixedDraft, roles: ["hunter"] }).blockedBy).toBeNull();
+    // Where they are allowed together (14 players, four wolves) there is no reason to name.
+    expect(itemOf(14, "magician", setFixedWolfCount(withWitch, 4)).blockedBy).toBeNull();
+    // The chosen role itself is never blocked, and no other role has a rival.
+    expect(itemOf(12, "witch", withWitch).blockedBy).toBeNull();
+    expect(itemOf(12, "hunter", withWitch).blockedBy).toBeNull();
+  });
+
   it("locks a role when no place is free", () => {
     const full: FixedDraft = {
       ...emptyFixedDraft,
