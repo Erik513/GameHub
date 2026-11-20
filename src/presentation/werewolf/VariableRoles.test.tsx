@@ -141,9 +141,7 @@ it("changes the range with the buttons and keeps it inside what is possible", as
 it("says to put roles on May while there is none", async () => {
   await renderVariable("en", 12);
   const range = screen.getByRole("region", { name: "Special roles from May" });
-  expect(
-    within(range).getByText("Put roles on May to set how many are drawn."),
-  ).toBeInTheDocument();
+  expect(within(range).getByText("No role on May yet.")).toBeInTheDocument();
 });
 
 it("lets the wolf counts be chosen where the players allow it, with the standard chosen and a recommendation", async () => {
@@ -349,4 +347,41 @@ it("shows the fixed order again when the fixed roles are chosen", async () => {
   const dialog = await screen.findByRole("dialog", { name: "Wake-up order" });
   // Nothing of the variable draft shows in the fixed order.
   expect(dialog.querySelector('[data-presence="may"]')).toBeNull();
+});
+
+it("gives every role and extra its info button", async () => {
+  await renderVariable("en", 12, put(emptyVariableDraft, { cupid: "may", witch: "must" }));
+  const chips = [...document.querySelectorAll(".ww-chip")];
+  expect(chips.length).toBeGreaterThan(10);
+  for (const chip of chips) {
+    expect(chip.querySelector(".ww-chip__info")).not.toBeNull();
+  }
+  expect(screen.getByRole("button", { name: "Info about Protective amulet" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Info about Cupid" })).toBeInTheDocument();
+});
+
+it("cannot drag an entry that is locked, as another option of its role must be in the game", async () => {
+  const { latest } = await renderVariable(
+    "en",
+    12,
+    put(emptyVariableDraft, { "hunter:required": "must" }),
+  );
+  const locked = screen.getByRole("button", { name: "Hunter · No duty to shoot" });
+  expect(locked.closest(".ww-chip")).toHaveAttribute("data-lock");
+  fireEvent.pointerDown(locked, { button: 0, clientX: 10, clientY: 10 });
+  pointerOver(boxOf("role", "may"));
+  fireEvent.pointerMove(window, { clientX: 60, clientY: 60 });
+  expect(document.querySelector(".ww-chip--ghost")).toBeNull();
+  fireEvent.pointerUp(window, { clientX: 60, clientY: 60 });
+  expect(latest.variable.states).toEqual({ "hunter:required": "must" });
+});
+
+it("keeps the wolves and the seer side by side at the top", async () => {
+  await renderVariable("en", 12);
+  const top = document.querySelector(".ww-vtop");
+  expect(top?.querySelector(".ww-card--wolves")).not.toBeNull();
+  const seer = top?.querySelector(".ww-card--seer");
+  expect(seer).not.toBeNull();
+  expect(seer).toHaveTextContent("Seer");
+  expect(seer?.querySelector(".ww-stat__value")).toHaveTextContent("1");
 });

@@ -116,7 +116,6 @@ export const werewolfConfigTexts = {
         not: "Should not be in the game",
       },
       empty: "Nothing here",
-      hint: "Tap a role to choose where it goes, or drag it into a box.",
       lock: {
         incompatibleRoles: "It does not play together with the roles that are in the game.",
         insufficientSeats: "No place is free for it.",
@@ -130,7 +129,7 @@ export const werewolfConfigTexts = {
       less: "{{what}}: one less",
       more: "{{what}}: one more",
       rangePossible: "Possible: {{minimum}} to {{maximum}}",
-      rangeNone: "Put roles on May to set how many are drawn.",
+      rangeNone: "No role on May yet.",
       cannotStart: "This selection cannot be played with {{count}} players.",
     },
     wake: {

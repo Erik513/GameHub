@@ -95,22 +95,27 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
   const infoIdOf = (id: string): ConfigInfoId => {
     if (id.startsWith("item:")) return id.slice(5) as ConfigInfoId;
     const role = view.entries.find((candidate) => candidate.entry.id === id)?.entry.role;
-    return role === "bodyguard" || role === "nightGuest"
-      ? "guard"
-      : ((role ?? "seer"));
+    return role === "bodyguard" || role === "nightGuest" ? "guard" : (role ?? "seer");
   };
+  // A chip is the name (to tap and to drag) with the "i" of the role beside it. An entry that is locked cannot be
+  // moved: a tap shows why, it cannot be dragged.
   const chip = (id: string, label: string, lock: VariableEntryView["lock"]) => (
-    <button
+    <span
       className="ww-chip"
       data-dragged={dragging.drag?.player === id || undefined}
       data-lock={lock ?? undefined}
       key={id}
-      onClick={dragging.tap(id)}
-      onPointerDown={dragging.startDrag(id)}
-      type="button"
     >
-      {label}
-    </button>
+      <button
+        className="ww-chip__main"
+        onClick={dragging.tap(id)}
+        {...(lock === null ? { onPointerDown: dragging.startDrag(id) } : {})}
+        type="button"
+      >
+        {label}
+      </button>
+      <ConfigInfo className="ww-chip__info" id={infoIdOf(id)} name={label} />
+    </span>
   );
 
   const box = (kind: "item" | "role", state: VariableState, chips: readonly ReactNode[]) => (
@@ -137,47 +142,57 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
   const header = (
     <div className="ww-players-head">
       {modeSwitch}
-      <section className="ww-card ww-card--wolves">
-        <ConfigCardHead
-          id="wolves"
-          name={t("werewolfConfig.wolves")}
-          title={t("werewolfConfig.wolves")}
-        />
-        <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
-          {view.wolf.options.map((option) => (
-            <div className="ww-wolves__option" key={option.count}>
-              <button
-                aria-pressed={option.selected}
-                className="ww-wolves__button"
-                data-fixed={!view.wolf.choice || undefined}
-                data-recommended={option.recommended || undefined}
-                disabled={!view.wolf.choice}
-                onClick={() => onChange(toggleVariableWolfCount(draft, players, option.count))}
-                type="button"
-              >
-                {option.count}
-              </button>
-              <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
-            </div>
-          ))}
-        </div>
-      </section>
-      <div className="ww-cards">
-        <div aria-label={t("werewolfConfig.seer")} className="ww-card ww-stat" role="group">
+      <div className="ww-vtop">
+        <section className="ww-card ww-card--wolves ww-vtop__wolves">
+          <ConfigCardHead
+            id="wolves"
+            name={t("werewolfConfig.wolves")}
+            title={t("werewolfConfig.wolves")}
+          />
+          <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
+            {view.wolf.options.map((option) => (
+              <div className="ww-wolves__option" key={option.count}>
+                <button
+                  aria-pressed={option.selected}
+                  className="ww-wolves__button"
+                  data-fixed={!view.wolf.choice || undefined}
+                  data-recommended={option.recommended || undefined}
+                  disabled={!view.wolf.choice}
+                  onClick={() => onChange(toggleVariableWolfCount(draft, players, option.count))}
+                  type="button"
+                >
+                  {option.count}
+                </button>
+                <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section aria-label={t("werewolfConfig.seer")} className="ww-card ww-card--seer">
           <ConfigCardHead
             id="seer"
             name={t("werewolfConfig.seer")}
             title={t("werewolfConfig.seer")}
           />
           <strong className="ww-stat__value">1</strong>
-        </div>
+        </section>
       </div>
     </div>
   );
 
   const footer = (
     <section aria-label={t("werewolfConfig.variable.rangeTitle")} className="ww-range">
-      <h4 className="ww-range__title">{t("werewolfConfig.variable.rangeTitle")}</h4>
+      <div className="ww-range__head">
+        <h4 className="ww-range__title">{t("werewolfConfig.variable.rangeTitle")}</h4>
+        {view.possibleRange !== null && view.mayRoleCount > 0 && (
+          <span className="ww-range__hint">
+            {t("werewolfConfig.variable.rangePossible", {
+              maximum: view.possibleRange.maximum,
+              minimum: view.possibleRange.minimum,
+            })}
+          </span>
+        )}
+      </div>
       {view.mayRoleCount === 0 || view.possibleRange === null ? (
         <p className="ww-range__hint">{t("werewolfConfig.variable.rangeNone")}</p>
       ) : (
@@ -223,12 +238,6 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
               );
             })}
           </div>
-          <p className="ww-range__hint">
-            {t("werewolfConfig.variable.rangePossible", {
-              maximum: view.possibleRange.maximum,
-              minimum: view.possibleRange.minimum,
-            })}
-          </p>
         </>
       )}
       {!view.canStart && (
@@ -241,7 +250,6 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
 
   return (
     <TabPane footer={footer} header={header}>
-      <p className="ww-hint">{t("werewolfConfig.variable.hint")}</p>
       <h3 className="ww-vheading">{t("werewolfConfig.variable.rolesHeading")}</h3>
       <div className="ww-vboxes">
         {states.map((state) =>
@@ -316,7 +324,8 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
           className="ww-chip ww-chip--ghost"
           style={{ left: dragging.drag.x, top: dragging.drag.y }}
         >
-          {labelOf(dragging.drag.player)}
+          <span className="ww-chip__main">{labelOf(dragging.drag.player)}</span>
+          <span className="ww-chip__info-room" />
         </div>
       )}
     </TabPane>

@@ -687,28 +687,29 @@
 
 .ww-vbox {
   display: grid;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   background: var(--color-surface);
 }
 
-.ww-vbox[data-kind="role"][data-state="must"] {
+/* The color of a box says where it sends a role: green must, yellow may, red should not. The extras have a blue
+   ground to tell them from the roles. */
+.ww-vbox[data-state="must"] {
   border-color: var(--color-success);
 }
 
-.ww-vbox[data-kind="role"][data-state="may"] {
+.ww-vbox[data-state="may"] {
   border-color: var(--color-warning);
+}
+
+.ww-vbox[data-state="not"] {
+  border-color: var(--color-danger);
 }
 
 .ww-vbox[data-kind="item"] {
   background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
-  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-line));
-}
-
-.ww-vbox[data-kind="item"][data-state="must"] {
-  border-color: var(--color-accent);
 }
 
 .ww-vbox__title {
@@ -720,8 +721,8 @@
 .ww-vbox__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
-  min-height: 2rem;
+  gap: var(--space-1);
+  min-height: 1.75rem;
 }
 
 .ww-vbox__empty {
@@ -733,18 +734,59 @@
 .ww-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 2rem;
-  padding: 0 var(--space-3);
+  min-height: 1.75rem;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   background: var(--color-surface-muted);
+  font-size: var(--text-xs);
+}
+
+.ww-chip .ww-chip__main {
+  align-self: stretch;
+  min-height: 0;
+  min-width: 0;
+  padding: 0 var(--space-1) 0 var(--space-2);
+  border: 0;
+  background: none;
   color: inherit;
   font: inherit;
-  font-size: var(--text-sm);
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   cursor: grab;
+}
+
+.ww-chip .ww-chip__info.kit-info-button {
+  position: static;
+  flex: none;
+  width: 1.5rem;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  min-height: 1.5rem;
+  margin: 0 var(--space-1) 0 0;
+}
+
+.ww-chip .ww-chip__info svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+/* The room of the "i" in the name that follows the pointer: it is as big as the chip it stands for. */
+.ww-chip__info-room {
+  flex: none;
+  width: 1.5rem;
+  margin-right: var(--space-1);
+}
+
+.ww-chip[data-lock] {
+  border-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 14%, var(--color-surface-muted));
+  color: var(--color-danger);
+}
+
+.ww-chip[data-lock] .ww-chip__main {
+  cursor: not-allowed;
+  touch-action: auto;
 }
 
 .ww-chip[data-dragged] {
@@ -760,39 +802,54 @@
   border-color: var(--color-accent);
 }
 
-.ww-vbox[data-over] {
-  outline: 2px solid var(--color-accent);
+/* The box under the pointer while something is dragged: it is filled with its own color (green, yellow or red), so the
+   color shows where the role goes. Nothing is painted outside of the box (an outline would be cut off by the
+   scrolling body). */
+.ww-vbox[data-state="must"][data-over] {
+  background: color-mix(in srgb, var(--color-success) 22%, var(--color-surface));
 }
 
-.ww-chip[data-lock] {
-  opacity: 0.55;
+.ww-vbox[data-state="may"][data-over] {
+  background: color-mix(in srgb, var(--color-warning) 22%, var(--color-surface));
+}
+
+.ww-vbox[data-state="not"][data-over] {
+  background: color-mix(in srgb, var(--color-danger) 22%, var(--color-surface));
 }
 
 /* The number of "may" roles: fixed at the bottom of the tab. */
 .ww-range {
   display: grid;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   background: var(--color-surface);
 }
 
-.ww-range__title {
-  margin: 0;
-  font-size: var(--text-sm);
+.ww-range__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
 }
 
+.ww-range__title {
+  margin: 0;
+  font-size: var(--text-xs);
+}
+
+/* Least and most side by side, each with its label in front of the buttons. */
 .ww-range__row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
 }
 
 .ww-range__field {
-  display: grid;
+  display: flex;
+  align-items: center;
   gap: var(--space-1);
-  justify-items: start;
 }
 
 .ww-range__label,
@@ -807,6 +864,10 @@
 }
 
 .ww-range__problem {
+  margin: 0;
+}
+
+.ww-range__problem {
   color: var(--color-danger);
   font-size: var(--text-xs);
 }
@@ -814,17 +875,21 @@
 .ww-range__stepper {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .ww-range__stepper .button {
-  min-width: 2.25rem;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  height: 1.75rem;
   padding-inline: 0;
+  font-size: var(--text-sm);
 }
 
 .ww-range__stepper output {
-  min-width: 1.5rem;
+  min-width: 1rem;
   text-align: center;
+  font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
 }
@@ -844,4 +909,22 @@
   background: none;
   border: 1px dashed var(--color-warning);
   color: inherit;
+}
+
+/* The top of the variable roles: the wolves take three quarters, the seer the rest with the number below its name. */
+.ww-vtop {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: var(--space-2);
+  align-items: stretch;
+}
+
+.ww-card--seer {
+  align-content: start;
+  justify-items: start;
+}
+
+.ww-card--seer .ww-stat__value {
+  min-height: 0;
+  padding-inline: var(--space-1);
 }

@@ -118,7 +118,6 @@ export const werewolfConfigTexts = {
         not: "Soll nicht ins Spiel",
       },
       empty: "Nichts hier",
-      hint: "Tippe eine Rolle an, um zu wählen, wohin sie soll, oder ziehe sie in einen Kasten.",
       lock: {
         incompatibleRoles: "Sie spielt nicht zusammen mit den Rollen, die im Spiel sind.",
         insufficientSeats: "Es ist kein Platz mehr frei.",
@@ -132,7 +131,7 @@ export const werewolfConfigTexts = {
       less: "{{what}}: eine weniger",
       more: "{{what}}: eine mehr",
       rangePossible: "Möglich: {{minimum}} bis {{maximum}}",
-      rangeNone: "Setze Rollen auf Darf, um festzulegen, wie viele gelost werden.",
+      rangeNone: "Noch keine Rolle auf Darf.",
       cannotStart: "Mit {{count}} Spielern ist diese Auswahl nicht spielbar.",
     },
     wake: {
