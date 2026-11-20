@@ -1,8 +1,9 @@
 /** Texts of the shared game building blocks (setup screen, teams, players). */
 export const kitTexts = {
   kitSetup: {
-    playersTab: "Players ({{count}})",
-    teamsTab: "Teams ({{count}})",
+    playersTab: "Players",
+    playersTabRange: "Players ({{minimum}}-{{maximum}})",
+    teamsTab: "Teams ({{minimum}}-{{maximum}})",
     lineupTabs: "Players and teams",
     tabSettings: "Game settings",
     rulesButton: "Rules",

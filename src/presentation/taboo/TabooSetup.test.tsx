@@ -57,7 +57,7 @@ it("opens on the line-up, keeps the settings on their own screen and starts the 
   const lineup = screen.getByRole("region", { name: "Line-up" });
   expect(screen.queryByRole("group", { name: "Rounds per team" })).not.toBeInTheDocument();
   const tabs = within(lineup).getAllByRole("tab");
-  expect(tabs.map((tab) => tab.textContent)).toEqual(["Players (0)", "Teams (2)"]);
+  expect(tabs.map((tab) => tab.textContent)).toEqual(["Players", "Teams (2-6)"]);
   expect(tabs[1]).toHaveAttribute("aria-selected", "true");
   expect(within(lineup).getByRole("textbox", { name: "Name of team 1" })).toBeVisible();
   expect(screen.queryByRole("region", { name: "Round overview" })).not.toBeInTheDocument();

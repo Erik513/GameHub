@@ -109,7 +109,15 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
         </>
       ),
       id: "players",
-      label: t("kitSetup.playersTab", { count: playerCount }),
+      // The tabs name what can be chosen, not what is chosen: a game that needs its players says how many
+      // (from - to); with an optional player list the name stands alone.
+      label:
+        config.players === "required"
+          ? t("kitSetup.playersTabRange", {
+              maximum: config.maxPlayers,
+              minimum: config.minPlayers,
+            })
+          : t("kitSetup.playersTab"),
     });
   }
   if (rules) {
@@ -138,7 +146,7 @@ export function LineupSetup({ config, onChange, value }: LineupSetupProps) {
         </>
       ),
       id: "teams",
-      label: t("kitSetup.teamsTab", { count: clampTeamCount(value.count, rules) }),
+      label: t("kitSetup.teamsTab", { maximum: rules.maxTeams, minimum: rules.minTeams }),
     });
   }
 

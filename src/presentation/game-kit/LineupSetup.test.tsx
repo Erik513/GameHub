@@ -28,8 +28,8 @@ const selected = () =>
     ?.textContent;
 
 it.each([
-  ["en", ["Players (0)", "Teams (2)"], "Teams (2)"],
-  ["de", ["Spieler (0)", "Teams (2)"], "Teams (2)"],
+  ["en", ["Players", "Teams (2-6)"], "Teams (2-6)"],
+  ["de", ["Spieler", "Teams (2-6)"], "Teams (2-6)"],
 ] as const)(
   "shows a tab for the players and a tab for the teams, the teams open, in %s",
   async (language, names, open) => {
@@ -50,13 +50,13 @@ it("shows the players first when they are required, and keeps both tabs in the p
     players: "required",
     teams: defaultTeamRules,
   });
-  expect(selected()).toBe("Players (0)");
+  expect(selected()).toBe("Players (2-12)");
   // The inactive tab stays in the page (the style hides it), so a form still reads it.
   expect(screen.getAllByRole("tabpanel")).toHaveLength(2);
   expect(document.querySelectorAll('.kit-tabpanel[data-active="true"]')).toHaveLength(1);
   await user.type(screen.getByLabelText("Add player"), "Anna, Ben{enter}");
-  // The number in the tab follows.
-  expect(tabNames()[0]).toBe("Players (2)");
+  // The tab names what can be chosen (the range), not how many there are.
+  expect(tabNames()[0]).toBe("Players (2-12)");
 });
 
 it("changes the tab with a tap and with the arrow keys, Home and End", async () => {
@@ -65,35 +65,35 @@ it("changes the tab with a tap and with the arrow keys, Home and End", async () 
     players: "required",
     teams: defaultTeamRules,
   });
-  await user.click(screen.getByRole("tab", { name: "Teams (2)" }));
-  expect(selected()).toBe("Teams (2)");
+  await user.click(screen.getByRole("tab", { name: "Teams (2-6)" }));
+  expect(selected()).toBe("Teams (2-6)");
   // Only the chosen tab can be reached with the Tab key.
-  expect(screen.getByRole("tab", { name: "Players (0)" })).toHaveAttribute("tabindex", "-1");
+  expect(screen.getByRole("tab", { name: "Players (2-12)" })).toHaveAttribute("tabindex", "-1");
   await user.keyboard("{ArrowRight}");
-  expect(selected()).toBe("Players (0)");
+  expect(selected()).toBe("Players (2-12)");
   await user.keyboard("{ArrowLeft}");
-  expect(selected()).toBe("Teams (2)");
+  expect(selected()).toBe("Teams (2-6)");
   await user.keyboard("{Home}");
-  expect(selected()).toBe("Players (0)");
+  expect(selected()).toBe("Players (2-12)");
   await user.keyboard("{End}");
-  expect(selected()).toBe("Teams (2)");
+  expect(selected()).toBe("Teams (2-6)");
   // The focus follows, and other keys do nothing.
-  expect(screen.getByRole("tab", { name: "Teams (2)" })).toHaveFocus();
+  expect(screen.getByRole("tab", { name: "Teams (2-6)" })).toHaveFocus();
   await user.keyboard("a");
-  expect(selected()).toBe("Teams (2)");
+  expect(selected()).toBe("Teams (2-6)");
   // Wrapping around at both ends.
   await user.keyboard("{ArrowRight}");
-  expect(selected()).toBe("Players (0)");
+  expect(selected()).toBe("Players (2-12)");
   await user.keyboard("{ArrowLeft}");
-  expect(selected()).toBe("Teams (2)");
+  expect(selected()).toBe("Teams (2-6)");
 });
 
 it("shows only the players, with a list to remove them, for a game without teams", async () => {
   const user = await renderLineup("en", { ...defaultLineup, players: "required", teams: "off" });
-  expect(tabNames()).toEqual(["Players (0)"]);
+  expect(tabNames()).toEqual(["Players (2-12)"]);
   expect(screen.queryByRole("button", { name: "Draw teams" })).toBeNull();
   await user.type(screen.getByLabelText("Add player"), "Anna, Ben{enter}");
-  expect(screen.getByRole("tab", { name: "Players (2)" })).toBeVisible();
+  expect(screen.getByRole("tab", { name: "Players (2-12)" })).toBeVisible();
   const panel = screen.getByRole("tabpanel");
   expect(within(panel).getByRole("button", { name: "Remove Anna" })).toBeVisible();
   await user.click(within(panel).getByRole("button", { name: "Remove Anna" }));
@@ -103,7 +103,7 @@ it("shows only the players, with a list to remove them, for a game without teams
 
 it("shows only the teams for a game that has no player list", async () => {
   await renderLineup("en", { ...defaultLineup, players: "off", teams: defaultTeamRules });
-  expect(tabNames()).toEqual(["Teams (2)"]);
+  expect(tabNames()).toEqual(["Teams (2-6)"]);
   expect(screen.queryByLabelText("Add player")).not.toBeInTheDocument();
   expect(screen.getByRole("textbox", { name: "Name of team 1" })).toBeVisible();
 });
@@ -111,4 +111,20 @@ it("shows only the teams for a game that has no player list", async () => {
 it("shows no tab for a game without players and without teams", async () => {
   await renderLineup("en", { ...defaultLineup, players: "off", teams: "off" });
   expect(screen.queryByRole("tab")).not.toBeInTheDocument();
+});
+
+it("names the range of the players in the tab only when the game needs its players", async () => {
+  await renderLineup("en", {
+    ...defaultLineup,
+    maxPlayers: 20,
+    minPlayers: 6,
+    players: "required",
+    teams: defaultTeamRules,
+  });
+  expect(tabNames()).toEqual(["Players (6-20)", "Teams (2-6)"]);
+});
+
+it("names the players tab without a range when the player list is optional (and in German)", async () => {
+  await renderLineup("de", { ...defaultLineup, players: "optional", teams: defaultTeamRules });
+  expect(tabNames()).toEqual(["Spieler", "Teams (2-6)"]);
 });
