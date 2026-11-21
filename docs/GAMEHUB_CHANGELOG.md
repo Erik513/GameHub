@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-60: Erzählersicht, Schritt 1 (Spielstart und Spielstand)
+
+- Spielstart aus Aufstellung und Konfiguration (fest oder variabel), Rollen werden einmalig verteilt. Der Spielstand wird nach jedem Schritt mit Versionsnummer lokal gespeichert; ein Stand anderer Version wird verworfen. Hook `useWerewolfSession` (Start, Ereignis, Rückgängig, Beenden). 1504 Tests, tsc -b, eslint sauber. Noch keine sichtbare Oberfläche.
+
 ### We-03-68: Nachtaufrufe und variable Gewichtung
 
 - We-03-68: Nachtlogik umgesetzt und gezielt in den Werwolf-UI-Arbeitsstand übernommen. Nicht gezogene Rollen, Lehrling und Trunkenbold werden übersprungen; vorhandene verdeckte Rollen behalten ihre Tarnaufrufe. Überflüssige Pool-Felder entfernt. Variable API beschreibt Claudes gewichtete Rollengruppen samt Beispielen und Heilergrenzen. Keine Produkt-UI oder Übersetzungen geändert.

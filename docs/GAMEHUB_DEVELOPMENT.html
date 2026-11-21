@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T19:38:47.793Z",
+    "updatedAt": "2026-11-21T20:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 235,
-      "totalTasks": 297,
-      "percent": 79.1
+      "completedTasks": 236,
+      "totalTasks": 298,
+      "percent": 79.2
     }
   },
   "environment": {
@@ -1567,6 +1567,12 @@
           "title": "Symbolsatz für die Erzählersicht festlegen und als Legende in der Anleitung zeigen",
           "status": "done",
           "validation": "34 Symbole in vier Gruppen (Rollen, eigene Mittel, Zusätze, Zustände) mit Zeichnungen aus Tabler Icons (MIT) und dem Wolfskopf von Lorc (CC BY 3.0), Namen und Bedeutungen auf Deutsch und Englisch, Legende als vierter Reiter der Anleitung; Tests zur Vollständigkeit; 1495 Tests, tsc -b, eslint, Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-60",
+          "title": "Erzählersicht: Spielstart aus der Konfiguration, Spielstand mit Versionsnummer speichern, Anbindung von Sitzung und Rücknahme (Schritt 1)",
+          "status": "done",
+          "validation": "Spielstart startWerewolfGame (fest und variabel, Zufall einmalig), Spielstand mit Versionsnummer speichern und prüfen (parseSavedWerewolfSession), Hook useWerewolfSession mit start, advance, undo, end; Tests inklusive JSON-Rundlauf und Verwerfen fremder Versionen; 1504 Tests, tsc -b, eslint sauber. Die Erzählersicht selbst folgt in We-01-61 ff."
         }
       ]
     },
