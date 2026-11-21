@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { ConfigCardHead } from "./ConfigInfo";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import { GeneralSettings, type GeneralRules } from "./GeneralSettings";
 
 /** One wolf count the narrator can pick. */
@@ -59,6 +60,7 @@ export function CoreBlock({
                   }}
                   type="button"
                 >
+                  <WerewolfSymbol id="wolf" size={22} />
                   {option.count}
                 </button>
                 <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
@@ -74,7 +76,10 @@ export function CoreBlock({
           name={t("werewolfConfig.villagers")}
           title={t("werewolfConfig.villagersTitle")}
         />
-        <strong className="ww-stat__value ww-villagers__number">{villagers}</strong>
+        <strong className="ww-stat__value ww-villagers__number">
+          <WerewolfSymbol id="villager" size={24} />
+          {villagers}
+        </strong>
       </div>
       <div aria-label={t("werewolfConfig.seer")} className="ww-card ww-stat" role="group">
         <ConfigCardHead
@@ -82,7 +87,9 @@ export function CoreBlock({
           name={t("werewolfConfig.seer")}
           title={t("werewolfConfig.seer")}
         />
-        <strong className="ww-stat__value">1</strong>
+        <strong className="ww-stat__value">
+          <WerewolfSymbol id="seer" size={24} />1
+        </strong>
       </div>
     </div>
   );

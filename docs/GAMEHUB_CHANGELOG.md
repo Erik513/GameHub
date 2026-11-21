@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-70: Symbole neben den Zahlen der Kopfkarten
+
+- Werwölfe, Dorfbewohner und Seherin zeigen ihr Symbol direkt links neben der Zahl, die Werwölfe neben jeder Auswahlzahl.
+
 ### We-01-69: Erzählersicht ohne leere Flächen
 
 - Die Boxen teilen sich die ganze Fläche: in der Ankündigung zwei gleich große Boxen (verdeckte Karte mit Fragezeichen), beim Handeln die Rollenkarte mit großen Fähigkeitsknöpfen über der Anleitungsbox, am Tag, am Morgen und beim Ausschluss füllt die Box die Fläche. Personenknöpfe füllen ihre Zeilen, die Gewinnergruppen verteilen sich über die Fläche.

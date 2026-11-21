@@ -1698,3 +1698,12 @@
   font-size: var(--text-md);
   font-weight: var(--weight-medium);
 }
+
+/* The symbol of a core role stands directly before its number. */
+.ww-wolves__button,
+.ww-stat__value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
