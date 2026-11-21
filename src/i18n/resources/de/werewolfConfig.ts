@@ -170,9 +170,9 @@ export const werewolfConfigTexts = {
         general:
           "Der Träger wird zu Beginn zufällig unter den Spielern, die keine Werwölfe sind, ausgelost.\nEs fängt die Angriffe der Nacht ab (Wolfsangriff, Gift, Todeszauber): Wird der Träger nachts angegriffen, überlebt er.",
         tasks:
-          "Der Träger wird jede Nacht als Letzter geweckt und gefragt: Amulett behalten oder weitergeben.\nHat es einen Angriff abgefangen, muss er es weitergeben.\nEr darf es jeder lebenden Person geben, auch einem Werwolf.",
+          "Der Träger wird jede Nacht als Letzter geweckt und gefragt: Amulett behalten oder weitergeben.\nHat es einen Angriff abgefangen, muss er es weitergeben.\nEr darf es jeder Person geben, die zu Beginn der Nacht lebte, auch einem Werwolf oder einer Person, die in dieser Nacht stirbt.\nDer neue Träger ist dadurch nicht geschützt: Alle Angriffe der Nacht sind schon entschieden.",
         notes:
-          "Der Träger kann trotzdem sterben:\ndurch Hammer, Abstimmung oder Jägerschuss (so erfährt niemand, wer das Amulett hat)\nwenn sein Liebespartner stirbt (er stirbt aus Liebeskummer mit, das Amulett geht dann verloren)\nals Harter Bursche, wenn er das Amulett erst nach dem Angriff bekam\nStirbt der Träger, egal wodurch, ist das Amulett weg: nach Abstimmung oder Jägerschuss am Tag ebenso wie durch Hammer oder Liebeskummer.\nNur wenn er es im letzten Nachtschritt weitergegeben hat, bevor er stirbt (zum Beispiel am Morgen durch den Hammer), bleibt es dem neuen Träger erhalten.",
+          "Der Träger kann trotzdem sterben:\ndurch Hammer, Abstimmung oder Jägerschuss (so erfährt niemand, wer das Amulett hat)\nwenn sein Liebespartner stirbt (er stirbt aus Liebeskummer mit)\nals Harter Bursche, wenn er das Amulett erst nach dem Angriff bekam\nStirbt der Träger, egal wodurch, ist das Amulett weg. Nur wenn er es im letzten Nachtschritt weitergegeben hat, bevor er stirbt (zum Beispiel am Morgen durch den Hammer), bleibt es dem neuen Träger erhalten.\nHexe und Magier sehen das Wolfsopfer auch dann, wenn das Amulett den Angriff abgefangen hat.",
       },
       apprenticeSeer: {
         general: "Er hat keine Aktion, solange die Seherin lebt.",
@@ -191,7 +191,7 @@ export const werewolfConfigTexts = {
         tasks:
           "Zu Beginn der dritten Nacht nüchtert er aus und erinnert sich an seine wahre Rolle.\nBis dahin ruht seine Fähigkeit.",
         notes:
-          "Seherin und Ermittler erfahren die wahre Rolle schon vorher.\nIst er in Wahrheit ein Werwolf, wacht er erst nach der Enthüllung mit den Wölfen auf.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf oder muss noch schießen, je nach Option des Jägers.",
+          "Seherin und Ermittler erfahren die wahre Rolle schon vorher.\nIst er in Wahrheit ein Werwolf, wacht er erst nach der Enthüllung mit den Wölfen auf.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf oder muss noch schießen, je nach Option des Jägers.\nIst er in Wahrheit der Gerber, gilt dessen Siegbedingung schon vor der Enthüllung: Stirbt er vorher, gewinnt er für sich.",
       },
       guard: {
         general:
@@ -215,18 +215,20 @@ export const werewolfConfigTexts = {
       magician: {
         tasks:
           "Er hat zwei Zauber und bestimmt selbst, was er für jeden einsetzt: Heilung des Wolfsopfers oder Tötung einer beliebigen Person.\nEr darf beide Zauber in einer Nacht einsetzen, auch zweimal dasselbe.",
+        notes:
+          "Er sieht das Wolfsopfer auch dann, wenn das Amulett oder der Leibwächter den Angriff abgefangen hat; heilt er in diesem Fall, ist der Zauber verbraucht.\nEin Todeszauber auf eine geschützte Person ist trotzdem verbraucht.",
       },
       mayor: {
         general: "Er darf seine Rolle nicht preisgeben.",
         options:
           "Doppelte Stimme: Der Erzähler zählt seine Stimme bei Abstimmungen doppelt.\nHammer: Hat er einen Werwolf im Verdacht, darf er ab der zweiten Nacht einmal pro Partie eine lebende Person damit töten wollen. Ist sie ein Werwolf, stirbt sie; hat er eine Dorfrolle gewählt, stirbt er selbst.",
         notes:
-          "Todesfälle durch den Hammer können Hexe und Magier nicht heilen.\nNichts schützt vor dem Hammer, auch das Amulett nicht.",
+          "Todesfälle durch den Hammer können Hexe und Magier nicht heilen, auch nicht die Strafe des Bürgermeisters selbst. Wurde er vorher als Wolfsopfer geheilt, stirbt er bei einem falschen Hammer trotzdem.\nNichts schützt vor dem Hammer, auch das Amulett nicht.",
       },
       paranormalInvestigator: {
         general: "Seine Fähigkeit hat er einmal pro Partie.",
         tasks:
-          "Nachts wählt er eine Person. Dann erfährt er, ob diese Person oder einer ihrer zwei nächsten lebenden Sitznachbarn ein Werwolf ist.",
+          "Nachts wählt er eine Person. Dann erfährt er, ob diese Person oder einer ihrer beiden lebenden Sitznachbarn (links und rechts) ein Werwolf ist.",
       },
       seer: {
         general: "Es gibt immer genau eine Seherin.",
@@ -238,12 +240,14 @@ export const werewolfConfigTexts = {
         options:
           "Selbstwahl erlaubt: Sie darf auch sich selbst stummschalten.\nSelbstwahl verboten: Sie muss eine andere Person wählen.",
         notes:
-          "Eine stumme Person darf weder sprechen noch nominieren oder abstimmen, kann aber nominiert werden.",
+          "Eine stumme Person darf weder sprechen noch nominieren oder abstimmen, kann aber nominiert werden.\nSie darf jede Person wählen, die zu Beginn der Nacht lebte, auch ein Opfer dieser Nacht. Stirbt die gewählte Person am Morgen, ist am Tag niemand stumm.",
       },
       tanner: {
         tasks: "Zu sterben ist sein eigenes Ziel: Dann gewinnt er für sich.",
         options:
           "Sieg bei jedem Ausscheiden: Jeder Tod zählt.\nSieg nur bei Abstimmung: Er muss rausgewählt werden.",
+        notes:
+          "Auch als Trunkenbold gewinnt er schon vor der Enthüllung für sich, wenn die Bedingung erfüllt ist.",
       },
       toughGuy: {
         tasks:
@@ -263,7 +267,7 @@ export const werewolfConfigTexts = {
         tasks:
           "Für die ganze Partie hat sie einen Heiltrank für das Wolfsopfer und einen Gifttrank für eine beliebige Person.",
         notes:
-          "Beide Tränke können in derselben Nacht eingesetzt werden.\nGift auf eine geschützte Person ist trotzdem verbraucht.",
+          "Beide Tränke können in derselben Nacht eingesetzt werden.\nSie sieht das Wolfsopfer auch dann, wenn das Amulett oder der Leibwächter den Angriff abgefangen hat. Heilt sie in diesem Fall, ist der Trank verbraucht, ohne dass sich etwas ändert.\nGift auf eine geschützte Person ist trotzdem verbraucht.",
       },
       wolves: {
         tasks: "Jede Nacht wählen die Werwölfe ein Opfer.",

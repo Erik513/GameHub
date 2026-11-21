@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T18:49:03.023Z",
+    "updatedAt": "2026-11-21T19:01:11.070Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 233,
-      "totalTasks": 295,
-      "percent": 79
+      "completedTasks": 234,
+      "totalTasks": 296,
+      "percent": 79.1
     }
   },
   "environment": {
@@ -1555,6 +1555,12 @@
           "title": "Wolfsempfehlung im variablen Modus berücksichtigt die gezogenen Darf-Rollen",
           "status": "done",
           "validation": "Die Empfehlung rechnet die Stärke des Dorfes aus Muss-Rollen, mittlerem Wert der Darf-Rollen mal mittlerer Rollenzahl und halbem Wert der Zusätze (variableRecommendation.ts); sofort berechnet, steigt mit der Spanne nur an; Tests für 12, 16 und 20 Spieler; 1487 Tests, tsc -b, eslint, Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-58",
+          "title": "Spielanleitung und Rollentexte gegen die aktuelle Logik prüfen und nachziehen",
+          "status": "done",
+          "validation": "Jede Aussage der Rollentexte und der Anleitung mit Code und Regeldokumenten abgeglichen (Deutsch und Englisch); nachgezogen: Reihenfolge der Nacht, Zeitpunkt des Todes, Wolfsopfer für Hexe und Magier, Amulett, Hammer-Strafe, Alte Vettel, Gerber als Trunkenbold, Sitznachbarn des Ermittlers, Empfehlung und Spanne im variablen Modus; 1487 Tests, tsc -b, eslint sauber."
         }
       ]
     },

@@ -168,9 +168,9 @@ export const werewolfConfigTexts = {
         general:
           "The holder is drawn randomly at the start among the players who are not wolves.\nIt stops the attacks of the night (wolf attack, poison, death spell): if the holder is attacked at night, he survives.",
         tasks:
-          "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf it has stopped an attack, he has to pass it on.\nHe may give it to any living player, also to a wolf.",
+          "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf it has stopped an attack, he has to pass it on.\nHe may give it to anyone who was alive at the start of the night, also to a wolf or to a player who dies this night.\nThe new holder is not protected by it: all attacks of the night are already decided.",
         notes:
-          "The holder can still die:\nby the hammer, the vote or the hunter shot (so nobody learns who has the amulet)\nwhen his lover dies (he dies of heartbreak, too, and the amulet is lost)\nas the tough guy, if he got the amulet only after the attack\nIf the holder dies, however it happens, the amulet is gone: after a vote or a hunter shot in the day just as through the hammer or heartbreak.\nOnly if he passed it on in the last step of the night before he dies (for example in the morning through the hammer) does the new holder keep it.",
+          "The holder can still die:\nby the hammer, the vote or the hunter shot (so nobody learns who has the amulet)\nwhen his lover dies (he dies of heartbreak, too)\nas the tough guy, if he got the amulet only after the attack\nIf the holder dies, however it happens, the amulet is gone. Only if he passed it on in the last step of the night before he dies (for example in the morning through the hammer) does the new holder keep it.\nThe witch and the magician see the wolf victim even if the amulet stopped the attack.",
       },
       apprenticeSeer: {
         general: "He has no action while the seer lives.",
@@ -189,7 +189,7 @@ export const werewolfConfigTexts = {
         tasks:
           "At the start of the third night he sobers up and remembers his real role.\nUntil then his ability rests.",
         notes:
-          "The seer and the investigator learn the real role before.\nIf he is really a wolf, he wakes up with the wolves only after the reveal.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.",
+          "The seer and the investigator learn the real role before.\nIf he is really a wolf, he wakes up with the wolves only after the reveal.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.\nIf he is really the tanner, the winning condition of the tanner holds before the reveal: if he dies before, he wins for himself.",
       },
       guard: {
         general:
@@ -211,18 +211,20 @@ export const werewolfConfigTexts = {
       magician: {
         tasks:
           "He has two spells and decides for each one: heal the wolf victim or kill any player.\nHe may use both in one night, also the same twice.",
+        notes:
+          "He sees the wolf victim even if the amulet or the bodyguard stopped the attack; if he heals in that case, the spell is used up.\nA death spell on a protected player is used up anyway.",
       },
       mayor: {
         general: "He must not reveal his role.",
         options:
           "Double vote: The narrator counts his vote twice in votes.\nHammer: If he suspects a wolf, he may try once per game, from the second night on, to kill one living player. A wolf dies; if he picked a village role, he dies himself.",
         notes:
-          "The witch and the magician cannot heal deaths by the hammer.\nNothing protects from the hammer, not even the amulet.",
+          "The witch and the magician cannot heal deaths by the hammer, not even the penalty of the mayor himself. If he was healed as the wolf victim before, he still dies for a wrong hammer.\nNothing protects from the hammer, not even the amulet.",
       },
       paranormalInvestigator: {
         general: "He can use his ability once per game.",
         tasks:
-          "At night he picks a player. Then he learns whether that player or one of the two nearest living neighbours is a wolf.",
+          "At night he picks a player. Then he learns whether that player or one of their two living seat neighbours (left and right) is a wolf.",
       },
       seer: {
         general: "There is always exactly one seer.",
@@ -234,11 +236,12 @@ export const werewolfConfigTexts = {
         options:
           "Self-pick allowed: She may also silence herself.\nSelf-pick forbidden: She must choose another player.",
         notes:
-          "A silenced player may neither speak nor nominate nor vote, but can still be nominated.",
+          "A silenced player may neither speak nor nominate nor vote, but can still be nominated.\nShe may choose anyone who was alive at the start of the night, also a victim of this night. If the chosen player dies in the morning, nobody is silenced in the day.",
       },
       tanner: {
         tasks: "To die is his own goal: then he wins for himself.",
         options: "Win on any death: Every death counts.\nWin by vote only: He has to be voted out.",
+        notes: "As the drunk, too, he wins for himself before the reveal if the condition is met.",
       },
       toughGuy: {
         tasks:
@@ -257,7 +260,7 @@ export const werewolfConfigTexts = {
         tasks:
           "For the whole game she has one healing potion for the wolf victim and one poison for any player.",
         notes:
-          "Both potions can be used in the same night.\nPoison on a protected player is used up anyway.",
+          "Both potions can be used in the same night.\nShe sees the wolf victim even if the amulet or the bodyguard stopped the attack. If she heals in that case, the potion is used up and nothing changes.\nPoison on a protected player is used up anyway.",
       },
       wolves: {
         tasks: "Each night the wolves choose a victim.",
