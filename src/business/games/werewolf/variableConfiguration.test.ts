@@ -327,3 +327,50 @@ describe("the villagers the draw can leave", () => {
     expect(view.villagers.maximum).toBe(14 - 3 - 1 - 0);
   });
 });
+
+describe("the recommended wolf count", () => {
+  const everything = (players: number, minimum: number, maximum: number) => {
+    let draft = emptyVariableDraft;
+    for (const entry of describeVariableConfiguration(players, draft).entries) {
+      draft = setVariableEntryState(draft, entry.entry.id, "may");
+    }
+    draft = setVariableItemState(setVariableItemState(draft, "amulet", "may"), "drunk", "may");
+    return setVariableRoleRange(draft, minimum, maximum);
+  };
+  const recommended = (players: number, draft: VariableDraft) =>
+    describeVariableConfiguration(players, draft).wolf.options.find((option) => option.recommended)
+      ?.count;
+
+  it("counts the roles that are drawn, not only the must roles", () => {
+    // Twenty players: a draw that surely brings eleven special roles recommends more wolves than no special role.
+    const none = recommended(20, emptyVariableDraft);
+    const many = recommended(20, everything(20, 11, 11));
+    expect(none).toBeDefined();
+    expect(many).toBeDefined();
+    expect(many!).toBeGreaterThan(none!);
+  });
+
+  it.each([12, 16, 20])(
+    "does not jump when the most roles change one by one, but only rises (%s players)",
+    (players) => {
+      const base = everything(players, 0, 0);
+      const counts: number[] = [];
+      for (let maximum = 1; maximum <= 12; maximum += 1) {
+        counts.push(recommended(players, setVariableRoleRange(base, 0, maximum))!);
+      }
+      // Never a step down, and never a step of more than one wolf.
+      for (let index = 1; index < counts.length; index += 1) {
+        expect(counts[index]!).toBeGreaterThanOrEqual(counts[index - 1]!);
+        expect(counts[index]! - counts[index - 1]!).toBeLessThanOrEqual(1);
+      }
+    },
+  );
+
+  it("is the same every time for the same selection, and does not need long", () => {
+    const draft = everything(20, 6, 11);
+    const start = performance.now();
+    const first = recommended(20, draft);
+    expect(recommended(20, draft)).toBe(first);
+    expect(performance.now() - start).toBeLessThan(3000);
+  });
+});

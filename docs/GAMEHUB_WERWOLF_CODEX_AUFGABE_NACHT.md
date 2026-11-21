@@ -103,3 +103,7 @@ Die persönliche Siegbedingung des Gerbers gilt schon vor der Enthüllung des Tr
 ### Rollen nach dem Ausscheiden (We-01-53)
 
 Es gibt keine Aufdeck-Einstellung mehr. Ansagen enthalten nur Namen; es werden nur lebende Rollen geweckt (siehe oben und die Umsetzung We-03-68).
+
+### Wolfsempfehlung im variablen Modus (We-01-57)
+
+`recommendVariableWerewolfCount` bewertet weiter nur die Muss-Rollen (so dokumentiert). Die Oberfläche braucht aber eine Empfehlung, die auch die gezogenen Darf-Rollen berücksichtigt (Hinweis des Auftraggebers: bei 20 Spielern und genau elf gezogenen Rollen empfahl sie nur 3 Wölfe). Dafür steht jetzt `recommendWolfCountForSelection` in `variableRecommendation.ts`, nach dem Rechenweg des Auftraggebers: Stärke des Dorfes = Wert der Muss-Rollen (und Muss-Zusätze) + Durchschnittswert aller Rollen auf Darf × mittlere Zahl der gezogenen Rollen (Mittelwert von Mindestens und Höchstens) + halber Wert jedes Zusatzes auf Darf. Die Bewertung der Logik ist additiv (`scoreWerewolfVillage`), deshalb braucht es keine Ziehung. Empfohlen wird die Wolfszahl, bei der `difference` der Muss-Aufstellung plus diese Veränderung dem Betrag nach am kleinsten ist (Gleichstand wie in der Logik: näher an der Standardzahl, dann die kleinere). Nicht berücksichtigt sind Bonuspunkte für Rollenpaare unter den gezogenen Rollen. Wenn Codex die Bewertung in der Logik selbst auf gezogene Rollen ausdehnen will, kann die Funktion durch einen Aufruf ersetzt werden.

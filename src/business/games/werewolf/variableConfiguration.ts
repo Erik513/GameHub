@@ -15,6 +15,7 @@ import {
   type WerewolfItem,
   type WerewolfSelectionRange,
 } from "./variableSetup";
+import { recommendWolfCountForSelection } from "./variableRecommendation";
 
 /** Where an entry stands: it must be in the game, it may be (the system draws), or it should not be. */
 export type VariableState = "may" | "must" | "not";
@@ -317,6 +318,30 @@ const emptyView = (supported: boolean): VariableConfigurationView => ({
   wolf: { choice: false, options: [] },
 });
 
+/**
+ * The wolf count that is recommended: the rating of the logic for the roles that must be in the game, corrected by
+ * the roles and extras that are drawn (see `recommendWolfCountForSelection`). Where that cannot be worked out, the
+ * recommendation of the logic for the "must" roles alone has to do.
+ */
+function recommendedWolfCount(
+  players: number,
+  selection: VariableWerewolfSelection,
+  settings: VariableRules,
+): number | undefined {
+  const rated = recommendWolfCountForSelection(players, selection, settings);
+  if (rated !== undefined) return rated;
+  const plain = recommendVariableWerewolfCount(
+    players,
+    {
+      requiredItems: selection.requiredItems ?? [],
+      requiredRoles: selection.requiredRoles ?? [],
+      ...(selection.roleOptions ? { roleOptions: selection.roleOptions } : {}),
+    },
+    settings,
+  );
+  return plain.ok ? plain.recommendedWolfCount : undefined;
+}
+
 /** What the screen shows for this number of players: entries, locks, wolf counts and the possible range. */
 export function describeVariableConfiguration(
   players: number,
@@ -378,20 +403,12 @@ function viewOf(
     return [{ item, lock, mustBlocked, state }];
   });
   const counts = availableWerewolfCounts(players);
-  const recommended = recommendVariableWerewolfCount(
-    players,
-    {
-      requiredItems: selection.requiredItems ?? [],
-      requiredRoles: selection.requiredRoles ?? [],
-      ...(selection.roleOptions ? { roleOptions: selection.roleOptions } : {}),
-    },
-    settings,
-  );
+  const recommendedCount = recommendedWolfCount(players, selection, settings);
   const chosen = selection.wolfCounts;
   const wolfOptions = counts.map((count) => ({
     canStart: analysis.wolfCounts.find((info) => info.wolfCount === count)?.canStart ?? false,
     count,
-    recommended: recommended.ok && recommended.recommendedWolfCount === count,
+    recommended: recommendedCount === count,
     selected: chosen.includes(count),
   }));
   const possible = analysis.possibleRoleRange;

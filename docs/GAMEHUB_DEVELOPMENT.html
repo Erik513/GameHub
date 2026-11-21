@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T18:15:04.269Z",
+    "updatedAt": "2026-11-21T18:49:03.023Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 232,
-      "totalTasks": 294,
-      "percent": 78.9
+      "completedTasks": 233,
+      "totalTasks": 295,
+      "percent": 79
     }
   },
   "environment": {
@@ -1549,6 +1549,12 @@
           "title": "Feinschliff der variablen Konfiguration: Abstand im Spannenstrich, Höchstens nie 0, schnelleres Antippen",
           "status": "done",
           "validation": "Höchstens bleibt bei vorhandenen Darf-Rollen mindestens 1 (Logik und Knopf), Zwischenspeicher für die Aufzählung der Möglichkeiten, Ansicht je Modus nur einmal berechnet; im Browser gemessen (etwa 25 Millisekunden je Antippen nach dem Warmlaufen, vorher bis 200); 1482 Tests, tsc -b, eslint sauber."
+        },
+        {
+          "id": "We-01-57",
+          "title": "Wolfsempfehlung im variablen Modus berücksichtigt die gezogenen Darf-Rollen",
+          "status": "done",
+          "validation": "Die Empfehlung rechnet die Stärke des Dorfes aus Muss-Rollen, mittlerem Wert der Darf-Rollen mal mittlerer Rollenzahl und halbem Wert der Zusätze (variableRecommendation.ts); sofort berechnet, steigt mit der Spanne nur an; Tests für 12, 16 und 20 Spieler; 1487 Tests, tsc -b, eslint, Schichtprüfung sauber."
         }
       ]
     },
