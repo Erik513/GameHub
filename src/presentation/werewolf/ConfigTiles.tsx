@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 import type { FixedItemView } from "../../business/games/werewolf/fixedConfiguration";
 import { ConfigInfo, type ConfigInfoId } from "./ConfigInfo";
+import { symbolOfInfo } from "./infoSymbol";
+import type { SymbolId } from "./symbols/catalog";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import { useLockHint } from "./useLockHint";
 
 interface RoleTileProps {
@@ -17,6 +20,8 @@ interface RoleTileProps {
   readonly showInfo?: boolean;
   /** The second line: the special text, for example the option of the role. */
   readonly sub?: string;
+  /** The symbol before the name; by default the one of the entry. */
+  readonly symbol?: SymbolId;
 }
 
 /**
@@ -37,6 +42,7 @@ export function RoleTile({
   selected,
   showInfo = true,
   sub,
+  symbol,
 }: RoleTileProps) {
   const lockHint = useLockHint();
   // Not enough players is told in the window of the role (a box next to its name); the button only names the
@@ -58,6 +64,7 @@ export function RoleTile({
         />
         <span>
           <strong className="ww-tile__main">
+            <WerewolfSymbol id={symbol ?? symbolOfInfo(infoId)} size={18} />
             {name}
             {/* Why the role is locked stands in brackets next to the name; the second line stays for the text of the role. */}
             {hint && <em className="ww-tile__lock"> ({hint})</em>}

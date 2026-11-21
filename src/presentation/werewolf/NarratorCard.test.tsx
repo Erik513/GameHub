@@ -27,8 +27,8 @@ describe("NarratorCard", () => {
     const { container } = await inLanguage("en", <NarratorCard card={witch} />);
     expect(screen.getByText("Witch")).toBeTruthy();
     expect(screen.getByText("Anna")).toBeTruthy();
-    expect(container.querySelectorAll(".ww-card__slot")).toHaveLength(3);
-    expect(container.querySelectorAll('.ww-card__slot[data-empty="true"]')).toHaveLength(1);
+    expect(container.querySelectorAll(".ww-role-card__slot")).toHaveLength(3);
+    expect(container.querySelectorAll('.ww-role-card__slot[data-empty="true"]')).toHaveLength(1);
     expect(screen.getByLabelText("Protective amulet")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Heal: ready" })).toHaveProperty("disabled", false);
     expect(screen.getByRole("button", { name: "Poison: not possible" })).toHaveProperty(
@@ -72,8 +72,8 @@ describe("NarratorCard", () => {
     const cover: Card = { ...witch, actors: [], cover: true };
     const { container } = await inLanguage("en", <NarratorCard card={cover} />);
     expect(container.querySelector("small")).toBeNull();
-    expect(container.querySelector(".ww-card__abilities")).not.toBeNull();
+    expect(container.querySelector(".ww-role-card__abilities")).not.toBeNull();
     const plain = await inLanguage("en", <NarratorCard card={{ ...witch, abilities: [] }} />);
-    expect(plain.container.querySelector(".ww-card__abilities")).toBeNull();
+    expect(plain.container.querySelector(".ww-role-card__abilities")).toBeNull();
   });
 });

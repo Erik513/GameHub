@@ -31,6 +31,7 @@ export const werewolfTexts = {
     circleTitle: "Sitzkreis",
     move: "{{player}} verschieben",
     start: "Spiel starten",
-    startSoon: "Die Rollenverteilung folgt im nächsten Entwicklungsschritt.",
+    startFailed:
+      "Diese Rollen lassen sich mit dieser Spielerzahl nicht spielen. Ändere die Konfiguration.",
   },
 };

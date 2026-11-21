@@ -115,11 +115,13 @@ export function FixedRoles({ draft, modeSwitch, onChange, top, view }: FixedRole
         ? entry.roles.map((role) => ({
             label: undefined,
             name: roleName(role),
+            symbol: role,
             value: role,
           }))
         : variantValues[entry.id as keyof typeof variantValues].map((value) => ({
             label: t(`werewolfConfig.variants.${value}`),
             name,
+            symbol: undefined,
             value,
           }));
     const pick = (value: string | null) =>
@@ -157,6 +159,7 @@ export function FixedRoles({ draft, modeSwitch, onChange, top, view }: FixedRole
                 selected={selected}
                 showInfo={false}
                 {...(choice.label === undefined ? {} : { sub: choice.label })}
+                {...(choice.symbol === undefined ? {} : { symbol: choice.symbol })}
               />
             );
           })}

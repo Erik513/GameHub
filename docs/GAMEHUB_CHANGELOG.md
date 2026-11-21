@@ -2,6 +2,14 @@
 
 ## 2026-11-21
 
+### We-01-63: Rollenverteilung als Karte, Symbole bei den Rollen
+
+- Rollenverteilung neu: eine Karte je Person. Erste Ansicht: Name und Hinweis, Tippen zeigt die Rolle (Symbol, Name, Fähigkeitssymbole, Info-Knopf, deutlicher Hinweis auf das Schutzamulett), erneutes Tippen verdeckt sie; der Trunkenbold sieht den Trunkenbold. Zurück und Weiter bleiben unten. Symbole stehen jetzt auch vor den festen Rollen, im Titel der Info-Fenster und in der Anleitung.
+
+### We-01-62: Erzählersicht, Schritte 3 und 4 (untere Box, Zurück/Weiter)
+
+- „Spiel starten“ verteilt die Rollen und öffnet die Erzählersicht. Obere Box (Rollenkarte, am Anfang verdeckt) und untere Box (Ansage, Tippen, Spielerauswahl, Rückgängig). Unten nur „Zurück“ und „Weiter“: Zurück geht genau einen Schritt, Weiter nur bei vollständigem Schritt. Auswahl bleibt lokal, das Spiel bewegt sich erst mit Weiter. Tarnaufrufe zeigen je Fähigkeit „fragen, dann nicht möglich zeigen“. Spiel beenden mit Rückfrage; Spielstand bleibt nach Neuladen erhalten. Tag und Abstimmung folgen. 1529 Tests, tsc -b, eslint, Schichtprüfung sauber.
+
 ### We-01-61: Erzählersicht, Schritt 2 (obere Box)
 
 - Rollenkarte der Erzählersicht: Rollensymbol und Name der Wachen, drei Plätze für Wirkungen von außen, große Fähigkeitsknöpfe (grün = nutzbar, rot = verbraucht oder nicht möglich), Magier mit Zähler an beiden Zaubern, Tarnaufruf ohne Namen und mit roten Knöpfen. Modell `describeNarratorCard` in der Logik, Komponente `NarratorCard`. Noch nicht im Spiel eingebunden. 1516 Tests, tsc -b, eslint, Schichtprüfung sauber.

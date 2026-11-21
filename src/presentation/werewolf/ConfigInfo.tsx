@@ -6,7 +6,9 @@ import type {
   FixedLock,
 } from "../../business/games/werewolf/fixedConfiguration";
 import { InfoButton } from "../game-kit";
+import { symbolOfInfo } from "./infoSymbol";
 import { teamOf } from "./roleTeam";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 /** The entries that have an explanation. */
 export type ConfigInfoId = FixedAddonId | FixedItemId | "seer" | "villagers" | "wolves";
@@ -125,26 +127,23 @@ export function ConfigInfo({
       subtitle={team}
       title={name}
       {...(open === undefined ? {} : { onOpenChange, open })}
-      // From how many players the role can be taken: a green box while it can, a red one while it cannot.
-      {...(minimum > 0
-        ? {
-            titleExtra: (
-              <>
-                <span
-                  className="ww-available"
-                  data-state={lock === "minimumPlayers" ? "locked" : "ok"}
-                >
-                  {t("werewolfConfig.availableFrom", { count: minimum })}
-                </span>
-                {hammerOk !== undefined && (
-                  <span className="ww-available" data-state={hammerOk ? "ok" : "locked"}>
-                    {t("werewolfConfig.hammerFrom", { count: 10 })}
-                  </span>
-                )}
-              </>
-            ),
-          }
-        : {})}
+      // The symbol of the role stands next to the title; a green or red box tells from how many players the role can
+      // be taken.
+      titleExtra={
+        <>
+          <WerewolfSymbol id={symbolOfInfo(id)} size={28} />
+          {minimum > 0 && (
+            <span className="ww-available" data-state={lock === "minimumPlayers" ? "locked" : "ok"}>
+              {t("werewolfConfig.availableFrom", { count: minimum })}
+            </span>
+          )}
+          {minimum > 0 && hammerOk !== undefined && (
+            <span className="ww-available" data-state={hammerOk ? "ok" : "locked"}>
+              {t("werewolfConfig.hammerFrom", { count: 10 })}
+            </span>
+          )}
+        </>
+      }
     />
   );
 }

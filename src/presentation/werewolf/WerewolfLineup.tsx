@@ -15,6 +15,8 @@ interface WerewolfLineupProps {
   readonly lineup: Lineup;
   readonly onChange: (lineup: Lineup) => void;
   readonly onOpenConfiguration: () => void;
+  /** Deals the roles and starts the game; false when the setup cannot be played. */
+  readonly onStart: () => boolean;
 }
 
 /**
@@ -22,7 +24,12 @@ interface WerewolfLineupProps {
  * and "Seats") and the start button at the bottom. The start can always be pressed; when something is missing (players,
  * a narrator, six to twenty players besides the narrator) a notification above the bar says what.
  */
-export function WerewolfLineup({ lineup, onChange, onOpenConfiguration }: WerewolfLineupProps) {
+export function WerewolfLineup({
+  lineup,
+  onChange,
+  onOpenConfiguration,
+  onStart,
+}: WerewolfLineupProps) {
   const { t } = useTranslation();
   const [notice, setNotice] = useState<{ readonly id: number; readonly text: string }>();
   const issues = werewolfLineupIssues(lineup);
@@ -34,12 +41,13 @@ export function WerewolfLineup({ lineup, onChange, onOpenConfiguration }: Werewo
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!problem && onStart()) return;
     const text =
       lineup.participants.length === 0
         ? t("werewolfLineup.noPlayers")
         : first
           ? issueText(first)
-          : t("werewolfLineup.startSoon");
+          : t("werewolfLineup.startFailed");
     setNotice((current) => ({ id: (current?.id ?? 0) + 1, text }));
   }
 

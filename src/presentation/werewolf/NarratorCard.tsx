@@ -25,18 +25,18 @@ export function NarratorCard({ card, active = null, onAbility }: NarratorCardPro
   const roleName = t(`werewolfSymbols.items.${card.role}.name`);
   const slots = Array.from({ length: slotCount }, (_, index) => card.effects[index] ?? null);
   return (
-    <section aria-label={roleName} className="ww-card" data-cover={card.cover}>
-      <header className="ww-card__head">
-        <span className="ww-card__role">
+    <section aria-label={roleName} className="ww-role-card" data-cover={card.cover}>
+      <header className="ww-role-card__head">
+        <span className="ww-role-card__role">
           <WerewolfSymbol id={card.role} size={40} />
         </span>
-        <span className="ww-card__who">
+        <span className="ww-role-card__who">
           <strong>{roleName}</strong>
           {card.actors.length > 0 && <small>{card.actors.join(", ")}</small>}
         </span>
-        <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-card__slots">
+        <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
           {slots.map((effect, index) => (
-            <li className="ww-card__slot" data-empty={effect === null} key={index}>
+            <li className="ww-role-card__slot" data-empty={effect === null} key={index}>
               {effect && (
                 <WerewolfSymbol
                   id={effect}
@@ -49,7 +49,7 @@ export function NarratorCard({ card, active = null, onAbility }: NarratorCardPro
         </ul>
       </header>
       {card.abilities.length > 0 && (
-        <div className="ww-card__abilities">
+        <div className="ww-role-card__abilities">
           {card.abilities.map((ability) => {
             const name = t(`werewolfNarrator.ability.${ability.id}`);
             return (

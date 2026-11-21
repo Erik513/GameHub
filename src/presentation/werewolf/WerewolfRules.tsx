@@ -6,6 +6,7 @@ import { ConfigInfoParts, type ConfigInfoId } from "./ConfigInfo";
 import { teamOf } from "./roleTeam";
 import { symbolGroups, symbols } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
+import { symbolOfInfo } from "./infoSymbol";
 
 interface WerewolfRulesDialogProps {
   onClose: () => void;
@@ -59,7 +60,8 @@ export function WerewolfRulesDialog({ onClose, open }: WerewolfRulesDialogProps)
   const role = (id: ConfigInfoId, name: string, minimum?: number) => (
     <section aria-label={name} className="ww-rules-role" key={id}>
       <h4>
-        <span>{name}</span> <small className="ww-rules-role__team">({teamOf(id, t)})</small>
+        <WerewolfSymbol id={symbolOfInfo(id)} size={22} /> <span>{name}</span>{" "}
+        <small className="ww-rules-role__team">({teamOf(id, t)})</small>
       </h4>
       {minimum !== undefined && (
         <p className="ww-rules-role__meta">

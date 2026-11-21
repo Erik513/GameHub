@@ -1,0 +1,83 @@
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ConfigInfo } from "./ConfigInfo";
+import { abilitiesOfRole, infoOfRole, type DealtRole } from "./roleAbilities";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
+
+interface DealCardProps {
+  /** The player who looks at the card now. */
+  readonly name: string;
+  /** What the player sees: the drunk sees the drunk, never the real role. */
+  readonly role: DealtRole;
+  /** The player holds the protective amulet. */
+  readonly amulet: boolean;
+  readonly mayor: "doubleVote" | "hammer";
+}
+
+/**
+ * The card of the role reveal. The first view names the player and says what to do; a tap shows the role (symbol,
+ * name, abilities, an "i" that explains the role) and a second tap covers it again, so the device can be passed on.
+ * The card is covered whenever the app goes to the background.
+ */
+export function DealCard({ name, role, amulet, mayor }: DealCardProps) {
+  const { t } = useTranslation();
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const cover = () => {
+      if (document.hidden) setShown(false);
+    };
+    document.addEventListener("visibilitychange", cover);
+    return () => document.removeEventListener("visibilitychange", cover);
+  }, []);
+  const roleName = t(`werewolfSymbols.items.${role}.name`);
+  const abilities = abilitiesOfRole(role, mayor);
+  return (
+    <section aria-label={name} className="ww-deal" data-shown={shown}>
+      <button
+        aria-pressed={shown}
+        className="ww-deal__face"
+        onClick={() => setShown((current) => !current)}
+        type="button"
+      >
+        {shown ? (
+          <>
+            <span className="ww-deal__role">
+              <WerewolfSymbol id={role} size={64} />
+            </span>
+            <strong className="ww-deal__name">{roleName}</strong>
+            <span className="ww-deal__abilities">
+              {abilities.length === 0 ? (
+                <small>{t("werewolfNarrator.deal.noAbility")}</small>
+              ) : (
+                abilities.map((entry) => (
+                  <span className="ww-deal__ability" key={entry.symbol}>
+                    <WerewolfSymbol id={entry.symbol} size={28} />
+                    <small>
+                      {entry.ability
+                        ? t(`werewolfNarrator.ability.${entry.ability}`)
+                        : t(`werewolfSymbols.items.${entry.symbol}.name`)}
+                    </small>
+                  </span>
+                ))
+              )}
+            </span>
+            {amulet && (
+              <span className="ww-deal__amulet">
+                <WerewolfSymbol id="amulet" size={24} />
+                <strong>{t("werewolfNarrator.deal.amulet")}</strong>
+              </span>
+            )}
+            <small>{t("werewolfNarrator.deal.hide")}</small>
+          </>
+        ) : (
+          <>
+            <strong className="ww-deal__name">{name}</strong>
+            <span>{t("werewolfNarrator.deal.hint")}</span>
+            <small>{t("werewolfNarrator.deal.show")}</small>
+          </>
+        )}
+      </button>
+      {shown && <ConfigInfo className="ww-deal__info" id={infoOfRole(role)} name={roleName} />}
+    </section>
+  );
+}

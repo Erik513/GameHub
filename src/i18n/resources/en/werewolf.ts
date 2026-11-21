@@ -30,6 +30,7 @@ export const werewolfTexts = {
     circleTitle: "Seat circle",
     move: "Move {{player}}",
     start: "Start game",
-    startSoon: "The role assignment follows in the next development step.",
+    startFailed:
+      "These roles cannot be played with this number of players. Change the configuration.",
   },
 };

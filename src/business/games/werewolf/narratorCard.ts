@@ -135,7 +135,7 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
         },
       ];
     case "seer":
-      return [{ available: true, id: "inspect", symbol: "seer" }];
+      return [{ available: state.status === "seer", id: "inspect", symbol: "seer" }];
     case "paranormalInvestigator":
       return [{ available: !state.investigationUsed, id: "investigate", symbol: "investigation" }];
     case "witch":

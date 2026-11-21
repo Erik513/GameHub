@@ -1087,7 +1087,7 @@
 }
 
 /* The upper box of the narrator view: the awake role, three slots for effects, the abilities as large buttons. */
-.ww-card {
+.ww-role-card {
   display: grid;
   gap: var(--space-3);
   padding: var(--space-3);
@@ -1096,14 +1096,14 @@
   background: var(--color-surface);
 }
 
-.ww-card__head {
+.ww-role-card__head {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: var(--space-3);
 }
 
-.ww-card__role {
+.ww-role-card__role {
   display: grid;
   place-items: center;
   width: 64px;
@@ -1113,17 +1113,17 @@
   background: var(--color-surface-muted);
 }
 
-.ww-card__who {
+.ww-role-card__who {
   display: grid;
   min-width: 0;
 }
 
-.ww-card__who small {
+.ww-role-card__who small {
   color: var(--color-ink-muted);
   overflow-wrap: anywhere;
 }
 
-.ww-card__slots {
+.ww-role-card__slots {
   display: flex;
   gap: var(--space-2);
   margin: 0;
@@ -1131,7 +1131,7 @@
   list-style: none;
 }
 
-.ww-card__slot {
+.ww-role-card__slot {
   display: grid;
   place-items: center;
   width: 36px;
@@ -1140,11 +1140,11 @@
   border-radius: var(--radius-sm);
 }
 
-.ww-card__slot[data-empty="true"] {
+.ww-role-card__slot[data-empty="true"] {
   border-style: dashed;
 }
 
-.ww-card__abilities {
+.ww-role-card__abilities {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
@@ -1195,4 +1195,184 @@
   font-size: var(--text-xs);
   line-height: 16px;
   text-align: center;
+}
+
+/* The narrator view: the card on top, the guide below it, back and next at the bottom edge. */
+.ww-night__stage {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: var(--space-3);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Back and next: two equally wide buttons at the bottom edge. */
+.ww-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.ww-nav .button {
+  width: 100%;
+  min-height: 4rem;
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.ww-role-card--hidden {
+  min-height: 108px;
+  border-style: dashed;
+  background: var(--color-surface-muted);
+}
+
+.ww-guide {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+  text-align: left;
+}
+
+.ww-guide--tap {
+  min-height: 120px;
+  align-content: center;
+  justify-items: center;
+  border: 2px solid var(--color-accent);
+  text-align: center;
+  cursor: pointer;
+}
+
+.ww-guide__text {
+  font-size: var(--text-lg);
+}
+
+.ww-guide small {
+  color: var(--color-ink-muted);
+}
+
+.ww-guide__rows {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-guide__rows li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ww-guide__people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ww-person {
+  min-height: 44px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ww-person[aria-pressed="true"] {
+  border: 2px solid var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.ww-guide__undo {
+  justify-self: start;
+}
+
+/* A symbol stands in front of a name in a tile, in the window of a role and in the rules. */
+.ww-tile__main .ww-symbol {
+  margin-right: var(--space-1);
+  vertical-align: -3px;
+}
+
+.ww-rules-role h4 .ww-symbol {
+  vertical-align: -4px;
+}
+
+/* The card of the role reveal: the name first, the role after a tap; the "i" stands in the corner of the role. */
+.ww-deal {
+  position: relative;
+}
+
+.ww-deal__face {
+  display: grid;
+  width: 100%;
+  min-height: 280px;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.ww-deal__face small {
+  color: var(--color-ink-muted);
+}
+
+.ww-deal__name {
+  font-size: var(--text-xl, 1.5rem);
+  overflow-wrap: anywhere;
+}
+
+.ww-deal__role {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.ww-deal__abilities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.ww-deal__ability {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+.ww-deal__amulet {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  color: var(--color-warning);
+}
+
+.ww-deal__info {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
 }

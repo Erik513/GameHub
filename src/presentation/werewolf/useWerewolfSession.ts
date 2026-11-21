@@ -59,6 +59,11 @@ export function useWerewolfSession() {
     },
     [saved, setSaved],
   );
+  /** Takes over a game state that the narrator view moved on. */
+  const replace = useCallback(
+    (next: WerewolfSession) => setSaved(serializeWerewolfSession(next)),
+    [setSaved],
+  );
   const end = useCallback(() => setSaved(null), [setSaved]);
-  return { advance, end, session, start, undo };
+  return { advance, end, replace, session, start, undo };
 }

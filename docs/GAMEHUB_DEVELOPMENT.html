@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T21:10:00.000Z",
+    "updatedAt": "2026-11-21T23:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 237,
-      "totalTasks": 299,
-      "percent": 79.3
+      "completedTasks": 239,
+      "totalTasks": 301,
+      "percent": 79.4
     }
   },
   "environment": {
@@ -1579,6 +1579,18 @@
           "title": "Erzählersicht, Schritt 2: obere Box (Rollenkarte mit Symbol, drei Wirkungsplätzen und Fähigkeitsknöpfen grün/rot)",
           "status": "done",
           "validation": "Logikmodell describeNarratorCard (Rolle, Wache, Tarnaufruf, Fähigkeiten mit Verfügbarkeit und Zähler, höchstens drei Wirkungen) und Komponente NarratorCard (Deutsch und Englisch); Magier mit Zähler an beiden Zaubern, Tarnaufruf alle Knöpfe rot; noch nicht im Spiel eingebunden, das folgt mit der unteren Box; 1516 Tests, tsc -b, eslint, Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-62",
+          "title": "Erzählersicht, Schritte 3 und 4: untere Box (Anleitung, Spielerauswahl, Rückgängig), Zurück/Weiter, Spielstart aus der Aufstellung",
+          "status": "done",
+          "validation": "Reines Anleitungsmodell narratorGuide (Phasen Aufwecken, Handeln, Einschlafen, Rollenverteilung; Auswahl bleibt lokal und geht erst mit Weiter ans Spiel; Zurück genau ein Schritt, Bestätigung bei Morgen und Ausschluss); Oberfläche NarratorView, GuideBox, Hook useNarratorGuide; Spiel starten in der Aufstellung, Spiel beenden mit Rückfrage; Fortsetzen nach Neuladen im Browser geprüft; Tarnaufruf mit Zeilen je Fähigkeit; im Browser bei 390 Pixel Breite bis zum Ergebnis der Seherin durchgespielt; Tag (Abstimmung, Jäger) und Amulett-Ende folgen; 1529 Tests, tsc -b, eslint, Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-63",
+          "title": "Rollenverteilung als Karte (Name, Tippen zeigt Rolle, zweites Tippen verdeckt, Info, Amulett, Trunkenbold) und Symbole in Rollenknöpfen, Info-Fenstern und Anleitung",
+          "status": "done",
+          "validation": "Ein Schritt je Person (Zurück und Weiter bleiben unten), Karte mit zwei Ansichten, Rollensymbol, Fähigkeitssymbole, Info-Fenster, deutlicher Hinweis auf das Schutzamulett, Trunkenbold zeigt den Trunkenbold, Karte wird beim Wechsel in den Hintergrund verdeckt; Symbole vor den Rollennamen der festen Rollen, im Titel der Info-Fenster und in der Anleitung; im Browser bei 390 Pixel Breite angesehen; 1531 Tests, tsc -b, eslint, Schichtprüfung sauber. Noch offen: obere Leiste (Sonne/Mond, Übersicht, Schließen), Tag."
         }
       ]
     },

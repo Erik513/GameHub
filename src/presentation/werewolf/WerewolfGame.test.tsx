@@ -61,10 +61,17 @@ it.each(["en", "de"] as const)(
     await addPlayers(user, language);
     await user.click(start());
     expect(await screen.findByText(startProblems[language].narrator)).toBeInTheDocument();
-    // Ready: a note that more follows.
+    // Ready: the game starts with the role reveal of the narrator view; ending it leads back to the line-up.
     await chooseNarrator(user, "Anna", chooseName[language]);
     await user.click(start());
-    expect(await screen.findByText(/role assignment|Rollenverteilung/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        /Hand the device to this person|Gib das Gerät an diese Person weiter/,
+      ),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /End game|Spiel beenden/ }));
+    await user.click(screen.getByRole("button", { name: /Yes, end it|Ja, beenden/ }));
+    expect(await screen.findByRole("button", { name: startName[language] })).toBeInTheDocument();
   },
 );
 

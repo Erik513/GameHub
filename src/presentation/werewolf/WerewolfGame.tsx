@@ -18,6 +18,8 @@ import {
 import { useGameRulesButton } from "../GameChrome";
 import { usePersistentState } from "../game-kit";
 import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
+import { NarratorView } from "./NarratorView";
+import { useWerewolfSession } from "./useWerewolfSession";
 import { WerewolfLineup } from "./WerewolfLineup";
 import { WerewolfRulesDialog } from "./WerewolfRules";
 
@@ -68,12 +70,15 @@ export function WerewolfGame() {
     () => normalizeVariableDraft(lineup.seats.length, variableDraft),
     [lineup.seats.length, variableDraft],
   );
+  const game = useWerewolfSession();
   const [configuring, setConfiguring] = useState(false);
   // The rules stay reachable from the header in both views.
   const [rulesOpen, setRulesOpen] = useState(false);
   useGameRulesButton(true, () => setRulesOpen(true));
 
-  const view = configuring ? (
+  const view = game.session ? (
+    <NarratorView onEnd={game.end} onSession={game.replace} session={game.session} />
+  ) : configuring ? (
     <WerewolfConfiguration
       draft={draft}
       onChange={setDraft}
@@ -93,6 +98,15 @@ export function WerewolfGame() {
         setDraft((current) => normalizeFixedDraft(next.seats.length, current));
       }}
       onOpenConfiguration={() => setConfiguring(true)}
+      onStart={() =>
+        game.start({
+          fixedDraft: draft,
+          lineup,
+          mode,
+          random: Math.random,
+          variableDraft: normalizedVariable,
+        })
+      }
     />
   );
   return (
