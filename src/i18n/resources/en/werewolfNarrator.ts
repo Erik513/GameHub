@@ -10,6 +10,7 @@ export const werewolfNarratorTexts = {
       show: "Tap: show the role",
     },
     bar: {
+      closeConfirm: "End?",
       rules: "Rules",
       day: "Day {{count}}",
       night: "Night {{count}}",
@@ -113,8 +114,6 @@ export const werewolfNarratorTexts = {
       coverTitle: "Ask anyway",
       coverRow: "{{ability}}: ask, then show “not possible”",
       nobody: "Nobody",
-      confirmEnd: "The running game will be ended. End it?",
-      confirmEndYes: "Yes, end it",
       undo: "Undo",
       back: "Back",
       next: "Next",

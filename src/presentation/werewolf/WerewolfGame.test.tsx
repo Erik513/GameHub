@@ -70,7 +70,8 @@ it.each(["en", "de"] as const)(
       ),
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /End game|Spiel beenden/ }));
-    await user.click(screen.getByRole("button", { name: /Yes, end it|Ja, beenden/ }));
+    await new Promise((resolve) => setTimeout(resolve, 450));
+    await user.click(screen.getByRole("button", { name: /Tap again|Nochmal tippen/ }));
     expect(await screen.findByRole("button", { name: startName[language] })).toBeInTheDocument();
   },
 );

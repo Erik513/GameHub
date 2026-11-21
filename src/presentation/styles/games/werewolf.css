@@ -1986,3 +1986,10 @@
 .ww-deal .ww-deal__info {
   color: var(--color-ink);
 }
+
+/* The close button of the bar grows while it waits for the second tap. */
+.ww-bar .confirm-button[data-armed="true"] {
+  width: auto;
+  padding: 0 var(--space-3);
+  gap: var(--space-1);
+}

@@ -10,6 +10,7 @@ export const werewolfNarratorTexts = {
       show: "Tippen: Rolle anzeigen",
     },
     bar: {
+      closeConfirm: "Beenden?",
       rules: "Spielregeln",
       day: "Tag {{count}}",
       night: "Nacht {{count}}",
@@ -113,8 +114,6 @@ export const werewolfNarratorTexts = {
       coverTitle: "Trotzdem fragen",
       coverRow: "{{ability}}: fragen, dann „nicht möglich“ zeigen",
       nobody: "Niemand",
-      confirmEnd: "Das laufende Spiel wird beendet. Wirklich beenden?",
-      confirmEndYes: "Ja, beenden",
       undo: "Rückgängig",
       back: "Zurück",
       next: "Weiter",

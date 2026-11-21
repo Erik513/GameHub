@@ -63,6 +63,13 @@ describe("NarratorBar", () => {
     const onClose = vi.fn();
     const user = await renderBar("de", false, onClose);
     await user.click(screen.getByRole("button", { name: "Spiel beenden" }));
+    // The first tap only asks, inside the button.
+    expect(onClose).not.toHaveBeenCalled();
+    const armed = screen.getByRole("button", { name: "Nochmal tippen zum Beenden" });
+    expect(armed).toHaveTextContent("Beenden?");
+    // A tap right after arming is ignored (double tap), the next one confirms.
+    await new Promise((resolve) => setTimeout(resolve, 450));
+    await user.click(armed);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

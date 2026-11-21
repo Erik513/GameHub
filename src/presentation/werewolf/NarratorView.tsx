@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { WerewolfSession } from "../../business/games/werewolf/session";
 import { Button } from "../components";
@@ -27,7 +26,6 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
   const { t } = useTranslation();
   const guide = useNarratorGuide(session, onSession);
   const { view } = guide;
-  const [confirmEnd, setConfirmEnd] = useState(false);
   return (
     <section
       aria-label={t("werewolfNarrator.view")}
@@ -36,7 +34,7 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
     >
       <NarratorBar
         day={isDayStep(view.state)}
-        onClose={() => setConfirmEnd(true)}
+        onClose={onEnd}
         onRules={onRules}
         state={view.state}
       />
@@ -82,19 +80,6 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
             </ActionRow>
           </div>
         )}
-        {confirmEnd ? (
-          <div className="ww-guide ww-guide--confirm" role="alertdialog">
-            <strong>{t("werewolfNarrator.guide.confirmEnd")}</strong>
-            <ActionRow>
-              <Button onClick={onEnd} variant="danger">
-                {t("werewolfNarrator.guide.confirmEndYes")}
-              </Button>
-              <Button onClick={() => setConfirmEnd(false)} variant="secondary">
-                {t("werewolfNarrator.guide.confirmNo")}
-              </Button>
-            </ActionRow>
-          </div>
-        ) : null}
       </div>
       <StartBar>
         <div className="ww-nav">

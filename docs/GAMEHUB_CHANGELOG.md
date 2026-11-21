@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-76: Schließen mit Bestätigung im Knopf
+
+- Der X-Knopf der Leiste bestätigt wie in den anderen Spielen im Knopf selbst (rot, „Beenden?“, zweiter Tipp beendet); die Rückfrage-Box entfällt. Rollenkarte: Trennlinie, Fähigkeiten mittig, größerer Info-Knopf.
+
 ### We-01-75: Übersicht aller Spieler auf einer Seite
 
 - „Alle Spieler und Rollen“ ist alphabetisch sortiert und zeigt alle Spieler kompakt in zwei Spalten auf einer Seite. Hintergrund- und Randfarben folgen später mit dem Liveticker.

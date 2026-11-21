@@ -80,14 +80,14 @@ describe.each([
     expect(screen.queryByRole("button", { name: /Info|info/ })).toBeNull();
   });
 
-  it("asks before it ends the game", async () => {
+  it("asks inside the button before it ends the game", async () => {
     const onEnd = vi.fn();
     const user = await renderView(language, onEnd);
     await user.click(screen.getByRole("button", { name: /End game|Spiel beenden/ }));
     expect(onEnd).not.toHaveBeenCalled();
-    await user.click(screen.getByRole("button", { name: /No|Nein/ }));
-    await user.click(screen.getByRole("button", { name: /End game|Spiel beenden/ }));
-    await user.click(screen.getByRole("button", { name: /Yes, end it|Ja, beenden/ }));
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+    await new Promise((resolve) => setTimeout(resolve, 450));
+    await user.click(screen.getByRole("button", { name: /Tap again|Nochmal tippen/ }));
     expect(onEnd).toHaveBeenCalledTimes(1);
   });
 });

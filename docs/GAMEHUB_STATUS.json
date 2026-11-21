@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T08:00:00.000Z",
+    "updatedAt": "2026-11-22T09:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 259,
-      "totalTasks": 313,
-      "percent": 82.7
+      "completedTasks": 260,
+      "totalTasks": 314,
+      "percent": 82.8
     }
   },
   "environment": {
@@ -1438,6 +1438,12 @@
           "title": "Übersicht „Alle Spieler und Rollen“: alle Spieler auf einer Seite, alphabetisch sortiert",
           "status": "done",
           "validation": "Die Namen stehen in alphabetischer Reihenfolge, in zwei Spalten mit kompakten Zeilen (ab 40 rem drei); alle 20 Spieler passen im Browser bei 390 Pixel Breite ohne Scrollen auf eine Seite; die Markierungen (ausgeschieden, verliebt, Amulett, verwundet, stumm) stehen in der Ecke jeder Zeile; Hintergrund- und Randfarben folgen später mit dem Liveticker; Test der Reihenfolge; Tests, tsc -b, eslint sauber."
+        },
+        {
+          "id": "We-01-76",
+          "title": "Karten und Leiste: Rollenkarte mit Trennlinie, Fähigkeiten mittig, größerer Info-Knopf; Schließen-Knopf mit Bestätigung im Knopf selbst",
+          "status": "done",
+          "validation": "Der X-Knopf der Leiste nutzt den gemeinsamen ConfirmButton wie die anderen Spiele: erster Tipp macht ihn rot mit „Beenden?“, der zweite beendet das Spiel (Doppeltipp direkt nach dem ersten wird ignoriert); die Rückfrage-Box entfällt; Rollenkarte: Trennlinie zwischen Rolle und Fähigkeiten, Fähigkeiten mittig unter der Linie, Info-Knopf größer; Tests angepasst (1555 Tests), tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen, um das offene Spiel des Auftraggebers nicht zu stören."
         }
       ]
     },

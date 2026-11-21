@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { describePlayers } from "../../business/games/werewolf/selectors";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
-import { Button, Dialog, Icon } from "../components";
+import { Button, ConfirmButton, Dialog, Icon } from "../components";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface NarratorBarProps {
   readonly state: WerewolfState;
   /** Day (sun) or night (moon). */
   readonly day: boolean;
-  /** Asks to leave the game. */
+  /** Leaves the game (after the second tap on the button). */
   readonly onClose: () => void;
   /** Opens the rules of the game. */
   readonly onRules: () => void;
@@ -47,14 +47,21 @@ export function NarratorBar({ state, day, onClose, onRules }: NarratorBarProps) 
       >
         <Icon name="users" />
       </Button>
-      <Button
-        aria-label={t("werewolfNarrator.bar.close")}
-        onClick={onClose}
-        title={t("werewolfNarrator.bar.close")}
-        variant="secondary"
+      {/* Two taps without a window: the first turns the button red and asks, the second leaves the game. */}
+      <ConfirmButton
+        armedContent={
+          <>
+            <Icon name="close" />
+            <span>{t("werewolfNarrator.bar.closeConfirm")}</span>
+          </>
+        }
+        armedLabel={t("navigation.exitGameConfirm")}
+        idleLabel={t("werewolfNarrator.bar.close")}
+        idleVariant="danger"
+        onConfirm={onClose}
       >
         <Icon name="close" />
-      </Button>
+      </ConfirmButton>
       <Dialog
         closeLabel={t("werewolfConfig.infoClose")}
         onClose={() => setOverview(false)}
