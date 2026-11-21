@@ -965,3 +965,17 @@ We-01-48 (geteilter Harter-Bursche-Button mit leerer Auswahl für keine Rolle) i
 Werwolf We-03-66 abgeschlossen: Amulett nur noch gegen Nachtangriffe; Abstimmung und Jägerschuss werden trotz Amulett aufgelöst. Keine künstliche Weitergabepflicht bei Liebeskummer. Freie Paarentscheidungen, Wolfsparität und unveränderte Trunkenbold-Enthüllung in Nacht drei geprüft. 277 gezielte Tests, 100 komplette Partien und zwei Sechser-Kombinationsprüfungen bestanden; 99,83 % Zeilen / 98,07 % Zweige. Historische Balancewerte nicht neu simuliert; UI-Anbindung bleibt We-01-48.
 
 Präzisierung des Auftraggebers zum Amulett (aktuelle zweite Regelrunde): Entscheidend ist der Besitzer im Moment eines nächtlichen Wolfsangriffs, Gifts oder Todeszaubers. Eine frühere Abwehr bleibt nach der Weitergabe wirksam; neue Besitzer werden nicht rückwirkend gerettet. Hammer, Tagesabstimmung und jeder Jägerschuss umgehen das Amulett unabhängig vom Besitzer. Liebeskummer und bereits ausgelöste Verwundungen werden ebenfalls nicht abgewehrt. Nur ein tatsächlich abgewehrter Nachtangriff erzwingt die Weitergabe; bei Liebeskummer bleibt Behalten oder Weitergeben freiwillig.
+
+
+### We-03-67 – variable Rollen nach Muss/Darf
+
+We-03-67 abgeschlossen: Wünsche 1–7 für variable Werwolf-Rollen umgesetzt. Muss-/Darf-Pools, gezählte Rollenfamilien, Optionsmengen und gleichverteilte Wolfswahl; jeder optionale Zusatz unabhängig mit 50 %. Machbarkeit mit Grenzen und Sperrgründen; separate Empfehlung nur anhand der Muss-Einträge. Frühere Itembereiche und Wolfsberechnung nach Ziehung ersetzt. 313 Tests erfolgreich; neue API und Migrationshinweise dokumentiert. UI-Anbindung bleibt separat.
+
+Technischer Vertrag: [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md). 313 gezielte Tests einschließlich 100 kompletter Partien bestanden. Exakte Ziehungsverteilung, unabhängige 50-%-Zusätze, Muss-Varianten, alle Spielerzahlen 6–20, Machbarkeitsgrenzen, Fehlerfälle und Hammer-Tarnaufrufe geprüft. variableSetup.ts: 100 % Zeilen / 99,52 % Zweige; geprüfte kritische Module insgesamt 99,86 % Zeilen / 98,23 % Zweige. Typprüfung, Lint, Format und Schichtprüfung bestanden. Keine Balance-Simulationen erneut gestartet.
+
+
+### We-03-68 – Nachtaufrufe nur für tatsächliche Rollen
+
+We-03-68: Nachtlogik umgesetzt und gezielt in den Werwolf-UI-Arbeitsstand übernommen. Nicht gezogene Rollen, Lehrling und Trunkenbold werden übersprungen; vorhandene verdeckte Rollen behalten ihre Tarnaufrufe. Überflüssige Pool-Felder entfernt. Variable API beschreibt Claudes gewichtete Rollengruppen samt Beispielen und Heilergrenzen. Keine Produkt-UI oder Übersetzungen geändert.
+
+431 Werwolf-Tests inklusive 100 kompletter Partien und Ziehungsprüfungen bestanden. Nachtmodul 100 % Zeilen/Zweige; geprüfte kritische Logik insgesamt 99,73 % Zeilen / 98,15 % Zweige. Typprüfung im Logik-Arbeitsordner, ESLint, Format und Schichtprüfung erfolgreich. Breiter Testlauf dort: 1.091 Tests; aktueller UI-Arbeitsstand: 1.472 Tests erfolgreich. Lange Forschungs-/Balance-Simulationen ausgenommen. Gesamt-Typprüfung im UI-Arbeitsstand meldet fünf nachweislich vorbestehende UI-Fehler (auch mit ursprünglichen Logikdateien reproduziert); Übergabe enthält Fundstellen. Keine UI-Fehler in dieser Aufgabe verändert.

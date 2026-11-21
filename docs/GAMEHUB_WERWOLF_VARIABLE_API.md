@@ -1,6 +1,6 @@
 # Werwolf – API für variable Rollen
 
-Stand: 20.11.2026, We-03-67. Wünsche 1–7 aus GAMEHUB_WERWOLF_UI.md sind in der Business-Logik umgesetzt. Diese Schnittstelle ersetzt die frühere variable Auswahl mit itemRange und nachträglicher automatischer Wolfsberechnung. UI und getrennte Speicherung der Entwürfe bleiben bei Claude Code. Quellordner: src/business/games/werewolf/, Branch game/werwolf.
+Stand: 21.11.2026, We-03-68. Wünsche 1–7 aus GAMEHUB_WERWOLF_UI.md sind in der Business-Logik umgesetzt. Diese Schnittstelle ersetzt die frühere variable Auswahl mit itemRange und nachträglicher automatischer Wolfsberechnung. UI und getrennte Speicherung der Entwürfe bleiben bei Claude Code. Quellordner: src/business/games/werewolf/, Branch game/werwolf.
 
 ## Geänderte Funktionen
 
@@ -33,7 +33,7 @@ const result = createVariableWerewolf(playersText, narrator, random, selection);
 
 requiredRoles und requiredItems dürfen fehlen und bedeuten dann leer. rolePool/itemPool enthalten ausschließlich Darf-Einträge, ohne Überschneidung mit Muss. Nein-Einträge fehlen in beiden Pools. Die feste Seherin, Wölfe und aufgefüllte Dorfbewohner gehören nicht in die Sonderrollenpools. Der Erzähler zählt nicht zur Spielerzahl.
 
-roleRange zählt nur Darf-Rollenfamilien: Leibwächter und Dorfmatratze bilden eine Familie und werden höchstens einmal gezogen. Beide dürfen auf Darf stehen; ein Muss-Leibwächter sperrt die Darf-Dorfmatratze und umgekehrt. Dorftrottel bleibt separat. Zwei feste Schutzalternativen sind unmöglich. Für die UI sollte die gesperrte Alternative auf Nein gesetzt werden; ein veralteter Darf-Eintrag wird beim Ziehen nicht zusätzlich berücksichtigt. Optionen erhöhen weder Rollenanzahl noch Ziehungsgewicht.
+roleRange zählt nur Darf-Rollenfamilien: Leibwächter und Dorfmatratze bilden eine Familie und werden höchstens einmal gezogen. Beide dürfen auf Darf stehen; ein Muss-Leibwächter sperrt die Darf-Dorfmatratze und umgekehrt. Dorftrottel bleibt separat. Zwei feste Schutzalternativen sind unmöglich. Für die UI sollte die gesperrte Alternative auf Nein gesetzt werden; ein veralteter Darf-Eintrag wird beim Ziehen nicht zusätzlich berücksichtigt. Einstellungsoptionen wie zwei Jägerschussvarianten erhöhen weder Rollenanzahl noch Ziehungsgewicht. Echte alternative Rollenkarten wie Leibwächter/Dorfmatratze werden dagegen für die Auswahl ihrer Gruppe gewichtet (siehe unten).
 
 roleOptions enthält optional je Rolle eine nichtleere, duplikatfreie Menge:
 
@@ -55,14 +55,30 @@ itemRange entfällt vollständig. Ein alter Aufrufer erhält obsoleteItemRange u
 
 1. Unter den ausgewählten Wolfszahlen gleichverteilt ziehen.
 2. Unter den für genau diese Wolfszahl machbaren Darf-Anzahlen innerhalb von roleRange gleichverteilt ziehen.
-3. Unter den für diese Anzahl zulässigen Rollenfamilien-Kombinationen gleichverteilt ziehen.
-4. Je gezogener Familie die erlaubte Rollenvariante gleichverteilt wählen (Leibwächter/Dorfmatratze), anschließend je gezogener Rolle ihre erlaubte Einstellungsvariante gleichverteilt wählen.
+3. Genau A Rollenfamilien gewichtet ziehen: Jede einzelne alternative Rollenkarte soll dieselbe Teilnahmechance bekommen. Eine Gruppe mit zwei Rollenkarten erhält daher das doppelte Gewicht einer Gruppe mit nur einer Karte. Gruppen sind höchstens sicher dabei (100 %); verbleibende Chance wird auf andere Gruppen verteilt. Die konkreten Teilmengen sind damit nicht gleich wahrscheinlich.
+4. Je gezogener Familie die erlaubte Rollenkarte gleichverteilt wählen (Leibwächter/Dorfmatratze beziehungsweise gegebenenfalls Hexe/Magier), anschließend je gezogener Rolle ihre erlaubte Einstellungsvariante gleichverteilt wählen.
 5. Je Darf-Zusatz eine unabhängige faire Münze; Muss-Zusätze hinzufügen.
 6. Erst beim Spielstart die fertigen Karten privat auf Spieler verteilen. Es gibt keine erneute Bewertung oder Korrektur der Wolfszahl.
 
 Eine einzige Auswahlmöglichkeit benötigt keinen Zufallswert. Die kanonische Sortierung macht die Ziehung unabhängig von der Eingabereihenfolge. random muss für jeden tatsächlich benötigten Wert eine endliche Zahl ab 0 und kleiner 1 liefern. Ungültige Werte führen zu invalidRandom; Fehler, die der Zufallsanbieter selbst wirft, werden weitergereicht.
 
-Die frühere Gleichgewichtung von Rollen-/Zusatz-Zahlenpaaren ist durch Wunsch 6 ersetzt: Zwei optionale Zusätze erzeugen vier gleich wahrscheinliche Kombinationen; null/ein/zwei Zusätze haben damit 25/50/25 %. Varianten erhöhen nicht die Chance, dass ihre Rollenfamilie gezogen wird.
+Die frühere Gleichgewichtung von Rollen-/Zusatz-Zahlenpaaren ist durch Wunsch 6 ersetzt: Zwei optionale Zusätze erzeugen vier gleich wahrscheinliche Kombinationen; null/ein/zwei Zusätze haben damit 25/50/25 %. Einstellungsvarianten erhöhen nicht die Teilnahmechance einer Rolle. Mehrere alternative Rollenkarten erhöhen dagegen das Gewicht ihrer gemeinsamen Familie.
+
+### Beispiele und Grenzen der Gewichtung
+
+Darf-Pool: Leibwächter, Dorfmatratze, Amor und Hexe. Leibwächter/Dorfmatratze bilden zusammen eine Gruppe mit Gewicht zwei, Amor und Hexe jeweils eine mit Gewicht eins. Gezählt werden höchstens drei Gruppen:
+
+| Feste Darf-Anzahl A | Leibwächter | Dorfmatratze | Amor | Hexe |
+| --- | --- | --- | --- | --- |
+| 1 | 25 % | 25 % | 25 % | 25 % |
+| 2 | 50 % | 50 % | 50 % | 50 % |
+| 3 | 50 % | 50 % | 100 % | 100 % |
+
+Bei A = 3 ist Gleichheit unmöglich: Die Wächtergruppe kann nicht häufiger als immer gezogen werden und daraus kommt nur eine Karte. Andere Rollen sind dann sicher dabei. Die Gewichtung heißt nicht, dass sämtliche zulässigen vollständigen Kombinationen gleich häufig auftreten.
+
+Hexe und Magier werden je gezogener Wolfszahl gruppiert (familiesForWolves): Wo beide gemeinsam erlaubt sind, zählen sie als zwei eigenständige Darf-Rollen; wo beide nicht gemeinsam erlaubt sind und beide auf Darf stehen, zählen sie als eine Familie mit Gewicht zwei und anschließender 50/50-Kartenwahl. Gemeinsame Teilnahme ist ab 14 Spielern mit vier Wölfen und ab 17 auch mit fünf Wölfen erlaubt. Zwei Muss-Heiler sind ausschließlich mit einer dafür freigegebenen Spieler-/Wolfszahl zulässig. Eine Muss-Hexe plus Darf-Magier bleibt eine feste und eine optionale Karte; unzulässige Kombinationen werden ausgeschlossen.
+
+Technisch nutzt pickFamilies die marginalen Familienchancen aus familyChances, eine zufällige Reihenfolge und einen zufälligen Startpunkt. Es zieht genau A Familien. Bei unzulässigen Teilmengen wiederholt es bis zu 200 Versuche und verwendet danach eine gleichverteilte zulässige Teilmenge als Rückfall. Die Gleichheit einzelner Rollen ist deshalb ein Ziel unter den Kombinationsgrenzen; bei zusätzlichen Ausschlüssen und im Rückfall wird keine exakte Gleichheit versprochen. An dieser bestehenden Ziehung wurde in We-03-68 nichts geändert.
 
 Die Rollenanzahl ist bedingt auf die Wolfszahl gleichverteilt. Beispiel: 14 Spieler, Muss-Hexe, Darf-Magier, wolfCounts [3,4], roleRange 0–1. Drei Wölfe erlauben nur null Darf-Rollen; vier Wölfe erlauben null oder eine mit je 50 %. Die Wolfszahlen bleiben je 50 % wahrscheinlich; die Magierchance insgesamt beträgt 25 %. Ist für auch nur eine ausgewählte Wolfszahl innerhalb des gewünschten Bereichs nichts machbar, wird der Start gesperrt, statt diese Wolfszahl heimlich auszulassen oder anders zu gewichten.
 
@@ -88,4 +104,6 @@ recommendVariableWerewolfCount benötigt nur requiredRoles, requiredItems und ro
 
 Für Muss-Rollen gelten nur feste Varianten. Unmögliche Muss-Konfigurationen liefern noFeasibleLineup; optionale Varianten ohne Muss-Rolle werden in der Empfehlung ignoriert.
 
-Der private Spielzustand merkt sich nightRolePool, nightItemPool und nightMayUseHammer. Kann der Bürgermeister im Pool einen Hammer haben, bleiben entsprechende Tarnaufrufe auch dann bestehen, wenn die Rolle nicht gezogen wurde oder tatsächlich doppelte Stimme hat. Dazu ergänzen stateMachine.ts und nightScript.ts das private Feld; keine UI muss den gewählten Hammerstatus aus öffentlichen Aufrufen erraten. Übrige Erzähler-API siehe GAMEHUB_WERWOLF_NARRATOR_API.md.
+Das Nachtskript verwendet ausschließlich tatsächlich verteilte Rollen und Zusätze. Nicht gezogene Pool-Einträge sind skip und erzeugen keinen Zustand nightCall. Tarnaufrufe bleiben für tatsächlich vorhandene verdeckte Rollen erhalten: etwa tote Rollen ohne öffentliche Aufdeckung, noch verdeckte Trunkenbold-Rollen und verbrauchte Fähigkeiten. Ein nicht gezogener Bürgermeister oder die Variante doubleVote erzeugt keinen Hammer-Aufruf. Ein nicht gezogener Trunkenbold oder Lehrling erzeugt keinen eigenen Aufruf.
+
+Die ehemaligen Felder nightRolePool, nightItemPool und nightMayUseHammer sind entfernt. Sie werden weder in Match benötigt noch durch createVariableWerewolf oder createRandomWerewolf gesetzt. Alte gespeicherte Zusatzfelder beeinflussen das Skript nicht. nightCall und acknowledgeCall bleiben für die legitimen Tarnaufrufe erhalten. Keine UI- oder Übersetzungsänderung in We-03-68. Übrige Erzähler-API siehe GAMEHUB_WERWOLF_NARRATOR_API.md.

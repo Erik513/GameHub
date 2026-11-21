@@ -1,10 +1,20 @@
 # Werwolf – technischer Einstieg für Claude Code
 
+Aktueller Nachtablauf (We-03-68, 21.11.2026): Nicht gezogene Pool-Rollen und Zusätze werden übersprungen. Tarnaufrufe gelten nur für tatsächlich vorhandene verdeckte Rollen beziehungsweise verbrauchte Fähigkeiten. nightRolePool, nightItemPool und nightMayUseHammer sind entfernt. Änderungen sind im Logik-Arbeitsordner und gezielt im Werwolf-UI-Arbeitsstand übernommen. Die gewichtete variable Ziehung und Zahlenbeispiele stehen in [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md); ältere widersprechende Tarn-/Gewichtungsaussagen sind ersetzt.
+
+Aktueller variabler Modus (We-03-67, 20.11.2026): Die Wünsche 1–7 aus dem Abschnitt „Variable Rollen“ sind logisch implementiert. Muss-/Darf-Pools, Variantenmengen, ausgewählte Wolfszahlen und unabhängige 50-%-Zusätze ersetzen itemRange und die Wolfsberechnung nach Ziehung. Aktuelle Signaturen, Wahrscheinlichkeiten und UI-Metadaten: [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md). Ältere gegenteilige Abschnitte sind historische Beschlussstände. Die UI-Anbindung bleibt separat.
+
+Aktueller Beschlussstand der zweiten Regelrunde (We-03-66, 20.11.2026): Amulett schützt nur gegen nächtlichen Wolfsangriff, Gift und Todeszauber. Kein Schutz bei Hammer, Abstimmung oder Jägerschuss. Liebeskummer allein löst keine Weitergabepflicht aus. Verliebte entscheiden frei; ein verdeckter Trunkenbold-Wolf wird weiterhin erst in Nacht drei enthüllt. Implementiert und geprüft; aktuelle Anbindung in GAMEHUB_WERWOLF_NARRATOR_API.md.
+
+Neue Rollenregeln vom 20.11.2026 sind in We-03-65 implementiert und geprüft. Aktuelle Optionen und Amulett-Zeitfolge siehe GAMEHUB_WERWOLF_NARRATOR_API.md. Oberflächenanbindung erfolgt gesondert in We-01-48; keine UI-Dateien in diesem Logikschritt geändert.
+
+Aktueller Logikstand vom 20.11.2026: Hammer-Neuordnung, Zielkatalog, Tarnskript, Ereignisprotokoll, Spielerprojektion und Rücknahme sind implementiert. Verbindlicher Anschluss für Claude: [Erzähler-API](GAMEHUB_WERWOLF_NARRATOR_API.md). Ältere Planungs-/Prüfabschnitte beschreiben ihren damaligen Stand. Browser-Speicherung, Navigation und UI bleiben gesonderte Integrationsarbeit.
+
 Stand: 19.11.2026. Zusammen mit [UI-Spezifikation](GAMEHUB_WERWOLF_UI.md) und [Spielregeln](GAMEHUB_WERWOLF.md) lesen. Bestätigte Vorgaben, Entwürfe und offene Entscheidungen bleiben unterscheidbar. Keine neue UI aus dieser Datei ableiten.
 
 ## Richtiger Arbeitsstand
 
-Die geprüfte Werwolf-Logik liegt im Arbeitsordner **`C:/Users/Kosta/Documents/Codex/2026-11-09/p/work/gamehub-branches/werwolf`**, Branch **`game/werwolf`**. Dort bestehen derzeit auch unversionierte/neue und geänderte Dateien. Ein bloßer Branchwechsel oder GitHub-Checkout übernimmt diese noch nicht vollständig. Vor Übertragung `git status --short` prüfen und sämtliche benötigten Dateien einschließlich Tests und Kalibrierungsdaten berücksichtigen. Kein automatisches Zusammenführen oder Veröffentlichen.
+Die geprüfte Werwolf-Logik liegt im Arbeitsordner **`C:/Users/Kosta/Documents/Codex/2026-11-09/p/work/gamehub-branches/werwolf`**, Branch **`game/werwolf`**. Der Werwolf-Arbeitsstand wird lokal auf game/werwolf versioniert. Vor Übertragung git status prüfen; ein lokaler Commit ist nicht automatisch auf GitHub veröffentlicht. Neuere UI-Integrationen dieses Checkouts bleiben erhalten.
 
 `C:/Users/Kosta/source/repos/GameHub` enthält parallel weiterentwickelte gemeinsame Oberfläche/Tabu. Dort sowie unter `work/dashboard` liegen aktualisierte Entwicklungsübersichten und Übergabedokumente, dadurch ist die neue Werwolf-Logik dort **nicht automatisch integriert**. Neuere gemeinsame Komponenten nicht durch ältere Dateien des Werwolf-Arbeitsordners ersetzen.
 
@@ -33,7 +43,7 @@ Alle Pfade relativ zum oben genannten Werwolf-Arbeitsordner.
 
 Nur wenn `availableWerewolfCounts(players)` mehrere Werte hat, den empfohlenen Zahlenbutton mit Rand und „empfohlen“ darunter kennzeichnen. Für 6/9/10/13 gibt es nur einen Wert. Freischaltgruppen im Raster aus den Mindestspielerzahlen ableiten. Die Pflichtseherin und automatische Auffüllung mit Dorfbewohnern sind bereits im Spieleinstieg enthalten. Anzahl Dorfbewohner = Spieler − gewählte Wölfe − 1 Seherin − optionale Rollenkarten; Amulett/Trunkenbold belegen keinen weiteren Platz.
 
-**Variabel:** `VariableWerewolfSelection` enthält `rolePool`, `roleRange:{minimum,maximum}`, `itemPool` (`amulet`, `drunk`), `itemRange:{minimum,maximum}`. Analyse liefert Machbarkeit und zulässige Anzahlen, keine bereits gezogenen Rollen. Beim Start zuerst tatsächliche Rollen/Items ziehen, **danach** Wolfszahl bestimmen und verteilen. Den Start weder beim Rendern noch bei jedem Einstellungswechsel ausführen. UI-Details dieser Ansicht sind ausdrücklich noch später festzulegen.
+**Variabel:** VariableWerewolfSelection besitzt requiredRoles, requiredItems, rolePool, roleOptions, roleRange (nur Darf-Familien), itemPool und wolfCounts. itemRange entfällt. analyzeVariableWerewolfSelection liefert Grenzen/Sperren, recommendVariableWerewolfCount bewertet nur Muss-Einträge. createVariableWerewolf zieht die Wolfszahl und Rollen/Varianten ohne Fairness-Korrektur; optionale Zusätze je 50 %. Start ausschließlich privat und einmalig. Vollständige Migration siehe GAMEHUB_WERWOLF_VARIABLE_API.md.
 
 **Namen/Sitzordnung:** Erzähler aus der Teilnehmerauswahl abtrennen und als eigenen String übergeben. Die verbleibenden 6–20 Namen in bestätigter Sitzfolge als `playersText` übergeben. Nie die alphabetische Auswahlansicht als neue Sitzfolge übernehmen. Der Erzähler ist weder Rollenempfänger noch Nachbar für den Ermittler. Namen dienen der gegenwärtigen Logik als Identitäten; während der Partie nicht umbenennen oder sortieren.
 
@@ -64,9 +74,9 @@ Die zentrale Erzähleransicht rendert den aktuellen `status`; die folgenden Eint
 | `hunter` | `shot` mit `target`; `null` nur bei freiwilligem Schuss. Folgeopfer und anschließenden Zustand von der Logik übernehmen. |
 | `finished` | Gewinneransicht öffnen. `winner` ist `village` oder `wolves`; `tannerWinner` gegebenenfalls zusätzlich berücksichtigen. |
 
-Die Union `WerewolfEvent` ist die verbindliche Parameterdefinition. Die Tabelle ersetzt keine Zielvalidierung; manche Schritte erlauben bestimmte Null-/Verzichtsaktionen nur unter Bedingungen. Aktuell gibt es keinen vollständigen öffentlichen Katalog aller gültigen UI-Ziele. Falls ein gemeinsamer Ziel-Selektor nötig ist, ihn gezielt in Business ergänzen und mit denselben Regeln testen, statt Regeln unterschiedlich in mehreren UI-Komponenten nachzubauen.
+Die Union `WerewolfEvent` ist die verbindliche Parameterdefinition. Die Tabelle ersetzt keine Zielvalidierung; manche Schritte erlauben bestimmte Null-/Verzichtsaktionen nur unter Bedingungen. Der Zielkatalog ist nun in selectors.ts implementiert: validTargets, validNominators, validSeconders und votingPlayers. Keine Regeln in React nachbauen.
 
-`wakingPlayers(state)` liefert die relevanten Rollenpersonen für Hinweise. Der Ablauf überspringt derzeit viele nicht vorhandene/tote Rollen; verbrauchte Hexentränke verhindern den Aufruf nicht, der Hammer besitzt eine gesonderte Tarnbehandlung. **Eine einheitliche Tarnaufrufregel für alle Rollen und geheime variable Pools ist noch nicht fertig entschieden/implementiert.** Kein neues öffentliches Rollenwissen aus dem Ablauf erzeugen.
+`wakingPlayers(state)` liefert die tatsächlich handelnden Rollenpersonen. nightScript überspringt nicht gezogene Rollen und Zusätze; vorhandene verdeckte/tote Rollen bei geheimer Aufdeckung sowie verbrauchte Fähigkeiten behalten Tarnaufrufe. Pool-Metadaten wurden in We-03-68 entfernt. Anzeige verwendet active/cover/skip; nightCall nur mit acknowledgeCall bestätigen.
 
 ## Zustandsdaten für Kreis, Übersichten und Ergebnis
 
@@ -80,23 +90,15 @@ Die Union `WerewolfEvent` ist die verbindliche Parameterdefinition. Die Tabelle 
 | Angriff / Opfer | Phasenabhängig `victim`, `poisoned`, `spellVictims`, `nightDeaths`; daraus lässt sich nicht ohne zusätzliche Festlegung jede gewünschte rote Markierung vor/nach Rettung rekonstruieren. |
 | Öffentliche Bekanntgabe | `werewolfAnnouncement` respektiert `settings.revealRoles`. Die vollständige private Rollenliste niemals als öffentliche Bekanntgabe verwenden. `shotDeaths` ist kein dauerhafter Ereignisverlauf und nicht bei jedem Rendern erneut als neue Meldung behandeln. |
 | Gewinner | Nur bei `status === "finished"` auf `winner` zugreifen. Wolfsgleichstand beendet die Partie zugunsten der Wölfe. Ein siegreicher Gerber ist zusätzlich in `tannerWinner` festgehalten; sein Ausscheiden beendet nicht selbst die gesamte Partie. |
-| Todesursache + handelnde Person | Vollständige historische Zuordnung liegt noch nicht für alle Quellen als fertiger Datenvertrag vor. Nicht aus der aktuellen Nacht oder Rolle raten. Erweiterung erst gezielt für benötigte Detailanzeige planen; vollständige Verlaufsoberfläche ganz zuletzt. |
+| Todesursache + handelnde Person | Historische Fakten sind jetzt in state.history mit Aktions-, Verletzungs- und Todesdatensätzen einschließlich Ursachen/handelnden Personen vorhanden. describePlayers liefert den Todeseintrag pro Person. Vollständige Verlaufsoberfläche weiterhin zuletzt. |
 
 **Gewinneransicht ist erforderlich (`We-01-30`). Ihre Gestaltung plant der Auftraggeber erst am Ende mit Claude Code.** Jetzt keine Anordnung, Zusatzbuttons oder Layoutvorgaben erfinden. Der vorhandene Endzustand ist ihr technischer Anschluss; eine Rollenauflösung nach Spielende ist nicht allein durch die private Datenverfügbarkeit freigegeben.
 
 ## Schichten, Daten und noch offene Entscheidungen
 
-Es gibt für Werwolf aktuell keine benötigte separate Datenbank für einzelne Züge. Die Business-Funktionen erzeugen und verändern einen privaten In-Memory-Partiezustand. Gemeinsame gespeicherte Spieler über bestehende Schnittstellen verwenden. Keine neue Parallelverwaltung, dauerhafte Partiedatenbank, Multiplayer-Synchronisierung oder Wiederaufnahme behaupten/ungefragt ergänzen.
+Es gibt für Werwolf aktuell keine benötigte separate Datenbank für einzelne Züge. Die Business-Funktionen erzeugen und verändern einen privaten In-Memory-Partiezustand. Gemeinsame gespeicherte Spieler über bestehende Schnittstellen verwenden. Keine neue Parallelverwaltung, externe Partiedatenbank oder Multiplayer-Synchronisierung ergänzen. Lokales Fortsetzen auf dem Erzählergerät ist inzwischen beschlossen; seine UI-/Speicheranbindung übernimmt Claude.
 
-Vor den jeweils betroffenen UI-Schritten noch klären:
-
-- **Zurück:** nur vorherigen Hinweis ansehen oder Fachaktion zurücknehmen? Es existiert kein allgemeines Undo-Ereignis; verbrauchte Tränke und geheime Informationen dürfen nicht still zurückgesetzt werden.
-- **Abbrechen:** Bestätigung/Rückweg und Bereinigung der laufenden Sitzung sind noch zu definieren; kein `abort` in der Fachereignisunion.
-- **Nachtskript:** Tarnaufrufe toter/verbraucht handelnder Rollen je Aufdeckung und geheimem Rollenpool, einschließlich vorhandener Hammer-Ausnahme.
-- **Hauptansicht und Konfiguration:** genaue Sitzsortierung, Erzählerwechsel, Konfliktbehandlung und variable Bedienung. Grundaufbau ist dokumentiert, diese Details sind keine fertige Entscheidung.
-- **Live-Kreis:** Symbolik, überlagerte Farbprioritäten, Rettungsmarkierungen und benötigte historische Felder; `We-01-44`. Vollständige Verlaufsansicht `We-01-45` ausdrücklich zuletzt.
-
-Diese Grenzen verhindern nicht die Übergabe. Sie verhindern lediglich die Behauptung, jede Ansicht könne bereits ohne jede weitere Produktentscheidung vollständig implementiert werden. Zunächst bestätigte Hauptansicht und feste Konfiguration konkretisieren/umsetzen, dann phasenweise Erzählerbedienung, Übersichten und Ergebnis; Verlauf zuletzt.
+Bestätigte Entscheidungen sind im neueren Claude-Plan festgehalten: Rücknahme per Zustandsstapel, Abbruch nach Rückfrage mit erhaltener Vorbereitung, lokale Fortsetzung auf dem Erzählergerät und Tarnaufrufe je Rollenaufdeckung. Die reinen Logikschnittstellen für Rücknahme, Tarnung und Anzeige sind fertig; UI-Bedienung und lokale Speicheranbindung werden von Claude umgesetzt. Offen bleiben insbesondere konkrete Symbol-/Farbprioritäten und variable Bedienungsdetails. Vollständige Verlaufsoberfläche ausdrücklich zuletzt.
 
 ## Prüfung und Abnahme
 
@@ -110,3 +112,34 @@ node scripts/sync-dashboard.mjs --check
 ```
 
 Neue UI in Deutsch/Englisch, auf kleinen und großen Displays, mit Sichtschutz und zustandsbewahrenden Ansichtswechseln prüfen. Massensimulationen nicht bei jedem UI-Schritt neu starten; Archive/Audit unter `docs/simulations` verwenden. Die Entwicklungs-HTML muss die aktuellen Werwolf-Aufgaben einschließlich tatsächlich offener UI-Arbeit zeigen; Hauptprojekt und gemeinsame Dashboard-Kopie gezielt mitpflegen und andere Spiele bewahren.
+
+
+## Hammer-Änderung vom 20.11.2026 – implementiert
+
+Der Bürgermeister mit Hammer erwacht nach dem Magier und vor dem Spellcaster. Er kennt keine laufenden Nachtopfer und darf jede Person wählen, die zu Beginn der Nacht lebte, außer sich selbst. Auch ein bereits als Nachtopfer bestimmter Bürgermeister darf handeln. Ein Werwolf wird vom Hammer getroffen, selbst wenn bereits andere tödliche Angriffe gegen ihn vorliegen; jede Person stirbt nur einmal. Das Amulett schützt nicht vor dem Hammer, auch keinen getroffenen Werwolf. Bei Wahl eines Nichtwerwolfs stirbt der Bürgermeister durch die Fehlentscheidung, die Zielperson bleibt vom Hammer unberührt. Die Fehlentscheidungsstrafe wird nicht vom Amulett abgewehrt; ein verbundener Liebespartner stirbt mit. Todesfälle durch Hammer, Fehlentscheidung und dadurch ausgelöste Partnertode sind nicht heilbar. Bereits ausgeführte Nachtaktionen bleiben wirksam; gemeinsame Auflösung und Bekanntgabe am Morgen.
+
+We-03-63 ist seit 20.11.2026 implementiert: Hammer nach Magier, Zielmenge vom Nachtbeginn, gemeinsame Todesauflösung und Überschneidungen geprüft. Magierheilung wurde nicht erweitert. Ziele, Tarnskript, Protokoll und Rücknahme siehe GAMEHUB_WERWOLF_NARRATOR_API.md.
+
+
+### Bestätigter Zeitpunkt des Amulettschutzes
+
+Präzisierung des Auftraggebers zum Amulett (aktuelle zweite Regelrunde): Entscheidend ist der Besitzer im Moment eines nächtlichen Wolfsangriffs, Gifts oder Todeszaubers. Eine frühere Abwehr bleibt nach der Weitergabe wirksam; neue Besitzer werden nicht rückwirkend gerettet. Hammer, Tagesabstimmung und jeder Jägerschuss umgehen das Amulett unabhängig vom Besitzer. Liebeskummer und bereits ausgelöste Verwundungen werden ebenfalls nicht abgewehrt. Nur ein tatsächlich abgewehrter Nachtangriff erzwingt die Weitergabe; bei Liebeskummer bleibt Behalten oder Weitergeben freiwillig.
+
+
+## Umsetzung der Nacht-Aufgabe (We-03-68, 21.11.2026)
+
+Die Nachtlogik ist umgesetzt und im Werwolf-UI-Arbeitsstand unter C:/Users/Kosta/source/repos/GameHub übernommen. Keine UI-Datei oder Übersetzung wurde geändert. Geänderte Logik: nightScript.ts, stateMachine.ts (nur entfernte Match-Felder), balancedSetup.ts und createVariableWerewolf in variableSetup.ts (keine Pool-Metadaten mehr). Tests: nightScript.test.ts neu, narrator.test.ts und variableSetup.test.ts angepasst. Claudes familiesForWolves/familyChances/pickFamilies bleiben unverändert.
+
+Die neuen Prüfungen decken nicht gezogene Rollen, veraltete gespeicherte Pool-Felder, vorhandene verdeckte Rollen, Trunkenbold, Lehrling, Hammer-Varianten und den echten Phasenablauf ab. Ein Seher-Lehrling wird nicht mehr angekündigt, wenn keiner mitspielt. Vorhandene nightCall-/acknowledgeCall-Schritte bleiben für legitime Tarnaufrufe erhalten.
+
+431 Werwolf-Tests inklusive 100 kompletter Partien und Ziehungsprüfungen bestanden. Nachtmodul 100 % Zeilen/Zweige; geprüfte kritische Logik insgesamt 99,73 % Zeilen / 98,15 % Zweige. Typprüfung im Logik-Arbeitsordner, ESLint, Format und Schichtprüfung erfolgreich. Breiter Testlauf dort: 1.091 Tests; aktueller UI-Arbeitsstand: 1.472 Tests erfolgreich. Lange Forschungs-/Balance-Simulationen ausgenommen. Gesamt-Typprüfung im UI-Arbeitsstand meldet fünf nachweislich vorbestehende UI-Fehler (auch mit ursprünglichen Logikdateien reproduziert); Übergabe enthält Fundstellen. Keine UI-Fehler in dieser Aufgabe verändert.
+
+### Unabhängige Typfehler im aktuellen UI-Arbeitsstand für Claude
+
+Mit einem Compiler-Dateiüberlagerungstest gegen die ursprünglichen Business-Dateien reproduziert; die tatsächlichen UI-Dateien wurden dafür nicht geändert:
+
+- src/presentation/werewolf/VariableRoles.test.tsx:78 – it.each-Zeile mit vier Werten, Callback nur drei Parametern (TS2345).
+- src/presentation/werewolf/VariableRoles.tsx:138 – dragging.drag möglicherweise undefined (TS18048).
+- src/presentation/werewolf/WerewolfGame.test.tsx:15, :252 und :299 – erforderliche GameScreenProps cardLanguage und onCardLanguageChange fehlen (TS2769).
+
+Die Gesamt-Typprüfung der UI ist deshalb noch nicht grün. Die Logik-Typprüfung und alle 1.472 normalen Tests im UI-Arbeitsstand bestehen. Lange historische Forschungs-/Balance-Läufe wurden nicht erneut gestartet. Es wurde weder committed noch gepusht.

@@ -54,6 +54,9 @@ Diese Regeln gelten für Codex, Claude Code und andere automatisierte Entwicklun
 
 ## Dokumentationspflicht
 
+- Halte nach jeder Änderung auch die tatsächlich verwendete `docs/GAMEHUB_DEVELOPMENT.html` unter `C:/Users/Kosta/source/repos/GameHub` und die gemeinsame Kopie unter `work/dashboard` aktuell. Eine Aktualisierung nur im Spiel-Arbeitsordner reicht nicht; übernimm gezielt die betroffenen Inhalte und bewahre parallele Änderungen anderer Spiele.
+
+
 - Aktualisiere nach jeder abgeschlossenen Aufgabe `docs/GAMEHUB_STATUS.json` und `docs/GAMEHUB_CHANGELOG.md`.
 - Aktualisiere Projektplan und Entscheidungsdokument, wenn sich Anforderungen oder genehmigte Architekturentscheidungen ändern.
 - Aktualisiere nach jeder größeren Änderung auch `docs/GAMEHUB_DEVELOPMENT.html`: Pflege `docs/GAMEHUB_STATUS.json` und führe danach `pnpm docs:sync` aus. `pnpm docs:check` prüft in der CI, dass der eingebettete Stand aktuell ist.

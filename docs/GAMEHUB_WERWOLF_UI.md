@@ -1,5 +1,9 @@
 # Werwolf – UI-Spezifikation und Übergabe
 
+Aktueller Nachtablauf (We-03-68, 21.11.2026): Nicht gezogene Pool-Rollen und Zusätze werden übersprungen. Tarnaufrufe gelten nur für tatsächlich vorhandene verdeckte Rollen beziehungsweise verbrauchte Fähigkeiten. nightRolePool, nightItemPool und nightMayUseHammer sind entfernt. Änderungen sind im Logik-Arbeitsordner und gezielt im Werwolf-UI-Arbeitsstand übernommen. Die gewichtete variable Ziehung und Zahlenbeispiele stehen in [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md); ältere widersprechende Tarn-/Gewichtungsaussagen sind ersetzt.
+
+Aktueller variabler Modus (We-03-67, 20.11.2026): Die Wünsche 1–7 aus dem Abschnitt „Variable Rollen“ sind logisch implementiert. Muss-/Darf-Pools, Variantenmengen, ausgewählte Wolfszahlen und unabhängige 50-%-Zusätze ersetzen itemRange und die Wolfsberechnung nach Ziehung. Aktuelle Signaturen, Wahrscheinlichkeiten und UI-Metadaten: [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md). Ältere gegenteilige Abschnitte sind historische Beschlussstände. Die UI-Anbindung bleibt separat.
+
 Aktueller Beschlussstand der zweiten Regelrunde (We-03-66, 20.11.2026): Amulett schützt nur gegen nächtlichen Wolfsangriff, Gift und Todeszauber. Kein Schutz bei Hammer, Abstimmung oder Jägerschuss. Liebeskummer allein löst keine Weitergabepflicht aus. Verliebte entscheiden frei; ein verdeckter Trunkenbold-Wolf wird weiterhin erst in Nacht drei enthüllt. Implementiert und geprüft; aktuelle Anbindung in GAMEHUB_WERWOLF_NARRATOR_API.md.
 
 Neue Rollenregeln vom 20.11.2026 sind in We-03-65 implementiert und geprüft. Aktuelle Optionen und Amulett-Zeitfolge siehe GAMEHUB_WERWOLF_NARRATOR_API.md. Oberflächenanbindung erfolgt gesondert in We-01-48; keine UI-Dateien in diesem Logikschritt geändert.
@@ -441,7 +445,7 @@ Wichtig: Ausgeschiedene Spielernamen bleiben bekannt. Die Einstellung zur Rollen
 
 Die Spielleitung müsste intern erkennen können, ob eine echte Handlung oder nur ein Tarnaufruf ansteht. Ungültige Aktionen bleiben in der Logik verboten; ein unveränderter gesprochener Satz gibt keinen verbrauchten Trank zurück.
 
-Einmalige zeitgebundene Schritte wie Amor in Nacht eins oder Trunkenbold-Enthüllung in Nacht drei behalten ihre festen vorgesehenen Nächte. Sie werden nicht allein wegen Tarnaufrufen zu täglichen Aktionen. Bei variabler, vorab geheimer Rollenbesetzung muss später zusätzlich geklärt werden, ob die Nachtaufrufe am erlaubten Pool ausgerichtet werden, damit ihr Auslassen die tatsächliche Ziehung nicht verrät. Dafür ist noch keine vollständige Entscheidung gefallen.
+Einmalige zeitgebundene Schritte wie Amor in Nacht eins oder Trunkenbold-Enthüllung in Nacht drei behalten ihre festen vorgesehenen Nächte. Sie werden nicht allein wegen Tarnaufrufen zu täglichen Aktionen. Beschluss vom 21.11.2026: Nachtaufrufe richten sich ausschließlich nach tatsächlich verteilten Rollen und Zusätzen; nicht gezogene Pool-Einträge werden übersprungen (We-03-68).
 
 Diese vorgeschlagene einheitliche Behandlung würde unter anderem die bisherige Bürgermeister-Sonderregel verändern: Sein Tarnaufruf bleibt aktuell auch nach öffentlich aufgedecktem Tod bestehen. Andere verbrauchte Fähigkeiten, etwa die Ermittleruntersuchung, werden aktuell teilweise übersprungen. Deshalb nicht behaupten, die allgemeine vorgeschlagene Tarnregel sei bereits vollständig implementiert. Vor einer Umsetzung ist die Produktentscheidung abzuschließen. Keine Spiellogik oder Produkt-UI geändert.
 
@@ -637,7 +641,7 @@ Präzisierung des Auftraggebers zum Amulett (aktuelle zweite Regelrunde): Entsch
 
 ## Variable Rollen: Bedienung und Wünsche an die Logik (Beschluss vom 20.11.2026, We-01-32)
 
-Der Auftraggeber hat die Bedienung des variablen Modus festgelegt. Sie ist die Grundlage für die Umsetzung; noch nicht implementiert.
+Der Auftraggeber hat die Bedienung des variablen Modus festgelegt. Die Wünsche 1–7 an die Logik sind in We-03-67 implementiert; die Bedienoberfläche ist separat anzubinden. Siehe GAMEHUB_WERWOLF_VARIABLE_API.md.
 
 ### Bedienung
 

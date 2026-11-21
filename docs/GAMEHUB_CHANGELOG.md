@@ -1,5 +1,12 @@
 # GameHub Changelog
 
+## 2026-11-21
+
+### We-03-68: Nachtaufrufe und variable Gewichtung
+
+- We-03-68: Nachtlogik umgesetzt und gezielt in den Werwolf-UI-Arbeitsstand übernommen. Nicht gezogene Rollen, Lehrling und Trunkenbold werden übersprungen; vorhandene verdeckte Rollen behalten ihre Tarnaufrufe. Überflüssige Pool-Felder entfernt. Variable API beschreibt Claudes gewichtete Rollengruppen samt Beispielen und Heilergrenzen. Keine Produkt-UI oder Übersetzungen geändert.
+- 431 Werwolf-Tests inklusive 100 kompletter Partien und Ziehungsprüfungen bestanden. Nachtmodul 100 % Zeilen/Zweige; geprüfte kritische Logik insgesamt 99,73 % Zeilen / 98,15 % Zweige. Typprüfung im Logik-Arbeitsordner, ESLint, Format und Schichtprüfung erfolgreich. Breiter Testlauf dort: 1.091 Tests; aktueller UI-Arbeitsstand: 1.472 Tests erfolgreich. Lange Forschungs-/Balance-Simulationen ausgenommen. Gesamt-Typprüfung im UI-Arbeitsstand meldet fünf nachweislich vorbestehende UI-Fehler (auch mit ursprünglichen Logikdateien reproduziert); Übergabe enthält Fundstellen. Keine UI-Fehler in dieser Aufgabe verändert.
+
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
 

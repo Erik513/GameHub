@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-20T15:09:29.614Z",
+    "updatedAt": "2026-11-21T00:21:56.278Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 223,
-      "totalTasks": 285,
-      "percent": 78.2
+      "completedTasks": 225,
+      "totalTasks": 287,
+      "percent": 78.4
     }
   },
   "environment": {
@@ -1873,6 +1873,18 @@
           "title": "Amulett auf Nachtangriffe begrenzen und Regeln für Verliebte und Trunkenbold-Wolf bestätigen",
           "status": "done",
           "validation": "277 gezielte Tests einschließlich 100 kompletter Partien sowie zwei Sechser-Kombinationsprüfungen bestanden. Abstimmung/Jägerschuss trotz Amulett, freiwillige Weitergabe bei Liebeskummer, Harter-Bursche-Ausnahme, freie Paarentscheidungen und Trunkenbold-Wolf bis Nacht drei geprüft. 99,83 % Zeilen / 98,07 % Zweige; Typ-/Lint-/Schichtprüfung erfolgreich."
+        },
+        {
+          "id": "We-03-67",
+          "title": "Variable Rollen mit Muss-/Darf-Pools, Varianten, Wolfswahl und unabhängigen Zusätzen umsetzen",
+          "status": "done",
+          "validation": "313 gezielte Tests einschließlich 100 kompletter Partien bestanden. Exakte Ziehungsverteilung, unabhängige 50-%-Zusätze, Muss-Varianten, alle Spielerzahlen 6–20, Machbarkeitsgrenzen, Fehlerfälle und Hammer-Tarnaufrufe geprüft. variableSetup.ts: 100 % Zeilen / 99,52 % Zweige; geprüfte kritische Module insgesamt 99,86 % Zeilen / 98,23 % Zweige. Typprüfung, Lint, Format und Schichtprüfung bestanden. Keine Balance-Simulationen erneut gestartet."
+        },
+        {
+          "id": "We-03-68",
+          "title": "Nicht gezogene Rollen im Nachtskript überspringen und variable Ziehung dokumentieren",
+          "status": "done",
+          "validation": "431 Werwolf-Tests inklusive 100 kompletter Partien und Ziehungsprüfungen bestanden. Nachtmodul 100 % Zeilen/Zweige; geprüfte kritische Logik insgesamt 99,73 % Zeilen / 98,15 % Zweige. Typprüfung im Logik-Arbeitsordner, ESLint, Format und Schichtprüfung erfolgreich. Breiter Testlauf dort: 1.091 Tests; aktueller UI-Arbeitsstand: 1.472 Tests erfolgreich. Lange Forschungs-/Balance-Simulationen ausgenommen. Gesamt-Typprüfung im UI-Arbeitsstand meldet fünf nachweislich vorbestehende UI-Fehler (auch mit ursprünglichen Logikdateien reproduziert); Übergabe enthält Fundstellen. Keine UI-Fehler in dieser Aufgabe verändert."
         }
       ]
     },
@@ -2052,6 +2064,14 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-21",
+      "summary": "We-03-68: Nachtlogik umgesetzt und gezielt in den Werwolf-UI-Arbeitsstand übernommen. Nicht gezogene Rollen, Lehrling und Trunkenbold werden übersprungen; vorhandene verdeckte Rollen behalten ihre Tarnaufrufe. Überflüssige Pool-Felder entfernt. Variable API beschreibt Claudes gewichtete Rollengruppen samt Beispielen und Heilergrenzen. Keine Produkt-UI oder Übersetzungen geändert."
+    },
+    {
+      "date": "2026-11-20",
+      "summary": "We-03-67 abgeschlossen: Wünsche 1–7 für variable Werwolf-Rollen umgesetzt. Muss-/Darf-Pools, gezählte Rollenfamilien, Optionsmengen und gleichverteilte Wolfswahl; jeder optionale Zusatz unabhängig mit 50 %. Machbarkeit mit Grenzen und Sperrgründen; separate Empfehlung nur anhand der Muss-Einträge. Frühere Itembereiche und Wolfsberechnung nach Ziehung ersetzt. 313 Tests erfolgreich; neue API und Migrationshinweise dokumentiert. UI-Anbindung bleibt separat."
+    },
     {
       "date": "2026-11-20",
       "summary": "Werwolf We-03-66 abgeschlossen: Amulett nur noch gegen Nachtangriffe; Abstimmung und Jägerschuss werden trotz Amulett aufgelöst. Keine künstliche Weitergabepflicht bei Liebeskummer. Freie Paarentscheidungen, Wolfsparität und unveränderte Trunkenbold-Enthüllung in Nacht drei geprüft. 277 gezielte Tests, 100 komplette Partien und zwei Sechser-Kombinationsprüfungen bestanden; 99,83 % Zeilen / 98,07 % Zweige. Historische Balancewerte nicht neu simuliert; UI-Anbindung bleibt We-01-48."
@@ -2614,7 +2634,7 @@
   "werewolfLineupOverview": {
     "note": "Eine Seherin ist immer Pflicht. Die Zeilen bauen aufeinander auf: Bereits freigegebene Rollen und Zusätze bleiben verfügbar. Alle weiteren Rollen sind optional; gewöhnliche Dorfbewohner füllen freie Plätze. Nachprüfungen übernommen: 7 Spieler mit 1–2 Wölfen (Standard 1), 8 mit 1–2 (Standard 2), 9 und 10 immer mit genau 2, 11 mit 2–3 (Standard 2).",
     "constraints": "Leibwächter und Dorfmatratze sind immer Alternativen. Beim Bürgermeister gilt entweder doppelte Stimme oder Hammer. Trunkenbold und Schutzamulett belegen keinen zusätzlichen Rollenplatz; beide sind standardmäßig aus. Alle Auswahlen müssen in die freien Spielerplätze passen.",
-    "wolfPolicy": "Aktuelle UI-Vorgabe: Feste Rollen erlauben manuelle Wahl innerhalb dieser Wolfsgrenzen, mit separater Empfehlung. Variable Rollen bestimmen die Zahl automatisch nach der konkreten Ziehung. Bei mehreren auswählbaren Werten erhält der empfohlene Button einen Rand und darunter „empfohlen“; Einzelwerte bleiben ohne Empfehlungsmarkierung. Fester manueller Startpfad We-03-62 ist implementiert und geprüft.",
+    "wolfPolicy": "Feste Rollen: manuelle Wolfswahl innerhalb der Freigaben mit separater Empfehlung. Variable Rollen: mindestens eine erlaubte Wolfszahl auswählen, mehrere gleichverteilt ziehen; Empfehlung nur anhand der Muss-Rollen und Muss-Zusätze. Keine nachträgliche Fairness-Korrektur der gezogenen Zahl. Standardauswahl laut Spielerzahl. Empfehlungsrand und „empfohlen“ nur bei mehreren erlaubten Zahlen. We-03-62 und We-03-67 sind logisch implementiert.",
     "rows": [
       {
         "players": 6,
@@ -2847,7 +2867,7 @@
   },
   "werewolfUiPlan": {
     "title": "UI-Planung für Werwolf",
-    "stage": "Zweite Regelrunde logisch umgesetzt: Amulett schützt nur nachts, freie Paarentscheidungen und Trunkenbold-Wolf bis Nacht drei geprüft. UI-Anbindung weiterhin We-01-48.",
+    "stage": "Nachtlogik We-03-68 fertig und im UI-Arbeitsstand übernommen: keine Aufrufe nicht gezogener Rollen. Variable Gewichtung dokumentiert. Gesamt-UI-Typprüfung hat unabhängige Altfehler.",
     "views": [
       {
         "name": "Hauptansicht",
@@ -2856,7 +2876,7 @@
       },
       {
         "name": "Konfiguration",
-        "status": "Feste Ansicht im UI-Arbeitsstand umgesetzt; variabel später",
+        "status": "Fester und variabler Vertrag dokumentiert; variable Logik umgesetzt, UI-Anbindung separat",
         "purpose": "Rollen, Items und Partieeinstellungen festlegen."
       },
       {
@@ -2871,8 +2891,8 @@
       }
     ],
     "proposal": "Bestätigte drei Bereiche: Hauptansicht, Konfiguration und zentraler Spielablauf mit abschließender Gewinneransicht. Technische Übergabe enthält Dateipfade, feste/variable Einstiege, Fachereignisse, Zustandsfelder, Prüfungen und offene Grenzen. Live-Kreis bleibt erster Entwurf mit ungefähr 60–70 % Platz, gehaltenen Details und separater Legende. Aufgabenliste auf aktuellen Stand abgeglichen.",
-    "open": "UI-Anbindung laut We-01-48: Amulett nie als Abstimmungs-/Jägerschutz anzeigen, keine Pflichtweitergabe wegen Liebeskummer; neue Harter-Bursche-Option, öffentliche Lehrlingskennung und letzte Nachtphase anbinden. Weitere UI- und Speicherarbeit bleibt separat.",
-    "document": "GAMEHUB_WERWOLF_NARRATOR_API.md"
+    "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
+    "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   }
 };
       const REFRESH_INTERVAL_MS = 20_000;
