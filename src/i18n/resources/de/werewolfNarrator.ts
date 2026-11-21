@@ -11,6 +11,7 @@ export const werewolfNarratorTexts = {
       show: "Tippen: Rolle anzeigen",
     },
     bar: {
+      dealing: "Rollenverteilung",
       closeConfirm: "Beenden?",
       rules: "Spielregeln",
       day: "Tag {{count}}",

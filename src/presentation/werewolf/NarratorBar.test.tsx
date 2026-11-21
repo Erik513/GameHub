@@ -93,6 +93,9 @@ describe("NarratorBar during the role reveal", () => {
     expect(state.status).toBe("roles");
     expect(screen.queryByRole("button", { name: "All players and roles" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Rules" })).toBeNull();
+    // No moon and no night while the players look at their roles.
+    expect(screen.queryByRole("img", { name: /Night|Nacht/ })).toBeNull();
+    expect(screen.getByText("Role reveal")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "End game" })).toBeInTheDocument();
   });
 

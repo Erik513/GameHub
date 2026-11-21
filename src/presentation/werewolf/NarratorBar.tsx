@@ -30,10 +30,18 @@ export function NarratorBar({ state, day, onClose, onRules }: NarratorBarProps) 
   });
   return (
     <header className="ww-bar">
-      <span className="ww-bar__phase" role="img" aria-label={label}>
-        <Icon name={day ? "sun" : "moon"} />
-        <strong>{label}</strong>
-      </span>
+      {dealing ? (
+        // The night has not begun yet: no moon and no number of a night while the players look at their roles.
+        <span className="ww-bar__phase">
+          <Icon name="cards" />
+          <strong>{t("werewolfNarrator.bar.dealing")}</strong>
+        </span>
+      ) : (
+        <span className="ww-bar__phase" role="img" aria-label={label}>
+          <Icon name={day ? "sun" : "moon"} />
+          <strong>{label}</strong>
+        </span>
+      )}
       {!dealing && (
         <>
           <Button

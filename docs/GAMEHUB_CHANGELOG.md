@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-81: Leiste in der Rollenverteilung
+
+- In der Rollenverteilung zeigt die Leiste „Rollenverteilung“ statt Mond und „Nacht 1“. Die Trennlinie der Rollenkarte ist auf jeder Karte gleich lang.
+
 ### We-01-80: Kurze Rollentexte im Spiel
 
 - Der Info-Knopf der Rollenkarte zeigt jetzt kurze Sätze nur für die Spielerin oder den Spieler (Aufgabe, Besonderheiten, Option der Rolle, Amulett), ohne die Hinweise zur Konfiguration. Die ausführlichen Texte bleiben in der Konfiguration und der Anleitung.

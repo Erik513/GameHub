@@ -11,6 +11,7 @@ export const werewolfNarratorTexts = {
       show: "Tap: show the role",
     },
     bar: {
+      dealing: "Role reveal",
       closeConfirm: "End?",
       rules: "Rules",
       day: "Day {{count}}",
