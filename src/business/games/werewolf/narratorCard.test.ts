@@ -104,8 +104,19 @@ describe("describeNarratorCard", () => {
         describeNarratorCard(at(base, { ...stepFields(base, status), status }))?.role,
         status,
       ).toBe(role);
-    for (const status of ["day", "morning", "vote", "exile", "finished"])
+    for (const status of ["morning", "exile", "finished"])
       expect(describeNarratorCard(at(base, { status })), status).toBeNull();
+    // The day has a card of its own: the vote names the nominated person.
+    expect(describeNarratorCard(at(base, { status: "day" }))).toMatchObject({
+      abilities: [{ available: true, id: "vote" }],
+      actors: [],
+      role: "day",
+    });
+    expect(describeNarratorCard(at(base, { status: "vote", target: "Anna" }))).toMatchObject({
+      abilities: [],
+      actors: ["Anna"],
+      role: "day",
+    });
     for (const call of [
       "amuletPass",
       "bodyguard",

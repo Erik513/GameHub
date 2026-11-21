@@ -37,6 +37,10 @@ export const werewolfSymbolsTexts = {
         name: "Amor",
         meaning: "Herz mit Handschlag: verbindet zwei Personen",
       },
+      day: {
+        name: "Tag",
+        meaning: "Sonne: das Dorf spricht und stimmt ab",
+      },
       dead: {
         name: "Tot",
         meaning: "Grabstein: ausgeschieden",
@@ -144,6 +148,10 @@ export const werewolfSymbolsTexts = {
       wolf: {
         name: "Werwolf",
         meaning: "Wolfskopf: jagt nachts",
+      },
+      vote: {
+        name: "Abstimmung",
+        meaning: "Zettel in einer Urne: eine Person nominieren und abstimmen",
       },
       wounded: {
         name: "Verwundet",

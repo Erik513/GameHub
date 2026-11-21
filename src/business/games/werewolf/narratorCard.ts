@@ -17,7 +17,8 @@ export type CardRoleSymbol =
   | "lovers"
   | "drunk"
   | "amulet"
-  | "amuletPass";
+  | "amuletPass"
+  | "day";
 export type CardAbilityId =
   | "attack"
   | "inspect"
@@ -31,7 +32,8 @@ export type CardAbilityId =
   | "hammer"
   | "silence"
   | "shot"
-  | "passAmulet";
+  | "passAmulet"
+  | "vote";
 export type CardAbilitySymbol =
   | "attacked"
   | "seer"
@@ -44,7 +46,8 @@ export type CardAbilitySymbol =
   | "hammer"
   | "silenced"
   | "shotDuty"
-  | "amuletPass";
+  | "amuletPass"
+  | "vote";
 export type CardEffect =
   "lovers" | "amulet" | "attacked" | "protected" | "guest" | "poisoned" | "silenced" | "drunk";
 
@@ -119,6 +122,9 @@ function cardRole(state: WerewolfState): CardRoleSymbol | null {
       return "amulet";
     case "amuletPass":
       return "amuletPass";
+    case "day":
+    case "vote":
+      return "day";
     default:
       return null;
   }
@@ -178,6 +184,9 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
       return [{ available: true, id: "shot", symbol: "shotDuty" }];
     case "amuletPass":
       return [{ available: true, id: "passAmulet", symbol: "amuletPass" }];
+    case "day":
+      // The vote itself needs no button: the narrator only names who votes yes.
+      return state.status === "day" ? [{ available: true, id: "vote", symbol: "vote" }] : [];
     default:
       return [];
   }
@@ -206,7 +215,8 @@ export function describeNarratorCard(state: WerewolfState): NarratorCard | null 
   const role = cardRole(state);
   if (!role) return null;
   const cover = state.status === "nightCall";
-  const actors = cover ? [] : wakingPlayers(state);
+  // At the vote the card names the nominated person; during the day nobody is awake.
+  const actors = cover ? [] : state.status === "vote" ? [state.target] : wakingPlayers(state);
   return {
     abilities: abilitiesOf(state, role).map((ability) =>
       cover ? { ...ability, available: false } : ability,

@@ -14,6 +14,8 @@ interface NarratorViewProps {
   readonly onSession: (next: WerewolfSession) => void;
   /** Leaves the game (after the narrator confirmed). */
   readonly onEnd: () => void;
+  /** Opens the rules of the game. */
+  readonly onRules: () => void;
 }
 
 /**
@@ -21,7 +23,7 @@ interface NarratorViewProps {
  * leads through the night. At the bottom only "Back" and "Next": back is exactly one step, next only where the
  * step is complete.
  */
-export function NarratorView({ session, onSession, onEnd }: NarratorViewProps) {
+export function NarratorView({ session, onSession, onEnd, onRules }: NarratorViewProps) {
   const { t } = useTranslation();
   const guide = useNarratorGuide(session, onSession);
   const { view } = guide;
@@ -35,6 +37,7 @@ export function NarratorView({ session, onSession, onEnd }: NarratorViewProps) {
       <NarratorBar
         day={isDayStep(view.state)}
         onClose={() => setConfirmEnd(true)}
+        onRules={onRules}
         state={view.state}
       />
       <div className="ww-night__stage">
@@ -89,7 +92,9 @@ export function NarratorView({ session, onSession, onEnd }: NarratorViewProps) {
             {t("werewolfNarrator.guide.back")}
           </Button>
           <Button disabled={!view.canContinue} onClick={guide.continueGuide} variant="success">
-            {t("werewolfNarrator.guide.next")}
+            {view.nextKind === "next"
+              ? t("werewolfNarrator.guide.next")
+              : t(`werewolfNarrator.guide.nextKind.${view.nextKind}`)}
           </Button>
         </div>
       </StartBar>

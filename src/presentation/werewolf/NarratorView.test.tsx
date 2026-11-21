@@ -14,7 +14,14 @@ function Harness({ onEnd }: { readonly onEnd: () => void }) {
   const [session, setSession] = useState<WerewolfSession>(() =>
     createWerewolfSession(createWerewolf(names, "Max", () => 0.3, [], {})!),
   );
-  return <NarratorView onEnd={onEnd} onSession={setSession} session={session} />;
+  return (
+    <NarratorView
+      onEnd={onEnd}
+      onRules={() => undefined}
+      onSession={setSession}
+      session={session}
+    />
+  );
 }
 
 async function renderView(language: "en" | "de", onEnd = () => undefined) {

@@ -131,8 +131,8 @@ it.each(["de", "en"] as const)(
     await user.click(within(dialog).getByRole("tab", { name: text.tabs[3] }));
     const panel = within(dialog).getAllByRole("tabpanel", { hidden: true })[3]!;
     // Every symbol is there with its drawing, and the attribution of the wolf head is shown.
-    expect(panel.querySelectorAll(".ww-legend__item")).toHaveLength(34);
-    expect(panel.querySelectorAll(".ww-legend__item svg")).toHaveLength(34);
+    expect(panel.querySelectorAll(".ww-legend__item")).toHaveLength(36);
+    expect(panel.querySelectorAll(".ww-legend__item svg")).toHaveLength(36);
     expect(panel.querySelector('[data-symbol="wolf"]')).not.toBeNull();
     expect(panel.querySelector(".ww-legend__credits")).toHaveTextContent("CC BY 3.0");
   },

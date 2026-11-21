@@ -1,5 +1,11 @@
 import { describeNarratorCard, type CardAbilityId, type NarratorCard } from "./narratorCard";
-import { validTargets, type WerewolfTargetAction } from "./selectors";
+import {
+  validNominators,
+  validSeconders,
+  validTargets,
+  votingPlayers,
+  type WerewolfTargetAction,
+} from "./selectors";
 import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
 import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./stateMachine";
 
@@ -71,11 +77,26 @@ const mayChooseNobody: readonly CardAbilityId[] = [
 ];
 
 function phaseOf(state: WerewolfState): GuidePhase {
-  return describeNarratorCard(state) ? "intro" : "plain";
+  const card = describeNarratorCard(state);
+  // Nobody wakes up during the day: its card is open at once.
+  return !card ? "plain" : card.role === "day" ? "act" : "intro";
+}
+
+/** The vote starts with the people who have to vote yes already chosen. */
+function initialSelection(state: WerewolfState): GuideSelection {
+  return state.status === "vote"
+    ? {
+        ...emptySelection,
+        ability: "vote",
+        picks: votingPlayers(state)
+          .filter((player) => player.requiredYes)
+          .map((player) => player.name),
+      }
+    : emptySelection;
 }
 
 function frameOf(state: WerewolfState, pastLength: number): GuideFrame {
-  return { event: null, pastLength, phase: phaseOf(state), selection: emptySelection };
+  return { event: null, pastLength, phase: phaseOf(state), selection: initialSelection(state) };
 }
 
 export function createGuide(session: WerewolfSession): Guide {
@@ -114,6 +135,19 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       return { night, type: "announceMorning" };
     case "exile":
       return { night, type: "announceExile" };
+    case "day":
+      if (selection.picks.length === 0) return { night, type: "endDay" };
+      return selection.picks.length === 3
+        ? {
+            night,
+            nominator: selection.picks[1]!,
+            seconder: selection.picks[2]!,
+            target: selection.picks[0]!,
+            type: "nominate",
+          }
+        : null;
+    case "vote":
+      return { night, nomination: state.nomination, type: "vote", yesVoters: selection.picks };
     case "wolves":
       if (state.night === 1 && !state.settings.attackOnFirstNight)
         return { night, type: "wolvesReady" };
@@ -159,6 +193,8 @@ function roleOf(state: WerewolfState) {
 
 /** How many targets an ability takes, and whether it can be left without one. */
 function pickLimit(state: WerewolfState, selection: GuideSelection): number {
+  if (selection.ability === "vote")
+    return state.status === "vote" ? votingPlayers(state).length : 3;
   if (selection.ability === "bond") return 2;
   if (selection.ability === "kill")
     return Math.max(0, state.spellsRemaining - Number(selection.heal));
@@ -166,6 +202,8 @@ function pickLimit(state: WerewolfState, selection: GuideSelection): number {
 }
 
 export interface GuideView {
+  /** What the "next" button says: the day ends, the vote starts or ends, or simply "next". */
+  readonly nextKind: "endDay" | "endVote" | "next" | "startVote";
   readonly phase: GuidePhase;
   readonly state: WerewolfState;
   /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */
@@ -185,13 +223,25 @@ export function describeGuide(guide: Guide): GuideView {
   const state = guide.session.present;
   const { selection } = frame;
   const action = selection.ability ? abilityAction[selection.ability] : undefined;
-  const targets =
-    frame.phase === "act" && action
-      ? validTargets(state, action, {
-          heal: selection.heal,
-          selected: selection.ability === "bond" ? selection.picks.slice(0, 1) : selection.picks,
-        }).filter((name) => !selection.picks.includes(name))
-      : [];
+  let targets: readonly string[] = [];
+  if (frame.phase === "act" && selection.ability === "vote") {
+    const [nominee, nominator] = selection.picks;
+    targets =
+      state.status === "vote"
+        ? votingPlayers(state).map((player) => player.name)
+        : selection.picks.length >= 3
+          ? []
+          : nominee === undefined
+            ? validTargets(state, "nominate")
+            : nominator === undefined
+              ? validNominators(state, nominee)
+              : validSeconders(state, nominee, nominator);
+    targets = targets.filter((name) => !selection.picks.includes(name));
+  } else if (frame.phase === "act" && action)
+    targets = validTargets(state, action, {
+      heal: selection.heal,
+      selected: selection.ability === "bond" ? selection.picks.slice(0, 1) : selection.picks,
+    }).filter((name) => !selection.picks.includes(name));
   const canContinue =
     frame.phase === "intro" ||
     frame.phase === "outro" ||
@@ -205,8 +255,19 @@ export function describeGuide(guide: Guide): GuideView {
       !(selection.ability === "shot" && state.settings.hunterShot === "required"),
     canContinue,
     canGoBack: guide.trail.length > 1 || guide.session.past.length > 0,
-    canUndo: selection.picks.length > 0 || selection.heal || selection.none,
+    canUndo:
+      selection.picks.length > initialSelection(state).picks.length ||
+      selection.heal ||
+      selection.none,
     card: describeNarratorCard(state),
+    nextKind:
+      state.status === "vote"
+        ? "endVote"
+        : state.status === "day"
+          ? selection.picks.length === 3
+            ? "startVote"
+            : "endDay"
+          : "next",
     phase: frame.phase,
     selection,
     state,
@@ -252,10 +313,16 @@ export function choosePlayer(guide: Guide, name: string): Guide {
 /** The narrator removes a chosen person again. */
 export function unchoosePlayer(guide: Guide, name: string): Guide {
   const { selection } = current(guide);
-  return withSelection(guide, {
-    ...selection,
-    picks: selection.picks.filter((pick) => pick !== name),
-  });
+  const { status } = guide.session.present;
+  // The people who have to vote yes stay chosen; a nomination is taken back from the chosen person on.
+  if (status === "vote" && initialSelection(guide.session.present).picks.includes(name))
+    return guide;
+  const index = selection.picks.indexOf(name);
+  const picks =
+    status === "day"
+      ? selection.picks.slice(0, Math.max(0, index))
+      : selection.picks.filter((pick) => pick !== name);
+  return withSelection(guide, { ...selection, picks });
 }
 
 export function chooseNobody(guide: Guide): Guide {
@@ -266,7 +333,10 @@ export function chooseNobody(guide: Guide): Guide {
 /** Takes back the choice of this step (not the step itself). */
 export function undoSelection(guide: Guide): Guide {
   const { selection } = current(guide);
-  return withSelection(guide, { ...emptySelection, ability: selection.ability });
+  return withSelection(guide, {
+    ...initialSelection(guide.session.present),
+    ability: selection.ability,
+  });
 }
 
 function commit(guide: Guide, event: WerewolfEvent): Guide {
@@ -296,14 +366,14 @@ export function continueGuide(guide: Guide): Guide {
       const next = transitionWerewolf(state, event);
       // The same role stays awake (the seer looks at a result): the game moves on now. Otherwise the role first falls
       // asleep, and the game moves on with the next "continue".
-      if (frame.phase === "act" && roleOf(next) !== roleOf(state))
+      if (frame.phase === "act" && roleOf(state) !== "day" && roleOf(next) !== roleOf(state))
         return {
           ...guide,
           trail: [...guide.trail, { ...frame, event, phase: "outro" }],
         };
       const moved = commit(guide, event);
       const last = moved.trail[moved.trail.length - 1]!;
-      return frame.phase === "act" && roleOf(next) !== null
+      return frame.phase === "act" && roleOf(next) === roleOf(state)
         ? { ...moved, trail: [...moved.trail.slice(0, -1), { ...last, phase: "act" }] }
         : moved;
     }

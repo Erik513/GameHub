@@ -10,6 +10,7 @@ export const werewolfNarratorTexts = {
       show: "Tippen: Rolle anzeigen",
     },
     bar: {
+      rules: "Spielregeln",
       day: "Tag {{count}}",
       night: "Nacht {{count}}",
       overview: "Alle Spieler und Rollen",
@@ -22,6 +23,7 @@ export const werewolfNarratorTexts = {
       unavailable: "nicht möglich",
     },
     ability: {
+      vote: "Abstimmung",
       doubleVote: "Doppelte Stimme",
       attack: "Opfer",
       bond: "Verbinden",
@@ -39,6 +41,7 @@ export const werewolfNarratorTexts = {
     },
     guide: {
       wake: {
+        day: "Der Tag beginnt",
         wolf: "Die Werwölfe erwachen",
         seer: "Die Seherin erwacht",
         witch: "Die Hexe erwacht",
@@ -56,6 +59,7 @@ export const werewolfNarratorTexts = {
         amuletPass: "Der Amulett-Träger erwacht",
       },
       sleep: {
+        day: "Der Tag endet",
         wolf: "Die Werwölfe schlafen wieder ein",
         seer: "Die Seherin schläft wieder ein",
         witch: "Die Hexe schläft wieder ein",
@@ -73,6 +77,7 @@ export const werewolfNarratorTexts = {
         amuletPass: "Der Amulett-Träger schläft wieder ein",
       },
       ask: {
+        vote: "Abstimmung",
         attack: "Die Werwölfe wählen ihr Opfer",
         inspect: "Die Seherin zeigt auf eine Person",
         investigate: "Der Ermittler zeigt auf eine Person oder verzichtet",
@@ -120,8 +125,23 @@ export const werewolfNarratorTexts = {
         died: "Gestorben: {{names}}",
       },
       day: {
-        title: "Der Tag",
-        hint: "Der Tagesablauf folgt im nächsten Entwicklungsschritt.",
+        nominee: "Wer wird nominiert?",
+        nominator: "Wer nominiert?",
+        seconder: "Wer unterstützt die Nominierung?",
+        voters: "Wer stimmt mit Ja?",
+        idle: "Tippe auf „Abstimmung“, wenn jemand nominiert wird. Sonst: Tag beenden.",
+        chosen: "Nominiert: {{target}} – von {{nominator}}, unterstützt von {{seconder}}",
+      },
+      nextKind: {
+        endDay: "Tag beenden",
+        startVote: "Abstimmung starten",
+        endVote: "Abstimmung beenden",
+      },
+      exile: "{{name}} scheidet aus",
+      finished: {
+        village: "Das Dorf gewinnt",
+        wolves: "Die Werwölfe gewinnen",
+        tanner: "{{name}} (Gerber) gewinnt",
       },
     },
   },

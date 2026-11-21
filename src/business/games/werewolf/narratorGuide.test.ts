@@ -177,4 +177,75 @@ describe("narrator guide", () => {
     const victim = describeGuide(poison).targets[0]!;
     expect(describeGuide(choosePlayer(poison, victim)).selection.picks).toEqual([victim]);
   });
+
+  describe("the day", () => {
+    function toDay(roles: Parameters<typeof game>[0] = ["idiot"]): Guide {
+      let guide = game(roles, { attackOnFirstNight: true });
+      for (let step = 0; step < 300 && guide.session.present.status !== "day"; step += 1)
+        guide = forward(guide)!;
+      expect(guide.session.present.status).toBe("day");
+      return guide;
+    }
+
+    it("opens the day card at once and ends the day with the next button", () => {
+      const guide = toDay();
+      const view = describeGuide(guide);
+      expect(view.phase).toBe("act");
+      expect(view.card?.role).toBe("day");
+      expect(view.nextKind).toBe("endDay");
+      expect(view.canContinue).toBe(true);
+      const night = continueGuide(guide);
+      expect(night.session.present.status).not.toBe("day");
+      // The first role of the night is announced, not shown: its intro comes first.
+      expect(describeGuide(night).phase).toBe("intro");
+      const back = backGuide(night);
+      expect(back.ok && back.guide.session.present.status).toBe("day");
+    });
+
+    it("nominates in three choices, starts the vote and counts the yes voters", () => {
+      let guide = toDay();
+      guide = chooseAbility(guide, "vote");
+      const first = describeGuide(guide);
+      expect(first.targets.length).toBeGreaterThan(2);
+      expect(first.nextKind).toBe("endDay");
+      guide = choosePlayer(guide, first.targets[0]!);
+      const nominee = describeGuide(guide).selection.picks[0]!;
+      expect(describeGuide(guide).targets).not.toContain(nominee);
+      expect(describeGuide(guide).canContinue).toBe(false);
+      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+      expect(describeGuide(guide).nextKind).toBe("startVote");
+      expect(describeGuide(guide).canContinue).toBe(true);
+      guide = continueGuide(guide);
+      const vote = describeGuide(guide);
+      expect(vote.state.status).toBe("vote");
+      expect(vote.card?.actors).toEqual([nominee]);
+      expect(vote.nextKind).toBe("endVote");
+      expect(vote.targets.length).toBeGreaterThan(2);
+      // The village idiot has to vote yes and cannot be taken back.
+      const idiot = vote.state.alive.find((p) => p.role === "idiot")?.name;
+      if (idiot) {
+        expect(vote.selection.picks).toContain(idiot);
+        expect(describeGuide(unchoosePlayer(guide, idiot)).selection.picks).toContain(idiot);
+      }
+      guide = choosePlayer(guide, vote.targets[0]!);
+      expect(describeGuide(guide).canUndo).toBe(true);
+      guide = undoSelection(guide);
+      expect(describeGuide(guide).canUndo).toBe(false);
+      guide = continueGuide(guide);
+      expect(["day", "exile"]).toContain(guide.session.present.status);
+      // Back from the result goes into the vote again.
+      const back = backGuide(guide);
+      expect(back.ok && describeGuide(back.guide).state.status).toBe("vote");
+    });
+
+    it("takes a nomination back from the chosen person on", () => {
+      let guide = chooseAbility(toDay(), "vote");
+      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+      const [nominee, nominator] = describeGuide(guide).selection.picks;
+      guide = unchoosePlayer(guide, nominator!);
+      expect(describeGuide(guide).selection.picks).toEqual([nominee]);
+    });
+  });
 });

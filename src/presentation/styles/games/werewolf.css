@@ -1466,6 +1466,7 @@
   color: var(--color-ink);
 }
 
-.app-shell:has(.ww-night[data-time="day"]) .site-header {
-  background: rgb(246 242 231 / 94%);
+/* The bar of the narrator view takes the place of the header of the app. */
+.app-shell:has(.ww-night) .site-header {
+  display: none;
 }

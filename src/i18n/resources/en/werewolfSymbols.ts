@@ -37,6 +37,10 @@ export const werewolfSymbolsTexts = {
         name: "Cupid",
         meaning: "Heart with a handshake: joins two players",
       },
+      day: {
+        name: "Day",
+        meaning: "Sun: the village talks and votes",
+      },
       dead: {
         name: "Dead",
         meaning: "Gravestone: out of the game",
@@ -144,6 +148,10 @@ export const werewolfSymbolsTexts = {
       wolf: {
         name: "Werewolf",
         meaning: "Wolf head: hunts at night",
+      },
+      vote: {
+        name: "Vote",
+        meaning: "Slip into a box: nominate a person and vote",
       },
       wounded: {
         name: "Wounded",

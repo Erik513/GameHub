@@ -11,13 +11,15 @@ interface NarratorBarProps {
   readonly day: boolean;
   /** Asks to leave the game. */
   readonly onClose: () => void;
+  /** Opens the rules of the game. */
+  readonly onRules: () => void;
 }
 
 /**
  * The top bar of the narrator view: sun or moon with the number of the night, the overview of all players with their
  * roles (private to the narrator) and the button that leaves the game.
  */
-export function NarratorBar({ state, day, onClose }: NarratorBarProps) {
+export function NarratorBar({ state, day, onClose, onRules }: NarratorBarProps) {
   const { t } = useTranslation();
   const [overview, setOverview] = useState(false);
   const label = t(day ? "werewolfNarrator.bar.day" : "werewolfNarrator.bar.night", {
@@ -29,6 +31,14 @@ export function NarratorBar({ state, day, onClose }: NarratorBarProps) {
         <Icon name={day ? "sun" : "moon"} />
         <strong>{label}</strong>
       </span>
+      <Button
+        aria-label={t("werewolfNarrator.bar.rules")}
+        onClick={onRules}
+        title={t("werewolfNarrator.bar.rules")}
+        variant="secondary"
+      >
+        <Icon name="book" />
+      </Button>
       <Button
         aria-label={t("werewolfNarrator.bar.overview")}
         onClick={() => setOverview(true)}

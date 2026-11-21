@@ -52,7 +52,7 @@ export function GuideBox({
     );
   }
 
-  const info = actInfo(view, t);
+  const info = actInfo(view, t) ?? dayPrompt(view, t);
   const showPeople =
     selection.ability !== null &&
     (view.targets.length > 0 || selection.picks.length > 0 || view.canChooseNobody);
@@ -193,10 +193,38 @@ function PlainBox({ view }: { readonly view: GuideView }) {
       </section>
     );
   }
-  return (
-    <section className="ww-guide">
-      <strong className="ww-guide__text">{t("werewolfNarrator.guide.day.title")}</strong>
-      <span>{t("werewolfNarrator.guide.day.hint")}</span>
-    </section>
-  );
+  if (state.status === "exile")
+    return (
+      <section className="ww-guide">
+        <strong className="ww-guide__text">
+          {t("werewolfNarrator.guide.exile", { name: state.victim.name })}
+        </strong>
+      </section>
+    );
+  if (state.status === "finished")
+    return (
+      <section className="ww-guide">
+        <strong className="ww-guide__text">
+          {state.tannerWinner
+            ? t("werewolfNarrator.guide.finished.tanner", { name: state.tannerWinner })
+            : t(
+                `werewolfNarrator.guide.finished.${state.winner === "village" ? "village" : "wolves"}`,
+              )}
+        </strong>
+      </section>
+    );
+  return null;
+}
+
+/** What the narrator reads or does during the day: nominate (three choices), vote, or end the day. */
+function dayPrompt(view: GuideView, t: TFunction): string | null {
+  const { selection, state } = view;
+  if (state.status === "vote") return t("werewolfNarrator.guide.day.voters");
+  if (state.status !== "day") return null;
+  if (selection.ability !== "vote") return t("werewolfNarrator.guide.day.idle");
+  const [target, nominator, seconder] = selection.picks;
+  if (target === undefined) return t("werewolfNarrator.guide.day.nominee");
+  if (nominator === undefined) return t("werewolfNarrator.guide.day.nominator");
+  if (seconder === undefined) return t("werewolfNarrator.guide.day.seconder");
+  return t("werewolfNarrator.guide.day.chosen", { nominator, seconder, target });
 }

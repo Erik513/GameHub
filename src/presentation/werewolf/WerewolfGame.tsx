@@ -77,7 +77,12 @@ export function WerewolfGame() {
   useGameRulesButton(true, () => setRulesOpen(true));
 
   const view = game.session ? (
-    <NarratorView onEnd={game.end} onSession={game.replace} session={game.session} />
+    <NarratorView
+      onEnd={game.end}
+      onRules={() => setRulesOpen(true)}
+      onSession={game.replace}
+      session={game.session}
+    />
   ) : configuring ? (
     <WerewolfConfiguration
       draft={draft}

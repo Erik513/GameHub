@@ -10,6 +10,7 @@ export const werewolfNarratorTexts = {
       show: "Tap: show the role",
     },
     bar: {
+      rules: "Rules",
       day: "Day {{count}}",
       night: "Night {{count}}",
       overview: "All players and roles",
@@ -22,6 +23,7 @@ export const werewolfNarratorTexts = {
       unavailable: "not possible",
     },
     ability: {
+      vote: "Vote",
       doubleVote: "Double vote",
       attack: "Victim",
       bond: "Join",
@@ -39,6 +41,7 @@ export const werewolfNarratorTexts = {
     },
     guide: {
       wake: {
+        day: "The day begins",
         wolf: "The werewolves wake up",
         seer: "The seer wakes up",
         witch: "The witch wakes up",
@@ -56,6 +59,7 @@ export const werewolfNarratorTexts = {
         amuletPass: "The amulet holder wakes up",
       },
       sleep: {
+        day: "The day ends",
         wolf: "The werewolves go back to sleep",
         seer: "The seer goes back to sleep",
         witch: "The witch goes back to sleep",
@@ -73,6 +77,7 @@ export const werewolfNarratorTexts = {
         amuletPass: "The amulet holder goes back to sleep",
       },
       ask: {
+        vote: "Vote",
         attack: "The werewolves choose their victim",
         inspect: "The seer points at a person",
         investigate: "The investigator points at a person or passes",
@@ -120,8 +125,19 @@ export const werewolfNarratorTexts = {
         died: "Died: {{names}}",
       },
       day: {
-        title: "The day",
-        hint: "The course of the day follows in the next development step.",
+        nominee: "Who is nominated?",
+        nominator: "Who nominates?",
+        seconder: "Who seconds the nomination?",
+        voters: "Who votes yes?",
+        idle: "Tap “Vote” when somebody is nominated. Otherwise: end the day.",
+        chosen: "Nominated: {{target}} by {{nominator}}, seconded by {{seconder}}",
+      },
+      nextKind: { endDay: "End the day", startVote: "Start the vote", endVote: "End the vote" },
+      exile: "{{name}} leaves the game",
+      finished: {
+        village: "The village wins",
+        wolves: "The werewolves win",
+        tanner: "{{name}} (tanner) wins",
       },
     },
   },

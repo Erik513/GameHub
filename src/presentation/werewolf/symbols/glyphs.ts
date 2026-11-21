@@ -147,6 +147,12 @@ export const lineGlyphs = {
     "M9 3a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2",
     "M19 13a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2",
   ],
+  // Drawn for GameHub in the style of the others: a slip above a box with a slot (the vote).
+  ballot: ["M4 12h16v8H4z", "M9 15h6", "M8 3h8v6H8z"],
+  sun: [
+    "M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0",
+    "M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7",
+  ],
 } as const;
 
 export type LineGlyph = keyof typeof lineGlyphs;

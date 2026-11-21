@@ -30,6 +30,7 @@ Diese Regeln gelten für Codex, Claude Code und andere automatisierte Entwicklun
 - Verwende Ports beziehungsweise Interfaces an Schichtgrenzen und implementiere technische Adapter außerhalb der Business-Schicht.
 - Halte gemeinsame App-Infrastruktur unabhängig von der Spiellogik einzelner Spiele.
 - Der Einstellungs- beziehungsweise Konfigurationsknopf im Hauptmenü eines Spiels (Reglersymbol) steht links neben „Spiel starten“ und ist blau (Variante `primary`), in jedem Spiel gleich. Dasselbe gilt für den Knopf links neben „Fertig“ in der Konfiguration (Werwolf: Aufwachreihenfolge).
+- Während ein Spiel läuft, zeigt die obere Leiste nur spielspezifische Elemente (Werwolf: Tag-/Nachtanzeige, Spielregeln nur als Symbol, Übersicht, Schließen). Die allgemeine Kopfleiste der App (Titel, Spielregeln als Text, Einstellungen, Startseite) ist dann ausgeblendet und wiederholt nichts aus den Einstellungen oder dem Hauptmenü.
 - Starte die Anwendung immer mit einer Spielauswahl; kein einzelnes Spiel darf beim App-Start automatisch geöffnet werden.
 - Registriere Spiele über einen zentralen, genreunabhängigen Spielkatalog statt sie fest in Navigation oder Startseite einzubauen.
 - Jedes Spiel besitzt eigene Business-Logik und eigene UI-Komponenten.

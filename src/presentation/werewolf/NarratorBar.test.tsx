@@ -10,12 +10,17 @@ import { NarratorBar } from "./NarratorBar";
 const names = "Anna,Ben,Cleo,Dora,Emil,Finn,Gina,Hans,Ida,Jan,Kim,Lea";
 const state = createWerewolf(names, "Max", () => 0.3, [], {})!;
 
-async function renderBar(language: "en" | "de", day: boolean, onClose = () => undefined) {
+async function renderBar(
+  language: "en" | "de",
+  day: boolean,
+  onClose = () => undefined,
+  onRules = () => undefined,
+) {
   const i18n = await createGameHubI18n(language);
   const user = userEvent.setup();
   render(
     <I18nextProvider i18n={i18n}>
-      <NarratorBar day={day} onClose={onClose} state={state} />
+      <NarratorBar day={day} onClose={onClose} onRules={onRules} state={state} />
     </I18nextProvider>,
   );
   return user;
@@ -41,6 +46,13 @@ describe("NarratorBar", () => {
     expect(within(dialog).getByText("For the narrator only")).toBeInTheDocument();
     await user.click(within(dialog).getByRole("button", { name: /Close|close/ }));
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("opens the rules through the book symbol", async () => {
+    const onRules = vi.fn();
+    const user = await renderBar("en", false, () => undefined, onRules);
+    await user.click(screen.getByRole("button", { name: "Rules" }));
+    expect(onRules).toHaveBeenCalledTimes(1);
   });
 
   it("asks to leave through the close button", async () => {

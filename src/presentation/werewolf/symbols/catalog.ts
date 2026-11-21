@@ -49,6 +49,9 @@ const definitions = [
   { glyph: "microphoneOff", group: "state", id: "silenced" },
   { glyph: "arrowsExchange", group: "state", id: "amuletPass" },
   { glyph: "grave2", group: "state", id: "dead" },
+  // The day: its own card in the narrator view and the vote that it holds.
+  { glyph: "sun", group: "state", id: "day" },
+  { glyph: "ballot", group: "state", id: "vote" },
 ] as const;
 
 export type SymbolId = (typeof definitions)[number]["id"];

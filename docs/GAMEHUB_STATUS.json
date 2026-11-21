@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T23:40:00.000Z",
+    "updatedAt": "2026-11-22T00:45:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 240,
-      "totalTasks": 302,
-      "percent": 79.5
+      "completedTasks": 242,
+      "totalTasks": 304,
+      "percent": 79.6
     }
   },
   "environment": {
@@ -1364,6 +1364,18 @@
           "title": "Erzählersicht: obere Leiste (Sonne/Mond mit Nacht oder Tag, Übersicht aller Spieler und Rollen, Schließen mit Rückfrage), heller Tag und dunkle Nacht",
           "status": "done",
           "validation": "Leiste NarratorBar mit Phasenanzeige, Übersichtsfenster (nur für den Erzähler: Rolle, ausgeschieden, verliebt, Amulett, Trunkenbold) und Schließen mit Rückfrage; Tag hell und Nacht dunkel nur in der Spielansicht (eigene Farbwerte); Modell isDayStep; im Browser bei 390 Pixel Breite angesehen (Nacht und Tag); Deutsch und Englisch getestet; das Übersichtsfenster bleibt im Dunkel, weil es außerhalb der Spielansicht liegt; Tagesablauf folgt."
+        },
+        {
+          "id": "We-01-65",
+          "title": "Erzählersicht: Tag (Tageskarte mit Knopf Abstimmung, Nominierung in drei Wahlen, Abstimmung mit benannten Ja-Stimmen, Weiter als Tag beenden, Ausschluss, Spielende)",
+          "status": "done",
+          "validation": "Tageskarte ohne Aufwecken mit Knopf Abstimmung; Nominieren (Person, Nominierende, Unterstützende) aus den gültigen Zielen der Logik, Abstimmung mit benannten Ja-Stimmen (Dorftrottel vorgewählt und nicht abwählbar), Weiter heißt Tag beenden, Abstimmung starten oder Abstimmung beenden; Ausschluss und Spielende mit eigener Ansage; zwei neue Symbole (Tag, Abstimmung) mit Legende; Rücknahme geprüft; im Browser bei 390 Pixel Breite bis zum Ergebnis der Abstimmung durchgespielt; 1541 Tests, tsc -b, eslint, Schichtprüfung sauber. Offen: Jäger am Tag und Amulett-Ende im Browser, Lehrling-Ansage (We-01-49)."
+        },
+        {
+          "id": "We-01-66",
+          "title": "Erzählersicht: Kopfleiste der App ausblenden, Spielregeln als Symbol in die Tag-/Nachtleiste",
+          "status": "done",
+          "validation": "Die Kopfleiste der App ist in der Erzählersicht ausgeblendet; die Tag-/Nachtleiste übernimmt die Spielregeln als Buchsymbol (Deutsch und Englisch beschriftet für Screenreader) neben Übersicht und Schließen; im Browser bei 390 Pixel Breite angesehen, Regeln öffnen sich; 1542 Tests, tsc -b, eslint, Schichtprüfung sauber."
         }
       ]
     },

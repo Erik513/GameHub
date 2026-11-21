@@ -2,6 +2,14 @@
 
 ## 2026-11-21
 
+### We-01-66: Erzählersicht ohne App-Kopfleiste
+
+- Die Kopfleiste der App („Werwolf“, Spielregeln, Einstellungen, Startseite) entfällt in der Erzählersicht. Die Tag-/Nachtleiste ersetzt sie und hat die Spielregeln als Buchsymbol, daneben Übersicht und Schließen; weitere Knöpfe können dort später folgen.
+
+### We-01-65: Erzählersicht, der Tag
+
+- Tageskarte: Knopf „Abstimmung“, Nominierung in drei Wahlen (Person, Nominierende, Unterstützende) nur aus den gültigen Zielen der Logik, Abstimmung mit benannten Ja-Stimmen (Dorftrottel vorgewählt). „Weiter“ heißt Tag beenden, Abstimmung starten oder Abstimmung beenden. Ausschluss und Spielende werden angesagt. Neue Symbole „Tag“ und „Abstimmung“ in der Legende.
+
 ### We-01-64: Erzählersicht, obere Leiste und heller Tag
 
 - Obere Leiste: Sonne oder Mond mit „Nacht 1“ oder „Tag 1“, Knopf mit allen Spielern und Rollen (nur für den Erzähler), Schließen mit Rückfrage. Der Tag ist hell, die Nacht dunkel, nur in der Spielansicht. Das alte Textknopf „Spiel beenden“ entfällt.
