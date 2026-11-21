@@ -2,7 +2,7 @@
 
 Aktueller Nachtablauf (We-03-68, 21.11.2026): Nicht gezogene Pool-Rollen und Zusätze werden übersprungen. Tarnaufrufe gelten nur für tatsächlich vorhandene verdeckte Rollen beziehungsweise verbrauchte Fähigkeiten. nightRolePool, nightItemPool und nightMayUseHammer sind entfernt. Änderungen sind im Logik-Arbeitsordner und gezielt im Werwolf-UI-Arbeitsstand übernommen. Die gewichtete variable Ziehung und Zahlenbeispiele stehen in [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md); ältere widersprechende Tarn-/Gewichtungsaussagen sind ersetzt.
 
-Aktueller variabler Modus (We-03-67, 20.11.2026): Die Wünsche 1–7 aus dem Abschnitt „Variable Rollen“ sind logisch implementiert. Muss-/Darf-Pools, Variantenmengen, ausgewählte Wolfszahlen und unabhängige 50-%-Zusätze ersetzen itemRange und die Wolfsberechnung nach Ziehung. Aktuelle Signaturen, Wahrscheinlichkeiten und UI-Metadaten: [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md). Ältere gegenteilige Abschnitte sind historische Beschlussstände. Die UI-Anbindung bleibt separat.
+Aktueller variabler Modus (We-03-67, 20.11.2026): Die Wünsche 1–7 aus dem Abschnitt „Variable Rollen“ sind logisch implementiert. Muss-/Darf-Pools, Variantenmengen, ausgewählte Wolfszahlen und unabhängige 50-%-Zusätze ersetzen itemRange und die Wolfsberechnung nach Ziehung. Aktuelle Signaturen, Wahrscheinlichkeiten und UI-Metadaten: [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md). Ältere gegenteilige Abschnitte sind historische Beschlussstände. Die Bedienoberfläche ist umgesetzt (We-01-32, Stand 21.11.2026); die Ziehung beim Spielstart folgt mit We-01-52.
 
 Aktueller Beschlussstand der zweiten Regelrunde (We-03-66, 20.11.2026): Amulett schützt nur gegen nächtlichen Wolfsangriff, Gift und Todeszauber. Kein Schutz bei Hammer, Abstimmung oder Jägerschuss. Liebeskummer allein löst keine Weitergabepflicht aus. Verliebte entscheiden frei; ein verdeckter Trunkenbold-Wolf wird weiterhin erst in Nacht drei enthüllt. Implementiert und geprüft; aktuelle Anbindung in GAMEHUB_WERWOLF_NARRATOR_API.md.
 
@@ -346,7 +346,7 @@ Die Einstellung zum Wolfsangriff ab Nacht eins ist für die Rollenkonfiguration 
 | Bürgermeister | Fähigkeit | Doppelte Stimme / Hammer | Doppelte Stimme; Hammer erst ab zehn Spielern. |
 | Alte Vettel | Sich selbst stummschalten dürfen | Verboten / erlaubt | Verboten. |
 
-Die Trennung ist bestätigt: **Erster Wolfsangriff** und **Rollen nach dem Ausscheiden** sind allgemeine Einstellungen. Ein kompakter Bereich **„Spielregeln“** innerhalb der Konfiguration ist dafür ein Layoutvorschlag. Auswahl über Buttons passt zur bisherigen Gestaltungsrichtung; zum Beispiel „Nacht 1 / Nacht 2“ für den ersten Wolfsangriff und „Aufdecken / Geheim“ für Rollen nach dem Ausscheiden. Diese Beschriftungen und die genaue Position sind noch nicht endgültig bestätigt. Jäger, Gerber, Bürgermeister und Alte Vettel erhalten jeweils einen optionalen Varianten-Auswahlbutton nach dem bestätigten Jäger-Prinzip.
+Die Trennung ist bestätigt: **Erster Wolfsangriff** und **Rollen nach dem Ausscheiden** sind allgemeine Einstellungen. Ein kompakter Bereich innerhalb der Konfiguration ist dafür ein Layoutvorschlag; umgesetzt als Reiter **„Einstellungen“** (nicht „Spielregeln“, damit er nicht mit dem Knopf der Spielanleitung verwechselt wird). Auswahl über Buttons passt zur bisherigen Gestaltungsrichtung; zum Beispiel „Nacht 1 / Nacht 2“ für den ersten Wolfsangriff und „Aufdecken / Geheim“ für Rollen nach dem Ausscheiden. Diese Beschriftungen und die genaue Position sind noch nicht endgültig bestätigt. Jäger, Gerber, Bürgermeister und Alte Vettel erhalten jeweils einen optionalen Varianten-Auswahlbutton nach dem bestätigten Jäger-Prinzip.
 
 Bereits separat geplant sind Modus Fest/Variabel, optionale Rollenkarten, Amulett/Trunkenbold als Zusätze und die Wolfswahl beziehungsweise automatische Wolfszahl. Beim später zu planenden variablen Modus kommen Rollen-/Itempools und deren inklusive Mindest-/Höchstzahlen hinzu. Ein Bereichsminimum aktiviert keine unsichtbare neue Rolle außerhalb des erlaubten Pools.
 
@@ -641,7 +641,7 @@ Präzisierung des Auftraggebers zum Amulett (aktuelle zweite Regelrunde): Entsch
 
 ## Variable Rollen: Bedienung und Wünsche an die Logik (Beschluss vom 20.11.2026, We-01-32)
 
-Der Auftraggeber hat die Bedienung des variablen Modus festgelegt. Die Wünsche 1–7 an die Logik sind in We-03-67 implementiert; die Bedienoberfläche ist separat anzubinden. Siehe GAMEHUB_WERWOLF_VARIABLE_API.md.
+Der Auftraggeber hat die Bedienung des variablen Modus festgelegt. Die Wünsche 1–7 an die Logik sind in We-03-67 implementiert, die Bedienoberfläche in We-01-32 (siehe Umsetzungsstand unten). Siehe GAMEHUB_WERWOLF_VARIABLE_API.md.
 
 ### Bedienung
 
@@ -666,3 +666,24 @@ Der Auftraggeber hat die Bedienung des variablen Modus festgelegt. Die Wünsche 
 5. **Verteilung dokumentieren:** Wie bisher die Zahlenpaare gleich gewichten; zusätzlich die Wolfszahl und die Optionswahl als eigene gleichverteilte Schritte beschreiben.
 6. **Zusätze unabhängig:** Der gemeinsame Zusatzbereich (`itemRange`) entfällt. Jeder Zusatz hat Muss, Darf oder Nein; jeder "Darf"-Zusatz wird unabhängig von den anderen gelost (Vorschlag: gleiche Wahrscheinlichkeit für dabei und nicht dabei; bitte so dokumentieren oder Alternative vorschlagen). Die Machbarkeit (Trunkenbold ab 9 Spielern und zwei Wölfen, Amulett ab 10) gilt je Zusatz.
 7. **Empfehlung der Wolfszahl für einen Entwurf:** Eine reine Funktion liefert die empfohlene Wolfszahl für die "Muss"-Rollen und "Muss"-Zusätze (die Ziehung ist unbekannt), damit die Oberfläche sie wie im festen Modus markieren kann. Bitte klären, ob die vorhandene Bewertung (`lineupBalance.ts`) dafür genügt.
+
+## Umsetzungsstand der Bedienoberfläche (21.11.2026)
+
+Diese Angaben ersetzen abweichende Einzelheiten der früheren Entwürfe.
+
+### Variable Rollen (We-01-32)
+
+- Oben im festen Kopf: Umschalter Feste/Variable Rollen, darunter die Werwölfe (Dreiviertel der Breite, mit Empfehlung, mehrere Wolfszahlen wählbar) und die Seherin (ein Viertel, Zahl unter dem Namen).
+- **Drei Kästen** für Rollen und Zusätze zusammen: Muss ins Spiel (grün), Darf ins Spiel (gelb), Soll nicht ins Spiel (rot). Zusätze sind Einträge mit bläulicher Farbe in denselben Kästen, keine eigenen Kästen. Jede Rolle, jede Option einer Rolle und jeder Zusatz ist ein kleiner Eintrag mit eigenem Info-Knopf.
+- **Bedienung:** Ziehen in einen Kasten (der Kasten unter dem Zeiger füllt sich mit seiner Farbe), Antippen öffnet die Wahl der drei Kästen, Gedrückthalten beginnt das Ziehen auch ohne Bewegung (nach 300 Millisekunden). Der mitgezogene Name hat dieselbe Größe und das i-Symbol des Eintrags.
+- **Sperren:** Ist eine Option einer Rolle auf „Muss“, sind die anderen Optionen rot und nicht verschiebbar; ebenso das andere Mitglied des Wächterpaars. Der Kasten „Muss“ nimmt nichts mehr auf, wenn für die Spielerzahl kein Platz mehr frei ist (bei allen gewählten Wolfszahlen).
+- **Spanne:** Die Leiste „Sonderrollen aus Darf“ am Fuß zeigt „Mindestens“ und „Höchstens“ mit Schaltflächen und „Möglich: a bis b“. „Mindestens“ bleibt unter der Zahl der Rollen auf „Darf“ (alle zu ziehen wäre „Muss“) und unter dem, was die engste gewählte Wolfszahl erlaubt.
+- **Zählweise:** Leibwächter und Dorfmatratze zählen als eine Rolle, ebenso mehrere Optionen einer Rolle; Hexe und Magier zählen als eine Rolle, wo sie nicht zusammen spielen dürfen, sonst als zwei und beide dürfen auf „Muss“.
+- **Ziehung:** Wolfszahl auslosen, Zahl A gleichverteilt, dann genau A Gruppen so, dass jede einzelne Rolle dieselbe Chance hat, danach Variante und Option, Zusätze einzeln mit 50 %, Rest Dorfbewohner (siehe GAMEHUB_WERWOLF_VARIABLE_API.md).
+- Der Erzähler weckt nachts nur die Rollen, die tatsächlich im Spiel sind; die Weckreihenfolge zeigt Rollen auf „Darf“ als mögliche Stufen.
+
+### Weitere Ansichten
+
+- **Spielanleitung (We-01-50):** Knopf „Spielregeln“ in der Kopfleiste, sichtbar in Aufstellung und Konfiguration; Reiter Spiel, Rollen, Optionen. Die Rollentexte sind dieselben wie in den Info-Fenstern.
+- **Konfiguration (We-01-51):** Reiter Rollen und Einstellungen; beide Einstellungen (Wolfsangriff, Rollen nach dem Ausscheiden) haben einen Info-Knopf. Der feste Modus liegt in `FixedRoles.tsx`, der variable in `VariableRoles.tsx`, die Einstellungen in `GeneralSettings.tsx`.
+- **Noch offen:** Ansicht für große Bildschirme, Spielstart (We-01-52), Spielablauf.

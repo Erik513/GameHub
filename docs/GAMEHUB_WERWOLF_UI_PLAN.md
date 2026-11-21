@@ -84,7 +84,7 @@ Jeder Schritt wird einzeln geprüft (Unit-Tests, Browserprüfung Deutsch/Englisc
 | **6. Sonderabläufe** | Amor/Liebespaar, Trunkenbold-Enthüllung, Jäger, Magier mit Hexe, Bürgermeister-Hammer, Amulett-Weitergabe, Seher-Lehrling, Ermittler: je mit eigenem Test der Oberfläche | (in 4, aufgeteilt) | – |
 | **7. Live-Kreisübersicht** | Kreis mit Symbolslots, Hintergrundfarben, Rahmen, Detailfeld (gedrückt halten), Legende | We-01-44 | Symbole und Prioritäten; Logik: Todesursache, `describePlayers` |
 | **8. Gewinneransicht** | Gemeinsam mit dem Auftraggeber gestaltet | We-01-30 | Gestaltung |
-| **9. Politur und Abnahme** | PC-Layout, Tastatur, Offline, Handy-Prüfung, Dokumentation, danach variable Konfiguration (We-01-32) und Verlauf (We-01-45) | We-01-32, 45 | Variable Bedienung (später) |
+| **9. Politur und Abnahme** | PC-Layout, Tastatur, Offline, Handy-Prüfung, Dokumentation, danach Verlauf (We-01-45); die variable Konfiguration (We-01-32) ist umgesetzt, ihre Ziehung beim Spielstart folgt mit We-01-52 | We-01-32, 45 | Variable Bedienung (später) |
 
 Reihenfolge-Begründung: 1 und 2 sind unabhängig vom Spielablauf und bringen die Entscheidungen früh auf den Tisch. 3 braucht nur den Start. 4 ist der Kern und die größte Abhängigkeit (Entscheidungen und Logikbausteine); deshalb sollten beides **bis zum Ende von Schritt 3 vorliegen**. 7 kommt nach dem Ablauf, weil sie dessen Zustandsdaten braucht.
 
@@ -117,7 +117,7 @@ Reihenfolge-Begründung: 1 und 2 sind unabhängig vom Spielablauf und bringen di
 2. **Sperrgründe:** "zu wenige Spieler", "kein Platz frei" und "nicht zusammen" (zum Beispiel Magier mit Hexe bei elf bis dreizehn Spielern); Kombinationen, die mit einer anderen erlaubten Wolfszahl gehen (Hexe und Magier ab 14), bleiben wählbar und lösen bei falscher Wolfszahl einen Konflikt mit Vorschlagsknopf aus.
 3. **Spielerzahl:** Die Konfiguration verlangt 6 bis 20 Spieler neben dem Erzähler und folgt der Spielerzahl der Aufstellung; ein bereits gewählter Wert wird bei Änderungen nie still geändert.
 6. **Immer spielbar (Wunsch des Auftraggebers):** Rollen und Wolfszahlen, die die Aufstellung unspielbar machen würden, sind gesperrt statt als Konflikt wählbar; nur eine durch geänderte Spielerzahl ungültig gewordene Wahl wird als Konflikt mit Vorschlagsknopf angezeigt.
-4. **Umschalter fest/variabel:** oben vorhanden; "Variable Rollen" zeigt nur den Hinweis, dass die Konfiguration später folgt.
+4. **Umschalter fest/variabel:** oben vorhanden; "Variable Rollen" zeigt die Bedienoberfläche des variablen Modus (umgesetzt in We-01-32, siehe GAMEHUB_WERWOLF_UI.md, Abschnitt Umsetzungsstand).
 5. **Trunkenbold** ist zusätzlich ab zwei Werwölfen wählbar (folgt der Logik); **Hammer** des Bürgermeisters ab zehn Spielern.
 
 ## 7. Nächste Schritte nach deiner Rückmeldung

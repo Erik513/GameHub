@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
@@ -417,4 +417,40 @@ it("takes no further role into 'must' once the seats are full, by dragging or by
   expect(within(dialog).getByRole("button", { name: "Must be in the game" })).toBeDisabled();
   expect(within(dialog).getByRole("button", { name: "Should not be in the game" })).toBeEnabled();
   expect(dialog).toHaveTextContent("No place is free for it.");
+});
+
+it("starts the drag by itself when a role is held for a moment, without moving it", async () => {
+  // jsdom has no layout: scrolling an element is a no-op here.
+  Object.defineProperty(Element.prototype, "scrollBy", {
+    configurable: true,
+    value: () => undefined,
+  });
+  const { latest } = await renderVariable("en", 12);
+  const chip = screen.getByRole("button", { name: "Cupid" });
+  pointerOver(boxOf("role", "may"));
+  fireEvent.pointerDown(chip, { button: 0, clientX: 10, clientY: 10 });
+  // Right after the press nothing is dragged: it could still be a tap.
+  expect(document.querySelector(".ww-chip--ghost")).toBeNull();
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+  });
+  expect(document.querySelector(".ww-chip--ghost")).toHaveTextContent("Cupid");
+  expect(boxOf("role", "may")).toHaveAttribute("data-over");
+  fireEvent.pointerUp(window, { clientX: 10, clientY: 10 });
+  expect(latest.variable.states).toEqual({ cupid: "may" });
+  expect(document.querySelector(".ww-chip--ghost")).toBeNull();
+});
+
+it("keeps a quick press without moving a tap that opens the choice", async () => {
+  await renderVariable("en", 12);
+  const chip = screen.getByRole("button", { name: "Cupid" });
+  fireEvent.pointerDown(chip, { button: 0, clientX: 10, clientY: 10 });
+  fireEvent.pointerUp(window, { clientX: 10, clientY: 10 });
+  fireEvent.click(chip);
+  expect(await screen.findByRole("dialog", { name: "Cupid" })).toBeInTheDocument();
+  // The timer of the hold is gone: no drag starts later.
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+  });
+  expect(document.querySelector(".ww-chip--ghost")).toBeNull();
 });

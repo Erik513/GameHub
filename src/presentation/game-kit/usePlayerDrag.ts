@@ -18,6 +18,8 @@ export const dropAttribute = "data-drop";
 
 /** How far the pointer must move before a press counts as a drag and not as a tap. */
 const dragThreshold = 6;
+/** How long a press must be held, without moving, before it starts a drag by itself (a tap is quicker). */
+const holdDelay = 300;
 /** Near the top or the bottom of the screen the page scrolls while a player is dragged. */
 const scrollEdge = 80;
 /** The bottom edge is higher, because the start bar covers the lower part of the screen. */
@@ -44,7 +46,8 @@ interface PlayerDragOptions {
  * Dragging of players with the mouse or a finger (pointer events, so it works on a phone, too).
  * Put `startDrag(player)` on the pointer-down of a player's name, give the fields where players
  * can be dropped the attribute `data-drop`, and show `drag` as a name that follows the pointer.
- * `over` is the field under the pointer, for highlighting. A press that does not move is a tap.
+ * `over` is the field under the pointer, for highlighting. A quick press that does not move is a tap; a press that
+ * is held for a moment starts the drag by itself, so the name can be picked up before it is moved.
  */
 export function usePlayerDrag({ onDrop, onTap }: PlayerDragOptions) {
   const [drag, setDrag] = useState<DragState>();
@@ -82,15 +85,23 @@ export function usePlayerDrag({ onDrop, onTap }: PlayerDragOptions) {
         frame = requestAnimationFrame(scrollNearEdge);
       };
 
+      // The drag begins when the pointer has moved a little, or when the press has been held for a moment.
+      const begin = () => {
+        if (dragging) return;
+        dragging = true;
+        frame = requestAnimationFrame(scrollNearEdge);
+        setDrag({ player, x: latest.x, y: latest.y });
+        setOver(targetAt(latest.x, latest.y));
+      };
+      const hold = setTimeout(begin, holdDelay);
       const move = (moved: PointerEvent) => {
+        latest = { x: moved.clientX, y: moved.clientY };
         if (
           !dragging &&
           Math.hypot(moved.clientX - originX, moved.clientY - originY) < dragThreshold
         )
           return;
-        if (!dragging) frame = requestAnimationFrame(scrollNearEdge);
-        dragging = true;
-        latest = { x: moved.clientX, y: moved.clientY };
+        begin();
         setDrag({ player, x: moved.clientX, y: moved.clientY });
         setOver(targetAt(moved.clientX, moved.clientY));
       };
@@ -98,6 +109,7 @@ export function usePlayerDrag({ onDrop, onTap }: PlayerDragOptions) {
         window.removeEventListener("pointermove", move);
         window.removeEventListener("pointerup", up);
         window.removeEventListener("pointercancel", cancel);
+        clearTimeout(hold);
         cancelAnimationFrame(frame);
         if (!dragging) return;
         setDrag(undefined);
