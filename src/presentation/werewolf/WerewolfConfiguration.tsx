@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   describeFixedConfiguration,
@@ -54,7 +54,17 @@ export function WerewolfConfiguration({
 }: WerewolfConfigurationProps) {
   const { t } = useTranslation();
   const focus = useFocusOnShow<HTMLElement>();
-  const view = describeFixedConfiguration(players, draft);
+  // Only the view of the shown kind of roles is worked out, and only when its draft changes: the analysis is the
+  // costly part of a tap.
+  const fixedView = useMemo(
+    () => (mode === "fixed" ? describeFixedConfiguration(players, draft) : undefined),
+    [mode, players, draft],
+  );
+  const variableView = useMemo(
+    () => (mode === "variable" ? describeVariableConfiguration(players, variableDraft) : undefined),
+    [mode, players, variableDraft],
+  );
+  const supported = (fixedView ?? variableView)?.supported ?? false;
 
   const modeSwitch = (
     <ChoiceGroup
@@ -81,14 +91,14 @@ export function WerewolfConfiguration({
       ? onVariableChange(setVariableRule(variableDraft, key, value))
       : onChange(setFixedSetting(draft, key, value));
 
-  const variableView =
-    mode === "variable" ? describeVariableConfiguration(players, variableDraft) : undefined;
-  const range = (low: number, high: number) => (low === high ? String(low) : `${low}–${high}`);
+  // A thin space on both sides keeps the dash apart from the numbers.
+  const range = (low: number, high: number) =>
+    low === high ? String(low) : `${low}\u2009–\u2009${high}`;
 
   // The top is the same for both kinds of roles; only what it shows differs.
   const top = (
     <CoreBlock
-      fixedWolves={variableView ? !variableView.wolf.choice : view.wolf.fixed}
+      fixedWolves={variableView ? !variableView.wolf.choice : (fixedView?.wolf.fixed ?? true)}
       onPickWolves={(count) =>
         variableView
           ? onVariableChange(toggleVariableWolfCount(variableDraft, players, count))
@@ -99,7 +109,7 @@ export function WerewolfConfiguration({
       villagers={
         variableView
           ? range(variableView.villagers.minimum, variableView.villagers.maximum)
-          : String(view.villagers ?? 0)
+          : String(fixedView?.villagers ?? 0)
       }
       wolves={
         variableView
@@ -109,7 +119,7 @@ export function WerewolfConfiguration({
               recommended: option.recommended,
               selected: option.selected,
             }))
-          : view.wolf.options.map((option) => ({
+          : (fixedView?.wolf.options ?? []).map((option) => ({
               count: option.count,
               disabled: !option.selectable && !option.selected,
               recommended: option.recommended,
@@ -128,9 +138,15 @@ export function WerewolfConfiguration({
       top={top}
       view={variableView}
     />
-  ) : (
-    <FixedRoles draft={draft} modeSwitch={modeSwitch} onChange={onChange} top={top} view={view} />
-  );
+  ) : fixedView ? (
+    <FixedRoles
+      draft={draft}
+      modeSwitch={modeSwitch}
+      onChange={onChange}
+      top={top}
+      view={fixedView}
+    />
+  ) : null;
 
   return (
     <section
@@ -139,7 +155,7 @@ export function WerewolfConfiguration({
       ref={focus}
       tabIndex={-1}
     >
-      {!view.supported ? (
+      {!supported ? (
         <p className="ww-hint">
           {players > werewolfPlayerLimits.targetMaximum
             ? t("werewolfConfig.tooManyPlayers", {

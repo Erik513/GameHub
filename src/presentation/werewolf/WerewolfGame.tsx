@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   emptyFixedDraft,
   normalizeFixedDraft,
@@ -49,7 +49,10 @@ export function WerewolfGame() {
     parseSavedFixedDraft,
   );
   // What was saved may not fit the players of today: the roles that no longer fit are taken back.
-  const draft = normalizeFixedDraft(lineup.seats.length, savedDraft);
+  const draft = useMemo(
+    () => normalizeFixedDraft(lineup.seats.length, savedDraft),
+    [lineup.seats.length, savedDraft],
+  );
   // The draft of the variable roles is kept apart from the fixed one and saved apart; so is the kind of roles.
   const [variableDraft, setVariableDraft] = usePersistentState(
     "werewolf.variableConfiguration",
@@ -60,6 +63,10 @@ export function WerewolfGame() {
     "werewolf.rolesMode",
     () => "fixed",
     (raw) => (raw === "fixed" || raw === "variable" ? raw : undefined),
+  );
+  const normalizedVariable = useMemo(
+    () => normalizeVariableDraft(lineup.seats.length, variableDraft),
+    [lineup.seats.length, variableDraft],
   );
   const [configuring, setConfiguring] = useState(false);
   // The rules stay reachable from the header in both views.
@@ -75,7 +82,7 @@ export function WerewolfGame() {
       onModeChange={setMode}
       onVariableChange={setVariableDraft}
       players={lineup.seats.length}
-      variableDraft={normalizeVariableDraft(lineup.seats.length, variableDraft)}
+      variableDraft={normalizedVariable}
     />
   ) : (
     <WerewolfLineup

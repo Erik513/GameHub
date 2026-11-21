@@ -180,10 +180,12 @@ export function variableSelectionOf(
   const analysis = analyzeVariableWerewolfSelection(players, wide, { ...draft.rules });
   const bounds = analysis.ok ? seatBounds(analysis) : null;
   if (!bounds) return selection;
-  const maximum = Math.max(
-    Math.min(selection.roleRange.maximum, bounds.maximumTop),
+  // At most 0 "may" roles would make every role on "may" useless, so one is the least while one is possible.
+  const floor = Math.max(
     bounds.maximumBottom,
+    selection.rolePool.length > 0 && bounds.maximumTop >= 1 ? 1 : 0,
   );
+  const maximum = Math.max(Math.min(selection.roleRange.maximum, bounds.maximumTop), floor);
   const minimum = Math.min(selection.roleRange.minimum, bounds.minimumTop, maximum);
   return { ...selection, roleRange: { maximum, minimum } };
 }
@@ -395,7 +397,11 @@ function viewOf(
   const possible = analysis.possibleRoleRange;
   const bounds = seatBounds(analysis);
   const top = bounds?.maximumTop ?? possible?.maximum ?? 0;
-  const bottom = bounds?.maximumBottom ?? 0;
+  // At most 0 would make every "may" role useless: one is the least while there are "may" roles and one is possible.
+  const bottom = Math.max(
+    bounds?.maximumBottom ?? 0,
+    selection.rolePool.length > 0 && top >= 1 ? 1 : 0,
+  );
   const most = possible ? Math.max(Math.min(draft.roleRange.maximum ?? top, top), bottom) : 0;
   // The least number stays below the number of "may" roles (drawing all of them would make them "must" roles) and
   // below what the tightest wolf count allows.

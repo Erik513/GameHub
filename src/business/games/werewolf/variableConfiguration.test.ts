@@ -292,3 +292,38 @@ describe("a draft saved before the choice 'reveal roles' was dropped", () => {
     expect(parsed?.rules).toEqual({ attackOnFirstNight: true });
   });
 });
+
+describe("the most may roles", () => {
+  it("is never 0 while there are may roles and one can be drawn", () => {
+    const one = put(emptyVariableDraft, { witch: "may" });
+    // Even a saved "0 to 0" is raised to one, and the screen does not offer to go below one.
+    const view = describeVariableConfiguration(8, setVariableRoleRange(one, 0, 0));
+    expect(view.range).toEqual({ maximum: 1, minimum: 0 });
+    expect(view.maximumFloor).toBe(1);
+    expect(variableSelectionOf(8, setVariableRoleRange(one, 0, 0)).roleRange.maximum).toBe(1);
+  });
+
+  it("may be 0 where there is no may role at all", () => {
+    const view = describeVariableConfiguration(8, emptyVariableDraft);
+    expect(view.range.maximum).toBe(0);
+    expect(view.maximumFloor).toBe(0);
+  });
+});
+
+describe("the villagers the draw can leave", () => {
+  it("is one number when nothing is drawn, and a range with wolf counts and may roles", () => {
+    // 12 players, 3 wolves, the seer: 8 seats; the witch is a must role: 7 villagers.
+    const fixed = describeVariableConfiguration(12, put(emptyVariableDraft, { witch: "must" }));
+    expect(fixed.villagers).toEqual({ maximum: 7, minimum: 7 });
+    // 14 players allow three or four wolves: two wolf counts and up to two may roles: the range grows on both sides.
+    const wide = setVariableRoleRange(
+      toggleVariableWolfCount(put(emptyVariableDraft, { cupid: "may", witch: "may" }), 14, 4),
+      0,
+      2,
+    );
+    const view = describeVariableConfiguration(14, wide);
+    expect(view.villagers.maximum).toBeGreaterThan(view.villagers.minimum);
+    expect(view.villagers.minimum).toBe(14 - 4 - 1 - 2);
+    expect(view.villagers.maximum).toBe(14 - 3 - 1 - 0);
+  });
+});

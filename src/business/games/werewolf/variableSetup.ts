@@ -260,16 +260,30 @@ function familiesForWolves(plan: NormalizedSelection, wolfCount: number): readon
     .map((family) => (family.id === "witch" ? merged : family));
 }
 
-/** Enumerates role families only. Options and optional items never multiply a role's drawing weight. */
-function variableChoices(
-  players: number,
-  input: VariableWerewolfSelection,
-  settings: Partial<WerewolfSettings>,
-): Choices | VariableWerewolfFailure {
-  const result = normalizeSelection(players, input, settings);
-  if (!result.ok) return result;
-  const plan = result.selection;
-  const wolves = availableWerewolfCounts(players).map((wolfCount) => {
+interface WolfChoices {
+  readonly wolfCount: number;
+  readonly families: readonly Family[];
+  readonly allGroups: readonly ChoiceGroup[];
+}
+
+/**
+ * The enumeration of the possible subsets is the costly part of every analysis and does not depend on the range of
+ * the number of roles, so it is remembered: the screen asks again after every tap, mostly with the same roles.
+ */
+const choicesCache = new Map<string, readonly WolfChoices[]>();
+const choicesCacheSize = 200;
+
+function enumerateChoices(plan: NormalizedSelection): readonly WolfChoices[] {
+  const key = JSON.stringify([
+    plan.players,
+    plan.requiredRoles,
+    plan.rolePool,
+    plan.requiredItems,
+    plan.itemPool,
+  ]);
+  const known = choicesCache.get(key);
+  if (known) return known;
+  const computed = availableWerewolfCounts(plan.players).map((wolfCount) => {
     const families = familiesForWolves(plan, wolfCount);
     const subsets = Array.from({ length: 2 ** families.length }, (_, mask) =>
       families.filter((_, index) => Boolean(mask & (1 << index))),
@@ -286,16 +300,32 @@ function variableChoices(
     const allGroups = [...groups.entries()]
       .sort(([a], [b]) => a - b)
       .map(([roleCount, choices]) => ({ roleCount, choices }));
-    return {
-      wolfCount,
-      families,
-      allGroups,
-      groups: allGroups.filter(
-        (group) =>
-          group.roleCount >= plan.roleRange.minimum && group.roleCount <= plan.roleRange.maximum,
-      ),
-    };
+    return { wolfCount, families, allGroups };
   });
+  if (choicesCache.size >= choicesCacheSize) {
+    const oldest = choicesCache.keys().next().value;
+    if (oldest !== undefined) choicesCache.delete(oldest);
+  }
+  choicesCache.set(key, computed);
+  return computed;
+}
+
+/** Enumerates role families only. Options and optional items never multiply a role's drawing weight. */
+function variableChoices(
+  players: number,
+  input: VariableWerewolfSelection,
+  settings: Partial<WerewolfSettings>,
+): Choices | VariableWerewolfFailure {
+  const result = normalizeSelection(players, input, settings);
+  if (!result.ok) return result;
+  const plan = result.selection;
+  const wolves = enumerateChoices(plan).map((wolf) => ({
+    ...wolf,
+    groups: wolf.allGroups.filter(
+      (group) =>
+        group.roleCount >= plan.roleRange.minimum && group.roleCount <= plan.roleRange.maximum,
+    ),
+  }));
   return { ok: true, selection: plan, wolves };
 }
 export type VariableWerewolfBlockReason =

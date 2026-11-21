@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T18:03:14.597Z",
+    "updatedAt": "2026-11-21T18:15:04.269Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 231,
-      "totalTasks": 293,
-      "percent": 78.8
+      "completedTasks": 232,
+      "totalTasks": 294,
+      "percent": 78.9
     }
   },
   "environment": {
@@ -1310,6 +1310,12 @@
           "title": "Konfiguration ohne Reiter: gemeinsames Kopfstück (Werwölfe und Wolfsangriff in einer Box, Dorfbewohner, Seherin) für festen und variablen Modus",
           "status": "done",
           "validation": "Reiter entfernt, neues Kopfstück CoreBlock in beiden Modi, Dorfbewohner-Spanne im variablen Modus (villagers); im Browser bei 375 Pixel Breite angesehen; 1479 Tests, tsc -b, eslint sauber."
+        },
+        {
+          "id": "We-01-56",
+          "title": "Feinschliff der variablen Konfiguration: Abstand im Spannenstrich, Höchstens nie 0, schnelleres Antippen",
+          "status": "done",
+          "validation": "Höchstens bleibt bei vorhandenen Darf-Rollen mindestens 1 (Logik und Knopf), Zwischenspeicher für die Aufzählung der Möglichkeiten, Ansicht je Modus nur einmal berechnet; im Browser gemessen (etwa 25 Millisekunden je Antippen nach dem Warmlaufen, vorher bis 200); 1482 Tests, tsc -b, eslint sauber."
         }
       ]
     },
