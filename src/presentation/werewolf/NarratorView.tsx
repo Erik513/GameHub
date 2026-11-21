@@ -51,7 +51,11 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
             </div>
           ) : (
             <NarratorCard
-              active={view.selection.ability}
+              pressed={[
+                ...(view.selection.ability ? [view.selection.ability] : []),
+                ...(view.selection.heal ? (["heal"] as const) : []),
+              ]}
+              settled={view.phase === "outro"}
               card={view.card}
               onAbility={guide.ability}
             />
@@ -96,7 +100,11 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
           <Button disabled={!view.canGoBack} onClick={() => guide.goBack()} variant="secondary">
             {t("werewolfNarrator.guide.back")}
           </Button>
-          <Button disabled={!view.canContinue} onClick={guide.continueGuide} variant="success">
+          <Button
+            disabled={!view.canContinue}
+            onClick={view.nextKind === "finish" ? onEnd : guide.continueGuide}
+            variant="success"
+          >
             {view.nextKind === "next"
               ? t("werewolfNarrator.guide.next")
               : t(`werewolfNarrator.guide.nextKind.${view.nextKind}`)}

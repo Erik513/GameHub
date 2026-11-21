@@ -8,7 +8,10 @@ import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 interface NarratorCardProps {
   readonly card: Card;
   /** The ability the narrator has opened (its content is in the lower box). */
-  readonly active?: CardAbilityId | null;
+  /** The abilities the narrator has chosen (the open one, the healing switch). */
+  readonly pressed?: readonly CardAbilityId[];
+  /** The step is done: the buttons no longer invite a tap and only show what was chosen. */
+  readonly settled?: boolean;
   /** Called when the narrator taps an ability that can be used. */
   readonly onAbility?: (id: CardAbilityId) => void;
 }
@@ -20,7 +23,12 @@ const slotCount = 3;
  * slots) and, at the bottom, the abilities of the role as large buttons: green when the narrator can use one now,
  * red when it is used up or not possible.
  */
-export function NarratorCard({ card, active = null, onAbility }: NarratorCardProps) {
+export function NarratorCard({
+  card,
+  pressed = [],
+  settled = false,
+  onAbility,
+}: NarratorCardProps) {
   const { t } = useTranslation();
   const roleName = t(`werewolfSymbols.items.${card.role}.name`);
   const slots = Array.from({ length: slotCount }, (_, index) => card.effects[index] ?? null);
@@ -59,10 +67,11 @@ export function NarratorCard({ card, active = null, onAbility }: NarratorCardPro
                     ? "werewolfNarrator.card.ready"
                     : "werewolfNarrator.card.unavailable",
                 )}`}
-                aria-pressed={active === ability.id}
+                aria-pressed={pressed.includes(ability.id)}
                 className="ww-ability"
                 data-available={ability.available}
-                disabled={!ability.available}
+                data-settled={settled || undefined}
+                disabled={!ability.available || settled}
                 key={ability.id}
                 onClick={() => onAbility?.(ability.id)}
                 type="button"

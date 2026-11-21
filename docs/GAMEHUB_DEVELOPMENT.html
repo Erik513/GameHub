@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T04:50:00.000Z",
+    "updatedAt": "2026-11-22T06:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 255,
-      "totalTasks": 309,
-      "percent": 82.5
+      "completedTasks": 256,
+      "totalTasks": 310,
+      "percent": 82.6
     }
   },
   "environment": {
@@ -1647,6 +1647,12 @@
           "title": "Symbole in der Aufwachreihenfolge",
           "status": "done",
           "validation": "Jeder Schritt der Aufwachreihenfolge zeigt das Symbol seiner Rolle vor dem Namen (Leibwächter und Dorfmatratze mit dem Schild); im Browser bei 390 Pixel Breite angesehen; Tests, tsc -b, eslint sauber."
+        },
+        {
+          "id": "We-01-72",
+          "title": "Dritte Partie im Browser (Dorfmatratze, Magier, Doppelstimme) mit Prüfung der Erzählersicht auf Verständlichkeit und Absicherung",
+          "status": "done",
+          "validation": "Zwei weitere Partien mit 20 Spielern gespielt (Dorfmatratze, Magier mit Heilung und Todeszauber, Hexe, Doppelstimme des Bürgermeisters, Jäger, Alte Vettel, Amulett, Verliebte). Spielverlauf und Ergebnisse stimmten (Wolfsopfer, Heilung, Gift, Zauber, Liebeskummer, Dorfmatratze nicht zu Hause, Ausschluss, Jägerschuss, Spielende). Gefunden und behoben: gewählte Fähigkeiten (auch der Heilschalter) waren nicht erkennbar, jetzt Haken, Rahmen und Zusammenfassung beim Einschlafen mit gedimmten Knöpfen; Gründe für jeden Tod (nur für den Erzähler, nicht vorlesen) beim Morgen, Ausschluss und Jägerschuss; am Tag stehen Stumme und Verwundete, bei der Abstimmung ×2 und muss Ja; Hinweise zu nicht wählbaren Personen (Leibwächter, Dorfmatratze) und zum Verzicht bei Hexe und Magier; am Spielende führt Weiter zur Aufstellung; die Zurück-Taste des Systems fragt vor dem Verlassen (wie in den anderen Spielen). Nicht geprüft: variabler Modus von Hand, schnelles Doppeltippen (Zurück fängt es ab); 1553 Tests, tsc -b, eslint, Schichtprüfung sauber."
         }
       ]
     },

@@ -301,7 +301,8 @@ describe("narrator guide", () => {
     guide = continueGuide(guide);
     const view = describeGuide(guide);
     expect(view.phase).toBe("outro");
-    expect(view.outcome).toContain(target);
+    expect(view.deaths.map((d) => d.name)).toContain(target);
+    expect(view.deaths.find((d) => d.name === target)?.causes).toContain("hunter");
     // The shot reaches the game only with the next confirmation.
     expect(guide.session.present.status).toBe("hunter");
     guide = continueGuide(guide);
@@ -350,6 +351,77 @@ describe("narrator guide", () => {
 
     it("has no winners before the end", () => {
       expect(describeWinners(game().session.present)).toEqual([]);
+    });
+  });
+
+  describe("what the narrator has to know", () => {
+    it("tells why somebody dies in the morning, for the narrator only", () => {
+      let guide = game([], { attackOnFirstNight: true });
+      for (let step = 0; step < 300 && guide.session.present.status !== "morning"; step += 1)
+        guide = forward(guide)!;
+      const view = describeGuide(guide);
+      expect(view.state.status).toBe("morning");
+      expect(view.deaths.length).toBeGreaterThan(0);
+      expect(view.deaths[0]?.causes).toContain("wolves");
+      // The names that are read out come from the game; the reasons are only additional.
+      expect(view.nextKind).toBe("next");
+    });
+
+    it("names the person who is silenced or wounded during the day", () => {
+      const base = game(["toughGuy"]).session.present;
+      const tough = base.players.find((p) => p.role === "toughGuy")!;
+      const other = base.players.find((p) => p.role === "villager")!;
+      const day = {
+        ...base,
+        silencedPlayer: other.name,
+        status: "day",
+        toughGuyDiesOn: 3,
+      } as unknown as WerewolfState;
+      const view = describeGuide(createGuide(createWerewolfSession(day)));
+      expect(view.notes.silenced).toBe(other.name);
+      expect(view.notes.wounded).toEqual([tough.name]);
+    });
+
+    it("says whom the bodyguard and the night guest may not choose again", () => {
+      const base = game(["bodyguard"]).session.present;
+      const target = base.players.find((p) => p.role === "villager")!;
+      const state = {
+        ...base,
+        protectedPlayer: target.name,
+        status: "bodyguard",
+      } as unknown as WerewolfState;
+      let guide = createGuide(createWerewolfSession(state));
+      guide = continueGuide(guide);
+      guide = chooseAbility(guide, "protect");
+      expect(describeGuide(guide).notes.restricted).toBe(target.name);
+      expect(describeGuide(guide).targets).not.toContain(target.name);
+    });
+
+    it("marks the votes that count twice or have to be yes", () => {
+      let guide = game(["idiot", "mayor"], { attackOnFirstNight: true });
+      for (let step = 0; step < 300 && guide.session.present.status !== "day"; step += 1)
+        guide = forward(guide)!;
+      guide = chooseAbility(guide, "vote");
+      for (let i = 0; i < 3; i += 1) guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+      guide = continueGuide(guide);
+      const notes = describeGuide(guide).voterNotes;
+      const values = Object.values(notes);
+      expect(values.length).toBeGreaterThan(0);
+      for (const value of values) expect(["double", "mustYes"]).toContain(value);
+    });
+
+    it("lets the narrator leave from the winners and keeps the game going otherwise", () => {
+      const base = game().session.present;
+      const finished = {
+        ...base,
+        alive: base.players.filter((p) => p.role !== "wolf"),
+        status: "finished",
+        winner: "village",
+      } as unknown as WerewolfState;
+      const view = describeGuide(createGuide(createWerewolfSession(finished)));
+      expect(view.nextKind).toBe("finish");
+      expect(view.canContinue).toBe(true);
+      expect(describeGuide(game()).nextKind).toBe("next");
     });
   });
 });

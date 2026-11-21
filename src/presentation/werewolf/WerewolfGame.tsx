@@ -15,7 +15,7 @@ import {
   normalizeVariableDraft,
   parseSavedVariableDraft,
 } from "../../business/games/werewolf/variableConfiguration";
-import { useGameRulesButton } from "../GameChrome";
+import { useGameExit, useGameRulesButton } from "../GameChrome";
 import { usePersistentState } from "../game-kit";
 import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
 import { NarratorView } from "./NarratorView";
@@ -75,6 +75,8 @@ export function WerewolfGame() {
   // The rules stay reachable from the header in both views.
   const [rulesOpen, setRulesOpen] = useState(false);
   useGameRulesButton(true, () => setRulesOpen(true));
+  // The Back key of the system asks before it leaves a running game, as in the other games.
+  useGameExit(game.session !== null, game.end);
 
   const view = game.session ? (
     <NarratorView

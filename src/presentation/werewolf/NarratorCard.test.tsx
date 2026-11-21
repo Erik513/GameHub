@@ -39,7 +39,7 @@ describe("NarratorCard", () => {
 
   it("calls back only for an ability that can be used and marks the open one", async () => {
     const onAbility = vi.fn();
-    await inLanguage("en", <NarratorCard active="heal" card={witch} onAbility={onAbility} />);
+    await inLanguage("en", <NarratorCard pressed={["heal"]} card={witch} onAbility={onAbility} />);
     fireEvent.click(screen.getByRole("button", { name: "Heal: ready" }));
     fireEvent.click(screen.getByRole("button", { name: "Poison: not possible" }));
     expect(onAbility).toHaveBeenCalledTimes(1);

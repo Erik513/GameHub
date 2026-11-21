@@ -1714,3 +1714,62 @@
   align-items: center;
   gap: var(--space-2);
 }
+
+/* The abilities that were chosen show a check mark; in the outro they only show the result. */
+.ww-ability[aria-pressed="true"] {
+  position: relative;
+}
+
+.ww-ability[aria-pressed="true"]::after {
+  content: "✓";
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+}
+
+.ww-ability[data-settled]:not([aria-pressed="true"]) {
+  opacity: 0.45;
+}
+
+.ww-ability[data-settled][aria-pressed="true"] {
+  opacity: 1;
+}
+
+.ww-guide__chosen {
+  padding: var(--space-2);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  font-weight: var(--weight-medium);
+}
+
+.ww-guide__causes {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-sm);
+  text-align: left;
+}
+
+.ww-guide__causes ul,
+.ww-guide__notes {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-guide__notes {
+  padding: var(--space-2);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-sm);
+}
+
+.ww-person__mark {
+  margin-left: var(--space-1);
+  opacity: 0.8;
+}

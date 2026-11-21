@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-72: Weitere Partien und Verständlichkeit der Erzählersicht
+
+- Gewählte Fähigkeiten sind erkennbar (Haken, Rahmen, Zusammenfassung beim Einschlafen). Der Erzähler sieht die Gründe jedes Todes (nicht vorlesen), am Tag die Stummen und Verwundeten, bei der Abstimmung ×2 und „muss Ja“, Hinweise zu nicht wählbaren Personen und zum Verzicht. Am Spielende führt „Weiter“ zur Aufstellung. Die Zurück-Taste des Systems fragt vor dem Verlassen.
+
 ### We-01-71: Symbole in der Aufwachreihenfolge
 
 - Jeder Schritt der Aufwachreihenfolge zeigt das Symbol seiner Rolle vor dem Namen.

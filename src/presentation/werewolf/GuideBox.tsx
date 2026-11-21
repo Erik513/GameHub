@@ -48,9 +48,8 @@ export function GuideBox({
     return (
       <button className="ww-guide ww-guide--tap" onClick={onContinue} type="button">
         <strong className="ww-guide__text">{text}</strong>
-        {view.outcome.length > 0 && (
-          <span>{t("werewolfNarrator.guide.left", { names: view.outcome.join(", ") })}</span>
-        )}
+        {phase === "outro" && <Summary view={view} />}
+        {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
         <small>{hint}</small>
       </button>
     );
@@ -97,6 +96,19 @@ export function GuideBox({
             : t("werewolfNarrator.guide.noVictim")}
         </span>
       )}
+      {!card.cover && selection.heal && state.wolfTarget && (
+        <span className="ww-guide__victim">
+          {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}
+        </span>
+      )}
+      {!card.cover &&
+        (state.status === "witch" || state.status === "magician") &&
+        !selection.heal &&
+        selection.picks.length === 0 && <small>{t("werewolfNarrator.guide.skipHint")}</small>}
+      {view.notes.restricted && (
+        <small>{t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}</small>
+      )}
+      {(state.status === "day" || state.status === "vote") && <DayNotes view={view} />}
       {showPeople && (
         <div className="ww-guide__people">
           {selection.picks.map((name) => (
@@ -108,11 +120,13 @@ export function GuideBox({
               type="button"
             >
               {name}
+              <Mark name={name} view={view} />
             </button>
           ))}
           {view.targets.map((name) => (
             <button className="ww-person" key={name} onClick={() => onChoose(name)} type="button">
               {name}
+              <Mark name={name} view={view} />
             </button>
           ))}
           {view.canChooseNobody && (
@@ -203,6 +217,7 @@ function PlainBox({ view }: { readonly view: GuideView }) {
             ? t("werewolfNarrator.guide.morning.nobody")
             : t("werewolfNarrator.guide.morning.died", { names: names.join(", ") })}
         </span>
+        <DeathDetails deaths={view.deaths} />
       </section>
     );
   }
@@ -216,6 +231,7 @@ function PlainBox({ view }: { readonly view: GuideView }) {
         {names.length > 1 && (
           <span>{t("werewolfNarrator.guide.left", { names: names.join(", ") })}</span>
         )}
+        <DeathDetails deaths={view.deaths} />
       </section>
     );
   }
@@ -269,5 +285,72 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
         ))}
       </div>
     </section>
+  );
+}
+
+/** A small mark behind a name in the list of voters: the mayor counts twice, the village idiot has to vote yes. */
+function Mark({ view, name }: { readonly view: GuideView; readonly name: string }) {
+  const { t } = useTranslation();
+  const note = view.voterNotes[name];
+  return note ? (
+    <small className="ww-person__mark"> {t(`werewolfNarrator.guide.voter.${note}`)}</small>
+  ) : null;
+}
+
+/** What the narrator chose in this step, so it can be checked before the role falls asleep. */
+function Summary({ view }: { readonly view: GuideView }) {
+  const { t } = useTranslation();
+  const { card, selection } = view;
+  if (!card || card.cover || card.abilities.length === 0) return null;
+  const parts: string[] = [];
+  if (selection.heal) parts.push(t("werewolfNarrator.ability.heal"));
+  if (selection.ability && selection.ability !== "heal") {
+    const people =
+      selection.none || selection.picks.length === 0
+        ? t("werewolfNarrator.guide.nobody")
+        : selection.picks.join(", ");
+    parts.push(`${t(`werewolfNarrator.ability.${selection.ability}`)}: ${people}`);
+  }
+  return (
+    <span className="ww-guide__chosen">
+      {parts.length > 0
+        ? t("werewolfNarrator.guide.chosen", { items: parts.join(" · ") })
+        : t("werewolfNarrator.guide.noChoice")}
+    </span>
+  );
+}
+
+/** Why somebody leaves the game: for the narrator only, not to be read out. */
+function DeathDetails({ deaths }: { readonly deaths: GuideView["deaths"] }) {
+  const { t } = useTranslation();
+  if (deaths.length === 0) return null;
+  return (
+    <div className="ww-guide__causes">
+      <small>{t("werewolfNarrator.guide.causesTitle")}</small>
+      <ul>
+        {deaths.map((death) => (
+          <li key={death.name}>
+            <strong>{death.name}</strong>
+            {": "}
+            {death.causes.map((cause) => t(`werewolfNarrator.cause.${cause}`)).join(", ")}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** What the narrator has to keep in mind during the day: who is silenced, who is wounded. */
+function DayNotes({ view }: { readonly view: GuideView }) {
+  const { t } = useTranslation();
+  const { silenced, wounded } = view.notes;
+  if (!silenced && wounded.length === 0) return null;
+  return (
+    <ul className="ww-guide__notes">
+      {silenced && <li>{t("werewolfNarrator.guide.silenced", { name: silenced })}</li>}
+      {wounded.length > 0 && (
+        <li>{t("werewolfNarrator.guide.wounded", { names: wounded.join(", ") })}</li>
+      )}
+    </ul>
   );
 }

@@ -1,5 +1,7 @@
+import type { DeathCause } from "./eventLog";
 import { describeNarratorCard, type CardAbilityId, type NarratorCard } from "./narratorCard";
 import {
+  describePlayers,
   validNominators,
   validSeconders,
   validTargets,
@@ -7,12 +9,7 @@ import {
   type WerewolfTargetAction,
 } from "./selectors";
 import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
-import {
-  transitionWerewolf,
-  werewolfAnnouncement,
-  type WerewolfEvent,
-  type WerewolfState,
-} from "./stateMachine";
+import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./stateMachine";
 
 /**
  * The guide of the narrator: which instruction the lower box shows and what the narrator can do.
@@ -206,11 +203,45 @@ function pickLimit(state: WerewolfState, selection: GuideSelection): number {
   return 1;
 }
 
+/** A person who leaves the game and the reasons, for the narrator only. */
+export interface DeathNote {
+  readonly name: string;
+  readonly causes: readonly DeathCause[];
+}
+
+export interface GuideNotes {
+  readonly silenced: string | null;
+  readonly wounded: readonly string[];
+  /** The person the open choice may not name again (the bodyguard and the night guest need a new one every night). */
+  readonly restricted: string | null;
+}
+
+/** What a confirmed event would let leave the game, read from the log of a trial transition. */
+function previewDeaths(state: WerewolfState, event: WerewolfEvent | null): readonly DeathNote[] {
+  if (!event) return [];
+  const next = transitionWerewolf(state, event);
+  if (next === state) return [];
+  return next.history.slice(state.history.length).flatMap((entry) =>
+    entry.kind === "death"
+      ? [
+          {
+            causes: [...new Set(entry.sources.map((source) => source.cause))],
+            name: entry.player,
+          },
+        ]
+      : [],
+  );
+}
+
 export interface GuideView {
-  /** What the "next" button says: the day ends, the vote starts or ends, or simply "next". */
-  readonly nextKind: "endDay" | "endVote" | "next" | "startVote";
-  /** Who leaves the game through the step that is about to be confirmed (the shot of the hunter). */
-  readonly outcome: readonly string[];
+  /** What the "next" button says: the day ends, the vote starts or ends, the game is left, or simply "next". */
+  readonly nextKind: "endDay" | "endVote" | "finish" | "next" | "startVote";
+  /** Who leaves the game through the step that is about to be confirmed, and why (private to the narrator). */
+  readonly deaths: readonly DeathNote[];
+  /** Facts the narrator has to keep in mind during the day (silenced, wounded) and who a choice may not name. */
+  readonly notes: GuideNotes;
+  /** The votes that do not count once: the mayor twice, the village idiot has to vote yes. */
+  readonly voterNotes: Readonly<Record<string, "double" | "mustYes">>;
   readonly phase: GuidePhase;
   readonly state: WerewolfState;
   /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */
@@ -250,6 +281,7 @@ export function describeGuide(guide: Guide): GuideView {
       selected: selection.ability === "bond" ? selection.picks.slice(0, 1) : selection.picks,
     }).filter((name) => !selection.picks.includes(name));
   const canContinue =
+    state.status === "finished" ||
     frame.phase === "intro" ||
     frame.phase === "outro" ||
     ((frame.phase === "act" || frame.phase === "plain") &&
@@ -267,18 +299,38 @@ export function describeGuide(guide: Guide): GuideView {
       selection.heal ||
       selection.none,
     card: describeNarratorCard(state),
-    outcome:
-      frame.phase === "outro" && frame.event && describeNarratorCard(state)?.role === "hunter"
-        ? werewolfAnnouncement(transitionWerewolf(state, frame.event)).map((entry) => entry.name)
-        : [],
+    deaths:
+      state.status === "morning" || state.status === "exile"
+        ? previewDeaths(state, eventOf(state, emptySelection))
+        : frame.phase === "outro" && describeNarratorCard(state)?.role === "hunter"
+          ? previewDeaths(state, frame.event)
+          : [],
+    notes: {
+      restricted:
+        frame.phase === "act" && selection.ability === "protect"
+          ? state.protectedPlayer
+          : frame.phase === "act" && selection.ability === "stayWith"
+            ? state.hostPlayer
+            : null,
+      silenced:
+        state.silencedPlayer && state.alive.some((p) => p.name === state.silencedPlayer)
+          ? state.silencedPlayer
+          : null,
+      wounded: describePlayers(state)
+        .filter((player) => player.alive && player.delayedDeathNight !== null)
+        .map((player) => player.name),
+    },
+    voterNotes: voterNotesOf(state),
     nextKind:
-      state.status === "vote"
-        ? "endVote"
-        : state.status === "day"
-          ? selection.picks.length === 3
-            ? "startVote"
-            : "endDay"
-          : "next",
+      state.status === "finished"
+        ? "finish"
+        : state.status === "vote"
+          ? "endVote"
+          : state.status === "day"
+            ? selection.picks.length === 3
+              ? "startVote"
+              : "endDay"
+            : "next",
     phase: frame.phase,
     selection,
     state,
@@ -467,4 +519,13 @@ export function describeWinners(state: WerewolfState): readonly WinnerGroup[] {
     groups.push({ kind: "lovers", players: [...lovers] });
   if (state.tannerWinner) groups.push({ kind: "tanner", players: [state.tannerWinner] });
   return groups.filter((group) => group.players.length > 0);
+}
+
+function voterNotesOf(state: WerewolfState): Record<string, "double" | "mustYes"> {
+  const notes: Record<string, "double" | "mustYes"> = {};
+  for (const player of votingPlayers(state)) {
+    if (player.requiredYes) notes[player.name] = "mustYes";
+    else if (player.weight === 2) notes[player.name] = "double";
+  }
+  return notes;
 }
