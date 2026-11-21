@@ -53,7 +53,7 @@ export function TabooLineup({
           className="kit-lineup__settings"
           onClick={onOpenSettings}
           title={t("kitSetup.tabSettings")}
-          variant="secondary"
+          variant="primary"
         >
           <Icon name="sliders" />
         </Button>

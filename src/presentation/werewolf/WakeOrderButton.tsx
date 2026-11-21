@@ -72,7 +72,7 @@ export function WakeOrderButton({
         className="kit-lineup__settings"
         onClick={() => setOpen(true)}
         title={t("werewolfConfig.wake.open")}
-        variant="secondary"
+        variant="primary"
       >
         <Icon name="moon" />
       </Button>

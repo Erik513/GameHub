@@ -29,6 +29,7 @@ Diese Regeln gelten für Codex, Claude Code und andere automatisierte Entwicklun
 - Die Business-Schicht darf React, IndexedDB, Browser-APIs oder konkrete KI-Anbieter weder importieren noch voraussetzen.
 - Verwende Ports beziehungsweise Interfaces an Schichtgrenzen und implementiere technische Adapter außerhalb der Business-Schicht.
 - Halte gemeinsame App-Infrastruktur unabhängig von der Spiellogik einzelner Spiele.
+- Der Einstellungs- beziehungsweise Konfigurationsknopf im Hauptmenü eines Spiels (Reglersymbol) steht links neben „Spiel starten“ und ist blau (Variante `primary`), in jedem Spiel gleich. Dasselbe gilt für den Knopf links neben „Fertig“ in der Konfiguration (Werwolf: Aufwachreihenfolge).
 - Starte die Anwendung immer mit einer Spielauswahl; kein einzelnes Spiel darf beim App-Start automatisch geöffnet werden.
 - Registriere Spiele über einen zentralen, genreunabhängigen Spielkatalog statt sie fest in Navigation oder Startseite einzubauen.
 - Jedes Spiel besitzt eigene Business-Logik und eigene UI-Komponenten.

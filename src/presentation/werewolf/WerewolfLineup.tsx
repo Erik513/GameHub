@@ -61,7 +61,7 @@ export function WerewolfLineup({ lineup, onChange, onOpenConfiguration }: Werewo
           className="kit-lineup__settings"
           onClick={onOpenConfiguration}
           title={t("werewolfConfig.open")}
-          variant="secondary"
+          variant="primary"
         >
           <Icon name="sliders" />
         </Button>
