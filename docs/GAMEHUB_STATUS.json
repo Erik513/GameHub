@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T09:00:00.000Z",
+    "updatedAt": "2026-11-22T09:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 260,
-      "totalTasks": 314,
-      "percent": 82.8
+      "completedTasks": 261,
+      "totalTasks": 315,
+      "percent": 82.9
     }
   },
   "environment": {
@@ -1444,6 +1444,12 @@
           "title": "Karten und Leiste: Rollenkarte mit Trennlinie, Fähigkeiten mittig, größerer Info-Knopf; Schließen-Knopf mit Bestätigung im Knopf selbst",
           "status": "done",
           "validation": "Der X-Knopf der Leiste nutzt den gemeinsamen ConfirmButton wie die anderen Spiele: erster Tipp macht ihn rot mit „Beenden?“, der zweite beendet das Spiel (Doppeltipp direkt nach dem ersten wird ignoriert); die Rückfrage-Box entfällt; Rollenkarte: Trennlinie zwischen Rolle und Fähigkeiten, Fähigkeiten mittig unter der Linie, Info-Knopf größer; Tests angepasst (1555 Tests), tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen, um das offene Spiel des Auftraggebers nicht zu stören."
+        },
+        {
+          "id": "We-01-77",
+          "title": "Rollenverteilung geschützt: Übersicht aller Spieler und Rollen sowie Spielregeln erst sichtbar, wenn das eigentliche Spiel beginnt",
+          "status": "done",
+          "validation": "Solange die Spieler ihre Rolle ansehen (Status roles), zeigt die Leiste nur die Phase und den Beenden-Knopf; Übersicht und Spielregeln erscheinen erst mit der ersten Ankündigung der Nacht, ein geöffnetes Übersichtsfenster bleibt in diesem Zustand geschlossen; Tests für beide Zustände; 1557 Tests, tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
         }
       ]
     },

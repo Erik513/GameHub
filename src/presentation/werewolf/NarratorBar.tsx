@@ -22,6 +22,9 @@ interface NarratorBarProps {
 export function NarratorBar({ state, day, onClose, onRules }: NarratorBarProps) {
   const { t } = useTranslation();
   const [overview, setOverview] = useState(false);
+  // While the players look at their roles nobody may see all the roles or open the rules: the buttons only appear when
+  // the real game begins.
+  const dealing = state.status === "roles";
   const label = t(day ? "werewolfNarrator.bar.day" : "werewolfNarrator.bar.night", {
     count: state.night,
   });
@@ -31,22 +34,26 @@ export function NarratorBar({ state, day, onClose, onRules }: NarratorBarProps) 
         <Icon name={day ? "sun" : "moon"} />
         <strong>{label}</strong>
       </span>
-      <Button
-        aria-label={t("werewolfNarrator.bar.rules")}
-        onClick={onRules}
-        title={t("werewolfNarrator.bar.rules")}
-        variant="secondary"
-      >
-        <Icon name="book" />
-      </Button>
-      <Button
-        aria-label={t("werewolfNarrator.bar.overview")}
-        onClick={() => setOverview(true)}
-        title={t("werewolfNarrator.bar.overview")}
-        variant="secondary"
-      >
-        <Icon name="users" />
-      </Button>
+      {!dealing && (
+        <>
+          <Button
+            aria-label={t("werewolfNarrator.bar.rules")}
+            onClick={onRules}
+            title={t("werewolfNarrator.bar.rules")}
+            variant="secondary"
+          >
+            <Icon name="book" />
+          </Button>
+          <Button
+            aria-label={t("werewolfNarrator.bar.overview")}
+            onClick={() => setOverview(true)}
+            title={t("werewolfNarrator.bar.overview")}
+            variant="secondary"
+          >
+            <Icon name="users" />
+          </Button>
+        </>
+      )}
       {/* Two taps without a window: the first turns the button red and asks, the second leaves the game. */}
       <ConfirmButton
         armedContent={
@@ -65,7 +72,7 @@ export function NarratorBar({ state, day, onClose, onRules }: NarratorBarProps) 
       <Dialog
         closeLabel={t("werewolfConfig.infoClose")}
         onClose={() => setOverview(false)}
-        open={overview}
+        open={overview && !dealing}
         size="large"
         subtitle={t("werewolfNarrator.bar.overviewHint")}
         title={t("werewolfNarrator.bar.overview")}

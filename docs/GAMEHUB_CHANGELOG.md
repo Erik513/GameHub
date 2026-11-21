@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-77: Rollenverteilung geschützt
+
+- Während die Spieler ihre Rolle ansehen, sind die Übersicht aller Spieler und Rollen und der Spielregeln-Knopf nicht sichtbar; sie erscheinen erst, wenn das eigentliche Spiel beginnt.
+
 ### We-01-76: Schließen mit Bestätigung im Knopf
 
 - Der X-Knopf der Leiste bestätigt wie in den anderen Spielen im Knopf selbst (rot, „Beenden?“, zweiter Tipp beendet); die Rückfrage-Box entfällt. Rollenkarte: Trennlinie, Fähigkeiten mittig, größerer Info-Knopf.

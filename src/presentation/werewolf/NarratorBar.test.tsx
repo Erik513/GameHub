@@ -9,6 +9,8 @@ import { NarratorBar } from "./NarratorBar";
 
 const names = "Anna,Ben,Cleo,Dora,Emil,Finn,Gina,Hans,Ida,Jan,Kim,Lea";
 const state = createWerewolf(names, "Max", () => 0.3, [], {})!;
+/** The same game once the roles are dealt: the night begins. */
+const running = { ...state, status: "wolves" } as unknown as WerewolfState;
 
 async function renderBar(
   language: "en" | "de",
@@ -20,7 +22,7 @@ async function renderBar(
   const user = userEvent.setup();
   render(
     <I18nextProvider i18n={i18n}>
-      <NarratorBar day={day} onClose={onClose} onRules={onRules} state={state} />
+      <NarratorBar day={day} onClose={onClose} onRules={onRules} state={running} />
     </I18nextProvider>,
   );
   return user;
@@ -71,6 +73,43 @@ describe("NarratorBar", () => {
     await new Promise((resolve) => setTimeout(resolve, 450));
     await user.click(armed);
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("NarratorBar during the role reveal", () => {
+  it("shows neither the overview of all roles nor the rules, only the close button", async () => {
+    const i18n = await createGameHubI18n("en");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <NarratorBar
+          day={false}
+          onClose={() => undefined}
+          onRules={() => undefined}
+          state={state}
+        />
+      </I18nextProvider>,
+    );
+    // The state of the line-up is the role reveal.
+    expect(state.status).toBe("roles");
+    expect(screen.queryByRole("button", { name: "All players and roles" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Rules" })).toBeNull();
+    expect(screen.getByRole("button", { name: "End game" })).toBeInTheDocument();
+  });
+
+  it("shows them as soon as the game begins", async () => {
+    const i18n = await createGameHubI18n("en");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <NarratorBar
+          day={false}
+          onClose={() => undefined}
+          onRules={() => undefined}
+          state={{ ...state, status: "wolves" } as unknown as WerewolfState}
+        />
+      </I18nextProvider>,
+    );
+    expect(screen.getByRole("button", { name: "All players and roles" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Rules" })).toBeInTheDocument();
   });
 });
 
