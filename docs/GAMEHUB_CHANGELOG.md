@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-71: Symbole in der Aufwachreihenfolge
+
+- Jeder Schritt der Aufwachreihenfolge zeigt das Symbol seiner Rolle vor dem Namen.
+
 ### We-01-70: Symbole neben den Zahlen der Kopfkarten
 
 - Werwölfe, Dorfbewohner und Seherin zeigen ihr Symbol direkt links neben der Zahl, die Werwölfe neben jeder Auswahlzahl.

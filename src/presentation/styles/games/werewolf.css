@@ -1707,3 +1707,10 @@
   justify-content: center;
   gap: var(--space-2);
 }
+
+/* The symbol of a role stands directly before its name in the order of the wake-up. */
+.ww-wake__text strong {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}

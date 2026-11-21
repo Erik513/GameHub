@@ -8,6 +8,8 @@ import {
 } from "../../business/games/werewolf/wakeOrder";
 import type { VariableDraft } from "../../business/games/werewolf/variableConfiguration";
 import { Button, Dialog, Icon } from "../components";
+import { symbolOfInfo } from "./infoSymbol";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 /**
  * The button that shows in which order the roles wake up every night, and its window. The roles that
@@ -97,7 +99,10 @@ export function WakeOrderButton({
                   {step.inGame ? numbers[index] : "–"}
                 </span>
                 <span className="ww-wake__text">
-                  <strong>{nameOf(step)}</strong>
+                  <strong>
+                    <WerewolfSymbol id={symbolOfInfo(step.id)} size={20} />
+                    {nameOf(step)}
+                  </strong>
                   {step.presence === "may" && <small>{t("werewolfConfig.wake.maybe")}</small>}
                   {step.inGame ? (
                     note && <small>{note}</small>
