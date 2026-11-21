@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T17:18:09.458Z",
+    "updatedAt": "2026-11-21T17:36:18.076Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 229,
-      "totalTasks": 291,
-      "percent": 78.7
+      "completedTasks": 230,
+      "totalTasks": 292,
+      "percent": 78.8
     }
   },
   "environment": {
@@ -1298,6 +1298,12 @@
           "title": "Einstellung „Rollen nach dem Ausscheiden“ streichen: nur Namen ansagen, nur lebende Rollen wecken",
           "status": "done",
           "validation": "Einstellung revealRoles aus Logik, Entwürfen und Oberfläche entfernt, gespeicherte Entwürfe bleiben lesbar; Nachtskript ruft keine Toten mehr auf; Anleitung und Texte (Deutsch und Englisch) angepasst; 1474 Tests, tsc -b, eslint und Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-54",
+          "title": "Hexe und Magier sehen die angegriffene Person auch bei abgefangenem Wolfsangriff",
+          "status": "done",
+          "validation": "Neues Feld wolfTarget im Spielzustand, Heilen prüft es; Tests für Amulett und Leibwächter; 1478 Tests, tsc -b, eslint und Schichtprüfung sauber."
         }
       ]
     },

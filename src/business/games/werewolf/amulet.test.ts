@@ -286,3 +286,22 @@ it("delays a shot at the tough-guy carrier without activating amulet protection"
   expect(pass(end, "Dan").status).toBe("morning");
   expect(resolve(end)).toMatchObject({ amulet: null });
 });
+
+it("shows the witch the attacked holder although the amulet stops the attack, and lets her heal", () => {
+  // In the first night the witch does not use a potion.
+  const first = apply(firstNight(open(deal("Eva", ["witch"]))), {
+    type: "potions",
+    night: 1,
+    heal: false,
+    poison: null,
+  });
+  const witch = attack(dusk(resolve(first)), "Eva");
+  // The amulet stops the attack, but the witch sees the attacked person like in any other night.
+  expect(witch).toMatchObject({ status: "witch", victim: null, wolfTarget: { name: "Eva" } });
+  const healed = apply(witch, { type: "potions", night: 2, heal: true, poison: null });
+  expect(healed).toMatchObject({
+    status: "amuletPass",
+    amulet: { holder: "Eva", mustPass: true },
+    potions: { heal: false },
+  });
+});

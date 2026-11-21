@@ -62,3 +62,44 @@ Mit einem Compiler-Dateiüberlagerungstest gegen die ursprünglichen Business-Da
 - src/presentation/werewolf/WerewolfGame.test.tsx:15, :252 und :299 – erforderliche GameScreenProps cardLanguage und onCardLanguageChange fehlen (TS2769).
 
 Die Gesamt-Typprüfung der UI ist deshalb noch nicht grün. Die Logik-Typprüfung und alle 1.472 normalen Tests im UI-Arbeitsstand bestehen. Lange historische Forschungs-/Balance-Läufe wurden nicht erneut gestartet. Es wurde weder committed noch gepusht.
+
+## Bestätigte Regelklarstellungen vom 21.11.2026 (für Codex, Stand der Logik im Branch game/werewolf-ui)
+
+Diese Punkte hat der Auftraggeber im Gespräch geprüft und bestätigt. Sie entsprechen dem aktuellen Code; sie sind hier festgehalten, damit sie bei Änderungen erhalten bleiben (jeweils mit Test, wo vorhanden).
+
+### Reihenfolge der Nacht
+
+Amor, Liebespaar (beide nur Nacht 1), Trunkenbold-Enthüllung (Beginn Nacht 3), Leibwächter oder Dorfmatratze, Werwölfe, Seherin (nach ihrem Tod der Seher-Lehrling), Paranormaler Ermittler, Hexe, Magier, **Bürgermeister mit Hammer (ab Nacht 2)**, Alte Vettel, **Amulett (Behalten oder Weitergeben, letzter Nachtschritt)**, dann die Morgenauflösung. Der Bürgermeister kommt also **nach** Hexe und Magier, nicht davor. Begründung der Reihenfolge der letzten drei: Alle Tötungen (Wölfe, Hexe, Magier, Hammer) stehen beisammen; der Hammer ist nicht heilbar und soll Hexe und Magier nicht bekannt sein; das Amulett steht zuletzt, weil erst nach dem Magier feststeht, ob es einen Angriff abgefangen hat. Die Alte Vettel wirkt nur auf den Tag und beeinflusst keinen Todesfall.
+
+### Zeitpunkt des Todes
+
+- In der Nacht entfernt keine Aktion eine Person aus `alive`; Wolfsopfer, Gift, Todeszauber und Hammer sind nur vorgemerkt. Auch ein vorgemerktes Opfer wacht auf und darf handeln.
+- Heilen (Hexe, Magier) ist bis zum Ende des Magier-Schritts möglich. Hammer und Hammer-Strafe sind nie heilbar.
+- Alle vorgemerkten Todesfälle (auch Liebeskummer, getroffener Werwolf, Bürgermeister mit Strafe) treten gleichzeitig bei der Morgenauflösung ein; dabei verschwindet das Amulett, wenn sein Träger dabei ist. Der Sieg wird erst nach der vollständigen Auflösung geprüft.
+- Ausnahmen: Harter Bursche stirbt erst in der Nacht nach einem wirksamen Angriff (Hammer und Liebeskummer sofort); der Jäger stirbt am Morgen und schießt danach, sein Ziel stirbt sofort; Tagesabstimmungen wirken, wenn der Erzähler das Ergebnis ansagt.
+
+### Alte Vettel
+
+Wählbar ist jede Person, die zu Beginn der Nacht lebte, auch ein vorgemerktes Opfer (sonst ließe sich ablesen, wer stirbt). Sie selbst nur bei „Selbstwahl erlaubt“; nie dieselbe Person wie in der Vornacht; Verzicht ist erlaubt. Stirbt die gewählte Person am Morgen, gibt es am Tag niemanden, der stumm ist; das fällt nicht auf. Die Stummschaltung gilt nur für den einen folgenden Tag.
+
+### Amulett
+
+- Weitergabe an jede Person, die zu Beginn der Nacht lebte (auch vorgemerkte Opfer, auch Werwölfe). Der Träger darf es sich selbst nur lassen, wenn es keinen Angriff abgefangen hat (`mustPass` false).
+- Kein rückwirkender Schutz: Alle Angriffe der Nacht sind vor der Weitergabe entschieden. Wird der neue Besitzer am Morgen getötet, weil er vorher getroffen wurde, verschwindet das Amulett mit ihm (Test „does not transfer retroactive protection to an already attacked player“).
+- Stirbt der Träger, egal wodurch (Abstimmung, Jägerschuss, Hammer, Liebeskummer), ist das Amulett weg; nur wenn er es im letzten Nachtschritt vorher weitergegeben hat, behält es der neue Träger.
+
+### Wolfsopfer für Hexe und Magier (We-01-54)
+
+Neues Feld `wolfTarget` im Spielzustand: die angegriffene Person, auch wenn das Amulett oder der Leibwächter den Angriff abgefangen hat. Hexe und Magier sehen immer `wolfTarget` und dürfen es heilen (Trank oder Zauber verbraucht, sonst keine Wirkung); `victim` bleibt, wer wirklich stirbt. Ein Angriff auf die abwesende Dorfmatratze geht ins Leere (kein Opfer). Tests: amulet.test.ts und specialRoles.test.ts.
+
+### Bürgermeister mit Hammer und Heilung
+
+Ist der Bürgermeister Wolfsopfer und wird geheilt (Trank verbraucht), handelt er danach normal. Setzt er den Hammer falsch ein, stirbt er trotzdem bei der Morgenauflösung; die Strafe ist nicht heilbar, das Ziel bleibt unberührt. Test: advancedRoles.test.ts („lets the witch heal a mayor who is the wolf victim …“).
+
+### Trunkenbold als Gerber
+
+Die persönliche Siegbedingung des Gerbers gilt schon vor der Enthüllung des Trunkenbolds; stirbt er unenthüllt, gewinnt er für sich (es zählt die wahre Rolle).
+
+### Rollen nach dem Ausscheiden (We-01-53)
+
+Es gibt keine Aufdeck-Einstellung mehr. Ansagen enthalten nur Namen; es werden nur lebende Rollen geweckt (siehe oben und die Umsetzung We-03-68).

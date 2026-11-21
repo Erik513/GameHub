@@ -32,6 +32,12 @@ interface Match {
   readonly alive: readonly Player[];
   readonly night: number;
   readonly protectedPlayer: string | null;
+  /**
+   * The person the werewolves attacked this night, as the witch and the magician see them: also when the attack
+   * did not kill (the amulet or the bodyguard stopped it). They always see the attacked person, so nobody learns
+   * from what they see whether a protection was at work.
+   */
+  readonly wolfTarget: Player | null;
   readonly hostPlayer: string | null;
   readonly potions: { readonly heal: boolean; readonly poison: boolean };
   readonly spellsRemaining: number;
@@ -208,6 +214,7 @@ export function createWerewolf(
     alive: players,
     night: 1,
     protectedPlayer: null,
+    wolfTarget: null,
     hostPlayer: null,
     potions: { heal: true, poison: true },
     spellsRemaining: hasMagician ? 2 : 0,
@@ -332,7 +339,14 @@ function enterCall(
 }
 
 function startNight(state: Match, night: number): WerewolfState {
-  const next = { ...state, night, nightDeaths: [], spellVictims: [], hammerVictim: null };
+  const next = {
+    ...state,
+    night,
+    nightDeaths: [],
+    spellVictims: [],
+    hammerVictim: null,
+    wolfTarget: null,
+  };
   return enterCall(
     next,
     "cupid",
@@ -379,7 +393,13 @@ function wolvesPhase(state: Match): WerewolfState {
     () => afterWolves(state, null),
   );
 }
-function afterWolves(state: Match, victim: Player | null): WerewolfState {
+/** `victim` is who dies from the attack, `attacked` who the witch and the magician see (the same, unless protected). */
+function afterWolves(
+  base: Match,
+  victim: Player | null,
+  attacked: Player | null = victim,
+): WerewolfState {
+  const state = { ...base, wolfTarget: attacked };
   return enterCall(
     state,
     "seer",
@@ -664,12 +684,12 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       if (!victim) return state;
       if (state.hostPlayer && victim.role === "nightGuest") return afterWolves(state, null);
       const saved = absorbNightAttackWithAmulet(state, victim);
-      if (saved) return afterWolves(saved, null);
-      if (victim.name === state.protectedPlayer) return afterWolves(state, null);
+      if (saved) return afterWolves(saved, null, victim);
+      if (victim.name === state.protectedPlayer) return afterWolves(state, null, victim);
       if (victim.name !== state.hostPlayer) return afterWolves(state, victim);
       const guest = findActiveRole(state, "nightGuest");
       const savedGuest = absorbNightAttackWithAmulet(state, guest);
-      return savedGuest ? afterWolves(savedGuest, null) : afterWolves(state, guest ?? null);
+      return savedGuest ? afterWolves(savedGuest, null, guest) : afterWolves(state, guest ?? null);
     }
     case "seer": {
       if (event.type !== "inspect") return state;
@@ -701,7 +721,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
     case "investigation":
       return event.type === "closeInvestigation" ? afterInvestigation(state, state.victim) : state;
     case "witch": {
-      if (event.type !== "potions" || (event.heal && (!state.victim || !state.potions.heal)))
+      if (event.type !== "potions" || (event.heal && (!state.wolfTarget || !state.potions.heal)))
         return state;
       const target =
         event.poison === null
@@ -726,7 +746,7 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       const cost = event.kill.length + Number(event.heal);
       if (
         cost > state.spellsRemaining ||
-        (event.heal && !state.victim) ||
+        (event.heal && !state.wolfTarget) ||
         picks.size !== event.kill.length
       )
         return state;

@@ -334,3 +334,27 @@ it.each([undefined, "optional", "required"] as const)(
     });
   },
 );
+
+it("shows the witch the attacked person although the bodyguard protects them, and lets her heal", () => {
+  let state = deal("bodyguard", "witch");
+  state = act(
+    state,
+    { type: "protect", night: 1, target: "Dan" },
+    { type: "wolvesReady", night: 1 },
+  );
+  state = endDay(
+    morning(act(sight(state), { type: "potions", night: 1, heal: false, poison: null })),
+  );
+  state = act(
+    state,
+    { type: "protect", night: 2, target: "Eva" },
+    { type: "attack", night: 2, target: "Eva" },
+  );
+  // The protection stops the attack, but the witch sees the attacked person like in any other night.
+  const witch = sight(state);
+  expect(witch).toMatchObject({ status: "witch", victim: null, wolfTarget: { name: "Eva" } });
+  // She may heal: the potion is spent and nothing changes for the person.
+  const healed = morning(act(witch, { type: "potions", night: 2, heal: true, poison: null }));
+  expect(healed.potions.heal).toBe(false);
+  expect(healed.alive).toHaveLength(6);
+});

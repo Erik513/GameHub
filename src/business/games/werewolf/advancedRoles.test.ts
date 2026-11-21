@@ -282,3 +282,21 @@ it("resolves eight distinct deaths in one night including the morning hunter sho
   ).toBe(8);
   expect(state.alive.map((player) => player.name)).toContain(wrongTarget);
 });
+
+it("lets the witch heal a mayor who is the wolf victim, who still dies for a wrong hammer", () => {
+  let state = deal(["mayor", "witch"], { mayor: "hammer" });
+  // The first night: nobody uses anything.
+  state = see(wolves(state));
+  state = act(state, { type: "potions", night: 1, heal: false, poison: null });
+  state = dusk(day(state));
+  // The second night: the wolves attack the mayor, the witch heals him.
+  state = see(attack(state, "Cam"));
+  expect(state).toMatchObject({ status: "witch", wolfTarget: { name: "Cam" } });
+  state = act(state, { type: "potions", night: 2, heal: true, poison: null });
+  expect(state).toMatchObject({ status: "mayor", victim: null, potions: { heal: false } });
+  // The healed mayor strikes a villager: the penalty cannot be healed and he dies, the target stays alive.
+  const morning = hammer(state, "Eva");
+  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Cam" }]);
+  const next = day(morning);
+  expect(next.alive.map((player) => player.name)).toEqual(["Ada", "Bea", "Dan", "Eva", "Flo"]);
+});
