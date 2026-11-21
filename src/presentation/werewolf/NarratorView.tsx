@@ -62,6 +62,7 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
           ))}
         <GuideBox
           onChoose={guide.choose}
+          onCloseAbility={guide.closeAbility}
           onContinue={guide.continueGuide}
           onNobody={guide.nobody}
           onUndo={guide.undo}

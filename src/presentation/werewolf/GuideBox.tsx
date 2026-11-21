@@ -7,13 +7,14 @@ import {
   werewolfDrunkReveal,
   type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
-import { Button } from "../components";
+import { Icon } from "../components";
 import { DealCard } from "./DealCard";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface GuideBoxProps {
   readonly view: GuideView;
   readonly onChoose: (name: string) => void;
+  readonly onCloseAbility: () => void;
   readonly onContinue: () => void;
   readonly onNobody: () => void;
   readonly onUndo: () => void;
@@ -27,6 +28,7 @@ interface GuideBoxProps {
 export function GuideBox({
   view,
   onChoose,
+  onCloseAbility,
   onContinue,
   onNobody,
   onUndo,
@@ -48,9 +50,11 @@ export function GuideBox({
     return (
       <button className="ww-guide ww-guide--tap" onClick={onContinue} type="button">
         <strong className="ww-guide__text">{text}</strong>
-        {phase === "outro" && <Summary view={view} />}
-        {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
-        <small>{hint}</small>
+        <span className="ww-guide__extra">
+          {phase === "outro" && <Summary view={view} />}
+          {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
+          <small>{hint}</small>
+        </span>
       </button>
     );
   }
@@ -59,11 +63,72 @@ export function GuideBox({
   const showPeople =
     selection.ability !== null &&
     (view.targets.length > 0 || selection.picks.length > 0 || view.canChooseNobody);
+  const isWitchOrMagician = state.status === "witch" || state.status === "magician";
+  const extras = [
+    !card.cover && isWitchOrMagician && (
+      <span className="ww-guide__victim" key="victim">
+        {state.wolfTarget
+          ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
+          : t("werewolfNarrator.guide.noVictim")}
+      </span>
+    ),
+    !card.cover && selection.heal && state.wolfTarget && (
+      <span className="ww-guide__victim" key="heal">
+        {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}
+      </span>
+    ),
+    !card.cover && isWitchOrMagician && !selection.heal && selection.picks.length === 0 && (
+      <small key="skip">{t("werewolfNarrator.guide.skipHint")}</small>
+    ),
+    view.notes.restricted && (
+      <small key="restricted">
+        {t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}
+      </small>
+    ),
+    (state.status === "day" || state.status === "vote") && <DayNotes key="notes" view={view} />,
+  ].filter(Boolean);
   return (
-    <section className={showPeople ? "ww-guide" : "ww-guide ww-guide--idle"}>
-      {card.cover ? (
-        <>
-          <strong className="ww-guide__text">{t("werewolfNarrator.guide.coverTitle")}</strong>
+    <section className="ww-guide ww-guide--sheet">
+      <header className="ww-guide__head">
+        <strong className="ww-guide__text">
+          {card.cover
+            ? t("werewolfNarrator.guide.coverTitle")
+            : (info ??
+              (selection.ability
+                ? t(
+                    `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,
+                  )
+                : card.abilities.length > 0
+                  ? t("werewolfNarrator.guide.pickAbility")
+                  : t("werewolfNarrator.guide.confirmDone")))}
+        </strong>
+        <span className="ww-guide__tools">
+          {view.canUndo && (
+            <button
+              aria-label={t("werewolfNarrator.guide.undo")}
+              className="ww-guide__close"
+              onClick={onUndo}
+              title={t("werewolfNarrator.guide.undo")}
+              type="button"
+            >
+              <Icon name="reset" />
+            </button>
+          )}
+          {view.canCloseAbility && (
+            <button
+              aria-label={t("werewolfNarrator.guide.closeSelection")}
+              className="ww-guide__close"
+              onClick={onCloseAbility}
+              title={t("werewolfNarrator.guide.closeSelection")}
+              type="button"
+            >
+              <Icon name="close" />
+            </button>
+          )}
+        </span>
+      </header>
+      <div className="ww-guide__body">
+        {card.cover && (
           <ul className="ww-guide__rows">
             {card.abilities.map((ability) => (
               <li key={ability.id}>
@@ -76,76 +141,42 @@ export function GuideBox({
               </li>
             ))}
           </ul>
-        </>
-      ) : (
-        <strong className="ww-guide__text">
-          {info ??
-            (selection.ability
-              ? t(
-                  `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,
-                )
-              : card.abilities.length > 0
-                ? t("werewolfNarrator.guide.pickAbility")
-                : t("werewolfNarrator.guide.confirmDone"))}
-        </strong>
-      )}
-      {!card.cover && (state.status === "witch" || state.status === "magician") && (
-        <span className="ww-guide__victim">
-          {state.wolfTarget
-            ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
-            : t("werewolfNarrator.guide.noVictim")}
-        </span>
-      )}
-      {!card.cover && selection.heal && state.wolfTarget && (
-        <span className="ww-guide__victim">
-          {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}
-        </span>
-      )}
-      {!card.cover &&
-        (state.status === "witch" || state.status === "magician") &&
-        !selection.heal &&
-        selection.picks.length === 0 && <small>{t("werewolfNarrator.guide.skipHint")}</small>}
-      {view.notes.restricted && (
-        <small>{t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}</small>
-      )}
-      {(state.status === "day" || state.status === "vote") && <DayNotes view={view} />}
-      {showPeople && (
-        <div className="ww-guide__people">
-          {selection.picks.map((name) => (
-            <button
-              aria-pressed="true"
-              className="ww-person"
-              key={name}
-              onClick={() => onUnchoose(name)}
-              type="button"
-            >
-              {name}
-              <Mark name={name} view={view} />
-            </button>
-          ))}
-          {view.targets.map((name) => (
-            <button className="ww-person" key={name} onClick={() => onChoose(name)} type="button">
-              {name}
-              <Mark name={name} view={view} />
-            </button>
-          ))}
-          {view.canChooseNobody && (
-            <button
-              aria-pressed={selection.none}
-              className="ww-person ww-person--nobody"
-              onClick={onNobody}
-              type="button"
-            >
-              {t("werewolfNarrator.guide.nobody")}
-            </button>
-          )}
-        </div>
-      )}
-      {view.canUndo && (
-        <Button className="ww-guide__undo" onClick={onUndo} variant="secondary">
-          {t("werewolfNarrator.guide.undo")}
-        </Button>
-      )}
+        )}
+        {showPeople && (
+          <div className="ww-guide__people">
+            {/* All names in alphabetical order, the chosen ones in place, so a name is quickly found. */}
+            {[...selection.picks, ...view.targets]
+              .sort((one, other) => one.localeCompare(other, undefined, { sensitivity: "base" }))
+              .map((name) => {
+                const chosen = selection.picks.includes(name);
+                return (
+                  <button
+                    aria-pressed={chosen}
+                    className="ww-person"
+                    key={name}
+                    onClick={() => (chosen ? onUnchoose(name) : onChoose(name))}
+                    title={name}
+                    type="button"
+                  >
+                    <span className="ww-person__name">{name}</span>
+                    <Mark name={name} view={view} />
+                  </button>
+                );
+              })}
+            {view.canChooseNobody && (
+              <button
+                aria-pressed={selection.none}
+                className="ww-person ww-person--nobody"
+                onClick={onNobody}
+                type="button"
+              >
+                <span className="ww-person__name">{t("werewolfNarrator.guide.nobody")}</span>
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      {extras.length > 0 && <footer className="ww-guide__extra">{extras}</footer>}
     </section>
   );
 }
@@ -210,28 +241,46 @@ function PlainBox({ view }: { readonly view: GuideView }) {
   if (state.status === "morning") {
     const names = werewolfAnnouncement(state).map((entry) => entry.name);
     return (
-      <section className="ww-guide">
-        <strong className="ww-guide__text">{t("werewolfNarrator.guide.morning.title")}</strong>
-        <span>
-          {names.length === 0
-            ? t("werewolfNarrator.guide.morning.nobody")
-            : t("werewolfNarrator.guide.morning.died", { names: names.join(", ") })}
-        </span>
-        <DeathDetails deaths={view.deaths} />
+      <section className="ww-guide ww-guide--sheet">
+        <header className="ww-guide__head">
+          <strong className="ww-guide__text">{t("werewolfNarrator.guide.morning.title")}</strong>
+        </header>
+        <div className="ww-guide__body">
+          <span className="ww-guide__lead">
+            {names.length === 0
+              ? t("werewolfNarrator.guide.morning.nobody")
+              : t("werewolfNarrator.guide.morning.died", { names: names.join(", ") })}
+          </span>
+        </div>
+        {view.deaths.length > 0 && (
+          <footer className="ww-guide__extra">
+            <DeathDetails deaths={view.deaths} />
+          </footer>
+        )}
       </section>
     );
   }
   if (state.status === "exile") {
     const names = werewolfAnnouncement(state).map((entry) => entry.name);
     return (
-      <section className="ww-guide">
-        <strong className="ww-guide__text">
-          {t("werewolfNarrator.guide.exile", { name: state.victim.name })}
-        </strong>
-        {names.length > 1 && (
-          <span>{t("werewolfNarrator.guide.left", { names: names.join(", ") })}</span>
+      <section className="ww-guide ww-guide--sheet">
+        <header className="ww-guide__head">
+          <strong className="ww-guide__text">
+            {t("werewolfNarrator.guide.exile", { name: state.victim.name })}
+          </strong>
+        </header>
+        <div className="ww-guide__body">
+          {names.length > 1 && (
+            <span className="ww-guide__lead">
+              {t("werewolfNarrator.guide.left", { names: names.join(", ") })}
+            </span>
+          )}
+        </div>
+        {view.deaths.length > 0 && (
+          <footer className="ww-guide__extra">
+            <DeathDetails deaths={view.deaths} />
+          </footer>
         )}
-        <DeathDetails deaths={view.deaths} />
       </section>
     );
   }

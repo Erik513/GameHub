@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   backGuide,
   chooseAbility,
+  closeAbility,
   chooseNobody,
   choosePlayer,
   continueGuide,
@@ -423,5 +424,27 @@ describe("narrator guide", () => {
       expect(view.canContinue).toBe(true);
       expect(describeGuide(game()).nextKind).toBe("next");
     });
+  });
+
+  it("closes the list of people again when an ability was tapped by mistake", () => {
+    let guide = continueGuide(game([], { attackOnFirstNight: true }));
+    for (let step = 0; step < 100 && describeGuide(guide).card?.role !== "seer"; step += 1)
+      guide = forward(guide)!;
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).canCloseAbility).toBe(false);
+    guide = chooseAbility(guide, "inspect");
+    expect(describeGuide(guide).canCloseAbility).toBe(true);
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    const closed = closeAbility(guide);
+    const view = describeGuide(closed);
+    expect(view.selection.ability).toBeNull();
+    expect(view.selection.picks).toEqual([]);
+    expect(view.targets).toEqual([]);
+    expect(view.canCloseAbility).toBe(false);
+    expect(view.canContinue).toBe(false);
+    // The ability can be opened again.
+    expect(describeGuide(chooseAbility(closed, "inspect")).targets.length).toBeGreaterThan(2);
+    // Nothing to close without an open ability.
+    expect(closeAbility(closed)).toBe(closed);
   });
 });

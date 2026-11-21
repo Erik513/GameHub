@@ -109,4 +109,24 @@ describe("NarratorView choices", () => {
     await user.click(nextButton());
     expect(screen.getByText(new RegExp(`${person} is (not )?a werewolf`))).toBeInTheDocument();
   });
+
+  it("lists the people in alphabetical order, all equally, and closes the list with the X", async () => {
+    const user = await renderView("en");
+    for (let guard = 0; guard < 30 && !screen.queryByText(/seer wakes up/); guard += 1)
+      await user.click(screen.getByRole("button", { name: "Next" }));
+    await user.click(screen.getByText(/seer wakes up/));
+    expect(screen.queryByRole("button", { name: "Close the selection" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Look: ready/ }));
+    const people = screen
+      .getAllByRole("button")
+      .filter((button) => button.classList.contains("ww-person"))
+      .map((button) => button.textContent ?? "");
+    expect(people.length).toBeGreaterThan(5);
+    expect(people).toEqual([...people].sort((a, b) => a.localeCompare(b)));
+    await user.click(screen.getByRole("button", { name: "Close the selection" }));
+    expect(
+      screen.queryAllByRole("button").filter((button) => button.classList.contains("ww-person")),
+    ).toHaveLength(0);
+    expect(screen.queryByRole("button", { name: "Close the selection" })).toBeNull();
+  });
 });

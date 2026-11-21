@@ -162,6 +162,7 @@ export const werewolfNarratorTexts = {
       restricted: "Nicht wählbar: {{name}} (schon in der letzten Nacht gewählt)",
       healChosen: "Heilen gewählt: {{name}} wird gerettet",
       voter: { double: "×2", mustYes: "muss Ja" },
+      closeSelection: "Auswahl schließen",
       left: "Ausgeschieden: {{names}}",
       exile: "{{name}} scheidet aus",
       finished: {

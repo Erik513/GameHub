@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import {
   backGuide,
   chooseAbility,
+  closeAbility,
   chooseNobody,
   choosePlayer,
   continueGuide,
@@ -51,6 +52,7 @@ export function useNarratorGuide(
   return {
     ability: (id: CardAbilityId) => update((g) => chooseAbility(g, id)),
     cancelBack: () => setConfirmBack(false),
+    closeAbility: () => update(closeAbility),
     choose: (name: string) => update((g) => choosePlayer(g, name)),
     confirmBack,
     continueGuide: () => {

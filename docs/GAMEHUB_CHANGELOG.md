@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-74: Gleich große Boxen, Leitfaden oben, Personenliste alphabetisch
+
+- Obere und untere Box sind immer gleich groß. In der unteren Box steht der Leitfaden oben und die Zusatzinformation unten. Personenknöpfe sind alphabetisch sortiert und gleich groß (vier je Zeile); oben rechts schließt ein X die Auswahl, daneben steht Rückgängig als Symbol.
+
 ### We-01-73: Heller Tageshintergrund, Texte unten in den Boxen
 
 - Am Tag ist nur der Hintergrund hell; Boxen und Knöpfe bleiben dunkel. Texte in den Boxen (Ankündigung, Anleitung, Morgen, Ausschluss) stehen unten statt in der Mitte.

@@ -162,6 +162,7 @@ export const werewolfNarratorTexts = {
       restricted: "Not allowed: {{name}} (chosen last night already)",
       healChosen: "Healing chosen: {{name}} is saved",
       voter: { double: "×2", mustYes: "must vote yes" },
+      closeSelection: "Close the selection",
       left: "Left the game: {{names}}",
       exile: "{{name}} leaves the game",
       finished: {

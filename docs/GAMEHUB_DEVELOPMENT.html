@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T06:30:00.000Z",
+    "updatedAt": "2026-11-22T07:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 257,
-      "totalTasks": 311,
-      "percent": 82.6
+      "completedTasks": 258,
+      "totalTasks": 312,
+      "percent": 82.7
     }
   },
   "environment": {
@@ -1659,6 +1659,12 @@
           "title": "Tag nur mit hellem Hintergrund (Bedienelemente bleiben dunkel); Texte in den Boxen stehen unten",
           "status": "done",
           "validation": "Am Tag ist nur der Hintergrund hell, Boxen und Knöpfe bleiben dunkel, die Beschriftung der Leiste ist dunkel; Texte in der Anleitungsbox, bei der Ankündigung, am Morgen und beim Ausschluss stehen am unteren Rand der Box statt in der Mitte; im Browser bei 390 Pixel Breite angesehen (Nacht, Morgen, Tag); Tests, eslint sauber."
+        },
+        {
+          "id": "We-01-74",
+          "title": "Erzählersicht: obere und untere Box immer gleich groß, Leitfaden oben und Zusatzinfo unten, gleich große Personenknöpfe in alphabetischer Reihenfolge mit X zum Schließen",
+          "status": "done",
+          "validation": "Die beiden Boxen teilen sich die Fläche immer zu gleichen Teilen; in der unteren Box steht der Leitfaden oben und die Zusatzinformation (Wolfsopfer, Hinweise, Ursachen, Tipp) unten; die Personenliste ist alphabetisch, jeder Knopf gleich groß (vier je Zeile), die gewählten bleiben an ihrem Platz; oben rechts in der Box schließt ein X die Auswahl (Fähigkeit versehentlich angetippt), daneben ein Symbol für Rückgängig; im Browser bei 390 Pixel Breite mit 20 Spielern angesehen (Amor, Hexe, Morgen); Tests für Schließen und alphabetische Reihenfolge; 1555 Tests, tsc -b, eslint, Schichtprüfung sauber."
         }
       ]
     },

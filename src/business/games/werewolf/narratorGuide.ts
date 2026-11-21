@@ -250,6 +250,8 @@ export interface GuideView {
   /** The people the narrator can choose now; empty while no ability is open. */
   readonly targets: readonly string[];
   readonly canChooseNobody: boolean;
+  /** The list of people can be closed again (an ability that was opened by a tap). */
+  readonly canCloseAbility: boolean;
   readonly canContinue: boolean;
   readonly canGoBack: boolean;
   /** There is a choice that "undo" can take back. */
@@ -292,6 +294,7 @@ export function describeGuide(guide: Guide): GuideView {
       selection.ability !== null &&
       mayChooseNobody.includes(selection.ability) &&
       !(selection.ability === "shot" && state.settings.hunterShot === "required"),
+    canCloseAbility: frame.phase === "act" && state.status !== "vote" && selection.ability !== null,
     canContinue,
     canGoBack: guide.trail.length > 1 || guide.session.past.length > 0,
     canUndo:
@@ -361,6 +364,16 @@ export function chooseAbility(guide: Guide, id: CardAbilityId): Guide {
     return withSelection(guide, next);
   }
   return withSelection(guide, { ...selection, ability: id, none: false, picks: [] });
+}
+
+/** The narrator closes the list of people again (an ability was tapped by mistake); the choices of it are dropped. */
+export function closeAbility(guide: Guide): Guide {
+  const frame = current(guide);
+  const state = guide.session.present;
+  // The vote is the whole step of its own: there is nothing to close.
+  if (frame.phase !== "act" || state.status === "vote" || frame.selection.ability === null)
+    return guide;
+  return withSelection(guide, { ...frame.selection, ability: null, none: false, picks: [] });
 }
 
 /** The narrator taps a person in the list. */
