@@ -1470,3 +1470,58 @@
 .app-shell:has(.ww-night) .site-header {
   display: none;
 }
+
+/* The role reveal uses the whole area between the top bar and the buttons at the bottom. */
+.ww-night__stage:has(.ww-deal) {
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+}
+
+.ww-night__stage:has(.ww-deal) .ww-deal,
+.ww-night__stage:has(.ww-deal) .ww-deal__face {
+  height: 100%;
+  min-height: 0;
+}
+
+.ww-deal__face {
+  gap: var(--space-4);
+}
+
+.ww-deal__face .ww-deal__name {
+  font-size: clamp(2rem, 9vw, 3rem);
+}
+
+.ww-deal__role {
+  width: 128px;
+  height: 128px;
+}
+
+.ww-deal__face > span:not([class]),
+.ww-deal__face > small {
+  font-size: var(--text-md);
+}
+
+.ww-deal__ability small {
+  font-size: var(--text-md);
+}
+
+.ww-deal__abilities {
+  gap: var(--space-5);
+}
+
+/* The content of the card is centered; the hint to tap stands at the bottom edge of the card. */
+.ww-deal__face {
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-content: stretch;
+}
+
+.ww-deal__body {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-4);
+}
+
+.ww-deal__tap {
+  padding-bottom: var(--space-1);
+}

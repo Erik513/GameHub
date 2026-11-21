@@ -39,43 +39,46 @@ export function DealCard({ name, role, amulet, mayor }: DealCardProps) {
         onClick={() => setShown((current) => !current)}
         type="button"
       >
-        {shown ? (
-          <>
-            <span className="ww-deal__role">
-              <WerewolfSymbol id={role} size={64} />
-            </span>
-            <strong className="ww-deal__name">{roleName}</strong>
-            <span className="ww-deal__abilities">
-              {abilities.length === 0 ? (
-                <small>{t("werewolfNarrator.deal.noAbility")}</small>
-              ) : (
-                abilities.map((entry) => (
-                  <span className="ww-deal__ability" key={entry.symbol}>
-                    <WerewolfSymbol id={entry.symbol} size={28} />
-                    <small>
-                      {entry.ability
-                        ? t(`werewolfNarrator.ability.${entry.ability}`)
-                        : t(`werewolfSymbols.items.${entry.symbol}.name`)}
-                    </small>
-                  </span>
-                ))
-              )}
-            </span>
-            {amulet && (
-              <span className="ww-deal__amulet">
-                <WerewolfSymbol id="amulet" size={24} />
-                <strong>{t("werewolfNarrator.deal.amulet")}</strong>
+        <span className="ww-deal__body">
+          {shown ? (
+            <>
+              <span className="ww-deal__role">
+                <WerewolfSymbol id={role} size={88} />
               </span>
-            )}
-            <small>{t("werewolfNarrator.deal.hide")}</small>
-          </>
-        ) : (
-          <>
-            <strong className="ww-deal__name">{name}</strong>
-            <span>{t("werewolfNarrator.deal.hint")}</span>
-            <small>{t("werewolfNarrator.deal.show")}</small>
-          </>
-        )}
+              <strong className="ww-deal__name">{roleName}</strong>
+              <span className="ww-deal__abilities">
+                {abilities.length === 0 ? (
+                  <small>{t("werewolfNarrator.deal.noAbility")}</small>
+                ) : (
+                  abilities.map((entry) => (
+                    <span className="ww-deal__ability" key={entry.symbol}>
+                      <WerewolfSymbol id={entry.symbol} size={44} />
+                      <small>
+                        {entry.ability
+                          ? t(`werewolfNarrator.ability.${entry.ability}`)
+                          : t(`werewolfSymbols.items.${entry.symbol}.name`)}
+                      </small>
+                    </span>
+                  ))
+                )}
+              </span>
+              {amulet && (
+                <span className="ww-deal__amulet">
+                  <WerewolfSymbol id="amulet" size={24} />
+                  <strong>{t("werewolfNarrator.deal.amulet")}</strong>
+                </span>
+              )}
+            </>
+          ) : (
+            <>
+              <strong className="ww-deal__name">{name}</strong>
+              <span>{t("werewolfNarrator.deal.hint")}</span>
+            </>
+          )}
+        </span>
+        <small className="ww-deal__tap">
+          {t(shown ? "werewolfNarrator.deal.hide" : "werewolfNarrator.deal.show")}
+        </small>
       </button>
       {shown && <ConfigInfo className="ww-deal__info" id={infoOfRole(role)} name={roleName} />}
     </section>

@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-67: Rollenenthüllung auf der ganzen Fläche
+
+- Die Karte der Rollenverteilung füllt die ganze Fläche zwischen der oberen Leiste und den Knöpfen unten; Rollensymbol, Fähigkeitssymbole und Texte sind größer.
+
 ### We-01-66: Erzählersicht ohne App-Kopfleiste
 
 - Die Kopfleiste der App („Werwolf“, Spielregeln, Einstellungen, Startseite) entfällt in der Erzählersicht. Die Tag-/Nachtleiste ersetzt sie und hat die Spielregeln als Buchsymbol, daneben Übersicht und Schließen; weitere Knöpfe können dort später folgen.
