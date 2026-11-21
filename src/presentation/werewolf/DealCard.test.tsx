@@ -50,4 +50,33 @@ describe("DealCard", () => {
     await user.click(screen.getByRole("button", { pressed: false }));
     expect(document.querySelector(".ww-deal__variant")).toBeNull();
   });
+
+  it.each([
+    {
+      language: "de",
+      info: /Info zu Jäger/,
+      shoot: "Wenn du ausscheidest, schießt du auf eine lebende Person.",
+      duty: "Du musst schießen.",
+    },
+    {
+      language: "en",
+      info: /Info about Hunter/i,
+      shoot: "When you leave the game, you shoot at a living person.",
+      duty: "You have to shoot.",
+    },
+  ] as const)(
+    "explains the role in a few sentences for the player in $language",
+    async ({ duty, info, language, shoot }) => {
+      const user = await renderCard(language, "required");
+      await user.click(screen.getByRole("button", { pressed: false }));
+      await user.click(screen.getByRole("button", { name: info }));
+      const dialog = await screen.findByRole("dialog");
+      expect(dialog).toHaveTextContent(shoot);
+      expect(dialog).toHaveTextContent(duty);
+      // Nothing about the setup of the game.
+      expect(dialog.textContent).not.toMatch(
+        /Konfiguration|Empfehlung|configuration|recommendation|Wähle, wie viele|how many/i,
+      );
+    },
+  );
 });

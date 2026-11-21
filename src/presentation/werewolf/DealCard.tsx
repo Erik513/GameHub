@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ConfigInfo } from "./ConfigInfo";
-import { abilitiesOfRole, infoOfRole, type DealtRole, type RoleVariant } from "./roleAbilities";
+import { RoleCardInfo } from "./RoleCardInfo";
+import { abilitiesOfRole, type DealtRole, type RoleVariant } from "./roleAbilities";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface DealCardProps {
@@ -102,7 +102,9 @@ export function DealCard({ name, role, amulet, mayor, position, total, variant }
           {t("werewolfNarrator.deal.count", { current: position, total })}
         </small>
       )}
-      {shown && <ConfigInfo className="ww-deal__info" id={infoOfRole(role)} name={roleName} />}
+      {shown && (
+        <RoleCardInfo amulet={amulet} className="ww-deal__info" role={role} variant={variant} />
+      )}
     </section>
   );
 }

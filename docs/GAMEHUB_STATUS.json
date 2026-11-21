@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T10:45:00.000Z",
+    "updatedAt": "2026-11-22T11:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 263,
-      "totalTasks": 317,
+      "completedTasks": 264,
+      "totalTasks": 318,
       "percent": 83
     }
   },
@@ -1462,6 +1462,12 @@
           "title": "Rollenkarte nennt die Spielweise der Rolle (Jäger mit oder ohne Schusspflicht, Harter Bursche, Gerber, Alte Vettel)",
           "status": "done",
           "validation": "Unter dem Rollennamen steht die Option, mit der das Spiel eingerichtet wurde: Jäger Schusspflicht oder keine Schusspflicht, Harter Bursche nur Wolfsangriff oder jeder Angriff, Gerber Sieg bei jedem Ausscheiden oder nur bei Abstimmung, Alte Vettel Selbstwahl erlaubt oder verboten; dieselben Texte wie in der Konfiguration (Deutsch und Englisch); Rollen ohne Option zeigen nichts, der Platz unter dem Namen ist auf jeder Karte gleich hoch reserviert, damit Trennlinie und Layout bei allen Karten gleich bleiben (Wunsch des Auftraggebers); Tests; 1562 Tests, tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
+        },
+        {
+          "id": "We-01-80",
+          "title": "Kurze Rollentexte für die Spieler im Spiel: der Info-Knopf der Rollenkarte ohne Hinweise zur Konfiguration",
+          "status": "done",
+          "validation": "Neue Texte werewolfRoleInfo (Deutsch und Englisch) für alle 17 Rollen in zwei bis vier kurzen Sätzen aus Sicht der Spielerin oder des Spielers, mit der Option der Rolle (Jäger, Harter Bursche, Gerber, Alte Vettel, Bürgermeister) und den Amulett-Regeln für den Träger; der Trunkenbold erfährt nicht, auf welcher Seite er steht; der Info-Knopf der Karte nutzt sie statt der Texte der Konfiguration (die dort bleiben); Tests für beide Sprachen und dafür, dass keine Hinweise zur Konfiguration vorkommen; 1564 Tests, tsc -b, eslint, Schichtprüfung sauber; Texte sind zu prüfen (Annahme: aus den bestätigten Regeltexten vereinfacht)."
         }
       ]
     },

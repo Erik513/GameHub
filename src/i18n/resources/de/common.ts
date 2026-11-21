@@ -2,6 +2,7 @@ import { kitTexts } from "./kit";
 import { tabooTexts } from "./taboo";
 import { werewolfTexts } from "./werewolf";
 import { werewolfConfigTexts } from "./werewolfConfig";
+import { werewolfRoleInfoTexts } from "./werewolfRoleInfo";
 import { werewolfRulesTexts } from "./werewolfRules";
 import { werewolfNarratorTexts } from "./werewolfNarrator";
 import { werewolfSymbolsTexts } from "./werewolfSymbols";
@@ -11,6 +12,7 @@ export const common = {
   ...tabooTexts,
   ...werewolfTexts,
   ...werewolfConfigTexts,
+  ...werewolfRoleInfoTexts,
   ...werewolfRulesTexts,
   ...werewolfNarratorTexts,
   ...werewolfSymbolsTexts,

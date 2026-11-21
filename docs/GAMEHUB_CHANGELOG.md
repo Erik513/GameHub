@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-80: Kurze Rollentexte im Spiel
+
+- Der Info-Knopf der Rollenkarte zeigt jetzt kurze Sätze nur für die Spielerin oder den Spieler (Aufgabe, Besonderheiten, Option der Rolle, Amulett), ohne die Hinweise zur Konfiguration. Die ausführlichen Texte bleiben in der Konfiguration und der Anleitung.
+
 ### We-01-79: Spielweise der Rolle auf der Karte
 
 - Die Rollenkarte nennt die Option der Rolle, zum Beispiel „Schusspflicht“ oder „Keine Schusspflicht“ beim Jäger (auch Harter Bursche, Gerber, Alte Vettel).
