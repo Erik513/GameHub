@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T19:01:11.070Z",
+    "updatedAt": "2026-11-21T19:38:47.793Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 234,
-      "totalTasks": 296,
+      "completedTasks": 235,
+      "totalTasks": 297,
       "percent": 79.1
     }
   },
@@ -1328,6 +1328,12 @@
           "title": "Spielanleitung und Rollentexte gegen die aktuelle Logik prüfen und nachziehen",
           "status": "done",
           "validation": "Jede Aussage der Rollentexte und der Anleitung mit Code und Regeldokumenten abgeglichen (Deutsch und Englisch); nachgezogen: Reihenfolge der Nacht, Zeitpunkt des Todes, Wolfsopfer für Hexe und Magier, Amulett, Hammer-Strafe, Alte Vettel, Gerber als Trunkenbold, Sitznachbarn des Ermittlers, Empfehlung und Spanne im variablen Modus; 1487 Tests, tsc -b, eslint sauber."
+        },
+        {
+          "id": "We-01-59",
+          "title": "Symbolsatz für die Erzählersicht festlegen und als Legende in der Anleitung zeigen",
+          "status": "done",
+          "validation": "34 Symbole in vier Gruppen (Rollen, eigene Mittel, Zusätze, Zustände) mit Zeichnungen aus Tabler Icons (MIT) und dem Wolfskopf von Lorc (CC BY 3.0), Namen und Bedeutungen auf Deutsch und Englisch, Legende als vierter Reiter der Anleitung; Tests zur Vollständigkeit; 1495 Tests, tsc -b, eslint, Schichtprüfung sauber."
         }
       ]
     },

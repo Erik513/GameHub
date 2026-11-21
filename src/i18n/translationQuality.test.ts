@@ -34,6 +34,7 @@ const allowedIdenticalValues = [
   "tabooShortcuts.pauseHint",
   "tabooShortcuts.skipped",
   "werewolfConfig.variants.hammer",
+  "werewolfSymbols.items.hammer.name",
 ];
 
 /** Keys that are only read by tests or kept for the project foundation. */

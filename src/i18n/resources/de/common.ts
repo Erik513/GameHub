@@ -3,6 +3,7 @@ import { tabooTexts } from "./taboo";
 import { werewolfTexts } from "./werewolf";
 import { werewolfConfigTexts } from "./werewolfConfig";
 import { werewolfRulesTexts } from "./werewolfRules";
+import { werewolfSymbolsTexts } from "./werewolfSymbols";
 
 export const common = {
   ...kitTexts,
@@ -10,6 +11,7 @@ export const common = {
   ...werewolfTexts,
   ...werewolfConfigTexts,
   ...werewolfRulesTexts,
+  ...werewolfSymbolsTexts,
   app: {
     eyebrow: "Projektgrundlage",
     title: "GameHub",

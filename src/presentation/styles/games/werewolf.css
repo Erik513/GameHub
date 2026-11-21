@@ -1041,3 +1041,47 @@
 .ww-core .ww-stat__value {
   justify-items: start;
 }
+
+/* A symbol is as high as the text it stands beside and takes the color of that text. */
+.ww-symbol {
+  flex: none;
+}
+
+/* The legend: one row per symbol, the drawing on the left, the name and its meaning on the right. */
+.ww-legend {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-legend__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.ww-legend__item > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ww-legend__item small {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+.ww-legend__credits {
+  margin: var(--space-4) 0 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+}
+
+/* Four tabs side by side in the rules window: a smaller type keeps every name on one line on a phone. */
+.ww-rules .kit-tab {
+  padding-inline: var(--space-1);
+  font-size: var(--text-xs);
+}

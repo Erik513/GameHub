@@ -4,6 +4,8 @@ import { Dialog } from "../components";
 import { RulesSection, SetupTabs } from "../game-kit";
 import { ConfigInfoParts, type ConfigInfoId } from "./ConfigInfo";
 import { teamOf } from "./roleTeam";
+import { symbolGroups, symbols } from "./symbols/catalog";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface WerewolfRulesDialogProps {
   onClose: () => void;
@@ -134,6 +136,31 @@ export function WerewolfRulesDialog({ onClose, open }: WerewolfRulesDialogProps)
     </>
   );
 
+  // The legend: every symbol with its name and what it says, by group.
+  const legend = (
+    <>
+      <p className="kit-rules-intro">{t("werewolfSymbols.intro")}</p>
+      {symbolGroups.map((group) => (
+        <RulesSection key={group} title={t(`werewolfSymbols.groups.${group}`)}>
+          <ul className="ww-legend">
+            {symbols
+              .filter((entry) => entry.group === group)
+              .map((entry) => (
+                <li className="ww-legend__item" key={entry.id}>
+                  <WerewolfSymbol id={entry.id} size={28} />
+                  <span>
+                    <strong>{t(`werewolfSymbols.items.${entry.id}.name`)}</strong>
+                    <small>{t(`werewolfSymbols.items.${entry.id}.meaning`)}</small>
+                  </span>
+                </li>
+              ))}
+          </ul>
+        </RulesSection>
+      ))}
+      <p className="ww-legend__credits">{t("werewolfSymbols.credits")}</p>
+    </>
+  );
+
   return (
     <Dialog
       closeLabel={t("werewolfConfig.infoClose")}
@@ -150,6 +177,7 @@ export function WerewolfRulesDialog({ onClose, open }: WerewolfRulesDialogProps)
             { content: game, id: "game", label: t("werewolfRules.tabGame") },
             { content: roles, id: "roles", label: t("werewolfRules.tabRoles") },
             { content: extras, id: "extras", label: t("werewolfRules.tabExtras") },
+            { content: legend, id: "symbols", label: t("werewolfSymbols.tab") },
           ]}
         />
       </div>

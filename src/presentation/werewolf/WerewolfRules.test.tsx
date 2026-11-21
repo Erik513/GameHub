@@ -11,7 +11,7 @@ const texts = {
   de: {
     rules: "Spielregeln",
     title: "Spielanleitung Werwolf",
-    tabs: ["Spiel", "Rollen", "Optionen"],
+    tabs: ["Spiel", "Rollen", "Optionen", "Symbole"],
     gameHeadings: ["Ziel", "Vorbereitung", "Die Nacht", "Der Morgen", "Der Tag", "Wer gewinnt"],
     rolesHeadings: ["Grundrollen", "Sonderrollen"],
     firstRole: "Werwölfe",
@@ -23,7 +23,7 @@ const texts = {
   en: {
     rules: "Rules",
     title: "Werewolf rules",
-    tabs: ["Game", "Roles", "Options"],
+    tabs: ["Game", "Roles", "Options", "Symbols"],
     gameHeadings: ["Goal", "Preparation", "The night", "The morning", "The day", "Who wins"],
     rolesHeadings: ["Basic roles", "Special roles"],
     firstRole: "Werewolves",
@@ -118,5 +118,22 @@ it.each(["de", "en"] as const)(
         .map((entry) => entry.textContent),
     ).toHaveLength(2);
     expect(optionsPanel).toHaveTextContent(text.variable);
+  },
+);
+
+it.each(["de", "en"] as const)(
+  "shows the legend of the symbols as the last tab in %s",
+  async (language) => {
+    const text = texts[language];
+    const user = await renderApp(language);
+    await user.click(await screen.findByRole("button", { name: text.rules }));
+    const dialog = screen.getByRole("dialog", { name: text.title });
+    await user.click(within(dialog).getByRole("tab", { name: text.tabs[3] }));
+    const panel = within(dialog).getAllByRole("tabpanel", { hidden: true })[3]!;
+    // Every symbol is there with its drawing, and the attribution of the wolf head is shown.
+    expect(panel.querySelectorAll(".ww-legend__item")).toHaveLength(34);
+    expect(panel.querySelectorAll(".ww-legend__item svg")).toHaveLength(34);
+    expect(panel.querySelector('[data-symbol="wolf"]')).not.toBeNull();
+    expect(panel.querySelector(".ww-legend__credits")).toHaveTextContent("CC BY 3.0");
   },
 );

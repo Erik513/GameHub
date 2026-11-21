@@ -1,4 +1,4 @@
-import type { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { Difficulty, ValidationIssue } from "../../business/games/taboo/model";
 import { defaultCountdownBudgetMs } from "../../business/games/taboo/countdown";
 import { defaultRaceRounds } from "../../business/games/taboo/race";
@@ -102,7 +102,7 @@ export function tiebreakRows(state: TiebreakData): readonly TiebreakRow[] {
 
 export function roundOption(
   value: RoundChoice,
-  t: ReturnType<typeof useTranslation>["t"],
+  t: TFunction,
 ): ChoiceOption {
   if (value === "unlimited") {
     return {
@@ -125,7 +125,7 @@ export function roundOption(
 /** The names of the lengths of a game of the mode "Auf Zeit": 1, 3 or 5 rounds are short, medium or long. */
 export function raceRoundOption(
   value: number,
-  t: ReturnType<typeof useTranslation>["t"],
+  t: TFunction,
 ): ChoiceOption {
   const names: Record<number, "short" | "medium" | "long"> = { 1: "short", 3: "medium", 5: "long" };
   const name = names[value];
