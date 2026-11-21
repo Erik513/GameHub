@@ -78,9 +78,10 @@ export const werewolfRoleInfoTexts = {
       voteOnly: "Du musst durch eine Abstimmung ausscheiden.",
       allowed: "Du darfst dich selbst wählen.",
       forbidden: "Du musst eine andere Person wählen.",
-      doubleVote: "Deine Stimme zählt bei Abstimmungen doppelt.",
+      doubleVote:
+        "Deine Stimme zählt bei Abstimmungen doppelt.\nDer Erzähler zählt sie für dich mit.",
       hammer:
-        "Ab der zweiten Nacht darfst du einmal pro Partie jemanden mit dem Hammer töten wollen: Ist die Person ein Werwolf, stirbt sie, sonst stirbst du selbst.",
+        "Ab der zweiten Nacht darfst du einmal pro Partie mit dem Hammer jemanden töten wollen: Du wählst eine Person oder verzichtest.\nIst die Person ein Werwolf, stirbt sie. Ist sie keiner, stirbst du selbst.\nNichts schützt vor dem Hammer, auch das Amulett nicht.",
     },
   },
 };

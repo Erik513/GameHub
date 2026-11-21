@@ -7,7 +7,8 @@ import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 interface RoleCardInfoProps {
   readonly role: DealtRole;
   /** The option the role is played with in this game; its sentence stands at the end. */
-  readonly variant: RoleVariant | null;
+  /** The mayor plays with the double vote or the hammer; their sentences are part of the info, not of a label. */
+  readonly variant: RoleVariant | "doubleVote" | "hammer" | null;
   /** The player holds the protective amulet: its rules are added. */
   readonly amulet: boolean;
   readonly className?: string;

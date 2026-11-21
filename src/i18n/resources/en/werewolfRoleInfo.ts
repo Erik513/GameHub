@@ -78,9 +78,9 @@ export const werewolfRoleInfoTexts = {
       voteOnly: "You have to be voted out.",
       allowed: "You may choose yourself.",
       forbidden: "You have to choose somebody else.",
-      doubleVote: "Your vote counts twice in votes.",
+      doubleVote: "Your vote counts twice in votes.\nThe narrator counts it for you.",
       hammer:
-        "From the second night on you may once per game try to kill somebody with the hammer: if they are a werewolf, they die, otherwise you die yourself.",
+        "From the second night on you may once per game try to kill somebody with the hammer: you choose a person or pass.\nIf the person is a werewolf, they die. If they are not, you die yourself.\nNothing protects from the hammer, not even the amulet.",
     },
   },
 };

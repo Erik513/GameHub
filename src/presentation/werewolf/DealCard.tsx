@@ -103,7 +103,12 @@ export function DealCard({ name, role, amulet, mayor, position, total, variant }
         </small>
       )}
       {shown && (
-        <RoleCardInfo amulet={amulet} className="ww-deal__info" role={role} variant={variant} />
+        <RoleCardInfo
+          amulet={amulet}
+          className="ww-deal__info"
+          role={role}
+          variant={role === "mayor" ? mayor : variant}
+        />
       )}
     </section>
   );

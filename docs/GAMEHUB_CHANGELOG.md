@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-82: Info des Bürgermeisters
+
+- Die Info des Bürgermeisters erklärt jetzt den Hammer (oder die doppelte Stimme); vorher stand dort nur „Verrate deine Rolle nicht“.
+
 ### We-01-81: Leiste in der Rollenverteilung
 
 - In der Rollenverteilung zeigt die Leiste „Rollenverteilung“ statt Mond und „Nacht 1“. Die Trennlinie der Rollenkarte ist auf jeder Karte gleich lang.

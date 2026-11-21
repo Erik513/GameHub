@@ -79,4 +79,45 @@ describe("DealCard", () => {
       );
     },
   );
+
+  it.each([
+    {
+      language: "de",
+      hammer: "Nichts schützt vor dem Hammer",
+      vote: "Deine Stimme zählt bei Abstimmungen doppelt.",
+    },
+    {
+      language: "en",
+      hammer: "Nothing protects from the hammer",
+      vote: "Your vote counts twice in votes.",
+    },
+  ] as const)(
+    "explains the hammer and the double vote of the mayor in $language",
+    async ({ hammer, language, vote }) => {
+      for (const mayor of ["hammer", "doubleVote"] as const) {
+        const i18n = await createGameHubI18n(language);
+        const user = userEvent.setup();
+        const { unmount } = render(
+          <I18nextProvider i18n={i18n}>
+            <DealCard
+              amulet={false}
+              mayor={mayor}
+              name="Anna"
+              position={1}
+              role="mayor"
+              total={20}
+              variant={null}
+            />
+          </I18nextProvider>,
+        );
+        await user.click(screen.getByRole("button", { pressed: false }));
+        await user.click(screen.getByRole("button", { name: /Info/ }));
+        const dialog = await screen.findByRole("dialog");
+        expect(dialog).toHaveTextContent(mayor === "hammer" ? hammer : vote);
+        expect(dialog.textContent).not.toContain(mayor === "hammer" ? vote : hammer);
+        unmount();
+        document.body.innerHTML = "";
+      }
+    },
+  );
 });

@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T12:00:00.000Z",
+    "updatedAt": "2026-11-22T12:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 265,
-      "totalTasks": 319,
+      "completedTasks": 266,
+      "totalTasks": 320,
       "percent": 83.1
     }
   },
@@ -1474,6 +1474,12 @@
           "title": "Leiste in der Rollenverteilung ohne Mond und Nacht 1, Trennlinie der Rollenkarte gleich lang",
           "status": "done",
           "validation": "Solange die Spieler ihre Rolle ansehen, steht in der Leiste nur „Rollenverteilung“ (Role reveal) mit Kartensymbol, ohne Mond und Nachtnummer; Ursache der unterschiedlich langen Trennlinie gefunden (zentrierter Inhalt war nur so breit wie sein Inhalt), Inhalt nimmt jetzt die volle Kartenbreite; Test; 1564 Tests, tsc -b, eslint sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
+        },
+        {
+          "id": "We-01-82",
+          "title": "Info des Bürgermeisters: Hammer und doppelte Stimme erklärt",
+          "status": "done",
+          "validation": "Der Info-Knopf der Karte des Bürgermeisters nannte nur „Verrate deine Rolle nicht“, weil die Option des Bürgermeisters nicht übergeben wurde; jetzt steht der Satz zur Option dabei: beim Hammer ab der zweiten Nacht, einmal pro Partie, Werwolf stirbt, sonst stirbt der Bürgermeister, nichts schützt davor (auch das Amulett nicht); bei der doppelten Stimme, dass der Erzähler sie doppelt zählt; Tests in Deutsch und Englisch; 1566 Tests, tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen."
         }
       ]
     },
