@@ -842,6 +842,11 @@ body:has(.kit-onepage) {
   margin-bottom: 0;
 }
 
+/* A pane right in a one-page screen (no tabs) takes the room that is left. */
+.kit-onepage > .kit-pane {
+  flex: 1;
+}
+
 .kit-onepage .kit-tabpanel {
   flex: 1;
   align-content: start;

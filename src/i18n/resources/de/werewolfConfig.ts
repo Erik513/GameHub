@@ -2,14 +2,11 @@
 export const werewolfConfigTexts = {
   werewolfConfig: {
     open: "Konfiguration",
-    rolesTab: "Rollen",
-    rulesTab: "Einstellungen",
     modeLabel: "Art der Rollen",
     modeFixed: "Feste Rollen",
     modeVariable: "Variable Rollen",
     label: "Konfiguration",
     done: "Fertig",
-    coreHeading: "Grundrollen und Zusätze",
     wolves: "Werwölfe",
     recommended: "empfohlen",
     seer: "Seherin",
@@ -19,9 +16,9 @@ export const werewolfConfigTexts = {
     unavailableHeading: "Nicht verfügbar (mehr Spieler benötigt)",
     row: "Ab {{count}} Spielern",
     extrasHeading: "Zusätze",
-    attackLabel: "Wolfsangriff",
-    attackNight1: "Ab Nacht 1",
-    attackNight2: "Ab Nacht 2",
+    attackLabel: "Wolfsangriff ab",
+    attackNight1: "Nacht 1",
+    attackNight2: "Nacht 2",
     attackInfo:
       "Ab Nacht 1: Die Werwölfe greifen schon in der ersten Nacht an.\nAb Nacht 2: In der ersten Nacht lernen sich die Werwölfe nur kennen; der erste Angriff kommt in der zweiten Nacht.",
     issuesHeading: "Zu korrigieren",

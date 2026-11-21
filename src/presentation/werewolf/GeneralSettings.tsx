@@ -11,7 +11,7 @@ interface GeneralSettingsProps {
   readonly rules: GeneralRules;
 }
 
-/** The tab "Settings": the general rules; for now only when the werewolves attack first. */
+/** The general rules, in the box with the werewolves; for now only when the werewolves attack first. */
 export function GeneralSettings({ onChange, rules }: GeneralSettingsProps) {
   const { t } = useTranslation();
   const legend = t("werewolfConfig.attackLabel");

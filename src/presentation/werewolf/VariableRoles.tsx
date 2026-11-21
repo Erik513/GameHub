@@ -1,11 +1,10 @@
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  describeVariableConfiguration,
   setVariableEntryState,
   setVariableItemState,
   setVariableRoleRange,
-  toggleVariableWolfCount,
+  type VariableConfigurationView,
   type VariableDraft,
   type VariableEntryView,
   type VariableItemView,
@@ -13,12 +12,16 @@ import {
 } from "../../business/games/werewolf/variableConfiguration";
 import { Button, Dialog } from "../components";
 import { InfoButton, TabPane, dropAttribute, usePlayerDrag } from "../game-kit";
-import { ConfigCardHead, ConfigInfo, type ConfigInfoId } from "./ConfigInfo";
+import { ConfigInfo, type ConfigInfoId } from "./ConfigInfo";
 
 interface VariableRolesProps {
   readonly draft: VariableDraft;
   /** The switch between fixed and variable roles; it stays in place above the boxes. */
   readonly modeSwitch: ReactNode;
+  /** The top of the configuration (wolves, villagers, seer, the first attack): the same in both kinds of roles. */
+  readonly top: ReactNode;
+  /** What the screen shows for this draft (the frame holds it, as the top needs it, too). */
+  readonly view: VariableConfigurationView;
   readonly onChange: (draft: VariableDraft) => void;
   /** The number of players besides the narrator. */
   readonly players: number;
@@ -44,9 +47,15 @@ const lockText = {
  * extras in three boxes of another color, at the bottom (it stays in place, too) the number of "may" roles
  * that is drawn. Only the roles that exist for this number of players are shown.
  */
-export function VariableRoles({ draft, modeSwitch, onChange, players }: VariableRolesProps) {
+export function VariableRoles({
+  draft,
+  modeSwitch,
+  onChange,
+  players,
+  top,
+  view,
+}: VariableRolesProps) {
   const { t } = useTranslation();
-  const view = describeVariableConfiguration(players, draft);
   // The entry whose box is being chosen after a tap (an extra is "item:" and its name).
   const [picking, setPicking] = useState<string>();
 
@@ -160,41 +169,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
   const header = (
     <div className="ww-players-head">
       {modeSwitch}
-      <div className="ww-vtop">
-        <section className="ww-card ww-card--wolves ww-vtop__wolves">
-          <ConfigCardHead
-            id="wolves"
-            name={t("werewolfConfig.wolves")}
-            title={t("werewolfConfig.wolves")}
-          />
-          <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
-            {view.wolf.options.map((option) => (
-              <div className="ww-wolves__option" key={option.count}>
-                <button
-                  aria-pressed={option.selected}
-                  className="ww-wolves__button"
-                  data-fixed={!view.wolf.choice || undefined}
-                  data-recommended={option.recommended || undefined}
-                  disabled={!view.wolf.choice || (!option.selected && !option.canStart)}
-                  onClick={() => onChange(toggleVariableWolfCount(draft, players, option.count))}
-                  type="button"
-                >
-                  {option.count}
-                </button>
-                <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
-              </div>
-            ))}
-          </div>
-        </section>
-        <section aria-label={t("werewolfConfig.seer")} className="ww-card ww-card--seer">
-          <ConfigCardHead
-            id="seer"
-            name={t("werewolfConfig.seer")}
-            title={t("werewolfConfig.seer")}
-          />
-          <strong className="ww-stat__value">1</strong>
-        </section>
-      </div>
+      {top}
     </div>
   );
 

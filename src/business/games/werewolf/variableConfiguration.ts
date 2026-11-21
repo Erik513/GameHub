@@ -283,6 +283,11 @@ export interface VariableConfigurationView {
   readonly mayRoleCount: number;
   /** The highest value of "at least": below the number of "may" roles, as all of them would be "must" roles. */
   readonly minimumCeiling: number;
+  /**
+   * How many villagers are left when the wolves, the seer, the "must" roles and the drawn "may" roles have their
+   * seats: the fewest (most wolves, most roles) and the most (fewest wolves, fewest roles).
+   */
+  readonly villagers: { readonly maximum: number; readonly minimum: number };
   /** The lowest value of "at most": the wolf counts need at least this many roles. */
   readonly maximumFloor: number;
   readonly supported: boolean;
@@ -301,6 +306,7 @@ const emptyView = (supported: boolean): VariableConfigurationView => ({
   items: [],
   mayRoleCount: 0,
   maximumFloor: 0,
+  villagers: { maximum: 0, minimum: 0 },
   minimumCeiling: 0,
   possibleRange: null,
   problem: supported ? "invalid" : null,
@@ -398,12 +404,22 @@ function viewOf(
     Math.max(possible?.minimum ?? 0, roleFamilyCount(selection.rolePool) - 1),
   );
   const least = possible ? Math.min(Math.max(draft.roleRange.minimum, 0), most, ceiling) : 0;
+  // The seats left for villagers: the players without the wolves, the seer, the "must" roles and the drawn roles.
+  const chosenWolves = counts.filter((count) => chosen.includes(count));
+  const fewestWolves = chosenWolves.length > 0 ? Math.min(...chosenWolves) : 0;
+  const mostWolves = chosenWolves.length > 0 ? Math.max(...chosenWolves) : 0;
+  const musts = selection.requiredRoles?.length ?? 0;
+  const villagers = {
+    maximum: Math.max(0, players - fewestWolves - 1 - musts - least),
+    minimum: Math.max(0, players - mostWolves - 1 - musts - most),
+  };
   return {
     canStart: analysis.canStart,
     entries,
     items,
     mayRoleCount: roleFamilyCount(selection.rolePool),
     maximumFloor: bottom,
+    villagers,
     minimumCeiling: ceiling,
     possibleRange: possible,
     problem: analysis.canStart ? null : "noLineup",

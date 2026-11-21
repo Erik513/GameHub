@@ -383,10 +383,6 @@
   color: var(--color-accent-contrast);
 }
 
-.ww-cards .ww-card__head {
-  min-height: 2.25rem;
-}
-
 /* A basic role is a card like the other roles: the name with its "i" on the first line, the value or the
    choice on the second. */
 .ww-card {
@@ -440,13 +436,6 @@
 .ww-card__head > button.kit-info-button svg {
   width: 1rem;
   height: 1rem;
-}
-
-/* The cards to read: two side by side, a plain number on the second line. */
-.ww-cards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-1);
 }
 
 /* The read-only cards are one low row: the name with its "i" on the left, the number on the right. */
@@ -943,24 +932,6 @@
   color: inherit;
 }
 
-/* The top of the variable roles: the wolves take three quarters, the seer the rest with the number below its name. */
-.ww-vtop {
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  gap: var(--space-2);
-  align-items: stretch;
-}
-
-.ww-card--seer {
-  align-content: start;
-  justify-items: start;
-}
-
-.ww-card--seer .ww-stat__value {
-  min-height: 0;
-  padding-inline: var(--space-1);
-}
-
 /* The rules window: every role is a short part with its name, side and the same explanation as its "i" window. */
 .ww-rules-role {
   display: grid;
@@ -1027,4 +998,46 @@
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
   font-weight: 400;
+}
+
+/*
+ * The top of the configuration, the same for fixed and variable roles: two columns, the left two thirds wide. The left
+ * is one box (the werewolves and the rule for the first attack), the right has two cards to read, the villagers and
+ * the seer, each with the number below its name.
+ */
+.ww-core {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.ww-core__wolves {
+  display: grid;
+  grid-row: 1 / span 2;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+/* The wolves are no box of their own inside the box. */
+.ww-core__wolves > .ww-card {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.ww-core .ww-card.ww-stat {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 0;
+  padding: 0 var(--space-2) var(--space-1);
+}
+
+.ww-core .ww-stat__value {
+  justify-items: start;
 }

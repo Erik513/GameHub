@@ -2,14 +2,11 @@
 export const werewolfConfigTexts = {
   werewolfConfig: {
     open: "Configuration",
-    rolesTab: "Roles",
-    rulesTab: "Settings",
     modeLabel: "Kind of roles",
     modeFixed: "Fixed roles",
     modeVariable: "Variable roles",
     label: "Configuration",
     done: "Done",
-    coreHeading: "Basic roles and extras",
     wolves: "Werewolves",
     recommended: "recommended",
     seer: "Seer",
@@ -19,9 +16,9 @@ export const werewolfConfigTexts = {
     unavailableHeading: "Not available (more players needed)",
     row: "From {{count}} players",
     extrasHeading: "Extras",
-    attackLabel: "Wolf attack",
-    attackNight1: "From night 1",
-    attackNight2: "From night 2",
+    attackLabel: "Wolf attack from",
+    attackNight1: "Night 1",
+    attackNight2: "Night 2",
     attackInfo:
       "From night 1: The werewolves attack in the very first night.\nFrom night 2: In the first night the werewolves only get to know each other; the first attack comes in the second night.",
     issuesHeading: "To correct",

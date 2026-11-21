@@ -3,17 +3,20 @@ import { useTranslation } from "react-i18next";
 import {
   describeFixedConfiguration,
   setFixedSetting,
+  setFixedWolfCount,
   type FixedDraft,
 } from "../../business/games/werewolf/fixedConfiguration";
 import { werewolfPlayerLimits } from "../../business/games/werewolf/configuration";
 import {
+  describeVariableConfiguration,
   setVariableRule,
+  toggleVariableWolfCount,
   type VariableDraft,
 } from "../../business/games/werewolf/variableConfiguration";
 import { Button } from "../components";
-import { ChoiceGroup, SetupTabs, StartBar, useFocusOnShow } from "../game-kit";
+import { ChoiceGroup, StartBar, useFocusOnShow } from "../game-kit";
+import { CoreBlock } from "./CoreBlock";
 import { FixedRoles } from "./FixedRoles";
-import { GeneralSettings } from "./GeneralSettings";
 import { VariableRoles } from "./VariableRoles";
 import { WakeOrderButton } from "./WakeOrderButton";
 
@@ -68,18 +71,6 @@ export function WerewolfConfiguration({
     />
   );
 
-  const rolesTab: ReactNode =
-    mode === "variable" ? (
-      <VariableRoles
-        draft={variableDraft}
-        modeSwitch={modeSwitch}
-        onChange={onVariableChange}
-        players={players}
-      />
-    ) : (
-      <FixedRoles draft={draft} modeSwitch={modeSwitch} onChange={onChange} view={view} />
-    );
-
   // The general rules belong to the draft of the mode that is shown.
   const rules =
     mode === "variable"
@@ -89,7 +80,57 @@ export function WerewolfConfiguration({
     mode === "variable"
       ? onVariableChange(setVariableRule(variableDraft, key, value))
       : onChange(setFixedSetting(draft, key, value));
-  const rulesTab: ReactNode = <GeneralSettings onChange={setRule} rules={rules} />;
+
+  const variableView =
+    mode === "variable" ? describeVariableConfiguration(players, variableDraft) : undefined;
+  const range = (low: number, high: number) => (low === high ? String(low) : `${low}–${high}`);
+
+  // The top is the same for both kinds of roles; only what it shows differs.
+  const top = (
+    <CoreBlock
+      fixedWolves={variableView ? !variableView.wolf.choice : view.wolf.fixed}
+      onPickWolves={(count) =>
+        variableView
+          ? onVariableChange(toggleVariableWolfCount(variableDraft, players, count))
+          : onChange(setFixedWolfCount(draft, count))
+      }
+      onRule={setRule}
+      rules={rules}
+      villagers={
+        variableView
+          ? range(variableView.villagers.minimum, variableView.villagers.maximum)
+          : String(view.villagers ?? 0)
+      }
+      wolves={
+        variableView
+          ? variableView.wolf.options.map((option) => ({
+              count: option.count,
+              disabled: !variableView.wolf.choice || (!option.selected && !option.canStart),
+              recommended: option.recommended,
+              selected: option.selected,
+            }))
+          : view.wolf.options.map((option) => ({
+              count: option.count,
+              disabled: !option.selectable && !option.selected,
+              recommended: option.recommended,
+              selected: option.selected,
+            }))
+      }
+    />
+  );
+
+  const rolesView: ReactNode = variableView ? (
+    <VariableRoles
+      draft={variableDraft}
+      modeSwitch={modeSwitch}
+      onChange={onVariableChange}
+      players={players}
+      top={top}
+      view={variableView}
+    />
+  ) : (
+    <FixedRoles draft={draft} modeSwitch={modeSwitch} onChange={onChange} top={top} view={view} />
+  );
 
   return (
     <section
@@ -108,13 +149,7 @@ export function WerewolfConfiguration({
             : t("werewolfConfig.tooFewPlayers", { count: players })}
         </p>
       ) : (
-        <SetupTabs
-          ariaLabel={t("werewolfConfig.label")}
-          tabs={[
-            { content: rolesTab, id: "roles", label: t("werewolfConfig.rolesTab") },
-            { content: rulesTab, id: "rules", label: t("werewolfConfig.rulesTab") },
-          ]}
-        />
+        rolesView
       )}
       <StartBar
         sideAction={<WakeOrderButton draft={draft} mode={mode} variableDraft={variableDraft} />}

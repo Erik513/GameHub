@@ -186,13 +186,12 @@ it("has three boxes with a main heading each, and sets the roles in rows by the 
   await renderConfiguration("en", 8);
   const boxes = [...document.querySelectorAll(".ww-box")];
   expect(boxes.map((box) => box.querySelector(".ww-box__title")?.textContent)).toEqual([
-    "Basic roles and extras",
+    "Extras",
     "Available roles",
     "Not available (more players needed)",
   ]);
   const [core, available, locked] = boxes as [Element, Element, Element];
-  // The extras are the second row of the first box.
-  expect(core.querySelector(".ww-row__title")?.textContent).toBe("Extras");
+  // The first box holds the two extras.
   expect(core.querySelectorAll("input[type='checkbox']")).toHaveLength(2);
   // Available roles: the rows of 6, 7 and 8 players, set apart by lines but without titles.
   expect(available.querySelectorAll(".ww-row")).toHaveLength(3);
@@ -242,14 +241,13 @@ it("sets the extras and the game rules", async () => {
   const { latest, user } = await renderConfiguration("en", 10);
   await user.click(screen.getByRole("checkbox", { name: /^Drunk/ }));
   await user.click(screen.getByRole("checkbox", { name: /^Protective amulet/ }));
-  await user.click(screen.getByRole("tab", { name: "Settings" }));
-  await user.click(screen.getByRole("radio", { name: "From night 1" }));
+  await user.click(screen.getByRole("radio", { name: "Night 1" }));
   expect(latest.draft.settings).toMatchObject({
     amulet: true,
     attackOnFirstNight: true,
     drunk: true,
   });
-  await user.click(screen.getByRole("radio", { name: "From night 2" }));
+  await user.click(screen.getByRole("radio", { name: "Night 2" }));
   expect(latest.draft.settings).toMatchObject({ attackOnFirstNight: false });
   // The roles of people who are out are never revealed by the game: there is nothing to choose.
   expect(screen.queryByRole("radio", { name: "Reveal" })).not.toBeInTheDocument();

@@ -14,13 +14,14 @@ import {
 import type { WerewolfSpecialRole } from "../../business/games/werewolf/configuration";
 import { Button } from "../components";
 import { TabPane } from "../game-kit";
-import { ConfigCardHead } from "./ConfigInfo";
 import { RoleRow, RoleTile } from "./ConfigTiles";
 
 interface FixedRolesProps {
   readonly draft: FixedDraft;
   /** The switch between fixed and variable roles; it stays in place above the boxes. */
   readonly modeSwitch: ReactNode;
+  /** The top of the configuration (wolves, villagers, seer, the first attack): the same in both kinds of roles. */
+  readonly top: ReactNode;
   readonly onChange: (draft: FixedDraft) => void;
   readonly view: FixedConfigurationView;
 }
@@ -39,7 +40,7 @@ const variantValues = {
  * is always in), the extras, the issues of a choice that no longer fits, and the roles in two boxes (the available
  * ones, the ones that are not available yet), each in rows by the number of players that unlocks them.
  */
-export function FixedRoles({ draft, modeSwitch, onChange, view }: FixedRolesProps) {
+export function FixedRoles({ draft, modeSwitch, onChange, top, view }: FixedRolesProps) {
   const { t } = useTranslation();
 
   const roleName = (role: WerewolfSpecialRole) => t(`werewolfConfig.roles.${role}`);
@@ -200,66 +201,19 @@ export function FixedRoles({ draft, modeSwitch, onChange, view }: FixedRolesProp
   const hasIssues = view.issues.length > 0;
 
   return (
-    <TabPane header={<div className="ww-players-head">{modeSwitch}</div>}>
+    <TabPane
+      header={
+        <div className="ww-players-head">
+          {modeSwitch}
+          {top}
+        </div>
+      }
+    >
       {
         <>
-          <section className="ww-box ww-core">
-            <h3 className="ww-box__title">{t("werewolfConfig.coreHeading")}</h3>
-            {/* Every basic role is a card like the other roles: the name with its "i" on the first line, the value or the choice on the second. */}
-            <section className="ww-card ww-card--wolves">
-              <ConfigCardHead
-                id="wolves"
-                name={t("werewolfConfig.wolves")}
-                title={t("werewolfConfig.wolves")}
-              />
-              <div aria-label={t("werewolfConfig.wolves")} className="ww-wolves" role="group">
-                {view.wolf.options.map((option) => (
-                  <div className="ww-wolves__option" key={option.count}>
-                    <button
-                      aria-pressed={option.selected}
-                      className="ww-wolves__button"
-                      data-fixed={view.wolf.fixed || undefined}
-                      data-recommended={option.recommended || undefined}
-                      disabled={!option.selectable && !option.selected}
-                      onClick={() => {
-                        if (!view.wolf.fixed) onChange(setFixedWolfCount(draft, option.count));
-                      }}
-                      type="button"
-                    >
-                      {option.count}
-                    </button>
-                    <small>{option.recommended ? t("werewolfConfig.recommended") : " "}</small>
-                  </div>
-                ))}
-              </div>
-            </section>
-            {/* Only to read, nothing to set: the same cards with a plain number on the second line. */}
-            <div className="ww-cards">
-              <div aria-label={t("werewolfConfig.seer")} className="ww-card ww-stat" role="group">
-                <ConfigCardHead
-                  id="seer"
-                  name={t("werewolfConfig.seer")}
-                  title={t("werewolfConfig.seer")}
-                />
-                <strong className="ww-stat__value">1</strong>
-              </div>
-              <div
-                aria-label={t("werewolfConfig.villagers")}
-                className="ww-card ww-stat"
-                role="group"
-              >
-                <ConfigCardHead
-                  id="villagers"
-                  name={t("werewolfConfig.villagers")}
-                  title={t("werewolfConfig.villagersTitle")}
-                />
-                <strong className="ww-stat__value ww-villagers__number">
-                  {view.villagers ?? 0}
-                </strong>
-              </div>
-            </div>
+          <section className="ww-box">
+            <h3 className="ww-box__title">{t("werewolfConfig.extrasHeading")}</h3>
             <div className="ww-row">
-              <h4 className="ww-row__title">{t("werewolfConfig.extrasHeading")}</h4>
               <div className="ww-list">
                 {view.addons.map((addon) => {
                   const name = t(`werewolfConfig.addons.${addon.id}`);

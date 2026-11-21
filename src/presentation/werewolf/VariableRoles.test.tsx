@@ -178,8 +178,7 @@ it("tells that the selection cannot be played when the logic says so", async () 
 
 it("keeps the general rules of the variable roles apart from the fixed ones", async () => {
   const { latest, user } = await renderVariable("en", 12);
-  await user.click(screen.getByRole("tab", { name: "Settings" }));
-  await user.click(screen.getByRole("radio", { name: "From night 1" }));
+  await user.click(screen.getByRole("radio", { name: "Night 1" }));
   expect(latest.variable.rules.attackOnFirstNight).toBe(true);
 });
 
@@ -384,14 +383,17 @@ it("cannot drag an entry that is locked, as another option of its role must be i
   expect(latest.variable.states).toEqual({ "hunter:required": "must" });
 });
 
-it("keeps the wolves and the seer side by side at the top", async () => {
+it("has the same top as the fixed roles: the wolves with the first attack in one box, the villagers and the seer", async () => {
   await renderVariable("en", 12);
-  const top = document.querySelector(".ww-vtop");
-  expect(top?.querySelector(".ww-card--wolves")).not.toBeNull();
-  const seer = top?.querySelector(".ww-card--seer");
-  expect(seer).not.toBeNull();
-  expect(seer).toHaveTextContent("Seer");
-  expect(seer?.querySelector(".ww-stat__value")).toHaveTextContent("1");
+  const core = document.querySelector(".ww-core");
+  const left = core?.querySelector(".ww-core__wolves");
+  expect(left?.querySelector(".ww-card--wolves")).not.toBeNull();
+  expect(within(left as HTMLElement).getByRole("radio", { name: "Night 2" })).toBeChecked();
+  const seer = within(core as HTMLElement).getByRole("group", { name: "Seer" });
+  expect(seer.querySelector(".ww-stat__value")).toHaveTextContent("1");
+  // The number of villagers is the range the draw can leave: twelve players, wolves, seer and the roles.
+  const villagers = within(core as HTMLElement).getByRole("group", { name: "Villagers" });
+  expect(villagers.querySelector(".ww-stat__value")?.textContent).toMatch(/^\d+(–\d+)?$/);
 });
 
 it("takes no further role into 'must' once the seats are full, by dragging or by the choice", async () => {
