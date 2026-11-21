@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T07:30:00.000Z",
+    "updatedAt": "2026-11-22T08:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 258,
-      "totalTasks": 312,
+      "completedTasks": 259,
+      "totalTasks": 313,
       "percent": 82.7
     }
   },
@@ -1665,6 +1665,12 @@
           "title": "Erzählersicht: obere und untere Box immer gleich groß, Leitfaden oben und Zusatzinfo unten, gleich große Personenknöpfe in alphabetischer Reihenfolge mit X zum Schließen",
           "status": "done",
           "validation": "Die beiden Boxen teilen sich die Fläche immer zu gleichen Teilen; in der unteren Box steht der Leitfaden oben und die Zusatzinformation (Wolfsopfer, Hinweise, Ursachen, Tipp) unten; die Personenliste ist alphabetisch, jeder Knopf gleich groß (vier je Zeile), die gewählten bleiben an ihrem Platz; oben rechts in der Box schließt ein X die Auswahl (Fähigkeit versehentlich angetippt), daneben ein Symbol für Rückgängig; im Browser bei 390 Pixel Breite mit 20 Spielern angesehen (Amor, Hexe, Morgen); Tests für Schließen und alphabetische Reihenfolge; 1555 Tests, tsc -b, eslint, Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-75",
+          "title": "Übersicht „Alle Spieler und Rollen“: alle Spieler auf einer Seite, alphabetisch sortiert",
+          "status": "done",
+          "validation": "Die Namen stehen in alphabetischer Reihenfolge, in zwei Spalten mit kompakten Zeilen (ab 40 rem drei); alle 20 Spieler passen im Browser bei 390 Pixel Breite ohne Scrollen auf eine Seite; die Markierungen (ausgeschieden, verliebt, Amulett, verwundet, stumm) stehen in der Ecke jeder Zeile; Hintergrund- und Randfarben folgen später mit dem Liveticker; Test der Reihenfolge; Tests, tsc -b, eslint sauber."
         }
       ]
     },

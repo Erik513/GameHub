@@ -1883,3 +1883,44 @@
   flex: none;
   gap: var(--space-2);
 }
+
+/* The overview of all players fits on one page: two columns of compact rows. */
+.ww-overview {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.ww-overview__row {
+  position: relative;
+  gap: var(--space-2);
+  padding: 6px var(--space-2);
+}
+
+.ww-overview__who strong,
+.ww-overview__who small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ww-overview__who strong {
+  font-size: var(--text-sm);
+}
+
+.ww-overview__who small {
+  font-size: var(--text-xs);
+}
+
+/* The marks (out, in love, amulet ...) sit in the corner of the row. */
+.ww-overview__marks {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  gap: 2px;
+}
+
+@media (min-width: 40rem) {
+  .ww-overview {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
