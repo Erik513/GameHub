@@ -3,7 +3,7 @@ export const werewolfConfigTexts = {
   werewolfConfig: {
     open: "Configuration",
     rolesTab: "Roles",
-    rulesTab: "Game rules",
+    rulesTab: "Settings",
     modeLabel: "Kind of roles",
     modeFixed: "Fixed roles",
     modeVariable: "Variable roles",
@@ -22,9 +22,13 @@ export const werewolfConfigTexts = {
     attackLabel: "Wolf attack",
     attackNight1: "From night 1",
     attackNight2: "From night 2",
+    attackInfo:
+      "From night 1: The werewolves attack in the very first night.\nFrom night 2: In the first night the werewolves only get to know each other; the first attack comes in the second night.",
     revealLabel: "Roles after death",
     revealOpen: "Reveal",
     revealSecret: "Keep secret",
+    revealInfo:
+      "Reveal: Whoever leaves the game, the narrator tells the group their role.\nKeep secret: The role stays hidden. The narrator also calls roles that are out, as a cover, so that silence gives nothing away.",
     issuesHeading: "To correct",
     useWolves: "Use wolf count {{count}}",
     infoLabel: "Info about {{name}}",
@@ -130,9 +134,9 @@ export const werewolfConfigTexts = {
       rangePossible: "Possible: {{minimum}} to {{maximum}}",
       rangeNone: "No role on May yet.",
       mayInfo: {
-        label: "What does \"May be in the game\" mean?",
+        label: 'What does "May be in the game" mean?',
         roles:
-          "The roles in this box are not certain: the game draws among them.\nHow many of them are drawn is set below with \"At least\" and \"At most\".\nThe roles that are drawn play, the others stay out. Which ones is decided when the game starts.\nAt night the narrator wakes only the roles that are in the game.",
+          'The roles in this box are not certain: the game draws among them.\nHow many of them are drawn is set below with "At least" and "At most".\nThe roles that are drawn play, the others stay out. Which ones is decided when the game starts.\nAt night the narrator wakes only the roles that are in the game.',
         items:
           "The extras in this box are not certain either: each one is drawn on its own, with the same chance to be in the game as not.\nThe draw happens when the game starts.\nThe number of extras is not limited by the range below.",
       },
@@ -196,7 +200,8 @@ export const werewolfConfigTexts = {
           "The seer and the investigator learn the real role before.\nIf he is really a wolf, he wakes up with the wolves only after the reveal.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.",
       },
       guard: {
-        general: "The bodyguard and the night guest exclude each other: at most one of them is in the game, or none.",
+        general:
+          "The bodyguard and the night guest exclude each other: at most one of them is in the game, or none.",
         tasks:
           "Each night the role chooses another player to spend the night with.\nChoosing the same player twice in a row is forbidden.",
         options:

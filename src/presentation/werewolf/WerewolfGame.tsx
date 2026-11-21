@@ -15,9 +15,11 @@ import {
   normalizeVariableDraft,
   parseSavedVariableDraft,
 } from "../../business/games/werewolf/variableConfiguration";
+import { useGameRulesButton } from "../GameChrome";
 import { usePersistentState } from "../game-kit";
 import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
 import { WerewolfLineup } from "./WerewolfLineup";
+import { WerewolfRulesDialog } from "./WerewolfRules";
 
 /**
  * While the game is developed (the dev server, not the tests and not a build) the line-up starts with
@@ -60,22 +62,22 @@ export function WerewolfGame() {
     (raw) => (raw === "fixed" || raw === "variable" ? raw : undefined),
   );
   const [configuring, setConfiguring] = useState(false);
+  // The rules stay reachable from the header in both views.
+  const [rulesOpen, setRulesOpen] = useState(false);
+  useGameRulesButton(true, () => setRulesOpen(true));
 
-  if (configuring) {
-    return (
-      <WerewolfConfiguration
-        draft={draft}
-        onChange={setDraft}
-        mode={mode}
-        onDone={() => setConfiguring(false)}
-        onModeChange={setMode}
-        onVariableChange={setVariableDraft}
-        players={lineup.seats.length}
-        variableDraft={normalizeVariableDraft(lineup.seats.length, variableDraft)}
-      />
-    );
-  }
-  return (
+  const view = configuring ? (
+    <WerewolfConfiguration
+      draft={draft}
+      onChange={setDraft}
+      mode={mode}
+      onDone={() => setConfiguring(false)}
+      onModeChange={setMode}
+      onVariableChange={setVariableDraft}
+      players={lineup.seats.length}
+      variableDraft={normalizeVariableDraft(lineup.seats.length, variableDraft)}
+    />
+  ) : (
     <WerewolfLineup
       lineup={lineup}
       onChange={(next) => {
@@ -85,5 +87,11 @@ export function WerewolfGame() {
       }}
       onOpenConfiguration={() => setConfiguring(true)}
     />
+  );
+  return (
+    <>
+      {view}
+      <WerewolfRulesDialog onClose={() => setRulesOpen(false)} open={rulesOpen} />
+    </>
   );
 }

@@ -3,7 +3,7 @@ export const werewolfConfigTexts = {
   werewolfConfig: {
     open: "Konfiguration",
     rolesTab: "Rollen",
-    rulesTab: "Spielregeln",
+    rulesTab: "Einstellungen",
     modeLabel: "Art der Rollen",
     modeFixed: "Feste Rollen",
     modeVariable: "Variable Rollen",
@@ -22,9 +22,13 @@ export const werewolfConfigTexts = {
     attackLabel: "Wolfsangriff",
     attackNight1: "Ab Nacht 1",
     attackNight2: "Ab Nacht 2",
+    attackInfo:
+      "Ab Nacht 1: Die Werwölfe greifen schon in der ersten Nacht an.\nAb Nacht 2: In der ersten Nacht lernen sich die Werwölfe nur kennen; der erste Angriff kommt in der zweiten Nacht.",
     revealLabel: "Rollen nach dem Ausscheiden",
     revealOpen: "Aufdecken",
     revealSecret: "Geheim halten",
+    revealInfo:
+      "Aufdecken: Wer ausscheidet, dessen Rolle nennt der Erzähler der Gruppe.\nGeheim halten: Die Rolle bleibt verborgen. Der Erzähler ruft auch ausgeschiedene Rollen zur Tarnung auf, damit das Schweigen nichts verrät.",
     issuesHeading: "Zu korrigieren",
     useWolves: "Wolfszahl {{count}} nehmen",
     infoLabel: "Info zu {{name}}",
@@ -132,9 +136,9 @@ export const werewolfConfigTexts = {
       rangePossible: "Möglich: {{minimum}} bis {{maximum}}",
       rangeNone: "Noch keine Rolle auf Darf.",
       mayInfo: {
-        label: "Was bedeutet \"Darf ins Spiel\"?",
+        label: 'Was bedeutet "Darf ins Spiel"?',
         roles:
-          "Die Rollen in diesem Kasten sind nicht sicher: Das Spiel lost unter ihnen aus.\nWie viele davon gezogen werden, legst du unten mit \"Mindestens\" und \"Höchstens\" fest.\nDie gezogenen Rollen spielen mit, die anderen bleiben draußen. Welche, wird beim Start des Spiels gelost.\nIn der Nacht weckt der Erzähler nur die Rollen, die im Spiel sind.",
+          'Die Rollen in diesem Kasten sind nicht sicher: Das Spiel lost unter ihnen aus.\nWie viele davon gezogen werden, legst du unten mit "Mindestens" und "Höchstens" fest.\nDie gezogenen Rollen spielen mit, die anderen bleiben draußen. Welche, wird beim Start des Spiels gelost.\nIn der Nacht weckt der Erzähler nur die Rollen, die im Spiel sind.',
         items:
           "Auch die Zusätze in diesem Kasten sind nicht sicher: Jeder wird für sich gelost, mit der gleichen Chance, dabei zu sein oder nicht.\nGelost wird beim Start des Spiels.\nDie Anzahl der Zusätze wird nicht von der Spanne unten begrenzt.",
       },
@@ -198,7 +202,8 @@ export const werewolfConfigTexts = {
           "Seherin und Ermittler erfahren die wahre Rolle schon vorher.\nIst er in Wahrheit ein Werwolf, wacht er erst nach der Enthüllung mit den Wölfen auf.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf oder muss noch schießen, je nach Option des Jägers.",
       },
       guard: {
-        general: "Leibwächter und Dorfmatratze schließen sich aus: Höchstens eine von ihnen ist im Spiel, oder keine.",
+        general:
+          "Leibwächter und Dorfmatratze schließen sich aus: Höchstens eine von ihnen ist im Spiel, oder keine.",
         tasks:
           "Jede Nacht wählt die Rolle eine andere Person, bei der sie die Nacht verbringt.\nDieselbe Person zweimal hintereinander wählen ist verboten.",
         options:

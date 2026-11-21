@@ -6,6 +6,7 @@ import type {
   FixedLock,
 } from "../../business/games/werewolf/fixedConfiguration";
 import { InfoButton } from "../game-kit";
+import { teamOf } from "./roleTeam";
 
 /** The entries that have an explanation. */
 export type ConfigInfoId = FixedAddonId | FixedItemId | "seer" | "villagers" | "wolves";
@@ -27,23 +28,12 @@ interface ConfigInfoProps {
 }
 
 /**
- * The "i" button of a role, an extra or a core value: a short explanation in a window of its own. It
- * stays reachable when the choice is locked, and then names the reason first. It never changes the
- * choice itself.
+ * The explanation of a role or an extra in up to four parts, each only when there is something to say: the
+ * general information (conditions), the tasks (what it does and when), the options (when it has any) and the
+ * special notes. The window of the "i" button and the rules of the game show the same texts.
  */
-export function ConfigInfo({
-  className,
-  hammerOk,
-  id,
-  lock = null,
-  minimum = 0,
-  name,
-  onOpenChange,
-  open,
-}: ConfigInfoProps) {
+export function ConfigInfoParts({ id }: { readonly id: ConfigInfoId }) {
   const { i18n, t } = useTranslation();
-  // The window has four parts, each only when there is something to say: the general information (team,
-  // conditions), the tasks (what the role does and when), the options (when it has any) and the special notes.
   const part = (name: "general" | "notes" | "options" | "tasks"): readonly string[] => {
     const key = `werewolfConfig.info.${id}.${name}`;
     return i18n.exists(key)
@@ -58,6 +48,56 @@ export function ConfigInfo({
     options: t("werewolfConfig.infoOptions"),
     tasks: t("werewolfConfig.infoTasks"),
   };
+  return (
+    <>
+      {(["general", "tasks", "options", "notes"] as const).map((name) => {
+        const lines = part(name);
+        if (lines.length === 0) return null;
+        return (
+          <section className="ww-info__part" key={name}>
+            <h3 className="ww-info__heading">{headings[name]}</h3>
+            <ul className="kit-info-list">
+              {lines.map((line) => {
+                // An option is "Name: explanation"; a note ending with a colon introduces the lines below.
+                const colon = name === "options" ? line.indexOf(": ") : -1;
+                const lead = name === "notes" && line.endsWith(":");
+                return (
+                  <li className={lead ? "ww-info__lead" : undefined} key={line}>
+                    {colon < 0 ? (
+                      line
+                    ) : (
+                      <>
+                        <strong>{line.slice(0, colon)}</strong>
+                        {line.slice(colon)}
+                      </>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+/**
+ * The "i" button of a role, an extra or a core value: a short explanation in a window of its own. It
+ * stays reachable when the choice is locked, and then names the reason first. It never changes the
+ * choice itself.
+ */
+export function ConfigInfo({
+  className,
+  hammerOk,
+  id,
+  lock = null,
+  minimum = 0,
+  name,
+  onOpenChange,
+  open,
+}: ConfigInfoProps) {
+  const { t } = useTranslation();
   // Not enough players is shown by the box next to the name; the other reasons stand first in the text.
   const reason =
     lock === "noSeat"
@@ -70,16 +110,7 @@ export function ConfigInfo({
             })
           : t("werewolfConfig.lockCombination")
         : null;
-  // The line right under the name: whose side the role is on (the witch and the magician exclude each other).
-  const teamKey =
-    id === "wolves"
-      ? "teamWolves"
-      : id === "tanner"
-        ? "teamOwnGoal"
-        : id === "amulet" || id === "drunk"
-          ? "teamExtra"
-          : "teamVillage";
-  const team = t(`werewolfConfig.${teamKey}`);
+  const team = teamOf(id, t);
   return (
     <InfoButton
       {...(className === undefined ? {} : { className })}
@@ -88,34 +119,7 @@ export function ConfigInfo({
       text={
         <>
           {reason && <p className="ww-lock-reason">{reason}</p>}
-          {(["general", "tasks", "options", "notes"] as const).map((name) => {
-            const lines = part(name);
-            if (lines.length === 0) return null;
-            return (
-              <section className="ww-info__part" key={name}>
-                <h3 className="ww-info__heading">{headings[name]}</h3>
-                <ul className="kit-info-list">
-                  {lines.map((line) => {
-                    // An option is "Name: explanation"; a note ending with a colon introduces the lines below.
-                    const colon = name === "options" ? line.indexOf(": ") : -1;
-                    const lead = name === "notes" && line.endsWith(":");
-                    return (
-                      <li className={lead ? "ww-info__lead" : undefined} key={line}>
-                        {colon < 0 ? (
-                          line
-                        ) : (
-                          <>
-                            <strong>{line.slice(0, colon)}</strong>
-                            {line.slice(colon)}
-                          </>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            );
-          })}
+          <ConfigInfoParts id={id} />
         </>
       }
       subtitle={team}

@@ -960,3 +960,31 @@
   min-height: 0;
   padding-inline: var(--space-1);
 }
+
+/* The rules window: every role is a short part with its name, side and the same explanation as its "i" window. */
+.ww-rules-role {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ww-rules-role + .ww-rules-role {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-line);
+}
+
+.ww-rules-role h4 {
+  margin: 0;
+  font-size: var(--text-base);
+}
+
+.ww-rules-role .ww-rules-role__meta {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}
+
+.kit-rules-intro {
+  margin: 0 0 var(--space-3);
+  color: var(--color-ink-muted);
+  line-height: 1.5;
+}

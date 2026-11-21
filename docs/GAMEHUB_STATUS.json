@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T00:21:56.278Z",
+    "updatedAt": "2026-11-21T00:41:49.492Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 225,
-      "totalTasks": 287,
-      "percent": 78.4
+      "completedTasks": 227,
+      "totalTasks": 289,
+      "percent": 78.5
     }
   },
   "environment": {
@@ -1274,6 +1274,18 @@
           "id": "We-01-49",
           "title": "Amulett-Endschritt und öffentlichen Lehrlingsaufruf (announcementRole) in der Erzähleransicht anbinden",
           "status": "planned"
+        },
+        {
+          "id": "We-01-50",
+          "title": "Spielanleitung als Knopf in der Kopfleiste (beide Ansichten) mit Reitern Spiel, Rollen, Zusätze und Einstellungen umsetzen",
+          "status": "done",
+          "validation": "Regelfenster mit den Reitern Spiel, Rollen, Optionen in beiden Ansichten über den Knopf in der Kopfleiste (Deutsch und Englisch); 1476 Tests, tsc -b, eslint, Schichtprüfung sauber; im Browser bei 375 Pixel Breite angesehen."
+        },
+        {
+          "id": "We-01-51",
+          "title": "Beide Ansichten (Hauptansicht und Konfiguration) gründlich analysieren und aufräumen, vor dem Spielstart",
+          "status": "done",
+          "validation": "Beide Ansichten bei 375 Pixel Breite durchgesehen (Spieler, Sitzplätze, Rollen fest und variabel, Einstellungen, Weckreihenfolge); Aufgeräumt: Reiter Spielregeln heißt Einstellungen (Verwechslung mit dem Knopf), Info-Knöpfe an beiden Einstellungen, Wolfsangriff-Optionen aufsteigend. Nicht geprüft: die Ansicht für große Bildschirme (noch nicht gebaut), Englisch nur über Tests."
         }
       ]
     },

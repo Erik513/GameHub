@@ -178,7 +178,7 @@ it("tells that the selection cannot be played when the logic says so", async () 
 
 it("keeps the general rules of the variable roles apart from the fixed ones", async () => {
   const { latest, user } = await renderVariable("en", 12);
-  await user.click(screen.getByRole("tab", { name: "Game rules" }));
+  await user.click(screen.getByRole("tab", { name: "Settings" }));
   await user.click(screen.getByRole("radio", { name: "From night 1" }));
   expect(latest.variable.rules.attackOnFirstNight).toBe(true);
 });

@@ -242,7 +242,7 @@ it("sets the extras and the game rules", async () => {
   const { latest, user } = await renderConfiguration("en", 10);
   await user.click(screen.getByRole("checkbox", { name: /^Drunk/ }));
   await user.click(screen.getByRole("checkbox", { name: /^Protective amulet/ }));
-  await user.click(screen.getByRole("tab", { name: "Game rules" }));
+  await user.click(screen.getByRole("tab", { name: "Settings" }));
   await user.click(screen.getByRole("radio", { name: "From night 1" }));
   await user.click(screen.getByRole("radio", { name: "Keep secret" }));
   expect(latest.draft.settings).toMatchObject({
