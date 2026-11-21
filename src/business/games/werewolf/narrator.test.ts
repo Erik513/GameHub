@@ -91,11 +91,6 @@ describe("narrator business contract", () => {
     );
     const dead = { ...initial, alive: initial.alive.filter((p) => p.role !== "witch") };
     expect(nightScript(dead).find((c) => c.id === "witch")?.mode).toBe("skip");
-    expect(
-      nightScript({ ...dead, settings: { ...dead.settings, revealRoles: false } }).find(
-        (c) => c.id === "witch",
-      )?.mode,
-    ).toBe("cover");
     const spent = {
       ...initial,
       potions: { heal: false, poison: false },
@@ -354,7 +349,6 @@ it("plays reproducible complete games across all roles, privacy modes and attack
       {
         wolfCount: 4,
         mayor: seed % 2 ? "hammer" : "doubleVote",
-        revealRoles: seed % 3 === 0,
         drunk: true,
         amulet: true,
         attackOnFirstNight: seed % 2 === 0,
@@ -464,8 +458,8 @@ it("skips an absent apprentice but conceals an actual masked apprentice after th
   ).toBe("skip");
 });
 
-it("does not resurrect a hunter announcement from a queued cover continuation", () => {
-  const initial = game(["hunter", "bodyguard"], { revealRoles: false });
+it("does not keep the announcement of the hunter's victim into the next night", () => {
+  const initial = game(["hunter", "bodyguard"]);
   const hunter = initial.players.find((p) => p.role === "hunter")!;
   const s: WerewolfState = {
     ...initial,
@@ -479,10 +473,9 @@ it("does not resurrect a hunter announcement from a queued cover continuation", 
     night: 1,
     target: initial.players.find((p) => p.role === "wolf")!.name,
   });
-  expect(shot.status).toBe("nightCall");
+  // The dead are not called: the night goes straight to the wolves.
+  expect(shot.status).toBe("wolves");
   expect(werewolfAnnouncement(shot)).toHaveLength(1);
-  const first = act(shot, { type: "acknowledgeCall", night: 2 });
-  expect(first.status).toBe("wolves");
-  expect(werewolfAnnouncement(first)).toEqual([]);
-  expect(act(first, { type: "acknowledgeCall", night: 2 })).toBe(first);
+  const next = act(shot, { type: "attack", night: 2, target: null });
+  expect(werewolfAnnouncement(next)).toEqual([]);
 });

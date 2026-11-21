@@ -281,3 +281,14 @@ describe("the least number of may roles", () => {
     expect(viewTwo.minimumCeiling).toBe(1);
   });
 });
+
+describe("a draft saved before the choice 'reveal roles' was dropped", () => {
+  it("is still read, and the old field is ignored", () => {
+    const old = {
+      ...(JSON.parse(JSON.stringify(emptyVariableDraft)) as Record<string, unknown>),
+      rules: { attackOnFirstNight: true, revealRoles: false },
+    };
+    const parsed = parseSavedVariableDraft(old);
+    expect(parsed?.rules).toEqual({ attackOnFirstNight: true });
+  });
+});

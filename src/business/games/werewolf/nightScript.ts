@@ -34,9 +34,9 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
     enabled = true,
     spent = false,
   ) => {
-    const present = state.players.filter((p) => p.role === role);
-    const hidden =
-      present.some((p) => masked(p.name)) || (!state.settings.revealRoles && present.length > 0);
+    // Only a role that is alive is called: a drunk who does not know the role yet is called as a cover, the dead
+    // are not called (the players find out who is gone by who is no longer woken).
+    const hidden = state.alive.some((p) => p.role === role && masked(p.name));
     const mode = !enabled
       ? "skip"
       : actors.length && !spent
@@ -57,11 +57,10 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
     state.drunk && !state.drunk.revealed && state.alive.some((p) => p.name === state.drunk!.player)
       ? [state.drunk.player]
       : [];
-  const drunkCover = !state.settings.revealRoles && state.drunk !== null;
   calls.push({
     id: "drunkReveal",
     announcementRole: "drunkReveal",
-    mode: state.night !== 3 ? "skip" : drunk.length ? "active" : drunkCover ? "cover" : "skip",
+    mode: state.night === 3 && drunk.length ? "active" : "skip",
     actors: state.night === 3 ? drunk : [],
   });
   add("bodyguard", "bodyguard", visible("bodyguard"));
@@ -85,8 +84,7 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
   const apprentice = state.players.filter((p) => p.role === "apprenticeSeer");
   const possibleApprentice =
     !state.alive.some((p) => p.role === "seer") &&
-    (apprentice.some((p) => masked(p.name)) ||
-      (apprentice.length > 0 && !state.settings.revealRoles));
+    apprentice.some((p) => masked(p.name) && state.alive.includes(p));
   if (possibleApprentice && calls[calls.length - 1]!.mode === "skip")
     calls[calls.length - 1] = {
       id: "seer",

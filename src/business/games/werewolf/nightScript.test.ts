@@ -47,20 +47,14 @@ it("skips every undrawn role and item, even with obsolete pool fields from a sav
   expect(mode(randomGame, "cupid")).toBe("skip");
 });
 
-it("does not call an absent apprentice after the seer dies, regardless of role disclosure", () => {
+it("does not call an absent apprentice after the seer dies", () => {
   const initial = base();
-  for (const revealRoles of [false, true]) {
-    const state = {
-      ...initial,
-      alive: initial.alive.filter((p) => p.role !== "seer"),
-      settings: { ...initial.settings, revealRoles },
-    };
-    expect(mode(state, "seer")).toBe(revealRoles ? "skip" : "cover");
-    expect(nightScript(state).find((call) => call.id === "seer")?.announcementRole).toBe("seer");
-  }
+  const state = { ...initial, alive: initial.alive.filter((p) => p.role !== "seer") };
+  expect(mode(state, "seer")).toBe("skip");
+  expect(nightScript(state).find((call) => call.id === "seer")?.announcementRole).toBe("seer");
 });
 
-it("retains calls for actual hidden deaths, masked roles and spent abilities", () => {
+it("retains calls for masked roles and spent abilities of the living, and never calls the dead", () => {
   const initial = createWerewolf(
     names,
     "Narrator",
@@ -77,9 +71,6 @@ it("retains calls for actual hidden deaths, masked roles and spent abilities", (
   );
   const deadGuard = { ...initial, alive: initial.alive.filter((p) => p !== guard) };
   expect(mode(deadGuard, "bodyguard")).toBe("skip");
-  expect(
-    mode({ ...deadGuard, settings: { ...initial.settings, revealRoles: false } }, "bodyguard"),
-  ).toBe("cover");
   expect(mode({ ...initial, potions: { heal: false, poison: false } }, "witch")).toBe("cover");
   expect(mode({ ...initial, spellsRemaining: 0 }, "magician")).toBe("cover");
   expect(mode({ ...initial, night: 2, hammerUsed: true }, "mayor")).toBe("cover");
@@ -94,7 +85,7 @@ it("retains calls for actual hidden deaths, masked roles and spent abilities", (
   );
 });
 
-it("calls the actual drunk only in night three and respects disclosure after death", () => {
+it("calls the actual drunk only in night three, and not after death", () => {
   const initial = base();
   const player = initial.players.find((p) => p.role === "villager")!.name;
   const drunk = { ...initial, drunk: { player, revealed: false } };
@@ -102,7 +93,4 @@ it("calls the actual drunk only in night three and respects disclosure after dea
   expect(mode({ ...drunk, night: 3 }, "drunkReveal")).toBe("active");
   const dead = { ...drunk, night: 3, alive: initial.alive.filter((p) => p.name !== player) };
   expect(mode(dead, "drunkReveal")).toBe("skip");
-  expect(mode({ ...dead, settings: { ...dead.settings, revealRoles: false } }, "drunkReveal")).toBe(
-    "cover",
-  );
 });

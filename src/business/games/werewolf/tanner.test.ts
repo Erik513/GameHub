@@ -123,6 +123,6 @@ it("uses the real goal for a masked tanner without changing the public announcem
   )!;
   const night = play(setup, ...seats.map((player) => ({ type: "roleSeen", player }) as const));
   const morning = attack(dusk(dawn(firstNight(night))), "Dan");
-  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Dan", role: "drunk" }]);
+  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Dan" }]);
   expect(dawn(morning)).toMatchObject({ status: "day", tannerWinner: "Dan" });
 });

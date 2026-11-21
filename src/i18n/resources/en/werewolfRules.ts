@@ -16,20 +16,20 @@ export const werewolfRulesTexts = {
         "Everyone sits in a circle, the narrator included. You set the seating order in the app: seat 1 is to the left of the narrator, then it goes clockwise.\nThe narrator does not play and has no role. He leads the game and tells the group what happens.\nEach person learns their role in secret and shows it to nobody.",
       nightTitle: "The night",
       nightSteps:
-        'Everyone closes their eyes. The narrator calls the roles one after another in a fixed order. Whoever is called opens their eyes and acts silently; then they close them again.\nThe werewolves come first. They agree silently on a victim. In the first night they only get to know each other, unless the wolf attack from night 1 is switched on. If they do not agree in the time the narrator has set, the attack is dropped.\nThe seer points at a person and learns by a silent sign whether they are a werewolf.\nThen come the special roles that are in the game. Their tasks are in the tab "Roles".',
+        'Everyone closes their eyes. The narrator calls the roles one after another in a fixed order. Whoever is called opens their eyes and acts silently; then they close them again. Only roles that are still alive are called.\nThe werewolves come first. They agree silently on a victim. In the first night they only get to know each other, unless the wolf attack from night 1 is switched on. If they do not agree in the time the narrator has set, the attack is dropped.\nThe seer points at a person and learns by a silent sign whether they are a werewolf.\nThen come the special roles that are in the game. Their tasks are in the tab "Roles".',
       nightHint: 'The button "{{button}}" in the configuration shows the whole order.',
       morningTitle: "The morning",
       morning:
-        "The narrator wakes the village and says who died in the night. Depending on the setting he also names the role.\nWhoever is out watches in silence and no longer votes.",
+        "The narrator wakes the village and says who died in the night, the name only, never the role.\nWhoever is out watches in silence and no longer votes.",
       dayTitle: "The day",
       daySteps:
-        "The village discusses whom it distrusts.\nA living person nominates someone, a second person supports the nomination.\nThe named person defends themselves briefly.\nAll the living vote at the same time with their thumbs. A strict majority sends the person out, and the day ends.\nWith a tie or less support the discussion goes on and a new nomination is possible. When the time limit the narrator has set is reached, he can end the day without anyone leaving.",
+        "The village discusses whom it distrusts.\nA living person nominates someone, a second person supports the nomination.\nThe named person defends themselves briefly.\nAll the living vote at the same time. A strict majority sends the person out, and the day ends.\nWith a tie or less support the discussion goes on and a new nomination is possible. When the time limit the narrator has set is reached, he can end the day without anyone leaving.\nWhoever leaves in the day may reveal their role, but does not have to. The role of whoever dies in the night is not named; only the hunter gives himself away by his shot.",
       winTitle: "Who wins",
       win: "The village wins as soon as all werewolves are out.\nThe werewolves win as soon as at least as many werewolves as members of the village side are alive, also at 1 to 1 or 2 to 2. The seer belongs to the village side.\nLovers count for their own side.\nThe tanner wins alone if he dies: depending on the option at every elimination or only by a vote.",
     },
     roles: {
       intro:
-        "Every role has a minimum number of players. The narrator sets in the configuration which roles play; the werewolves, the seer and the villagers are always there.",
+        "Every role has a minimum number of players. The narrator sets in the configuration which roles play. The werewolves and the seer are always there; villagers fill the remaining places, if any are left.",
       coreTitle: "Basic roles",
       specialTitle: "Special roles",
     },
@@ -39,7 +39,7 @@ export const werewolfRulesTexts = {
         "Extras are no roles of their own, they come into the game in addition. They also need a minimum number of players.",
       settingsTitle: "Settings",
       settings:
-        "Wolf attack: The werewolves attack from night 1 or only from night 2. Until then they only get to know each other.\nRoles after leaving: The role of a person who is out is revealed or kept secret. With secret roles the narrator also calls roles that are out, as a cover.\nWerewolves: How many play depends on the number of players. If several numbers are possible you choose; a recommendation fits the chosen roles but never changes your choice by itself.",
+        "Wolf attack: The werewolves attack from night 1 or only from night 2. Until then they only get to know each other.\nRoles that are out: The game never names the role of a person who is out. The group works out who is missing from the night: the narrator wakes only roles that are still alive. Whoever leaves in the day may reveal their role, but does not have to.\nWerewolves: How many play depends on the number of players. If several numbers are possible you choose; a recommendation fits the chosen roles but never changes your choice by itself.",
       fixedTitle: "Fixed roles",
       fixed:
         "You decide exactly which roles play. Tap a role to take it into the game; tap it again to leave it out.\nRoles with options are chosen through their variants.\nRoles that do not fit the chosen ones, or for which no place is left, are locked; the reason is in the info window.\nThe app fills the remaining places with villagers.",

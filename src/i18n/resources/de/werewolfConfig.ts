@@ -24,11 +24,6 @@ export const werewolfConfigTexts = {
     attackNight2: "Ab Nacht 2",
     attackInfo:
       "Ab Nacht 1: Die Werwölfe greifen schon in der ersten Nacht an.\nAb Nacht 2: In der ersten Nacht lernen sich die Werwölfe nur kennen; der erste Angriff kommt in der zweiten Nacht.",
-    revealLabel: "Rollen nach dem Ausscheiden",
-    revealOpen: "Aufdecken",
-    revealSecret: "Geheim halten",
-    revealInfo:
-      "Aufdecken: Wer ausscheidet, dessen Rolle nennt der Erzähler der Gruppe.\nGeheim halten: Die Rolle bleibt verborgen. Der Erzähler ruft auch ausgeschiedene Rollen zur Tarnung auf, damit das Schweigen nichts verrät.",
     issuesHeading: "Zu korrigieren",
     useWolves: "Wolfszahl {{count}} nehmen",
     infoLabel: "Info zu {{name}}",
@@ -147,7 +142,7 @@ export const werewolfConfigTexts = {
     wake: {
       open: "Aufwachreihenfolge",
       title: "Aufwachreihenfolge",
-      hint: "Der Erzähler weckt die Rollen jede Nacht in dieser Reihenfolge. Rollen, die nicht im Spiel sind, sind abgeblendet. Bei geheimer Rollenaufdeckung werden auch ausgeschiedene Rollen zur Tarnung aufgerufen.",
+      hint: "Der Erzähler weckt die Rollen jede Nacht in dieser Reihenfolge. Rollen, die nicht im Spiel sind, sind abgeblendet. Der Erzähler weckt nur Rollen, die noch leben: Ausgeschiedene werden nicht mehr aufgerufen, und die Gruppe merkt an der Reihenfolge, wer fehlt.",
       notInGame: "nicht im Spiel",
       maybe: "Darf ins Spiel: wird nur geweckt, wenn sie gezogen wird",
       hintVariable:
@@ -180,7 +175,7 @@ export const werewolfConfigTexts = {
         tasks:
           "Der Träger wird jede Nacht als Letzter geweckt und gefragt: Amulett behalten oder weitergeben.\nHat es einen Angriff abgefangen, muss er es weitergeben.\nEr darf es jeder lebenden Person geben, auch einem Werwolf.",
         notes:
-          "Der Träger kann trotzdem sterben:\ndurch Hammer, Abstimmung oder Jägerschuss (so erfährt niemand, wer das Amulett hat)\nwenn sein Liebespartner stirbt (er stirbt aus Liebeskummer mit, das Amulett geht dann verloren)\nals Harter Bursche, wenn er das Amulett erst nach dem Angriff bekam",
+          "Der Träger kann trotzdem sterben:\ndurch Hammer, Abstimmung oder Jägerschuss (so erfährt niemand, wer das Amulett hat)\nwenn sein Liebespartner stirbt (er stirbt aus Liebeskummer mit, das Amulett geht dann verloren)\nals Harter Bursche, wenn er das Amulett erst nach dem Angriff bekam\nStirbt der Träger, egal wodurch, ist das Amulett weg: nach Abstimmung oder Jägerschuss am Tag ebenso wie durch Hammer oder Liebeskummer.\nNur wenn er es im letzten Nachtschritt weitergegeben hat, bevor er stirbt (zum Beispiel am Morgen durch den Hammer), bleibt es dem neuen Träger erhalten.",
       },
       apprenticeSeer: {
         general: "Er hat keine Aktion, solange die Seherin lebt.",

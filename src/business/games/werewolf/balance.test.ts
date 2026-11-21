@@ -532,7 +532,10 @@ function play(
             ? werewolfAnnouncement(state)
             : [];
       if (event.type === "announceMorning") clues.morningDeaths = announcements.length;
-      for (const { role } of announcements) {
+      // The village learns roles only from a person who left in the day and chose to reveal it: the vote or the
+      // hunter shot. The names of the night are announced without a role.
+      for (const { name } of event.type === "announceMorning" ? [] : announcements) {
+        const role = state.players.find((player) => player.name === name)?.role;
         if (role === "wolf") clues.livingWolves--;
         if (role === "idiot") clues.idiotCandidates.clear();
         if (

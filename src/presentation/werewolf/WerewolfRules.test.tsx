@@ -99,13 +99,14 @@ it.each(["de", "en"] as const)(
     expect(groups.map((entry) => entry.textContent)).toEqual(text.rolesHeadings);
     const roleNames = within(rolesPanel)
       .getAllByRole("heading", { level: 4 })
-      .map((entry) => entry.textContent);
+      .map((entry) => entry.querySelector("span")?.textContent);
     // Three basic roles and the twelve choices of the special roles (the guards are one choice).
     expect(roleNames).toHaveLength(15);
     expect(roleNames[0]).toBe(text.firstRole);
     expect(roleNames.at(-1)).toBe(text.magician);
     // A role shows its side and from how many players it can play; its explanation is the same as in the "i" window.
-    expect(rolesPanel.querySelectorAll(".ww-rules-role__meta")).toHaveLength(15);
+    expect(rolesPanel.querySelectorAll(".ww-rules-role__team")).toHaveLength(15);
+    expect(rolesPanel.querySelectorAll(".ww-rules-role__meta")).toHaveLength(12);
     expect(rolesPanel.querySelectorAll(".ww-info__part").length).toBeGreaterThan(15);
 
     // The options: the extras, the settings and both kinds of roles.

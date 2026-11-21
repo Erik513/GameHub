@@ -42,12 +42,9 @@ it("keeps the tough guy alive for the day and announces the delayed death once",
   expect(day.alive.map((player) => player.name)).toContain("Cam");
   const night = endDay(day);
   const repeatAttack = sight(attack(night, "Cam"));
-  expect(werewolfAnnouncement(repeatAttack)).toEqual([{ name: "Cam", role: "toughGuy" }]);
+  expect(werewolfAnnouncement(repeatAttack)).toEqual([{ name: "Cam" }]);
   const otherVictim = sight(attack(night, "Eva"));
-  expect(werewolfAnnouncement(otherVictim)).toEqual([
-    { name: "Cam", role: "toughGuy" },
-    { name: "Eva", role: "villager" },
-  ]);
+  expect(werewolfAnnouncement(otherVictim)).toEqual([{ name: "Cam" }, { name: "Eva" }]);
   expect(morning(otherVictim).alive.map((player) => player.name)).toEqual([
     "Ada",
     "Bea",
@@ -66,7 +63,7 @@ it("lets the witch heal the triggering attack and resolves poison immediately", 
     werewolfAnnouncement(act(thirdNight, { type: "potions", night: 3, heal: false, poison: null })),
   ).toEqual([]);
   const poisoned = act(attacked, { type: "potions", night: 2, heal: false, poison: "Cam" });
-  expect(werewolfAnnouncement(poisoned)).toEqual([{ name: "Cam", role: "toughGuy" }]);
+  expect(werewolfAnnouncement(poisoned)).toEqual([{ name: "Cam" }]);
   expect(morning(poisoned).alive).toHaveLength(5);
 });
 
@@ -94,10 +91,10 @@ it("resolves the delayed death together with a linked lover, even during a decis
   state = morning(state);
   state = act(sight(attack(endDay(state), "Bea")), { type: "hammer", night: 3, target: "Ada" });
   expect(werewolfAnnouncement(state)).toEqual([
-    { name: "Ada", role: "wolf" },
-    { name: "Bea", role: "seer" },
-    { name: "Cam", role: "toughGuy" },
-    { name: "Flo", role: "villager" },
+    { name: "Ada" },
+    { name: "Bea" },
+    { name: "Cam" },
+    { name: "Flo" },
   ]);
   expect(morning(state)).toMatchObject({ status: "finished", winner: "village" });
 });
@@ -206,7 +203,7 @@ it("redirects wolves to the visiting guest, who can be healed or poisoned", () =
   expect(redirected).toMatchObject({ status: "witch", victim: { name: "Cam" } });
   expect(
     werewolfAnnouncement(act(redirected, { type: "potions", night: 2, heal: false, poison: null })),
-  ).toEqual([{ name: "Cam", role: "nightGuest" }]);
+  ).toEqual([{ name: "Cam" }]);
   const healed = act(redirected, { type: "potions", night: 2, heal: true, poison: null });
   expect(morning(healed).alive).toHaveLength(6);
 

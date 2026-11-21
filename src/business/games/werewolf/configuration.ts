@@ -28,7 +28,6 @@ export interface WerewolfSettings {
   readonly hunterShot: "optional" | "required";
   readonly toughGuy: "wolfOnly" | "anyAttack";
   readonly allowSelfSilence: boolean;
-  readonly revealRoles: boolean;
   readonly drunk: boolean;
   readonly tanner: "anyDeath" | "voteOnly";
   readonly amulet: boolean;

@@ -24,11 +24,6 @@ export const werewolfConfigTexts = {
     attackNight2: "From night 2",
     attackInfo:
       "From night 1: The werewolves attack in the very first night.\nFrom night 2: In the first night the werewolves only get to know each other; the first attack comes in the second night.",
-    revealLabel: "Roles after death",
-    revealOpen: "Reveal",
-    revealSecret: "Keep secret",
-    revealInfo:
-      "Reveal: Whoever leaves the game, the narrator tells the group their role.\nKeep secret: The role stays hidden. The narrator also calls roles that are out, as a cover, so that silence gives nothing away.",
     issuesHeading: "To correct",
     useWolves: "Use wolf count {{count}}",
     infoLabel: "Info about {{name}}",
@@ -145,7 +140,7 @@ export const werewolfConfigTexts = {
     wake: {
       open: "Wake-up order",
       title: "Wake-up order",
-      hint: "Every night the narrator wakes the roles in this order. Roles that are not in the game are dimmed. With secret roles, roles that are out are still called to keep them hidden.",
+      hint: "Every night the narrator wakes the roles in this order. Roles that are not in the game are dimmed. The narrator wakes only roles that are still alive: people who are out are no longer called, and the group notices from the order who is missing.",
       notInGame: "not in the game",
       maybe: "May be in the game: only woken if it is drawn",
       hintVariable:
@@ -178,7 +173,7 @@ export const werewolfConfigTexts = {
         tasks:
           "The holder is woken last every night and asked: keep the amulet or pass it on.\nIf it has stopped an attack, he has to pass it on.\nHe may give it to any living player, also to a wolf.",
         notes:
-          "The holder can still die:\nby the hammer, the vote or the hunter shot (so nobody learns who has the amulet)\nwhen his lover dies (he dies of heartbreak, too, and the amulet is lost)\nas the tough guy, if he got the amulet only after the attack",
+          "The holder can still die:\nby the hammer, the vote or the hunter shot (so nobody learns who has the amulet)\nwhen his lover dies (he dies of heartbreak, too, and the amulet is lost)\nas the tough guy, if he got the amulet only after the attack\nIf the holder dies, however it happens, the amulet is gone: after a vote or a hunter shot in the day just as through the hammer or heartbreak.\nOnly if he passed it on in the last step of the night before he dies (for example in the morning through the hammer) does the new holder keep it.",
       },
       apprenticeSeer: {
         general: "He has no action while the seer lives.",

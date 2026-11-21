@@ -84,11 +84,8 @@ export function WerewolfConfiguration({
   const rules =
     mode === "variable"
       ? variableDraft.rules
-      : {
-          attackOnFirstNight: draft.settings.attackOnFirstNight,
-          revealRoles: draft.settings.revealRoles,
-        };
-  const setRule = (key: "attackOnFirstNight" | "revealRoles", value: boolean) =>
+      : { attackOnFirstNight: draft.settings.attackOnFirstNight };
+  const setRule = (key: "attackOnFirstNight", value: boolean) =>
     mode === "variable"
       ? onVariableChange(setVariableRule(variableDraft, key, value))
       : onChange(setFixedSetting(draft, key, value));

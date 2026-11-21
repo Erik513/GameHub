@@ -67,7 +67,7 @@ describe("fixed-role setup", () => {
     ).toBeNull();
     expect(
       resolveFixedWerewolfLineup(10, [], {
-        revealRoles: "bad",
+        amulet: "bad",
       } as unknown as Partial<WerewolfSettings>),
     ).toBeNull();
     let draws = 0;

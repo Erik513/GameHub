@@ -72,10 +72,7 @@ it("can spend both spells on distinct living targets including the magician", ()
   expect(cast(state, false, "P1", "P2", "P3")).toBe(state);
   const resolved = cast(state, false, "P5", "P1");
   expect(resolved.spellsRemaining).toBe(0);
-  expect(werewolfAnnouncement(resolved)).toEqual([
-    { name: "P1", role: "wolf" },
-    { name: "P5", role: "magician" },
-  ]);
+  expect(werewolfAnnouncement(resolved)).toEqual([{ name: "P1" }, { name: "P5" }]);
 });
 
 it("can heal the magician and a different wolf victim over two nights", () => {
@@ -100,21 +97,19 @@ it("can target the wolf victim and resolves the death only once", () => {
   const danger = attack(afterMorning(cast(firstNight())), "P6");
   for (const heal of [false, true]) {
     const resolved = cast(danger, heal, "P6");
-    expect(werewolfAnnouncement(resolved)).toEqual([{ name: "P6", role: "villager" }]);
+    expect(werewolfAnnouncement(resolved)).toEqual([{ name: "P6" }]);
     expect(resolved.spellsRemaining).toBe(heal ? 0 : 1);
   }
 });
 
 it("can kill the tough guy immediately or heal only his fresh wolf attack", () => {
   const danger = attack(afterMorning(cast(firstNight(deal(["toughGuy"])))), "P6");
-  expect(werewolfAnnouncement(cast(danger, false, "P6"))).toEqual([
-    { name: "P6", role: "toughGuy" },
-  ]);
+  expect(werewolfAnnouncement(cast(danger, false, "P6"))).toEqual([{ name: "P6" }]);
   const pending = cast(danger);
   expect(werewolfAnnouncement(pending)).toEqual([]);
   const late = attack(afterMorning(pending), null);
   expect(cast(late, true)).toBe(late);
-  expect(werewolfAnnouncement(cast(late))).toEqual([{ name: "P6", role: "toughGuy" }]);
+  expect(werewolfAnnouncement(cast(late))).toEqual([{ name: "P6" }]);
 });
 
 it("can heal the night guest and cast a death spell on the host", () => {
@@ -129,7 +124,7 @@ it("can heal the night guest and cast a death spell on the host", () => {
   const danger = attack(wolves, "P8");
   expect(danger).toMatchObject({ victim: { name: "P6" } });
   const resolved = cast(danger, true, "P8");
-  expect(werewolfAnnouncement(resolved)).toEqual([{ name: "P8", role: "villager" }]);
+  expect(werewolfAnnouncement(resolved)).toEqual([{ name: "P8" }]);
   expect(resolved.spellsRemaining).toBe(0);
 });
 

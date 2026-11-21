@@ -94,7 +94,7 @@ it("does not transfer retroactive protection to an already attacked player", () 
   const night = nightTwo(deal("Eva"));
   const attacked = attack(night, "Dan");
   const morning = transfer(attacked, "Dan");
-  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Dan", role: "villager" }]);
+  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Dan" }]);
   expect(dawn(morning)).toMatchObject({ status: "day", amulet: null });
 });
 
@@ -211,7 +211,7 @@ it("cannot shield the new holder from a hunter shot and removes the amulet", () 
   const shot = apply(hunter, { type: "shot", night: 2, target: "Dan" });
   expect(shot).toMatchObject({ status: "day", amulet: null });
   expect(shot.alive.map((p) => p.name)).not.toContain("Dan");
-  expect(werewolfAnnouncement(shot)).toEqual([{ name: "Dan", role: "villager" }]);
+  expect(werewolfAnnouncement(shot)).toEqual([{ name: "Dan" }]);
   expect(attack(dusk(shot), null).status).toBe("morning");
 });
 
@@ -224,7 +224,7 @@ it("cannot block a correct hammer strike or the mayor penalty", () => {
   });
   expect(hit.status).toBe("amuletPass");
   const hitMorning = transfer(hit, "Eva");
-  expect(werewolfAnnouncement(hitMorning)).toEqual([{ name: "Ada", role: "wolf" }]);
+  expect(werewolfAnnouncement(hitMorning)).toEqual([{ name: "Ada" }]);
   expect(dawn(hitMorning)).toMatchObject({
     status: "finished",
     winner: "village",
@@ -236,7 +236,7 @@ it("cannot block a correct hammer strike or the mayor penalty", () => {
     target: "Dan",
   });
   const missMorning = transfer(miss, "Eva");
-  expect(werewolfAnnouncement(missMorning)).toEqual([{ name: "Cam", role: "mayor" }]);
+  expect(werewolfAnnouncement(missMorning)).toEqual([{ name: "Cam" }]);
   expect(dawn(missMorning).alive.map((p) => p.name)).toContain("Dan");
 });
 
@@ -245,25 +245,20 @@ it("cannot heal an existing tough-guy wound when acquired after the attack", () 
   const day = resolve(attack(night, "Cam"), "Cam");
   expect(day.toughGuyDiesOn).toBe(3);
   const morning = transfer(attack(dusk(day), null), "Cam");
-  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Cam", role: "toughGuy" }]);
+  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Cam" }]);
   expect(dawn(morning).amulet).toBeNull();
 });
 
-it.each([false, true])(
-  "executes a voted-out carrier and awards the tanner win (reveal=%s)",
-  (revealRoles) => {
-    const day = resolve(
-      firstNight(open(deal("Cam", ["tanner"], { tanner: "voteOnly", revealRoles }))),
-    );
+it("executes a voted-out carrier and awards the tanner win", () => {
+  {
+    const day = resolve(firstNight(open(deal("Cam", ["tanner"], { tanner: "voteOnly" }))));
     const exile = apply(
       day,
       { type: "nominate", night: 1, target: "Cam", nominator: "Ada", seconder: "Bea" },
       { type: "vote", night: 1, nomination: 1, yesVoters: names },
     );
     expect(exile.status).toBe("exile");
-    expect(werewolfAnnouncement(exile)).toEqual([
-      { name: "Cam", role: revealRoles ? "tanner" : null },
-    ]);
+    expect(werewolfAnnouncement(exile)).toEqual([{ name: "Cam" }]);
     const next = apply(exile, { type: "announceExile", night: 1 });
     expect(next.amulet).toBeNull();
     expect(next.alive.map((p) => p.name)).not.toContain("Cam");
@@ -272,8 +267,8 @@ it.each([false, true])(
       kind: "death",
       sources: [{ cause: "vote", actors: names }],
     });
-  },
-);
+  }
+});
 
 it("delays a shot at the tough-guy carrier without activating amulet protection", () => {
   const night = nightTwo(deal("Dan", ["hunter", "toughGuy"], { toughGuy: "anyAttack" }));

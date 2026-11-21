@@ -18,7 +18,6 @@ const play = (state: WerewolfState, ...events: WerewolfEvent[]) =>
 function deal(
   maskDraw: number,
   roles: WerewolfSpecialRole[] = [],
-  revealRoles = true,
   hunterShot: "optional" | "required" = "optional",
 ) {
   let draws = 0;
@@ -27,7 +26,7 @@ function deal(
     "Narrator",
     () => (++draws < names.length ? 0.99 : maskDraw),
     roles,
-    { drunk: true, revealRoles, hunterShot },
+    { drunk: true, hunterShot },
   )!;
 }
 
@@ -100,28 +99,19 @@ it("does not promote the apprentice while the masked seer is alive", () => {
   expect(play(noVision, { type: "acknowledgeCall", night: 1 }).status).toBe("morning");
 });
 
-it.each([
-  { revealRoles: true, hunterShot: "optional" },
-  { revealRoles: false, hunterShot: "optional" },
-  { revealRoles: true, hunterShot: "required" },
-  { revealRoles: false, hunterShot: "required" },
-] as const)(
-  "reveals a dying masked hunter privately before the shot ($revealRoles, $hunterShot)",
-  ({ revealRoles, hunterShot }) => {
-    const night = dusk(firstDay(deal(3 / 9, ["hunter"], revealRoles, hunterShot)));
+it.each(["optional", "required"] as const)(
+  "reveals a dying masked hunter privately before the shot (%s)",
+  (hunterShot) => {
+    const night = dusk(firstDay(deal(3 / 9, ["hunter"], hunterShot)));
     const morning = vision(play(night, { type: "attack", night: 2, target: "Dan" }));
-    expect(werewolfAnnouncement(morning)).toEqual([
-      { name: "Dan", role: revealRoles ? "drunk" : null },
-    ]);
+    expect(werewolfAnnouncement(morning)).toEqual([{ name: "Dan" }]);
     const dying = dawn(morning);
     expect(dying.status).toBe("drunkHunter");
     expect(werewolfDrunkReveal(dying)).toEqual({ name: "Dan", role: "hunter" });
     const shot = { type: "shot", night: 2, target: "Ada" } as const;
     expect(play(dying, shot)).toBe(dying);
     const hunter = play(dying, { type: "drunkReady", night: 2 });
-    expect(werewolfAnnouncement(play(hunter, shot))).toEqual([
-      { name: "Ada", role: revealRoles ? "wolf" : null },
-    ]);
+    expect(werewolfAnnouncement(play(hunter, shot))).toEqual([{ name: "Ada" }]);
     const skipped = play(hunter, { ...shot, target: null });
     if (hunterShot === "required") expect(skipped).toBe(hunter);
     else expect(werewolfAnnouncement(skipped)).toEqual([]);
@@ -131,6 +121,6 @@ it.each([
 it("does not activate a masked tough guy when the wolves attack before the reveal", () => {
   const night = dusk(firstDay(deal(3 / 9, ["toughGuy"])));
   const morning = vision(play(night, { type: "attack", night: 2, target: "Dan" }));
-  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Dan", role: "drunk" }]);
+  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Dan" }]);
   expect(dusk(dawn(morning)).status).toBe("wolves");
 });

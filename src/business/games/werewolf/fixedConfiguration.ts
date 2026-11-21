@@ -19,7 +19,6 @@ export type FixedSettings = Pick<
   | "drunk"
   | "hunterShot"
   | "mayor"
-  | "revealRoles"
   | "tanner"
   | "toughGuy"
 >;
@@ -42,7 +41,6 @@ export const defaultFixedSettings: FixedSettings = {
   drunk: false,
   hunterShot: "optional",
   mayor: "doubleVote",
-  revealRoles: true,
   tanner: "anyDeath",
   toughGuy: "wolfOnly",
 };
@@ -482,9 +480,11 @@ export function chooseFixedVariant(
   }
 }
 
-export function setFixedSetting<
-  Key extends "amulet" | "attackOnFirstNight" | "drunk" | "revealRoles",
->(draft: FixedDraft, key: Key, value: boolean): FixedDraft {
+export function setFixedSetting<Key extends "amulet" | "attackOnFirstNight" | "drunk">(
+  draft: FixedDraft,
+  key: Key,
+  value: boolean,
+): FixedDraft {
   return { ...draft, settings: { ...draft.settings, [key]: value } };
 }
 
@@ -562,7 +562,6 @@ export function parseSavedFixedDraft(raw: unknown): FixedDraft | undefined {
     !bool(s.amulet) ||
     !bool(s.attackOnFirstNight) ||
     !bool(s.drunk) ||
-    !bool(s.revealRoles) ||
     (s.hunterShot !== "optional" && s.hunterShot !== "required") ||
     (s.mayor !== "doubleVote" && s.mayor !== "hammer") ||
     (s.tanner !== "anyDeath" && s.tanner !== "voteOnly") ||
@@ -583,7 +582,6 @@ export function parseSavedFixedDraft(raw: unknown): FixedDraft | undefined {
       drunk: s.drunk,
       hunterShot: s.hunterShot,
       mayor: s.mayor,
-      revealRoles: s.revealRoles,
       tanner: s.tanner,
       toughGuy: s.toughGuy === "anyAttack" ? "anyAttack" : "wolfOnly",
     },

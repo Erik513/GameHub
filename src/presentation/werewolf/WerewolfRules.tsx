@@ -56,11 +56,14 @@ export function WerewolfRulesDialog({ onClose, open }: WerewolfRulesDialogProps)
 
   const role = (id: ConfigInfoId, name: string, minimum?: number) => (
     <section aria-label={name} className="ww-rules-role" key={id}>
-      <h4>{name}</h4>
-      <p className="ww-rules-role__meta">
-        {teamOf(id, t)}
-        {minimum !== undefined && ` · ${t("werewolfConfig.availableFrom", { count: minimum })}`}
-      </p>
+      <h4>
+        <span>{name}</span> <small className="ww-rules-role__team">({teamOf(id, t)})</small>
+      </h4>
+      {minimum !== undefined && (
+        <p className="ww-rules-role__meta">
+          {t("werewolfConfig.availableFrom", { count: minimum })}
+        </p>
+      )}
       <ConfigInfoParts id={id} />
     </section>
   );
@@ -136,16 +139,20 @@ export function WerewolfRulesDialog({ onClose, open }: WerewolfRulesDialogProps)
       closeLabel={t("werewolfConfig.infoClose")}
       onClose={onClose}
       open={open}
+      size="large"
       title={t("werewolfRules.title")}
     >
-      <SetupTabs
-        ariaLabel={t("werewolfRules.label")}
-        tabs={[
-          { content: game, id: "game", label: t("werewolfRules.tabGame") },
-          { content: roles, id: "roles", label: t("werewolfRules.tabRoles") },
-          { content: extras, id: "extras", label: t("werewolfRules.tabExtras") },
-        ]}
-      />
+      {/* Only the content of a tab scrolls, so the tabs stay reachable at the end of a long text. */}
+      <div className="ww-rules">
+        <SetupTabs
+          ariaLabel={t("werewolfRules.label")}
+          tabs={[
+            { content: game, id: "game", label: t("werewolfRules.tabGame") },
+            { content: roles, id: "roles", label: t("werewolfRules.tabRoles") },
+            { content: extras, id: "extras", label: t("werewolfRules.tabExtras") },
+          ]}
+        />
+      </div>
     </Dialog>
   );
 }

@@ -105,7 +105,6 @@ export function evaluateWerewolfLineup(
     evidence:
       players >= 15 ||
       (roles.includes("hunter") && settings.hunterShot === "required") ||
-      settings.revealRoles === false ||
       !availableWerewolfCounts(players).includes(best.wolfCount)
         ? "provisional"
         : players < 9

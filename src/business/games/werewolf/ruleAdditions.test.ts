@@ -165,10 +165,9 @@ it("allows Cupid to select himself and keeps heartbreak immediately lethal", () 
   expect(s.toughGuyDiesOn).toBeNull();
 });
 
-it.each([false, true])(
-  "announces the apprentice openly after the seer dies (reveal=%s)",
-  (revealRoles) => {
-    let s = setup(["apprenticeSeer"], { revealRoles });
+it("announces the apprentice openly after the seer dies", () => {
+  {
+    let s = setup(["apprenticeSeer"]);
     const seer = who(s, "seer");
     expect(nightScript(s).find((c) => c.id === "seer")?.announcementRole).toBe("seer");
     s = dusk(dawn(attack(s, seer)));
@@ -177,8 +176,8 @@ it.each([false, true])(
       mode: "active",
       actors: [who(s, "apprenticeSeer")],
     });
-  },
-);
+  }
+});
 
 it("does not force lovers to spare one another and preserves the original winning sides", () => {
   let s = setup(["cupid"]);

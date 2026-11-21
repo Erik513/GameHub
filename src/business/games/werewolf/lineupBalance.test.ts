@@ -113,7 +113,6 @@ describe("wolf recommendation", () => {
       "provisional",
     );
     expect(evaluateWerewolfLineup(15, [])?.evidence).toBe("provisional");
-    expect(evaluateWerewolfLineup(14, [], { revealRoles: false })?.evidence).toBe("provisional");
     expect(availableWerewolfCounts(8)).toEqual([1, 2]);
   });
 

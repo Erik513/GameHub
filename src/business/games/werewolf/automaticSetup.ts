@@ -23,7 +23,6 @@ export function automaticWerewolfSettings(
     hunterShot: settings.hunterShot ?? "optional",
     toughGuy: settings.toughGuy ?? "wolfOnly",
     allowSelfSilence: settings.allowSelfSilence ?? false,
-    revealRoles: settings.revealRoles ?? true,
     drunk: settings.drunk ?? false,
     tanner: settings.tanner ?? "anyDeath",
     amulet: settings.amulet ?? false,
@@ -34,13 +33,9 @@ export function automaticWerewolfSettings(
     !["optional", "required"].includes(result.hunterShot) ||
     !["wolfOnly", "anyAttack"].includes(result.toughGuy) ||
     !["anyDeath", "voteOnly"].includes(result.tanner) ||
-    [
-      result.allowSelfSilence,
-      result.revealRoles,
-      result.drunk,
-      result.amulet,
-      result.attackOnFirstNight,
-    ].some((value) => typeof value !== "boolean")
+    [result.allowSelfSilence, result.drunk, result.amulet, result.attackOnFirstNight].some(
+      (value) => typeof value !== "boolean",
+    )
   )
     return null;
   return result;

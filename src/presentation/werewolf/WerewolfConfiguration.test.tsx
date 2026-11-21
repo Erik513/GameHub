@@ -244,16 +244,15 @@ it("sets the extras and the game rules", async () => {
   await user.click(screen.getByRole("checkbox", { name: /^Protective amulet/ }));
   await user.click(screen.getByRole("tab", { name: "Settings" }));
   await user.click(screen.getByRole("radio", { name: "From night 1" }));
-  await user.click(screen.getByRole("radio", { name: "Keep secret" }));
   expect(latest.draft.settings).toMatchObject({
     amulet: true,
     attackOnFirstNight: true,
     drunk: true,
-    revealRoles: false,
   });
   await user.click(screen.getByRole("radio", { name: "From night 2" }));
-  await user.click(screen.getByRole("radio", { name: "Reveal" }));
-  expect(latest.draft.settings).toMatchObject({ attackOnFirstNight: false, revealRoles: true });
+  expect(latest.draft.settings).toMatchObject({ attackOnFirstNight: false });
+  // The roles of people who are out are never revealed by the game: there is nothing to choose.
+  expect(screen.queryByRole("radio", { name: "Reveal" })).not.toBeInTheDocument();
 });
 
 it("locks the extras below their minimum", async () => {
@@ -360,7 +359,7 @@ it.each([
     expect(parts[1]).toHaveTextContent(task);
     expect(parts[2]).toHaveTextContent(note);
     // The reasons the amulet is lost stand as single points below the introduction.
-    expect(parts[2]?.querySelectorAll("li")).toHaveLength(4);
+    expect(parts[2]?.querySelectorAll("li")).toHaveLength(6);
   },
 );
 

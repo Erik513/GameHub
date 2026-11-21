@@ -386,10 +386,7 @@ function checkTransition(state: WerewolfState, [event, expected]: Decision) {
     );
     assert.deepEqual(
       werewolfAnnouncement(event.type === "shot" ? next : state),
-      losses.map(({ name, role }) => ({
-        name,
-        role: state.settings.revealRoles ? (masked(state, name) ? "drunk" : role) : null,
-      })),
+      losses.map(({ name }) => ({ name })),
       "The public announcement does not match the deaths",
     );
   }
@@ -457,7 +454,6 @@ it.each([6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])(
         const settings: Partial<WerewolfSettings> = {
           mayor: flags & 1 ? "hammer" : "doubleVote",
           allowSelfSilence: Boolean(flags & 2),
-          revealRoles: Boolean(flags & 4),
           drunk: false,
         };
         winners.add(play(count, selected, settings, ++seed));
@@ -482,7 +478,6 @@ it.each([9, 10, 11, 12, 13, 14, 15, 16, 17, 18])(
         {
           mayor: seed & 1 ? "hammer" : "doubleVote",
           allowSelfSilence: Boolean(seed & 2),
-          revealRoles: Boolean(seed & 4),
           drunk: true,
         },
         seed,
@@ -507,7 +502,6 @@ it.each([6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])(
       const settings = {
         mayor: seed & 1 ? "hammer" : "doubleVote",
         allowSelfSilence: Boolean(seed & 2),
-        revealRoles: Boolean(seed & 4),
         drunk: wolves >= 2 && Boolean(seed & 8),
       } satisfies Partial<WerewolfSettings>;
       play(count, selected, settings, seed);
@@ -547,7 +541,6 @@ it.each([11, 12, 13, 14, 15, 16, 17, 18])(
         {
           mayor: seed & 1 ? "hammer" : "doubleVote",
           allowSelfSilence: Boolean(seed & 2),
-          revealRoles: Boolean(seed & 4),
           drunk: Boolean(seed & 8),
         },
         seed,
@@ -574,7 +567,6 @@ it.each([6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])(
           {
             mayor: seed & 1 ? "hammer" : "doubleVote",
             allowSelfSilence: Boolean(seed & 2),
-            revealRoles: Boolean(seed & 4),
             drunk: wolves >= 2 && Boolean(seed & 8),
             tanner,
           },
@@ -603,7 +595,6 @@ it.each([6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])(
         {
           mayor: seed & 1 ? "hammer" : "doubleVote",
           allowSelfSilence: Boolean(seed & 2),
-          revealRoles: Boolean(seed & 4),
           drunk: wolves >= 2 && Boolean(seed & 8),
           tanner: seed & 32 ? "voteOnly" : "anyDeath",
           amulet: true,
@@ -629,7 +620,6 @@ it.each([3, 4, 5])(
         wolfCount,
         mayor: checked & 1 ? "hammer" : "doubleVote",
         allowSelfSilence: Boolean(checked & 2),
-        revealRoles: Boolean(checked & 4),
         drunk: Boolean(checked & 8),
         amulet: Boolean(checked & 16),
         hunterShot: checked & 1 ? "required" : "optional",
@@ -656,7 +646,6 @@ it.each([3, 4, 5])(
         wolfCount,
         mayor: checked & 1 ? "hammer" : "doubleVote",
         allowSelfSilence: Boolean(checked & 2),
-        revealRoles: Boolean(checked & 4),
         drunk: Boolean(checked & 8),
         amulet: Boolean(checked & 16),
         hunterShot: checked & 1 ? "required" : "optional",
@@ -712,7 +701,6 @@ it.each([1, 2])(
         selected,
         {
           wolfCount,
-          revealRoles: Boolean(checked & 1),
           attackOnFirstNight: Boolean(checked & 2),
           hunterShot: checked & 4 ? "required" : "optional",
           tanner: checked & 8 ? "voteOnly" : "anyDeath",

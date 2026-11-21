@@ -62,7 +62,6 @@ export const variableItems: readonly WerewolfItem[] = ["drunk", "amulet"];
 /** The game rules that are no part of the draw. */
 export interface VariableRules {
   readonly attackOnFirstNight: boolean;
-  readonly revealRoles: boolean;
 }
 
 /**
@@ -82,7 +81,7 @@ export interface VariableDraft {
 export const emptyVariableDraft: VariableDraft = {
   items: { amulet: "not", drunk: "not" },
   roleRange: { maximum: null, minimum: 0 },
-  rules: { attackOnFirstNight: false, revealRoles: true },
+  rules: { attackOnFirstNight: false },
   states: {},
   wolfCounts: null,
 };
@@ -479,12 +478,8 @@ export function parseSavedVariableDraft(raw: unknown): VariableDraft | undefined
   if (!isState(savedItems.amulet) || !isState(savedItems.drunk)) return undefined;
   if (typeof rules !== "object" || rules === null) return undefined;
   const savedRules = rules as Record<string, unknown>;
-  if (
-    typeof savedRules.attackOnFirstNight !== "boolean" ||
-    typeof savedRules.revealRoles !== "boolean"
-  ) {
-    return undefined;
-  }
+  // An older save also holds the choice "reveal roles", which no longer exists: it is dropped.
+  if (typeof savedRules.attackOnFirstNight !== "boolean") return undefined;
   if (typeof roleRange !== "object" || roleRange === null) return undefined;
   const range = roleRange as Record<string, unknown>;
   const whole = (value: unknown): value is number =>
@@ -499,10 +494,7 @@ export function parseSavedVariableDraft(raw: unknown): VariableDraft | undefined
   return {
     items: { amulet: savedItems.amulet, drunk: savedItems.drunk },
     roleRange: { maximum: range.maximum, minimum: range.minimum },
-    rules: {
-      attackOnFirstNight: savedRules.attackOnFirstNight,
-      revealRoles: savedRules.revealRoles,
-    },
+    rules: { attackOnFirstNight: savedRules.attackOnFirstNight },
     states: cleanStates,
     wolfCounts: wolfCounts === null ? null : [...new Set(wolfCounts)].sort((a, b) => a - b),
   };

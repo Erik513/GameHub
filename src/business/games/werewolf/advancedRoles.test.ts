@@ -99,10 +99,7 @@ it("ends the game at two wolves against two village players with a surviving mix
 it("announces both partners once and resolves the hunter before checking a winner", () => {
   let state = day(see(wolves(couple(deal(["cupid", "hunter"]), ["Dan", "Flo"]))));
   state = see(attack(dusk(state), "Flo"));
-  expect(werewolfAnnouncement(state)).toEqual([
-    { name: "Dan", role: "hunter" },
-    { name: "Flo", role: "villager" },
-  ]);
+  expect(werewolfAnnouncement(state)).toEqual([{ name: "Dan" }, { name: "Flo" }]);
   state = day(state);
   expect(state).toMatchObject({ status: "hunter", hunter: { name: "Dan" } });
   expect(act(state, { type: "shot", night: 2, target: "Ada" })).toMatchObject({
@@ -128,7 +125,7 @@ it("counts the village idiot's mandatory yes and the secret double vote", () => 
   // Dan's vote counts twice. Cam must vote yes, making four of seven weighted votes.
   const exile = vote(state, ["Ada", "Dan"]);
   expect(exile).toMatchObject({ status: "exile", victim: { name: "Flo" } });
-  expect(werewolfAnnouncement(exile)).toEqual([{ name: "Flo", role: "villager" }]);
+  expect(werewolfAnnouncement(exile)).toEqual([{ name: "Flo" }]);
 });
 
 it("applies silence to nominations and voting, including the village idiot's mandatory yes", () => {
@@ -156,7 +153,7 @@ it("applies silence to nominations and voting, including the village idiot's man
 });
 
 it("places the private hammer after all attacks and permits a dying mayor to act", () => {
-  const first = deal(["mayor"], { mayor: "hammer", revealRoles: false });
+  const first = deal(["mayor"], { mayor: "hammer" });
   const next = see(attack(dusk(day(see(wolves(first)))), "Cam"));
   expect(next.status).toBe("mayor");
   expect(wakingPlayers(next)).toEqual(["Cam"]);
@@ -165,18 +162,14 @@ it("places the private hammer after all attacks and permits a dying mayor to act
   expect(hammer(next, null)).toMatchObject({ status: "morning", hammerUsed: false });
   const hit = hammer(next, "Ada");
   expect(hit.alive).toHaveLength(6);
-  expect(werewolfAnnouncement(hit)).toEqual([
-    { name: "Ada", role: null },
-    { name: "Cam", role: null },
-  ]);
+  expect(werewolfAnnouncement(hit)).toEqual([{ name: "Ada" }, { name: "Cam" }]);
   expect(day(hit)).toMatchObject({ status: "finished", winner: "village" });
   const miss = hammer(next, "Dan");
-  expect(werewolfAnnouncement(miss)).toEqual([{ name: "Cam", role: null }]);
+  expect(werewolfAnnouncement(miss)).toEqual([{ name: "Cam" }]);
+  // The mayor is dead: the night goes on without a call for him.
   const nextNight = see(attack(dusk(day(miss)), null));
-  expect(nextNight.status).toBe("nightCall");
-  expect(wakingPlayers(nextNight)).toEqual([]);
+  expect(nextNight.status).toBe("morning");
   expect(hammer(nextNight, "Ada")).toBe(nextNight);
-  expect(act(nextNight, { type: "acknowledgeCall", night: 3 }).status).toBe("morning");
 });
 
 it("resolves the hammer only at morning and keeps spent living calls as cover", () => {
@@ -188,10 +181,7 @@ it("resolves the hammer only at morning and keeps spent living calls as cover", 
   state = see(attack(dusk(day(see(wolves(state)))), "Ira"));
   const hit = hammer(state, "Ada");
   expect(hit.alive.map((p) => p.name)).toContain("Ada");
-  expect(werewolfAnnouncement(hit)).toEqual([
-    { name: "Ada", role: "wolf" },
-    { name: "Ira", role: "villager" },
-  ]);
+  expect(werewolfAnnouncement(hit)).toEqual([{ name: "Ada" }, { name: "Ira" }]);
   const nextNight = see(attack(dusk(day(hit)), null), "Bea");
   expect(nextNight.status).toBe("nightCall");
   expect(hammer(nextNight, "Bea")).toBe(nextNight);
@@ -213,12 +203,9 @@ it("defers a hunter linked to a failed hammer until morning", () => {
 });
 
 it("orders simultaneous announcements by seats rather than cause", () => {
-  const first = deal(["mayor"], { mayor: "hammer", revealRoles: false });
+  const first = deal(["mayor"], { mayor: "hammer" });
   const next = see(attack(dusk(day(see(wolves(first)))), "Bea"));
-  expect(werewolfAnnouncement(hammer(next, "Flo"))).toEqual([
-    { name: "Bea", role: null },
-    { name: "Cam", role: null },
-  ]);
+  expect(werewolfAnnouncement(hammer(next, "Flo"))).toEqual([{ name: "Bea" }, { name: "Cam" }]);
 });
 
 it("resolves eight distinct deaths in one night including the morning hunter shot", () => {

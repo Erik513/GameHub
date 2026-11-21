@@ -218,7 +218,6 @@ export function createWerewolf(
       hunterShot: settings.hunterShot ?? "optional",
       toughGuy: settings.toughGuy ?? "wolfOnly",
       allowSelfSilence: settings.allowSelfSilence ?? false,
-      revealRoles: settings.revealRoles ?? true,
       drunk: settings.drunk ?? false,
       tanner: settings.tanner ?? "anyDeath",
       amulet: settings.amulet ?? false,
@@ -506,9 +505,11 @@ function announceMorning(state: Extract<WerewolfState, { status: "morning" }>): 
   return announce(injury ? woundToughGuy(state, injury[1], injury[2]) : state, deaths, "day");
 }
 
-export function werewolfAnnouncement(
-  state: WerewolfState,
-): readonly { name: string; role: VisibleRole | null }[] {
+/**
+ * Who left the game, for the announcement of the narrator: the names only. The role of a person who is out is
+ * never told by the game; whoever left in the day may reveal it, the others find out by who is no longer woken.
+ */
+export function werewolfAnnouncement(state: WerewolfState): readonly { name: string }[] {
   const deaths =
     state.status === "morning"
       ? morningDeaths(state)
@@ -518,10 +519,7 @@ export function werewolfAnnouncement(
   const names = new Set(deaths.map((player) => player.name));
   return state.players
     .filter((player) => names.has(player.name))
-    .map((player) => ({
-      name: player.name,
-      role: state.settings.revealRoles ? visibleRole(state, player) : null,
-    }));
+    .map((player) => ({ name: player.name }));
 }
 
 function announce(

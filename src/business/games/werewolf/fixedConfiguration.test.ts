@@ -224,14 +224,9 @@ describe("the choices", () => {
   });
 
   it("passes the party options to the logic with the wolf count", () => {
-    const draft = setFixedSetting(
-      setFixedSetting(emptyFixedDraft, "revealRoles", false),
-      "attackOnFirstNight",
-      true,
-    );
+    const draft = setFixedSetting(emptyFixedDraft, "attackOnFirstNight", true);
     expect(fixedConfigurationSettings(draft, 9)).toMatchObject({
       attackOnFirstNight: true,
-      revealRoles: false,
       wolfCount: 2,
     });
   });
@@ -468,6 +463,12 @@ describe("a saved draft", () => {
     expect(parseSavedFixedDraft(JSON.parse(JSON.stringify(emptyFixedDraft)))).toEqual(
       emptyFixedDraft,
     );
+  });
+
+  it("still reads a draft saved with the dropped choice 'reveal roles' and leaves it out", () => {
+    const old = JSON.parse(JSON.stringify(draft)) as { settings: Record<string, unknown> };
+    old.settings.revealRoles = false;
+    expect(parseSavedFixedDraft(old)).toEqual(draft);
   });
 
   it.each([
