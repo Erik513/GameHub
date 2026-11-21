@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-84: Wartebild vor dem Spielbeginn
+
+- Nach der Rollenverteilung kommt ein Wartebild ohne Spielinformationen: „Alle Rollen sind verteilt – Gib das Gerät jetzt an den Erzähler zurück.“ Der untere Knopf heißt dort „Beginnen“ und startet das Spiel, danach wieder „Weiter“. Vorher sah der letzte Spieler schon die Ansage für den Amulett-Träger.
+
 ### We-01-83: Info des Harten Burschen
 
 - Der Text erklärt jetzt die Wunde, dass nur in der Angriffsnacht ein Wolfsangriff geheilt werden kann (sonst stirbt er in der nächsten Nacht), was ihn sofort tötet (Hammer, Abstimmung, Tod des Liebespartners) und was die Option jeweils bedeutet.

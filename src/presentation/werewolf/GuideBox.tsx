@@ -38,6 +38,7 @@ export function GuideBox({
   const { t } = useTranslation();
   const { card, phase, selection, state } = view;
 
+  if (phase === "ready") return <ReadyBox />;
   if (phase === "plain") return <PlainBox view={view} />;
   if (!card) return null;
 
@@ -405,5 +406,23 @@ function DayNotes({ view }: { readonly view: GuideView }) {
         <li>{t("werewolfNarrator.guide.wounded", { names: wounded.join(", ") })}</li>
       )}
     </ul>
+  );
+}
+
+/**
+ * Between the role reveal and the game: the last player hands the device back. Nothing of the game is shown here; the
+ * button below says "begin" and starts the first step of the night.
+ */
+function ReadyBox() {
+  const { t } = useTranslation();
+  return (
+    <section className="ww-guide ww-guide--sheet">
+      <header className="ww-guide__head">
+        <strong className="ww-guide__text">{t("werewolfNarrator.guide.ready.title")}</strong>
+      </header>
+      <div className="ww-guide__body">
+        <span className="ww-guide__lead">{t("werewolfNarrator.guide.ready.hint")}</span>
+      </div>
+    </section>
   );
 }

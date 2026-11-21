@@ -18,11 +18,14 @@ import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./st
  * - act: the narrator uses an ability (or only confirms); the choice is kept here and reaches the game on "continue".
  * - outro: "the role falls asleep again"; the choice is handed to the game on "continue".
  * - plain: a step without an awake role (the role reveal, the morning, the day).
+ * - ready: the roles are dealt and the last player has looked: the device goes back to the narrator, who begins the
+ *   game with the button below (it says "begin" here). Nothing of the game is shown, so the last player learns
+ *   nothing.
  *
  * Every phase is one step of the trail, so "back" is exactly one step: inside a role, back to the previous role, or
  * back into the day. The game itself only moves on a confirmed event, so going back never replays randomness.
  */
-export type GuidePhase = "intro" | "act" | "outro" | "plain";
+export type GuidePhase = "intro" | "act" | "outro" | "plain" | "ready";
 
 export interface GuideSelection {
   /** The ability whose targets are shown. */
@@ -101,8 +104,18 @@ function frameOf(state: WerewolfState, pastLength: number): GuideFrame {
   return { event: null, pastLength, phase: phaseOf(state), selection: initialSelection(state) };
 }
 
+/** True right after the last player has looked at the role: the game is dealt but not begun. */
+function justDealt(session: WerewolfSession): boolean {
+  const last = session.past[session.past.length - 1];
+  return last?.status === "roles" && session.present.status !== "roles";
+}
+
 export function createGuide(session: WerewolfSession): Guide {
-  return { session, trail: [frameOf(session.present, session.past.length)] };
+  const frame = frameOf(session.present, session.past.length);
+  return {
+    session,
+    trail: [justDealt(session) ? { ...frame, phase: "ready", selection: emptySelection } : frame],
+  };
 }
 
 function current(guide: Guide): GuideFrame {
@@ -235,7 +248,7 @@ function previewDeaths(state: WerewolfState, event: WerewolfEvent | null): reado
 
 export interface GuideView {
   /** What the "next" button says: the day ends, the vote starts or ends, the game is left, or simply "next". */
-  readonly nextKind: "endDay" | "endVote" | "finish" | "next" | "startVote";
+  readonly nextKind: "begin" | "endDay" | "endVote" | "finish" | "next" | "startVote";
   /** Who leaves the game through the step that is about to be confirmed, and why (private to the narrator). */
   readonly deaths: readonly DeathNote[];
   /** Facts the narrator has to keep in mind during the day (silenced, wounded) and who a choice may not name. */
@@ -283,6 +296,7 @@ export function describeGuide(guide: Guide): GuideView {
       selected: selection.ability === "bond" ? selection.picks.slice(0, 1) : selection.picks,
     }).filter((name) => !selection.picks.includes(name));
   const canContinue =
+    frame.phase === "ready" ||
     state.status === "finished" ||
     frame.phase === "intro" ||
     frame.phase === "outro" ||
@@ -301,7 +315,7 @@ export function describeGuide(guide: Guide): GuideView {
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
       selection.none,
-    card: describeNarratorCard(state),
+    card: frame.phase === "ready" ? null : describeNarratorCard(state),
     deaths:
       state.status === "morning" || state.status === "exile"
         ? previewDeaths(state, eventOf(state, emptySelection))
@@ -325,15 +339,17 @@ export function describeGuide(guide: Guide): GuideView {
     },
     voterNotes: voterNotesOf(state),
     nextKind:
-      state.status === "finished"
-        ? "finish"
-        : state.status === "vote"
-          ? "endVote"
-          : state.status === "day"
-            ? selection.picks.length === 3
-              ? "startVote"
-              : "endDay"
-            : "next",
+      frame.phase === "ready"
+        ? "begin"
+        : state.status === "finished"
+          ? "finish"
+          : state.status === "vote"
+            ? "endVote"
+            : state.status === "day"
+              ? selection.picks.length === 3
+                ? "startVote"
+                : "endDay"
+              : "next",
     phase: frame.phase,
     selection,
     state,
@@ -417,9 +433,14 @@ export function undoSelection(guide: Guide): Guide {
 
 function commit(guide: Guide, event: WerewolfEvent): Guide {
   const session = advanceWerewolfSession(guide.session, event);
+  const frame = frameOf(session.present, session.past.length);
   return {
     session,
-    trail: [...guide.trail, frameOf(session.present, session.past.length)],
+    // The last player of the role reveal hands the device back: the game waits for the narrator.
+    trail: [
+      ...guide.trail,
+      justDealt(session) ? { ...frame, phase: "ready", selection: emptySelection } : frame,
+    ],
   };
 }
 
@@ -428,6 +449,12 @@ export function continueGuide(guide: Guide): Guide {
   const frame = current(guide);
   const state = guide.session.present;
   switch (frame.phase) {
+    case "ready":
+      // The narrator begins the game: the first step of the night.
+      return {
+        ...guide,
+        trail: [...guide.trail, frameOf(state, guide.session.past.length)],
+      };
     case "intro":
       return {
         ...guide,

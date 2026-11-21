@@ -7,6 +7,8 @@ import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface NarratorBarProps {
   readonly state: WerewolfState;
+  /** The game is dealt but not begun (the last player has looked): nothing of the game may show yet. */
+  readonly dealing?: boolean;
   /** Day (sun) or night (moon). */
   readonly day: boolean;
   /** Leaves the game (after the second tap on the button). */
@@ -19,12 +21,18 @@ interface NarratorBarProps {
  * The top bar of the narrator view: sun or moon with the number of the night, the overview of all players with their
  * roles (private to the narrator) and the button that leaves the game.
  */
-export function NarratorBar({ state, day, onClose, onRules }: NarratorBarProps) {
+export function NarratorBar({
+  state,
+  day,
+  dealing: forceDealing = false,
+  onClose,
+  onRules,
+}: NarratorBarProps) {
   const { t } = useTranslation();
   const [overview, setOverview] = useState(false);
   // While the players look at their roles nobody may see all the roles or open the rules: the buttons only appear when
   // the real game begins.
-  const dealing = state.status === "roles";
+  const dealing = forceDealing || state.status === "roles";
   const label = t(day ? "werewolfNarrator.bar.day" : "werewolfNarrator.bar.night", {
     count: state.night,
   });

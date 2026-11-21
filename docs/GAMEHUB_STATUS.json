@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T13:00:00.000Z",
+    "updatedAt": "2026-11-22T14:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 267,
-      "totalTasks": 321,
+      "completedTasks": 268,
+      "totalTasks": 322,
       "percent": 83.2
     }
   },
@@ -1486,6 +1486,12 @@
           "title": "Info des Harten Burschen vollständig: Wunde, Rettung nur in der Angriffsnacht, was sofort tötet, Optionen",
           "status": "done",
           "validation": "Text gegen die Logik geprüft (wounds.ts, specialRoles.test.ts) und danach auf Wunsch des Auftraggebers bewusst kurz gehalten: Angriff tötet nicht sofort; gerettet nur durch Heilung des Wolfsangriffs in derselben Nacht; Hammer, Abstimmung und der Tod des Liebespartners töten sofort; je Option ein vollständiger Text nur für die gespielte Option (Nur Wolfsangriff oder Jeder Angriff), nichts über die andere; Deutsch und Englisch; Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-84",
+          "title": "Wartebild zwischen Rollenverteilung und Spielbeginn: der Erzähler beginnt das Spiel bewusst",
+          "status": "done",
+          "validation": "Nach dem letzten Spieler zeigt die Ansicht „Alle Rollen sind verteilt – Gib das Gerät jetzt an den Erzähler zurück“ ohne Spielinformationen (keine Rollenkarte, Leiste weiter nur „Rollenverteilung“ ohne Übersicht und Regeln, der untere Knopf heißt dort „Beginnen“ und startet das Spiel (Auftraggeber: kein eigener Knopf in der Box), danach wieder „Weiter“; Zurück führt von der ersten Ansage in das Wartebild und von dort zum letzten Spieler; wird das Spiel direkt nach der Rollenverteilung geladen, erscheint wieder das Wartebild; Tests für Logik und Oberfläche in beiden Sprachen; 1567 Tests, tsc -b, eslint sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
         }
       ]
     },

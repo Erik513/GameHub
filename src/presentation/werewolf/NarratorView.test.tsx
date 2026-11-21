@@ -24,6 +24,11 @@ function Harness({ onEnd }: { readonly onEnd: () => void }) {
   );
 }
 
+/** After the role reveal the button below says "begin"; one tap starts the game. */
+async function beginGame(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: /^(Begin|Beginnen)$/ }));
+}
+
 async function renderView(language: "en" | "de", onEnd = () => undefined) {
   const i18n = await createGameHubI18n(language);
   const user = userEvent.setup();
@@ -57,6 +62,15 @@ describe.each([
     expect(screen.getByRole("button", { name: back })).toBeDisabled();
     for (let player = 0; player < 12; player += 1)
       await user.click(screen.getByRole("button", { name: next }));
+    // The last player has looked: nothing of the game shows, the narrator begins it on purpose.
+    expect(screen.getByText(/All roles are dealt|Alle Rollen sind verteilt/)).toBeInTheDocument();
+    expect(screen.queryByText(wake)).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: /All players and roles|Alle Spieler und Rollen/ }),
+    ).toBeNull();
+    expect(screen.queryByRole("button", { name: next })).toBeNull();
+    await beginGame(user);
+    expect(screen.getByRole("button", { name: next })).toBeInTheDocument();
     // The role is announced; the upper box stays hidden until the narrator taps.
     expect(screen.getByText(wake)).toBeInTheDocument();
     expect(screen.queryByRole("region", { name: /Werewolf|Werwolf/ })).toBeNull();
@@ -64,6 +78,9 @@ describe.each([
     expect(screen.getByRole("region", { name: /Werewolf|Werwolf/ })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: back }));
     expect(screen.getByText(wake)).toBeInTheDocument();
+    // Back from the first role leads to the waiting box, then to the last player.
+    await user.click(screen.getByRole("button", { name: back }));
+    expect(screen.getByText(/All roles are dealt|Alle Rollen sind verteilt/)).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: back }));
     expect(screen.getByText(reveal)).toBeInTheDocument();
   });
@@ -99,8 +116,10 @@ describe("NarratorView choices", () => {
     const user = await renderView("en");
     const nextButton = () => screen.getByRole("button", { name: "Next" });
     // Walk to the seer: role reveal, wolves (intro, act, outro), seer intro.
-    for (let guard = 0; guard < 30 && !screen.queryByText(/seer wakes up/); guard += 1)
-      await user.click(nextButton());
+    for (let guard = 0; guard < 30 && !screen.queryByText(/seer wakes up/); guard += 1) {
+      if (screen.queryByText("All roles are dealt")) await beginGame(user);
+      else await user.click(nextButton());
+    }
     await user.click(screen.getByText(/seer wakes up/));
     expect(nextButton()).toBeDisabled();
     await user.click(screen.getByRole("button", { name: /Look: ready/ }));
@@ -114,8 +133,10 @@ describe("NarratorView choices", () => {
 
   it("lists the people in alphabetical order, all equally, and closes the list with the X", async () => {
     const user = await renderView("en");
-    for (let guard = 0; guard < 30 && !screen.queryByText(/seer wakes up/); guard += 1)
-      await user.click(screen.getByRole("button", { name: "Next" }));
+    for (let guard = 0; guard < 30 && !screen.queryByText(/seer wakes up/); guard += 1) {
+      if (screen.queryByText("All roles are dealt")) await beginGame(user);
+      else await user.click(screen.getByRole("button", { name: "Next" }));
+    }
     await user.click(screen.getByText(/seer wakes up/));
     expect(screen.queryByRole("button", { name: "Close the selection" })).toBeNull();
     await user.click(screen.getByRole("button", { name: /Look: ready/ }));

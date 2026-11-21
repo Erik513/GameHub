@@ -44,6 +44,8 @@ function decide(guide: Guide): Guide {
 /** Walks one step forward the way a narrator would; null when the guide cannot go on by itself. */
 function forward(guide: Guide): Guide | null {
   const view = describeGuide(guide);
+  // The narrator begins the game on purpose after the role reveal.
+  if (view.phase === "ready") return continueGuide(guide);
   const prepared = view.phase === "act" && !view.canContinue ? decide(guide) : guide;
   if (!describeGuide(prepared).canContinue) return null;
   const next = continueGuide(prepared);
@@ -51,7 +53,7 @@ function forward(guide: Guide): Guide | null {
 }
 
 describe("narrator guide", () => {
-  it("hands out the roles one player after the other and then wakes the first role", () => {
+  it("hands out the roles one player after the other, then waits for the narrator, then wakes the first role", () => {
     const start = game();
     expect(describeGuide(start).phase).toBe("plain");
     expect(describeGuide(start).canGoBack).toBe(false);
@@ -63,12 +65,38 @@ describe("narrator guide", () => {
       expect(describeGuide(guide).canContinue).toBe(true);
       guide = continueGuide(guide);
     }
-    expect(describeGuide(guide).phase).toBe("intro");
-    expect(describeGuide(guide).card).not.toBeNull();
-    // Back from the first role goes back to the last player of the role reveal.
-    const back = backGuide(guide);
-    expect(back.ok && describeGuide(back.guide).state.status).toBe("roles");
-    expect(back.ok && back.guide.session.past.length).toBe(count - 1);
+    // The last player has looked: the game is dealt, but nothing of it is shown.
+    const ready = describeGuide(guide);
+    expect(ready.phase).toBe("ready");
+    expect(ready.card).toBeNull();
+    // The button below says "begin" and starts the game.
+    expect(ready.canContinue).toBe(true);
+    expect(ready.nextKind).toBe("begin");
+    expect(guide.session.past.length).toBe(count);
+    // Begin: the first role is announced, the button says "next" again.
+    const begun = continueGuide(guide);
+    expect(describeGuide(begun).nextKind).toBe("next");
+    expect(describeGuide(begun).phase).toBe("intro");
+    expect(describeGuide(begun).card).not.toBeNull();
+    // Back from the first role goes back to the waiting step, then to the last player.
+    const back = backGuide(begun);
+    expect(back.ok && describeGuide(back.guide).phase).toBe("ready");
+    const backAgain = back.ok ? backGuide(back.guide) : back;
+    expect(backAgain.ok && describeGuide(backAgain.guide).state.status).toBe("roles");
+    expect(backAgain.ok && backAgain.guide.session.past.length).toBe(count - 1);
+  });
+
+  it("waits for the narrator also after the game was loaded right after the role reveal", () => {
+    let guide = game();
+    const count = guide.session.present.players.length;
+    for (let index = 0; index < count; index += 1) guide = continueGuide(guide);
+    const loaded = createGuide(guide.session);
+    expect(describeGuide(loaded).phase).toBe("ready");
+    expect(describeGuide(loaded).card).toBeNull();
+    // Once the narrator has begun and something has happened, a loaded game goes on as usual.
+    let later = continueGuide(loaded);
+    later = continueGuide(later);
+    expect(describeGuide(createGuide(later.session)).phase).not.toBe("plain");
   });
 
   it("goes through intro, act and outro of the wolves, handing the choice to the game at the outro", () => {
@@ -257,6 +285,8 @@ describe("narrator guide", () => {
     for (let step = 0; step < 300 && guide.session.present.status !== "amuletIntro"; step += 1)
       guide = forward(guide)!;
     expect(guide.session.present.status).toBe("amuletIntro");
+    // The amulet holder is the first to be announced, after the narrator has begun the game.
+    if (describeGuide(guide).phase === "ready") guide = continueGuide(guide);
     expect(describeGuide(guide).card?.role).toBe("amulet");
     expect(describeGuide(guide).card?.actors).toEqual([holder]);
     guide = continueGuide(guide);

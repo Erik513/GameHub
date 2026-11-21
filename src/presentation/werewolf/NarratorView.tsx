@@ -34,6 +34,7 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
     >
       <NarratorBar
         day={isDayStep(view.state)}
+        dealing={view.phase === "ready"}
         onClose={onEnd}
         onRules={onRules}
         state={view.state}

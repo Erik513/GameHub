@@ -147,6 +147,7 @@ export const werewolfNarratorTexts = {
         chosen: "Nominiert: {{target}} – von {{nominator}}, unterstützt von {{seconder}}",
       },
       nextKind: {
+        begin: "Beginnen",
         finish: "Zur Aufstellung",
         endDay: "Tag beenden",
         startVote: "Abstimmung starten",
@@ -164,6 +165,10 @@ export const werewolfNarratorTexts = {
       healChosen: "Heilen gewählt: {{name}} wird gerettet",
       voter: { double: "×2", mustYes: "muss Ja" },
       closeSelection: "Auswahl schließen",
+      ready: {
+        title: "Alle Rollen sind verteilt",
+        hint: "Gib das Gerät jetzt an den Erzähler zurück. Nur der Erzähler beginnt das Spiel.",
+      },
       left: "Ausgeschieden: {{names}}",
       exile: "{{name}} scheidet aus",
       finished: {
