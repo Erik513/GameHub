@@ -2022,3 +2022,21 @@
   justify-items: center;
   height: 2.75rem;
 }
+
+/* The line under the role is the same length on every card: the column of the card has a fixed width, whatever the
+   role or its texts need. */
+.ww-deal__body:has(.ww-deal__zone) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ww-deal__zone {
+  width: 70%;
+  box-sizing: border-box;
+}
+
+/* The cause of the different lengths: the content of the card was centered and so only as wide as its content. The
+   body now takes the whole width of the card, so the line (70 % of it) is the same on every card. */
+.ww-deal__face > .ww-deal__body {
+  justify-self: stretch;
+  width: 100%;
+}
