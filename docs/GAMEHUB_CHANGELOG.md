@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-61: Erzählersicht, Schritt 2 (obere Box)
+
+- Rollenkarte der Erzählersicht: Rollensymbol und Name der Wachen, drei Plätze für Wirkungen von außen, große Fähigkeitsknöpfe (grün = nutzbar, rot = verbraucht oder nicht möglich), Magier mit Zähler an beiden Zaubern, Tarnaufruf ohne Namen und mit roten Knöpfen. Modell `describeNarratorCard` in der Logik, Komponente `NarratorCard`. Noch nicht im Spiel eingebunden. 1516 Tests, tsc -b, eslint, Schichtprüfung sauber.
+
 ### We-01-60: Erzählersicht, Schritt 1 (Spielstart und Spielstand)
 
 - Spielstart aus Aufstellung und Konfiguration (fest oder variabel), Rollen werden einmalig verteilt. Der Spielstand wird nach jedem Schritt mit Versionsnummer lokal gespeichert; ein Stand anderer Version wird verworfen. Hook `useWerewolfSession` (Start, Ereignis, Rückgängig, Beenden). 1504 Tests, tsc -b, eslint sauber. Noch keine sichtbare Oberfläche.

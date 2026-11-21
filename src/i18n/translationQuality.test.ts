@@ -34,6 +34,7 @@ const allowedIdenticalValues = [
   "tabooShortcuts.pauseHint",
   "tabooShortcuts.skipped",
   "werewolfConfig.variants.hammer",
+  "werewolfNarrator.ability.hammer",
   "werewolfSymbols.items.hammer.name",
 ];
 

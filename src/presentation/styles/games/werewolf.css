@@ -1085,3 +1085,114 @@
   padding-inline: var(--space-1);
   font-size: var(--text-xs);
 }
+
+/* The upper box of the narrator view: the awake role, three slots for effects, the abilities as large buttons. */
+.ww-card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.ww-card__head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ww-card__role {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.ww-card__who {
+  display: grid;
+  min-width: 0;
+}
+
+.ww-card__who small {
+  color: var(--color-ink-muted);
+  overflow-wrap: anywhere;
+}
+
+.ww-card__slots {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-card__slot {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.ww-card__slot[data-empty="true"] {
+  border-style: dashed;
+}
+
+.ww-card__abilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ww-ability {
+  display: grid;
+  flex: 1 1 96px;
+  justify-items: center;
+  gap: var(--space-1);
+  min-height: 72px;
+  padding: var(--space-2);
+  border: 2px solid var(--color-success);
+  border-radius: var(--radius-md);
+  background: var(--color-success);
+  color: var(--color-accent-contrast);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ww-ability[data-available="false"] {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: var(--color-accent-contrast);
+  cursor: default;
+}
+
+.ww-ability[aria-pressed="true"] {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.ww-ability__symbol {
+  position: relative;
+  display: inline-grid;
+}
+
+.ww-ability__count {
+  position: absolute;
+  right: -12px;
+  bottom: -6px;
+  min-width: 18px;
+  padding: 0 4px;
+  border: 1px solid currentColor;
+  border-radius: 9px;
+  background: var(--color-ink);
+  font-size: var(--text-xs);
+  line-height: 16px;
+  text-align: center;
+}

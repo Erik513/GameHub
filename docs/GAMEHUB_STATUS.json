@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T20:30:00.000Z",
+    "updatedAt": "2026-11-21T21:10:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 236,
-      "totalTasks": 298,
-      "percent": 79.2
+      "completedTasks": 237,
+      "totalTasks": 299,
+      "percent": 79.3
     }
   },
   "environment": {
@@ -1340,6 +1340,12 @@
           "title": "Erzählersicht: Spielstart aus der Konfiguration, Spielstand mit Versionsnummer speichern, Anbindung von Sitzung und Rücknahme (Schritt 1)",
           "status": "done",
           "validation": "Spielstart startWerewolfGame (fest und variabel, Zufall einmalig), Spielstand mit Versionsnummer speichern und prüfen (parseSavedWerewolfSession), Hook useWerewolfSession mit start, advance, undo, end; Tests inklusive JSON-Rundlauf und Verwerfen fremder Versionen; 1504 Tests, tsc -b, eslint sauber. Die Erzählersicht selbst folgt in We-01-61 ff."
+        },
+        {
+          "id": "We-01-61",
+          "title": "Erzählersicht, Schritt 2: obere Box (Rollenkarte mit Symbol, drei Wirkungsplätzen und Fähigkeitsknöpfen grün/rot)",
+          "status": "done",
+          "validation": "Logikmodell describeNarratorCard (Rolle, Wache, Tarnaufruf, Fähigkeiten mit Verfügbarkeit und Zähler, höchstens drei Wirkungen) und Komponente NarratorCard (Deutsch und Englisch); Magier mit Zähler an beiden Zaubern, Tarnaufruf alle Knöpfe rot; noch nicht im Spiel eingebunden, das folgt mit der unteren Box; 1516 Tests, tsc -b, eslint, Schichtprüfung sauber."
         }
       ]
     },
