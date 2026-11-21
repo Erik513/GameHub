@@ -88,7 +88,8 @@ it("weights wolves, optional counts and role families uniformly, independently o
         for (let mode = 0; mode < (subset.includes("hunter") ? 2 : 1); mode++)
           for (let item = 0; item < 2; item++) {
             const values = [(w + 0.5) / 2, (count + 0.5) / 3];
-            if (subsets.length > 1) values.push((subsetIndex + 0.5) / subsets.length);
+            // One of two families: a random order of the two, then the starting point decides.
+            if (subsets.length > 1) values.push(0.75, subsetIndex === 0 ? 0.25 : 0.75);
             if (subset.includes("hunter")) values.push((mode + 0.5) / 2);
             values.push((item + 0.5) / 2);
             const result = draw(12, selection, values);
@@ -132,7 +133,7 @@ it("draws optional items with independent fair coins instead of uniform item cou
   expect(required.items).toEqual(["amulet", "drunk"]);
 });
 
-it("groups bodyguard and night guest as one optional role with equally likely variants", () => {
+it("groups bodyguard and night guest as one optional role and gives every single role the same chance", () => {
   const selection = select({
     rolePool: ["hunter", "nightGuest", "bodyguard"],
     roleRange: { minimum: 1, maximum: 1 },
@@ -140,9 +141,23 @@ it("groups bodyguard and night guest as one optional role with equally likely va
   const summary = analyze(10, selection);
   expect(summary.groups).toEqual([{ wolfCount: 2, roleCount: 1, choices: 2 }]);
   expect(summary.possibleRoleRange).toEqual({ minimum: 0, maximum: 2 });
-  expect(draw(10, selection, [0.25, 0.25]).lineup.roles).toEqual(["bodyguard"]);
-  expect(draw(10, selection, [0.25, 0.75]).lineup.roles).toEqual(["nightGuest"]);
-  expect(draw(10, selection, [0.75]).lineup.roles).toEqual(["hunter"]);
+  // One of three roles is drawn: each of them with a third, the two guards are one family with two variants.
+  let seed = 11;
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  const hits: Record<string, number> = {};
+  const draws = 9000;
+  for (let index = 0; index < draws; index += 1) {
+    const result = drawVariableWerewolfLineup(10, selection, random);
+    if (!result.ok) throw Error(result.reason);
+    const role = result.lineup.roles[0]!;
+    hits[role] = (hits[role] ?? 0) + 1;
+  }
+  for (const role of ["hunter", "bodyguard", "nightGuest"]) {
+    expect(Math.abs((hits[role] ?? 0) / draws - 1 / 3)).toBeLessThan(0.03);
+  }
   const onlyGuard = select({
     rolePool: ["bodyguard", "nightGuest"],
     roleRange: { minimum: 0, maximum: 1 },
@@ -657,4 +672,117 @@ it.each([
   expect(
     hasFeasibleAutomaticWerewolfLineup(players, roles, settings as Partial<WerewolfSettings>),
   ).toBe(expected);
+});
+
+it("counts the witch and the magician as one role where they may not play together, and as two where they may", () => {
+  // 14 players: together only with four wolves (see validWerewolfRoles).
+  const selection = select({
+    rolePool: ["magician", "witch"],
+    roleRange: { minimum: 0, maximum: 2 },
+    wolfCounts: [3, 4],
+  });
+  const summary = analyze(14, selection);
+  const three = summary.wolfCounts.find((wolf) => wolf.wolfCount === 3);
+  const four = summary.wolfCounts.find((wolf) => wolf.wolfCount === 4);
+  // With three wolves one of them at most (one role), with four wolves both can be drawn (two roles).
+  expect(three?.possibleRoleCounts).toEqual([0, 1]);
+  expect(four?.possibleRoleCounts).toEqual([0, 1, 2]);
+
+  let seed = 5;
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  const withThree = { both: 0, magician: 0, none: 0, witch: 0 };
+  let bothWithFour = 0;
+  const wolfOnly = select({ ...selection, wolfCounts: [3] });
+  for (let index = 0; index < 4000; index += 1) {
+    const result = drawVariableWerewolfLineup(14, wolfOnly, random);
+    if (!result.ok) throw Error(result.reason);
+    const roles = result.lineup.roles;
+    const key =
+      roles.includes("witch") && roles.includes("magician")
+        ? "both"
+        : roles.includes("witch")
+          ? "witch"
+          : roles.includes("magician")
+            ? "magician"
+            : "none";
+    withThree[key] += 1;
+  }
+  expect(withThree.both).toBe(0);
+  // One role of the draw: zero or one is drawn with the same chance, and the one is the witch or the magician.
+  expect(Math.abs(withThree.none / 4000 - 1 / 2)).toBeLessThan(0.04);
+  expect(Math.abs(withThree.witch / 4000 - 1 / 4)).toBeLessThan(0.04);
+  expect(Math.abs(withThree.magician / 4000 - 1 / 4)).toBeLessThan(0.04);
+  const fourOnly = select({ ...selection, wolfCounts: [4] });
+  for (let index = 0; index < 2000; index += 1) {
+    const result = drawVariableWerewolfLineup(14, fourOnly, random);
+    if (!result.ok) throw Error(result.reason);
+    if (result.lineup.roles.includes("witch") && result.lineup.roles.includes("magician"))
+      bothWithFour += 1;
+  }
+  expect(bothWithFour).toBeGreaterThan(300);
+});
+
+it("lets both the witch and the magician be required where they may play together", () => {
+  const selection = select({ requiredRoles: ["magician", "witch"], wolfCounts: [4] });
+  expect(analyze(14, selection).canStart).toBe(true);
+  expect(analyze(14, select({ ...selection, wolfCounts: [3] })).canStart).toBe(false);
+});
+
+it("gives every single role the same chance, though the guards exclude each other", () => {
+  let seed = 3;
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  const rates = (selection: VariableWerewolfSelection) => {
+    const draws = 12000;
+    const hits: Record<string, number> = {};
+    let both = 0;
+    for (let index = 0; index < draws; index += 1) {
+      const result = drawVariableWerewolfLineup(12, selection, random);
+      if (!result.ok) throw Error(result.reason);
+      const roles = result.lineup.roles;
+      if (roles.includes("bodyguard") && roles.includes("nightGuest")) both += 1;
+      for (const role of roles) hits[role] = (hits[role] ?? 0) + 1;
+    }
+    return { both, rate: (role: string) => (hits[role] ?? 0) / draws };
+  };
+  // Four roles, two of them the guards, two drawn: each role is in with half the draws.
+  const two = rates(
+    select({
+      rolePool: ["bodyguard", "cupid", "nightGuest", "witch"],
+      roleRange: { minimum: 2, maximum: 2 },
+      wolfCounts: [3],
+    }),
+  );
+  expect(two.both).toBe(0);
+  for (const role of ["bodyguard", "nightGuest", "cupid", "witch"]) {
+    expect(Math.abs(two.rate(role) - 0.5)).toBeLessThan(0.03);
+  }
+  // One drawn: a quarter each.
+  const one = rates(
+    select({
+      rolePool: ["bodyguard", "cupid", "nightGuest", "witch"],
+      roleRange: { minimum: 1, maximum: 1 },
+      wolfCounts: [3],
+    }),
+  );
+  for (const role of ["bodyguard", "nightGuest", "cupid", "witch"]) {
+    expect(Math.abs(one.rate(role) - 0.25)).toBeLessThan(0.03);
+  }
+  // Three drawn: the guards are one role, so they are always in (one of them), and the others are certain, too.
+  const three = rates(
+    select({
+      rolePool: ["bodyguard", "cupid", "nightGuest", "witch"],
+      roleRange: { minimum: 3, maximum: 3 },
+      wolfCounts: [3],
+    }),
+  );
+  expect(three.both).toBe(0);
+  expect(three.rate("cupid")).toBe(1);
+  expect(three.rate("witch")).toBe(1);
+  expect(Math.abs(three.rate("bodyguard") - 0.5)).toBeLessThan(0.03);
 });

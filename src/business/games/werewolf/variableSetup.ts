@@ -86,6 +86,8 @@ interface ChoiceGroup {
 }
 interface WolfPlan {
   readonly wolfCount: number;
+  /** The roles that count as one role of the draw with this wolf count (see familiesForWolves). */
+  readonly families: readonly Family[];
   readonly allGroups: readonly ChoiceGroup[];
   readonly groups: readonly ChoiceGroup[];
 }
@@ -239,6 +241,25 @@ function fitsRoles(
     validWerewolfRoles(plan.players, roles, wolves)
   );
 }
+/**
+ * The families of the draw for one wolf count. The witch and the magician play together only with some wolf counts
+ * (see validWerewolfRoles): where they may play together they are two roles of the draw, where they may not and both
+ * are allowed they count as one role (one of them is drawn, never both).
+ */
+function familiesForWolves(plan: NormalizedSelection, wolfCount: number): readonly Family[] {
+  const witch = plan.families.find((family) => family.id === "witch");
+  const magician = plan.families.find((family) => family.id === "magician");
+  if (!witch || !magician) return plan.families;
+  if (validWerewolfRoles(plan.players, ["witch", "magician"], wolfCount)) return plan.families;
+  const merged: Family = {
+    id: "witch",
+    variants: [...witch.variants, ...magician.variants],
+  };
+  return plan.families
+    .filter((family) => family.id !== "magician")
+    .map((family) => (family.id === "witch" ? merged : family));
+}
+
 /** Enumerates role families only. Options and optional items never multiply a role's drawing weight. */
 function variableChoices(
   players: number,
@@ -248,10 +269,11 @@ function variableChoices(
   const result = normalizeSelection(players, input, settings);
   if (!result.ok) return result;
   const plan = result.selection;
-  const subsets = Array.from({ length: 2 ** plan.families.length }, (_, mask) =>
-    plan.families.filter((_, index) => Boolean(mask & (1 << index))),
-  );
   const wolves = availableWerewolfCounts(players).map((wolfCount) => {
+    const families = familiesForWolves(plan, wolfCount);
+    const subsets = Array.from({ length: 2 ** families.length }, (_, mask) =>
+      families.filter((_, index) => Boolean(mask & (1 << index))),
+    );
     const groups = new Map<number, (readonly RoleFamily[])[]>();
     for (const subset of subsets) {
       const roles = [...plan.requiredRoles, ...subset.map((family) => family.variants[0]!)];
@@ -266,6 +288,7 @@ function variableChoices(
       .map(([roleCount, choices]) => ({ roleCount, choices }));
     return {
       wolfCount,
+      families,
       allGroups,
       groups: allGroups.filter(
         (group) =>
@@ -440,6 +463,77 @@ function pick<T>(values: readonly T[], random: () => number): T {
     ? values[0]!
     : values[Math.floor(randomValue(random) * values.length)]!;
 }
+/**
+ * The chance of every family to be among the drawn ones, so that every single role has the same chance: a family
+ * with several variants (bodyguard or night guest) counts as many times as it has variants, and the chances add up to
+ * the number of families to draw. A family cannot be more likely than certain; what it cannot take is shared by the
+ * others.
+ */
+function familyChances(weights: readonly number[], count: number): readonly number[] {
+  const chances = weights.map(() => 0);
+  const open = new Set(weights.keys());
+  let left = count;
+  while (open.size > 0) {
+    const total = [...open].reduce((sum, index) => sum + weights[index]!, 0);
+    const capped = [...open].filter((index) => (weights[index]! * left) / total >= 1);
+    if (capped.length === 0) {
+      for (const index of open) chances[index] = (weights[index]! * left) / total;
+      break;
+    }
+    for (const index of capped) {
+      chances[index] = 1;
+      open.delete(index);
+      left -= 1;
+    }
+  }
+  return chances;
+}
+
+/**
+ * Draws the families of the "may" roles. Every role has the same chance to be drawn (a family with two variants is
+ * twice as likely, then one variant is drawn), which no uniform choice among the subsets can give when two roles
+ * exclude each other. The families are put in a random order and walked with one random starting point, so exactly
+ * `group.roleCount` of them are taken with their chances. A subset that may not be played is drawn again.
+ */
+function pickFamilies(
+  families: readonly Family[],
+  group: ChoiceGroup,
+  random: () => number,
+): readonly RoleFamily[] {
+  const feasible = new Set(group.choices.map((choice) => [...choice].sort().join("|")));
+  const eligible = families.filter((family) =>
+    group.choices.some((choice) => choice.includes(family.id)),
+  );
+  if (group.roleCount === 0) return [];
+  if (group.roleCount >= eligible.length) return eligible.map((family) => family.id);
+  const chances = familyChances(
+    eligible.map((family) => family.variants.length),
+    group.roleCount,
+  );
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    // Fisher-Yates: a random order of the families.
+    const order = eligible.map((_, index) => index);
+    for (let index = order.length - 1; index > 0; index -= 1) {
+      const other = Math.floor(randomValue(random) * (index + 1));
+      [order[index], order[other]] = [order[other]!, order[index]!];
+    }
+    const start = randomValue(random);
+    const chosen: RoleFamily[] = [];
+    let before = 0;
+    for (const index of order) {
+      const after = before + chances[index]!;
+      // A point start + k (k = 0, 1, ...) inside [before, after) takes the family.
+      if (Math.ceil(after - start - 1e-12) > Math.ceil(before - start - 1e-12)) {
+        chosen.push(eligible[index]!.id);
+      }
+      before = after;
+    }
+    if (chosen.length === group.roleCount && feasible.has([...chosen].sort().join("|")))
+      return chosen;
+  }
+  return pick(group.choices, random);
+}
+
 /** Uniform wolves, then feasible optional count and family subset; uniform variants and independent item coins. */
 function drawPlannedLineup(
   plan: Choices,
@@ -451,12 +545,10 @@ function drawPlannedLineup(
   try {
     const wolf = pick(wolves, random);
     const group = pick(wolf.groups, random);
-    const families = pick(group.choices, random);
+    const families = pickFamilies(wolf.families, group, random);
     const roles = [...normalized.requiredRoles];
     for (const familyId of families)
-      roles.push(
-        pick(normalized.families.find((family) => family.id === familyId)!.variants, random),
-      );
+      roles.push(pick(wolf.families.find((family) => family.id === familyId)!.variants, random));
     roles.sort();
     let settings: Partial<WerewolfSettings> = { ...normalized.settings };
     for (const rule of optionRules)
