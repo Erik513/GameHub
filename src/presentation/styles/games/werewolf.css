@@ -1936,7 +1936,7 @@
 /* The role reveal: the role stands in the middle, the line below it, and the abilities (with the amulet) are
    centered between the line and the bottom of the card. */
 .ww-deal__body:has(.ww-deal__zone) {
-  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 0.4fr) auto minmax(0, 1fr);
   align-content: stretch;
   gap: 0;
   height: 100%;
