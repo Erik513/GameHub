@@ -1404,24 +1404,14 @@
   padding: 0;
 }
 
-/* The day is light: the colors of the whole screen change while the narrator view shows the day. */
+/* The day is light only behind the boxes: the controls keep their dark colors, only the writing that stands directly
+   on the page turns dark. */
 .app-shell:has(.ww-night[data-time="day"]) {
-  --color-canvas: #f6f2e7;
-  --color-surface: #fffdf6;
-  --color-surface-muted: #ece6d5;
-  --color-ink: #1d1e23;
-  --color-ink-muted: #5b5e68;
-  --color-line: #cdc5b0;
-  --color-accent: #3556d6;
-  --color-accent-hover: #2a46b3;
-  --color-accent-contrast: #ffffff;
-  --color-danger: #b3261e;
-  --color-success: #1d7f48;
-  --color-success-hover: #17693b;
-  --color-warning: #9a5b00;
-  --color-danger-fill: #c3342b;
-  --color-danger-fill-hover: #a52b23;
-  --color-focus: #3556d6;
+  --color-canvas: #f1ece0;
+}
+
+.ww-night[data-time="day"] .ww-bar__phase {
+  color: #1d1e23;
 }
 
 /* The overview of all players and their roles. */
@@ -1460,10 +1450,6 @@
 .ww-overview__marks {
   display: flex;
   gap: var(--space-1);
-}
-
-.app-shell:has(.ww-night[data-time="day"]) {
-  color: var(--color-ink);
 }
 
 /* The bar of the narrator view takes the place of the header of the app. */
@@ -1575,7 +1561,7 @@
 }
 
 .ww-guide--tap {
-  align-content: center;
+  align-content: end;
   gap: var(--space-3);
 }
 
@@ -1583,9 +1569,9 @@
   font-size: clamp(1.5rem, 7vw, 2.25rem);
 }
 
-/* A message (morning, exile) stands in the middle of the box; the winners start at the top. */
+/* A message (morning, exile) stands at the bottom of the box; the winners start at the top. */
 .ww-night__stage[data-layout="plain"] .ww-guide:not(.ww-winners):not(.ww-deal) {
-  align-content: center;
+  align-content: end;
   justify-items: center;
   text-align: center;
 }
@@ -1630,9 +1616,9 @@
   font-weight: var(--weight-bold);
 }
 
-/* A guide without a list of people (waiting for a tap on an ability, a result, a cover call) is centered in its box. */
+/* A guide without a list of people (waiting for a tap on an ability, a result, a cover call) stands at the bottom of its box. */
 .ww-guide--idle {
-  align-content: center;
+  align-content: end;
   justify-items: center;
   text-align: center;
 }

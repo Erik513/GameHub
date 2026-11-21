@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-73: Heller Tageshintergrund, Texte unten in den Boxen
+
+- Am Tag ist nur der Hintergrund hell; Boxen und Knöpfe bleiben dunkel. Texte in den Boxen (Ankündigung, Anleitung, Morgen, Ausschluss) stehen unten statt in der Mitte.
+
 ### We-01-72: Weitere Partien und Verständlichkeit der Erzählersicht
 
 - Gewählte Fähigkeiten sind erkennbar (Haken, Rahmen, Zusammenfassung beim Einschlafen). Der Erzähler sieht die Gründe jedes Todes (nicht vorlesen), am Tag die Stummen und Verwundeten, bei der Abstimmung ×2 und „muss Ja“, Hinweise zu nicht wählbaren Personen und zum Verzicht. Am Spielende führt „Weiter“ zur Aufstellung. Die Zurück-Taste des Systems fragt vor dem Verlassen.

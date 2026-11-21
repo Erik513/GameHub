@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T06:00:00.000Z",
+    "updatedAt": "2026-11-22T06:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 256,
-      "totalTasks": 310,
+      "completedTasks": 257,
+      "totalTasks": 311,
       "percent": 82.6
     }
   },
@@ -1420,6 +1420,12 @@
           "title": "Dritte Partie im Browser (Dorfmatratze, Magier, Doppelstimme) mit Prüfung der Erzählersicht auf Verständlichkeit und Absicherung",
           "status": "done",
           "validation": "Zwei weitere Partien mit 20 Spielern gespielt (Dorfmatratze, Magier mit Heilung und Todeszauber, Hexe, Doppelstimme des Bürgermeisters, Jäger, Alte Vettel, Amulett, Verliebte). Spielverlauf und Ergebnisse stimmten (Wolfsopfer, Heilung, Gift, Zauber, Liebeskummer, Dorfmatratze nicht zu Hause, Ausschluss, Jägerschuss, Spielende). Gefunden und behoben: gewählte Fähigkeiten (auch der Heilschalter) waren nicht erkennbar, jetzt Haken, Rahmen und Zusammenfassung beim Einschlafen mit gedimmten Knöpfen; Gründe für jeden Tod (nur für den Erzähler, nicht vorlesen) beim Morgen, Ausschluss und Jägerschuss; am Tag stehen Stumme und Verwundete, bei der Abstimmung ×2 und muss Ja; Hinweise zu nicht wählbaren Personen (Leibwächter, Dorfmatratze) und zum Verzicht bei Hexe und Magier; am Spielende führt Weiter zur Aufstellung; die Zurück-Taste des Systems fragt vor dem Verlassen (wie in den anderen Spielen). Nicht geprüft: variabler Modus von Hand, schnelles Doppeltippen (Zurück fängt es ab); 1553 Tests, tsc -b, eslint, Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-73",
+          "title": "Tag nur mit hellem Hintergrund (Bedienelemente bleiben dunkel); Texte in den Boxen stehen unten",
+          "status": "done",
+          "validation": "Am Tag ist nur der Hintergrund hell, Boxen und Knöpfe bleiben dunkel, die Beschriftung der Leiste ist dunkel; Texte in der Anleitungsbox, bei der Ankündigung, am Morgen und beim Ausschluss stehen am unteren Rand der Box statt in der Mitte; im Browser bei 390 Pixel Breite angesehen (Nacht, Morgen, Tag); Tests, eslint sauber."
         }
       ]
     },
