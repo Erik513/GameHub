@@ -53,7 +53,10 @@ export function useNarratorGuide(
     cancelBack: () => setConfirmBack(false),
     choose: (name: string) => update((g) => choosePlayer(g, name)),
     confirmBack,
-    continueGuide: () => update(continueGuide),
+    continueGuide: () => {
+      setConfirmBack(false);
+      update(continueGuide);
+    },
     goBack,
     nobody: () => update(chooseNobody),
     undo: () => update(undoSelection),

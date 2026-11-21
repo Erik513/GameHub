@@ -7,7 +7,12 @@ import {
   type WerewolfTargetAction,
 } from "./selectors";
 import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
-import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./stateMachine";
+import {
+  transitionWerewolf,
+  werewolfAnnouncement,
+  type WerewolfEvent,
+  type WerewolfState,
+} from "./stateMachine";
 
 /**
  * The guide of the narrator: which instruction the lower box shows and what the narrator can do.
@@ -204,6 +209,8 @@ function pickLimit(state: WerewolfState, selection: GuideSelection): number {
 export interface GuideView {
   /** What the "next" button says: the day ends, the vote starts or ends, or simply "next". */
   readonly nextKind: "endDay" | "endVote" | "next" | "startVote";
+  /** Who leaves the game through the step that is about to be confirmed (the shot of the hunter). */
+  readonly outcome: readonly string[];
   readonly phase: GuidePhase;
   readonly state: WerewolfState;
   /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */
@@ -260,6 +267,10 @@ export function describeGuide(guide: Guide): GuideView {
       selection.heal ||
       selection.none,
     card: describeNarratorCard(state),
+    outcome:
+      frame.phase === "outro" && frame.event && describeNarratorCard(state)?.role === "hunter"
+        ? werewolfAnnouncement(transitionWerewolf(state, frame.event)).map((entry) => entry.name)
+        : [],
     nextKind:
       state.status === "vote"
         ? "endVote"
@@ -427,4 +438,33 @@ export function isDayStep(state: WerewolfState): boolean {
     default:
       return false;
   }
+}
+
+/** A group of players that won together. */
+export interface WinnerGroup {
+  readonly kind: "wolves" | "village" | "lovers" | "tanner";
+  readonly players: readonly string[];
+}
+
+/**
+ * Who won, for the one and only winner view at the very end of the game: the winning side (all its players, also the
+ * ones who left the game), the lovers when both are still in the game, and the tanner when he reached his own goal.
+ * The tanner stands in his own group instead of in the village.
+ */
+export function describeWinners(state: WerewolfState): readonly WinnerGroup[] {
+  if (state.status !== "finished") return [];
+  const side = state.players.filter((p) =>
+    state.winner === "wolves" ? p.role === "wolf" : p.role !== "wolf",
+  );
+  const groups: WinnerGroup[] = [
+    {
+      kind: state.winner,
+      players: side.filter((p) => p.name !== state.tannerWinner).map((p) => p.name),
+    },
+  ];
+  const { lovers } = state;
+  if (lovers?.every((name) => state.alive.some((p) => p.name === name)))
+    groups.push({ kind: "lovers", players: [...lovers] });
+  if (state.tannerWinner) groups.push({ kind: "tanner", players: [state.tannerWinner] });
+  return groups.filter((group) => group.players.length > 0);
 }

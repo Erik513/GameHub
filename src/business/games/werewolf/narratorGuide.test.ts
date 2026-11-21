@@ -7,12 +7,13 @@ import {
   continueGuide,
   createGuide,
   describeGuide,
+  describeWinners,
   undoSelection,
   unchoosePlayer,
   type Guide,
 } from "./narratorGuide";
 import { createWerewolfSession } from "./session";
-import { createWerewolf } from "./stateMachine";
+import { createWerewolf, type WerewolfState } from "./stateMachine";
 
 const names = "Anna,Ben,Cleo,Dora,Emil,Finn,Gina,Hans,Ida,Jan,Kim,Lea";
 
@@ -278,5 +279,77 @@ describe("narrator guide", () => {
         !guide.session.present.amulet!.mustPass,
       );
     }
+  });
+
+  it("names who leaves the game with the shot of the hunter before the hunter falls asleep", () => {
+    const base = game(["hunter"]).session.present;
+    const hunter = base.players.find((p) => p.role === "hunter")!;
+    const shooting = {
+      ...base,
+      hunter,
+      next: "day",
+      status: "hunter",
+    } as unknown as WerewolfState;
+    let guide = createGuide(createWerewolfSession(shooting));
+    expect(describeGuide(guide).card?.role).toBe("hunter");
+    // No effect of the night is shown in the day.
+    expect(describeGuide(guide).card?.effects).not.toContain("protected");
+    guide = continueGuide(guide);
+    guide = chooseAbility(guide, "shot");
+    const target = describeGuide(guide).targets[0]!;
+    guide = choosePlayer(guide, target);
+    guide = continueGuide(guide);
+    const view = describeGuide(guide);
+    expect(view.phase).toBe("outro");
+    expect(view.outcome).toContain(target);
+    // The shot reaches the game only with the next confirmation.
+    expect(guide.session.present.status).toBe("hunter");
+    guide = continueGuide(guide);
+    expect(guide.session.present.alive.some((p) => p.name === target)).toBe(false);
+  });
+
+  describe("the winners", () => {
+    const finish = (winner: "village" | "wolves", extra: Record<string, unknown> = {}) => {
+      const base = game(["tanner"]).session.present;
+      const wolves = base.players.filter((p) => p.role === "wolf");
+      const alive = winner === "wolves" ? wolves : base.players.filter((p) => p.role !== "wolf");
+      return { ...base, alive, status: "finished", winner, ...extra } as unknown as WerewolfState;
+    };
+
+    it("lists the whole winning side, also the players who left the game", () => {
+      const wolves = describeWinners(finish("wolves"));
+      expect(wolves).toHaveLength(1);
+      expect(wolves[0]?.kind).toBe("wolves");
+      expect(wolves[0]?.players.length).toBeGreaterThan(1);
+      const village = describeWinners(finish("village"));
+      expect(village[0]?.kind).toBe("village");
+      expect(village[0]?.players.some((name) => wolves[0]!.players.includes(name))).toBe(false);
+    });
+
+    it("adds the lovers who are both still in the game and the tanner in a group of his own", () => {
+      const base = finish("village");
+      const [one, two] = base.alive.map((p) => p.name);
+      const tanner = base.players.find((p) => p.role === "tanner")!.name;
+      const groups = describeWinners({
+        ...base,
+        lovers: [one!, two!],
+        tannerWinner: tanner,
+      });
+      expect(groups.map((g) => g.kind)).toEqual(["village", "lovers", "tanner"]);
+      expect(groups[0]?.players).not.toContain(tanner);
+      expect(groups[1]?.players).toEqual([one, two]);
+      expect(groups[2]?.players).toEqual([tanner]);
+      // Lovers of whom one left the game are no winners.
+      const half = describeWinners({
+        ...base,
+        alive: base.alive.filter((p) => p.name !== one),
+        lovers: [one!, two!],
+      });
+      expect(half.map((g) => g.kind)).toEqual(["village"]);
+    });
+
+    it("has no winners before the end", () => {
+      expect(describeWinners(game().session.present)).toEqual([]);
+    });
   });
 });

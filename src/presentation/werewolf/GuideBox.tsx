@@ -1,10 +1,11 @@
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import type { GuideView } from "../../business/games/werewolf/narratorGuide";
+import { describeWinners, type GuideView } from "../../business/games/werewolf/narratorGuide";
 import {
   currentWerewolfRole,
   werewolfAnnouncement,
   werewolfDrunkReveal,
+  type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
 import { Button } from "../components";
 import { DealCard } from "./DealCard";
@@ -32,7 +33,7 @@ export function GuideBox({
   onUnchoose,
 }: GuideBoxProps) {
   const { t } = useTranslation();
-  const { card, phase, selection } = view;
+  const { card, phase, selection, state } = view;
 
   if (phase === "plain") return <PlainBox view={view} />;
   if (!card) return null;
@@ -47,6 +48,9 @@ export function GuideBox({
     return (
       <button className="ww-guide ww-guide--tap" onClick={onContinue} type="button">
         <strong className="ww-guide__text">{text}</strong>
+        {view.outcome.length > 0 && (
+          <span>{t("werewolfNarrator.guide.left", { names: view.outcome.join(", ") })}</span>
+        )}
         <small>{hint}</small>
       </button>
     );
@@ -57,7 +61,7 @@ export function GuideBox({
     selection.ability !== null &&
     (view.targets.length > 0 || selection.picks.length > 0 || view.canChooseNobody);
   return (
-    <section className="ww-guide">
+    <section className={showPeople ? "ww-guide" : "ww-guide ww-guide--idle"}>
       {card.cover ? (
         <>
           <strong className="ww-guide__text">{t("werewolfNarrator.guide.coverTitle")}</strong>
@@ -78,11 +82,20 @@ export function GuideBox({
         <strong className="ww-guide__text">
           {info ??
             (selection.ability
-              ? t(`werewolfNarrator.guide.ask.${selection.ability}`)
+              ? t(
+                  `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,
+                )
               : card.abilities.length > 0
                 ? t("werewolfNarrator.guide.pickAbility")
                 : t("werewolfNarrator.guide.confirmDone"))}
         </strong>
+      )}
+      {!card.cover && (state.status === "witch" || state.status === "magician") && (
+        <span className="ww-guide__victim">
+          {state.wolfTarget
+            ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
+            : t("werewolfNarrator.guide.noVictim")}
+        </span>
       )}
       {showPeople && (
         <div className="ww-guide__people">
@@ -193,26 +206,20 @@ function PlainBox({ view }: { readonly view: GuideView }) {
       </section>
     );
   }
-  if (state.status === "exile")
+  if (state.status === "exile") {
+    const names = werewolfAnnouncement(state).map((entry) => entry.name);
     return (
       <section className="ww-guide">
         <strong className="ww-guide__text">
           {t("werewolfNarrator.guide.exile", { name: state.victim.name })}
         </strong>
+        {names.length > 1 && (
+          <span>{t("werewolfNarrator.guide.left", { names: names.join(", ") })}</span>
+        )}
       </section>
     );
-  if (state.status === "finished")
-    return (
-      <section className="ww-guide">
-        <strong className="ww-guide__text">
-          {state.tannerWinner
-            ? t("werewolfNarrator.guide.finished.tanner", { name: state.tannerWinner })
-            : t(
-                `werewolfNarrator.guide.finished.${state.winner === "village" ? "village" : "wolves"}`,
-              )}
-        </strong>
-      </section>
-    );
+  }
+  if (state.status === "finished") return <WinnerList state={state} />;
   return null;
 }
 
@@ -227,4 +234,40 @@ function dayPrompt(view: GuideView, t: TFunction): string | null {
   if (nominator === undefined) return t("werewolfNarrator.guide.day.nominator");
   if (seconder === undefined) return t("werewolfNarrator.guide.day.seconder");
   return t("werewolfNarrator.guide.day.chosen", { nominator, seconder, target });
+}
+
+/** The winner view at the very end: every group of winners with the names of its players. */
+function WinnerList({ state }: { readonly state: WerewolfState }) {
+  const { t } = useTranslation();
+  return (
+    <section className="ww-guide ww-winners">
+      <strong className="ww-guide__text">{t("werewolfNarrator.guide.finished.title")}</strong>
+      <div className="ww-winners__groups">
+        {describeWinners(state).map((group) => (
+          <div className="ww-winners__group" key={group.kind}>
+            <h4>
+              <WerewolfSymbol
+                id={
+                  group.kind === "village"
+                    ? "villager"
+                    : group.kind === "wolves"
+                      ? "wolf"
+                      : group.kind === "tanner"
+                        ? "tanner"
+                        : "lovers"
+                }
+                size={22}
+              />{" "}
+              {t(`werewolfNarrator.guide.finished.${group.kind}`)}
+            </h4>
+            <ul>
+              {group.players.map((name) => (
+                <li key={name}>{name}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 }

@@ -75,6 +75,17 @@ export interface NarratorCard {
 
 const maximumEffects = 3;
 
+/** The steps of the day: the effects of the night are not shown there. */
+const dayStatuses: readonly WerewolfState["status"][] = [
+  "morning",
+  "day",
+  "vote",
+  "exile",
+  "hunter",
+  "drunkHunter",
+  "finished",
+];
+
 type NightCallRole = Extract<WerewolfState, { status: "nightCall" }>["call"];
 
 const roleOfCall: Record<NightCallRole, CardRoleSymbol> = {
@@ -210,13 +221,15 @@ function effectsOf(state: WerewolfState, actors: readonly string[]): readonly Ca
   const found = new Set<CardEffect>();
   const people = describePlayers(state).filter((person) => actors.includes(person.name));
   const poisoned = "poisoned" in state ? state.poisoned?.name : undefined;
+  // What the night did to a person (attacked, protected, guest, poisoned) is of no interest in the day.
+  const night = !dayStatuses.includes(state.status);
   for (const person of people) {
     if (person.partner) found.add("lovers");
     if (person.amulet) found.add("amulet");
-    if (state.wolfTarget?.name === person.name) found.add("attacked");
-    if (state.protectedPlayer === person.name) found.add("protected");
-    if (state.hostPlayer === person.name) found.add("guest");
-    if (poisoned === person.name) found.add("poisoned");
+    if (night && state.wolfTarget?.name === person.name) found.add("attacked");
+    if (night && state.protectedPlayer === person.name) found.add("protected");
+    if (night && state.hostPlayer === person.name) found.add("guest");
+    if (night && poisoned === person.name) found.add("poisoned");
     if (person.silenced) found.add("silenced");
     if (person.drunk && person.alive) found.add("drunk");
   }

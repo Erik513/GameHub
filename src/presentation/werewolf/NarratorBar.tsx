@@ -93,6 +93,20 @@ export function NarratorBar({ state, day, onClose, onRules }: NarratorBarProps) 
                     size={20}
                   />
                 )}
+                {player.alive && player.delayedDeathNight !== null && (
+                  <WerewolfSymbol
+                    id="wounded"
+                    label={t("werewolfSymbols.items.wounded.name")}
+                    size={20}
+                  />
+                )}
+                {player.silenced && (
+                  <WerewolfSymbol
+                    id="silenced"
+                    label={t("werewolfSymbols.items.silenced.name")}
+                    size={20}
+                  />
+                )}
                 {player.drunk && player.alive && (
                   <WerewolfSymbol
                     id="drunk"

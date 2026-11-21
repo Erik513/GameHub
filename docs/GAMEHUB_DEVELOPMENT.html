@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T01:40:00.000Z",
+    "updatedAt": "2026-11-22T04:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 250,
-      "totalTasks": 305,
-      "percent": 82
+      "completedTasks": 253,
+      "totalTasks": 307,
+      "percent": 82.4
     }
   },
   "environment": {
@@ -1413,7 +1413,8 @@
         {
           "id": "We-01-30",
           "title": "Gewinneransicht anbinden; Gestaltung erst am Ende mit Claude Code abstimmen",
-          "status": "planned"
+          "status": "done",
+          "validation": "Genau eine Gewinneransicht am Spielende nach Vorschlag des Auftraggebers: Spielende mit allen Gewinnergruppen untereinander, jeweils mit den Namen (Werwölfe oder Dorf mit allen Spielern der Seite, die Verliebten wenn beide noch im Spiel sind, der Gerber mit eigenem Ziel in eigener Gruppe); Modell describeWinners mit Tests, Deutsch und Englisch; im Browser bei 390 Pixel Breite angesehen; Annahme: die Verliebten erscheinen nur, wenn beide am Ende noch im Spiel sind."
         },
         {
           "id": "We-01-31",
@@ -1622,6 +1623,18 @@
           "title": "Rollenenthüllung: Karte nutzt die ganze Fläche zwischen Leiste und Knöpfen, größere Symbole",
           "status": "done",
           "validation": "Die Karte der Rollenverteilung füllt die Fläche zwischen oberer Leiste und den Knöpfen unten, der Hinweis zum Tippen steht unten an der Karte; Rollensymbol und Fähigkeitssymbole größer; im Browser bei 390 Pixel Breite angesehen (Name und Rolle); Tests, tsc -b, eslint, Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-68",
+          "title": "Durchspielen im Browser mit allen Rollen (20 Spieler, Amulett, Trunkenbold, Hammer) und Behebung der gefundenen Lücken",
+          "status": "done",
+          "validation": "Zwei komplette Partien bei 390 Pixel Breite bis zum Spielende mit einem Spielfahrer im Browser gespielt: Rollenverteilung, Amulett, Amor und Verliebte, Leibwächter, Wölfe, Seherin und Seher-Lehrling, Ermittler, Hexe und Magier mit echtem Einsatz, Bürgermeister mit Hammer und Strafe, Alte Vettel, Trunkenbold, Morgen mit Verstorbenen und Liebeskummer, Nominierung, Abstimmung, Ausschluss, Jäger mit Schuss, Tarnaufrufe, Zurück über mehrere Schritte, Rückfrage beim Morgen, Neuladen in der Nacht und Spielende. Gefunden und behoben: Wer durch den Jägerschuss und beim Ausschluss mit ausscheidet, wurde nicht angesagt; die Wirkungen der Nacht standen am Tag auf der Karte; Hexe und Magier sahen das Wolfsopfer nicht; das Spielende nannte bei einem Gerber nur diesen; der Lehrling wurde mit dem Seherin-Text aufgefordert; die Übersicht kannte Verwundet und Stumm nicht. Der Gerber wird nicht während der Partie, sondern nur in der Gewinneransicht am Ende genannt (Beschluss des Auftraggebers). Nicht gespielt: Dorfmatratze, Wolfsangriff mit Heilung durch den Magier, variabler Modus; 1545 Tests, tsc -b, eslint, Schichtprüfung sauber."
+        },
+        {
+          "id": "We-01-69",
+          "title": "Erzählersicht ohne leere Flächen: Boxen teilen sich die ganze Fläche (Nacht, Tag, Morgen, Spielende)",
+          "status": "done",
+          "validation": "Rollenkarte und Anleitungsbox teilen sich die Fläche zwischen Leiste und Knöpfen (Ankündigung zwei gleich große Boxen, Handeln Karte mit großen Fähigkeitsknöpfen über der Box, Tag, Morgen und Ausschluss in der ganzen Fläche), Personenknöpfe füllen ihre Zeilen, die Gewinnergruppen teilen sich die Fläche; im Browser bei 390 Pixel Breite angesehen; Tests, tsc -b, eslint, Schichtprüfung sauber."
         }
       ]
     },

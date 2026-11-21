@@ -40,10 +40,15 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
         onRules={onRules}
         state={view.state}
       />
-      <div className="ww-night__stage">
+      <div
+        className="ww-night__stage"
+        data-layout={view.card ? (view.phase === "intro" ? "intro" : "act") : "plain"}
+      >
         {view.card &&
           (view.phase === "intro" ? (
-            <div aria-hidden="true" className="ww-role-card ww-role-card--hidden" />
+            <div aria-hidden="true" className="ww-role-card ww-role-card--hidden">
+              ?
+            </div>
           ) : (
             <NarratorCard
               active={view.selection.ability}

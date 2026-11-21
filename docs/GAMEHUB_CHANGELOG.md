@@ -2,6 +2,18 @@
 
 ## 2026-11-21
 
+### We-01-69: Erzählersicht ohne leere Flächen
+
+- Die Boxen teilen sich die ganze Fläche: in der Ankündigung zwei gleich große Boxen (verdeckte Karte mit Fragezeichen), beim Handeln die Rollenkarte mit großen Fähigkeitsknöpfen über der Anleitungsbox, am Tag, am Morgen und beim Ausschluss füllt die Box die Fläche. Personenknöpfe füllen ihre Zeilen, die Gewinnergruppen verteilen sich über die Fläche.
+
+### We-01-30: Gewinneransicht am Spielende
+
+- Nur noch eine Gewinneransicht, ganz am Ende: alle Gewinnergruppen untereinander mit den Namen der Spieler (Werwölfe oder Dorf, die Verliebten, der Gerber). Während der Partie wird der Gerber nicht angesagt.
+
+### We-01-68: Durchspielen mit allen Rollen im Browser
+
+- Zwei vollständige Partien mit 20 Spielern und allen Rollen durchgespielt. Behoben: Ansage derer, die durch den Jägerschuss oder beim Ausschluss mitausscheiden; Wirkungen der Nacht nicht mehr am Tag; Hexe und Magier sehen das Wolfsopfer; Spielende nennt Partei und Gerber; eigener Text für den Seher-Lehrling; Übersicht kennt Verwundet und Stumm; die Rückfrage verschwindet bei Weiter.
+
 ### We-01-49: Seher-Lehrling öffentlich aufrufen; Aufgabenstände nachgezogen
 
 - Nach dem Tod der Seherin wird der Seher-Lehrling öffentlich als Seher-Lehrling aufgerufen (Karte mit Augensymbol, Texte Deutsch und Englisch). Amulett-Ansage und Weitergabe sind in der Erzählersicht abgedeckt. Die Aufgaben We-01-04, 10, 27, 28, 29, 49 und 52 sind mit ihrem tatsächlichen Prüfstand auf erledigt gesetzt.
