@@ -71,8 +71,8 @@ const chips = (name: string) =>
   [...box(name).querySelectorAll(".ww-chip")].map((chip) => chip.textContent);
 
 it.each([
-  ["en", "Must be in the game", "May be in the game", "Should not be in the game"],
-  ["de", "Muss ins Spiel", "Darf ins Spiel", "Soll nicht ins Spiel"],
+  ["en", "Must be in the game", "May be in the game"],
+  ["de", "Muss ins Spiel", "Darf ins Spiel"],
 ] as const)(
   "shows three boxes for the roles, all in the last one at first (%s)",
   async (language, must, may) => {

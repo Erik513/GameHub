@@ -27,9 +27,6 @@ interface Amulet {
 interface Match {
   readonly history: readonly WerewolfLogEntry[];
   readonly hammerVictim: string | null;
-  readonly nightRolePool?: readonly WerewolfSpecialRole[];
-  readonly nightItemPool?: readonly ("drunk" | "amulet")[];
-  readonly nightMayUseHammer?: boolean;
   readonly narrator: string;
   readonly players: readonly Player[];
   readonly alive: readonly Player[];

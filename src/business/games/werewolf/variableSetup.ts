@@ -534,7 +534,7 @@ function pickFamilies(
   return pick(group.choices, random);
 }
 
-/** Uniform wolves, then feasible optional count and family subset; uniform variants and independent item coins. */
+/** Uniform wolves and feasible counts, weighted families, uniform variants and independent item coins. */
 function drawPlannedLineup(
   plan: Choices,
   random: () => number,
@@ -618,18 +618,7 @@ export function createVariableWerewolf(
     draw.lineup.settings,
   );
   if (!game) return fail("invalidRandom");
-  const optional = plan.selection.families.flatMap((family) => family.variants);
-  const nightRolePool = [...plan.selection.requiredRoles, ...optional].sort();
-  return {
-    ok: true,
-    game: {
-      ...game,
-      nightRolePool,
-      nightItemPool: [...plan.selection.requiredItems, ...plan.selection.itemPool].sort(),
-      nightMayUseHammer:
-        nightRolePool.includes("mayor") && plan.selection.options.mayor.includes("hammer"),
-    },
-  };
+  return { ok: true, game };
 }
 export interface VariableWerewolfRecommendation {
   readonly ok: true;

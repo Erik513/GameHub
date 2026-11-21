@@ -134,7 +134,7 @@ export function VariableRoles({ draft, modeSwitch, onChange, players }: Variable
       {...{ [dropAttribute]: String(dropOf(state)) }}
       data-over={
         (dragging.over === dropOf(state) &&
-          dragging.drag !== null &&
+          dragging.drag !== undefined &&
           accepts(dragging.drag.player, state)) ||
         undefined
       }

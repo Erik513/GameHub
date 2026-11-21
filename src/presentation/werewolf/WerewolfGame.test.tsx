@@ -12,7 +12,7 @@ async function renderGame(language: "en" | "de") {
   const { Screen } = createWerewolfModule();
   render(
     <I18nextProvider i18n={i18n}>
-      <Screen />
+      <Screen cardLanguage="en" onCardLanguageChange={() => undefined} />
     </I18nextProvider>,
   );
   return userEvent.setup();
@@ -249,7 +249,7 @@ it("keeps the line-up for the next game", async () => {
   const view = () => (
     <I18nextProvider i18n={i18n}>
       <GameSettingsMemoryProvider memory={memory}>
-        <Screen />
+        <Screen cardLanguage="en" onCardLanguageChange={() => undefined} />
       </GameSettingsMemoryProvider>
     </I18nextProvider>
   );
@@ -296,7 +296,7 @@ it("keeps the fixed and the variable roles apart, and the kind of roles", async 
   const view = () => (
     <I18nextProvider i18n={i18n}>
       <GameSettingsMemoryProvider memory={memory}>
-        <Screen />
+        <Screen cardLanguage="en" onCardLanguageChange={() => undefined} />
       </GameSettingsMemoryProvider>
     </I18nextProvider>
   );

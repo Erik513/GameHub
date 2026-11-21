@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   createWerewolf,
   transitionWerewolf,
-  wakingPlayers,
   werewolfAnnouncement,
   type WerewolfEvent,
   type WerewolfSettings,
@@ -45,11 +44,6 @@ function vision(s: WerewolfState) {
 const morning = (s: WerewolfState) => act(s, { type: "announceMorning", night: s.night });
 function nextNight(s: WerewolfState) {
   return act(morning(s), { type: "endDay", night: s.night });
-}
-function skipCover(s: WerewolfState): WerewolfState {
-  return s.status === "nightCall"
-    ? skipCover(act(s, { type: "acknowledgeCall", night: s.night }))
-    : s;
 }
 function noAttack(s: WerewolfState) {
   return vision(
@@ -114,7 +108,7 @@ describe("narrator business contract", () => {
       expect(nightScript(spent).find((c) => c.id === role)?.mode).toBe("cover");
   });
 
-  it("makes undrawn variable roles cover calls and prevents actions or stale acknowledgments", () => {
+  it("skips undrawn variable roles throughout the actual night", () => {
     const result = createVariableWerewolf(
       Array.from({ length: 10 }, (_, i) => "P" + i).join(","),
       "Narrator",
@@ -126,27 +120,19 @@ describe("narrator business contract", () => {
         wolfCounts: [2],
       },
     );
-    expect(result.ok).toBe(true);
-    if (!result.ok) throw Error("setup");
+    if (!result.ok) throw Error(result.reason);
     let s = act(
       result.game,
       ...result.game.players.map((p) => ({ type: "roleSeen", player: p.name }) as const),
     );
-    expect(s).toMatchObject({ status: "nightCall", call: "cupid" });
-    expect(validTargets(s)).toEqual([]);
-    expect(wakingPlayers(s)).toEqual([]);
-    expect(act(s, { type: "bond", night: 1, players: ["P0", "P1"] })).toBe(s);
-    expect(act(s, { type: "acknowledgeCall", night: 2 })).toBe(s);
-    s = skipCover(s);
     expect(s.status).toBe("wolves");
-    const end = skipCover(noAttack(s));
-    expect(end.status).toBe("morning");
-    expect(
-      end.history.filter((e) => e.kind === "action" && e.event.type === "acknowledgeCall"),
-    ).toHaveLength(4);
-    expect(nightScript({ ...end, night: 3 }).find((c) => c.id === "drunkReveal")?.mode).toBe(
-      "cover",
+    expect(act(s, { type: "acknowledgeCall", night: 1 })).toBe(s);
+    s = noAttack(s);
+    expect(s.status).toBe("morning");
+    expect(s.history.some((e) => e.kind === "action" && e.event.type === "acknowledgeCall")).toBe(
+      false,
     );
+    expect(nightScript({ ...s, night: 3 }).find((c) => c.id === "drunkReveal")?.mode).toBe("skip");
   });
 
   it("resolves hammer overlaps once and records every effective cause with its actor", () => {
@@ -458,14 +444,13 @@ it("provides valid nomination participants and mandatory weighted voters", () =>
   );
 });
 
-it("conceals an undrawn or masked apprentice after the public seer dies", () => {
+it("skips an absent apprentice but conceals an actual masked apprentice after the seer dies", () => {
   const s = game();
   const noSeer = {
     ...s,
     alive: s.alive.filter((p) => p.role !== "seer"),
-    nightRolePool: ["apprenticeSeer"] as const,
   };
-  expect(nightScript(noSeer).find((p) => p.id === "seer")?.mode).toBe("cover");
+  expect(nightScript(noSeer).find((p) => p.id === "seer")?.mode).toBe("skip");
   const withApprentice = game(["apprenticeSeer"]);
   const name = withApprentice.players.find((p) => p.role === "apprenticeSeer")!.name;
   const masked = {
@@ -480,15 +465,14 @@ it("conceals an undrawn or masked apprentice after the public seer dies", () => 
 });
 
 it("does not resurrect a hunter announcement from a queued cover continuation", () => {
-  const initial = game(["hunter"]);
+  const initial = game(["hunter", "bodyguard"], { revealRoles: false });
   const hunter = initial.players.find((p) => p.role === "hunter")!;
   const s: WerewolfState = {
     ...initial,
     status: "hunter",
     hunter,
     next: "wolves",
-    alive: initial.alive.filter((p) => p !== hunter),
-    nightRolePool: ["bodyguard", "nightGuest"],
+    alive: initial.alive.filter((p) => p !== hunter && p.role !== "bodyguard"),
   };
   const shot = act(s, {
     type: "shot",
@@ -498,9 +482,7 @@ it("does not resurrect a hunter announcement from a queued cover continuation", 
   expect(shot.status).toBe("nightCall");
   expect(werewolfAnnouncement(shot)).toHaveLength(1);
   const first = act(shot, { type: "acknowledgeCall", night: 2 });
-  expect(first.status).toBe("nightCall");
+  expect(first.status).toBe("wolves");
   expect(werewolfAnnouncement(first)).toEqual([]);
-  const next = act(first, { type: "acknowledgeCall", night: 2 });
-  expect(next.status).toBe("wolves");
-  expect(werewolfAnnouncement(next)).toEqual([]);
+  expect(act(first, { type: "acknowledgeCall", night: 2 })).toBe(first);
 });

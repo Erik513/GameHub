@@ -34,9 +34,6 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
     enabled = true,
     spent = false,
   ) => {
-    const inPool =
-      (state.nightRolePool?.some((r) => r === role) ?? false) &&
-      !state.players.some((p) => p.role === role);
     const present = state.players.filter((p) => p.role === role);
     const hidden =
       present.some((p) => masked(p.name)) || (!state.settings.revealRoles && present.length > 0);
@@ -44,7 +41,7 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
       ? "skip"
       : actors.length && !spent
         ? "active"
-        : actors.length || inPool || hidden
+        : actors.length || hidden
           ? "cover"
           : "skip";
     calls.push({ id, announcementRole: id, mode, actors: mode === "active" ? actors : [] });
@@ -60,9 +57,7 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
     state.drunk && !state.drunk.revealed && state.alive.some((p) => p.name === state.drunk!.player)
       ? [state.drunk.player]
       : [];
-  const drunkCover =
-    Boolean(state.nightItemPool?.includes("drunk")) ||
-    (!state.settings.revealRoles && state.drunk !== null);
+  const drunkCover = !state.settings.revealRoles && state.drunk !== null;
   calls.push({
     id: "drunkReveal",
     announcementRole: "drunkReveal",
@@ -81,14 +76,17 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
   add("seer", "seer", seer);
   calls[calls.length - 1] = {
     ...calls[calls.length - 1]!,
-    announcementRole: state.alive.some((p) => p.role === "seer") ? "seer" : "apprenticeSeer",
+    announcementRole:
+      state.alive.some((p) => p.role === "seer") ||
+      !state.players.some((p) => p.role === "apprenticeSeer")
+        ? "seer"
+        : "apprenticeSeer",
   };
   const apprentice = state.players.filter((p) => p.role === "apprenticeSeer");
   const possibleApprentice =
     !state.alive.some((p) => p.role === "seer") &&
     (apprentice.some((p) => masked(p.name)) ||
-      (apprentice.length > 0 && !state.settings.revealRoles) ||
-      (apprentice.length === 0 && state.nightRolePool?.includes("apprenticeSeer")));
+      (apprentice.length > 0 && !state.settings.revealRoles));
   if (possibleApprentice && calls[calls.length - 1]!.mode === "skip")
     calls[calls.length - 1] = {
       id: "seer",
@@ -109,8 +107,8 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
     "mayor",
     "mayor",
     visible("mayor"),
-    state.night > 1 && (state.settings.mayor === "hammer" || state.nightMayUseHammer === true),
-    state.hammerUsed || state.settings.mayor !== "hammer",
+    state.night > 1 && state.settings.mayor === "hammer",
+    state.hammerUsed,
   );
   add("spellcaster", "spellcaster", visible("spellcaster"));
   calls.push({

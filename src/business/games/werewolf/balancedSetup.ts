@@ -36,8 +36,7 @@ export function createRandomWerewolf(
     return null;
   const lineup = drawAutomaticWerewolfLineup(players.length, pool, roleCount, random, settings);
   if (!lineup) return null;
-  const game = createResolvedWerewolf(playersText, narrator, random, lineup);
-  return game ? { ...game, nightRolePool: [...pool] } : null;
+  return createResolvedWerewolf(playersText, narrator, random, lineup);
 }
 
 /** Validates every random draw, including shuffle, drunk and amulet assignment. */

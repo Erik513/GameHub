@@ -515,7 +515,7 @@ it("validates every used random draw and never returns a partial match", () => {
   ).toThrow("RNG unavailable");
 });
 
-it("keeps a possible hammer variant hidden when the double-vote variant or no mayor is drawn", () => {
+it("skips the hammer call when no mayor or the double-vote variant is drawn", () => {
   for (const range of [
     { minimum: 0, maximum: 1 },
     { minimum: 1, maximum: 1 },
@@ -528,9 +528,8 @@ it("keeps a possible hammer variant hidden when the double-vote variant or no ma
     const result = createVariableWerewolf(names(10), "Narrator", () => 0.25, selection);
     if (!result.ok) throw Error(result.reason);
     expect(result.game.settings.mayor).toBe("doubleVote");
-    expect(result.game.nightMayUseHammer).toBe(true);
     const script = nightScript({ ...result.game, night: 2 });
-    expect(script.find((c) => c.id === "mayor")).toMatchObject({ mode: "cover", actors: [] });
+    expect(script.find((c) => c.id === "mayor")).toMatchObject({ mode: "skip", actors: [] });
   }
   const doubleOnly = createVariableWerewolf(
     names(9),
@@ -543,7 +542,6 @@ it("keeps a possible hammer variant hidden when the double-vote variant or no ma
     }),
   );
   if (!doubleOnly.ok) throw Error(doubleOnly.reason);
-  expect(doubleOnly.game.nightMayUseHammer).toBe(false);
   expect(nightScript({ ...doubleOnly.game, night: 2 }).find((c) => c.id === "mayor")?.mode).toBe(
     "skip",
   );
