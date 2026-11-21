@@ -5,6 +5,7 @@ import { wakingPlayers, type WerewolfState } from "./stateMachine";
 export type CardRoleSymbol =
   | "wolf"
   | "seer"
+  | "apprenticeSeer"
   | "witch"
   | "hunter"
   | "bodyguard"
@@ -92,15 +93,26 @@ const roleOfCall: Record<NightCallRole, CardRoleSymbol> = {
   wolves: "wolf",
 };
 
+/**
+ * The seer step is called "the seer" while a seer lives. After the death of the seer the apprentice takes over and
+ * the step is called "the apprentice seer" (the public call of the night script).
+ */
+function seerRole(state: WerewolfState): CardRoleSymbol {
+  return !state.alive.some((p) => p.role === "seer") &&
+    state.players.some((p) => p.role === "apprenticeSeer")
+    ? "apprenticeSeer"
+    : "seer";
+}
+
 function cardRole(state: WerewolfState): CardRoleSymbol | null {
   switch (state.status) {
     case "nightCall":
-      return roleOfCall[state.call];
+      return state.call === "seer" ? seerRole(state) : roleOfCall[state.call];
     case "wolves":
       return "wolf";
     case "seer":
     case "vision":
-      return "seer";
+      return seerRole(state);
     case "investigator":
     case "investigation":
       return "paranormalInvestigator";
@@ -141,6 +153,7 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
         },
       ];
     case "seer":
+    case "apprenticeSeer":
       return [{ available: state.status === "seer", id: "inspect", symbol: "seer" }];
     case "paranormalInvestigator":
       return [{ available: !state.investigationUsed, id: "investigate", symbol: "investigation" }];

@@ -182,4 +182,33 @@ describe("describeNarratorCard", () => {
     const quiet = { ...state, amulet: null, silencedPlayer: witch.name } as WerewolfState;
     expect(describeNarratorCard(quiet)!.effects).toEqual(["silenced"]);
   });
+
+  it("calls the apprentice instead of the seer once the seer is dead", () => {
+    const base = start(["apprenticeSeer"]);
+    const seen = at(base, { status: "seer", victim: null });
+    expect(describeNarratorCard(seen)?.role).toBe("seer");
+    const apprentice = base.alive.find((p) => p.role === "apprenticeSeer")!;
+    const without = {
+      ...seen,
+      alive: base.alive.filter((p) => p.role !== "seer"),
+    } as WerewolfState;
+    const card = describeNarratorCard(without)!;
+    expect(card.role).toBe("apprenticeSeer");
+    expect(card.actors).toEqual([apprentice.name]);
+    expect(card.abilities).toEqual([{ available: true, id: "inspect", symbol: "seer" }]);
+    expect(
+      describeNarratorCard(at(without, { status: "vision", target: "x", isWolf: false }))?.role,
+    ).toBe("apprenticeSeer");
+    const cover = describeNarratorCard(
+      at(without, { call: "seer", resume: without, status: "nightCall" }),
+    )!;
+    expect(cover.role).toBe("apprenticeSeer");
+    expect(cover.cover).toBe(true);
+    // Without an apprentice in the game the seer step stays "the seer".
+    const lonely = { ...at(start([]), { status: "seer", victim: null }) };
+    expect(
+      describeNarratorCard({ ...lonely, alive: lonely.alive.filter((p) => p.role !== "seer") })
+        ?.role,
+    ).toBe("seer");
+  });
 });

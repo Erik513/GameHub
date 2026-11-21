@@ -41,6 +41,7 @@ export const werewolfNarratorTexts = {
     },
     guide: {
       wake: {
+        apprenticeSeer: "The apprentice seer wakes up",
         day: "The day begins",
         wolf: "The werewolves wake up",
         seer: "The seer wakes up",
@@ -59,6 +60,7 @@ export const werewolfNarratorTexts = {
         amuletPass: "The amulet holder wakes up",
       },
       sleep: {
+        apprenticeSeer: "The apprentice seer goes back to sleep",
         day: "The day ends",
         wolf: "The werewolves go back to sleep",
         seer: "The seer goes back to sleep",

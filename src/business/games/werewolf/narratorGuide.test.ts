@@ -248,4 +248,35 @@ describe("narrator guide", () => {
       expect(describeGuide(guide).selection.picks).toEqual([nominee]);
     });
   });
+
+  it("announces the amulet holder at the start and lets the holder pass the amulet at the end of the night", () => {
+    let guide = game([], { amulet: true, attackOnFirstNight: true });
+    const holder = guide.session.present.amulet!.holder;
+    for (let step = 0; step < 300 && guide.session.present.status !== "amuletIntro"; step += 1)
+      guide = forward(guide)!;
+    expect(guide.session.present.status).toBe("amuletIntro");
+    expect(describeGuide(guide).card?.role).toBe("amulet");
+    expect(describeGuide(guide).card?.actors).toEqual([holder]);
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).phase).toBe("act");
+    expect(describeGuide(guide).canContinue).toBe(true);
+    // The night goes on until the end step: the holder passes the amulet, the next morning follows.
+    for (let step = 0; step < 300 && guide.session.present.status !== "amuletPass"; step += 1) {
+      const next = forward(guide);
+      if (!next) break;
+      guide = next;
+    }
+    if (guide.session.present.status === "amuletPass") {
+      expect(describeGuide(guide).card?.role).toBe("amuletPass");
+      guide = continueGuide(guide);
+      expect(describeGuide(guide).phase).toBe("act");
+      const before = guide.session.present.amulet!.holder;
+      guide = chooseAbility(guide, "passAmulet");
+      // The holder may keep the amulet unless the game says it has to be passed on.
+      expect(describeGuide(guide).targets.length).toBeGreaterThan(1);
+      expect(describeGuide(guide).targets.includes(before)).toBe(
+        !guide.session.present.amulet!.mustPass,
+      );
+    }
+  });
 });

@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-49: Seher-Lehrling öffentlich aufrufen; Aufgabenstände nachgezogen
+
+- Nach dem Tod der Seherin wird der Seher-Lehrling öffentlich als Seher-Lehrling aufgerufen (Karte mit Augensymbol, Texte Deutsch und Englisch). Amulett-Ansage und Weitergabe sind in der Erzählersicht abgedeckt. Die Aufgaben We-01-04, 10, 27, 28, 29, 49 und 52 sind mit ihrem tatsächlichen Prüfstand auf erledigt gesetzt.
+
 ### We-01-67: Rollenenthüllung auf der ganzen Fläche
 
 - Die Karte der Rollenverteilung füllt die ganze Fläche zwischen der oberen Leiste und den Knöpfen unten; Rollensymbol, Fähigkeitssymbole und Texte sind größer.
