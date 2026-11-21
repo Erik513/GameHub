@@ -42,10 +42,6 @@ export const werewolfRoleInfoTexts = {
         lines:
           "In der ersten Nacht wählst du zwei Verliebte; du darfst selbst dazugehören.\nStirbt eine der beiden Personen, stirbt die andere mit.",
       },
-      toughGuy: {
-        lines:
-          "Ein Angriff tötet dich nicht sofort: Du spielst noch einen Tag mit und stirbst in der Nacht danach.",
-      },
       tanner: {
         lines: "Dein Ziel ist es zu sterben: Dann gewinnst du für dich allein.",
       },
@@ -72,8 +68,10 @@ export const werewolfRoleInfoTexts = {
     variants: {
       required: "Du musst schießen.",
       optional: "Du darfst auch verzichten.",
-      wolfOnly: "Das gilt nur für Wolfsangriffe.",
-      anyAttack: "Das gilt für jeden Angriff, auch Gift, Todeszauber und Jägerschuss.",
+      wolfOnly:
+        "Ein Wolfsangriff tötet dich nicht sofort: Du spielst noch einen Tag mit und stirbst danach in der Nacht.\nGerettet wirst du nur, wenn der Angriff noch in derselben Nacht geheilt wird.\nAlles andere tötet dich sofort: Gift, Todeszauber, Jägerschuss, Hammer, Abstimmung und der Tod deines Liebespartners.",
+      anyAttack:
+        "Ein Angriff durch Wölfe, Gift, Todeszauber oder Jägerschuss tötet dich nicht sofort: Du spielst noch einen Tag mit und stirbst danach in der Nacht.\nGerettet wirst du nur, wenn ein Wolfsangriff noch in derselben Nacht geheilt wird.\nHammer, Abstimmung und der Tod deines Liebespartners töten dich sofort.",
       anyDeath: "Jeder Tod zählt.",
       voteOnly: "Du musst durch eine Abstimmung ausscheiden.",
       allowed: "Du darfst dich selbst wählen.",

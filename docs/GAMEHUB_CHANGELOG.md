@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-83: Info des Harten Burschen
+
+- Der Text erklärt jetzt die Wunde, dass nur in der Angriffsnacht ein Wolfsangriff geheilt werden kann (sonst stirbt er in der nächsten Nacht), was ihn sofort tötet (Hammer, Abstimmung, Tod des Liebespartners) und was die Option jeweils bedeutet.
+
 ### We-01-82: Info des Bürgermeisters
 
 - Die Info des Bürgermeisters erklärt jetzt den Hammer (oder die doppelte Stimme); vorher stand dort nur „Verrate deine Rolle nicht“.

@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T12:30:00.000Z",
+    "updatedAt": "2026-11-22T13:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 266,
-      "totalTasks": 320,
-      "percent": 83.1
+      "completedTasks": 267,
+      "totalTasks": 321,
+      "percent": 83.2
     }
   },
   "environment": {
@@ -1713,6 +1713,12 @@
           "title": "Info des Bürgermeisters: Hammer und doppelte Stimme erklärt",
           "status": "done",
           "validation": "Der Info-Knopf der Karte des Bürgermeisters nannte nur „Verrate deine Rolle nicht“, weil die Option des Bürgermeisters nicht übergeben wurde; jetzt steht der Satz zur Option dabei: beim Hammer ab der zweiten Nacht, einmal pro Partie, Werwolf stirbt, sonst stirbt der Bürgermeister, nichts schützt davor (auch das Amulett nicht); bei der doppelten Stimme, dass der Erzähler sie doppelt zählt; Tests in Deutsch und Englisch; 1566 Tests, tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-83",
+          "title": "Info des Harten Burschen vollständig: Wunde, Rettung nur in der Angriffsnacht, was sofort tötet, Optionen",
+          "status": "done",
+          "validation": "Text gegen die Logik geprüft (wounds.ts, specialRoles.test.ts) und danach auf Wunsch des Auftraggebers bewusst kurz gehalten: Angriff tötet nicht sofort; gerettet nur durch Heilung des Wolfsangriffs in derselben Nacht; Hammer, Abstimmung und der Tod des Liebespartners töten sofort; je Option ein vollständiger Text nur für die gespielte Option (Nur Wolfsangriff oder Jeder Angriff), nichts über die andere; Deutsch und Englisch; Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
         }
       ]
     },

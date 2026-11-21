@@ -42,10 +42,6 @@ export const werewolfRoleInfoTexts = {
         lines:
           "In the first night you choose two lovers; you may be one of them.\nIf one of the two dies, the other dies too.",
       },
-      toughGuy: {
-        lines:
-          "An attack does not kill you at once: you play on for one day and die in the night after.",
-      },
       tanner: {
         lines: "Your goal is to die: then you win on your own.",
       },
@@ -72,8 +68,10 @@ export const werewolfRoleInfoTexts = {
     variants: {
       required: "You have to shoot.",
       optional: "You may also pass.",
-      wolfOnly: "This only applies to wolf attacks.",
-      anyAttack: "This applies to every attack, also poison, death spell and the hunter's shot.",
+      wolfOnly:
+        "A wolf attack does not kill you at once: you play on for one day and die in the night after.\nYou are only saved if the attack is healed in the same night.\nEverything else kills you at once: poison, death spell, the hunter's shot, the hammer, a vote and the death of your lover.",
+      anyAttack:
+        "An attack by wolves, poison, death spell or the hunter's shot does not kill you at once: you play on for one day and die in the night after.\nYou are only saved if a wolf attack is healed in the same night.\nThe hammer, a vote and the death of your lover kill you at once.",
       anyDeath: "Every death counts.",
       voteOnly: "You have to be voted out.",
       allowed: "You may choose yourself.",
