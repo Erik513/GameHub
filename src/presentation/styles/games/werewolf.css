@@ -1924,3 +1924,65 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* The role reveal: a line and room between the name of the role and its abilities. */
+.ww-deal__abilities {
+  width: 70%;
+  margin-top: var(--space-4);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-line);
+}
+
+/* The role reveal: the role stands in the middle, the line below it, and the abilities (with the amulet) are
+   centered between the line and the bottom of the card. */
+.ww-deal__body:has(.ww-deal__zone) {
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: 0;
+  height: 100%;
+}
+
+.ww-deal__who {
+  grid-row: 2;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  padding-bottom: var(--space-5);
+}
+
+.ww-deal__zone {
+  grid-row: 3;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  width: 70%;
+  justify-self: center;
+  border-top: 1px solid var(--color-line);
+}
+
+.ww-deal__zone .ww-deal__abilities {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* The "i" of the role card is large enough to find and hit easily. */
+.ww-deal .ww-deal__info {
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 3rem;
+  min-width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+}
+
+.ww-deal .ww-deal__info svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.ww-deal .ww-deal__info {
+  color: var(--color-ink);
+}

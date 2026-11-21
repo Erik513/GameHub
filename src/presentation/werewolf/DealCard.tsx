@@ -42,32 +42,36 @@ export function DealCard({ name, role, amulet, mayor }: DealCardProps) {
         <span className="ww-deal__body">
           {shown ? (
             <>
-              <span className="ww-deal__role">
-                <WerewolfSymbol id={role} size={88} />
+              <span className="ww-deal__who">
+                <span className="ww-deal__role">
+                  <WerewolfSymbol id={role} size={88} />
+                </span>
+                <strong className="ww-deal__name">{roleName}</strong>
               </span>
-              <strong className="ww-deal__name">{roleName}</strong>
-              <span className="ww-deal__abilities">
-                {abilities.length === 0 ? (
-                  <small>{t("werewolfNarrator.deal.noAbility")}</small>
-                ) : (
-                  abilities.map((entry) => (
-                    <span className="ww-deal__ability" key={entry.symbol}>
-                      <WerewolfSymbol id={entry.symbol} size={44} />
-                      <small>
-                        {entry.ability
-                          ? t(`werewolfNarrator.ability.${entry.ability}`)
-                          : t(`werewolfSymbols.items.${entry.symbol}.name`)}
-                      </small>
-                    </span>
-                  ))
+              <span className="ww-deal__zone">
+                <span className="ww-deal__abilities">
+                  {abilities.length === 0 ? (
+                    <small>{t("werewolfNarrator.deal.noAbility")}</small>
+                  ) : (
+                    abilities.map((entry) => (
+                      <span className="ww-deal__ability" key={entry.symbol}>
+                        <WerewolfSymbol id={entry.symbol} size={44} />
+                        <small>
+                          {entry.ability
+                            ? t(`werewolfNarrator.ability.${entry.ability}`)
+                            : t(`werewolfSymbols.items.${entry.symbol}.name`)}
+                        </small>
+                      </span>
+                    ))
+                  )}
+                </span>
+                {amulet && (
+                  <span className="ww-deal__amulet">
+                    <WerewolfSymbol id="amulet" size={24} />
+                    <strong>{t("werewolfNarrator.deal.amulet")}</strong>
+                  </span>
                 )}
               </span>
-              {amulet && (
-                <span className="ww-deal__amulet">
-                  <WerewolfSymbol id="amulet" size={24} />
-                  <strong>{t("werewolfNarrator.deal.amulet")}</strong>
-                </span>
-              )}
             </>
           ) : (
             <>
