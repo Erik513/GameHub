@@ -1376,3 +1376,96 @@
   top: var(--space-2);
   right: var(--space-2);
 }
+
+/* The top bar of the narrator view: sun or moon with the night, the overview, the close button. */
+.ww-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ww-bar__phase {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.ww-bar__phase .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.ww-bar .button {
+  width: 3rem;
+  min-height: 3rem;
+  margin: 0;
+  padding: 0;
+}
+
+/* The day is light: the colors of the whole screen change while the narrator view shows the day. */
+.app-shell:has(.ww-night[data-time="day"]) {
+  --color-canvas: #f6f2e7;
+  --color-surface: #fffdf6;
+  --color-surface-muted: #ece6d5;
+  --color-ink: #1d1e23;
+  --color-ink-muted: #5b5e68;
+  --color-line: #cdc5b0;
+  --color-accent: #3556d6;
+  --color-accent-hover: #2a46b3;
+  --color-accent-contrast: #ffffff;
+  --color-danger: #b3261e;
+  --color-success: #1d7f48;
+  --color-success-hover: #17693b;
+  --color-warning: #9a5b00;
+  --color-danger-fill: #c3342b;
+  --color-danger-fill-hover: #a52b23;
+  --color-focus: #3556d6;
+}
+
+/* The overview of all players and their roles. */
+.ww-overview {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-overview__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.ww-overview__row[data-dead="true"] .ww-overview__who {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.ww-overview__who {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.ww-overview__who small {
+  color: var(--color-ink-muted);
+}
+
+.ww-overview__marks {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.app-shell:has(.ww-night[data-time="day"]) {
+  color: var(--color-ink);
+}
+
+.app-shell:has(.ww-night[data-time="day"]) .site-header {
+  background: rgb(246 242 231 / 94%);
+}

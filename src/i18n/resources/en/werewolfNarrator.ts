@@ -9,6 +9,13 @@ export const werewolfNarratorTexts = {
       hint: "Hand the device to this person.",
       show: "Tap: show the role",
     },
+    bar: {
+      day: "Day {{count}}",
+      night: "Night {{count}}",
+      overview: "All players and roles",
+      overviewHint: "For the narrator only",
+      close: "End game",
+    },
     card: {
       effects: "Effects on the awake",
       ready: "ready",
@@ -87,7 +94,6 @@ export const werewolfNarratorTexts = {
       coverTitle: "Ask anyway",
       coverRow: "{{ability}}: ask, then show “not possible”",
       nobody: "Nobody",
-      end: "End game",
       confirmEnd: "The running game will be ended. End it?",
       confirmEndYes: "Yes, end it",
       undo: "Undo",

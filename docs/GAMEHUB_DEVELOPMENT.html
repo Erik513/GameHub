@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-21T23:00:00.000Z",
+    "updatedAt": "2026-11-21T23:40:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 239,
-      "totalTasks": 301,
-      "percent": 79.4
+      "completedTasks": 240,
+      "totalTasks": 302,
+      "percent": 79.5
     }
   },
   "environment": {
@@ -1591,6 +1591,12 @@
           "title": "Rollenverteilung als Karte (Name, Tippen zeigt Rolle, zweites Tippen verdeckt, Info, Amulett, Trunkenbold) und Symbole in Rollenknöpfen, Info-Fenstern und Anleitung",
           "status": "done",
           "validation": "Ein Schritt je Person (Zurück und Weiter bleiben unten), Karte mit zwei Ansichten, Rollensymbol, Fähigkeitssymbole, Info-Fenster, deutlicher Hinweis auf das Schutzamulett, Trunkenbold zeigt den Trunkenbold, Karte wird beim Wechsel in den Hintergrund verdeckt; Symbole vor den Rollennamen der festen Rollen, im Titel der Info-Fenster und in der Anleitung; im Browser bei 390 Pixel Breite angesehen; 1531 Tests, tsc -b, eslint, Schichtprüfung sauber. Noch offen: obere Leiste (Sonne/Mond, Übersicht, Schließen), Tag."
+        },
+        {
+          "id": "We-01-64",
+          "title": "Erzählersicht: obere Leiste (Sonne/Mond mit Nacht oder Tag, Übersicht aller Spieler und Rollen, Schließen mit Rückfrage), heller Tag und dunkle Nacht",
+          "status": "done",
+          "validation": "Leiste NarratorBar mit Phasenanzeige, Übersichtsfenster (nur für den Erzähler: Rolle, ausgeschieden, verliebt, Amulett, Trunkenbold) und Schließen mit Rückfrage; Tag hell und Nacht dunkel nur in der Spielansicht (eigene Farbwerte); Modell isDayStep; im Browser bei 390 Pixel Breite angesehen (Nacht und Tag); Deutsch und Englisch getestet; das Übersichtsfenster bleibt im Dunkel, weil es außerhalb der Spielansicht liegt; Tagesablauf folgt."
         }
       ]
     },

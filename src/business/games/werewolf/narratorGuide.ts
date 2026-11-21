@@ -342,3 +342,19 @@ export function backGuide(guide: Guide, confirmed = false): GuideBack {
     ok: true,
   };
 }
+
+/** True from the announcement of the morning until the next night begins (sun); false at night (moon). */
+export function isDayStep(state: WerewolfState): boolean {
+  switch (state.status) {
+    case "morning":
+    case "day":
+    case "vote":
+    case "exile":
+    case "hunter":
+    case "drunkHunter":
+    case "finished":
+      return true;
+    default:
+      return false;
+  }
+}

@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import type { WerewolfSession } from "../../business/games/werewolf/session";
 import { Button } from "../components";
 import { ActionRow, StartBar } from "../game-kit";
+import { isDayStep } from "../../business/games/werewolf/narratorGuide";
 import { GuideBox } from "./GuideBox";
+import { NarratorBar } from "./NarratorBar";
 import { NarratorCard } from "./NarratorCard";
 import { useNarratorGuide } from "./useNarratorGuide";
 
@@ -25,7 +27,16 @@ export function NarratorView({ session, onSession, onEnd }: NarratorViewProps) {
   const { view } = guide;
   const [confirmEnd, setConfirmEnd] = useState(false);
   return (
-    <section aria-label={t("werewolfNarrator.view")} className="ww-night kit-onepage">
+    <section
+      aria-label={t("werewolfNarrator.view")}
+      className="ww-night kit-onepage"
+      data-time={isDayStep(view.state) ? "day" : "night"}
+    >
+      <NarratorBar
+        day={isDayStep(view.state)}
+        onClose={() => setConfirmEnd(true)}
+        state={view.state}
+      />
       <div className="ww-night__stage">
         {view.card &&
           (view.phase === "intro" ? (
@@ -70,11 +81,7 @@ export function NarratorView({ session, onSession, onEnd }: NarratorViewProps) {
               </Button>
             </ActionRow>
           </div>
-        ) : (
-          <Button className="ww-night__end" onClick={() => setConfirmEnd(true)} variant="quiet">
-            {t("werewolfNarrator.guide.end")}
-          </Button>
-        )}
+        ) : null}
       </div>
       <StartBar>
         <div className="ww-nav">

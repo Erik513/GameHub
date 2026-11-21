@@ -9,6 +9,13 @@ export const werewolfNarratorTexts = {
       hint: "Gib das Gerät an diese Person weiter.",
       show: "Tippen: Rolle anzeigen",
     },
+    bar: {
+      day: "Tag {{count}}",
+      night: "Nacht {{count}}",
+      overview: "Alle Spieler und Rollen",
+      overviewHint: "Nur für den Erzähler",
+      close: "Spiel beenden",
+    },
     card: {
       effects: "Wirkungen auf die Wachen",
       ready: "bereit",
@@ -87,7 +94,6 @@ export const werewolfNarratorTexts = {
       coverTitle: "Trotzdem fragen",
       coverRow: "{{ability}}: fragen, dann „nicht möglich“ zeigen",
       nobody: "Niemand",
-      end: "Spiel beenden",
       confirmEnd: "Das laufende Spiel wird beendet. Wirklich beenden?",
       confirmEndYes: "Ja, beenden",
       undo: "Rückgängig",

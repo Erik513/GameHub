@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-64: Erzählersicht, obere Leiste und heller Tag
+
+- Obere Leiste: Sonne oder Mond mit „Nacht 1“ oder „Tag 1“, Knopf mit allen Spielern und Rollen (nur für den Erzähler), Schließen mit Rückfrage. Der Tag ist hell, die Nacht dunkel, nur in der Spielansicht. Das alte Textknopf „Spiel beenden“ entfällt.
+
 ### We-01-63: Rollenverteilung als Karte, Symbole bei den Rollen
 
 - Rollenverteilung neu: eine Karte je Person. Erste Ansicht: Name und Hinweis, Tippen zeigt die Rolle (Symbol, Name, Fähigkeitssymbole, Info-Knopf, deutlicher Hinweis auf das Schutzamulett), erneutes Tippen verdeckt sie; der Trunkenbold sieht den Trunkenbold. Zurück und Weiter bleiben unten. Symbole stehen jetzt auch vor den festen Rollen, im Titel der Info-Fenster und in der Anleitung.
