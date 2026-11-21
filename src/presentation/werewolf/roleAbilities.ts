@@ -1,3 +1,4 @@
+import type { WerewolfSettings } from "../../business/games/werewolf/configuration";
 import type { CardAbilityId } from "../../business/games/werewolf/narratorCard";
 import type { ConfigInfoId } from "./ConfigInfo";
 import type { SymbolId } from "./symbols/catalog";
@@ -86,5 +87,38 @@ export function infoOfRole(role: DealtRole): ConfigInfoId {
       return "guard";
     default:
       return role;
+  }
+}
+
+/** The way a role is played in this game, named like the options of the configuration. */
+export type RoleVariant =
+  | "allowed"
+  | "anyAttack"
+  | "anyDeath"
+  | "forbidden"
+  | "optional"
+  | "required"
+  | "voteOnly"
+  | "wolfOnly";
+
+/**
+ * The option of a role that the game was set up with (the hunter with or without the duty to shoot, ...), or null for
+ * a role that has no options. It stands on the card of the role, so the player knows how the role works here.
+ */
+export function variantOfRole(
+  role: DealtRole,
+  settings: Pick<WerewolfSettings, "allowSelfSilence" | "hunterShot" | "tanner" | "toughGuy">,
+): RoleVariant | null {
+  switch (role) {
+    case "hunter":
+      return settings.hunterShot;
+    case "toughGuy":
+      return settings.toughGuy;
+    case "tanner":
+      return settings.tanner;
+    case "spellcaster":
+      return settings.allowSelfSilence ? "allowed" : "forbidden";
+    default:
+      return null;
   }
 }

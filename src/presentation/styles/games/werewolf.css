@@ -2004,3 +2004,21 @@
   font-weight: var(--weight-medium);
   pointer-events: none;
 }
+
+/* The option of the role stands as a small label under its name. */
+.ww-deal__variant {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+}
+
+/* The place for the option of the role has the same height on every card, with or without an option. */
+.ww-deal__variant-slot {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  height: 2.75rem;
+}

@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T10:00:00.000Z",
+    "updatedAt": "2026-11-22T10:45:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 262,
-      "totalTasks": 316,
-      "percent": 82.9
+      "completedTasks": 263,
+      "totalTasks": 317,
+      "percent": 83
     }
   },
   "environment": {
@@ -1456,6 +1456,12 @@
           "title": "Verdeckte Rollenkarte zeigt oben links die Nummer des Spielers („Spieler: 3/20“)",
           "status": "done",
           "validation": "Auf der verdeckten Karte steht oben links „Spieler: 3/20“ beziehungsweise „Player: 3/20“ (Deutsch und Englisch), auf der aufgedeckten Karte nicht; Test; 1557 Tests, tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
+        },
+        {
+          "id": "We-01-79",
+          "title": "Rollenkarte nennt die Spielweise der Rolle (Jäger mit oder ohne Schusspflicht, Harter Bursche, Gerber, Alte Vettel)",
+          "status": "done",
+          "validation": "Unter dem Rollennamen steht die Option, mit der das Spiel eingerichtet wurde: Jäger Schusspflicht oder keine Schusspflicht, Harter Bursche nur Wolfsangriff oder jeder Angriff, Gerber Sieg bei jedem Ausscheiden oder nur bei Abstimmung, Alte Vettel Selbstwahl erlaubt oder verboten; dieselben Texte wie in der Konfiguration (Deutsch und Englisch); Rollen ohne Option zeigen nichts, der Platz unter dem Namen ist auf jeder Karte gleich hoch reserviert, damit Trennlinie und Layout bei allen Karten gleich bleiben (Wunsch des Auftraggebers); Tests; 1562 Tests, tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
         }
       ]
     },

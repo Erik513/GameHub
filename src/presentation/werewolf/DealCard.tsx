@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ConfigInfo } from "./ConfigInfo";
-import { abilitiesOfRole, infoOfRole, type DealtRole } from "./roleAbilities";
+import { abilitiesOfRole, infoOfRole, type DealtRole, type RoleVariant } from "./roleAbilities";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface DealCardProps {
@@ -14,6 +14,8 @@ interface DealCardProps {
   readonly mayor: "doubleVote" | "hammer";
   /** Which player this is of how many (1 based), shown on the covered card. */
   readonly position: number;
+  /** The option the role is played with in this game (for example with the duty to shoot), if it has one. */
+  readonly variant: RoleVariant | null;
   readonly total: number;
 }
 
@@ -22,7 +24,7 @@ interface DealCardProps {
  * name, abilities, an "i" that explains the role) and a second tap covers it again, so the device can be passed on.
  * The card is covered whenever the app goes to the background.
  */
-export function DealCard({ name, role, amulet, mayor, position, total }: DealCardProps) {
+export function DealCard({ name, role, amulet, mayor, position, total, variant }: DealCardProps) {
   const { t } = useTranslation();
   const [shown, setShown] = useState(false);
   useEffect(() => {
@@ -50,6 +52,14 @@ export function DealCard({ name, role, amulet, mayor, position, total }: DealCar
                   <WerewolfSymbol id={role} size={88} />
                 </span>
                 <strong className="ww-deal__name">{roleName}</strong>
+                {/* The place under the name is kept free on every card, so the layout is the same for all roles. */}
+                <span className="ww-deal__variant-slot">
+                  {variant && (
+                    <span className="ww-deal__variant">
+                      {t(`werewolfConfig.variants.${variant}`)}
+                    </span>
+                  )}
+                </span>
               </span>
               <span className="ww-deal__zone">
                 <span className="ww-deal__abilities">

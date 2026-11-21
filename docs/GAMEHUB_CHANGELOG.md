@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-79: Spielweise der Rolle auf der Karte
+
+- Die Rollenkarte nennt die Option der Rolle, zum Beispiel „Schusspflicht“ oder „Keine Schusspflicht“ beim Jäger (auch Harter Bursche, Gerber, Alte Vettel).
+
 ### We-01-78: Spielernummer auf der verdeckten Karte
 
 - Die verdeckte Rollenkarte zeigt oben links „Spieler: 3/20“.

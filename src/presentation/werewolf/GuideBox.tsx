@@ -9,6 +9,7 @@ import {
 } from "../../business/games/werewolf/stateMachine";
 import { Icon } from "../components";
 import { DealCard } from "./DealCard";
+import { variantOfRole } from "./roleAbilities";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface GuideBoxProps {
@@ -237,6 +238,7 @@ function PlainBox({ view }: { readonly view: GuideView }) {
         position={state.index + 1}
         role={dealt.role}
         total={state.players.length}
+        variant={variantOfRole(dealt.role, state.settings)}
       />
     );
   }
