@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T09:30:00.000Z",
+    "updatedAt": "2026-11-22T10:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 261,
-      "totalTasks": 315,
+      "completedTasks": 262,
+      "totalTasks": 316,
       "percent": 82.9
     }
   },
@@ -1450,6 +1450,12 @@
           "title": "Rollenverteilung geschützt: Übersicht aller Spieler und Rollen sowie Spielregeln erst sichtbar, wenn das eigentliche Spiel beginnt",
           "status": "done",
           "validation": "Solange die Spieler ihre Rolle ansehen (Status roles), zeigt die Leiste nur die Phase und den Beenden-Knopf; Übersicht und Spielregeln erscheinen erst mit der ersten Ankündigung der Nacht, ein geöffnetes Übersichtsfenster bleibt in diesem Zustand geschlossen; Tests für beide Zustände; 1557 Tests, tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
+        },
+        {
+          "id": "We-01-78",
+          "title": "Verdeckte Rollenkarte zeigt oben links die Nummer des Spielers („Spieler: 3/20“)",
+          "status": "done",
+          "validation": "Auf der verdeckten Karte steht oben links „Spieler: 3/20“ beziehungsweise „Player: 3/20“ (Deutsch und Englisch), auf der aufgedeckten Karte nicht; Test; 1557 Tests, tsc -b, eslint, Schichtprüfung sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
         }
       ]
     },

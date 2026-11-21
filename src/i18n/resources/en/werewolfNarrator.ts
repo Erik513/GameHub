@@ -3,6 +3,7 @@ export const werewolfNarratorTexts = {
   werewolfNarrator: {
     view: "Narrator view",
     deal: {
+      count: "Player: {{current}}/{{total}}",
       noAbility: "No special ability",
       amulet: "You hold the protective amulet",
       hide: "Tap: cover the role",

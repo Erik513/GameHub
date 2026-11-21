@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-78: Spielernummer auf der verdeckten Karte
+
+- Die verdeckte Rollenkarte zeigt oben links „Spieler: 3/20“.
+
 ### We-01-77: Rollenverteilung geschützt
 
 - Während die Spieler ihre Rolle ansehen, sind die Übersicht aller Spieler und Rollen und der Spielregeln-Knopf nicht sichtbar; sie erscheinen erst, wenn das eigentliche Spiel beginnt.

@@ -70,6 +70,8 @@ describe.each([
 
   it("shows the role on a tap, covers it on the next tap and explains it", async () => {
     const user = await renderView(language);
+    // The covered card says which player this is.
+    expect(screen.getByText(/Player: 1\/12|Spieler: 1\/12/)).toBeInTheDocument();
     const face = screen.getAllByRole("button", { pressed: false })[0]!;
     expect(screen.queryByRole("button", { name: /Info|info/ })).toBeNull();
     await user.click(face);

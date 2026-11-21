@@ -1993,3 +1993,14 @@
   padding: 0 var(--space-3);
   gap: var(--space-1);
 }
+
+/* On the covered card the number of the player stands in the top left corner. */
+.ww-deal__count {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  color: var(--color-ink-muted);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  pointer-events: none;
+}

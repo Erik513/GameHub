@@ -234,7 +234,9 @@ function PlainBox({ view }: { readonly view: GuideView }) {
         key={dealt.name}
         mayor={state.settings.mayor}
         name={dealt.name}
+        position={state.index + 1}
         role={dealt.role}
+        total={state.players.length}
       />
     );
   }

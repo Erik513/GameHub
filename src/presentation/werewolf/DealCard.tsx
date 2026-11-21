@@ -12,6 +12,9 @@ interface DealCardProps {
   /** The player holds the protective amulet. */
   readonly amulet: boolean;
   readonly mayor: "doubleVote" | "hammer";
+  /** Which player this is of how many (1 based), shown on the covered card. */
+  readonly position: number;
+  readonly total: number;
 }
 
 /**
@@ -19,7 +22,7 @@ interface DealCardProps {
  * name, abilities, an "i" that explains the role) and a second tap covers it again, so the device can be passed on.
  * The card is covered whenever the app goes to the background.
  */
-export function DealCard({ name, role, amulet, mayor }: DealCardProps) {
+export function DealCard({ name, role, amulet, mayor, position, total }: DealCardProps) {
   const { t } = useTranslation();
   const [shown, setShown] = useState(false);
   useEffect(() => {
@@ -84,6 +87,11 @@ export function DealCard({ name, role, amulet, mayor }: DealCardProps) {
           {t(shown ? "werewolfNarrator.deal.hide" : "werewolfNarrator.deal.show")}
         </small>
       </button>
+      {!shown && (
+        <small className="ww-deal__count">
+          {t("werewolfNarrator.deal.count", { current: position, total })}
+        </small>
+      )}
       {shown && <ConfigInfo className="ww-deal__info" id={infoOfRole(role)} name={roleName} />}
     </section>
   );
