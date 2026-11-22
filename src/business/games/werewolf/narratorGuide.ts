@@ -457,6 +457,22 @@ function takeBackVision(guide: Guide, id: CardAbilityId): Guide {
   };
 }
 
+/**
+ * The narrator takes a decision back (the small reset button in the summary): the step of the role is open again,
+ * nothing is chosen, and the abilities can be used again. The game itself only moves on "continue", so nothing is lost.
+ */
+export function reopenDecision(guide: Guide): Guide {
+  const frame = current(guide);
+  if (frame.phase !== "outro") return guide;
+  return {
+    ...guide,
+    trail: [
+      ...guide.trail,
+      { ...frame, event: null, phase: "act", selection: initialSelection(guide.session.present) },
+    ],
+  };
+}
+
 /** The narrator closes the list of people again (an ability was tapped by mistake); the choices of it are dropped. */
 export function closeAbility(guide: Guide): Guide {
   const frame = current(guide);
@@ -562,6 +578,20 @@ export type GuideBack =
   | { readonly ok: true; readonly guide: Guide }
   | { readonly ok: false; readonly reason: "atStart" | "confirmationRequired" | "limit" };
 
+/** Where the step of the current role starts in the trail: announcement, choice and falling asleep belong together. */
+function roleStart(guide: Guide): number {
+  const length = guide.session.past.length;
+  let start = guide.trail.length - 1;
+  while (
+    start > 1 &&
+    guide.trail[start]!.phase !== "ready" &&
+    guide.trail[start - 1]!.pastLength === length &&
+    guide.trail[start - 1]!.phase !== "ready"
+  )
+    start -= 1;
+  return start;
+}
+
 /**
  * Back may leave the step of a role (go to the previous role) only once: after coming back to a role the narrator
  * decides again (or goes forward); further back is not possible until the game has moved on and the narrator comes
@@ -571,7 +601,7 @@ function backIsBlocked(guide: Guide): boolean {
   // The role reveal has nothing to do with the game: back and forward are free until the narrator begins the game.
   if (guide.session.present.status === "roles" || current(guide).phase === "ready") return false;
   const length = guide.session.past.length;
-  const previous = guide.trail[guide.trail.length - 2];
+  const previous = guide.trail[roleStart(guide) - 1];
   const leavesRole = previous ? previous.pastLength < length : length > 0;
   return (
     leavesRole &&
@@ -579,11 +609,14 @@ function backIsBlocked(guide: Guide): boolean {
   );
 }
 
-/** "Back": exactly one step; a step that the game already took is undone in the game, but only one role back. */
+/** "Back": to the previous role (a step that the game already took is undone in the game), but only one role back. */
 export function backGuide(guide: Guide, confirmed = false): GuideBack {
   if (backIsBlocked(guide)) return { ok: false, reason: "limit" };
   if (guide.trail.length > 1) {
-    const trail = guide.trail.slice(0, -1);
+    // Back leaves the whole step of the current role (announcement, choice, falling asleep) at once: it only moves
+    // between the roles. A decision is taken back with the button in the summary (see `reopenDecision`).
+    const start = roleStart(guide);
+    const trail = guide.trail.slice(0, start);
     const previous = trail[trail.length - 1]!;
     let session = guide.session;
     while (previous.pastLength < session.past.length) {
@@ -594,15 +627,12 @@ export function backGuide(guide: Guide, confirmed = false): GuideBack {
     }
     // Coming back into the role reveal is not marked: there the way back has no limit.
     const crossed = session !== guide.session && session.present.status !== "roles";
-    // Back from the next step reopens the decision of the role at once (not the "asleep" step, which is locked).
-    const reopened =
-      crossed && previous.phase === "outro" && trail.length > 1 ? trail.slice(0, -1) : trail;
     return {
       guide: {
         session,
         // All steps of the role are marked, so the mark stays while the narrator goes back inside the role.
         trail: crossed
-          ? reopened.map((frame) =>
+          ? trail.map((frame) =>
               frame.pastLength === previous.pastLength ? { ...frame, returned: true } : frame,
             )
           : trail,

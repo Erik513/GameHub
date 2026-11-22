@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 298,
-      "totalTasks": 352,
+      "completedTasks": 299,
+      "totalTasks": 353,
       "percent": 84.7
     }
   },
@@ -1899,6 +1899,12 @@
           "title": "Alte Vettel: Stummschalten ist Pflicht",
           "status": "done",
           "validation": "Das Stummschalten der Alten Vettel ist Pflicht (Entscheidung des Auftraggebers): kein Knopf „Verzichten“ und kein „Niemand“ in der Auswahl; nur wenn niemand wählbar ist (praktisch nur bei zwei Lebenden, wenn die einzige andere Person in der Vornacht stumm war und Selbstwahl aus ist), darf der Schritt übersprungen werden; Beschreibung roleStep und Test; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-114",
+          "title": "Zurück und Weiter nur zwischen den Rollen, Entscheidung mit dem Rücknahme-Knopf in der Zusammenfassung zurücknehmen",
+          "status": "done",
+          "validation": "Zurück verlässt den ganzen Schritt der Rolle auf einmal (Ankündigung, Auswahl, Einschlafen) und geht in die vorherige Rolle (in der Rollenverteilung weiter Spieler für Spieler); eine Entscheidung nimmt der kleine neutrale Knopf (Reset-Symbol) rechts in der blauen Zusammenfassung „Gewählt: …“ zurück: der Schritt ist wieder offen, nichts ist gewählt, die Fähigkeiten sind frei (reopenDecision); der Knopf erscheint nur im Schritt „schläft wieder ein“ (nicht bei „Kein Angriff in dieser Nacht“); die Grenze „nur eine Rolle zurück“ gilt auch mit dem neuen Zurück (Korrektur: sie hielt zunächst nicht, weil die Prüfung nur das letzte Bild ansah; Test mit vier Rollen); Tests: Logik und Oberfläche; Tests, tsc, eslint; nicht im Browser angesehen. Ersetzt die Änderung We-01-112 (Zurück öffnet die Entscheidung)."
         }
       ]
     },

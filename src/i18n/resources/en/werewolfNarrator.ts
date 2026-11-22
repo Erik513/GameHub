@@ -188,6 +188,7 @@ export const werewolfNarratorTexts = {
         outroSub: "Press “Next” to go on",
       },
       confirm: "Confirm the choice",
+      reopen: "Take the decision back",
       skip: "Skip",
       done: "Done",
       left: "Left the game: {{names}}",

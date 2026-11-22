@@ -9,6 +9,7 @@ import {
   createGuide,
   describeGuide,
   describeWinners,
+  reopenDecision,
   undoSelection,
   unchoosePlayer,
   type Guide,
@@ -165,10 +166,15 @@ describe("narrator guide", () => {
         const back = backGuide(next, true);
         expect(back.ok).toBe(true);
         if (!back.ok) break;
-        expect(back.guide.session.present).toEqual(guide.session.present);
-        // From the next step back reopens the decision of the role ("act"), not the locked "asleep" step.
-        const before = describeGuide(guide).phase;
-        expect(back.guide.trail.at(-1)?.phase).toBe(before === "outro" ? "act" : before);
+        // Back moves between the roles: walking forward again reaches the same game state.
+        let again = back.guide;
+        for (
+          let i = 0;
+          i < 20 && JSON.stringify(again.session.present) !== JSON.stringify(next.session.present);
+          i += 1
+        )
+          again = forward(again) ?? again;
+        expect(again.session.present).toEqual(next.session.present);
         guide = next;
       }
       expect(guide.session.past.length).toBeGreaterThan(0);
@@ -535,7 +541,7 @@ describe("narrator guide", () => {
     expect(createGuide(guide.session, [{ phase: "x" }]).trail).toEqual(guide.trail);
   });
 
-  it("goes back one role at most: from role 2 to role 1, then no further until the game has moved on again", () => {
+  it("goes back from a role to the previous role at once, then to the waiting step", () => {
     let guide = game([], { attackOnFirstNight: true });
     const roles: string[] = [];
     for (let step = 0; step < 200 && roles.length < 2; step += 1) {
@@ -545,37 +551,17 @@ describe("narrator guide", () => {
         roles.push(view.card.role);
     }
     expect(roles).toHaveLength(2);
-    // Back to the start of the third role, then into the second role: that is one role back.
-    const goBackUntil = (from: Guide, role: string): Guide => {
-      let g = from;
-      for (let i = 0; i < 20 && describeGuide(g).card?.role !== role; i += 1) {
-        const result = backGuide(g, true);
-        if (!result.ok) break;
-        g = result.guide;
-      }
-      return g;
-    };
-    let back = goBackUntil(guide, roles[0]!);
-    expect(describeGuide(back).card?.role).toBe(roles[0]);
-    // Inside the second role back still works (the choice, the announcement) ...
-    while (describeGuide(back).phase !== "intro") {
-      const result = backGuide(back, true);
-      expect(result.ok).toBe(true);
-      if (!result.ok) return;
-      back = result.guide;
-    }
-    // ... up to the waiting step before the first role; from there the role reveal is free (it has no limit).
-    const waiting = backGuide(back, true);
-    expect(waiting.ok).toBe(true);
-    if (!waiting.ok) return;
-    back = waiting.guide;
-    expect(describeGuide(back).phase).toBe("ready");
-    expect(describeGuide(back).canGoBack).toBe(true);
-    // After the game moved on, the narrator may go back one role again.
-    let ahead = back;
-    for (let i = 0; i < 20 && describeGuide(ahead).card?.role !== roles[1]; i += 1)
-      ahead = forward(ahead) ?? ahead;
-    expect(describeGuide(ahead).canGoBack).toBe(true);
+    // One tap on back: from the announcement of role 2 into the step of role 1 (asleep, with its decision).
+    const first = backGuide(guide, true);
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+    expect(describeGuide(first.guide).card?.role).toBe(roles[0]);
+    expect(describeGuide(first.guide).phase).toBe("outro");
+    // The next back leaves role 1 as a whole: the waiting step before the first role.
+    const second = backGuide(first.guide, true);
+    expect(second.ok).toBe(true);
+    if (!second.ok) return;
+    expect(describeGuide(second.guide).phase).toBe("ready");
   });
 
   it("lets the narrator tap the ability again after the choice was confirmed and replaces the choice", () => {
@@ -652,7 +638,7 @@ describe("narrator guide", () => {
     expect(describeGuide(done).state.status).not.toBe("investigation");
   });
 
-  it("restores the spell when the narrator goes back from the next step: the decision is open again", () => {
+  it("takes a decision back with the reset of the summary: the spell is free again", () => {
     let guide = game(["magician"], { attackOnFirstNight: true });
     for (let step = 0; step < 200 && describeGuide(guide).card?.role !== "magician"; step += 1)
       guide = forward(guide)!;
@@ -660,13 +646,35 @@ describe("narrator guide", () => {
     guide = chooseAbility(guide, "kill");
     guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
     guide = continueGuide(guide);
-    guide = continueGuide(guide);
-    const back = backGuide(guide, true);
-    expect(back.ok).toBe(true);
-    if (!back.ok) return;
-    const view = describeGuide(back.guide);
+    expect(describeGuide(guide).phase).toBe("outro");
+    guide = reopenDecision(guide);
+    const view = describeGuide(guide);
     expect(view.phase).toBe("act");
-    expect(view.state.status).toBe("magician");
+    expect(view.selection.picks).toEqual([]);
     expect(view.card?.abilities.every((ability) => ability.available)).toBe(true);
+    // Reset does nothing outside the step "asleep".
+    expect(reopenDecision(guide)).toBe(guide);
+  });
+
+  it("goes back one role at most during the game, until the game has moved on again", () => {
+    let guide = game(["witch", "bodyguard"], { attackOnFirstNight: true });
+    let intros = 0;
+    for (let step = 0; step < 300 && intros < 4; step += 1) {
+      const next = forward(guide);
+      if (!next) break;
+      guide = next;
+      if (describeGuide(guide).phase === "intro") intros += 1;
+    }
+    expect(intros).toBe(4);
+    // One role back is possible ...
+    const first = backGuide(guide, true);
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+    // ... but not a second one: the button is off and back is refused.
+    expect(describeGuide(first.guide).canGoBack).toBe(false);
+    expect(backGuide(first.guide, true)).toEqual({ ok: false, reason: "limit" });
+    // When the game has moved on again, one role back is possible again.
+    const ahead = forward(forward(first.guide)!)!;
+    expect(describeGuide(ahead).canGoBack).toBe(true);
   });
 });

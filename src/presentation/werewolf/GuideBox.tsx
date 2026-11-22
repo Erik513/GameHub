@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { describeWinners, type GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
@@ -18,6 +19,7 @@ interface GuideBoxProps {
   readonly onCloseAbility: () => void;
   readonly onContinue: () => void;
   readonly onNobody: () => void;
+  readonly onReopen: () => void;
   readonly onUndo: () => void;
   readonly onUnchoose: (name: string) => void;
 }
@@ -32,6 +34,7 @@ export function GuideBox({
   onCloseAbility,
   onContinue,
   onNobody,
+  onReopen,
   onUndo,
   onUnchoose,
 }: GuideBoxProps) {
@@ -71,7 +74,7 @@ export function GuideBox({
         </header>
         <div className="ww-guide__body" />
         <footer className="ww-guide__extra">
-          <Summary view={view} />
+          <Summary onReopen={onReopen} view={view} />
           {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
         </footer>
       </section>
@@ -323,8 +326,33 @@ function Mark({ view, name }: { readonly view: GuideView; readonly name: string 
   ) : null;
 }
 
+/** The blue box of the summary with a small reset button: it takes the decision back, so the role can decide anew. */
+function Chosen({
+  children,
+  onReopen,
+}: {
+  readonly children: ReactNode;
+  readonly onReopen: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <span className="ww-guide__chosen">
+      <span>{children}</span>
+      <button
+        aria-label={t("werewolfNarrator.guide.reopen")}
+        className="ww-guide__reset"
+        onClick={onReopen}
+        title={t("werewolfNarrator.guide.reopen")}
+        type="button"
+      >
+        <Icon name="reset" />
+      </button>
+    </span>
+  );
+}
+
 /** What the narrator chose in this step, so it can be checked before the role falls asleep. */
-function Summary({ view }: { readonly view: GuideView }) {
+function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReopen: () => void }) {
   const { t } = useTranslation();
   const { card, selection } = view;
   if (!card || card.cover || card.abilities.length === 0) return null;
@@ -338,11 +366,11 @@ function Summary({ view }: { readonly view: GuideView }) {
   if (view.state.status === "vision" || view.state.status === "investigation") {
     const ability = view.state.status === "vision" ? "inspect" : "investigate";
     return (
-      <span className="ww-guide__chosen">
+      <Chosen onReopen={onReopen}>
         {t("werewolfNarrator.guide.chosen", {
           items: `${t(`werewolfNarrator.guide.abilityDone.${ability}`)}: ${view.state.target}`,
         })}
-      </span>
+      </Chosen>
     );
   }
   const parts: string[] = [];
@@ -355,11 +383,11 @@ function Summary({ view }: { readonly view: GuideView }) {
     parts.push(`${t(`werewolfNarrator.guide.abilityDone.${selection.ability}`)}: ${people}`);
   }
   return (
-    <span className="ww-guide__chosen">
+    <Chosen onReopen={onReopen}>
       {parts.length > 0
         ? t("werewolfNarrator.guide.chosen", { items: parts.join(" · ") })
         : t("werewolfNarrator.guide.noChoice")}
-    </span>
+    </Chosen>
   );
 }
 

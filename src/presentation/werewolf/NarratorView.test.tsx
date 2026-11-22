@@ -76,9 +76,7 @@ describe.each([
     expect(screen.queryByRole("region", { name: /Werewolf|Werwolf/ })).toBeNull();
     await user.click(screen.getByText(wake));
     expect(screen.getByRole("region", { name: /Werewolf|Werwolf/ })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: back }));
-    expect(screen.getByText(wake)).toBeInTheDocument();
-    // Back from the first role leads to the waiting box, then to the last player.
+    // Back leaves the whole step of the role: from the first role to the waiting box, then to the last player.
     await user.click(screen.getByRole("button", { name: back }));
     expect(screen.getByText(/All roles are dealt|Alle Rollen sind verteilt/)).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: back }));
@@ -229,5 +227,22 @@ describe("NarratorView choices", () => {
     await user.click(screen.getByRole("button", { name: "Done" }));
     expect(screen.getByText("No attack in this night")).toBeInTheDocument();
     expect(screen.queryByText(/the role passes/)).toBeNull();
+  });
+
+  it("takes a decision back with the small reset button in the summary, so the abilities work again", async () => {
+    const user = await renderView("en");
+    await toSeer(user);
+    await user.click(screen.getByText(/seer wakes up/));
+    await user.click(screen.getByRole("button", { name: /Look: ready/ }));
+    const person = names.split(",").find((name) => screen.queryByRole("button", { name }))!;
+    await user.click(screen.getByRole("button", { name: person }));
+    await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
+    await user.click(screen.getByRole("button", { name: "Done" }));
+    // The role is asleep: the summary has the reset button; the abilities are switched off.
+    const reset = screen.getByRole("button", { name: "Take the decision back" });
+    expect(screen.getByRole("button", { name: /Look/ })).toBeDisabled();
+    await user.click(reset);
+    expect(screen.getByRole("button", { name: /Look: ready/ })).toBeEnabled();
+    expect(screen.queryByRole("button", { name: "Take the decision back" })).toBeNull();
   });
 });

@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-114: Zurück zwischen Rollen, Rücknahme in der Zusammenfassung
+
+- Zurück geht von Rolle zu Rolle; Entscheidungen nimmt ein kleiner neutraler Reset-Knopf in der Zusammenfassung zurück.
+
 ### We-01-113: Alte Vettel Pflicht
 
 - Stummschalten ist Pflicht; Verzichten nur, wenn niemand wählbar ist.
