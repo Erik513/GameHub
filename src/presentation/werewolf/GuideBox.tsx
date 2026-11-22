@@ -478,7 +478,10 @@ function RoleScript({
         ? "werewolfNarrator.guide.showRole"
         : box.button === "check"
           ? "werewolfNarrator.guide.taskDone"
-          : box.id === "heal" || box.id === "poison" || box.id === "show"
+          : box.id === "heal" ||
+              box.id === "poison" ||
+              box.id === "show" ||
+              (box.id === "decide" && !outro)
             ? "werewolfNarrator.guide.undo"
             : "werewolfNarrator.guide.reopen",
     );
@@ -488,7 +491,7 @@ function RoleScript({
       (box.id === "asleep" || box.id === "touch" || box.id === "show" ? onCheck : onContinue)();
     else if (box.id === "show" && question !== null) (outro ? onReopen : onUndo)();
     else if (box.id === "show") (outro ? onReopen : onUndo)();
-    else onReopen();
+    else (outro ? onReopen : onUndo)();
   };
   return (
     <div className="ww-script">

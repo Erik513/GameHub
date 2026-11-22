@@ -4,6 +4,7 @@
 
 ### We-01-139: Erwachen als erste Skriptbox
 
+- Skripte ohne Rollennamen („Person stummschalten (zeigen)“ usw.); Entscheidungsboxen mit Rückgängig-Knopf von Anfang an, Aufgaben mit Haken.
 - Skripte kurz: Hexe und Magier gekürzt, „(zeigen)“ am Ende aller Skripte mit Personenwahl, Symbole des Magiers untereinander.
 - Magier/Hexe: „Opfer zeigen“ mit Angriffssymbol, erste Magier-Frage mit beiden Fähigkeitssymbolen und Daumen-Symbol, zweite Frage gekürzt.
 - Notiert (We-01-140, geplant): Anleitung soll erklären, dass das Erzählerskript immer gleich ist und nur lebende Personen geweckt werden.

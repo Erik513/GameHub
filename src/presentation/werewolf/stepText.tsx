@@ -91,14 +91,7 @@ export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
         : "werewolfNarrator.guide.witch.poisonAsk",
     );
   // What the narrator does when a result is shown: the result itself stands in the summary box.
-  if (step.result)
-    return t(
-      card.role === "paranormalInvestigator"
-        ? "werewolfNarrator.guide.resultScript.paranormalInvestigator"
-        : card.role === "apprenticeSeer"
-          ? "werewolfNarrator.guide.resultScript.apprenticeSeer"
-          : "werewolfNarrator.guide.resultScript.seer",
-    );
+  if (step.result) return t("werewolfNarrator.guide.resultScript");
   if (state.status === "drunkReveal" || state.status === "drunkHunter")
     return t("werewolfNarrator.guide.drunkScript");
   const info = actInfo(view, t) ?? dayPrompt(view, t);
@@ -273,8 +266,8 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
     const progress = outro ? 3 : view.progress;
     return [
       {
-        // The decision is confirmed here; after that the box can take it back.
-        button: progress >= 1 ? "undo" : "check",
+        // A decision: undo from the start (the check mark of the list of people confirms it).
+        button: "undo",
         enabled: progress >= 1 || decided,
         id: "show",
         items: [t("werewolfNarrator.guide.cupid.show")],
@@ -310,8 +303,10 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
     const text = outro ? (askText(view, t) ?? stepTitle(view, step, t)) : stepTitle(view, step, t);
     return [
       {
-        button: outro ? "undo" : "check",
-        enabled: outro || view.canContinue,
+        // A decision: the undo button is there from the start (switched off until something is chosen). The choice is
+        // confirmed with the check mark of the list of people or with "skip".
+        button: "undo",
+        enabled: outro || view.canUndo,
         id: "decide",
         items: [text],
         state: outro ? "done" : "active",

@@ -727,7 +727,8 @@ export function continueGuide(guide: Guide): Guide {
                 // The first spell is done: the second question follows.
                 ...(compound === "castSpells"
                   ? { question: "poison" as const, spellPicks: frame.selection.picks.length }
-                  : {}),
+                  : // Cupid: the check mark of the list confirms the choice of the two (the next box of the script follows).
+                    { progress: Math.max(1, frame.selection.progress ?? 0) }),
               },
             },
           ],
