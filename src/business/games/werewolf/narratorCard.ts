@@ -220,24 +220,32 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
   }
 }
 
-/** The effects from outside on the awake people, most important first, at most three, each one once. */
+/**
+ * The effects from outside on the awake people, most important first, at most three, each one once. When several people
+ * are awake (the wolves, the lovers) only an effect that all of them have is shown, so it is never taken for a property
+ * of one person.
+ */
 function effectsOf(state: WerewolfState, actors: readonly string[]): readonly CardEffect[] {
-  const found = new Set<CardEffect>();
   const people = describePlayers(state).filter((person) => actors.includes(person.name));
   const poisoned = "poisoned" in state ? state.poisoned?.name : undefined;
   // What the night did to a person (attacked, protected, guest, poisoned) is of no interest in the day.
   const night = !dayStatuses.includes(state.status);
-  for (const person of people) {
-    if (person.partner) found.add("lovers");
-    if (person.amulet) found.add("amulet");
-    if (night && state.wolfTarget?.name === person.name) found.add("attacked");
-    if (night && state.protectedPlayer === person.name) found.add("protected");
-    if (night && state.hostPlayer === person.name) found.add("guest");
-    if (night && poisoned === person.name) found.add("poisoned");
-    if (person.silenced) found.add("silenced");
-    if (person.drunk && person.alive) found.add("drunk");
-  }
-  return [...found].slice(0, maximumEffects);
+  const effectsOfPerson = (person: (typeof people)[number]): CardEffect[] => {
+    const found: CardEffect[] = [];
+    if (person.partner) found.push("lovers");
+    if (person.amulet) found.push("amulet");
+    if (night && state.wolfTarget?.name === person.name) found.push("attacked");
+    if (night && state.protectedPlayer === person.name) found.push("protected");
+    if (night && state.hostPlayer === person.name) found.push("guest");
+    if (night && poisoned === person.name) found.push("poisoned");
+    if (person.silenced) found.push("silenced");
+    if (person.drunk && person.alive) found.push("drunk");
+    return found;
+  };
+  const [first, ...others] = people.map(effectsOfPerson);
+  if (!first) return [];
+  const shared = first.filter((effect) => others.every((rest) => rest.includes(effect)));
+  return shared.slice(0, maximumEffects);
 }
 
 /** The card of the role that is awake, or null when no role is awake (the day, the morning, the end). */

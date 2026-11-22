@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 286,
-      "totalTasks": 340,
-      "percent": 84.1
+      "completedTasks": 287,
+      "totalTasks": 341,
+      "percent": 84.2
     }
   },
   "environment": {
@@ -1594,6 +1594,12 @@
           "title": "Doppelter Name zeigt eine Meldung; Rollenverteilung ohne Zurück-Grenze",
           "status": "done",
           "validation": "Wird beim Hinzufügen ein Name eingegeben, der schon in der Spielerliste ist (Groß-/Kleinschreibung egal), erscheint eine Meldung „… ist schon dabei“ (deutsch und englisch; gilt in der gemeinsamen Spielerliste und im Spieler-Reiter von Werwolf, der eine eigene Liste hat); in der Rollenverteilung und im Wartebildschirm davor kann man beliebig oft vor und zurück, die Grenze „nur eine Rolle zurück“ gilt erst, wenn der Erzähler das Spiel beginnt; Tests; 1586 Tests (mit Oberflächentest der Meldung im Werwolf-Reiter), tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-102",
+          "title": "Mehrere Wache Personen: nur gemeinsame Effekte auf der Karte",
+          "status": "done",
+          "validation": "Sind mehrere Personen wach (Verliebte, Werwölfe), zeigt die Rollenkarte nur Effekte, die alle betreffen; vorher erschien das Amulett oben, wenn nur eine der beiden Verliebten es trug; bei einer wachen Person unverändert; Test; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

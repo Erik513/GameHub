@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-102: Gemeinsame Effekte bei mehreren Wachen
+
+- Bei mehreren wachen Personen zeigt die Karte nur Effekte, die alle betreffen (zum Beispiel nicht das Amulett eines der Verliebten).
+
 ### We-01-101: Doppelter Name und freie Rollenverteilung
 
 - Doppelter Spielername: Meldung statt stillem Ignorieren. Rollenverteilung: beliebig oft vor und zurück bis zum Beginn.

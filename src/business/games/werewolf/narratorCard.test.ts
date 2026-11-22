@@ -209,4 +209,20 @@ describe("describeNarratorCard", () => {
         ?.role,
     ).toBe("seer");
   });
+
+  it("shows an effect for several awake people only when all of them have it", () => {
+    const base = start(["witch"], { amulet: true });
+    const [one, two] = base.players;
+    const state = {
+      ...base,
+      amulet: { holder: one!.name, mustPass: false },
+      lovers: [one!.name, two!.name],
+      ...stepFields(base, "lovers"),
+      status: "lovers",
+    } as WerewolfState;
+    const card = describeNarratorCard(state)!;
+    expect(card.actors).toHaveLength(2);
+    // Both are in love, but only one holds the amulet: the amulet is not shown.
+    expect(card.effects).toEqual(["lovers"]);
+  });
 });
