@@ -184,21 +184,30 @@ export function GuideBox({
         {state.status === "vote" && <Ballots onBallot={onBallot} view={view} />}
         {showPeople && (
           <div className="ww-guide__people">
-            {/* All names in alphabetical order, the chosen ones in place, so a name is quickly found. */}
-            {[...selection.picks, ...view.targets]
+            {/* Every player is always there, in the same order (alphabetical): the dead are grey, those whom the role
+                may not choose now have a dashed frame, the others can be chosen. Nothing moves when the state changes. */}
+            {[...state.players]
+              .map((player) => player.name)
               .sort((one, other) => one.localeCompare(other, undefined, { sensitivity: "base" }))
               .map((name) => {
                 const chosen = selection.picks.includes(name);
+                const dead = !state.alive.some((player) => player.name === name);
+                const blocked = !dead && !chosen && !view.targets.includes(name);
                 return (
                   <button
                     aria-pressed={chosen}
                     className="ww-person"
+                    data-state={dead ? "dead" : blocked ? "blocked" : undefined}
+                    disabled={dead || blocked}
                     key={name}
                     onClick={() => (chosen ? onUnchoose(name) : onChoose(name))}
                     title={name}
                     type="button"
                   >
-                    <span className="ww-person__name">{name}</span>
+                    <span className="ww-person__name">
+                      {dead && <WerewolfSymbol id="dead" size={14} />}
+                      {name}
+                    </span>
                     <Mark name={name} view={view} />
                   </button>
                 );

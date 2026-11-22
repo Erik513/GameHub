@@ -4,6 +4,7 @@
 
 ### We-01-139: Erwachen als erste Skriptbox
 
+- Personenauswahl: immer alle Spieler in fester Reihenfolge; Tote grau, gesperrte gelb gestrichelt, lange Namen zweizeilig.
 - Symbole: Fähigkeiten stehen im Kreis, Rollen frei (Eigenschaft ring, Legende, Test).
 - „Tippe auf eine Fähigkeit“ entfernt: rollenspezifische Anweisungen im Skript (Leibwächter: „… wählt eine Person aus, die er schützen will.“).
 - Verliebte: kurzer Text „Die Verliebten schauen sich an.“, keine Namen; Hinweis „Drücke Weiter“ bei allen Rollen entfernt.
