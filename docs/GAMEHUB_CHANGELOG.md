@@ -2,6 +2,14 @@
 
 ## 2026-11-22
 
+### We-01-139: Erwachen als erste Skriptbox
+
+- Die Ansicht zum Antippen entfällt; „… wacht auf“ ist die erste Skriptbox mit Haken (zeigt die Rolle). Haken wie Rückgängig-Knopf mit blauem Rahmen, Namen unterstrichen. Tests, tsc, eslint grün (1635); nicht im Browser angesehen.
+
+### We-01-138: Einheitliches Skript (Amor zuerst)
+
+- Skript jeder Rolle als Boxen mit Einschlafbox von Anfang an; Knopf (Rückgängig oder Haken) rechts neben jeder Box außer der letzten; Reset/X neben dem Skript und der Knopf „Erledigt“ unten entfernt; Amor mit drei Boxen (zeigen, einschlafen, Schulter berühren mit Namen). Tests, tsc, eslint grün (1635). Nicht im Browser angesehen.
+
 ### We-03-69: Gezielte Amulett-Nachtstartprüfung
 
 - Nachtrag für Claude: Acht erfolgreiche gezielte Tests klar vom abgebrochenen Gesamtlauf getrennt; Heilungserwartung victim/wolfTarget und noch unveränderte Forschungsmodelle dokumentiert. Keine neuen Balance-Schlüsse.
@@ -10,6 +18,10 @@
 - Gezielte Abnahme nach Einschränkung durch den Auftraggeber: 8 Tests bestanden (sechs direkte Nachtstart-Varianten mit Amulett, bestehende Startvergabe und Weitergabe am Nachtende). Typprüfung, ESLint und Formatprüfung erfolgreich. Keine Produktionslogik geändert. Breiter Lauf auf Wunsch des Auftraggebers abgebrochen, Änderungen an balance.test.ts und simulation.test.ts zurückgenommen; keine vollständige Balance-/Simulationsabnahme behauptet.
 
 ## 2026-11-21
+
+### We-01-137: Skript für Amor und die Verliebten
+
+- Amor und die Verliebten haben ihr Skript als Liste in der Skriptbox; weitere Rollen folgen einzeln.
 
 ### We-01-135: Hexe mit zwei festen Fragen
 

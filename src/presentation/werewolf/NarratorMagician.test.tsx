@@ -56,7 +56,7 @@ it("lets the magician use a spell twice and both spells in one night; the 2 goes
       <Harness />
     </I18nextProvider>,
   );
-  fireEvent.click(document.querySelector(".ww-guide--tap")!);
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
   // Both spells are there: a 2 on both buttons.
   expect(counts()).toBe(2);
   // Kill: the list opens, one person is chosen: the 2 stays until the choice is confirmed.
@@ -78,7 +78,7 @@ it("lets the magician use a spell twice and both spells in one night; the 2 goes
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   // Both spells are used: the healing spell cannot be chosen any more, the step is confirmed with "done".
   expect(heal).toBeDisabled();
-  fireEvent.click(screen.getByRole("button", { name: "Done" }));
+  fireEvent.click(screen.getByRole("button", { name: "Task done" }));
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(/Killed: P\d+, P\d+/);
 });
 
@@ -89,12 +89,12 @@ it("lets the magician heal and kill in the same night", async () => {
       <Harness />
     </I18nextProvider>,
   );
-  fireEvent.click(document.querySelector(".ww-guide--tap")!);
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
   fireEvent.click(screen.getByRole("button", { name: /^Heal/ }));
   fireEvent.click(screen.getByRole("button", { name: /^Kill/ }));
   fireEvent.click(persons()[0]!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
-  fireEvent.click(screen.getByRole("button", { name: "Done" }));
+  fireEvent.click(screen.getByRole("button", { name: "Task done" }));
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
     /Healed: P\d+Killed: P\d+/,
   );

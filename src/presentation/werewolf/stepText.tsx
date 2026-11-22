@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { TFunction } from "i18next";
 import type { GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep, type RoleStepSpec } from "../../business/games/werewolf/roleStep";
@@ -22,7 +23,7 @@ export function actInfo(view: GuideView, t: TFunction): string | null {
     );
   switch (state.status) {
     case "lovers":
-      return t("werewolfNarrator.guide.lovers", {
+      return t("werewolfNarrator.guide.lovers.names", {
         first: state.lovers[0],
         second: state.lovers[1],
       });
@@ -92,6 +93,172 @@ export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
   return card.abilities.length > 0
     ? t("werewolfNarrator.guide.pickAbility")
     : t("werewolfNarrator.guide.confirmDone");
+}
+
+/**
+ * The script of the narrator for roles with more than one task in their box: the tasks as a list. null where the box
+ * holds a single text (see `stepTitle`).
+ */
+export function stepItems(view: GuideView, t: TFunction): string[] | null {
+  const { state } = view;
+  if (state.status === "lovers")
+    return [
+      t("werewolfNarrator.guide.lovers.open"),
+      t("werewolfNarrator.guide.lovers.names", {
+        first: state.lovers[0],
+        second: state.lovers[1],
+      }),
+    ];
+  return null;
+}
+
+/** One box of the script of a role: the tasks of the narrator, the button right of it and where the script stands. */
+export interface ScriptBox {
+  readonly id: "asleep" | "wake" | "confirm" | "decide" | "heal" | "poison" | "show" | "touch";
+  readonly items: readonly ReactNode[];
+  /** The text under the last box ("press Next"). */
+  readonly hint?: string;
+  /** The button right of the box: take the decision back, or confirm that the task is done; none for the last box. */
+  readonly button: "check" | "undo" | null;
+  readonly enabled: boolean;
+  /** Player names in the texts of the box: they are shown in bold. */
+  readonly names?: readonly string[];
+  readonly state: "active" | "done" | "pending";
+}
+
+/**
+ * The script of the narrator for the step of a role, from the first task to the falling asleep: the boxes from top to
+ * bottom, all visible from the start. Every box except the last one has a button right of it (undo, or a check that says
+ * the task is done). null for the day, which is no role.
+ */
+export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox[] | null {
+  const boxes = roleBoxes(view, step, t);
+  if (!boxes || view.phase !== "intro" || !view.card) return boxes;
+  // Before the role is shown, the box "the role wakes up" stands first, with the check that shows the role; all others wait.
+  return [
+    {
+      button: "check",
+      enabled: true,
+      id: "wake",
+      items: [t(`werewolfNarrator.guide.wake.${view.card.role}`)],
+      state: "active",
+    },
+    ...boxes.map((box) => ({ ...box, enabled: false, state: "pending" as const })),
+  ];
+}
+
+function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox[] | null {
+  const { card, selection, state } = view;
+  if (!card || card.role === "day") return null;
+  const outro = view.phase === "outro";
+  const asleep: ScriptBox = {
+    button: null,
+    enabled: false,
+    ...(outro ? { hint: t("werewolfNarrator.guide.tap.outroSub") } : {}),
+    id: "asleep",
+    items: [t(`werewolfNarrator.guide.sleep.${card.role}`)],
+    state: outro ? "active" : "pending",
+  };
+
+  // The witch: two questions, then falling asleep.
+  if (view.question !== null && !card.cover) {
+    const victim = state.wolfTarget;
+    return [
+      {
+        button: "undo",
+        enabled: outro || view.question === "poison",
+        id: "heal",
+        ...(victim ? { names: [victim.name] } : {}),
+        items: [
+          victim
+            ? t("werewolfNarrator.guide.witch.showVictim", { name: victim.name })
+            : t("werewolfNarrator.guide.witch.showNoVictim"),
+          t("werewolfNarrator.guide.witch.healAsk"),
+        ],
+        state: outro || view.question === "poison" ? "done" : "active",
+      },
+      {
+        button: "undo",
+        enabled: outro || selection.ability === "poison",
+        id: "poison",
+        items: [t("werewolfNarrator.guide.witch.poisonAsk")],
+        state: outro ? "done" : view.question === "poison" ? "active" : "pending",
+      },
+      asleep,
+    ];
+  }
+
+  // Cupid: point at two people, falling asleep, touching the two (the names stand once they are chosen).
+  if (state.status === "cupid") {
+    const decided = selection.picks.length === 2;
+    const progress = view.progress;
+    return [
+      {
+        button: "undo",
+        enabled: decided,
+        id: "show",
+        items: [t("werewolfNarrator.guide.cupid.show")],
+        state: decided ? "done" : "active",
+      },
+      {
+        button: "check",
+        enabled: !outro && decided && progress === 0,
+        id: "asleep",
+        items: [t("werewolfNarrator.guide.sleep.cupid")],
+        state: outro || (decided && progress > 0) ? "done" : decided ? "active" : "pending",
+      },
+      {
+        button: "check",
+        enabled: !outro && decided && progress === 1,
+        id: "touch",
+        ...(decided ? { names: selection.picks } : {}),
+        items: [
+          decided
+            ? t("werewolfNarrator.guide.cupid.touch", {
+                first: selection.picks[0],
+                second: selection.picks[1],
+              })
+            : t("werewolfNarrator.guide.cupid.touchAny"),
+        ],
+        state: outro ? "done" : progress === 1 ? "active" : "pending",
+      },
+    ];
+  }
+
+  // A role that decides: its script, then falling asleep.
+  if (step.kind === "choose") {
+    const askAbility =
+      selection.ability ?? card.abilities.find((ability) => ability.id !== "heal")?.id ?? null;
+    const text =
+      outro && askAbility
+        ? t(
+            `werewolfNarrator.guide.ask.${askAbility === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : askAbility}`,
+          )
+        : stepTitle(view, step, t);
+    return [
+      {
+        button: outro ? "undo" : "check",
+        enabled: outro || view.canContinue,
+        id: "decide",
+        items: [text],
+        state: outro ? "done" : "active",
+      },
+      asleep,
+    ];
+  }
+
+  // A step in which the narrator only reads something out or shows something: the check says it is done.
+  return [
+    {
+      button: outro ? "undo" : "check",
+      enabled: outro || view.canContinue,
+      id: "confirm",
+      ...(state.status === "lovers" ? { names: state.lovers } : {}),
+      items: stepItems(view, t) ?? [stepTitle(view, step, t)],
+      state: outro ? "done" : "active",
+    },
+    asleep,
+  ];
 }
 
 /** The lines under the choice: the victim of the wolves, the hint to skip, a restriction, the notes of the day. */

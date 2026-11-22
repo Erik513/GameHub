@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import {
   answerQuestion,
   backGuide,
+  checkScript,
   chooseAbility,
   closeAbility,
   chooseNobody,
@@ -68,6 +69,7 @@ export function useNarratorGuide(
     goBack,
     answer: (answer: "skip" | "use") => update((g) => answerQuestion(g, answer)),
     undoQuestion: (question: "heal" | "poison") => update((g) => undoQuestion(g, question)),
+    check: () => update(checkScript),
     ballot: (voter: string, candidate: string) => update((g) => setBallot(g, voter, candidate)),
     nobody: () => update(chooseNobody),
     reopen: () => update(reopenDecision),

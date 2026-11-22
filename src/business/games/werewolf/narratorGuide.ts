@@ -39,6 +39,8 @@ export interface GuideSelection {
    * somebody. This is the question that is open now.
    */
   readonly question?: "heal" | "poison";
+  /** The boxes of the script that the narrator has confirmed with a check (Cupid: the sleeping, then the touching). */
+  readonly progress?: number;
   /** At the vote: what each voter chose (voter to candidate). */
   readonly ballots?: Readonly<Record<string, string>>;
 }
@@ -263,6 +265,8 @@ export interface GuideView {
   readonly ballotRows: readonly BallotRow[];
   /** The question the witch is asked now (heal or poison), or null. */
   readonly question: "heal" | "poison" | null;
+  /** How many boxes of the script of Cupid are confirmed (0, 1). */
+  readonly progress: number;
   readonly phase: GuidePhase;
   readonly state: WerewolfState;
   /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */
@@ -357,6 +361,7 @@ export function describeGuide(guide: Guide): GuideView {
         .map((player) => player.name),
     },
     ballotRows: ballotRowsOf(state, selection),
+    progress: selection.progress ?? 0,
     question: state.status === "witch" ? (selection.question ?? null) : null,
     voterNotes: voterNotesOf(state),
     nextKind:
@@ -465,6 +470,23 @@ export function reopenDecision(guide: Guide): Guide {
       ? { ...initial, heal: frame.selection.heal, question: "poison" as const }
       : initial;
   return { ...guide, trail: [...guide.trail, { ...frame, event: null, phase: "act", selection }] };
+}
+
+/**
+ * Cupid's script has three boxes: pointing at the two people, falling asleep, touching the two. The people are chosen
+ * with the first; the check of the second says that Cupid sleeps, the check of the third that the lovers were touched,
+ * which finishes the step.
+ */
+export function checkScript(guide: Guide): Guide {
+  const frame = current(guide);
+  const state = guide.session.present;
+  const { selection } = frame;
+  if (frame.phase !== "act" || state.status !== "cupid" || selection.ability !== null) return guide;
+  if (selection.picks.length < 2) return guide;
+  const progress = selection.progress ?? 0;
+  if (progress === 0) return withSelection(guide, { ...selection, progress: 1 });
+  // The last check: the step is finished; the summary and "next" follow.
+  return continueGuide(withSelection(guide, { ...selection, progress: 2 }));
 }
 
 /**
@@ -610,12 +632,12 @@ export function continueGuide(guide: Guide): Guide {
       return frame.event ? commit(guide, frame.event) : guide;
     case "act":
     case "plain": {
-      // The magician chooses in parts (a spell with its people, the heal): the check mark of an open choice only closes
-      // it, the choice stays; the step itself is confirmed once, with "done".
+      // The magician and Cupid choose in parts: the check mark of an open choice only closes it, the choice stays; the
+      // step itself is confirmed later (the magician with "done", Cupid with the checks of the script).
       const compound = describeRoleStep(state).compound;
       if (
         frame.phase === "act" &&
-        compound === "castSpells" &&
+        (compound === "castSpells" || compound === "bond") &&
         frame.selection.ability !== null &&
         frame.selection.ability !== "heal"
       )

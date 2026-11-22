@@ -55,12 +55,12 @@ function candidates(): { element: Element; weight: number }[] {
     for (const element of document.querySelectorAll(selector))
       if (isEnabled(element)) all.push({ element, weight });
   };
-  add(".ww-guide--tap", 4);
+  add(".ww-script__wake", 4);
   add(".ww-nav .button--success", 4);
   // Back is rare: it only takes a step back.
   add(".ww-nav .button--secondary", 0.2);
   add(".ww-guide__confirm", 3);
-  add(".ww-guide__strip", 3);
+  add(".ww-script__check:not(:disabled)", 3);
   add(".ww-ability", 2);
   add(".ww-person", 2);
   add(".ww-ballot__choice", 2);

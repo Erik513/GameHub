@@ -10,13 +10,14 @@ import {
 import { Icon } from "../components";
 import { DealCard } from "./DealCard";
 import { variantOfRole } from "./roleAbilities";
-import { stepExtras, stepTitle } from "./stepText";
+import { scriptOf, stepExtras, stepTitle, type ScriptBox } from "./stepText";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface GuideBoxProps {
   readonly view: GuideView;
   readonly onChoose: (name: string) => void;
+  readonly onCheck: () => void;
   readonly onCloseAbility: () => void;
   readonly onContinue: () => void;
   readonly onBallot: (voter: string, candidate: string) => void;
@@ -33,6 +34,7 @@ interface GuideBoxProps {
  */
 export function GuideBox({
   view,
+  onCheck,
   onChoose,
   onCloseAbility,
   onContinue,
@@ -51,16 +53,25 @@ export function GuideBox({
   if (!card) return null;
 
   if (phase === "intro") {
+    // The box "the role wakes up" is the first box of the script; its check shows the role.
+    const script = scriptOf(view, describeRoleStep(state), t);
     return (
-      <button className="ww-guide ww-guide--tap" onClick={onContinue} type="button">
-        <span className="ww-guide__heading">
-          <strong className="ww-guide__text">
-            <WerewolfSymbol id={card.role} size={32} />
-            {t(`werewolfNarrator.guide.wake.${card.role}`)}
-          </strong>
-          <span className="ww-guide__sub">{t("werewolfNarrator.guide.tap.introSub")}</span>
-        </span>
-      </button>
+      <section className="ww-guide ww-guide--sheet">
+        <header className="ww-guide__head">
+          {script && (
+            <RoleScript
+              boxes={script}
+              onCheck={onCheck}
+              onContinue={onContinue}
+              onReopen={onReopen}
+              onUndo={onUndo}
+              onUndoQuestion={onUndoQuestion}
+              role={card.role}
+            />
+          )}
+        </header>
+        <div className="ww-guide__body" />
+      </section>
     );
   }
 
@@ -68,51 +79,21 @@ export function GuideBox({
     // The role is asleep again. Below the script (its boxes, with the undo buttons) stands the box that says so, always in
     // the blue frame; going on to the next role is the job of the button "next". The blue summary at the bottom only sums up.
     const outroStep = describeRoleStep(state);
-    const canReopen = !card.cover && card.abilities.length > 0 && outroStep.statement === undefined;
-    const askAbility =
-      selection.ability ?? card.abilities.find((ability) => ability.id !== "heal")?.id ?? null;
-    const outroScript = outroStep.result
-      ? stepTitle(view, outroStep, t)
-      : askAbility
-        ? t(
-            `werewolfNarrator.guide.ask.${askAbility === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : askAbility}`,
-          )
-        : null;
+    const script = scriptOf(view, outroStep, t);
     return (
       <section className="ww-guide ww-guide--sheet ww-guide--asleep">
         <header className="ww-guide__head">
-          <div className="ww-script">
-            {view.question !== null && !card.cover ? (
-              <ScriptRows onUndo={onUndoQuestion} view={view} />
-            ) : (
-              outroScript !== null && (
-                <div className="ww-script__row">
-                  <div className="ww-script__step" data-state="done">
-                    <strong className="ww-guide__text">{outroScript}</strong>
-                  </div>
-                  <button
-                    aria-label={t("werewolfNarrator.guide.reopen")}
-                    className="ww-guide__close"
-                    disabled={!canReopen}
-                    onClick={onReopen}
-                    title={t("werewolfNarrator.guide.reopen")}
-                    type="button"
-                  >
-                    <Icon name="reset" />
-                  </button>
-                </div>
-              )
-            )}
-            <div className="ww-script__step" data-state="active">
-              <span className="ww-guide__heading">
-                <strong className="ww-guide__text">
-                  <WerewolfSymbol id={card.role} size={32} />
-                  {t(`werewolfNarrator.guide.sleep.${card.role}`)}
-                </strong>
-                <span className="ww-guide__sub">{t("werewolfNarrator.guide.tap.outroSub")}</span>
-              </span>
-            </div>
-          </div>
+          {script && (
+            <RoleScript
+              boxes={script}
+              onCheck={onCheck}
+              onContinue={onContinue}
+              onReopen={onReopen}
+              onUndo={onUndo}
+              onUndoQuestion={onUndoQuestion}
+              role={card.role}
+            />
+          )}
         </header>
         <div className="ww-guide__body" />
         <footer className="ww-guide__extra">
@@ -135,6 +116,7 @@ export function GuideBox({
   const confirmReady =
     view.canContinue && (selection.ability !== null || selection.heal || !hasChoice);
   const extras = stepExtras(view, step, t);
+  const script = scriptOf(view, step, t);
   return (
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
@@ -163,39 +145,21 @@ export function GuideBox({
               <Icon name="close" />
             </button>
           </span>
-        ) : view.question !== null && !card.cover ? (
-          <div className="ww-script">
-            <ScriptRows onUndo={onUndoQuestion} view={view} />
-          </div>
+        ) : script ? (
+          <RoleScript
+            boxes={script}
+            onCheck={onCheck}
+            onContinue={onContinue}
+            onReopen={onReopen}
+            onUndo={onUndo}
+            onUndoQuestion={onUndoQuestion}
+            role={card.role}
+          />
         ) : (
-          // The script of the step is a box; the undo and close buttons right of it are as high as the box. They are
-          // always there (switched on or off), so nothing moves when something is chosen.
           <div className="ww-script__row">
             <div className="ww-script__step" data-state="active">
               <strong className="ww-guide__text">{stepTitle(view, step, t)}</strong>
             </div>
-            <span className="ww-guide__tools">
-              <button
-                aria-label={t("werewolfNarrator.guide.undo")}
-                className="ww-guide__close"
-                disabled={!view.canUndo}
-                onClick={onUndo}
-                title={t("werewolfNarrator.guide.undo")}
-                type="button"
-              >
-                <Icon name="reset" />
-              </button>
-              <button
-                aria-label={t("werewolfNarrator.guide.closeSelection")}
-                className="ww-guide__close"
-                disabled={!view.canCloseAbility}
-                onClick={onCloseAbility}
-                title={t("werewolfNarrator.guide.closeSelection")}
-                type="button"
-              >
-                <Icon name="close" />
-              </button>
-            </span>
           </div>
         )}
       </header>
@@ -249,49 +213,23 @@ export function GuideBox({
           </div>
         )}
       </div>
-      {(extras.length > 0 || card.role !== "day" || selection.ability !== null) && (
+      {(extras.length > 0 || selection.ability !== null) && (
         <footer className="ww-guide__extra">
           {!showPeople && extras}
-          {/* The day has no strip, but the choice of people (nomination, vote) is confirmed like every other choice. */}
-          {(card.role !== "day" || selection.ability !== null) &&
-            !(selection.ability === null && view.question !== null) &&
-            !(
-              selection.ability === null &&
-              step.skippable &&
-              !selection.heal &&
-              selection.picks.length === 0
-            ) &&
-            (selection.ability !== null ? (
-              <button
-                aria-label={t("werewolfNarrator.guide.confirm")}
-                className="ww-guide__confirm"
-                data-next={confirmReady || undefined}
-                disabled={!view.canContinue}
-                onClick={onContinue}
-                title={t("werewolfNarrator.guide.confirm")}
-                type="button"
-              >
-                <Icon name="check" />
-              </button>
-            ) : (
-              <button
-                className="ww-guide__strip"
-                // A role that may do nothing (the investigator, the witch): the ability and this strip both have the frame.
-                data-next={view.canContinue || undefined}
-                disabled={!view.canContinue}
-                onClick={onContinue}
-                type="button"
-              >
-                <span>
-                  {t(
-                    step.skippable && !selection.heal && selection.picks.length === 0
-                      ? "werewolfNarrator.guide.skip"
-                      : "werewolfNarrator.guide.done",
-                  )}
-                </span>
-                <Icon name="check" />
-              </button>
-            ))}
+          {/* The choice of people (also at the day) is confirmed with the check below the list. */}
+          {selection.ability !== null && (
+            <button
+              aria-label={t("werewolfNarrator.guide.confirm")}
+              className="ww-guide__confirm"
+              data-next={confirmReady || undefined}
+              disabled={!view.canContinue}
+              onClick={onContinue}
+              title={t("werewolfNarrator.guide.confirm")}
+              type="button"
+            >
+              <Icon name="check" />
+            </button>
+          )}
         </footer>
       )}
     </section>
@@ -448,82 +386,106 @@ function Ballots({
   );
 }
 
+/** A text with the player names in bold, so they stand out when the narrator reads. */
+function withNames(text: ReactNode, names: readonly string[] | undefined): ReactNode {
+  if (typeof text !== "string" || !names || names.length === 0) return text;
+  const escaped = names.map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  return text.split(new RegExp("(" + escaped.join("|") + ")")).map((part, index) =>
+    names.includes(part) ? (
+      <b className="ww-name" key={index}>
+        {part}
+      </b>
+    ) : (
+      part
+    ),
+  );
+}
+
 /**
- * The rows of the script of a role with several steps (the witch): one box for every question, from top to bottom, the open one
- * framed in blue; the ones that are done or still to come are dim.
+ * The script of a role: one box per task from top to bottom, all visible from the start, the open one framed in blue.
+ * Right of every box except the last one stands a button: take the decision back, or confirm that the task is done.
  */
-function ScriptRows({
+function RoleScript({
+  boxes,
+  onCheck,
+  onContinue,
+  onReopen,
   onUndo,
-  view,
+  onUndoQuestion,
+  role,
 }: {
-  readonly onUndo: (question: "heal" | "poison") => void;
-  readonly view: GuideView;
+  readonly boxes: readonly ScriptBox[];
+  readonly onCheck: () => void;
+  readonly onContinue: () => void;
+  readonly onReopen: () => void;
+  readonly onUndo: () => void;
+  readonly onUndoQuestion: (question: "heal" | "poison") => void;
+  readonly role: string;
 }) {
   const { t } = useTranslation();
-  const { question, selection, state } = view;
-  const asleep = view.phase === "outro";
-  const victim = state.wolfTarget;
-  // Every box has a number; where there is more than one thing to do, the tasks stand as a list.
-  const steps = [
-    {
-      id: "heal",
-      items: [
-        victim
-          ? t("werewolfNarrator.guide.witch.showVictim", { name: victim.name })
-          : t("werewolfNarrator.guide.witch.showNoVictim"),
-        t("werewolfNarrator.guide.witch.healAsk"),
-      ],
-    },
-    {
-      id: "poison",
-      items: [
-        // The script always shows the question; the list of people (with its own heading) covers the box.
-        t("werewolfNarrator.guide.witch.poisonAsk"),
-      ],
-    },
-  ] as const;
+  const label = (box: ScriptBox) =>
+    t(
+      box.id === "wake"
+        ? "werewolfNarrator.guide.showRole"
+        : box.button === "check"
+          ? "werewolfNarrator.guide.taskDone"
+          : box.id === "heal" || box.id === "poison" || box.id === "show"
+            ? "werewolfNarrator.guide.undo"
+            : "werewolfNarrator.guide.reopen",
+    );
+  const press = (box: ScriptBox) => {
+    if (box.id === "heal" || box.id === "poison") onUndoQuestion(box.id);
+    else if (box.button === "check")
+      (box.id === "asleep" || box.id === "touch" ? onCheck : onContinue)();
+    else if (box.id === "show") onUndo();
+    else onReopen();
+  };
   return (
-    <>
-      {steps.map((step) => (
-        <div className="ww-script__row" key={step.id}>
-          <div
-            className="ww-script__step"
-            data-state={
-              asleep
-                ? "done"
-                : step.id === question
-                  ? "active"
-                  : step.id === "heal"
-                    ? "done"
-                    : "pending"
-            }
-          >
-            <ul className="ww-script__items">
-              {step.items.map((item) => (
-                <li className="ww-script__item" key={item}>
-                  {item}
-                </li>
-              ))}
-            </ul>
+    <div className="ww-script">
+      {boxes.map((box) => (
+        <div className="ww-script__row" key={box.id}>
+          <div className="ww-script__step" data-state={box.state}>
+            {box.id === "asleep" || box.id === "wake" ? (
+              <span className="ww-guide__heading">
+                <strong className="ww-guide__text">
+                  <WerewolfSymbol id={role as SymbolId} size={32} />
+                  {box.items[0]}
+                </strong>
+                {box.hint && <span className="ww-guide__sub">{box.hint}</span>}
+              </span>
+            ) : box.items.length > 1 ? (
+              <ul className="ww-script__items">
+                {box.items.map((item, index) => (
+                  <li className="ww-script__item" key={index}>
+                    {withNames(item, box.names)}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <strong className="ww-guide__text">{withNames(box.items[0], box.names)}</strong>
+            )}
           </div>
-          {/* The undo button stands right of the box it belongs to, as high as the box; it only appears where a decision was made. */}
-          <button
-            aria-label={t("werewolfNarrator.guide.undo")}
-            className="ww-script__undo"
-            disabled={
-              !(step.id === "heal"
-                ? asleep || question === "poison"
-                : asleep || selection.ability === "poison")
-            }
-            onClick={() => onUndo(step.id)}
-            title={t("werewolfNarrator.guide.undo")}
-            type="button"
-          >
-            <Icon name="reset" />
-          </button>
+          {box.button !== null && (
+            <button
+              aria-label={label(box)}
+              className={
+                box.button === "undo"
+                  ? "ww-script__undo"
+                  : box.id === "wake"
+                    ? "ww-script__undo ww-script__check ww-script__wake"
+                    : "ww-script__undo ww-script__check"
+              }
+              disabled={!box.enabled}
+              onClick={() => press(box)}
+              title={label(box)}
+              type="button"
+            >
+              <Icon name={box.button === "undo" ? "reset" : "check"} />
+            </button>
+          )}
         </div>
       ))}
-    </>
+    </div>
   );
 }
 
@@ -602,7 +564,9 @@ function Summary({ view }: { readonly view: GuideView }) {
           ? "kill"
           : step.compound === "potions"
             ? "poison"
-            : null
+            : step.compound === "bond"
+              ? "bond"
+              : null
         : null;
   if (chosenAbility) {
     const people =

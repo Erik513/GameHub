@@ -61,7 +61,7 @@ async function open(attack: boolean) {
       <Harness attack={attack} />
     </I18nextProvider>,
   );
-  fireEvent.click(document.querySelector(".ww-guide--tap")!);
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
 }
 
 it("shows all options above at all times and the two questions as boxes below, the open one in blue", async () => {
@@ -77,13 +77,18 @@ it("shows all options above at all times and the two questions as boxes below, t
   // Below: two boxes, the first one is open; the hint with the victim stands below with its own border.
   // The first box holds two tasks as a list (show the victim, ask), the second one task.
   expect(
-    steps().map((step) =>
-      [...step.querySelectorAll(".ww-script__item")].map((item) => item.textContent),
-    ),
+    steps()
+      .slice(0, 2)
+      .map((step) =>
+        [...step.querySelectorAll(".ww-script__item")].map((item) => item.textContent),
+      ),
   ).toEqual([
     [expect.stringMatching(/^Show the victim: P\d+$/), "Does the witch want to save the victim?"],
-    ["Does the witch want to poison somebody? Then she points at a person."],
+    [],
   ]);
+  expect(steps()[1]?.textContent).toBe(
+    "Does the witch want to poison somebody? Then she points at a person.",
+  );
   expect([state(0), state(1)]).toEqual(["active", "pending"]);
   expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked/);
   // "Heal" answers the first question with yes; the second box opens, all options are still there.
@@ -151,13 +156,15 @@ it("has an undo button right of every box with a decision, as high as the box; t
   );
   // The box that says the witch sleeps again stands below the script, in the blue frame; the summary has no button.
   const stack = document.querySelector(".ww-guide__head .ww-script")!;
-  expect(stack.lastElementChild?.getAttribute("data-state")).toBe("active");
-  expect(stack.lastElementChild?.textContent).toMatch(/schläft wieder ein|goes back to sleep/);
+  const sleepBox = stack.lastElementChild!.querySelector(".ww-script__step")!;
+  expect(sleepBox.getAttribute("data-state")).toBe("active");
+  expect(stack.lastElementChild?.querySelector("button")).toBeNull();
+  expect(sleepBox.textContent).toMatch(/schläft wieder ein|goes back to sleep/);
   // Both boxes of the script have an undo button, in a row with the box.
   expect(document.querySelector(".ww-guide__chosen button")).toBeNull();
   const rows = [...document.querySelectorAll(".ww-script > .ww-script__row")];
-  expect(rows).toHaveLength(2);
-  for (const row of rows) {
+  expect(rows).toHaveLength(3);
+  for (const row of rows.slice(0, 2)) {
     expect(row.querySelector(".ww-script__step")).not.toBeNull();
     expect(row.querySelector(".ww-script__undo")).not.toBeNull();
   }

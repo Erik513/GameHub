@@ -126,7 +126,15 @@ export const werewolfNarratorTexts = {
         yes: "Bei {{name}} und den Nachbarn ist ein Werwolf",
         no: "Bei {{name}} und den Nachbarn ist kein Werwolf",
       },
-      lovers: "Verliebt: {{first}} und {{second}}",
+      lovers: {
+        open: "Die Verliebten öffnen die Augen und sehen sich an.",
+        names: "Verliebt: {{first}} und {{second}}",
+      },
+      cupid: {
+        show: "Amor zeigt auf zwei Personen, die sich verlieben.",
+        touch: "Berühre {{first}} und {{second}} leise an der Schulter.",
+        touchAny: "Berühre die beiden leise an der Schulter.",
+      },
       drunk: "{{name}} ist {{role}}",
       amuletMust: "{{name}} wurde angegriffen und muss das Amulett abgeben",
       amuletMay: "{{name}} darf das Amulett behalten oder weitergeben",
@@ -197,14 +205,14 @@ export const werewolfNarratorTexts = {
         hint: "Gib das Gerät jetzt an den Erzähler zurück. Nur der Erzähler beginnt das Spiel.",
       },
       tap: {
-        introSub: "Tippe, um die Rolle zu zeigen",
         outroSub: "Drücke „Weiter“, um fortzufahren",
       },
       confirm: "Auswahl bestätigen",
       reopen: "Entscheidung zurücknehmen",
       noVote: "Keine Abstimmung",
       skip: "Verzichten",
-      done: "Erledigt",
+      taskDone: "Aufgabe erledigt",
+      showRole: "Rolle zeigen",
       left: "Ausgeschieden: {{names}}",
       exile: "{{name}} scheidet aus",
       finished: {

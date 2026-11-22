@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 320,
-      "totalTasks": 375,
-      "percent": 85.3
+      "completedTasks": 323,
+      "totalTasks": 378,
+      "percent": 85.4
     }
   },
   "environment": {
@@ -1803,6 +1803,24 @@
           "id": "We-01-136",
           "title": "Magier: gleiches Fragenskript wie die Hexe, damit niemand an der Abfolge erkennen kann, ob ein Zauber verbraucht ist; Verzichten nach einem Zauber klickbar",
           "status": "planned"
+        },
+        {
+          "id": "We-01-137",
+          "title": "Skript des Erzählers: Amor und die Verliebten",
+          "status": "done",
+          "validation": "Das Skript für Amor steht als Liste mit zwei Aufgaben in der Skriptbox der unteren Box: „Amor zeigt auf zwei Personen, die sich verlieben.“ und „Berühre die beiden leise an der Schulter.“ (Annahme zur Praxis aus dem Originalregelheft; vom Auftraggeber zu bestätigen); der Schritt der Verliebten hat ebenfalls eine Liste: „Die Verliebten öffnen die Augen und sehen sich an.“ und „Verliebt: A und B“; im Schritt „schläft wieder ein“ bleibt das Skript sichtbar (gedimmt, mit Rückgängig-Knopf), die blaue Zusammenfassung zeigt das Symbol und „Verliebt: A, B“; Oberflächentest über beide Schritte; Tests, tsc, eslint; nicht im Browser angesehen. Weitere Rollen folgen einzeln."
+        },
+        {
+          "id": "We-01-138",
+          "title": "Einheitliches Skript für alle Rollen (zuerst Amor): Einschlafen gehört zum Skript, Knopf rechts an jeder Box",
+          "status": "done",
+          "validation": "Das Skript jeder Rolle besteht von Anfang an aus Boxen von oben nach unten, die Box „… schläft wieder ein“ ist von Beginn an sichtbar (zuletzt, ohne Knopf, wenn sie die letzte Box ist). Rechts neben jeder anderen Box steht ein Knopf: Rückgängig (Entscheidung zurücknehmen) oder ein Haken (Aufgabe erledigt); die Knöpfe Zurücksetzen und X neben dem Skript sind bei allen Rollen entfernt (die Personenauswahl behält ihre Leiste mit Rückgängig und Schließen); der Knopf „Erledigt/Verzichten“ unten ist überall entfernt (Verzichten bleibt in der Rollenkarte, Bestätigen über den Haken der Skriptbox). Amor hat drei Boxen: „Amor zeigt auf zwei Personen, die sich verlieben.“ (Rückgängig), „Amor schläft wieder ein“ (Haken), „Berühre A und B leise an der Schulter.“ (Haken; vor der Wahl ohne Namen); der letzte Haken beendet den Schritt. Logik: checkScript, Fortschritt in der Auswahl, Haken der Personenliste schließt sie bei Amor nur. Tests (Amor-Ablauf, Hexe, Playthrough), tsc, eslint, 1635 Tests grün; nicht im Browser angesehen. Annahme: Rückgängig/Haken-Zuordnung wie beschrieben, vom Auftraggeber zu prüfen; weitere Rollen folgen einzeln."
+        },
+        {
+          "id": "We-01-139",
+          "title": "Erwachen-Box als erste Skriptbox mit Haken statt Antippen der unteren Box; Haken wie Rückgängig-Knopf mit blauem Fokusrahmen; Namen unterstrichen",
+          "status": "done",
+          "validation": "Die erste Ansicht einer Rolle (Tippen auf die untere Box) entfällt: der Text „Die Rolle wacht auf“ steht als erste Box im Skript, alle weiteren Boxen warten gedimmt; der Haken rechts daneben (Beschriftung „Rolle zeigen“) zeigt oben die Rolle wie bisher; danach entfällt die Box. Der Haken neben Skriptboxen sieht aus wie der Rückgängig-Knopf und trägt den blauen Fokusrahmen, solange er zu drücken ist (Beschriftung „Aufgabe erledigt“); Spielernamen im Skript sind unterstrichen (Opfer der Hexe, Amors Verliebte, Verliebte). Tests, tsc, eslint, 1635 Tests grün; nicht im Browser angesehen."
         }
       ]
     },
