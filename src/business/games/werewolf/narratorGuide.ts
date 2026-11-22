@@ -8,7 +8,7 @@ import {
   votingPlayers,
   type WerewolfTargetAction,
 } from "./selectors";
-import { describeRoleStep } from "./roleStep";
+import { describeRoleStep, pickLimitOf } from "./roleStep";
 import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
 import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./stateMachine";
 
@@ -170,6 +170,18 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       return { night, target: skipTarget, type: event } as WerewolfEvent;
     return null;
   }
+  switch (step.compound) {
+    case "potions":
+      return { heal: selection.heal, night, poison: target, type: "potions" };
+    case "castSpells":
+      return { heal: selection.heal, kill: selection.picks, night, type: "castSpells" };
+    case "bond": {
+      const [one, two] = selection.picks;
+      return one && two ? { night, players: [one, two], type: "bond" } : null;
+    }
+    default:
+      break;
+  }
   switch (state.status) {
     case "roles": {
       const player = state.players[state.index];
@@ -206,14 +218,6 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
     case "wolves":
       // Without an attack in the first night the wolves only get to know each other.
       return { night, type: "wolvesReady" };
-    case "witch":
-      return { heal: selection.heal, night, poison: target, type: "potions" };
-    case "magician":
-      return { heal: selection.heal, kill: selection.picks, night, type: "castSpells" };
-    case "cupid": {
-      const [one, two] = selection.picks;
-      return one && two ? { night, players: [one, two], type: "bond" } : null;
-    }
     default:
       return null;
   }
@@ -227,16 +231,6 @@ function acceptedEvent(state: WerewolfState, selection: GuideSelection): Werewol
 
 function roleOf(state: WerewolfState) {
   return describeNarratorCard(state)?.role ?? null;
-}
-
-/** How many targets an ability takes, and whether it can be left without one. */
-function pickLimit(state: WerewolfState, selection: GuideSelection): number {
-  if (selection.ability === "vote")
-    return state.status === "vote" ? votingPlayers(state).length : 3;
-  if (selection.ability === "bond") return 2;
-  if (selection.ability === "kill")
-    return Math.max(0, state.spellsRemaining - Number(selection.heal));
-  return 1;
 }
 
 /** A person who leaves the game and the reasons, for the narrator only. */
@@ -476,7 +470,12 @@ export function choosePlayer(guide: Guide, name: string): Guide {
   const view = describeGuide(guide);
   if (!view.targets.includes(name)) return guide;
   const { selection } = view;
-  const limit = pickLimit(view.state, selection);
+  const limit = pickLimitOf(
+    view.state,
+    selection.ability,
+    selection.heal,
+    view.state.status === "vote" ? votingPlayers(view.state).length : 0,
+  );
   const picks = limit === 1 ? [name] : [...selection.picks, name].slice(0, limit);
   return withSelection(guide, { ...selection, none: false, picks });
 }

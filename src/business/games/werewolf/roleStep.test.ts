@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { describeRoleStep } from "./roleStep";
+import { describeRoleStep, pickLimitOf } from "./roleStep";
 import { createWerewolf } from "./stateMachine";
 
 const names = "Anna,Ben,Cleo,Dora,Emil,Finn,Gina,Hans,Ida,Jan,Kim,Lea";
@@ -87,5 +87,20 @@ describe("describeRoleStep", () => {
       skipTarget: null,
     });
     expect(describeRoleStep(at({ status: "morning" })).pick).toBeUndefined();
+  });
+
+  it("names the steps with a choice of several parts and how many people an ability takes", () => {
+    expect(describeRoleStep(at({ status: "witch", victim: null })).compound).toBe("potions");
+    expect(
+      describeRoleStep(at({ status: "magician", poisoned: null, victim: null })).compound,
+    ).toBe("castSpells");
+    expect(describeRoleStep(at({ status: "cupid" })).compound).toBe("bond");
+    expect(describeRoleStep(at({ status: "seer", victim: null })).compound).toBeUndefined();
+    const magician = at({ poisoned: null, spellsRemaining: 2, status: "magician", victim: null });
+    expect(pickLimitOf(magician, "kill", false, 0)).toBe(2);
+    // A healing spell takes one of the two spells.
+    expect(pickLimitOf(magician, "kill", true, 0)).toBe(1);
+    expect(pickLimitOf(magician, "bond", false, 0)).toBe(2);
+    expect(pickLimitOf(magician, "poison", false, 0)).toBe(1);
   });
 });

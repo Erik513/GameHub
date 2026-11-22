@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-119: Umbau Schritt 4, Hexe, Magier, Amor
+
+- Wahl in mehreren Teilen und die Zahl der Personen je Fähigkeit kommen aus roleStep.
+
 ### We-01-118: Umbau Schritt 3, Ergebnis aus der Beschreibung
 
 - Das Ergebnis von Seherin und Ermittler kommt aus roleStep.

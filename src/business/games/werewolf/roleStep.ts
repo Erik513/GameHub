@@ -65,6 +65,27 @@ export interface PickSpec {
   readonly excludes?: string;
 }
 
+/** The steps with a choice of several parts: the potions of the witch, the spells of the magician, the pair of Cupid. */
+export type CompoundEvent = "bond" | "castSpells" | "potions";
+
+/**
+ * How many people an ability takes. The spells of the magician are shared between healing and killing: a healing
+ * spell takes one of them. The vote takes the people who vote yes; a nomination takes three (nominee, nominator,
+ * seconder).
+ */
+export function pickLimitOf(
+  state: WerewolfState,
+  ability: string | null,
+  healing: boolean,
+  voters: number,
+): number {
+  if (ability === "vote") return state.status === "vote" ? voters : 3;
+  if (ability === "bond") return 2;
+  if (ability === "kill" && "spellsRemaining" in state)
+    return Math.max(0, state.spellsRemaining - Number(healing));
+  return 1;
+}
+
 export interface RoleStepSpec {
   readonly variant: RoleStepVariant;
   readonly kind: "choose" | "result" | "info" | "day" | "plain";
@@ -72,6 +93,8 @@ export interface RoleStepSpec {
   readonly skippable: boolean;
   /** The victim of the wolves is named in the step (the witch and the magician decide about it). */
   readonly showsVictim: boolean;
+  /** Present while the choice has several parts (potions, spells, the pair of Cupid). */
+  readonly compound?: CompoundEvent;
   /** Present while the step names one person. */
   readonly pick?: PickSpec;
   /** How the button of a skippable step is called, and what the summary says after it was pressed. */
@@ -103,8 +126,14 @@ const spec = (
 export function describeRoleStep(state: WerewolfState): RoleStepSpec {
   const base = baseStep(state);
   const pick = pickOf(state, base.skippable);
+  const compound = compoundOf(state);
   const result = resultOf(state);
-  return { ...base, ...(pick ? { pick } : {}), ...(result ? { result } : {}) };
+  return {
+    ...base,
+    ...(compound ? { compound } : {}),
+    ...(pick ? { pick } : {}),
+    ...(result ? { result } : {}),
+  };
 }
 
 function pickOf(state: WerewolfState, skippable: boolean): PickSpec | undefined {
@@ -140,6 +169,19 @@ function pickOf(state: WerewolfState, skippable: boolean): PickSpec | undefined 
         skipTarget: state.amulet.holder,
         ...(skippable ? { excludes: state.amulet.holder } : {}),
       });
+    default:
+      return undefined;
+  }
+}
+
+function compoundOf(state: WerewolfState): CompoundEvent | undefined {
+  switch (state.status) {
+    case "witch":
+      return "potions";
+    case "magician":
+      return "castSpells";
+    case "cupid":
+      return "bond";
     default:
       return undefined;
   }
