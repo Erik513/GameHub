@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 299,
-      "totalTasks": 353,
+      "completedTasks": 300,
+      "totalTasks": 354,
       "percent": 84.7
     }
   },
@@ -1905,6 +1905,12 @@
           "title": "Zurück und Weiter nur zwischen den Rollen, Entscheidung mit dem Rücknahme-Knopf in der Zusammenfassung zurücknehmen",
           "status": "done",
           "validation": "Zurück verlässt den ganzen Schritt der Rolle auf einmal (Ankündigung, Auswahl, Einschlafen) und geht in die vorherige Rolle (in der Rollenverteilung weiter Spieler für Spieler); eine Entscheidung nimmt der kleine neutrale Knopf (Reset-Symbol) rechts in der blauen Zusammenfassung „Gewählt: …“ zurück: der Schritt ist wieder offen, nichts ist gewählt, die Fähigkeiten sind frei (reopenDecision); der Knopf erscheint nur im Schritt „schläft wieder ein“ (nicht bei „Kein Angriff in dieser Nacht“); die Grenze „nur eine Rolle zurück“ gilt auch mit dem neuen Zurück (Korrektur: sie hielt zunächst nicht, weil die Prüfung nur das letzte Bild ansah; Test mit vier Rollen); Tests: Logik und Oberfläche; Tests, tsc, eslint; nicht im Browser angesehen. Ersetzt die Änderung We-01-112 (Zurück öffnet die Entscheidung)."
+        },
+        {
+          "id": "We-01-115",
+          "title": "Amulettträger: eigene Rolle auf der Karte, Behalten ohne Angriff, Abgeben nur nach Angriff Pflicht",
+          "status": "done",
+          "validation": "Im Schritt des Amulettträgers zeigt die Rollenkarte die echte Rolle des Trägers (Amulett ist nur ein Zusatz und steht als Effekt) statt „Amulettträger“; wurde der Träger angegriffen (das Amulett hat den Angriff gestoppt), erscheint zusätzlich der Effekt „angegriffen“ und der Text „… wurde angegriffen und muss das Amulett abgeben“; sonst „… darf das Amulett behalten oder weitergeben“ mit dem Knopf „Behalten“ in der Karte (Regel in GAMEHUB_WERWOLF.md: Liebeskummer und fehlender Angriff erzeugen keine Weitergabepflicht; die Logik nimmt dabei den Träger selbst als Ziel, die Oberfläche nimmt ihn aus der Liste); Zusammenfassung „Das Amulett bleibt bei …“; Test; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

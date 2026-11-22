@@ -48,7 +48,12 @@ export function actInfo(view: GuideView, t: TFunction): string | null {
         ? t("werewolfNarrator.guide.wolvesNoAttack")
         : null;
     case "amuletPass":
-      return t("werewolfNarrator.guide.amuletHolder", { name: state.amulet.holder });
+      return t(
+        state.amulet.mustPass
+          ? "werewolfNarrator.guide.amuletMust"
+          : "werewolfNarrator.guide.amuletMay",
+        { name: state.amulet.holder },
+      );
     default:
       return null;
   }

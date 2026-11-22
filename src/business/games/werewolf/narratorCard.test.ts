@@ -240,4 +240,26 @@ describe("describeNarratorCard", () => {
     // Both are in love, but only one holds the amulet: the amulet is not shown.
     expect(card.effects).toEqual(["lovers"]);
   });
+
+  it("shows the holder of the amulet with his own role and says that an attack is why he has to pass it", () => {
+    const base = start(["witch"], { amulet: true });
+    const witch = base.players.find((player) => player.role === "witch")!;
+    const must = at(base, {
+      amulet: { holder: witch.name, mustPass: true },
+      poisoned: null,
+      status: "amuletPass",
+      victim: null,
+    });
+    const card = describeNarratorCard(must)!;
+    expect(card.role).toBe("amuletPass");
+    expect(card.holderRole).toBe("witch");
+    expect(card.effects).toContain("amulet");
+    expect(card.effects).toContain("attacked");
+    const may = describeNarratorCard({
+      ...must,
+      amulet: { holder: witch.name, mustPass: false },
+    })!;
+    expect(may.effects).toContain("amulet");
+    expect(may.effects).not.toContain("attacked");
+  });
 });

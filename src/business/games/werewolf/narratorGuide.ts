@@ -221,7 +221,11 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
     case "hunter":
       return decided ? { night, target, type: "shot" } : null;
     case "amuletPass":
-      return first ? { night, target: first, type: "passAmulet" } : null;
+      // Keeping the amulet is the step "skip": the logic takes the holder himself as the target.
+      if (first) return { night, target: first, type: "passAmulet" };
+      return mayPass && selection.ability === null
+        ? { night, target: state.amulet.holder, type: "passAmulet" }
+        : null;
     case "cupid": {
       const [one, two] = selection.picks;
       return one && two ? { night, players: [one, two], type: "bond" } : null;
@@ -335,6 +339,9 @@ export function describeGuide(guide: Guide): GuideView {
       heal: selection.heal,
       selected: selection.ability === "bond" ? selection.picks.slice(0, 1) : selection.picks,
     }).filter((name) => !selection.picks.includes(name));
+  // Keeping the amulet is the button "keep"; the holder himself is not in the list of people.
+  if (state.status === "amuletPass" && describeRoleStep(state).skippable)
+    targets = targets.filter((name) => name !== state.amulet.holder);
   const canContinue =
     frame.phase === "ready" ||
     state.status === "finished" ||

@@ -75,6 +75,11 @@ export interface NarratorCard {
   /** Up to three effects from outside on the people who are awake. */
   readonly effects: readonly CardEffect[];
   readonly abilities: readonly CardAbility[];
+  /**
+   * The real role of the person who is awake, when the step is not a role of its own: the amulet is only an addition,
+   * so its holder is shown with the role he has (the amulet is one of his effects).
+   */
+  readonly holderRole?: string | undefined;
 }
 
 const maximumEffects = 3;
@@ -263,6 +268,13 @@ function effectsOf(state: WerewolfState, actors: readonly string[]): readonly Ca
     if (person.partner) found.push("lovers");
     if (person.amulet) found.push("amulet");
     if (night && state.wolfTarget?.name === person.name) found.push("attacked");
+    // The amulet stopped an attack: this is why the holder has to pass it on.
+    if (
+      state.status === "amuletPass" &&
+      state.amulet.mustPass &&
+      state.amulet.holder === person.name
+    )
+      found.push("attacked");
     if (night && state.protectedPlayer === person.name) found.push("protected");
     if (night && state.hostPlayer === person.name) found.push("guest");
     if (night && poisoned === person.name) found.push("poisoned");
@@ -292,6 +304,9 @@ export function describeNarratorCard(state: WerewolfState): NarratorCard | null 
     actors,
     cover,
     effects: effectsOf(state, actors),
+    ...(state.status === "amuletPass"
+      ? { holderRole: state.players.find((player) => player.name === state.amulet.holder)?.role }
+      : {}),
     role,
   };
 }

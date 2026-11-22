@@ -306,12 +306,18 @@ describe("narrator guide", () => {
       guide = continueGuide(guide);
       expect(describeGuide(guide).phase).toBe("act");
       const before = guide.session.present.amulet!.holder;
+      // After an attack the holder has to pass it on; otherwise he keeps it with the button "keep": the step can be
+      // left without a choice, and the amulet stays. The holder himself is never in the list of people.
+      const mustPass = guide.session.present.amulet!.mustPass;
+      expect(describeGuide(guide).canContinue).toBe(!mustPass);
       guide = chooseAbility(guide, "passAmulet");
-      // The holder may keep the amulet unless the game says it has to be passed on.
       expect(describeGuide(guide).targets.length).toBeGreaterThan(1);
-      expect(describeGuide(guide).targets.includes(before)).toBe(
-        !guide.session.present.amulet!.mustPass,
-      );
+      expect(describeGuide(guide).targets.includes(before)).toBe(false);
+      if (!mustPass) {
+        const kept = continueGuide(closeAbility(guide));
+        const after = continueGuide(kept);
+        expect(after.session.present.amulet?.holder).toBe(before);
+      }
     }
   });
 

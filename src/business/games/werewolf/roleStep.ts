@@ -33,7 +33,8 @@ export type RoleStepVariant =
   | "hunterRequired"
   | "loversInfo"
   | "drunkInfo"
-  | "amuletPass"
+  | "amuletPassMust"
+  | "amuletPassMay"
   | "cover"
   | "day"
   | "vote"
@@ -109,7 +110,10 @@ export function describeRoleStep(state: WerewolfState): RoleStepSpec {
     case "drunkReveal":
       return spec("drunkInfo", "info");
     case "amuletPass":
-      return spec("amuletPass", "choose");
+      // After an attack the holder has to pass the amulet on; otherwise he may keep it (the logic takes himself as the target).
+      return state.amulet.mustPass
+        ? spec("amuletPassMust", "choose")
+        : spec("amuletPassMay", "choose", { skippable: true });
     case "day":
       return spec("day", "day");
     case "vote":

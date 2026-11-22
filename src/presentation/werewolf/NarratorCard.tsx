@@ -3,6 +3,7 @@ import type {
   CardAbilityId,
   NarratorCard as Card,
 } from "../../business/games/werewolf/narratorCard";
+import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface NarratorCardProps {
@@ -18,7 +19,13 @@ interface NarratorCardProps {
   readonly next?: boolean;
   /** The role may do nothing: a button "skip" stands next to the abilities (the narrator decides in this box). */
   readonly skip?:
-    | { readonly disabled: boolean; readonly framed: boolean; readonly onSkip: () => void }
+    | {
+        readonly disabled: boolean;
+        readonly framed: boolean;
+        /** The text of the button when it is not "skip" (the holder of the amulet keeps it). */
+        readonly label?: string;
+        readonly onSkip: () => void;
+      }
     | undefined;
   /** Called when the narrator taps an ability that can be used. */
   readonly onAbility?: (id: CardAbilityId) => void;
@@ -41,13 +48,15 @@ export function NarratorCard({
   skip,
 }: NarratorCardProps) {
   const { t } = useTranslation();
-  const roleName = t(`werewolfSymbols.items.${card.role}.name`);
+  // The amulet is no role: its holder is shown with his own role.
+  const shownRole = (card.holderRole ?? card.role) as SymbolId;
+  const roleName = t(`werewolfSymbols.items.${shownRole}.name`);
   const slots = Array.from({ length: slotCount }, (_, index) => card.effects[index] ?? null);
   return (
     <section aria-label={roleName} className="ww-role-card" data-cover={card.cover}>
       <header className="ww-role-card__head">
         <span className="ww-role-card__role">
-          <WerewolfSymbol id={card.role} size={40} />
+          <WerewolfSymbol id={shownRole} size={40} />
         </span>
         <span className="ww-role-card__who">
           <strong>{roleName}</strong>
@@ -104,7 +113,7 @@ export function NarratorCard({
               onClick={skip.onSkip}
               type="button"
             >
-              {t("werewolfNarrator.guide.skip")}
+              {skip.label ?? t("werewolfNarrator.guide.skip")}
             </button>
           )}
         </div>

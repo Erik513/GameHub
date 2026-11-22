@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-115: Amulettträger mit eigener Rolle
+
+- Die Karte zeigt die Rolle des Trägers statt „Amulettträger“; Hinweis, ob er abgeben muss (Angriff) oder darf.
+
 ### We-01-114: Zurück zwischen Rollen, Rücknahme in der Zusammenfassung
 
 - Zurück geht von Rolle zu Rolle; Entscheidungen nimmt ein kleiner neutraler Reset-Knopf in der Zusammenfassung zurück.
