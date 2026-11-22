@@ -472,4 +472,27 @@ describe("narrator guide", () => {
     // Nothing to close without an open ability.
     expect(closeAbility(closed)).toBe(closed);
   });
+
+  it("lets the button next change the role only: not in the announcement and not inside the step of a role", () => {
+    let guide = game([], { attackOnFirstNight: true });
+    for (let step = 0; step < 100 && describeGuide(guide).card?.role !== "wolf"; step += 1)
+      guide = forward(guide)!;
+    // Announcement: the box is tapped, "next" waits.
+    expect(describeGuide(guide).phase).toBe("intro");
+    expect(describeGuide(guide).canNext).toBe(false);
+    guide = continueGuide(guide);
+    // Inside the step: the choice is made and confirmed in the box, "next" still waits.
+    expect(describeGuide(guide).phase).toBe("act");
+    expect(describeGuide(guide).canNext).toBe(false);
+    guide = chooseAbility(guide, "attack");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    expect(describeGuide(guide).canContinue).toBe(true);
+    expect(describeGuide(guide).canNext).toBe(false);
+    guide = continueGuide(guide);
+    // The role is asleep: now "next" changes to the next role.
+    expect(describeGuide(guide).phase).toBe("outro");
+    expect(describeGuide(guide).canNext).toBe(true);
+    // The steps without a role (the role reveal, the morning) are left with "next", too.
+    expect(describeGuide(game()).canNext).toBe(true);
+  });
 });

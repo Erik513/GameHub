@@ -35,7 +35,7 @@ export const werewolfSymbolsTexts = {
       },
       cupid: {
         name: "Amor",
-        meaning: "Herz mit Handschlag: verbindet zwei Personen",
+        meaning: "Herz mit Handschlag: verliebt 2 Personen",
       },
       day: {
         name: "Tag",

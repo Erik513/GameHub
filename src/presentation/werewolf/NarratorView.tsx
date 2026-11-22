@@ -55,6 +55,13 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
                 ...(view.selection.ability ? [view.selection.ability] : []),
                 ...(view.selection.heal ? (["heal"] as const) : []),
               ]}
+              next={
+                view.phase === "act" &&
+                !view.card.cover &&
+                view.card.role !== "day" &&
+                view.selection.ability === null &&
+                !view.selection.heal
+              }
               settled={view.phase === "outro"}
               card={view.card}
               onAbility={guide.ability}
@@ -89,7 +96,8 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
             {t("werewolfNarrator.guide.back")}
           </Button>
           <Button
-            disabled={!view.canContinue}
+            data-next={(view.canNext && view.phase !== "act") || undefined}
+            disabled={!view.canNext}
             onClick={view.nextKind === "finish" ? onEnd : guide.continueGuide}
             variant="success"
           >

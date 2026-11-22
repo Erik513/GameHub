@@ -42,28 +42,39 @@ export function GuideBox({
   if (phase === "plain") return <PlainBox view={view} />;
   if (!card) return null;
 
-  if (phase === "intro" || phase === "outro") {
-    const text = t(`werewolfNarrator.guide.${phase === "intro" ? "wake" : "sleep"}.${card.role}`);
+  if (phase === "intro") {
     return (
       <button className="ww-guide ww-guide--tap" onClick={onContinue} type="button">
         <span className="ww-guide__heading">
           <strong className="ww-guide__text">
             <WerewolfSymbol id={card.role} size={32} />
-            {text}
+            {t(`werewolfNarrator.guide.wake.${card.role}`)}
           </strong>
-          <span className="ww-guide__sub">{t(`werewolfNarrator.guide.tap.${phase}Sub`)}</span>
-        </span>
-        {(phase === "outro" || view.deaths.length > 0) && (
-          <span className="ww-guide__extra">
-            {phase === "outro" && <Summary view={view} />}
-            {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
-          </span>
-        )}
-        <span className="ww-guide__strip">
-          <span>{t(`werewolfNarrator.guide.tap.${phase}Action`)}</span>
-          <Icon name="chevronRight" />
+          <span className="ww-guide__sub">{t("werewolfNarrator.guide.tap.introSub")}</span>
         </span>
       </button>
+    );
+  }
+
+  if (phase === "outro") {
+    // The role is asleep again. The box only says so; going on to the next role is the job of the button "next".
+    return (
+      <section className="ww-guide ww-guide--sheet ww-guide--asleep">
+        <header className="ww-guide__head">
+          <span className="ww-guide__heading">
+            <strong className="ww-guide__text">
+              <WerewolfSymbol id={card.role} size={32} />
+              {t(`werewolfNarrator.guide.sleep.${card.role}`)}
+            </strong>
+            <span className="ww-guide__sub">{t("werewolfNarrator.guide.tap.outroSub")}</span>
+          </span>
+        </header>
+        <div className="ww-guide__body" />
+        <footer className="ww-guide__extra">
+          <Summary view={view} />
+          {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
+        </footer>
+      </section>
     );
   }
 
@@ -71,6 +82,11 @@ export function GuideBox({
   const showPeople =
     selection.ability !== null &&
     (view.targets.length > 0 || selection.picks.length > 0 || view.canChooseNobody);
+  // The green check confirms the step. It gets a blue frame when the step can be confirmed and there is nothing else to
+  // do: a choice was made, or there is nothing to choose (a result, a call without a decision).
+  const hasChoice = card.abilities.some((ability) => ability.available);
+  const confirmReady =
+    view.canContinue && (selection.ability !== null || selection.heal || !hasChoice);
   const isWitchOrMagician = state.status === "witch" || state.status === "magician";
   const extras = [
     !card.cover && isWitchOrMagician && (
@@ -111,10 +127,11 @@ export function GuideBox({
                   : t("werewolfNarrator.guide.confirmDone")))}
         </strong>
         <span className="ww-guide__tools">
-          {view.canUndo && (
+          {(selection.ability !== null || view.canUndo) && (
             <button
               aria-label={t("werewolfNarrator.guide.undo")}
               className="ww-guide__close"
+              disabled={!view.canUndo}
               onClick={onUndo}
               title={t("werewolfNarrator.guide.undo")}
               type="button"
@@ -184,7 +201,36 @@ export function GuideBox({
           </div>
         )}
       </div>
-      {extras.length > 0 && <footer className="ww-guide__extra">{extras}</footer>}
+      {(extras.length > 0 || card.role !== "day") && (
+        <footer className="ww-guide__extra">
+          {extras}
+          {card.role !== "day" &&
+            (selection.ability !== null ? (
+              <button
+                aria-label={t("werewolfNarrator.guide.confirm")}
+                className="ww-guide__confirm"
+                data-next={confirmReady || undefined}
+                disabled={!view.canContinue}
+                onClick={onContinue}
+                title={t("werewolfNarrator.guide.confirm")}
+                type="button"
+              >
+                <Icon name="check" />
+              </button>
+            ) : (
+              <button
+                className="ww-guide__strip"
+                data-next={(view.canContinue && (selection.heal || !hasChoice)) || undefined}
+                disabled={!view.canContinue}
+                onClick={onContinue}
+                type="button"
+              >
+                <span>{t("werewolfNarrator.guide.done")}</span>
+                <Icon name="check" />
+              </button>
+            ))}
+        </footer>
+      )}
     </section>
   );
 }
@@ -368,7 +414,11 @@ function Summary({ view }: { readonly view: GuideView }) {
       selection.none || selection.picks.length === 0
         ? t("werewolfNarrator.guide.nobody")
         : selection.picks.join(", ");
-    parts.push(`${t(`werewolfNarrator.ability.${selection.ability}`)}: ${people}`);
+    const label =
+      selection.ability === "bond"
+        ? t("werewolfNarrator.guide.bondDone")
+        : t(`werewolfNarrator.ability.${selection.ability}`);
+    parts.push(`${label}: ${people}`);
   }
   return (
     <span className="ww-guide__chosen">

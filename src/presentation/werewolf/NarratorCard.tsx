@@ -12,6 +12,8 @@ interface NarratorCardProps {
   readonly pressed?: readonly CardAbilityId[];
   /** The step is done: the buttons no longer invite a tap and only show what was chosen. */
   readonly settled?: boolean;
+  /** The abilities are the next thing to tap: the ones that can be used get a blue frame. */
+  readonly next?: boolean;
   /** Called when the narrator taps an ability that can be used. */
   readonly onAbility?: (id: CardAbilityId) => void;
 }
@@ -27,6 +29,7 @@ export function NarratorCard({
   card,
   pressed = [],
   settled = false,
+  next = false,
   onAbility,
 }: NarratorCardProps) {
   const { t } = useTranslation();
@@ -70,6 +73,7 @@ export function NarratorCard({
                 aria-pressed={pressed.includes(ability.id)}
                 className="ww-ability"
                 data-available={ability.available}
+                data-next={(next && ability.available && !settled) || undefined}
                 data-settled={settled || undefined}
                 disabled={!ability.available || settled}
                 key={ability.id}

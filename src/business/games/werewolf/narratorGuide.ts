@@ -264,6 +264,11 @@ export interface GuideView {
   /** The list of people can be closed again (an ability that was opened by a tap). */
   readonly canCloseAbility: boolean;
   readonly canContinue: boolean;
+  /**
+   * The button "next" at the bottom can be used. It changes from one role to the next (or to the day, the morning, ...),
+   * so it waits until a role is asleep again; inside the step of a role the box of the role is operated.
+   */
+  readonly canNext: boolean;
   readonly canGoBack: boolean;
   /** There is a choice that "undo" can take back. */
   readonly canUndo: boolean;
@@ -300,6 +305,12 @@ export function describeGuide(guide: Guide): GuideView {
     frame.phase === "outro" ||
     ((frame.phase === "act" || frame.phase === "plain") &&
       acceptedEvent(state, selection) !== null);
+  const dayCard = frame.phase === "act" && describeNarratorCard(state)?.role === "day";
+  const canNext =
+    frame.phase === "ready" ||
+    frame.phase === "outro" ||
+    state.status === "finished" ||
+    ((frame.phase === "plain" || dayCard) && canContinue);
   return {
     canChooseNobody:
       frame.phase === "act" &&
@@ -308,6 +319,7 @@ export function describeGuide(guide: Guide): GuideView {
       !(selection.ability === "shot" && state.settings.hunterShot === "required"),
     canCloseAbility: frame.phase === "act" && state.status !== "vote" && selection.ability !== null,
     canContinue,
+    canNext,
     canGoBack: guide.trail.length > 1 || guide.session.past.length > 0,
     canUndo:
       selection.picks.length > initialSelection(state).picks.length ||

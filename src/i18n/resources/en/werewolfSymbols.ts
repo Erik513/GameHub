@@ -35,7 +35,7 @@ export const werewolfSymbolsTexts = {
       },
       cupid: {
         name: "Cupid",
-        meaning: "Heart with a handshake: joins two players",
+        meaning: "Heart with a handshake: makes 2 players fall in love",
       },
       day: {
         name: "Day",

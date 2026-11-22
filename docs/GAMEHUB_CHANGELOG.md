@@ -2,6 +2,18 @@
 
 ## 2026-11-21
 
+### We-01-92: Amor verliebt
+
+- Statt „Verbinden“ heißt die Fähigkeit von Amor „Verlieben“ (Knopf, Frage, Symbolbedeutung; englisch „Make lovers“).
+
+### We-01-91: Weiter nur für den Rollenwechsel
+
+- „Weiter“ wechselt nur von Rolle zu Rolle und ist innerhalb eines Rollenschritts gesperrt; Haken nur in der Spielerauswahl, sonst die Zeile „Erledigt“; obere Box 40 %, untere 60 %.
+
+### We-01-90: Bedienung durch blaue Rahmen
+
+- Ein blauer Rahmen führt den Erzähler: erst die Box zum Antippen, dann die Fähigkeit, nach der Auswahl der grüne Haken unten rechts zum Bestätigen. In der Auswahl gibt es oben rechts immer Zurücksetzen und X. Die doppelte Zeile in der Box zum Antippen entfällt.
+
 ### We-01-89: Rollensymbol vor der Ansage
 
 - Vor der Ansage jeder erwachenden Rolle steht ihr Symbol.

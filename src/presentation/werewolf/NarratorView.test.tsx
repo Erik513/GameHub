@@ -111,32 +111,42 @@ describe.each([
   });
 });
 
+/**
+ * Walks through the role reveal, the begin and the wolves (a role is woken by a tap on its box, finished with "done" and
+ * followed by "next") until the box of the seer says that the seer wakes up.
+ */
+async function toSeer(user: ReturnType<typeof userEvent.setup>) {
+  for (let guard = 0; guard < 60 && !screen.queryByText(/seer wakes up/); guard += 1) {
+    const next = screen.queryByRole("button", { name: "Next" });
+    const done = screen.queryByRole("button", { name: "Done" });
+    const wake = screen.queryByText(/wake up|wakes up/);
+    if (screen.queryByText("All roles are dealt")) await beginGame(user);
+    else if (wake) await user.click(wake);
+    else if (done && !(done as HTMLButtonElement).disabled) await user.click(done);
+    else if (next && !(next as HTMLButtonElement).disabled) await user.click(next);
+    else throw new Error("the walk to the seer is stuck");
+  }
+}
+
 describe("NarratorView choices", () => {
-  it("lets the narrator choose a person for the seer and shows what the seer sees", async () => {
+  it("lets the narrator choose a person for the seer, confirm with the check mark and read what the seer sees", async () => {
     const user = await renderView("en");
-    const nextButton = () => screen.getByRole("button", { name: "Next" });
-    // Walk to the seer: role reveal, wolves (intro, act, outro), seer intro.
-    for (let guard = 0; guard < 30 && !screen.queryByText(/seer wakes up/); guard += 1) {
-      if (screen.queryByText("All roles are dealt")) await beginGame(user);
-      else await user.click(nextButton());
-    }
+    await toSeer(user);
     await user.click(screen.getByText(/seer wakes up/));
-    expect(nextButton()).toBeDisabled();
+    // Inside the step of a role the button "next" waits: it changes the role.
+    expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
     await user.click(screen.getByRole("button", { name: /Look: ready/ }));
     const person = names.split(",").find((name) => screen.queryByRole("button", { name }))!;
     await user.click(screen.getByRole("button", { name: person }));
-    expect(screen.getByRole("button", { name: "Undo" })).toBeInTheDocument();
-    expect(nextButton()).toBeEnabled();
-    await user.click(nextButton());
+    expect(screen.getByRole("button", { name: "Undo" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
     expect(screen.getByText(new RegExp(`${person} is (not )?a werewolf`))).toBeInTheDocument();
   });
 
   it("lists the people in alphabetical order, all equally, and closes the list with the X", async () => {
     const user = await renderView("en");
-    for (let guard = 0; guard < 30 && !screen.queryByText(/seer wakes up/); guard += 1) {
-      if (screen.queryByText("All roles are dealt")) await beginGame(user);
-      else await user.click(screen.getByRole("button", { name: "Next" }));
-    }
+    await toSeer(user);
     await user.click(screen.getByText(/seer wakes up/));
     expect(screen.queryByRole("button", { name: "Close the selection" })).toBeNull();
     await user.click(screen.getByRole("button", { name: /Look: ready/ }));
@@ -151,5 +161,53 @@ describe("NarratorView choices", () => {
       screen.queryAllByRole("button").filter((button) => button.classList.contains("ww-person")),
     ).toHaveLength(0);
     expect(screen.queryByRole("button", { name: "Close the selection" })).toBeNull();
+  });
+
+  it("leads the narrator with a blue frame: the ability, then the check mark once the choice is complete", async () => {
+    const user = await renderView("en");
+    await toSeer(user);
+    // The box to tap stands alone: there is no second button inside it that does the same as "Next".
+    expect(screen.queryByText(/^Show the role$/)).toBeNull();
+    await user.click(screen.getByText(/seer wakes up/));
+    const look = screen.getByRole("button", { name: /Look: ready/ });
+    // First the ability has the frame; the check mark is only there while people are chosen.
+    expect(look).toHaveAttribute("data-next");
+    expect(screen.queryByRole("button", { name: "Confirm the choice" })).toBeNull();
+    await user.click(look);
+    // In the list the reset and the X are always there; the check waits for the choice.
+    expect(screen.getByRole("button", { name: "Undo" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Close the selection" })).toBeEnabled();
+    expect(look).not.toHaveAttribute("data-next");
+    const confirm = screen.getByRole("button", { name: "Confirm the choice" });
+    expect(confirm).toBeDisabled();
+    expect(confirm).not.toHaveAttribute("data-next");
+    const person = names.split(",").find((name) => screen.queryByRole("button", { name }))!;
+    await user.click(screen.getByRole("button", { name: person }));
+    // The choice is complete: the check mark gets the frame and confirms.
+    expect(confirm).toBeEnabled();
+    expect(confirm).toHaveAttribute("data-next");
+    await user.click(confirm);
+    expect(screen.getByText(new RegExp(`${person} is (not )?a werewolf`))).toBeInTheDocument();
+  });
+
+  it("changes from one role to the next only with the button next, which then has the blue frame", async () => {
+    const user = await renderView("en");
+    await toSeer(user);
+    await user.click(screen.getByText(/seer wakes up/));
+    await user.click(screen.getByRole("button", { name: /Look: ready/ }));
+    const person = names.split(",").find((name) => screen.queryByRole("button", { name }))!;
+    await user.click(screen.getByRole("button", { name: person }));
+    await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
+    // The result of the seer is read out, the step is confirmed with "done".
+    await user.click(screen.getByRole("button", { name: "Done" }));
+    // The seer is asleep: the box only says so, a tap on it does nothing, and "next" leads on.
+    const asleep = screen.getByText(/seer goes back to sleep/);
+    await user.click(asleep);
+    expect(screen.getByText(/seer goes back to sleep/)).toBeInTheDocument();
+    const next = screen.getByRole("button", { name: "Next" });
+    expect(next).toBeEnabled();
+    expect(next).toHaveAttribute("data-next");
+    await user.click(next);
+    expect(screen.queryByText(/seer goes back to sleep/)).toBeNull();
   });
 });

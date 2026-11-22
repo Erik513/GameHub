@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T18:00:00.000Z",
+    "updatedAt": "2026-11-22T20:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 273,
-      "totalTasks": 327,
-      "percent": 83.5
+      "completedTasks": 276,
+      "totalTasks": 330,
+      "percent": 83.6
     }
   },
   "environment": {
@@ -1755,6 +1755,24 @@
           "title": "Rollensymbol vor der Ansage jeder erwachenden Rolle",
           "status": "done",
           "validation": "Vor „… erwacht“ und „… schläft wieder ein“ steht das Symbol der Rolle (Wolfskopf, Auge, Flasche, Zauberstab, Schild, Bett, Herz und so weiter, auch Verliebte, Trunkenbold und Amulettweitergabe); Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-90",
+          "title": "Bedienung durch blaue Rahmen geführt: Fähigkeit, Auswahl, grüner Haken zum Bestätigen; Zeile „Rolle zeigen“ entfällt",
+          "status": "done",
+          "validation": "Ein blauer Rahmen zeigt, was als Nächstes zu bedienen ist: zuerst die Box zum Antippen (Ankündigung), dann die verfügbaren Fähigkeitsknöpfe der Karte, dann nach der Auswahl der grüne Haken unten rechts in der Box (er ist gesperrt, bis die Auswahl gültig ist, und bekommt den blauen Rahmen, sobald sie vollständig ist, bei Amor also mit zwei Personen; bei Schritten ohne Entscheidung, etwa dem Ergebnis der Seherin, sofort); in der Auswahl stehen oben rechts immer Zurücksetzen (gesperrt, solange nichts gewählt ist) und X; die doppelte Zeile „Rolle zeigen“ in der Box zum Antippen entfällt, der Knopf „Weiter“ unten bleibt; gewählte Fähigkeiten zeigen nur noch den Haken, der Rahmen gehört dem nächsten Schritt; Test für den Ablauf; 1569 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-91",
+          "title": "Weiter nur für den Rollenwechsel, grüner Haken nur in der Spielerauswahl, Boxen 40 zu 60 Prozent",
+          "status": "done",
+          "validation": "Der Knopf „Weiter“ unten ist in der Ankündigung und innerhalb des Schritts einer Rolle gesperrt und wechselt nur von einer Rolle zur nächsten (er hat dann den blauen Rahmen) sowie in den Schritten ohne Rolle (Rollenverteilung, Beginnen, Morgen, Ausschluss, Tag); beim Einschlafen sagt die untere Box „Drücke Weiter, um fortzufahren“ und ist nicht antippbar; der grüne Haken erscheint nur, solange eine Spielerauswahl offen ist; ohne Auswahl (Tarnaufruf, Ergebnis, Verzicht von Hexe und Magier) steht unten eine Zeile „Erledigt“ mit Haken, die bei Schritten ohne Entscheidung den blauen Rahmen hat; obere Box 40 Prozent, untere 60 Prozent der Höhe, damit 20 Spieler besser passen; Logik canNext mit Test, Tests der Oberfläche angepasst und ergänzt; 1570 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-92",
+          "title": "Amor: Fähigkeit heißt „Verlieben“ statt „Verbinden“, Zusammenfassung „Verliebt“",
+          "status": "done",
+          "validation": "Fähigkeitsknopf, Frage und Symbolbedeutung der Amor-Karte sprechen von Verlieben (Deutsch) beziehungsweise „Make lovers“ / „fall in love“ (Englisch); 674 Tests der Werwolf-, Business- und i18n-Ordner grün; nicht im Browser angesehen."
         }
       ]
     },
