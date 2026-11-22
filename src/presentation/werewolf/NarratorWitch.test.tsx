@@ -75,9 +75,14 @@ it("shows all options above at all times and the two questions as boxes below, t
   expect(poison).not.toHaveAttribute("data-next");
   expect(poison).toBeDisabled();
   // Below: two boxes, the first one is open; the hint with the victim stands below with its own border.
-  expect(steps().map((step) => step.textContent)).toEqual([
-    "Does the witch want to save the victim?",
-    "Does the witch want to poison somebody? Then she points at a person.",
+  // The first box holds two tasks as a list (show the victim, ask), the second one task.
+  expect(
+    steps().map((step) =>
+      [...step.querySelectorAll(".ww-script__item")].map((item) => item.textContent),
+    ),
+  ).toEqual([
+    [expect.stringMatching(/^Show the victim: P\d+$/), "Does the witch want to save the victim?"],
+    ["Does the witch want to poison somebody? Then she points at a person."],
   ]);
   expect([state(0), state(1)]).toEqual(["active", "pending"]);
   expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked/);
@@ -117,6 +122,9 @@ it("asks about the healing potion although nobody was attacked: the hint says wh
   expect(skip).toHaveAttribute("data-next");
   // The reason stands below as a hint with its own (yellow) border.
   expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked nobody/);
+  expect(steps()[0]!.querySelector(".ww-script__item")?.textContent).toBe(
+    "Show the victim: no victim",
+  );
   fireEvent.click(skip!);
   expect([state(0), state(1)]).toEqual(["done", "active"]);
 });

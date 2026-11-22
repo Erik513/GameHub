@@ -149,6 +149,8 @@ export const werewolfNarratorTexts = {
         idle: "Tippe auf „Abstimmung“, wenn jemand nominiert wird. Sonst: Tag beenden.",
       },
       witch: {
+        showVictim: "Zeige das Opfer: {{name}}",
+        showNoVictim: "Zeige das Opfer: kein Opfer",
         healAsk: "Will die Hexe das Opfer retten?",
         healUsed: "Der Heiltrank ist verbraucht",
         poisonUsed: "Der Gifttrank ist verbraucht",

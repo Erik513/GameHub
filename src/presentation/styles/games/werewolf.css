@@ -2421,16 +2421,31 @@ button.ww-guide__strip[data-next] {
   border-radius: var(--radius-md);
 }
 
-/* The script of a role with several steps: one box for every step, from top to bottom; the open step is framed blue. */
+/* The script of a role with several steps: one numbered box for every step, from top to bottom; the open step is framed
+   blue. Where a box holds several tasks they stand as a list. */
 .ww-script {
   display: grid;
   gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .ww-script__step {
-  padding: var(--space-2);
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
+}
+
+.ww-script__items {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-left: var(--space-4);
+  font-size: var(--text-lg);
+  font-weight: 700;
 }
 
 .ww-script__step[data-state="active"] {

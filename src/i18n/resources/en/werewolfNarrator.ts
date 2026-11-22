@@ -149,6 +149,8 @@ export const werewolfNarratorTexts = {
         idle: "Tap “Vote” when somebody is nominated. Otherwise: end the day.",
       },
       witch: {
+        showVictim: "Show the victim: {{name}}",
+        showNoVictim: "Show the victim: no victim",
         healAsk: "Does the witch want to save the victim?",
         healUsed: "The healing potion is used up",
         poisonUsed: "The poison is used up",

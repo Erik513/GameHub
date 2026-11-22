@@ -384,29 +384,46 @@ function Ballots({
  */
 function Script({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
-  const { question, selection } = view;
+  const { question, selection, state } = view;
+  const victim = state.wolfTarget;
+  // Every box has a number; where there is more than one thing to do, the tasks stand as a list.
   const steps = [
-    { id: "heal", text: t("werewolfNarrator.guide.witch.healAsk") },
+    {
+      id: "heal",
+      items: [
+        victim
+          ? t("werewolfNarrator.guide.witch.showVictim", { name: victim.name })
+          : t("werewolfNarrator.guide.witch.showNoVictim"),
+        t("werewolfNarrator.guide.witch.healAsk"),
+      ],
+    },
     {
       id: "poison",
-      text:
+      items: [
         selection.ability === "poison"
           ? t("werewolfNarrator.guide.ask.poison")
           : t("werewolfNarrator.guide.witch.poisonAsk"),
+      ],
     },
   ] as const;
   return (
-    <div className="ww-script">
+    <ol className="ww-script">
       {steps.map((step) => (
-        <div
+        <li
           className="ww-script__step"
           data-state={step.id === question ? "active" : step.id === "heal" ? "done" : "pending"}
           key={step.id}
         >
-          <strong className="ww-guide__text">{step.text}</strong>
-        </div>
+          <ul className="ww-script__items">
+            {step.items.map((item) => (
+              <li className="ww-script__item" key={item}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 }
 
