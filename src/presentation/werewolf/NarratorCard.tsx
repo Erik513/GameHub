@@ -138,7 +138,7 @@ export function NarratorCard({
                 type="button"
               >
                 <span className="ww-ability__symbol">
-                  <WerewolfSymbol id={ability.symbol} size={24} />
+                  <WerewolfSymbol id={ability.symbol} ring size={24} />
                 </span>
                 <span>{name}</span>
                 {/* Both spells are still there: a 2 on both buttons. With one left the 2 is gone on both. */}

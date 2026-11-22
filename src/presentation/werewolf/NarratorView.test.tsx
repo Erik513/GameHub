@@ -223,7 +223,6 @@ describe("NarratorView choices", () => {
     }
     await user.click(document.querySelector(".ww-script__wake")!);
     expect(screen.getByText("The werewolves attack only from night 2")).toBeInTheDocument();
-    expect(screen.queryByText("Tap an ability")).toBeNull();
     await user.click(screen.getByRole("button", { name: "Task done" }));
     expect(screen.getByText("No attack in this night")).toBeInTheDocument();
     expect(screen.queryByText(/the role passes/)).toBeNull();

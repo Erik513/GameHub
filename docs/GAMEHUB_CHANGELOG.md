@@ -4,6 +4,8 @@
 
 ### We-01-139: Erwachen als erste Skriptbox
 
+- Symbole: Fähigkeiten stehen im Kreis, Rollen frei (Eigenschaft ring, Legende, Test).
+- „Tippe auf eine Fähigkeit“ entfernt: rollenspezifische Anweisungen im Skript (Leibwächter: „… wählt eine Person aus, die er schützen will.“).
 - Verliebte: kurzer Text „Die Verliebten schauen sich an.“, keine Namen; Hinweis „Drücke Weiter“ bei allen Rollen entfernt.
 - Amor: Entscheidung wird mit dem Haken der ersten Skriptbox bestätigt, dann erscheint die blaue Zusammenfassung; Einschlafen und Berühren sind eigene Schritte danach.
 - Nachtrag: Aufwach-Box bleibt stehen (gedimmt), jede Skriptbox beginnt mit dem Symbol der Fähigkeit.

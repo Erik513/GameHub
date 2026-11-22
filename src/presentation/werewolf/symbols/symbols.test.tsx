@@ -58,3 +58,17 @@ it.each(["en", "de"] as const)("names and explains every symbol in %s", async (l
   }
   expect(symbolOf("wolf").glyph).toBe("wolfHead");
 });
+
+it("draws an ability in a circle, so it never looks like its role", () => {
+  const { container } = render(
+    <>
+      <WerewolfSymbol id="protected" ring />
+      <WerewolfSymbol id="bodyguard" />
+      <WerewolfSymbol id="wolf" ring />
+    </>,
+  );
+  const [ability, role, wolf] = [...container.querySelectorAll("svg")];
+  expect(ability!.querySelector("circle")).not.toBeNull();
+  expect(role!.querySelector("circle")).toBeNull();
+  expect(wolf!.querySelector("circle")).not.toBeNull();
+});

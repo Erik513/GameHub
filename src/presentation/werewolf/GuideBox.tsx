@@ -171,7 +171,7 @@ export function GuideBox({
           <ul className="ww-guide__rows">
             {card.abilities.map((ability) => (
               <li key={ability.id}>
-                <WerewolfSymbol id={ability.symbol} size={20} />
+                <WerewolfSymbol id={ability.symbol} ring size={20} />
                 <span>
                   {t("werewolfNarrator.guide.coverRow", {
                     ability: t(`werewolfNarrator.ability.${ability.id}`),
@@ -461,7 +461,7 @@ function RoleScript({
               </span>
             ) : (
               <span className="ww-script__content">
-                {box.symbol && <WerewolfSymbol id={box.symbol as SymbolId} size={28} />}
+                {box.symbol && <WerewolfSymbol id={box.symbol as SymbolId} ring size={28} />}
                 {box.items.length > 1 ? (
                   <ul className="ww-script__items">
                     {box.items.map((item, index) => (
@@ -523,7 +523,7 @@ function Summary({ view }: { readonly view: GuideView }) {
   // What was used, as the symbol of the ability, its name and the person: no prefix ("chosen").
   const part = (symbol: string, label: string, people: string) => (
     <span className="ww-guide__chosen-part" key={symbol + label}>
-      <WerewolfSymbol id={symbol as SymbolId} size={20} />
+      <WerewolfSymbol id={symbol as SymbolId} ring size={20} />
       <span>
         <strong>{label}</strong>
         {": "}

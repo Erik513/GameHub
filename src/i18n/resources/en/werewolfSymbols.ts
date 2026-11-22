@@ -3,7 +3,7 @@ export const werewolfSymbolsTexts = {
   werewolfSymbols: {
     tab: "Symbols",
     intro:
-      "The narrator shows you these symbols when a role wakes up or a person is affected. The same meaning always has the same sign.",
+      "The narrator shows you these symbols when a role wakes up or a person is affected. The same meaning always has the same sign. A role is drawn as it is; its ability stands in a circle.",
     credits:
       'Wolf head: "Wolf head" by Lorc, game-icons.net, license CC BY 3.0. Other drawings: Tabler Icons, MIT license.',
     groups: {

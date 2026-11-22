@@ -87,9 +87,23 @@ export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
     return t(
       `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,
     );
-  return card.abilities.length > 0
-    ? t("werewolfNarrator.guide.pickAbility")
-    : t("werewolfNarrator.guide.confirmDone");
+  return askText(view, t) ?? t("werewolfNarrator.guide.confirmDone");
+}
+
+/**
+ * What the narrator reads out to ask for the decision of the role, before an ability is opened: the instruction of the
+ * role ("the bodyguard chooses a person to protect"). null where the role has no decision.
+ */
+export function askText(view: GuideView, t: TFunction): string | null {
+  const { card, selection } = view;
+  if (!card) return null;
+  if (card.role === "magician") return t("werewolfNarrator.guide.choose.magician");
+  const id =
+    selection.ability ?? card.abilities.find((ability) => ability.id !== "heal")?.id ?? null;
+  if (id === null) return null;
+  return t(
+    `werewolfNarrator.guide.ask.${id === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : id}`,
+  );
 }
 
 /** One box of the script of a role: the tasks of the narrator, the button right of it and where the script stands. */
@@ -232,14 +246,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
 
   // A role that decides: its script, then falling asleep.
   if (step.kind === "choose") {
-    const askAbility =
-      selection.ability ?? card.abilities.find((ability) => ability.id !== "heal")?.id ?? null;
-    const text =
-      outro && askAbility
-        ? t(
-            `werewolfNarrator.guide.ask.${askAbility === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : askAbility}`,
-          )
-        : stepTitle(view, step, t);
+    const text = outro ? (askText(view, t) ?? stepTitle(view, step, t)) : stepTitle(view, step, t);
     return [
       {
         button: outro ? "undo" : "check",
