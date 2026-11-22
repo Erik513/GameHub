@@ -76,6 +76,12 @@ export interface RoleStepSpec {
   readonly pick?: PickSpec;
   /** How the button of a skippable step is called, and what the summary says after it was pressed. */
   readonly skip: { readonly label: "keep" | "skip"; readonly summary: "kept" | "noChoice" };
+  /** What the role saw, in a result step: who was looked at, with which ability, and whether a werewolf was found. */
+  readonly result?: {
+    readonly ability: "inspect" | "investigate";
+    readonly found: boolean;
+    readonly name: string;
+  };
   /** The summary is a statement of the step itself, not the choice of the narrator (no attack in the first night). */
   readonly statement?: "noAttack";
 }
@@ -97,7 +103,8 @@ const spec = (
 export function describeRoleStep(state: WerewolfState): RoleStepSpec {
   const base = baseStep(state);
   const pick = pickOf(state, base.skippable);
-  return pick ? { ...base, pick } : base;
+  const result = resultOf(state);
+  return { ...base, ...(pick ? { pick } : {}), ...(result ? { result } : {}) };
 }
 
 function pickOf(state: WerewolfState, skippable: boolean): PickSpec | undefined {
@@ -136,6 +143,14 @@ function pickOf(state: WerewolfState, skippable: boolean): PickSpec | undefined 
     default:
       return undefined;
   }
+}
+
+function resultOf(state: WerewolfState): RoleStepSpec["result"] {
+  if (state.status === "vision")
+    return { ability: "inspect", found: state.isWolf, name: state.target };
+  if (state.status === "investigation")
+    return { ability: "investigate", found: state.isWolfNearby, name: state.target };
+  return undefined;
 }
 
 function baseStep(state: WerewolfState): RoleStepSpec {

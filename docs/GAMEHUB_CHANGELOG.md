@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-118: Umbau Schritt 3, Ergebnis aus der Beschreibung
+
+- Das Ergebnis von Seherin und Ermittler kommt aus roleStep.
+
 ### We-01-117: Umbau Schritt 2, Beschriftungen aus der Beschreibung
 
 - Verzichten/Behalten, Zusammenfassung und die Aussage der Wölfe kommen aus roleStep.

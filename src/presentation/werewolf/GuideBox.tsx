@@ -363,12 +363,12 @@ function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReop
       <span className="ww-guide__chosen">{t("werewolfNarrator.guide.wolvesNoAttackDone")}</span>
     );
   // The result of the seer or the investigator is shown: the choice is already in the game, not in the selection.
-  if (view.state.status === "vision" || view.state.status === "investigation") {
-    const ability = view.state.status === "vision" ? "inspect" : "investigate";
+  if (step.result) {
+    const { ability, name } = step.result;
     return (
       <Chosen onReopen={onReopen}>
         {t("werewolfNarrator.guide.chosen", {
-          items: `${t(`werewolfNarrator.guide.abilityDone.${ability}`)}: ${view.state.target}`,
+          items: `${t(`werewolfNarrator.guide.abilityDone.${ability}`)}: ${name}`,
         })}
       </Chosen>
     );

@@ -12,21 +12,15 @@ import { DayNotes, ResultText } from "./RoleStepContent";
 /** The result of a step in which the narrator reads something out (what the seer sees, who is in love). */
 export function actInfo(view: GuideView, t: TFunction): string | null {
   const { state } = view;
+  const { result } = describeRoleStep(state);
+  if (result)
+    return t(
+      result.ability === "inspect"
+        ? `werewolfNarrator.guide.vision.${result.found ? "wolf" : "village"}`
+        : `werewolfNarrator.guide.investigation.${result.found ? "yes" : "no"}`,
+      { name: result.name },
+    );
   switch (state.status) {
-    case "vision":
-      return t(
-        state.isWolf
-          ? "werewolfNarrator.guide.vision.wolf"
-          : "werewolfNarrator.guide.vision.village",
-        { name: state.target },
-      );
-    case "investigation":
-      return t(
-        state.isWolfNearby
-          ? "werewolfNarrator.guide.investigation.yes"
-          : "werewolfNarrator.guide.investigation.no",
-        { name: state.target },
-      );
     case "lovers":
       return t("werewolfNarrator.guide.lovers", {
         first: state.lovers[0],
@@ -74,11 +68,11 @@ export function dayPrompt(view: GuideView, t: TFunction): string | null {
 
 /** The heading of the box: the ask of the step, what the narrator reads out, or what to do next. */
 export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
-  const { card, selection, state } = view;
+  const { card, selection } = view;
   if (!card) return null;
   if (card.cover) return t("werewolfNarrator.guide.coverTitle");
   const info = actInfo(view, t) ?? dayPrompt(view, t);
-  if (info !== null) return <ResultText state={state} step={step} text={info} />;
+  if (info !== null) return <ResultText step={step} text={info} />;
   if (selection.ability)
     return t(
       `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,

@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 302,
-      "totalTasks": 356,
-      "percent": 84.8
+      "completedTasks": 303,
+      "totalTasks": 357,
+      "percent": 84.9
     }
   },
   "environment": {
@@ -1923,6 +1923,12 @@
           "title": "Umbau Schritt 2: Beschriftung von Verzichten/Behalten und Zusammenfassungen aus der Beschreibung",
           "status": "done",
           "validation": "Die Beschreibung roleStep nennt auch, wie der Knopf eines überspringbaren Schritts heißt (Verzichten oder Behalten), was die Zusammenfassung danach sagt (nichts gewählt oder Amulett bleibt) und ob der Schritt selbst eine Aussage ist (kein Angriff in Nacht 1); Oberfläche (Knopf, Zusammenfassung, Überschrift der Wölfe) vergleicht keine Ansichten mehr mit Namen; Verhalten unverändert; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-118",
+          "title": "Umbau Schritt 3: Ergebnis von Seherin und Ermittler aus der Beschreibung",
+          "status": "done",
+          "validation": "Die Beschreibung roleStep enthält das Ergebnis eines Ergebnisschritts (welche Fähigkeit, wer angeschaut wurde, ob ein Werwolf gefunden wurde); Überschrift mit Daumen und Zusammenfassung lesen es von dort statt den Spielzustand je Rolle abzufragen; Verhalten unverändert; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

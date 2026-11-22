@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { GuideView } from "../../business/games/werewolf/narratorGuide";
 import type { RoleStepSpec } from "../../business/games/werewolf/roleStep";
-import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
 
 /*
  * The content of a step in the lower box. The box itself (header, body, strip) is one building block for every role; what
@@ -17,22 +16,9 @@ const thumbDown =
  * The result of the seer or the investigator in front of the sentence: a thumb up in green when a werewolf was found,
  * a thumb down in red when not. Other steps show the text alone.
  */
-export function ResultText({
-  state,
-  step,
-  text,
-}: {
-  readonly state: WerewolfState;
-  readonly step: RoleStepSpec;
-  readonly text: string;
-}) {
-  const found =
-    state.status === "vision"
-      ? state.isWolf
-      : state.status === "investigation"
-        ? state.isWolfNearby
-        : null;
-  if (step.kind !== "result" || found === null) return <>{text}</>;
+export function ResultText({ step, text }: { readonly step: RoleStepSpec; readonly text: string }) {
+  if (!step.result) return <>{text}</>;
+  const { found } = step.result;
   return (
     <span className="ww-verdict" data-wolf={found}>
       <svg aria-hidden="true" fill="none" height="40" viewBox="0 0 24 24" width="40">
