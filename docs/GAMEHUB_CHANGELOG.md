@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-130: Variabler Modus geprüft
+
+- Zufällige Entwürfe werden gezogen und gespielt; das Spiel folgt dem Entwurf, die Erzähleransicht kommt ans Ende. Keine Abweichung.
+
 ### We-01-129: Abdeckungsprüfung Logik gegen Oberfläche
 
 - Vier neue Prüfungen zeigen: Jedes erlaubte Ereignis ist über die Oberfläche erreichbar, Fähigkeiten stimmen mit der Logik überein, Spiele lassen sich nur mit der Oberfläche beenden. Keine Abweichung gefunden.

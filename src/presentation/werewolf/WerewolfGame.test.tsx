@@ -350,3 +350,32 @@ it("tells the narrator with a notification when a name is added that takes part 
   await user.type(screen.getByLabelText("Add player"), "anna{enter}");
   expect(await screen.findByText("Anna is already in")).toBeInTheDocument();
 });
+
+it("starts a game of the variable roles from the line-up and leads through the role reveal to the first night", async () => {
+  const user = await renderGame("en");
+  await user.type(
+    screen.getByLabelText("Add player"),
+    "Anna, Ben, Cleo, Dora, Emil, Finn, Gina, Hans, Ida, Jan, Kim, Lea{enter}",
+  );
+  await chooseNarrator(user, "Anna", chooseName.en);
+  // The roles are drawn: the witch has to be in the game, the hunter may be.
+  await user.click(screen.getByRole("button", { name: "Configuration" }));
+  await user.click(screen.getByRole("radio", { name: "Variable roles" }));
+  await user.click(screen.getByRole("button", { name: "Witch" }));
+  await user.click(
+    within(await screen.findByRole("dialog", { name: "Witch" })).getByRole("button", {
+      name: "Must be in the game",
+    }),
+  );
+  await user.click(screen.getByRole("button", { name: "Done" }));
+  await user.click(screen.getByRole("button", { name: startName.en }));
+  expect(await screen.findByText(/Hand the device to this person/)).toBeInTheDocument();
+  // Every player looks at the role card once (eleven players), then the narrator begins the game.
+  for (let player = 0; player < 11; player += 1)
+    await user.click(screen.getByRole("button", { name: "Next" }));
+  await user.click(await screen.findByRole("button", { name: /^Begin$/ }));
+  // The first call of the night is announced; the witch is among the roles of the game.
+  expect(await screen.findByText(/wake up|wakes up|is up/)).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /All players and roles/ }));
+  expect(await screen.findByText(/Witch/)).toBeInTheDocument();
+});

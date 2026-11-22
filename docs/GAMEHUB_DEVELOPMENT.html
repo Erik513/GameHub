@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 314,
-      "totalTasks": 368,
-      "percent": 85.3
+      "completedTasks": 315,
+      "totalTasks": 369,
+      "percent": 85.4
     }
   },
   "environment": {
@@ -1995,6 +1995,12 @@
           "title": "Abdeckungsprüfung: Die Erzähleransicht bildet die Logik für alle Rollen, den Tag und den Jäger vollständig ab",
           "status": "done",
           "validation": "Vier neue Prüfungen: (1) Jedes Ereignis, das die Logik in einem Zustand zulässt, ist über die Bedienung der Führung erreichbar (Fähigkeit öffnen, Personen antippen, Stimmzettel setzen, bestätigen), und die Führung übergibt genau dieses Ereignis (zufällige Spiele mit allen Rollen, 60 Startwerte, je bis zu 12 Ereignisse je Zustand, dazu Nominierung mit zwei und drei Personen und gemischte Stimmzettel); (2) eine Fähigkeit steht genau dann als bereit, wenn die Logik ein Ereignis damit zulässt; (3) ein Erzähler spielt ganze Spiele nur mit der Führung und bleibt nie hängen, und die Karte nennt genau die Personen, die das Spiel weckt; (4) ganze Spiele werden über die Bildschirmkomponenten gespielt (zufällige Tipps auf aktive Bedienelemente) bis zur Siegansicht, mit fünf Besetzungen einschließlich Trunkenbold, Jäger (Pflicht und freiwillig), Bürgermeister (Hammer und doppelte Stimme), Amulett, Magier, Hexe, Amor. Ergebnis: keine Abweichung; bewusste Ausnahmen: die Alte Vettel kann in der Logik weiter „niemanden“ stumm machen (Notausgang, Oberfläche verlangt eine Person), und die Seherin kann nach dem Ergebnis erneut schauen (die Ansicht nimmt den Ergebnisschritt zurück). Nicht geprüft: Aussehen im Browser (das Schreiben in den Speicher des Browserfensters wurde nicht erlaubt), Texte und Layout."
+        },
+        {
+          "id": "We-01-130",
+          "title": "Prüfung des variablen Modus: Entwürfe, Ziehung, Spiel mit der Erzähleransicht",
+          "status": "done",
+          "validation": "Neue Prüfungen variableCoverage.test.ts: 300 zufällige Entwürfe, wie sie die Konfigurationsansicht zulässt (nur freigegebene Einträge, Nebenoptionen, Zusätze, Wolfszahlen, Spielregel, Spanne), wurden mit startWerewolfGame gezogen (je drei Ziehungen): wenn die Ansicht den Start erlaubt, startet auch die Logik; das Spiel folgt dem Entwurf (Muss-Rollen enthalten, keine Rollen außerhalb des Entwurfs, gezogene Rollen innerhalb der Spanne, Wolfszahl aus der Auswahl, Trunkenbold und Amulett wie gewählt, Regel Angriff in Nacht 1 übernommen, Optionen der Rollen übernommen); 40 gezogene Spiele werden mit der Erzähleransicht allein bis zum Ende gespielt, ohne Hänger und mit richtigen Aufgeweckten; Oberflächentest: Spiel mit variablen Rollen (Hexe als Muss) aus der Aufstellung starten, Rollenverteilung, Beginn, Übersicht zeigt die Hexe; Ergebnis: keine Abweichung gefunden; nicht von Hand im Browser gespielt; Aussehen und Ziehen per Maus nicht geprüft."
         }
       ]
     },
