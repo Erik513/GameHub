@@ -23,10 +23,7 @@ export function actInfo(view: GuideView, t: TFunction): string | null {
     );
   switch (state.status) {
     case "lovers":
-      return t("werewolfNarrator.guide.lovers.names", {
-        first: state.lovers[0],
-        second: state.lovers[1],
-      });
+      return t("werewolfNarrator.guide.lovers");
     case "drunkReveal":
     case "drunkHunter": {
       const player = werewolfDrunkReveal(state);
@@ -95,29 +92,10 @@ export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
     : t("werewolfNarrator.guide.confirmDone");
 }
 
-/**
- * The script of the narrator for roles with more than one task in their box: the tasks as a list. null where the box
- * holds a single text (see `stepTitle`).
- */
-export function stepItems(view: GuideView, t: TFunction): string[] | null {
-  const { state } = view;
-  if (state.status === "lovers")
-    return [
-      t("werewolfNarrator.guide.lovers.open"),
-      t("werewolfNarrator.guide.lovers.names", {
-        first: state.lovers[0],
-        second: state.lovers[1],
-      }),
-    ];
-  return null;
-}
-
 /** One box of the script of a role: the tasks of the narrator, the button right of it and where the script stands. */
 export interface ScriptBox {
   readonly id: "asleep" | "wake" | "confirm" | "decide" | "heal" | "poison" | "show" | "touch";
   readonly items: readonly ReactNode[];
-  /** The text under the last box ("press Next"). */
-  readonly hint?: string;
   /** The button right of the box: take the decision back, or confirm that the task is done; none for the last box. */
   readonly button: "check" | "undo" | null;
   readonly enabled: boolean;
@@ -181,7 +159,6 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
   const asleep: ScriptBox = {
     button: null,
     enabled: false,
-    ...(outro ? { hint: t("werewolfNarrator.guide.tap.outroSub") } : {}),
     id: "asleep",
     items: [t(`werewolfNarrator.guide.sleep.${card.role}`)],
     state: outro ? "active" : "pending",
@@ -281,8 +258,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
       button: outro ? "undo" : "check",
       enabled: outro || view.canContinue,
       id: "confirm",
-      ...(state.status === "lovers" ? { names: state.lovers } : {}),
-      items: stepItems(view, t) ?? [stepTitle(view, step, t)],
+      items: [stepTitle(view, step, t)],
       state: outro ? "done" : "active",
     },
     asleep,

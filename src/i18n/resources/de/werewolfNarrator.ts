@@ -126,10 +126,7 @@ export const werewolfNarratorTexts = {
         yes: "Bei {{name}} und den Nachbarn ist ein Werwolf",
         no: "Bei {{name}} und den Nachbarn ist kein Werwolf",
       },
-      lovers: {
-        open: "Die Verliebten öffnen die Augen und sehen sich an.",
-        names: "Verliebt: {{first}} und {{second}}",
-      },
+      lovers: "Die Verliebten schauen sich an.",
       cupid: {
         show: "Amor zeigt auf zwei Personen, die sich verlieben.",
         touch: "Berühre {{first}} und {{second}} leise an der Schulter.",
@@ -204,9 +201,7 @@ export const werewolfNarratorTexts = {
         title: "Alle Rollen sind verteilt",
         hint: "Gib das Gerät jetzt an den Erzähler zurück. Nur der Erzähler beginnt das Spiel.",
       },
-      tap: {
-        outroSub: "Drücke „Weiter“, um fortzufahren",
-      },
+      tap: {},
       confirm: "Auswahl bestätigen",
       reopen: "Entscheidung zurücknehmen",
       noVote: "Keine Abstimmung",

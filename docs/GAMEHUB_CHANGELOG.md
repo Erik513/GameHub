@@ -4,6 +4,7 @@
 
 ### We-01-139: Erwachen als erste Skriptbox
 
+- Verliebte: kurzer Text „Die Verliebten schauen sich an.“, keine Namen; Hinweis „Drücke Weiter“ bei allen Rollen entfernt.
 - Amor: Entscheidung wird mit dem Haken der ersten Skriptbox bestätigt, dann erscheint die blaue Zusammenfassung; Einschlafen und Berühren sind eigene Schritte danach.
 - Nachtrag: Aufwach-Box bleibt stehen (gedimmt), jede Skriptbox beginnt mit dem Symbol der Fähigkeit.
 - Die Ansicht zum Antippen entfällt; „… wacht auf“ ist die erste Skriptbox mit Haken (zeigt die Rolle). Haken wie Rückgängig-Knopf mit blauem Rahmen, Namen unterstrichen. Tests, tsc, eslint grün (1635); nicht im Browser angesehen.

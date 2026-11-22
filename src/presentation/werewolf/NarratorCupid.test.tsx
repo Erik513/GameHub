@@ -92,14 +92,14 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   fireEvent.click(checks()[0]!);
   expect(boxes().map((box) => box.disabled)).toEqual([false, true, false]);
   fireEvent.click(checks()[1]!);
-  // The lovers wake up: their script is a list, too (the names are the second task).
+  // The lovers wake up: one short task, no names (they are shown above), no "press next" hint.
   fireEvent.click(screen.getByRole("button", { name: "Next" }));
   fireEvent.click(document.querySelector(".ww-script__wake")!);
-  const items = [...document.querySelectorAll(".ww-guide__head .ww-script__item")].map(
-    (item) => item.textContent,
-  );
-  expect(items[0]).toBe("The lovers open their eyes and look at each other.");
-  expect(items[1]).toMatch(/^In love: P\d+ and P\d+$/);
+  expect(boxes().map((box) => box.text)).toEqual([
+    "The lovers look at each other.",
+    "The lovers go back to sleep",
+  ]);
+  expect(document.querySelector(".ww-guide__sub")).toBeNull();
 });
 
 it("takes the choice of the lovers back with the first box, while the script runs and after the step is finished", async () => {

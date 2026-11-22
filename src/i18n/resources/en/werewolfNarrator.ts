@@ -126,10 +126,7 @@ export const werewolfNarratorTexts = {
         yes: "There is a werewolf at {{name}} or next to them",
         no: "There is no werewolf at {{name}} or next to them",
       },
-      lovers: {
-        open: "The lovers open their eyes and look at each other.",
-        names: "In love: {{first}} and {{second}}",
-      },
+      lovers: "The lovers look at each other.",
       cupid: {
         show: "Cupid points at two people who fall in love.",
         touch: "Touch {{first}} and {{second}} lightly on the shoulder.",
@@ -204,9 +201,7 @@ export const werewolfNarratorTexts = {
         title: "All roles are dealt",
         hint: "Hand the device back to the narrator now. Only the narrator begins the game.",
       },
-      tap: {
-        outroSub: "Press “Next” to go on",
-      },
+      tap: {},
       confirm: "Confirm the choice",
       reopen: "Take the decision back",
       noVote: "No vote",

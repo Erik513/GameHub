@@ -458,7 +458,6 @@ function RoleScript({
                   <WerewolfSymbol id={role as SymbolId} size={32} />
                   {box.items[0]}
                 </strong>
-                {box.hint && <span className="ww-guide__sub">{box.hint}</span>}
               </span>
             ) : (
               <span className="ww-script__content">
