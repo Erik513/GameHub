@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { describeWinners, type GuideView } from "../../business/games/werewolf/narratorGuide";
+import { describeRoleStep } from "../../business/games/werewolf/roleStep";
 import {
   currentWerewolfRole,
   werewolfAnnouncement,
@@ -78,6 +79,7 @@ export function GuideBox({
     );
   }
 
+  const step = describeRoleStep(state);
   const info = actInfo(view, t) ?? dayPrompt(view, t);
   const showPeople =
     selection.ability !== null &&
@@ -87,9 +89,8 @@ export function GuideBox({
   const hasChoice = card.abilities.some((ability) => ability.available);
   const confirmReady =
     view.canContinue && (selection.ability !== null || selection.heal || !hasChoice);
-  const isWitchOrMagician = state.status === "witch" || state.status === "magician";
   const extras = [
-    !card.cover && isWitchOrMagician && (
+    !card.cover && step.showsVictim && (
       <span className="ww-guide__victim" key="victim">
         {state.wolfTarget
           ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
@@ -101,7 +102,7 @@ export function GuideBox({
         {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}
       </span>
     ),
-    !card.cover && isWitchOrMagician && !selection.heal && selection.picks.length === 0 && (
+    !card.cover && step.showsVictim && !selection.heal && selection.picks.length === 0 && (
       <small key="skip">{t("werewolfNarrator.guide.skipHint")}</small>
     ),
     view.notes.restricted && (
@@ -228,7 +229,7 @@ export function GuideBox({
               >
                 <span>
                   {t(
-                    hasChoice && !selection.heal && state.status !== "vision"
+                    step.skippable && !selection.heal
                       ? "werewolfNarrator.guide.skip"
                       : "werewolfNarrator.guide.done",
                   )}
@@ -277,7 +278,7 @@ function actInfo(view: GuideView, t: TFunction): string | null {
     }
     case "wolves":
       // The setting "attack from night 2": in the first night the wolves only get to know each other.
-      return state.night === 1 && !state.settings.attackOnFirstNight
+      return describeRoleStep(state).variant === "wolvesNoAttack"
         ? t("werewolfNarrator.guide.wolvesNoAttack")
         : null;
     case "amuletPass":
@@ -453,11 +454,8 @@ function Summary({ view }: { readonly view: GuideView }) {
   const { card, selection } = view;
   if (!card || card.cover || card.abilities.length === 0) return null;
   // The werewolves do not attack in the first night (setting): the role does not "pass", there is simply no attack.
-  if (
-    view.state.status === "wolves" &&
-    view.state.night === 1 &&
-    !view.state.settings.attackOnFirstNight
-  )
+  const step = describeRoleStep(view.state);
+  if (step.variant === "wolvesNoAttack")
     return (
       <span className="ww-guide__chosen">{t("werewolfNarrator.guide.wolvesNoAttackDone")}</span>
     );

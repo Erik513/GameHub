@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-105: Rollenbeschreibung je Ansicht
+
+- Neue Beschreibung roleStep: eine Ansicht je Rolle und Fall (zum Beispiel zwei für die Werwölfe); Logik und Oberfläche lesen sie. Stufe 2 (Texte, Zusatzzeilen, Auswahlregeln) ist geplant (We-01-106).
+
 ### We-01-104: Verzichten bei freiwilligen Rollen
 
 - Rollen, die nichts tun dürfen: Fähigkeit und der Knopf „Verzichten“ unten haben beide den blauen Rahmen.

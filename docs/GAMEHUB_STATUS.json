@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 289,
-      "totalTasks": 343,
-      "percent": 84.3
+      "completedTasks": 290,
+      "totalTasks": 345,
+      "percent": 84.1
     }
   },
   "environment": {
@@ -1612,6 +1612,17 @@
           "title": "Freiwillige Rollen: Knopf „Verzichten“, blauer Rahmen auf Fähigkeit und Verzichten",
           "status": "done",
           "validation": "Darf eine Rolle auch nichts tun (Paranormaler Ermittler, Hexe, Magier, Bürgermeister), tragen die Fähigkeit und unten der Streifen den blauen Rahmen; der Streifen heißt dann „Verzichten“ („Skip“) statt „Erledigt“; bei Pflichtrollen, Ergebnisschritten und gewählter Heilung bleibt „Erledigt“; im Ergebnisschritt der Seherin hat nur der Streifen den Rahmen; Tests, tsc, eslint; Korrektur: Beim Ermittler, Bürgermeister und der Alten Vettel war der Schritt ohne Auswahl nicht abschließbar, „Verzichten“ war deshalb gesperrt und ohne Rahmen; jetzt gilt ein Schritt ohne geöffnete Fähigkeit dort als Verzicht (Logik, Test mit dem Ermittler); nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-105",
+          "title": "Rollenbeschreibung je Ansicht (roleStep): erste Stufe des Umbaus auf einen Baustein mit rollenspezifischen Beschreibungen",
+          "status": "done",
+          "validation": "Neue reine Beschreibung roleStep.ts nennt für jeden Schritt die Ansicht (Variante) und ihre Eigenschaften: Art (Auswahl, Ergebnis, Info, Tag, einfach), ob die Rolle verzichten darf und ob das Opfer der Wölfe gezeigt wird; zwei Ansichten für die Werwölfe (Angriff, erste Nacht ohne Angriff), je eine Ansicht mit und ohne Möglichkeiten für Ermittler, Hexe, Magier und Bürgermeister, getrennte Ansichten für Seherin und Ermittler (Auswahl und Ergebnis); Logik (Verzichten) und Oberfläche (Streifen „Verzichten“, Opferzeile, Hinweis der Wölfe, Zusammenfassung) lesen diese Beschreibung statt eigener Rollenabfragen; Test für alle Ansichten; 1591 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-106",
+          "title": "Umbau Stufe 2: Texte, Zusatzzeilen und Auswahlregeln aller Rollen in die Rollenbeschreibung, ein gemeinsamer Baustein „Rollenschritt“",
+          "status": "planned"
         }
       ]
     },

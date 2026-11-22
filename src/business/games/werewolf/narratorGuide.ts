@@ -8,6 +8,7 @@ import {
   votingPlayers,
   type WerewolfTargetAction,
 } from "./selectors";
+import { describeRoleStep } from "./roleStep";
 import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
 import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./stateMachine";
 
@@ -168,7 +169,7 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
   const first = selection.picks[0];
   const target = first ?? null;
   // A role that may also do nothing (the investigator, the mayor, the old hag) is finished without any choice: "skip".
-  const mayPass = ["investigator", "mayor", "spellcaster"].includes(state.status);
+  const mayPass = describeRoleStep(state).skippable;
   const decided = first !== undefined || selection.none || (mayPass && selection.ability === null);
   switch (state.status) {
     case "roles": {
