@@ -359,7 +359,7 @@ export function describeGuide(guide: Guide): GuideView {
       frame.phase === "act" &&
       selection.ability !== null &&
       mayChooseNobody.includes(selection.ability) &&
-      !(selection.ability === "shot" && state.settings.hunterShot === "required"),
+      !(selection.ability === "shot" && !describeRoleStep(state).skippable),
     canCloseAbility: frame.phase === "act" && state.status !== "vote" && selection.ability !== null,
     canContinue,
     canNext,

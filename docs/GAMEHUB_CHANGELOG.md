@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-106: Jäger mit zwei Ansichten
+
+- Schuss freiwillig oder Pflicht als eigene Ansichten; die Regel „Niemand“ kommt aus der Rollenbeschreibung. Texte und Zusatzzeilen folgen (We-01-107).
+
 ### We-01-105: Rollenbeschreibung je Ansicht
 
 - Neue Beschreibung roleStep: eine Ansicht je Rolle und Fall (zum Beispiel zwei für die Werwölfe); Logik und Oberfläche lesen sie. Stufe 2 (Texte, Zusatzzeilen, Auswahlregeln) ist geplant (We-01-106).

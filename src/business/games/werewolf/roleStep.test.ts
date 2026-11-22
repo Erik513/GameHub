@@ -42,4 +42,16 @@ describe("describeRoleStep", () => {
     );
     expect(empty).toMatchObject({ skippable: false, variant: "witchEmpty" });
   });
+
+  it("has two views for the hunter: the shot may be left out, or is required", () => {
+    const hunter = { hunter: { name: "Anna", role: "hunter" }, next: "day", status: "hunter" };
+    expect(describeRoleStep(at(hunter))).toMatchObject({
+      skippable: true,
+      variant: "hunterOptional",
+    });
+    expect(describeRoleStep(at(hunter, { hunterShot: "required" }))).toMatchObject({
+      skippable: false,
+      variant: "hunterRequired",
+    });
+  });
 });

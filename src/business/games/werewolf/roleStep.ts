@@ -28,7 +28,8 @@ export type RoleStepVariant =
   | "spellcasterSilence"
   | "mayorHammer"
   | "mayorUnavailable"
-  | "hunterShot"
+  | "hunterOptional"
+  | "hunterRequired"
   | "loversInfo"
   | "drunkInfo"
   | "amuletPass"
@@ -95,7 +96,10 @@ export function describeRoleStep(state: WerewolfState): RoleStepSpec {
         : spec("mayorUnavailable", "info");
     case "hunter":
     case "drunkHunter":
-      return spec("hunterShot", "choose");
+      // The setting decides: the hunter may leave the shot out, or has to shoot.
+      return state.settings.hunterShot === "required"
+        ? spec("hunterRequired", "choose")
+        : spec("hunterOptional", "choose", { skippable: true });
     case "lovers":
       return spec("loversInfo", "info");
     case "drunkReveal":

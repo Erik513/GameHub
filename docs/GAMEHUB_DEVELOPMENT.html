@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 290,
-      "totalTasks": 345,
+      "completedTasks": 291,
+      "totalTasks": 346,
       "percent": 84.1
     }
   },
@@ -1854,7 +1854,13 @@
         },
         {
           "id": "We-01-106",
-          "title": "Umbau Stufe 2: Texte, Zusatzzeilen und Auswahlregeln aller Rollen in die Rollenbeschreibung, ein gemeinsamer Baustein „Rollenschritt“",
+          "title": "Umbau Stufe 2a: Jäger mit zwei Ansichten (Schuss freiwillig oder Pflicht), Auswahlregel „Niemand“ aus der Beschreibung",
+          "status": "done",
+          "validation": "Der Jäger hat je nach Einstellung zwei Ansichten: freiwillig (Verzichten möglich, „Niemand“ in der Auswahl) und Pflicht (kein Verzichten, kein „Niemand“); die Regel „Niemand“ beim Schuss kommt aus der Beschreibung statt aus einer Einstellungsabfrage in der Logik; Test; 1592 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-107",
+          "title": "Umbau Stufe 2b: Texte (Überschrift, Frage, Ergebnis) und Zusatzzeilen aller Ansichten in die Rollenbeschreibung, gemeinsamer Baustein „Rollenschritt“ statt der Fallunterscheidung in GuideBox",
           "status": "planned"
         }
       ]
