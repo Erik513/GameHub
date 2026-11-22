@@ -54,7 +54,7 @@ export const werewolfSymbolsTexts = {
         meaning: "Flasche: kennt seine wahre Rolle noch nicht",
       },
       guest: {
-        name: "Zu Gast",
+        name: "Übernachtungsgast",
         meaning: "Bett: die Dorfmatratze schläft hier",
       },
       hammer: {

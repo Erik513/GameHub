@@ -52,7 +52,7 @@ export const werewolfNarratorTexts = {
       protect: "Schützen",
       shot: "Schuss",
       silence: "Stumm",
-      stayWith: "Zu Gast",
+      stayWith: "Übernachten",
     },
     guide: {
       wake: {
@@ -196,7 +196,7 @@ export const werewolfNarratorTexts = {
         protect: "Geschützt",
         shot: "Geschossen",
         silence: "Stumm gemacht",
-        stayWith: "Zu Gast",
+        stayWith: "Übernachtet bei",
       },
       noChoice: "Nichts gewählt – die Rolle verzichtet",
       silenced: "Heute stumm: {{name}} (kein Reden, Nominieren oder Abstimmen)",
