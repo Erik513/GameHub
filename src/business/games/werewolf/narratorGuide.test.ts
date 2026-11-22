@@ -732,4 +732,26 @@ describe("narrator guide", () => {
     guide = continueGuide(guide);
     expect(chooseAbility(guide, "heal")).toBe(guide);
   });
+
+  it("takes the decisions of the witch back one by one: the last question is asked again, then the one before", () => {
+    let guide = game(["witch"], { attackOnFirstNight: true });
+    for (let step = 0; step < 200 && guide.session.present.status !== "witch"; step += 1)
+      guide = forward(guide)!;
+    guide = continueGuide(guide);
+    guide = answerQuestion(guide, "use");
+    guide = answerQuestion(guide, "use");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).phase).toBe("outro");
+    // The reset of the summary: only the poison is asked again, the answer to the first question stays.
+    guide = reopenDecision(guide);
+    expect(describeGuide(guide)).toMatchObject({ phase: "act", question: "poison" });
+    expect(describeGuide(guide).selection).toMatchObject({ heal: true, ability: null, picks: [] });
+    // One more step back: the first question.
+    expect(describeGuide(guide).canUndo).toBe(true);
+    guide = undoSelection(guide);
+    expect(describeGuide(guide)).toMatchObject({ question: "heal" });
+    expect(describeGuide(guide).selection.heal).toBe(false);
+    expect(describeGuide(guide).canUndo).toBe(false);
+  });
 });

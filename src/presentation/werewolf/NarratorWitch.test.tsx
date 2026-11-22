@@ -128,3 +128,20 @@ it("asks about the healing potion although nobody was attacked: the hint says wh
   fireEvent.click(skip!);
   expect([state(0), state(1)]).toEqual(["done", "active"]);
 });
+
+it("takes the decisions back one by one: the reset of the summary asks the last question again, undo goes back to the first", async () => {
+  await open(true);
+  fireEvent.click(abilityButtons()[0]!);
+  fireEvent.click(abilityButtons()[1]!);
+  fireEvent.click(document.querySelector(".ww-person")!);
+  fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  expect(screen.getByText(/Chosen: .*Healed.*Poisoned/)).toBeInTheDocument();
+  // One tap: only the poison is asked again, the healing answer stays.
+  fireEvent.click(screen.getByRole("button", { name: "Take the decision back" }));
+  expect([state(0), state(1)]).toEqual(["done", "active"]);
+  expect(abilityButtons()[1]).toHaveAttribute("data-next");
+  // One more step back with the undo of the box: the first question is open again.
+  fireEvent.click(screen.getByRole("button", { name: "Undo" }));
+  expect([state(0), state(1)]).toEqual(["active", "pending"]);
+  expect(abilityButtons()[0]).toHaveAttribute("data-next");
+});

@@ -13,6 +13,7 @@
 
 ### We-01-135: Hexe mit zwei festen Fragen
 
+- Zurücknehmen geht eine Entscheidung pro Tipp: erst die zweite Frage neu, dann die erste.
 - Oben bleiben alle Optionen sichtbar, die der offenen Frage sind blau gerahmt; unten stehen die zwei Fragen als Boxen von oben nach unten, Hinweise mit gelbem Rand darunter.
 
 ### We-01-134: Magier beide Zauber in einer Nacht

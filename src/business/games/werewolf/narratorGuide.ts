@@ -329,6 +329,7 @@ export function describeGuide(guide: Guide): GuideView {
     canNext,
     canGoBack: (guide.trail.length > 1 || guide.session.past.length > 0) && !backIsBlocked(guide),
     canUndo:
+      selection.question === "poison" ||
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
       selection.none ||
@@ -457,13 +458,13 @@ function takeBackVision(guide: Guide, id: CardAbilityId): Guide {
 export function reopenDecision(guide: Guide): Guide {
   const frame = current(guide);
   if (frame.phase !== "outro") return guide;
-  return {
-    ...guide,
-    trail: [
-      ...guide.trail,
-      { ...frame, event: null, phase: "act", selection: initialSelection(guide.session.present) },
-    ],
-  };
+  const initial = initialSelection(guide.session.present);
+  // One decision back per tap: the witch is asked the last question again, her earlier answer stays.
+  const selection =
+    frame.selection.question !== undefined
+      ? { ...initial, heal: frame.selection.heal, question: "poison" as const }
+      : initial;
+  return { ...guide, trail: [...guide.trail, { ...frame, event: null, phase: "act", selection }] };
 }
 
 /**
@@ -535,10 +536,20 @@ export function chooseNobody(guide: Guide): Guide {
 /** Takes back the choice of this step (not the step itself). */
 export function undoSelection(guide: Guide): Guide {
   const { selection } = current(guide);
-  return withSelection(guide, {
-    ...initialSelection(guide.session.present),
-    ability: selection.ability,
-  });
+  const initial = initialSelection(guide.session.present);
+  // The witch is asked question by question: one decision back per tap (the people of the poison, then the open list,
+  // then the second question back to the first one).
+  if (selection.question !== undefined) {
+    if (selection.ability !== null)
+      return withSelection(
+        guide,
+        selection.picks.length > 0
+          ? { ...selection, none: false, picks: [] }
+          : { ...selection, ability: null, none: false },
+      );
+    return withSelection(guide, initial);
+  }
+  return withSelection(guide, { ...initial, ability: selection.ability });
 }
 
 function commit(guide: Guide, event: WerewolfEvent): Guide {
