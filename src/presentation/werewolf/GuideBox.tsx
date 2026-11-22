@@ -137,7 +137,32 @@ export function GuideBox({
   return (
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
-        {view.question !== null && !card.cover ? (
+        {showPeople ? (
+          // Choosing people: the list covers the whole box. Neither the script nor the hints stand there; only the
+          // buttons to take the choice back and to close the list.
+          <span className="ww-guide__tools ww-guide__tools--bar">
+            <button
+              aria-label={t("werewolfNarrator.guide.undo")}
+              className="ww-guide__close"
+              disabled={!view.canUndo}
+              onClick={onUndo}
+              title={t("werewolfNarrator.guide.undo")}
+              type="button"
+            >
+              <Icon name="reset" />
+            </button>
+            <button
+              aria-label={t("werewolfNarrator.guide.closeSelection")}
+              className="ww-guide__close"
+              disabled={!view.canCloseAbility}
+              onClick={onCloseAbility}
+              title={t("werewolfNarrator.guide.closeSelection")}
+              type="button"
+            >
+              <Icon name="close" />
+            </button>
+          </span>
+        ) : view.question !== null && !card.cover ? (
           <div className="ww-script">
             <ScriptRows onUndo={onUndoQuestion} view={view} />
           </div>
@@ -225,7 +250,7 @@ export function GuideBox({
       </div>
       {(extras.length > 0 || card.role !== "day" || selection.ability !== null) && (
         <footer className="ww-guide__extra">
-          {extras}
+          {!showPeople && extras}
           {/* The day has no strip, but the choice of people (nomination, vote) is confirmed like every other choice. */}
           {(card.role !== "day" || selection.ability !== null) &&
             !(selection.ability === null && view.question !== null) &&

@@ -166,3 +166,20 @@ it("has an undo button right of every box with a decision, as high as the box; t
   expect([state(0), state(1)]).toEqual(["active", "pending"]);
   expect(abilityButtons()[0]).toHaveAttribute("data-next");
 });
+
+it("lets the list of people cover the whole lower box: no script and no hint while people are chosen", async () => {
+  await open(true);
+  fireEvent.click(abilityButtons()[0]!);
+  // The poison is used: the list of people opens.
+  fireEvent.click(abilityButtons()[1]!);
+  expect(document.querySelectorAll(".ww-person").length).toBeGreaterThan(5);
+  expect(document.querySelector(".ww-script")).toBeNull();
+  expect(document.querySelector(".ww-guide__victim")).toBeNull();
+  // Only the buttons on top (undo, close) and the check mark below remain.
+  expect(screen.getByRole("button", { name: "Close the selection" })).toBeEnabled();
+  expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeInTheDocument();
+  // Closing the list brings the script and the hint back.
+  fireEvent.click(screen.getByRole("button", { name: "Close the selection" }));
+  expect(document.querySelector(".ww-script")).not.toBeNull();
+  expect(document.querySelector(".ww-guide__victim")).not.toBeNull();
+});

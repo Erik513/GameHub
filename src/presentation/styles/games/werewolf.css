@@ -2496,3 +2496,9 @@ button.ww-guide__strip[data-next] {
   opacity: 0.4;
   cursor: default;
 }
+
+/* Choosing people: the buttons stand at the right on top of the list. */
+.ww-guide__tools--bar {
+  justify-content: flex-end;
+  width: 100%;
+}
