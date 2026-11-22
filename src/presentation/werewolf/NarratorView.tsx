@@ -101,6 +101,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           onChoose={guide.choose}
           onCloseAbility={guide.closeAbility}
           onContinue={guide.continueGuide}
+          onBallot={guide.ballot}
           onNobody={guide.nobody}
           onReopen={guide.reopen}
           onUndo={guide.undo}

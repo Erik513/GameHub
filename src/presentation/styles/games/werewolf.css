@@ -2321,3 +2321,56 @@ button.ww-guide__strip[data-next] {
   grid-row: 2;
   align-self: end;
 }
+
+/* The vote: one row for every voter with a button for each candidate. */
+.ww-ballots {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-ballot {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.ww-ballot[data-missing] {
+  border-color: var(--color-warning);
+}
+
+.ww-ballot__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ww-ballot__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ww-ballot__choice {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ww-ballot__choice[aria-pressed="true"] {
+  border-color: var(--color-success);
+  background: var(--color-success);
+  color: var(--color-accent-contrast);
+  font-weight: 600;
+}

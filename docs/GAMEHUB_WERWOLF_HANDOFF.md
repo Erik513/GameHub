@@ -87,8 +87,8 @@ Die zentrale Erzähleransicht rendert den aktuellen `status`; die folgenden Eint
 | `magician` | `castSpells` mit `heal:boolean`, `kill:string[]`; begrenzte `spellsRemaining`. Nicht selbst aus `victim` einen zweiten heilbaren Fall erfinden. |
 | `spellcaster` | `silence` mit `target` oder `null`; Selbstwahloption und nicht zweimal direkt dieselbe Person beachten. |
 | `morning` | `werewolfAnnouncement(state)` für Namen/zulässige öffentliche Rollen nutzen; per `announceMorning` auflösen. Es können Jäger-/Trunkenbold-Zwischenschritte folgen. |
-| `day` | `nominate` mit `target`, `nominator`, `seconder`; oder `endDay` ohne Abstimmung. |
-| `vote` | `vote` mit aktueller `nomination` und vorzugsweise `yesVoters:string[]`. So sind Dorftrottel-Pflichtstimme und doppelte Bürgermeisterstimme prüfbar; bloße Ja-Anzahl reicht nicht in allen Varianten. |
+| `day` | `nominate` mit `nominees` (eins bis drei Personen); oder `endDay` ohne Abstimmung. |
+| `vote` | `vote` mit aktueller `nomination` und `ballots` (Wähler zu gewählter Person, vollständig, nie für sich selbst). Bürgermeister mit doppelter Stimme zählt zweifach, der Dorftrottel wird vom Erzähler gesetzt; Gleichstand: einmal `round: 2`. |
 | `exile` | `werewolfAnnouncement(state)` beachten; `announceExile` führt die Auflösung durch. Amulett kann den Tod verhindern. |
 | `hunter` | `shot` mit `target`; `null` nur bei freiwilligem Schuss. Folgeopfer und anschließenden Zustand von der Logik übernehmen. |
 | `finished` | Gewinneransicht öffnen. `winner` ist `village` oder `wolves`; `tannerWinner` gegebenenfalls zusätzlich berücksichtigen. |

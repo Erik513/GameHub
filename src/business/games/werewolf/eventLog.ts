@@ -79,7 +79,7 @@ export function recordWerewolfTransition(
   if ("target" in event && event.target !== null) targets.push(event.target);
   if (event.type === "bond") targets.push(...event.players);
   if (event.type === "roleSeen") targets.push(event.player);
-  if (event.type === "vote" && before.status === "vote") targets.push(before.target);
+  if (event.type === "vote" && before.status === "vote") targets.push(...before.candidates);
   if (event.type === "potions") {
     if (event.poison) targets.push(event.poison);
     if (event.heal && before.status === "witch" && before.wolfTarget)
@@ -138,17 +138,14 @@ export function recordWerewolfTransition(
     const vote = [...before.history]
       .reverse()
       .find((e) => e.kind === "action" && e.event.type === "vote");
+    // Those who voted for the person who leaves the game.
     const voters =
-      vote?.kind === "action" && vote.event.type === "vote" && "yesVoters" in vote.event
-        ? vote.event.yesVoters
+      vote?.kind === "action" && vote.event.type === "vote"
+        ? Object.entries(vote.event.ballots)
+            .filter(([, choice]) => choice === before.victim.name)
+            .map(([name]) => name)
         : [];
-    const idiot = before.alive.find(
-      (p) =>
-        p.role === "idiot" &&
-        p.name !== before.silencedPlayer &&
-        !(before.drunk?.player === p.name && !before.drunk.revealed),
-    );
-    add(before.victim.name, "vote", [...new Set([...voters, ...(idiot ? [idiot.name] : [])])]);
+    add(before.victim.name, "vote", [...new Set(voters)]);
   }
   if (before.status === "hunter" && event.type === "shot")
     add(event.target ?? undefined, "hunter", [before.hunter.name]);

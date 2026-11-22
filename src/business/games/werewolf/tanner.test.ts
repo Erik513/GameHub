@@ -8,6 +8,7 @@ import {
   type WerewolfSpecialRole,
   type WerewolfState,
 } from "./stateMachine";
+import { lynchEvents } from "./voteTesting";
 
 const names = ["Ada", "Bea", "Cam", "Dan", "Eva", "Flo"];
 const play = (state: WerewolfState, ...events: WerewolfEvent[]) =>
@@ -39,19 +40,7 @@ const attack = (state: WerewolfState, target: string | null) =>
   vision(play(state, { type: "attack", night: state.night, target }));
 
 function exile(state: WerewolfState, target: string) {
-  const voters = state.alive.filter((player) => player.name !== target);
-  return play(
-    state,
-    {
-      type: "nominate",
-      night: state.night,
-      target,
-      nominator: voters[0]!.name,
-      seconder: voters[1]!.name,
-    },
-    { type: "vote", night: state.night, nomination: 1, yes: state.alive.length },
-    { type: "announceExile", night: state.night },
-  );
+  return play(state, ...lynchEvents(state, target), { type: "announceExile", night: state.night });
 }
 
 it.each(["anyDeath", "voteOnly"] as const)(

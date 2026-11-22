@@ -159,23 +159,27 @@ Für Codex festgehalten, damit die Logik dazu passt. Die Oberfläche liest das a
 Der Auftraggeber hat entschieden: Der Magier sieht das Wolfsopfer auch dann, wenn die Hexe es in derselben Nacht geheilt hat, und sein Heilzauber bleibt wählbar. Er ist dann verbraucht, ohne dass sich für die Person etwas ändert (wie bei Amulett und Leibwächter). Grund: Niemand soll aus der Anzeige ablesen können, ob eine Heilung oder ein Schutz gewirkt hat (Beschluss vom 21.11.2026, `wolfTarget`). Die Logik verhält sich schon so (`castSpells` prüft nur `wolfTarget`, nicht `victim`); der frühere Satz im Magier-Abschnitt von `GAMEHUB_WERWOLF.md` („eine bereits durch die Hexe geheilte Person steht nicht erneut als Heilziel zur Verfügung“) ist angepasst. Bitte bei künftigen Änderungen an Hexe und Magier beachten und keinen Test schreiben, der das Gegenteil verlangt.
 
 
-## Aufgabe für Codex: neue Tagesabstimmung (Claude, 22.11.2026, Entwurf nach Angabe des Auftraggebers)
+## Neue Tagesabstimmung (von Claude umgesetzt, 22.11.2026) – für Codex festgehalten
 
-Der Auftraggeber will die Tagesabstimmung nach dem Original umbauen. Die Oberfläche baut Claude, sobald die Logik steht. **Noch zu bestätigen** sind die mit „offen“ markierten Punkte; bitte nicht raten, sondern beim Auftraggeber nachfragen.
+Der Auftraggeber hat entschieden, dass **Claude** die Logik der neuen Tagesabstimmung selbst umsetzt (Ausnahme von der Rollenteilung) und alles für Codex notiert wird. Grundlage ist das Originalregelheft (Ultimate Werewolf: Ultimate Edition, Varianten „Secret Ballot“ und „1, 2, 3, Point!“, Mayor, Idiot, Old Hag).
 
-**Ablauf (Wunsch des Auftraggebers):**
+**Regeln (Entscheidungen des Auftraggebers):**
 
-1. Der Erzähler wählt **höchstens drei nominierte Personen** und bestätigt. Es gibt keinen Nominierenden und keinen Unterstützer mehr (bisher: `nominate` mit `target`, `nominator`, `seconder`). Offen: Genügt eine nominierte Person, und gibt es weiterhin die Möglichkeit, den Tag ohne Abstimmung zu beenden (Knopf „Keine Abstimmung“, Ereignis `endDay`)?
-2. **Jeder abstimmende Spieler gibt genau eine Stimme für eine nominierte Person ab.** Der Erzähler trägt je lebendem Spieler ein, wen er gewählt hat; bestätigt werden kann erst, wenn **alle** eingetragen sind (bisher: `vote` mit `yesVoters`, also eine Ja/Nein-Abstimmung zu einer Nominierung).
-3. **Bürgermeister mit doppelter Stimme:** Seine Stimme zählt doppelt. Der Erzähler muss ausdrücklich angeben, **für wen der Bürgermeister gestimmt hat** (der Name des Gewählten), er ist also ein normaler Eintrag in der Liste mit Gewicht 2.
-4. Die meisten Stimmen scheiden aus. Offen: **Gleichstand** (niemand scheidet aus, neue Abstimmung, Stichwahl unter den Gleichauf liegenden?).
+1. Der Erzähler wählt **eins bis drei** verschiedene nominierte lebende Personen und bestätigt. Nominierender und Unterstützer entfallen. Eine stumm gemachte Person kann nominiert werden.
+2. **Jeder abstimmende Spieler** (alle Lebenden außer der stumm gemachten Person) gibt **genau eine Stimme** für eine nominierte Person ab, **nie für sich selbst**. Wer nur sich selbst wählen könnte (einzige nominierte Person), hat keinen Stimmzettel. Die Nominierten stimmen mit.
+3. **Bürgermeister mit doppelter Stimme:** zählt zweifach; der Erzähler gibt an, **wen er gewählt hat** (normale Zeile mit Gewicht 2, in der Oberfläche als „zählt doppelt“ gekennzeichnet).
+4. **Dorftrottel:** entscheidet nicht selbst; der Erzähler trägt seine Stimme ein (Variante a, wie im Original, wo seine Stimme immer als „zum Tod“ gewertet wird). In der Logik ist das ein normaler Stimmzettel; die Oberfläche kennzeichnet ihn („Stimme vom Erzähler gesetzt“). Die frühere Pflichtstimme „Ja“ entfällt.
+5. Die meisten Stimmen scheiden aus. **Gleichstand:** einmal neu abstimmen unter den Gleichauf liegenden (`round: 2`), bei erneutem Gleichstand scheidet niemand aus und der Tag geht weiter (der Zustand wird wieder `day`).
+6. „Keine Abstimmung“ (`endDay`), der Hammer des Bürgermeisters, Folgen des Ausscheidens (Liebende, Amulett wirkt nicht, Jäger) sind unverändert.
 
-**Offene Fragen an den Auftraggeber, bevor Codex beginnt:**
+**Geänderte Dateien und Schnittstellen (für Codex):**
 
-- Dorftrottel: Bisher muss er in der Ja/Nein-Abstimmung mit Ja stimmen. Was gilt in der neuen Abstimmung (zum Beispiel muss er für die nominierte Person mit den meisten Stimmen stimmen, oder entfällt die Pflicht)?
-- Stumm gemachte Personen: Bisher geben sie keine Stimme ab. Bleibt das, und zählt „jeder muss abstimmen“ dann nur für alle anderen lebenden Spieler?
-- Dürfen die nominierten Personen selbst abstimmen, und für wen?
-- Bleibt der Hammer des Bürgermeisters unverändert?
-- Verliebte, Amulett und Jäger: Folgen des Ausscheidens bleiben wie bisher (Ausscheiden durch Abstimmung, Amulett wirkt nicht).
+- `stateMachine.ts`: Zustand `vote` hat jetzt `candidates` und `round` statt `target`. Ereignis `nominate` = `{ night, nominees }` (statt `target`, `nominator`, `seconder`). Ereignis `vote` = `{ night, nomination, ballots }` (statt `yes` oder `yesVoters`). Neue Funktionen `dayVoters` und `countBallots` ersetzen `dayVotes` (Mehrheit entfällt).
+- `selectors.ts`: `validNominators` und `validSeconders` entfernt; `validTargets(state, "nominate", { selected })` prüft bis zu drei Nominierte; `votingPlayers` liefert `{ name, choices, setByNarrator, weight }` (statt `requiredYes`).
+- `eventLog.ts`: Die Ursache `vote` führt als Beteiligte die Personen, die für die ausgeschiedene Person gestimmt haben (aus `ballots`).
+- `narratorGame.ts`: Gespeicherte Spiele mit einer offenen Abstimmung der alten Art werden übernommen (ein Kandidat, Runde 1); `savedSessionVersion` bleibt 1.
+- Neu: `voteTesting.ts` (Hilfen für Tests: `allVoteFor`, `lynchEvents`).
+- Angepasste Tests: `advancedRoles`, `amulet`, `drunk`, `specialRoles`, `tanner`, `ruleAdditions`, `stateMachine`, `narrator` (Zufallsspiele über 100 Seeds laufen mit der neuen Abstimmung), `narratorGuide`, `roleStep`, `narratorCard`. Neue Tests für Gleichstand (einmal neu, dann niemand), doppelte Bürgermeisterstimme, stumm gemachte Person, Stimmzettel.
+- **Lange Simulationen (`simulation.test.ts`, `balance.test.ts`):** Wegen der neuen Typen so angepasst, dass sie wieder übersetzen. `simulation.test.ts` rechnet die Regel für Stimmzettel unabhängig nach. **`balance.test.ts` bildet die Abstimmung nicht mehr nach**: Der Tisch nominiert eine Person und alle anderen stimmen für sie, die Wahrscheinlichkeit „Ja“ zu stimmen entfällt. Die Balance-Zahlen der alten Ja/Nein-Abstimmung sind damit nicht vergleichbar; ein neues Abstimmungsmodell ist offen (Codex). Die langen Läufe wurden nicht ausgeführt.
+- Oberfläche (Claude): Nominierung mit Haken (höchstens drei), danach eine Liste aller abstimmenden Spieler mit einer Taste je nominierter Person, Kennzeichnung „zählt doppelt“ und „Stimme vom Erzähler gesetzt“; Bestätigen erst, wenn alle abgestimmt haben.
 
-**Wirkung auf die Oberfläche** (Claude): Nominierung mit Haken (höchstens drei); danach eine Liste aller abstimmenden Spieler, je Spieler die Wahl unter den Nominierten; Zusatz für den Bürgermeister; „Bestätigen“ erst, wenn alle abgestimmt haben. Die Beschreibung `roleStep.ts` nimmt die neuen Schritte auf.

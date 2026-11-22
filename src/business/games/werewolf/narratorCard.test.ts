@@ -125,7 +125,9 @@ describe("describeNarratorCard", () => {
       actors: [],
       role: "day",
     });
-    expect(describeNarratorCard(at(base, { status: "vote", target: "Anna" }))).toMatchObject({
+    expect(
+      describeNarratorCard(at(base, { candidates: ["Anna"], round: 1, status: "vote" })),
+    ).toMatchObject({
       abilities: [],
       actors: ["Anna"],
       role: "day",

@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 312,
-      "totalTasks": 366,
-      "percent": 85.2
+      "completedTasks": 313,
+      "totalTasks": 367,
+      "percent": 85.3
     }
   },
   "environment": {
@@ -1983,6 +1983,12 @@
           "title": "Tag: Bestätigen-Knopf bei der Personenwahl, keine Hinweise während der Wahl",
           "status": "done",
           "validation": "Bei der Wahl der Personen am Tag (Nominierung, Abstimmung) steht wie bei den Rollen der grüne Haken zum Bestätigen unten rechts (gesperrt, bis die Wahl vollständig ist, dann mit blauem Rahmen); solange die Abstimmung offen ist und niemand genannt wurde, kann der Tag nicht beendet werden (vorher hätte der Haken den Tag beendet); der Hinweis „Heute stumm …“ steht nur, solange nichts gewählt wird; Test über den Weg bis zum Tag; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-128",
+          "title": "Neue Tagesabstimmung nach dem Original: bis zu drei Nominierte, ein Stimmzettel je Spieler, Gleichstand einmal neu",
+          "status": "done",
+          "validation": "Logik (von Claude auf Wunsch des Auftraggebers, für Codex notiert): nominate mit eins bis drei Nominierten, vote mit ballots (jeder abstimmende Spieler genau eine nominierte Person, nie sich selbst; stumm Gemachte stimmen nicht ab; Bürgermeister mit doppelter Stimme zählt zweifach; die meisten Stimmen scheiden aus; Gleichstand einmal neu unter den Gleichauf liegenden, bei erneutem Gleichstand niemand); Dorftrottel vom Erzähler gesetzt; Oberfläche: Nominierung mit Haken, Liste aller Abstimmenden mit Taste je Kandidat, Kennzeichnung zählt doppelt und vom Erzähler gesetzt, Bestätigen erst bei vollständigen Stimmen; gespeicherte alte Abstimmungen werden übernommen; Regeltext und API-Dokumentation angepasst; Tests für Logik, Zufallsspiele über 100 Seeds, Gleichstand und Oberfläche; Tests, tsc, eslint; lange Simulationen übersetzen, balance.test.ts bildet die Abstimmung nicht mehr nach (Hinweis für Codex); nicht im Browser angesehen."
         }
       ]
     },

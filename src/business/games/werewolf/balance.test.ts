@@ -120,43 +120,12 @@ function nominationPool(state: WerewolfState, clues: Clues, model: Model, random
   });
 }
 
-function voteChance(
-  state: Extract<WerewolfState, { status: "vote" }>,
-  voter: string,
-  model: Model,
-  clues: Clues,
-) {
-  if (model === "random") return 0.65;
-  const player = state.alive.find((candidate) => candidate.name === voter);
-  assert(player);
-  const isMasked = (name: string) => state.drunk?.player === name && !state.drunk.revealed;
-  const role = isMasked(voter) ? "villager" : player.role;
-  if (voter === state.target) return role === "tanner" ? 0.95 : 0.05;
-  if (state.lovers?.includes(voter) && state.lovers.includes(state.target)) return 0.1;
-  if (role === "wolf") {
-    return state.alive.some(
-      (target) => target.name === state.target && target.role === "wolf" && !isMasked(target.name),
-    )
-      ? 0.25
-      : 0.8;
-  }
-  if (usesCredibleSeer(model) && clues.reportedWolves.has(state.target))
-    return voter === clues.seer ? 0.95 : 0.85;
-  if (
-    usesCredibleSeer(model) &&
-    (clues.reportedNonwolves.has(state.target) ||
-      (sharesWitchKnowledge(model) && role === "witch" && clues.savedByWitch.has(state.target)))
-  )
-    return 0.2;
-  if (voter === clues.seer && clues.checked.has(state.target)) {
-    return clues.wolves.has(state.target) ? 0.95 : 0.2;
-  }
-  if (role === "paranormalInvestigator" && clues.investigation?.neighbors.includes(state.target)) {
-    return clues.investigation.positive ? 0.75 : 0.2;
-  }
-  return 0.65;
-}
-
+/*
+ * NOTE for Codex (22.11.2026): the vote changed (up to three nominated people, every voter names one of them, the most
+ * votes win, a tie votes again once). This simulation no longer models how likely a villager is to vote "yes" for a
+ * suspect: here the table nominates one person and everybody else votes for that person, so a nomination always leads
+ * to an exile. The balance numbers of the old yes/no vote are therefore not comparable. A new voting model is open.
+ */
 function decision(
   state: WerewolfState,
   clues: Clues,
@@ -391,29 +360,20 @@ function decision(
       if (usesCarefulWitch(model)) {
         clues.publicSuspicion.set(target.name, (clues.publicSuspicion.get(target.name) ?? 0) + 1);
       }
-      const potential = speakers.filter((player) => player !== target);
-      const nominator = pick(potential, random);
-      const seconder = pick(
-        potential.filter((player) => player !== nominator),
-        random,
-      );
-      return {
-        type: "nominate",
-        night,
-        target: target.name,
-        nominator: nominator.name,
-        seconder: seconder.name,
-      };
+      return { type: "nominate", night, nominees: [target.name] };
     }
     case "vote":
+      // Everybody who can vote for somebody else votes for the nominated person (the first candidate).
       return {
         type: "vote",
         night,
         nomination: state.nomination,
-        yesVoters: alive
-          .filter(({ name }) => name !== state.silencedPlayer)
-          .filter(({ name }) => random() < voteChance(state, name, model, clues))
-          .map(({ name }) => name),
+        ballots: Object.fromEntries(
+          alive
+            .filter(({ name }) => name !== state.silencedPlayer)
+            .filter(({ name }) => state.candidates.some((candidate) => candidate !== name))
+            .map(({ name }) => [name, state.candidates.find((candidate) => candidate !== name)!]),
+        ),
       };
     case "exile":
       return { type: "announceExile", night };
@@ -509,19 +469,6 @@ function play(
       next.alive.length < state.alive.length
     )
       clues.exiledOnQuietSecondDay = true;
-    if (usesIdiotInference(model) && event.type === "vote" && "yesVoters" in event) {
-      // The table sees the person's actual vote, including the compulsory yes.
-      const yes = new Set(event.yesVoters);
-      for (const player of state.alive) {
-        if (
-          player.name !== state.silencedPlayer &&
-          player.role !== "idiot" &&
-          !yes.has(player.name)
-        ) {
-          clues.idiotCandidates.delete(player.name);
-        }
-      }
-    }
     if (model !== "random" && model !== "clues") {
       const announcements =
         event.type === "shot"

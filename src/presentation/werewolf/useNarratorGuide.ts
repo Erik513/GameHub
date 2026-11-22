@@ -9,6 +9,7 @@ import {
   createGuide,
   describeGuide,
   reopenDecision,
+  setBallot,
   undoSelection,
   unchoosePlayer,
   type Guide,
@@ -63,6 +64,7 @@ export function useNarratorGuide(
       update(continueGuide);
     },
     goBack,
+    ballot: (voter: string, candidate: string) => update((g) => setBallot(g, voter, candidate)),
     nobody: () => update(chooseNobody),
     reopen: () => update(reopenDecision),
     undo: () => update(undoSelection),

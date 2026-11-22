@@ -8,6 +8,7 @@ import {
   type WerewolfSpecialRole,
   type WerewolfState,
 } from "./stateMachine";
+import { allVoteFor, lynchEvents } from "./voteTesting";
 import { automaticWerewolfSettings } from "./automaticSetup";
 import { createFixedWerewolf } from "./fixedSetup";
 import { nightScript } from "./nightScript";
@@ -97,19 +98,7 @@ it.each(["day", "morning"] as const)(
     if (period === "morning") s = dawn(attack(s, hunter));
     else {
       s = dawn(attack(s, null));
-      const supporters = s.alive.filter((p) => p.name !== hunter);
-      s = act(
-        s,
-        {
-          type: "nominate",
-          night: 1,
-          target: hunter,
-          nominator: supporters[0]!.name,
-          seconder: supporters[1]!.name,
-        },
-        { type: "vote", night: 1, nomination: 1, yesVoters: s.alive.map((p) => p.name) },
-        { type: "announceExile", night: 1 },
-      );
+      s = act(s, ...lynchEvents(s, hunter), { type: "announceExile", night: 1 });
     }
     expect(s.status).toBe("hunter");
     s = act(s, { type: "shot", night: 1, target: tough });
@@ -192,20 +181,16 @@ it("does not force lovers to spare one another and preserves the original winnin
   const attacked = act(s, { type: "attack", night: 1, target: partner });
   expect(attacked).not.toBe(s);
   const day = dawn(attack(s, null));
-  const seconder = day.alive.find((p) => p.name !== wolf && p.name !== partner)!.name;
-  const nominated = act(day, {
-    type: "nominate",
-    night: 1,
-    target: partner,
-    nominator: wolf,
-    seconder,
-  });
+  const nominated = act(day, { type: "nominate", night: 1, nominees: [partner] });
   expect(nominated.status).toBe("vote");
-  const voted = act(nominated, { type: "vote", night: 1, nomination: 1, yesVoters: [wolf] });
-  expect(voted.status).toBe("day");
+  // The wolf may vote for his lover: nothing forces him to spare the partner.
+  const ballots = allVoteFor(nominated, partner);
+  expect(ballots[wolf]).toBe(partner);
+  const voted = act(nominated, { type: "vote", night: 1, nomination: 1, ballots });
+  expect(voted.status).toBe("exile");
   expect(voted.history[voted.history.length - 1]).toMatchObject({
     kind: "action",
-    event: { type: "vote", yesVoters: [wolf] },
+    event: { type: "vote", ballots },
   });
   expect(getWerewolfWinner(s.alive.filter((p) => p.name === wolf || p.name === partner))).toBe(
     "wolves",

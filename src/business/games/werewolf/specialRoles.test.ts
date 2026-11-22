@@ -8,6 +8,7 @@ import {
   type WerewolfSpecialRole,
   type WerewolfState,
 } from "./stateMachine";
+import { lynchEvents } from "./voteTesting";
 
 const names = ["Ada", "Bea", "Cam", "Dan", "Eva", "Flo"];
 const act = (state: WerewolfState, ...events: WerewolfEvent[]) =>
@@ -279,12 +280,7 @@ it.each(["optional", "required"] as const)(
     }
     state = { ...state, settings: { ...state.settings, hunterShot } };
     const night = state.night;
-    state = act(
-      state,
-      { type: "nominate", night, nominator: "Ada", seconder: "Bea", target: "Cam" },
-      { type: "vote", night, nomination: 1, yes: 2 },
-      { type: "announceExile", night },
-    );
+    state = act(state, ...lynchEvents(state, "Cam"), { type: "announceExile", night });
     expect(state.status).toBe("hunter");
     expect(act(state, { type: "endDay", night })).toBe(state);
     expect(act(state, { type: "shot", night, target: "Cam" })).toBe(state);

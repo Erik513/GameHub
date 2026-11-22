@@ -8,14 +8,9 @@ import {
   type WerewolfSpecialRole,
   type WerewolfState,
 } from "./stateMachine";
-import {
-  describePlayers,
-  validTargets,
-  validNominators,
-  validSeconders,
-  votingPlayers,
-} from "./selectors";
+import { describePlayers, validTargets, votingPlayers } from "./selectors";
 import { nightScript } from "./nightScript";
+import { eventChoices as choices } from "./eventChoices";
 import { createVariableWerewolf } from "./variableSetup";
 import { advanceWerewolfSession, createWerewolfSession, undoWerewolfSession } from "./session";
 
@@ -208,113 +203,6 @@ describe("narrator business contract", () => {
   });
 });
 
-function choices(s: WerewolfState): WerewolfEvent[] {
-  const night = s.night;
-  const targets = validTargets(s);
-  const choose = (
-    type:
-      | "attack"
-      | "protect"
-      | "stayWith"
-      | "hammer"
-      | "inspect"
-      | "investigate"
-      | "silence"
-      | "shot"
-      | "passAmulet",
-  ) => targets.map((target) => ({ type, night, target }));
-  switch (s.status) {
-    case "roles":
-      return [{ type: "roleSeen", player: s.players[s.index]!.name }];
-    case "nightCall":
-      return [{ type: "acknowledgeCall", night }];
-    case "amuletPass":
-      return choose("passAmulet");
-    case "cupid":
-      return targets.flatMap((a) =>
-        validTargets(s, "bond", { selected: [a] }).map(
-          (b) => ({ type: "bond", night, players: [a, b] }) as const,
-        ),
-      );
-    case "lovers":
-      return [{ type: "loversReady", night }];
-    case "drunkReveal":
-    case "drunkHunter":
-      return [{ type: "drunkReady", night }];
-    case "mayor":
-      return [...choose("hammer"), { type: "hammer", night, target: null }];
-    case "bodyguard":
-      return choose("protect");
-    case "nightGuest":
-      return choose("stayWith");
-    case "wolves":
-      return night === 1 && !s.settings.attackOnFirstNight
-        ? [{ type: "wolvesReady", night }]
-        : [...choose("attack"), { type: "attack", night, target: null }];
-    case "seer":
-      return choose("inspect");
-    case "vision":
-      return [{ type: "closeVision", night }];
-    case "investigator":
-      return [...choose("investigate"), { type: "investigate", night, target: null }];
-    case "investigation":
-      return [{ type: "closeInvestigation", night }];
-    case "witch":
-      return [false, true]
-        .flatMap((heal) =>
-          [null, ...validTargets(s, "poison", { heal })].map(
-            (poison) => ({ type: "potions", night, heal, poison }) as const,
-          ),
-        )
-        .filter((e) => transitionWerewolf(s, e) !== s);
-    case "magician":
-      return [false, true]
-        .flatMap((heal) =>
-          [
-            [],
-            ...validTargets(s, "kill", { heal }).flatMap((a) => [
-              [a],
-              ...validTargets(s, "kill", { heal, selected: [a] }).map((b) => [a, b]),
-            ]),
-          ].map((kill) => ({ type: "castSpells", night, heal, kill }) as const),
-        )
-        .filter((e) => transitionWerewolf(s, e) !== s);
-    case "spellcaster":
-      return [...choose("silence"), { type: "silence", night, target: null }];
-    case "morning":
-      return [{ type: "announceMorning", night }];
-    case "day":
-      return [
-        ...targets.map((target) => {
-          const voters = s.alive.filter((p) => p.name !== target && p.name !== s.silencedPlayer);
-          return {
-            type: "nominate",
-            night,
-            target,
-            nominator: voters[0]!.name,
-            seconder: voters[1]!.name,
-          } as const;
-        }),
-        { type: "endDay", night },
-      ];
-    case "vote":
-      return [[], s.alive.filter((p) => p.name !== s.silencedPlayer).map((p) => p.name)].map(
-        (yesVoters) => ({ type: "vote", night, nomination: s.nomination, yesVoters }),
-      );
-    case "exile":
-      return [{ type: "announceExile", night }];
-    case "hunter":
-      return [
-        ...choose("shot"),
-        ...(s.settings.hunterShot === "optional" || !s.alive.length
-          ? [{ type: "shot", night, target: null } as const]
-          : []),
-      ];
-    case "finished":
-      return [];
-  }
-}
-
 it("plays reproducible complete games across all roles, privacy modes and attack settings", () => {
   const all: WerewolfSpecialRole[] = [
     "cupid",
@@ -411,28 +299,33 @@ it("plays reproducible complete games across all roles, privacy modes and attack
     expect(causes.has(cause), cause).toBe(true);
 }, 20000);
 
-it("provides valid nomination participants and mandatory weighted voters", () => {
+it("provides the voters of a vote: nobody votes for himself, the mayor counts twice, the idiot is set by the narrator", () => {
   let s = morning(noAttack(game(["idiot", "mayor"])));
   const target = s.alive.find((p) => p.role === "wolf")!.name;
-  expect(validNominators(s, target)).not.toContain(target);
-  const nominator = validNominators(s, target)[0]!;
-  const seconders = validSeconders(s, target, nominator);
-  expect(seconders).not.toContain(target);
-  expect(seconders).not.toContain(nominator);
   expect(votingPlayers(s)).toEqual([]);
-  s = act(s, { type: "nominate", night: 1, target, nominator, seconder: seconders[0]! });
+  // Up to three living people can be named.
+  expect(validTargets(s, "nominate", { selected: [target] })).not.toContain(target);
+  expect(validTargets(s, "nominate", { selected: s.alive.slice(0, 3).map((p) => p.name) })).toEqual(
+    [],
+  );
+  s = act(s, { type: "nominate", night: 1, nominees: [target] });
   const voters = votingPlayers(s);
-  expect(voters.find((p) => p.requiredYes)?.name).toBe(
+  expect(voters.find((p) => p.setByNarrator)?.name).toBe(
     s.players.find((p) => p.role === "idiot")!.name,
   );
   expect(voters.find((p) => p.weight === 2)?.name).toBe(
     s.players.find((p) => p.role === "mayor")!.name,
   );
+  // The nominated person is a voter without a choice (the only candidate is himself).
+  expect(voters.find((p) => p.name === target)?.choices).toEqual([]);
+  expect(voters.find((p) => p.name !== target)?.choices).toEqual([target]);
   const mayor = s.players.find((p) => p.role === "mayor")!.name;
   const disabled = { ...s, silencedPlayer: mayor };
   expect(votingPlayers(disabled).map((p) => p.name)).not.toContain(mayor);
+  // Any living person can be named, also when only two are left.
+  const two = s.alive.slice(0, 2).map((p) => p.name);
   expect(validTargets({ ...s, status: "day", nomination: 0, alive: s.alive.slice(0, 2) })).toEqual(
-    [],
+    two,
   );
 });
 

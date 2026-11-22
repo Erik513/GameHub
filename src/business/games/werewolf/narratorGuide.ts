@@ -2,8 +2,6 @@ import type { DeathCause } from "./eventLog";
 import { describeNarratorCard, type CardAbilityId, type NarratorCard } from "./narratorCard";
 import {
   describePlayers,
-  validNominators,
-  validSeconders,
   validTargets,
   votingPlayers,
   type WerewolfTargetAction,
@@ -36,6 +34,8 @@ export interface GuideSelection {
   readonly picks: readonly string[];
   /** The narrator chose "nobody" where that is allowed. */
   readonly none: boolean;
+  /** At the vote: what each voter chose (voter to candidate). */
+  readonly ballots?: Readonly<Record<string, string>>;
 }
 
 export const emptySelection: GuideSelection = {
@@ -81,17 +81,9 @@ function phaseOf(state: WerewolfState): GuidePhase {
   return !card ? "plain" : card.role === "day" ? "act" : "intro";
 }
 
-/** The vote starts with the people who have to vote yes already chosen. */
+/** The vote opens at once; nobody has chosen yet. */
 function initialSelection(state: WerewolfState): GuideSelection {
-  return state.status === "vote"
-    ? {
-        ...emptySelection,
-        ability: "vote",
-        picks: votingPlayers(state)
-          .filter((player) => player.requiredYes)
-          .map((player) => player.name),
-      }
-    : emptySelection;
+  return state.status === "vote" ? { ...emptySelection, ability: "vote" } : emptySelection;
 }
 
 function frameOf(state: WerewolfState, pastLength: number): GuideFrame {
@@ -180,22 +172,13 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       return one && two ? { night, players: [one, two], type: "bond" } : null;
     }
     case "nominate":
-      // Nobody named: the day ends. Three people (nominee, nominator, seconder): a nomination.
-      // Ending the day needs no open vote: while the vote is open (nobody named yet) nothing can be confirmed.
+      // Nobody named and no vote open: the day ends. One to three named people: the vote.
       if (selection.picks.length === 0)
         return selection.ability === null ? { night, type: "endDay" } : null;
-      return selection.picks.length === 3
-        ? {
-            night,
-            nominator: selection.picks[1]!,
-            seconder: selection.picks[2]!,
-            target: selection.picks[0]!,
-            type: "nominate",
-          }
-        : null;
+      return { night, nominees: selection.picks, type: "nominate" };
     case "vote":
       if (state.status !== "vote") return null;
-      return { night, nomination: state.nomination, type: "vote", yesVoters: selection.picks };
+      return { ballots: ballotsOf(selection), night, nomination: state.nomination, type: "vote" };
     default:
       break;
   }
@@ -248,6 +231,17 @@ function previewDeaths(state: WerewolfState, event: WerewolfEvent | null): reado
   );
 }
 
+export interface BallotRow {
+  readonly name: string;
+  /** The candidates he can vote for (never himself). */
+  readonly choices: readonly string[];
+  /** The mayor with the double vote counts twice. */
+  readonly weight: number;
+  /** The narrator sets this vote himself (the village idiot). */
+  readonly setByNarrator: boolean;
+  readonly choice: string | null;
+}
+
 export interface GuideView {
   /** What the "next" button says: the day ends, the vote starts or ends, the game is left, or simply "next". */
   readonly nextKind: "begin" | "endDay" | "endVote" | "finish" | "next" | "startVote";
@@ -256,7 +250,9 @@ export interface GuideView {
   /** Facts the narrator has to keep in mind during the day (silenced, wounded) and who a choice may not name. */
   readonly notes: GuideNotes;
   /** The votes that do not count once: the mayor twice, the village idiot has to vote yes. */
-  readonly voterNotes: Readonly<Record<string, "double" | "mustYes">>;
+  readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
+  /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
+  readonly ballotRows: readonly BallotRow[];
   readonly phase: GuidePhase;
   readonly state: WerewolfState;
   /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */
@@ -285,18 +281,13 @@ export function describeGuide(guide: Guide): GuideView {
   const action = selection.ability ? abilityAction[selection.ability] : undefined;
   let targets: readonly string[] = [];
   if (frame.phase === "act" && selection.ability === "vote") {
-    const [nominee, nominator] = selection.picks;
+    // At the day the narrator names up to three people; at the vote there is no list of people (the ballots are).
     targets =
       state.status === "vote"
-        ? votingPlayers(state).map((player) => player.name)
-        : selection.picks.length >= 3
-          ? []
-          : nominee === undefined
-            ? validTargets(state, "nominate")
-            : nominator === undefined
-              ? validNominators(state, nominee)
-              : validSeconders(state, nominee, nominator);
-    targets = targets.filter((name) => !selection.picks.includes(name));
+        ? []
+        : validTargets(state, "nominate", { selected: selection.picks }).filter(
+            (name) => !selection.picks.includes(name),
+          );
   } else if (frame.phase === "act" && action)
     targets = validTargets(state, action, {
       heal: selection.heal,
@@ -330,7 +321,8 @@ export function describeGuide(guide: Guide): GuideView {
     canUndo:
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
-      selection.none,
+      selection.none ||
+      Object.keys(ballotsOf(selection)).length > 0,
     card: frame.phase === "ready" ? null : describeNarratorCard(state),
     deaths:
       state.status === "morning" || state.status === "exile"
@@ -353,6 +345,7 @@ export function describeGuide(guide: Guide): GuideView {
         .filter((player) => player.alive && player.delayedDeathNight !== null)
         .map((player) => player.name),
     },
+    ballotRows: ballotRowsOf(state, selection),
     voterNotes: voterNotesOf(state),
     nextKind:
       frame.phase === "ready"
@@ -362,7 +355,7 @@ export function describeGuide(guide: Guide): GuideView {
           : state.status === "vote"
             ? "endVote"
             : state.status === "day"
-              ? selection.picks.length === 3
+              ? selection.picks.length >= 1
                 ? "startVote"
                 : "endDay"
               : "next",
@@ -455,12 +448,7 @@ export function choosePlayer(guide: Guide, name: string): Guide {
   const view = describeGuide(guide);
   if (!view.targets.includes(name)) return guide;
   const { selection } = view;
-  const limit = pickLimitOf(
-    view.state,
-    selection.ability,
-    selection.heal,
-    view.state.status === "vote" ? votingPlayers(view.state).length : 0,
-  );
+  const limit = pickLimitOf(view.state, selection.ability, selection.heal);
   const picks = limit === 1 ? [name] : [...selection.picks, name].slice(0, limit);
   return withSelection(guide, { ...selection, none: false, picks });
 }
@@ -468,16 +456,24 @@ export function choosePlayer(guide: Guide, name: string): Guide {
 /** The narrator removes a chosen person again. */
 export function unchoosePlayer(guide: Guide, name: string): Guide {
   const { selection } = current(guide);
-  const { status } = guide.session.present;
-  // The people who have to vote yes stay chosen; a nomination is taken back from the chosen person on.
-  if (status === "vote" && initialSelection(guide.session.present).picks.includes(name))
-    return guide;
-  const index = selection.picks.indexOf(name);
-  const picks =
-    status === "day"
-      ? selection.picks.slice(0, Math.max(0, index))
-      : selection.picks.filter((pick) => pick !== name);
-  return withSelection(guide, { ...selection, picks });
+  return withSelection(guide, {
+    ...selection,
+    picks: selection.picks.filter((pick) => pick !== name),
+  });
+}
+
+/**
+ * At the vote: the narrator sets what one voter chose. Tapping the same choice again takes it back. A voter can only
+ * choose among the candidates and never himself.
+ */
+export function setBallot(guide: Guide, voter: string, candidate: string): Guide {
+  const frame = current(guide);
+  const row = describeGuide(guide).ballotRows.find((entry) => entry.name === voter);
+  if (frame.phase !== "act" || !row?.choices.includes(candidate)) return guide;
+  const ballots = { ...ballotsOf(frame.selection) };
+  if (ballots[voter] === candidate) delete ballots[voter];
+  else ballots[voter] = candidate;
+  return withSelection(guide, { ...frame.selection, ballots });
 }
 
 export function chooseNobody(guide: Guide): Guide {
@@ -677,10 +673,25 @@ export function describeWinners(state: WerewolfState): readonly WinnerGroup[] {
   return groups.filter((group) => group.players.length > 0);
 }
 
-function voterNotesOf(state: WerewolfState): Record<string, "double" | "mustYes"> {
-  const notes: Record<string, "double" | "mustYes"> = {};
+function ballotsOf(selection: GuideSelection): Readonly<Record<string, string>> {
+  return selection.ballots ?? {};
+}
+
+function ballotRowsOf(state: WerewolfState, selection: GuideSelection): readonly BallotRow[] {
+  const ballots = ballotsOf(selection);
+  return votingPlayers(state).map((player) => ({
+    choice: ballots[player.name] ?? null,
+    choices: player.choices,
+    name: player.name,
+    setByNarrator: player.setByNarrator,
+    weight: player.weight,
+  }));
+}
+
+function voterNotesOf(state: WerewolfState): Record<string, "double" | "setByNarrator"> {
+  const notes: Record<string, "double" | "setByNarrator"> = {};
   for (const player of votingPlayers(state)) {
-    if (player.requiredYes) notes[player.name] = "mustYes";
+    if (player.setByNarrator) notes[player.name] = "setByNarrator";
     else if (player.weight === 2) notes[player.name] = "double";
   }
   return notes;

@@ -44,46 +44,70 @@ function masked(state: WerewolfState, name: string): boolean {
   return state.drunk?.player === name && !state.drunk.revealed;
 }
 
+/**
+ * The ballots of a vote: every voter who can vote for somebody else names one candidate. The answer of the game is
+ * worked out here again (most votes win, the mayor counts twice, a tie votes again once, a second tie leaves everybody
+ * in the game), so the reducer is checked against a second description of the rule. With `exhaustive` every combination
+ * of two choices is tried for the first voters.
+ */
 function ballots(state: VoteState, exhaustive: boolean): Decision[] {
   const voters = state.alive.filter((player) => player.name !== state.silencedPlayer);
-  const votersWithPowers = voters.filter((player) => !masked(state, player.name));
-  const mayor = votersWithPowers.find(
-    (player) => player.role === "mayor" && state.settings.mayor === "doubleVote",
+  const mayor = voters.find(
+    (player) =>
+      player.role === "mayor" &&
+      !masked(state, player.name) &&
+      state.settings.mayor === "doubleVote",
   );
-  const idiot = votersWithPowers.find((player) => player.role === "idiot");
-  const special = voters.filter((player) => player === mayor || player === idiot);
-  const ordinary = voters.filter((player) => !special.includes(player));
-  const groups = exhaustive
-    ? subsets(voters)
-    : subsets(special).flatMap((group) =>
-        Array.from({ length: ordinary.length + 1 }, (_, count) => [
-          ...group,
-          ...ordinary.slice(0, count),
-        ]),
-      );
-  const total = voters.length + Number(Boolean(mayor));
-  const outcome = (yes: number) => (yes * 2 > total ? "exile" : "day");
   const base = { type: "vote", night: state.night, nomination: state.nomination } as const;
-  const decisions: Decision[] = groups.map((group) => {
-    const yes =
-      group.length +
-      Number(Boolean(mayor && group.includes(mayor))) +
-      Number(Boolean(idiot && !group.includes(idiot)));
-    return [{ ...base, yesVoters: group.map((player) => player.name) }, outcome(yes)];
-  });
-  if (!mayor && !idiot) {
-    for (let yes = 0; yes <= total; yes++) decisions.push([{ ...base, yes }, outcome(yes)]);
-  }
-  decisions.push(
-    [{ ...base, yes: -1 }, null],
-    [{ ...base, yes: total + 1 }, null],
-    [{ ...base, yes: 1.5 }, null],
-    [{ ...base, yesVoters: [missing] }, null],
-    [{ ...base, yesVoters: [], nomination: state.nomination - 1 }, null],
+  const outcome = (choices: Record<string, string>): WerewolfState["status"] => {
+    const tally = new Map(state.candidates.map((name) => [name, 0] as const));
+    const counts = new Map<string, number>(tally);
+    for (const [voter, choice] of Object.entries(choices))
+      counts.set(choice, (counts.get(choice) ?? 0) + (mayor?.name === voter ? 2 : 1));
+    const most = Math.max(...counts.values());
+    const leaders = state.candidates.filter((name) => counts.get(name) === most);
+    if (leaders.length === 1) return "exile";
+    return state.round === 1 ? "vote" : "day";
+  };
+  const withChoices = voters.filter((player) =>
+    state.candidates.some((name) => name !== player.name),
   );
-  if (mayor || idiot) decisions.push([{ ...base, yes: total }, null]);
-  if (voters[0]) decisions.push([{ ...base, yesVoters: [voters[0].name, voters[0].name] }, null]);
-  if (state.silencedPlayer) decisions.push([{ ...base, yesVoters: [state.silencedPlayer] }, null]);
+  const pick = (player: (typeof voters)[number], index: number) => {
+    const choices = state.candidates.filter((name) => name !== player.name);
+    return choices[index % choices.length]!;
+  };
+  const sets: Record<string, string>[] = [];
+  const free = exhaustive ? withChoices.slice(0, 6) : withChoices.slice(0, 3);
+  for (let mask = 0; mask < 2 ** free.length; mask++) {
+    sets.push(
+      Object.fromEntries(
+        withChoices.map((player) => {
+          const at = free.indexOf(player);
+          return [player.name, pick(player, at >= 0 && (mask & (1 << at)) !== 0 ? 1 : 0)];
+        }),
+      ),
+    );
+  }
+  const decisions: Decision[] = sets.map((choices) => [
+    { ...base, ballots: choices },
+    outcome(choices),
+  ]);
+  const valid = sets[0] ?? {};
+  decisions.push(
+    [{ ...base, ballots: {} }, withChoices.length === 0 ? outcome({}) : null],
+    [{ ...base, ballots: { ...valid, [missing]: state.candidates[0]! } }, null],
+    [{ ...base, ballots: valid, nomination: state.nomination - 1 }, null],
+  );
+  const first = withChoices[0];
+  if (first) {
+    decisions.push([{ ...base, ballots: { ...valid, [first.name]: first.name } }, null]);
+    decisions.push([{ ...base, ballots: { ...valid, [first.name]: missing } }, null]);
+  }
+  if (state.silencedPlayer)
+    decisions.push([
+      { ...base, ballots: { ...valid, [state.silencedPlayer]: state.candidates[0]! } },
+      null,
+    ]);
   return decisions;
 }
 
@@ -239,21 +263,11 @@ function decisions(state: WerewolfState): Decision[] {
     case "day":
       return [
         [{ type: "endDay", night }, state.status],
-        ...names.map((target): Decision => {
-          const supporters = alive.filter(
-            (p) => p.name !== target && p.name !== state.silencedPlayer,
-          );
-          return [
-            {
-              type: "nominate",
-              night,
-              target,
-              nominator: supporters[0]?.name ?? missing,
-              seconder: supporters[1]?.name ?? missing,
-            },
-            player(target) && supporters.length >= 2 ? "vote" : null,
-          ];
-        }),
+        ...names.map((target): Decision => [
+          { type: "nominate", night, nominees: [target] },
+          player(target) ? "vote" : null,
+        ]),
+        [{ type: "nominate", night, nominees: [] }, null],
       ];
     case "vote":
       return ballots(state, false);

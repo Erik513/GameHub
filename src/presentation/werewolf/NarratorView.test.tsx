@@ -282,5 +282,19 @@ describe("NarratorView choices", () => {
     // The people are chosen: the check mark is there (switched off until the choice is complete).
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "No vote" })).toBeDisabled();
+    // One person is named: the check mark confirms, the vote starts with one row for every voter.
+    await user.click(document.querySelector(".ww-person")!);
+    expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
+    expect(screen.getByText("Everyone votes for a nominated person")).toBeInTheDocument();
+    const rows = document.querySelectorAll(".ww-ballot");
+    expect(rows.length).toBeGreaterThan(5);
+    // The check mark waits until every voter has chosen.
+    expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeDisabled();
+    for (const row of rows) {
+      const choice = row.querySelector<HTMLElement>(".ww-ballot__choice");
+      if (choice) await user.click(choice);
+    }
+    expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
   });
 });

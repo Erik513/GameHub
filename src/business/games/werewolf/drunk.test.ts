@@ -10,6 +10,7 @@ import {
   type WerewolfSpecialRole,
   type WerewolfState,
 } from "./stateMachine";
+import { lynchEvents } from "./voteTesting";
 
 const names = ["Ada", "Bea", "Cam", "Dan", "Eva", "Flo", "Gia", "Hugo", "Ira"];
 const play = (state: WerewolfState, ...events: WerewolfEvent[]) =>
@@ -69,12 +70,7 @@ it("keeps a masked wolf detectable, skips a hunt without an active wolf and wake
   );
   expect(firstVision).toMatchObject({ status: "vision", isWolf: true });
   const day = dawn(play(firstVision, { type: "closeVision", night: 1 }));
-  const secondNight = play(
-    day,
-    { type: "nominate", night: 1, target: "Bea", nominator: "Cam", seconder: "Dan" },
-    { type: "vote", night: 1, nomination: 1, yes: 9 },
-    { type: "announceExile", night: 1 },
-  );
+  const secondNight = play(day, ...lynchEvents(day, "Bea"), { type: "announceExile", night: 1 });
   expect(secondNight).toMatchObject({
     status: "nightCall",
     night: 2,

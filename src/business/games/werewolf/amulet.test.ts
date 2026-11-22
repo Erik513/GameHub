@@ -9,6 +9,7 @@ import {
   type WerewolfSpecialRole,
   type WerewolfState,
 } from "./stateMachine";
+import { lynchEvents } from "./voteTesting";
 
 const names = ["Ada", "Bea", "Cam", "Dan", "Eva", "Flo"];
 const apply = (state: WerewolfState, ...events: WerewolfEvent[]) =>
@@ -143,12 +144,7 @@ it("does not force a transfer for heartbreak and loses a kept amulet at death", 
   const morning = transfer(broken, "Dan");
   expect(werewolfAnnouncement(morning).map((p) => p.name)).toEqual(["Cam", "Eva"]);
   expect(dawn(morning)).toMatchObject({ status: "day", amulet: { holder: "Dan" } });
-  const voted = apply(
-    day,
-    { type: "nominate", night: 1, target: "Eva", nominator: "Ada", seconder: "Bea" },
-    { type: "vote", night: 1, nomination: 1, yes: 6 },
-    { type: "announceExile", night: 1 },
-  );
+  const voted = apply(day, ...lynchEvents(day, "Eva"), { type: "announceExile", night: 1 });
   expect(voted.amulet).toBeNull();
   expect(voted.alive.map((p) => p.name)).not.toContain("Cam");
 });
@@ -270,11 +266,7 @@ it("cannot heal an existing tough-guy wound when acquired after the attack", () 
 it("executes a voted-out carrier and awards the tanner win", () => {
   {
     const day = resolve(firstNight(open(deal("Cam", ["tanner"], { tanner: "voteOnly" }))));
-    const exile = apply(
-      day,
-      { type: "nominate", night: 1, target: "Cam", nominator: "Ada", seconder: "Bea" },
-      { type: "vote", night: 1, nomination: 1, yesVoters: names },
-    );
+    const exile = apply(day, ...lynchEvents(day, "Cam"));
     expect(exile.status).toBe("exile");
     expect(werewolfAnnouncement(exile)).toEqual([{ name: "Cam" }]);
     const next = apply(exile, { type: "announceExile", night: 1 });
@@ -283,7 +275,7 @@ it("executes a voted-out carrier and awards the tanner win", () => {
     expect(next.tannerWinner).toBe("Cam");
     expect(next.history.find((e) => e.kind === "death" && e.player === "Cam")).toMatchObject({
       kind: "death",
-      sources: [{ cause: "vote", actors: names }],
+      sources: [{ cause: "vote", actors: names.filter((name) => name !== "Cam") }],
     });
   }
 });

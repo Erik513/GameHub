@@ -37,10 +37,14 @@ const silence = (state: WerewolfState, target: string | null) =>
   act(state, { type: "silence", night: state.night, target });
 const hammer = (state: WerewolfState, target: string | null) =>
   act(state, { type: "hammer", night: state.night, target });
-const nominate = (state: WerewolfState, target = "Flo") =>
-  act(state, { type: "nominate", night: state.night, target, nominator: "Ada", seconder: "Bea" });
-const vote = (state: WerewolfState, yesVoters: readonly string[], nomination = 1) =>
-  act(state, { type: "vote", night: state.night, nomination, yesVoters });
+const nominate = (state: WerewolfState, ...nominees: string[]) =>
+  act(state, {
+    type: "nominate",
+    night: state.night,
+    nominees: nominees.length ? nominees : ["Flo"],
+  });
+const vote = (state: WerewolfState, ballots: Record<string, string>, nomination = 1) =>
+  act(state, { type: "vote", night: state.night, nomination, ballots });
 
 it("pairs distinct living players exactly once in the first night", () => {
   const state = deal(["cupid"]);
@@ -115,36 +119,64 @@ it("makes the village win when the last wolf dies together with a lover", () => 
   expect(finished.alive.map((player) => player.name)).toEqual(["Bea", "Cam", "Flo"]);
 });
 
-it("counts the village idiot's mandatory yes and the secret double vote", () => {
-  const state = nominate(day(see(wolves(deal(["idiot", "mayor"])))));
-  expect(act(state, { type: "vote", night: 1, nomination: 1, yes: 5 })).toBe(state);
-  expect(vote(state, ["Ada", "Ada"])).toBe(state);
-  expect(vote(state, ["Nobody"])).toBe(state);
-  const ties = vote(state, ["Ada", "Bea"]);
-  expect(ties.status).toBe("day");
-  // Dan's vote counts twice. Cam must vote yes, making four of seven weighted votes.
-  const exile = vote(state, ["Ada", "Dan"]);
-  expect(exile).toMatchObject({ status: "exile", victim: { name: "Flo" } });
-  expect(werewolfAnnouncement(exile)).toEqual([{ name: "Flo" }]);
+it("counts every ballot, the secret double vote of the mayor, and a tie votes again among the tied people", () => {
+  const state = nominate(day(see(wolves(deal(["idiot", "mayor"])))), "Flo", "Eva");
+  expect(state).toMatchObject({ status: "vote", candidates: ["Flo", "Eva"], round: 1 });
+  // Every voter needs a ballot; nobody votes for himself; only the candidates can be chosen.
+  expect(vote(state, {})).toBe(state);
+  const full = { Ada: "Flo", Bea: "Flo", Cam: "Eva", Dan: "Eva", Eva: "Flo", Flo: "Eva" };
+  expect(vote(state, { ...full, Eva: "Eva" })).toBe(state);
+  expect(vote(state, { ...full, Ada: "Dan" })).toBe(state);
+  expect(vote(state, { ...full, Nobody: "Flo" })).toBe(state);
+  expect(vote(state, { ...full, Flo: undefined as unknown as string })).toBe(state);
+  expect(vote(state, full, 2)).toBe(state);
+  // Dan is the mayor: his vote counts twice, so Eva has 4 votes (Cam, Dan twice, Flo) against 3 for Flo.
+  const exile = vote(state, full);
+  expect(exile).toMatchObject({ status: "exile", victim: { name: "Eva" } });
+  expect(werewolfAnnouncement(exile)).toEqual([{ name: "Eva" }]);
+  // Dan votes for Flo instead: Flo has 5 votes (Dan counts twice), Eva 2.
+  expect(vote(state, { ...full, Dan: "Flo" })).toMatchObject({
+    status: "exile",
+    victim: { name: "Flo" },
+  });
 });
 
-it("applies silence to nominations and voting, including the village idiot's mandatory yes", () => {
+it("votes again once after a tie among the tied people, and a second tie leaves everybody in the game", () => {
+  const state = nominate(day(see(wolves(deal([])))), "Flo", "Eva");
+  // Six voters without a mayor: 3 votes for each.
+  const tied = { Ada: "Flo", Bea: "Flo", Cam: "Eva", Dan: "Eva", Eva: "Flo", Flo: "Eva" };
+  const again = vote(state, tied);
+  expect(again).toMatchObject({ status: "vote", candidates: ["Flo", "Eva"], round: 2 });
+  const second = vote(again, tied);
+  expect(second.status).toBe("day");
+  expect(second.alive).toHaveLength(6);
+  // After the new vote one of them is out.
+  expect(vote(again, { ...tied, Cam: "Flo" })).toMatchObject({
+    status: "exile",
+    victim: { name: "Flo" },
+  });
+});
+
+it("applies silence to the vote: the silenced person can be named but does not vote", () => {
   let state = see(wolves(deal(["spellcaster", "idiot"])));
   expect(wakingPlayers(state)).toEqual(["Cam"]);
   expect(silence(state, "Cam")).toBe(state);
   expect(silence(state, "Unknown")).toBe(state);
   state = day(silence(state, "Dan"));
-  expect(
-    act(state, { type: "nominate", night: 1, target: "Eva", nominator: "Dan", seconder: "Ada" }),
-  ).toBe(state);
-  expect(
-    act(state, { type: "nominate", night: 1, target: "Eva", nominator: "Ada", seconder: "Dan" }),
-  ).toBe(state);
+  // One to three different living people can be named; the silenced person is allowed.
+  expect(act(state, { type: "nominate", night: 1, nominees: [] })).toBe(state);
+  expect(act(state, { type: "nominate", night: 1, nominees: ["Ada", "Bea", "Cam", "Eva"] })).toBe(
+    state,
+  );
+  expect(act(state, { type: "nominate", night: 1, nominees: ["Ada", "Ada"] })).toBe(state);
+  expect(act(state, { type: "nominate", night: 1, nominees: ["Nobody"] })).toBe(state);
   const mutedTarget = nominate(state, "Dan");
   expect(mutedTarget.status).toBe("vote");
-  expect(vote(mutedTarget, ["Ada", "Dan"])).toBe(mutedTarget);
-  expect(vote(mutedTarget, ["Ada", "Bea"]).status).toBe("day");
-  expect(vote(mutedTarget, ["Ada", "Bea", "Cam"]).status).toBe("exile");
+  // Dan is silenced and does not vote: a ballot of his is refused, the others vote.
+  const others = { Ada: "Dan", Bea: "Dan", Cam: "Dan", Eva: "Dan", Flo: "Dan" };
+  expect(vote(mutedTarget, { ...others, Dan: "Dan" })).toBe(mutedTarget);
+  expect(vote(mutedTarget, { Ada: "Dan" })).toBe(mutedTarget);
+  expect(vote(mutedTarget, others).status).toBe("exile");
   state = see(attack(dusk(state), "Flo"));
   expect(silence(state, "Dan")).toBe(state);
   expect(day(silence(state, null)).silencedPlayer).toBeNull();

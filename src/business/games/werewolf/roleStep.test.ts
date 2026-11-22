@@ -97,11 +97,11 @@ describe("describeRoleStep", () => {
     expect(describeRoleStep(at({ status: "cupid" })).compound).toBe("bond");
     expect(describeRoleStep(at({ status: "seer", victim: null })).compound).toBeUndefined();
     const magician = at({ poisoned: null, spellsRemaining: 2, status: "magician", victim: null });
-    expect(pickLimitOf(magician, "kill", false, 0)).toBe(2);
+    expect(pickLimitOf(magician, "kill", false)).toBe(2);
     // A healing spell takes one of the two spells.
-    expect(pickLimitOf(magician, "kill", true, 0)).toBe(1);
-    expect(pickLimitOf(magician, "bond", false, 0)).toBe(2);
-    expect(pickLimitOf(magician, "poison", false, 0)).toBe(1);
+    expect(pickLimitOf(magician, "kill", true)).toBe(1);
+    expect(pickLimitOf(magician, "bond", false)).toBe(2);
+    expect(pickLimitOf(magician, "poison", false)).toBe(1);
   });
 
   it("names the event of a step that the narrator only confirms, and of the day and the vote", () => {
@@ -110,7 +110,9 @@ describe("describeRoleStep", () => {
     expect(describeRoleStep(at({ status: "wolves" })).confirm).toBe("wolvesReady");
     expect(describeRoleStep(at({ night: 2, status: "wolves" })).confirm).toBeUndefined();
     expect(describeRoleStep(at({ status: "day" })).compound).toBe("nominate");
-    expect(describeRoleStep(at({ status: "vote" })).compound).toBe("vote");
+    expect(describeRoleStep(at({ candidates: ["Ada"], round: 1, status: "vote" })).compound).toBe(
+      "vote",
+    );
   });
 
   it("lets the day be skipped (no vote), but not the vote itself", () => {
@@ -118,6 +120,8 @@ describe("describeRoleStep", () => {
       skip: { label: "noVote" },
       skippable: true,
     });
-    expect(describeRoleStep(at({ status: "vote" })).skippable).toBe(false);
+    expect(describeRoleStep(at({ candidates: ["Ada"], round: 1, status: "vote" })).skippable).toBe(
+      false,
+    );
   });
 });

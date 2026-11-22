@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-128: Neue Tagesabstimmung
+
+- Bis zu drei Nominierte, ein Stimmzettel je Spieler, Bürgermeister doppelt mit Angabe, Dorftrottel vom Erzähler gesetzt, Gleichstand einmal neu; Logik und Oberfläche, für Codex notiert.
+
 ### We-01-127: Bestätigen bei der Tageswahl
 
 - Haken zum Bestätigen bei Nominierung und Abstimmung; Hinweise erscheinen nicht während der Wahl.

@@ -17,8 +17,6 @@ export type WerewolfTargetAction =
 export interface TargetSelection {
   readonly selected?: readonly string[];
   readonly heal?: boolean;
-  readonly nominator?: string;
-  readonly seconder?: string;
 }
 const phaseAction: Partial<Record<WerewolfState["status"], WerewolfTargetAction>> = {
   wolves: "attack",
@@ -63,13 +61,7 @@ export function validTargets(
         if (!partner) return false;
         event = { type: "bond", night, players: [partner, target] };
       } else if (action === "nominate") {
-        const candidates = state.alive
-          .filter((p) => p.name !== target && p.name !== state.silencedPlayer)
-          .map((p) => p.name);
-        const nominator = selection.nominator ?? candidates[0];
-        const seconder = selection.seconder ?? candidates.find((name) => name !== nominator);
-        if (!nominator || !seconder) return false;
-        event = { type: "nominate", night, target, nominator, seconder };
+        event = { type: "nominate", night, nominees: [...(selection.selected ?? []), target] };
       } else event = { type: action, night, target };
       return transitionWerewolf(state, event) !== state;
     })
@@ -115,34 +107,22 @@ export function describePlayers(state: WerewolfState) {
   });
 }
 
-export function validNominators(state: WerewolfState, target: string): readonly string[] {
-  return state.alive
-    .map((p) => p.name)
-    .filter((nominator) => validTargets(state, "nominate", { nominator }).includes(target));
-}
-
-export function validSeconders(
-  state: WerewolfState,
-  target: string,
-  nominator: string,
-): readonly string[] {
-  return state.alive
-    .map((p) => p.name)
-    .filter((seconder) =>
-      validTargets(state, "nominate", { nominator, seconder }).includes(target),
-    );
-}
-
-/** Private ballot facts; each player occurs once even when their vote has weight two. */
+/**
+ * The people who vote now, with what the narrator needs for each: who can be voted for (never himself), the weight of
+ * the vote (the mayor with the double vote counts twice) and whether the narrator sets the vote himself (the village
+ * idiot does not decide, as in the original). A person who cannot vote for anybody else has no choices and no ballot.
+ */
 export function votingPlayers(state: WerewolfState) {
   if (state.status !== "vote") return [];
+  const { candidates } = state;
   return state.alive
     .filter((p) => p.name !== state.silencedPlayer)
     .map((p) => {
       const masked = state.drunk?.player === p.name && !state.drunk.revealed;
       return {
         name: p.name,
-        requiredYes: p.role === "idiot" && !masked,
+        choices: candidates.filter((name) => name !== p.name),
+        setByNarrator: p.role === "idiot" && !masked,
         weight: p.role === "mayor" && !masked && state.settings.mayor === "doubleVote" ? 2 : 1,
       };
     });

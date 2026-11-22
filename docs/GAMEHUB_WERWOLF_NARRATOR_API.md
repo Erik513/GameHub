@@ -13,7 +13,7 @@ Alle Quellpfade unter `src/business/games/werewolf/`:
 | Datei | Öffentliche Schnittstelle |
 | --- | --- |
 | `stateMachine.ts` | `transitionWerewolf`, `WerewolfState`, `WerewolfEvent`; neue Felder `history`, `hammerVictim`, nightCall für vorhandene verdeckte Rollen; frühere Pool-Metadaten in We-03-68 entfernt. |
-| `selectors.ts` | `validTargets`, `validNominators`, `validSeconders`, `votingPlayers`, `describePlayers`. |
+| `selectors.ts` | `validTargets`, `votingPlayers`, `describePlayers`. |
 | `nightScript.ts` | `nightScript(state)`, Typen `NightRole`, `NightCall`. |
 | `eventLog.ts` | Typen `WerewolfLogEntry`, `DeathSource`, `DeathCause`; Aufzeichnung automatisch im Zustandsübergang. Nicht zusätzlich aus der UI aufrufen. |
 | `wounds.ts` | `delaysToughGuyAttack` als gemeinsame Regel für verzögerte Angriffe und Logging; Typ `WoundCause`. |
@@ -35,9 +35,9 @@ Die Magierheilung wurde **nicht erweitert**: weiterhin nur das aktuelle ungeheil
 
 Aktionskennungen: `attack`, `protect`, `stayWith`, `hammer`, `inspect`, `investigate`, `poison`, `kill`, `silence`, `shot`, `passAmulet`, `bond`, `nominate`.
 
-`selection` hat optionale Felder `selected:string[]`, `heal:boolean`, `nominator:string`, `seconder:string`. Für den zweiten Amorpartner `selected:[ersterName]` übergeben. Für einen weiteren Todeszauber bereits ausgewählte Ziele und eine gegebenenfalls geplante Heilung übergeben; verbliebene Zauberkosten werden mitgeprüft. Heilung/Gift und Zauberkombinationen bleiben durch die Fachereignisse validiert.
+`selection` hat optionale Felder `selected:string[]`, `heal:boolean`. Für den zweiten Amorpartner `selected:[ersterName]` übergeben. Für einen weiteren Todeszauber bereits ausgewählte Ziele und eine gegebenenfalls geplante Heilung übergeben; verbliebene Zauberkosten werden mitgeprüft. Heilung/Gift und Zauberkombinationen bleiben durch die Fachereignisse validiert.
 
-Bei Tagesabstimmungen nacheinander `validTargets(state, "nominate")`, `validNominators(state,target)`, `validSeconders(state,target,nominator)` verwenden. `votingPlayers(state)` liefert während `vote` pro wählender Person `{name,requiredYes,weight}`; Stummgeschaltete sind ausgeschlossen, Dorftrottel-Pflicht und doppelte Bürgermeisterstimme werden berücksichtigt. Weiterhin **benannte** `yesVoters` an den Reducer senden.
+Bei Tagesabstimmungen: `validTargets(state, "nominate", { selected })` liefert die noch nominierbaren lebenden Personen (höchstens drei insgesamt). Nach `nominate` mit `nominees` liefert `votingPlayers(state)` während `vote` pro abstimmender Person `{name, choices, setByNarrator, weight}`: `choices` sind die Kandidaten ohne die Person selbst, `setByNarrator` markiert den Dorftrottel (der Erzähler setzt seine Stimme), `weight` ist 2 beim Bürgermeister mit doppelter Stimme. Stumm gemachte sind ausgeschlossen. An den Reducer geht `vote` mit `ballots` (Wähler zu gewählter Person), vollständig für alle mit `choices`.
 
 `[]` bedeutet keine wählbaren Ziele, nicht automatisch „Weiter“. Manche Aktionen erlauben Verzicht `null`, andere benötigen zwingend ein Ziel. Dafür gilt unverändert `WerewolfEvent` und der Fachablauf.
 

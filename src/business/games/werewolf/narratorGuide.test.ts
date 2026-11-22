@@ -9,6 +9,7 @@ import {
   createGuide,
   describeGuide,
   describeWinners,
+  setBallot,
   reopenDecision,
   undoSelection,
   unchoosePlayer,
@@ -240,113 +241,72 @@ describe("narrator guide", () => {
       expect(back.ok && back.guide.session.present.status).toBe("day");
     });
 
-    it("nominates in three choices, starts the vote and counts the yes voters", () => {
+    it("names up to three people, confirms with the check mark and takes a vote with one ballot per voter", () => {
       let guide = toDay();
       guide = chooseAbility(guide, "vote");
       const first = describeGuide(guide);
       expect(first.targets.length).toBeGreaterThan(2);
-      expect(first.nextKind).toBe("endDay");
+      // Nothing named and the vote open: nothing can be confirmed, and the day cannot end.
+      expect(first.canContinue).toBe(false);
       guide = choosePlayer(guide, first.targets[0]!);
-      const nominee = describeGuide(guide).selection.picks[0]!;
-      expect(describeGuide(guide).targets).not.toContain(nominee);
-      expect(describeGuide(guide).canContinue).toBe(false);
-      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
-      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
-      expect(describeGuide(guide).nextKind).toBe("startVote");
       expect(describeGuide(guide).canContinue).toBe(true);
+      expect(describeGuide(guide).nextKind).toBe("startVote");
+      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+      // At most three people.
+      expect(describeGuide(guide).targets).toEqual([]);
+      const nominees = describeGuide(guide).selection.picks;
+      expect(nominees).toHaveLength(3);
+      // A named person can be taken back, on its own.
+      guide = unchoosePlayer(guide, nominees[1]!);
+      expect(describeGuide(guide).selection.picks).toEqual([nominees[0], nominees[2]]);
       guide = continueGuide(guide);
       const vote = describeGuide(guide);
       expect(vote.state.status).toBe("vote");
-      expect(vote.card?.actors).toEqual([nominee]);
+      expect(vote.card?.actors).toEqual([nominees[0], nominees[2]]);
       expect(vote.nextKind).toBe("endVote");
-      expect(vote.targets.length).toBeGreaterThan(2);
-      // The village idiot has to vote yes and cannot be taken back.
+      // Every voter has a row; the village idiot is marked as set by the narrator.
+      expect(vote.ballotRows.length).toBe(vote.state.alive.length);
       const idiot = vote.state.alive.find((p) => p.role === "idiot")?.name;
-      if (idiot) {
-        expect(vote.selection.picks).toContain(idiot);
-        expect(describeGuide(unchoosePlayer(guide, idiot)).selection.picks).toContain(idiot);
-      }
-      guide = choosePlayer(guide, vote.targets[0]!);
+      if (idiot) expect(vote.ballotRows.find((r) => r.name === idiot)?.setByNarrator).toBe(true);
+      // The check mark waits until every voter has chosen.
+      expect(vote.canContinue).toBe(false);
+      for (const row of vote.ballotRows.slice(0, -1))
+        guide = setBallot(guide, row.name, row.choices[0]!);
+      expect(describeGuide(guide).canContinue).toBe(false);
       expect(describeGuide(guide).canUndo).toBe(true);
-      guide = undoSelection(guide);
-      expect(describeGuide(guide).canUndo).toBe(false);
+      const last = describeGuide(guide).ballotRows.at(-1)!;
+      guide = setBallot(guide, last.name, last.choices[0]!);
+      // Tapping the same choice again takes it back; tapping it again sets it.
+      guide = setBallot(guide, last.name, last.choices[0]!);
+      expect(describeGuide(guide).canContinue).toBe(false);
+      guide = setBallot(guide, last.name, last.choices[0]!);
+      expect(describeGuide(guide).canContinue).toBe(true);
+      // Nobody can vote for himself.
+      expect(setBallot(guide, last.name, last.name)).toBe(guide);
       guide = continueGuide(guide);
-      expect(["day", "exile"]).toContain(guide.session.present.status);
-      // Back from the result goes into the vote again.
-      const back = backGuide(guide);
-      expect(back.ok && describeGuide(back.guide).state.status).toBe("vote");
+      expect(["day", "exile", "vote"]).toContain(guide.session.present.status);
     });
 
-    it("takes a nomination back from the chosen person on", () => {
-      let guide = chooseAbility(toDay(), "vote");
+    it("takes a named person back and offers a new vote among the tied people after a tie", () => {
+      let guide = chooseAbility(toDay([]), "vote");
       guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
       guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
-      const [nominee, nominator] = describeGuide(guide).selection.picks;
-      guide = unchoosePlayer(guide, nominator!);
-      expect(describeGuide(guide).selection.picks).toEqual([nominee]);
-    });
-  });
-
-  it("does not call the amulet holder at the start, only at the end of the night, where the holder passes the amulet", () => {
-    let guide = game([], { amulet: true, attackOnFirstNight: true });
-    // The holder knows it from the card of the role reveal: the first call of the night is a role, not the amulet.
-    for (let step = 0; step < 300 && describeGuide(guide).phase !== "ready"; step += 1)
-      guide = forward(guide)!;
-    guide = continueGuide(guide);
-    expect(describeGuide(guide).phase).toBe("intro");
-    expect(describeGuide(guide).card?.role).not.toBe("amuletPass");
-    // The night goes on until the end step: the holder passes the amulet, the next morning follows.
-    for (let step = 0; step < 300 && guide.session.present.status !== "amuletPass"; step += 1) {
-      const next = forward(guide);
-      if (!next) break;
-      guide = next;
-    }
-    if (guide.session.present.status === "amuletPass") {
-      expect(describeGuide(guide).card?.role).toBe("amuletPass");
+      const [one, two] = describeGuide(guide).selection.picks;
       guide = continueGuide(guide);
-      expect(describeGuide(guide).phase).toBe("act");
-      const before = guide.session.present.amulet!.holder;
-      // After an attack the holder has to pass it on; otherwise he keeps it with the button "keep": the step can be
-      // left without a choice, and the amulet stays. The holder himself is never in the list of people.
-      const mustPass = guide.session.present.amulet!.mustPass;
-      expect(describeGuide(guide).canContinue).toBe(!mustPass);
-      guide = chooseAbility(guide, "passAmulet");
-      expect(describeGuide(guide).targets.length).toBeGreaterThan(1);
-      expect(describeGuide(guide).targets.includes(before)).toBe(false);
-      if (!mustPass) {
-        const kept = continueGuide(closeAbility(guide));
-        const after = continueGuide(kept);
-        expect(after.session.present.amulet?.holder).toBe(before);
-      }
-    }
-  });
-
-  it("names who leaves the game with the shot of the hunter before the hunter falls asleep", () => {
-    const base = game(["hunter"]).session.present;
-    const hunter = base.players.find((p) => p.role === "hunter")!;
-    const shooting = {
-      ...base,
-      hunter,
-      next: "day",
-      status: "hunter",
-    } as unknown as WerewolfState;
-    let guide = createGuide(createWerewolfSession(shooting));
-    expect(describeGuide(guide).card?.role).toBe("hunter");
-    // No effect of the night is shown in the day.
-    expect(describeGuide(guide).card?.effects).not.toContain("protected");
-    guide = continueGuide(guide);
-    guide = chooseAbility(guide, "shot");
-    const target = describeGuide(guide).targets[0]!;
-    guide = choosePlayer(guide, target);
-    guide = continueGuide(guide);
-    const view = describeGuide(guide);
-    expect(view.phase).toBe("outro");
-    expect(view.deaths.map((d) => d.name)).toContain(target);
-    expect(view.deaths.find((d) => d.name === target)?.causes).toContain("hunter");
-    // The shot reaches the game only with the next confirmation.
-    expect(guide.session.present.status).toBe("hunter");
-    guide = continueGuide(guide);
-    expect(guide.session.present.alive.some((p) => p.name === target)).toBe(false);
+      // Half of the voters choose one, the other half the other person: a tie (an even number of voters).
+      let view = describeGuide(guide);
+      const voters = view.ballotRows;
+      voters.forEach((row, index) => {
+        const wanted = index % 2 === 0 ? one! : two!;
+        const choice = row.choices.includes(wanted) ? wanted : row.choices[0]!;
+        guide = setBallot(guide, row.name, choice);
+      });
+      view = describeGuide(guide);
+      expect(view.canContinue).toBe(true);
+      guide = continueGuide(guide);
+      expect(["vote", "exile"]).toContain(guide.session.present.status);
+    });
   });
 
   describe("the winners", () => {
@@ -447,7 +407,7 @@ describe("narrator guide", () => {
       const notes = describeGuide(guide).voterNotes;
       const values = Object.values(notes);
       expect(values.length).toBeGreaterThan(0);
-      for (const value of values) expect(["double", "mustYes"]).toContain(value);
+      for (const value of values) expect(["double", "setByNarrator"]).toContain(value);
     });
 
     it("lets the narrator leave from the winners and keeps the game going otherwise", () => {

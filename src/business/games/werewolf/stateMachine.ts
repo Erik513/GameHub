@@ -112,7 +112,14 @@ export type WerewolfState = Match &
         readonly poisoned: Player | null;
       }
     | { readonly status: "day"; readonly nomination: number }
-    | { readonly status: "vote"; readonly nomination: number; readonly target: string }
+    | {
+        readonly status: "vote";
+        readonly nomination: number;
+        /** The people who can be voted for: up to three nominated people, in the second round only the tied ones. */
+        readonly candidates: readonly string[];
+        /** The first vote, or the new vote after a tie (only once). */
+        readonly round: 1 | 2;
+      }
     | { readonly status: "exile"; readonly victim: Player }
     | ({ readonly status: "hunter" | "drunkHunter" } & HunterTurn)
     | { readonly status: "finished"; readonly winner: Side }
@@ -155,17 +162,21 @@ export type WerewolfEvent =
   | { readonly type: "inspect"; readonly night: number; readonly target: string }
   | { readonly type: "investigate"; readonly night: number; readonly target: string | null }
   | {
+      /** The narrator names one to three people for the vote. */
       readonly type: "nominate";
       readonly night: number;
-      readonly target: string;
-      readonly nominator: string;
-      readonly seconder: string;
+      readonly nominees: readonly string[];
     }
-  | ({
+  | {
+      /**
+       * Every voting person names exactly one of the candidates, never himself. The silenced person does not vote.
+       * The narrator also sets the vote of the village idiot himself (as in the original: he always votes "to die").
+       */
       readonly type: "vote";
       readonly night: number;
       readonly nomination: number;
-    } & ({ readonly yes: number } | { readonly yesVoters: readonly string[] }));
+      readonly ballots: Readonly<Record<string, string>>;
+    };
 
 export function createWerewolf(
   text: string,
@@ -585,25 +596,39 @@ function resolveHammer(
   );
 }
 
-function dayVotes(state: Match, event: Extract<WerewolfEvent, { type: "vote" }>) {
-  const voters = state.alive.filter((player) => player.name !== state.silencedPlayer);
+/** The people who vote at the day: the living, except the silenced person. */
+function dayVoters(state: Match): readonly Player[] {
+  return state.alive.filter((player) => player.name !== state.silencedPlayer);
+}
+
+/**
+ * Counts the ballots of a vote. Returns null when the ballots are not valid: every voter who can vote for somebody other
+ * than himself has to name one candidate (never himself), and nobody else votes. The mayor with the double vote counts
+ * twice. The leaders are all candidates with the most votes.
+ */
+function countBallots(
+  state: Match,
+  candidates: readonly string[],
+  ballots: Readonly<Record<string, string>>,
+): { readonly leaders: readonly string[] } | null {
+  const voters = dayVoters(state);
   const mayor =
     state.settings.mayor === "doubleVote" ? findActiveRole(state, "mayor", voters) : undefined;
-  const idiot = findActiveRole(state, "idiot", voters);
-  const total = voters.length + Number(mayor !== undefined);
-  if ("yes" in event) {
-    if (mayor || idiot || !Number.isInteger(event.yes) || event.yes < 0 || event.yes > total)
-      return null;
-    return { yes: event.yes, total };
-  }
-  const yes = new Set(event.yesVoters);
-  if (
-    yes.size !== event.yesVoters.length ||
-    [...yes].some((name) => !voters.some((voter) => voter.name === name))
-  )
+  if (Object.keys(ballots).some((name) => !voters.some((voter) => voter.name === name)))
     return null;
-  if (idiot) yes.add(idiot.name);
-  return { yes: yes.size + Number(mayor !== undefined && yes.has(mayor.name)), total };
+  const tally = new Map<string, number>(candidates.map((name) => [name, 0]));
+  for (const voter of voters) {
+    const choices = candidates.filter((name) => name !== voter.name);
+    if (choices.length === 0) {
+      if (voter.name in ballots) return null;
+      continue;
+    }
+    const choice = ballots[voter.name];
+    if (choice === undefined || !choices.includes(choice)) return null;
+    tally.set(choice, (tally.get(choice) ?? 0) + (voter.name === mayor?.name ? 2 : 1));
+  }
+  const most = Math.max(...tally.values());
+  return { leaders: candidates.filter((name) => tally.get(name) === most) };
 }
 
 export function transitionWerewolf(state: WerewolfState, event: WerewolfEvent): WerewolfState {
@@ -794,28 +819,36 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       return event.type === "announceMorning" ? announceMorning(state) : state;
     case "day": {
       if (event.type === "endDay") return finishResolution(state, "wolves");
+      // One to three different living people; a silenced person can be named, too.
       if (
         event.type !== "nominate" ||
-        event.nominator === event.seconder ||
-        event.nominator === event.target ||
-        event.seconder === event.target ||
-        state.silencedPlayer === event.nominator ||
-        state.silencedPlayer === event.seconder
+        event.nominees.length < 1 ||
+        event.nominees.length > 3 ||
+        new Set(event.nominees).size !== event.nominees.length ||
+        !event.nominees.every((name) => state.alive.some((p) => p.name === name))
       )
         return state;
-      return [event.nominator, event.seconder, event.target].every((name) =>
-        state.alive.some((p) => p.name === name),
-      )
-        ? { ...state, status: "vote", target: event.target, nomination: state.nomination + 1 }
-        : state;
+      return {
+        ...state,
+        candidates: event.nominees,
+        nomination: state.nomination + 1,
+        round: 1,
+        status: "vote",
+      };
     }
     case "vote": {
       if (event.type !== "vote" || event.nomination !== state.nomination) return state;
-      const votes = dayVotes(state, event);
-      if (!votes) return state;
-      if (votes.yes * 2 <= votes.total) return { ...state, status: "day" };
-      const victim = state.alive.find((p) => p.name === state.target);
-      return victim ? { ...state, status: "exile", victim } : state;
+      const result = countBallots(state, state.candidates, event.ballots);
+      if (!result) return state;
+      const [leader] = result.leaders;
+      if (result.leaders.length === 1 && leader !== undefined) {
+        const victim = state.alive.find((p) => p.name === leader);
+        return victim ? { ...state, status: "exile", victim } : state;
+      }
+      // A tie: one more vote among the tied people; a second tie leaves everybody in the game.
+      return state.round === 1
+        ? { ...state, candidates: result.leaders, round: 2 }
+        : { ...state, status: "day" };
     }
     case "exile": {
       if (event.type !== "announceExile") return state;

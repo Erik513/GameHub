@@ -18,6 +18,7 @@ interface GuideBoxProps {
   readonly onChoose: (name: string) => void;
   readonly onCloseAbility: () => void;
   readonly onContinue: () => void;
+  readonly onBallot: (voter: string, candidate: string) => void;
   readonly onNobody: () => void;
   readonly onReopen: () => void;
   readonly onUndo: () => void;
@@ -33,6 +34,7 @@ export function GuideBox({
   onChoose,
   onCloseAbility,
   onContinue,
+  onBallot,
   onNobody,
   onReopen,
   onUndo,
@@ -136,6 +138,7 @@ export function GuideBox({
             ))}
           </ul>
         )}
+        {state.status === "vote" && <Ballots onBallot={onBallot} view={view} />}
         {showPeople && (
           <div className="ww-guide__people">
             {/* All names in alphabetical order, the chosen ones in place, so a name is quickly found. */}
@@ -315,6 +318,51 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
         ))}
       </div>
     </section>
+  );
+}
+
+/**
+ * The vote: one row for every voter with a button for each candidate. Nobody votes for himself. The row of the mayor with
+ * the double vote says that the vote counts twice; the village idiot does not decide, the narrator sets his vote (as in
+ * the original rules). A voter without a choice is marked.
+ */
+function Ballots({
+  onBallot,
+  view,
+}: {
+  readonly onBallot: (voter: string, candidate: string) => void;
+  readonly view: GuideView;
+}) {
+  const { t } = useTranslation();
+  return (
+    <ul aria-label={t("werewolfNarrator.guide.ballots")} className="ww-ballots">
+      {view.ballotRows.map((row) => (
+        <li
+          className="ww-ballot"
+          data-missing={(row.choice === null && row.choices.length > 0) || undefined}
+          key={row.name}
+        >
+          <span className="ww-ballot__name">
+            <strong>{row.name}</strong>
+            <Mark name={row.name} view={view} />
+          </span>
+          <span className="ww-ballot__choices">
+            {row.choices.map((candidate) => (
+              <button
+                aria-pressed={row.choice === candidate}
+                aria-label={t("werewolfNarrator.guide.ballotFor", { name: row.name, candidate })}
+                className="ww-ballot__choice"
+                key={candidate}
+                onClick={() => onBallot(row.name, candidate)}
+                type="button"
+              >
+                {candidate}
+              </button>
+            ))}
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
 

@@ -91,7 +91,18 @@ export function parseSavedWerewolfSession(raw: unknown): WerewolfSession | undef
   // The step before the first night that called the holder of the amulet no longer exists: a game saved in it goes on
   // with the first night, and the step is no longer part of the way back.
   return {
-    past: past.filter((state) => !isRemovedAmuletIntro(state)),
-    present: leaveRemovedAmuletIntro(present),
+    past: past.filter((state) => !isRemovedAmuletIntro(state)).map(migrateOldVote),
+    present: migrateOldVote(leaveRemovedAmuletIntro(present)),
   };
+}
+
+/**
+ * A game saved while a vote was open before the new vote (one nominated person with yes or no): the nominated person
+ * becomes the only candidate of the first round.
+ */
+function migrateOldVote(state: WerewolfState): WerewolfState {
+  if (state.status !== "vote" || "candidates" in state) return state;
+  const old = state as unknown as { target?: string; nomination: number } & WerewolfState;
+  const { target, ...rest } = old;
+  return { ...rest, candidates: target ? [target] : [], round: 1 } as unknown as WerewolfState;
 }

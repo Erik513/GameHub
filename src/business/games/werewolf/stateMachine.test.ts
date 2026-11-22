@@ -6,6 +6,7 @@ import {
   transitionWerewolf,
   wakingPlayers,
 } from "./stateMachine";
+import { allVoteFor } from "./voteTesting";
 
 const names = ["Ada", "Bea", "Cam", "Dan", "Eva", "Flo"];
 function start(attackOnFirstNight?: boolean) {
@@ -30,7 +31,7 @@ it("resolves the first wolf attack when the experimental setting is enabled", ()
   expect(state.alive.map((player) => player.name)).toEqual(["Ada", "Bea", "Dan", "Eva", "Flo"]);
 });
 
-it("protects the first night and requires a strict majority", () => {
+it("protects the first night and exiles the person with the most votes", () => {
   let state = start();
   expect(transitionWerewolf(state, { type: "attack", night: 1, target: "Cam" })).toBe(state);
   state = transitionWerewolf(state, { type: "wolvesReady", night: 1 });
@@ -38,18 +39,16 @@ it("protects the first night and requires a strict majority", () => {
   expect(state).toMatchObject({ status: "vision", isWolf: true });
   state = transitionWerewolf(state, { type: "closeVision", night: 1 });
   state = transitionWerewolf(state, { type: "announceMorning", night: 1 });
-  const nomination = {
-    type: "nominate",
+  // Two people are named; the one with the most votes leaves the game (the wolf Ada: Cam, Dan, Flo and Bea against Eva and Ada).
+  state = transitionWerewolf(state, { type: "nominate", night: 1, nominees: ["Ada", "Bea"] });
+  expect(state).toMatchObject({ status: "vote", candidates: ["Ada", "Bea"], round: 1 });
+  state = transitionWerewolf(state, {
+    type: "vote",
     night: 1,
-    target: "Ada",
-    nominator: "Bea",
-    seconder: "Cam",
-  } as const;
-  state = transitionWerewolf(state, nomination);
-  state = transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, yes: 3 });
-  expect(state.status).toBe("day");
-  state = transitionWerewolf(state, nomination);
-  state = transitionWerewolf(state, { type: "vote", night: 1, nomination: 2, yes: 4 });
+    nomination: 1,
+    ballots: { Ada: "Bea", Bea: "Ada", Cam: "Ada", Dan: "Ada", Eva: "Bea", Flo: "Ada" },
+  });
+  expect(state.status).toBe("exile");
   expect(transitionWerewolf(state, { type: "announceExile", night: 1 })).toMatchObject({
     winner: "village",
   });
@@ -80,24 +79,17 @@ it("keeps parity separate from nomination validation and skips an eliminated see
   expect(state).toMatchObject({ status: "vision", isWolf: false });
   state = transitionWerewolf(state, { type: "closeVision", night: 1 });
   state = transitionWerewolf(state, { type: "announceMorning", night: 1 });
+  expect(transitionWerewolf(state, { type: "nominate", night: 1, nominees: [] })).toBe(state);
+  expect(transitionWerewolf(state, { type: "nominate", night: 1, nominees: ["Bea", "Bea"] })).toBe(
+    state,
+  );
+  state = transitionWerewolf(state, { type: "nominate", night: 1, nominees: ["Bea"] });
+  // The ballots are not complete: Cam has not voted.
+  const complete = allVoteFor(state, "Bea");
   expect(
-    transitionWerewolf(state, {
-      type: "nominate",
-      night: 1,
-      target: "Bea",
-      nominator: "Cam",
-      seconder: "Cam",
-    }),
+    transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, ballots: { Ada: "Bea" } }),
   ).toBe(state);
-  state = transitionWerewolf(state, {
-    type: "nominate",
-    night: 1,
-    target: "Bea",
-    nominator: "Cam",
-    seconder: "Dan",
-  });
-  expect(transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, yes: 7 })).toBe(state);
-  state = transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, yes: 6 });
+  state = transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, ballots: complete });
   state = transitionWerewolf(state, { type: "announceExile", night: 1 });
   expect(transitionWerewolf(state, { type: "attack", night: 2, target: "Ada" })).toBe(state);
   state = transitionWerewolf(state, { type: "attack", night: 2, target: null });
@@ -152,23 +144,31 @@ it("ignores out-of-phase commands and rejects nominations and ballots without va
   state = transitionWerewolf(state, { type: "closeVision", night: 1 });
   expect(transitionWerewolf(state, { type: "endDay", night: 1 })).toBe(state);
   state = transitionWerewolf(state, { type: "announceMorning", night: 1 });
-  const nominate = {
-    type: "nominate",
-    night: 1,
-    target: "Ada",
-    nominator: "Bea",
-    seconder: "Cam",
-  } as const;
-  expect(transitionWerewolf(state, { ...nominate, target: "Bea" })).toBe(state);
-  expect(transitionWerewolf(state, { ...nominate, target: "Cam" })).toBe(state);
-  expect(transitionWerewolf(state, { ...nominate, target: "Unknown" })).toBe(state);
-  state = transitionWerewolf(state, nominate);
-  expect(transitionWerewolf(state, { type: "vote", night: 1, nomination: 2, yes: 4 })).toBe(state);
-  expect(transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, yes: -1 })).toBe(state);
-  expect(transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, yes: 4.5 })).toBe(
+  const nominate = { type: "nominate", night: 1, nominees: ["Ada"] } as const;
+  expect(transitionWerewolf(state, { ...nominate, nominees: ["Unknown"] })).toBe(state);
+  expect(transitionWerewolf(state, { ...nominate, nominees: ["Ada", "Bea", "Cam", "Dan"] })).toBe(
     state,
   );
-  state = transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, yes: 4 });
+  state = transitionWerewolf(state, nominate);
+  const ballots = allVoteFor(state, "Ada");
+  expect(transitionWerewolf(state, { type: "vote", night: 1, nomination: 2, ballots })).toBe(state);
+  expect(
+    transitionWerewolf(state, {
+      type: "vote",
+      night: 1,
+      nomination: 1,
+      ballots: { ...ballots, Ada: "Ada" },
+    }),
+  ).toBe(state);
+  expect(
+    transitionWerewolf(state, {
+      type: "vote",
+      night: 1,
+      nomination: 1,
+      ballots: { ...ballots, Bea: "Cam" },
+    }),
+  ).toBe(state);
+  state = transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, ballots });
   expect(transitionWerewolf(state, { type: "endDay", night: 1 })).toBe(state);
   state = transitionWerewolf(state, { type: "announceExile", night: 1 });
   expect(transitionWerewolf(state, { type: "endDay", night: 1 })).toBe(state);

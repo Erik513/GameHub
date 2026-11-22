@@ -294,7 +294,11 @@ export function describeNarratorCard(state: WerewolfState): NarratorCard | null 
   if (!role) return null;
   const cover = state.status === "nightCall";
   // At the vote the card names the nominated person; during the day nobody is awake.
-  const actors = cover ? [] : state.status === "vote" ? [state.target] : wakingPlayers(state);
+  const actors = cover
+    ? []
+    : state.status === "vote"
+      ? [...state.candidates]
+      : wakingPlayers(state);
   return {
     abilities: abilitiesOf(state, role).map((ability) =>
       cover

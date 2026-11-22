@@ -81,16 +81,15 @@ export type ConfirmEvent =
 
 /**
  * How many people an ability takes. The spells of the magician are shared between healing and killing: a healing
- * spell takes one of them. The vote takes the people who vote yes; a nomination takes three (nominee, nominator,
- * seconder).
+ * spell takes one of them. A nomination takes up to three people.
  */
 export function pickLimitOf(
   state: WerewolfState,
   ability: string | null,
   healing: boolean,
-  voters: number,
 ): number {
-  if (ability === "vote") return state.status === "vote" ? voters : 3;
+  // At the day up to three people are named; the vote itself takes no list of people (every voter has a ballot).
+  if (ability === "vote") return state.status === "vote" ? 0 : 3;
   if (ability === "bond") return 2;
   if (ability === "kill" && "spellsRemaining" in state)
     return Math.max(0, state.spellsRemaining - Number(healing));

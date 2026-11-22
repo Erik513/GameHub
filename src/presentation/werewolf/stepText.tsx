@@ -56,14 +56,18 @@ export function actInfo(view: GuideView, t: TFunction): string | null {
 /** What the narrator reads or does during the day: nominate (three choices), vote, or end the day. */
 export function dayPrompt(view: GuideView, t: TFunction): string | null {
   const { selection, state } = view;
-  if (state.status === "vote") return t("werewolfNarrator.guide.day.voters");
+  if (state.status === "vote")
+    return t(
+      state.round === 2
+        ? "werewolfNarrator.guide.day.votersAgain"
+        : "werewolfNarrator.guide.day.voters",
+    );
   if (state.status !== "day") return null;
   if (selection.ability !== "vote") return t("werewolfNarrator.guide.day.idle");
-  const [target, nominator, seconder] = selection.picks;
-  if (target === undefined) return t("werewolfNarrator.guide.day.nominee");
-  if (nominator === undefined) return t("werewolfNarrator.guide.day.nominator");
-  if (seconder === undefined) return t("werewolfNarrator.guide.day.seconder");
-  return t("werewolfNarrator.guide.day.chosen", { nominator, seconder, target });
+  const names = selection.picks.join(", ");
+  if (selection.picks.length === 0) return t("werewolfNarrator.guide.day.nominee");
+  if (selection.picks.length < 3) return t("werewolfNarrator.guide.day.more", { names });
+  return t("werewolfNarrator.guide.day.chosen", { names });
 }
 
 /** The heading of the box: the ask of the step, what the narrator reads out, or what to do next. */
