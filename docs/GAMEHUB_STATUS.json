@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 308,
-      "totalTasks": 362,
+      "completedTasks": 309,
+      "totalTasks": 363,
       "percent": 85.1
     }
   },
@@ -1726,6 +1726,12 @@
           "title": "Entscheidung festgehalten: Magier kann nach geheilter Hexe weiter heilen",
           "status": "done",
           "validation": "Der Satz im Magier-Abschnitt von GAMEHUB_WERWOLF.md ist an die Entscheidung des Auftraggebers vom 22.11.2026 angepasst (Magier sieht das Wolfsopfer auch nach der Heilung durch die Hexe, Heilzauber bleibt wählbar und ist dann verbraucht), Prüfliste und Notiz für Codex ergänzt; Logik und Oberfläche unverändert (verhielten sich schon so); nur Dokumentation."
+        },
+        {
+          "id": "We-01-124",
+          "title": "Tag und Nacht als Box in der oberen Leiste: Nacht dunkel, Tag hell mit dunklem Symbol und Text",
+          "status": "done",
+          "validation": "Der Hintergrund der Erzähleransicht bleibt auch am Tag dunkel (Entscheidung des Auftraggebers geändert); Mond oder Sonne mit Text stehen in einer Box in der oberen Leiste, deren Hintergrund die Zeit anzeigt: Nacht dunkel, Tag hell mit dunklem Symbol und dunkler Schrift; reine Stiländerung; nicht im Browser angesehen."
         }
       ]
     },

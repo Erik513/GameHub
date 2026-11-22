@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-124: Tag und Nacht als Box
+
+- Der Hintergrund bleibt am Tag dunkel; Sonne oder Mond mit Text stehen in einer Box, die am Tag hell ist.
+
 ### We-01-123: Magier nach geheilter Hexe festgehalten
 
 - Der Magier kann auch nach einer Heilung durch die Hexe heilen; Regeltext und Notiz für Codex angepasst.

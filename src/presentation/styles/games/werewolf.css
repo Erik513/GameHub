@@ -1376,6 +1376,17 @@
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
+  min-height: 3rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+/* The box of the phase carries the time: dark at night, light with dark symbol and writing by day. */
+.ww-bar__phase[data-time="day"] {
+  border-color: transparent;
+  background: #f1ece0;
+  color: #1d1e23;
 }
 
 .ww-bar__phase .icon {
@@ -1388,16 +1399,6 @@
   min-height: 3rem;
   margin: 0;
   padding: 0;
-}
-
-/* The day is light only behind the boxes: the controls keep their dark colors, only the writing that stands directly
-   on the page turns dark. */
-.app-shell:has(.ww-night[data-time="day"]) {
-  --color-canvas: #f1ece0;
-}
-
-.ww-night[data-time="day"] .ww-bar__phase {
-  color: #1d1e23;
 }
 
 /* The overview of all players and their roles. */

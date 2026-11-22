@@ -45,7 +45,12 @@ export function NarratorBar({
           <strong>{t("werewolfNarrator.bar.dealing")}</strong>
         </span>
       ) : (
-        <span className="ww-bar__phase" role="img" aria-label={label}>
+        <span
+          aria-label={label}
+          className="ww-bar__phase"
+          data-time={day ? "day" : "night"}
+          role="img"
+        >
           <Icon name={day ? "sun" : "moon"} />
           <strong>{label}</strong>
         </span>
