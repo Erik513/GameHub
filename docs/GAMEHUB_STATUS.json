@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 313,
-      "totalTasks": 367,
+      "completedTasks": 314,
+      "totalTasks": 368,
       "percent": 85.3
     }
   },
@@ -1756,6 +1756,12 @@
           "title": "Neue Tagesabstimmung nach dem Original: bis zu drei Nominierte, ein Stimmzettel je Spieler, Gleichstand einmal neu",
           "status": "done",
           "validation": "Logik (von Claude auf Wunsch des Auftraggebers, für Codex notiert): nominate mit eins bis drei Nominierten, vote mit ballots (jeder abstimmende Spieler genau eine nominierte Person, nie sich selbst; stumm Gemachte stimmen nicht ab; Bürgermeister mit doppelter Stimme zählt zweifach; die meisten Stimmen scheiden aus; Gleichstand einmal neu unter den Gleichauf liegenden, bei erneutem Gleichstand niemand); Dorftrottel vom Erzähler gesetzt; Oberfläche: Nominierung mit Haken, Liste aller Abstimmenden mit Taste je Kandidat, Kennzeichnung zählt doppelt und vom Erzähler gesetzt, Bestätigen erst bei vollständigen Stimmen; gespeicherte alte Abstimmungen werden übernommen; Regeltext und API-Dokumentation angepasst; Tests für Logik, Zufallsspiele über 100 Seeds, Gleichstand und Oberfläche; Tests, tsc, eslint; lange Simulationen übersetzen, balance.test.ts bildet die Abstimmung nicht mehr nach (Hinweis für Codex); nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-129",
+          "title": "Abdeckungsprüfung: Die Erzähleransicht bildet die Logik für alle Rollen, den Tag und den Jäger vollständig ab",
+          "status": "done",
+          "validation": "Vier neue Prüfungen: (1) Jedes Ereignis, das die Logik in einem Zustand zulässt, ist über die Bedienung der Führung erreichbar (Fähigkeit öffnen, Personen antippen, Stimmzettel setzen, bestätigen), und die Führung übergibt genau dieses Ereignis (zufällige Spiele mit allen Rollen, 60 Startwerte, je bis zu 12 Ereignisse je Zustand, dazu Nominierung mit zwei und drei Personen und gemischte Stimmzettel); (2) eine Fähigkeit steht genau dann als bereit, wenn die Logik ein Ereignis damit zulässt; (3) ein Erzähler spielt ganze Spiele nur mit der Führung und bleibt nie hängen, und die Karte nennt genau die Personen, die das Spiel weckt; (4) ganze Spiele werden über die Bildschirmkomponenten gespielt (zufällige Tipps auf aktive Bedienelemente) bis zur Siegansicht, mit fünf Besetzungen einschließlich Trunkenbold, Jäger (Pflicht und freiwillig), Bürgermeister (Hammer und doppelte Stimme), Amulett, Magier, Hexe, Amor. Ergebnis: keine Abweichung; bewusste Ausnahmen: die Alte Vettel kann in der Logik weiter „niemanden“ stumm machen (Notausgang, Oberfläche verlangt eine Person), und die Seherin kann nach dem Ergebnis erneut schauen (die Ansicht nimmt den Ergebnisschritt zurück). Nicht geprüft: Aussehen im Browser (das Schreiben in den Speicher des Browserfensters wurde nicht erlaubt), Texte und Layout."
         }
       ]
     },

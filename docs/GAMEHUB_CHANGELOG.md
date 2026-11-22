@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-129: Abdeckungsprüfung Logik gegen Oberfläche
+
+- Vier neue Prüfungen zeigen: Jedes erlaubte Ereignis ist über die Oberfläche erreichbar, Fähigkeiten stimmen mit der Logik überein, Spiele lassen sich nur mit der Oberfläche beenden. Keine Abweichung gefunden.
+
 ### We-01-128: Neue Tagesabstimmung
 
 - Bis zu drei Nominierte, ein Stimmzettel je Spieler, Bürgermeister doppelt mit Angabe, Dorftrottel vom Erzähler gesetzt, Gleichstand einmal neu; Logik und Oberfläche, für Codex notiert.
