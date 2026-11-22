@@ -45,6 +45,7 @@ it("keeps the tough guy alive for the day and announces the delayed death once",
   const repeatAttack = sight(attack(night, "Cam"));
   expect(werewolfAnnouncement(repeatAttack)).toEqual([{ name: "Cam" }]);
   const otherVictim = sight(attack(night, "Eva"));
+  // The delayed death of the tough guy comes first (before anybody can attack), then the victim of the wolves.
   expect(werewolfAnnouncement(otherVictim)).toEqual([{ name: "Cam" }, { name: "Eva" }]);
   expect(morning(otherVictim).alive.map((player) => player.name)).toEqual([
     "Ada",
@@ -92,10 +93,10 @@ it("resolves the delayed death together with a linked lover, even during a decis
   state = morning(state);
   state = act(sight(attack(endDay(state), "Bea")), { type: "hammer", night: 3, target: "Ada" });
   expect(werewolfAnnouncement(state)).toEqual([
-    { name: "Ada" },
-    { name: "Bea" },
     { name: "Cam" },
     { name: "Flo" },
+    { name: "Bea" },
+    { name: "Ada" },
   ]);
   expect(morning(state)).toMatchObject({ status: "finished", winner: "village" });
 });

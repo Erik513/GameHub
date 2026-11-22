@@ -103,7 +103,8 @@ it("ends the game at two wolves against two village players with a surviving mix
 it("announces both partners once and resolves the hunter before checking a winner", () => {
   let state = day(see(wolves(couple(deal(["cupid", "hunter"]), ["Dan", "Flo"]))));
   state = see(attack(dusk(state), "Flo"));
-  expect(werewolfAnnouncement(state)).toEqual([{ name: "Dan" }, { name: "Flo" }]);
+  // By the time of death: the victim of the wolves first, the lover right after.
+  expect(werewolfAnnouncement(state)).toEqual([{ name: "Flo" }, { name: "Dan" }]);
   state = day(state);
   expect(state).toMatchObject({ status: "hunter", hunter: { name: "Dan" } });
   expect(act(state, { type: "shot", night: 2, target: "Ada" })).toMatchObject({
@@ -194,7 +195,8 @@ it("places the private hammer after all attacks and permits a dying mayor to act
   expect(hammer(next, null)).toMatchObject({ status: "morning", hammerUsed: false });
   const hit = hammer(next, "Ada");
   expect(hit.alive).toHaveLength(6);
-  expect(werewolfAnnouncement(hit)).toEqual([{ name: "Ada" }, { name: "Cam" }]);
+  // The wolves first, then the hammer.
+  expect(werewolfAnnouncement(hit)).toEqual([{ name: "Cam" }, { name: "Ada" }]);
   expect(day(hit)).toMatchObject({ status: "finished", winner: "village" });
   const miss = hammer(next, "Dan");
   expect(werewolfAnnouncement(miss)).toEqual([{ name: "Cam" }]);
@@ -213,7 +215,7 @@ it("resolves the hammer only at morning and keeps spent living calls as cover", 
   state = see(attack(dusk(day(see(wolves(state)))), "Ira"));
   const hit = hammer(state, "Ada");
   expect(hit.alive.map((p) => p.name)).toContain("Ada");
-  expect(werewolfAnnouncement(hit)).toEqual([{ name: "Ada" }, { name: "Ira" }]);
+  expect(werewolfAnnouncement(hit)).toEqual([{ name: "Ira" }, { name: "Ada" }]);
   const nextNight = see(attack(dusk(day(hit)), null), "Bea");
   expect(nextNight.status).toBe("nightCall");
   expect(hammer(nextNight, "Bea")).toBe(nextNight);

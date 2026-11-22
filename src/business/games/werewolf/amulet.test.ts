@@ -142,7 +142,7 @@ it("does not force a transfer for heartbreak and loses a kept amulet at death", 
   expect(kept.status).toBe("morning");
   expect(dawn(kept).amulet).toBeNull();
   const morning = transfer(broken, "Dan");
-  expect(werewolfAnnouncement(morning).map((p) => p.name)).toEqual(["Cam", "Eva"]);
+  expect(werewolfAnnouncement(morning).map((p) => p.name)).toEqual(["Eva", "Cam"]);
   expect(dawn(morning)).toMatchObject({ status: "day", amulet: { holder: "Dan" } });
   const voted = apply(day, ...lynchEvents(day, "Eva"), { type: "announceExile", night: 1 });
   expect(voted.amulet).toBeNull();

@@ -271,11 +271,33 @@ function PlainBox({ view }: { readonly view: GuideView }) {
           <strong className="ww-guide__text">{t("werewolfNarrator.guide.morning.title")}</strong>
         </header>
         <div className="ww-guide__body">
-          <span className="ww-guide__lead">
-            {names.length === 0
-              ? t("werewolfNarrator.guide.morning.nobody")
-              : t("werewolfNarrator.guide.morning.died", { names: names.join(", ") })}
-          </span>
+          {names.length === 0 ? (
+            <span className="ww-guide__lead">{t("werewolfNarrator.guide.morning.nobody")}</span>
+          ) : (
+            // Every dead person in a box of their own, one below the other: only names, never a role.
+            <div className="ww-guide__dead">
+              <strong>{t("werewolfNarrator.guide.morning.died")}</strong>
+              <ul>
+                {names.map((name) => {
+                  // The hunter gives himself away with his shot: his role is public, so his box says it.
+                  const hunter = state.players.some(
+                    (player) => player.name === name && player.role === "hunter",
+                  );
+                  return (
+                    <li data-role={hunter ? "hunter" : undefined} key={name}>
+                      <span>{name}</span>
+                      {hunter && (
+                        <span className="ww-guide__dead-role">
+                          <WerewolfSymbol id="hunter" size={22} />
+                          {t("werewolfSymbols.items.hunter.name")}
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
         {view.deaths.length > 0 && (
           <footer className="ww-guide__extra">

@@ -150,7 +150,7 @@ export const werewolfNarratorTexts = {
       morning: {
         title: "Der Morgen",
         nobody: "In dieser Nacht ist niemand gestorben",
-        died: "Gestorben: {{names}}",
+        died: "Gestorben",
       },
       day: {
         nominee: "Wer wird nominiert? (bis zu 3)",

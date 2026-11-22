@@ -1,4 +1,5 @@
 import { delaysToughGuyAttack, type WoundCause } from "./wounds";
+import { deathTimeOfCause, inOrderOfDeath as orderByDeath } from "./deathOrder";
 import type { WerewolfEvent, WerewolfState } from "./stateMachine";
 
 export type DeathCause =
@@ -149,12 +150,27 @@ export function recordWerewolfTransition(
   }
   if (before.status === "hunter" && event.type === "shot")
     add(event.target ?? undefined, "hunter", [before.hunter.name]);
-  const dead = before.alive.filter((p) => !after.alive.some((a) => a.name === p.name));
-  for (const player of dead) {
+  const diedNow = before.alive.filter((p) => !after.alive.some((a) => a.name === p.name));
+  for (const player of diedNow) {
     if (!sources.has(player.name) && before.lovers?.includes(player.name)) {
       const partner = before.lovers.find((n) => n !== player.name)!;
       add(player.name, "heartbreak", [partner]);
     }
+  }
+  // By the time of death (see `deathOrder.ts`); the seat order decides between equal times.
+  const own = new Map<string, number>();
+  for (const player of diedNow) {
+    const times = (sources.get(player.name) ?? [])
+      .filter((source) => source.cause !== "heartbreak")
+      .map((source) => deathTimeOfCause[source.cause]);
+    if (times.length > 0) own.set(player.name, Math.min(...times));
+  }
+  const dead = orderByDeath(
+    diedNow.map((player) => player.name),
+    own,
+    before.lovers,
+  ).map((name) => diedNow.find((player) => player.name === name)!);
+  for (const player of dead) {
     append({
       kind: "death",
       player: player.name,

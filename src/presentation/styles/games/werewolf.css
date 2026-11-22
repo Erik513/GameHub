@@ -2629,3 +2629,41 @@ button.ww-guide__strip[data-next] {
   height: 3rem;
   min-height: 3rem;
 }
+
+/* The morning: every dead person in a box of their own, one below the other. */
+.ww-guide__dead {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ww-guide__dead ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-guide__dead li {
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  font-size: clamp(1.1rem, 5vw, 1.5rem);
+}
+
+/* The hunter is the only one whose role is told: symbol and name of the role stand in his box. */
+.ww-guide__dead li[data-role="hunter"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  border-color: var(--color-warning);
+}
+
+.ww-guide__dead-role {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-warning);
+  font-size: 0.9rem;
+}

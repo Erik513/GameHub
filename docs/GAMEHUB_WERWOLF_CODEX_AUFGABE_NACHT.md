@@ -188,3 +188,8 @@ Der Auftraggeber hat entschieden, dass **Claude** die Logik der neuen Tagesabsti
 ## Hinweis für Codex (22.11.2026): Magier im Fragenmodell
 
 Die Führung des Erzählers (`narratorGuide.ts`) fragt den Magier wie die Hexe in zwei Runden: Frage 1 (Heilzauber oder ein Todeszauber), Frage 2 (ein weiterer Todeszauber). Die Spielregeln (`castSpells`, `spellsRemaining`) sind unverändert. Neu in der Auswahl der Führung: `spellPicks` (Personen des ersten Zaubers). Heilen ist nur in der ersten Frage wählbar, weil es pro Nacht nur ein Opfer gibt.
+
+
+## Hinweis für Codex (23.11.2026): Reihenfolge der Toten
+
+`werewolfAnnouncement` und die Todeseinträge im Ereignisprotokoll nennen mehrere Tote in der Reihenfolge ihres Todes (neue Datei `deathOrder.ts`, genutzt von `stateMachine.ts` und `eventLog.ts`): erst der verzögerte Tod des nicht gerettete Harten Burschen (er stirbt zu Beginn der Nacht, vor jedem möglichen Angriff), dann das Werwolfopfer, das Gift der Hexe, die Zauber des Magiers, der Hammer des Bürgermeisters. Bei zwei Verliebten steht immer die zuerst gestorbene Person vorn und direkt danach die Person, die aus Liebeskummer stirbt. Das erste Todesurteil zählt: Wird der Partner später noch einmal angegriffen (Hexe, Magier), ändert das seine Todeszeit nicht. Gleiche Zeiten behalten die Sitzreihenfolge. Die Spielregeln sind unverändert, nur die Reihenfolge der Ausgabe; fünf bestehende Tests und fünf neue Tests (`deathOrder.test.ts`) sichern es ab.

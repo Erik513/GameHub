@@ -1,4 +1,5 @@
 import { recordWerewolfTransition, type WerewolfLogEntry } from "./eventLog";
+import { deathTimeOfCause, inOrderOfDeath as orderByDeath } from "./deathOrder";
 import { delaysToughGuyAttack, type WoundCause } from "./wounds";
 import { nightScript, type NightRole } from "./nightScript";
 import { parsePlayers } from "../../shared/players";
@@ -517,7 +518,29 @@ function morningDeaths(state: Extract<WerewolfState, { status: "morning" }>): re
     const toughGuy = state.alive.find((player) => player.role === "toughGuy");
     if (toughGuy) victims.push(toughGuy);
   }
-  return relatedDeaths(state, [...state.nightDeaths, ...victims]);
+  return inOrderOfDeath(state, relatedDeaths(state, [...state.nightDeaths, ...victims]));
+}
+
+/** The people who die in the morning in the order of their death (see `deathOrder.ts`). */
+function inOrderOfDeath(
+  state: Extract<WerewolfState, { status: "morning" }>,
+  deaths: readonly Player[],
+): Player[] {
+  const own = new Map<string, number>();
+  const set = (name: string | undefined, time: number) => {
+    if (name) own.set(name, Math.min(own.get(name) ?? Number.POSITIVE_INFINITY, time));
+  };
+  set(state.victim?.name, deathTimeOfCause.wolves);
+  set(state.poisoned?.name, deathTimeOfCause.witchPoison);
+  for (const player of state.spellVictims) set(player.name, deathTimeOfCause.magicianKill);
+  for (const player of state.nightDeaths) set(player.name, deathTimeOfCause.hammer);
+  if (state.toughGuyDiesOn === state.night)
+    set(state.alive.find((player) => player.role === "toughGuy")?.name, deathTimeOfCause.toughGuy);
+  return orderByDeath(
+    deaths.map((player) => player.name),
+    own,
+    state.lovers,
+  ).map((name) => deaths.find((player) => player.name === name)!);
 }
 
 function woundToughGuy(state: Match, cause: WoundCause, actors: readonly string[]): Match {
@@ -556,10 +579,10 @@ export function werewolfAnnouncement(state: WerewolfState): readonly { name: str
       : state.status === "exile"
         ? relatedDeaths(state, [state.victim])
         : (state.shotDeaths ?? []);
-  const names = new Set(deaths.map((player) => player.name));
-  return state.players
-    .filter((player) => names.has(player.name))
-    .map((player) => ({ name: player.name }));
+  // In the order of their death (for the morning, see `inOrderOfDeath`); the others as the game lists them.
+  const names = deaths.map((player) => player.name);
+  const known = new Set(state.players.map((player) => player.name));
+  return names.filter((name) => known.has(name)).map((name) => ({ name }));
 }
 
 function announce(
