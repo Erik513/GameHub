@@ -1697,15 +1697,6 @@
   position: relative;
 }
 
-.ww-ability[aria-pressed="true"]::after {
-  content: "✓";
-  position: absolute;
-  top: var(--space-1);
-  right: var(--space-2);
-  font-size: var(--text-lg);
-  font-weight: var(--weight-bold);
-}
-
 .ww-ability[data-settled][aria-pressed="true"] {
   opacity: 1;
 }
