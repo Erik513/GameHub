@@ -13,7 +13,7 @@
 
 ### We-01-135: Hexe mit zwei festen Fragen
 
-- Zurücknehmen geht eine Entscheidung pro Tipp: erst die zweite Frage neu, dann die erste.
+- Der Rückgängig-Knopf steht einheitlich rechts neben dem passenden Skript, so hoch wie die Skriptbox; die blaue Zusammenfassung fasst nur zusammen. Bei der Hexe geht es eine Frage pro Tipp zurück.
 - Oben bleiben alle Optionen sichtbar, die der offenen Frage sind blau gerahmt; unten stehen die zwei Fragen als Boxen von oben nach unten, Hinweise mit gelbem Rand darunter.
 
 ### We-01-134: Magier beide Zauber in einer Nacht

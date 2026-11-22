@@ -2431,8 +2431,18 @@ button.ww-guide__strip[data-next] {
   list-style: none;
 }
 
+.ww-script__row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .ww-script__step {
-  display: grid;
+  flex: 1;
+  min-width: 0;
   gap: var(--space-1);
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-line);
@@ -2456,4 +2466,27 @@ button.ww-guide__strip[data-next] {
 .ww-script__step[data-state="done"],
 .ww-script__step[data-state="pending"] {
   opacity: 0.55;
+}
+
+/* The undo button of a box of the script: right of the box and as high as the box. */
+.ww-script__undo,
+.ww-script__row .ww-guide__close {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  align-self: stretch;
+  width: 44px;
+  height: auto;
+  min-height: 44px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.ww-script__row .ww-guide__tools {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
 }

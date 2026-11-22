@@ -468,6 +468,28 @@ export function reopenDecision(guide: Guide): Guide {
 }
 
 /**
+ * The witch takes one of her two questions back (the undo button right of its box in the script): the question is asked
+ * again, the answers after it are gone, the answers before it stay. It works while the step is open and after it was
+ * confirmed (the role is asleep again).
+ */
+export function undoQuestion(guide: Guide, question: "heal" | "poison"): Guide {
+  const frame = current(guide);
+  const state = guide.session.present;
+  if (state.status !== "witch" || frame.selection.question === undefined) return guide;
+  const initial = initialSelection(state);
+  const selection =
+    question === "heal"
+      ? initial
+      : { ...initial, heal: frame.selection.heal, question: "poison" as const };
+  if (frame.phase === "outro")
+    return {
+      ...guide,
+      trail: [...guide.trail, { ...frame, event: null, phase: "act", selection }],
+    };
+  return frame.phase === "act" ? withSelection(guide, selection) : guide;
+}
+
+/**
  * The witch is always asked both questions: "save the victim?" and then "poison somebody?". "Use" saves the victim in the
  * first round and opens the list of people in the second; "skip" says no in either round (after the second one the step is
  * complete and goes to "asleep"). An ability that cannot be used (no victim, no potion left) is still asked: the narrator

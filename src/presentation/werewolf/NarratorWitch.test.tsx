@@ -129,18 +129,30 @@ it("asks about the healing potion although nobody was attacked: the hint says wh
   expect([state(0), state(1)]).toEqual(["done", "active"]);
 });
 
-it("takes the decisions back one by one: the reset of the summary asks the last question again, undo goes back to the first", async () => {
+it("has an undo button right of every box with a decision, as high as the box; the blue summary only sums up", async () => {
   await open(true);
+  // Nothing decided yet: no undo button.
+  expect(screen.queryAllByRole("button", { name: "Undo" })).toHaveLength(0);
   fireEvent.click(abilityButtons()[0]!);
+  // The first question is answered: its box has the undo button, the open second one has none.
+  expect(screen.getAllByRole("button", { name: "Undo" })).toHaveLength(1);
   fireEvent.click(abilityButtons()[1]!);
   fireEvent.click(document.querySelector(".ww-person")!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   expect(screen.getByText(/Chosen: .*Healed.*Poisoned/)).toBeInTheDocument();
-  // One tap: only the poison is asked again, the healing answer stays.
-  fireEvent.click(screen.getByRole("button", { name: "Take the decision back" }));
+  // The summary has no button; both boxes have one, in a row with the box.
+  expect(document.querySelector(".ww-guide__chosen button")).toBeNull();
+  const rows = [...document.querySelectorAll(".ww-script > .ww-script__row")];
+  expect(rows).toHaveLength(2);
+  for (const row of rows) {
+    expect(row.querySelector(".ww-script__step")).not.toBeNull();
+    expect(row.querySelector(".ww-script__undo")).not.toBeNull();
+  }
+  // The undo of the second box asks the poison question again, the answer to the first question stays.
+  fireEvent.click(rows[1]!.querySelector(".ww-script__undo")!);
   expect([state(0), state(1)]).toEqual(["done", "active"]);
   expect(abilityButtons()[1]).toHaveAttribute("data-next");
-  // One more step back with the undo of the box: the first question is open again.
+  // The undo of the first box asks the first question again.
   fireEvent.click(screen.getByRole("button", { name: "Undo" }));
   expect([state(0), state(1)]).toEqual(["active", "pending"]);
   expect(abilityButtons()[0]).toHaveAttribute("data-next");

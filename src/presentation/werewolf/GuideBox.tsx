@@ -21,6 +21,7 @@ interface GuideBoxProps {
   readonly onBallot: (voter: string, candidate: string) => void;
   readonly onNobody: () => void;
   readonly onReopen: () => void;
+  readonly onUndoQuestion: (question: "heal" | "poison") => void;
   readonly onUndo: () => void;
   readonly onUnchoose: (name: string) => void;
 }
@@ -38,6 +39,7 @@ export function GuideBox({
   onNobody,
   onReopen,
   onUndo,
+  onUndoQuestion,
   onUnchoose,
 }: GuideBoxProps) {
   const { t } = useTranslation();
@@ -62,24 +64,46 @@ export function GuideBox({
   }
 
   if (phase === "outro") {
-    // The role is asleep again. The box only says so; going on to the next role is the job of the button "next".
+    // The role is asleep again. The box says so; going on to the next role is the job of the button "next". The undo
+    // button stands right of the script it belongs to; the blue box at the bottom only sums up the decisions.
+    const outroStep = describeRoleStep(state);
+    const canReopen = !card.cover && card.abilities.length > 0 && outroStep.statement === undefined;
     return (
       <section className="ww-guide ww-guide--sheet ww-guide--asleep">
         <header className="ww-guide__head">
-          <span className="ww-guide__heading">
-            <strong className="ww-guide__text">
-              <WerewolfSymbol id={card.role} size={32} />
-              {t(`werewolfNarrator.guide.sleep.${card.role}`)}
-            </strong>
-            <span className="ww-guide__sub">{t("werewolfNarrator.guide.tap.outroSub")}</span>
-          </span>
+          <div className="ww-script__row">
+            <div className="ww-script__step" data-state="done">
+              <span className="ww-guide__heading">
+                <strong className="ww-guide__text">
+                  <WerewolfSymbol id={card.role} size={32} />
+                  {t(`werewolfNarrator.guide.sleep.${card.role}`)}
+                </strong>
+                <span className="ww-guide__sub">{t("werewolfNarrator.guide.tap.outroSub")}</span>
+              </span>
+            </div>
+            {canReopen && view.question === null && (
+              <span className="ww-guide__tools">
+                <button
+                  aria-label={t("werewolfNarrator.guide.reopen")}
+                  className="ww-guide__close"
+                  onClick={onReopen}
+                  title={t("werewolfNarrator.guide.reopen")}
+                  type="button"
+                >
+                  <Icon name="reset" />
+                </button>
+              </span>
+            )}
+          </div>
         </header>
-        <div className="ww-guide__body" />
+        <div className="ww-guide__body">
+          {view.question !== null && !card.cover && <Script onUndo={onUndoQuestion} view={view} />}
+        </div>
         <footer className="ww-guide__extra">
           {/* The hints stay (yellow border); the summary of the decision (blue border) stands at the very bottom. */}
-          {stepExtras(view, describeRoleStep(state), t)}
+          {stepExtras(view, outroStep, t)}
           {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
-          <Summary onReopen={onReopen} view={view} />
+          <Summary view={view} />
         </footer>
       </section>
     );
@@ -99,35 +123,40 @@ export function GuideBox({
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
         {view.question !== null && !card.cover ? (
-          <Script view={view} />
+          <Script onUndo={onUndoQuestion} view={view} />
         ) : (
-          <strong className="ww-guide__text">{stepTitle(view, step, t)}</strong>
+          // The script of the step is a box; the undo and close buttons right of it are as high as the box.
+          <div className="ww-script__row">
+            <div className="ww-script__step" data-state="active">
+              <strong className="ww-guide__text">{stepTitle(view, step, t)}</strong>
+            </div>
+            <span className="ww-guide__tools">
+              {(selection.ability !== null || view.canUndo) && (
+                <button
+                  aria-label={t("werewolfNarrator.guide.undo")}
+                  className="ww-guide__close"
+                  disabled={!view.canUndo}
+                  onClick={onUndo}
+                  title={t("werewolfNarrator.guide.undo")}
+                  type="button"
+                >
+                  <Icon name="reset" />
+                </button>
+              )}
+              {view.canCloseAbility && (
+                <button
+                  aria-label={t("werewolfNarrator.guide.closeSelection")}
+                  className="ww-guide__close"
+                  onClick={onCloseAbility}
+                  title={t("werewolfNarrator.guide.closeSelection")}
+                  type="button"
+                >
+                  <Icon name="close" />
+                </button>
+              )}
+            </span>
+          </div>
         )}
-        <span className="ww-guide__tools">
-          {(selection.ability !== null || view.canUndo) && (
-            <button
-              aria-label={t("werewolfNarrator.guide.undo")}
-              className="ww-guide__close"
-              disabled={!view.canUndo}
-              onClick={onUndo}
-              title={t("werewolfNarrator.guide.undo")}
-              type="button"
-            >
-              <Icon name="reset" />
-            </button>
-          )}
-          {view.canCloseAbility && (
-            <button
-              aria-label={t("werewolfNarrator.guide.closeSelection")}
-              className="ww-guide__close"
-              onClick={onCloseAbility}
-              title={t("werewolfNarrator.guide.closeSelection")}
-              type="button"
-            >
-              <Icon name="close" />
-            </button>
-          )}
-        </span>
       </header>
       <div className="ww-guide__body">
         {card.cover && (
@@ -382,9 +411,16 @@ function Ballots({
  * The script of a role with several steps (the witch): one box for every question, from top to bottom, the open one
  * framed in blue; the ones that are done or still to come are dim.
  */
-function Script({ view }: { readonly view: GuideView }) {
+function Script({
+  onUndo,
+  view,
+}: {
+  readonly onUndo: (question: "heal" | "poison") => void;
+  readonly view: GuideView;
+}) {
   const { t } = useTranslation();
   const { question, selection, state } = view;
+  const asleep = view.phase === "outro";
   const victim = state.wolfTarget;
   // Every box has a number; where there is more than one thing to do, the tasks stand as a list.
   const steps = [
@@ -409,18 +445,41 @@ function Script({ view }: { readonly view: GuideView }) {
   return (
     <ol className="ww-script">
       {steps.map((step) => (
-        <li
-          className="ww-script__step"
-          data-state={step.id === question ? "active" : step.id === "heal" ? "done" : "pending"}
-          key={step.id}
-        >
-          <ul className="ww-script__items">
-            {step.items.map((item) => (
-              <li className="ww-script__item" key={item}>
-                {item}
-              </li>
-            ))}
-          </ul>
+        <li className="ww-script__row" key={step.id}>
+          <div
+            className="ww-script__step"
+            data-state={
+              asleep
+                ? "done"
+                : step.id === question
+                  ? "active"
+                  : step.id === "heal"
+                    ? "done"
+                    : "pending"
+            }
+          >
+            <ul className="ww-script__items">
+              {step.items.map((item) => (
+                <li className="ww-script__item" key={item}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* The undo button stands right of the box it belongs to, as high as the box; it only appears where a decision was made. */}
+          {(step.id === "heal"
+            ? asleep || question === "poison"
+            : asleep || selection.ability === "poison") && (
+            <button
+              aria-label={t("werewolfNarrator.guide.undo")}
+              className="ww-script__undo"
+              onClick={() => onUndo(step.id)}
+              title={t("werewolfNarrator.guide.undo")}
+              type="button"
+            >
+              <Icon name="reset" />
+            </button>
+          )}
         </li>
       ))}
     </ol>
@@ -436,33 +495,17 @@ function Mark({ view, name }: { readonly view: GuideView; readonly name: string 
   ) : null;
 }
 
-/** The blue box of the summary with a small reset button: it takes the decision back, so the role can decide anew. */
-function Chosen({
-  children,
-  onReopen,
-}: {
-  readonly children: ReactNode;
-  readonly onReopen: () => void;
-}) {
-  const { t } = useTranslation();
+/** The blue box of the summary: it only sums up the decisions; taking them back is the job of the undo buttons at the script. */
+function Chosen({ children }: { readonly children: ReactNode }) {
   return (
     <span className="ww-guide__chosen">
       <span>{children}</span>
-      <button
-        aria-label={t("werewolfNarrator.guide.reopen")}
-        className="ww-guide__reset"
-        onClick={onReopen}
-        title={t("werewolfNarrator.guide.reopen")}
-        type="button"
-      >
-        <Icon name="reset" />
-      </button>
     </span>
   );
 }
 
 /** What the narrator chose in this step, so it can be checked before the role falls asleep. */
-function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReopen: () => void }) {
+function Summary({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { card, selection } = view;
   if (!card || card.cover || card.abilities.length === 0) return null;
@@ -476,7 +519,7 @@ function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReop
   if (step.result) {
     const { ability, name } = step.result;
     return (
-      <Chosen onReopen={onReopen}>
+      <Chosen>
         {t("werewolfNarrator.guide.chosen", {
           items: `${t(`werewolfNarrator.guide.abilityDone.${ability}`)}: ${name}`,
         })}
@@ -486,7 +529,7 @@ function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReop
   // The holder of the amulet decided to keep it.
   if (step.skip.summary === "kept" && selection.picks.length === 0)
     return (
-      <Chosen onReopen={onReopen}>
+      <Chosen>
         {t("werewolfNarrator.guide.amuletKept", { name: view.state.amulet?.holder ?? "" })}
       </Chosen>
     );
@@ -511,7 +554,7 @@ function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReop
     parts.push(`${t(`werewolfNarrator.guide.abilityDone.${chosenAbility}`)}: ${people}`);
   }
   return (
-    <Chosen onReopen={onReopen}>
+    <Chosen>
       {parts.length > 0
         ? t("werewolfNarrator.guide.chosen", { items: parts.join(" · ") })
         : t("werewolfNarrator.guide.noChoice")}
