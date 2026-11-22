@@ -342,3 +342,11 @@ it("keeps the fixed and the variable roles apart, and the kind of roles", async 
   await user.click(screen.getByRole("radio", { name: "Fixed roles" }));
   expect(screen.getByRole("checkbox", { name: "Cupid" })).toBeChecked();
 });
+
+it("tells the narrator with a notification when a name is added that takes part already", async () => {
+  const user = await renderGame("en");
+  await user.type(screen.getByLabelText("Add player"), "Anna{enter}");
+  expect(screen.queryByText(/is already in/)).toBeNull();
+  await user.type(screen.getByLabelText("Add player"), "anna{enter}");
+  expect(await screen.findByText("Anna is already in")).toBeInTheDocument();
+});

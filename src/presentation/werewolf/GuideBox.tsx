@@ -153,6 +153,7 @@ export function GuideBox({
         </span>
       </header>
       <div className="ww-guide__body">
+        <Verdict state={state} />
         {card.cover && (
           <ul className="ww-guide__rows">
             {card.abilities.map((ability) => (
@@ -278,6 +279,39 @@ function actInfo(view: GuideView, t: TFunction): string | null {
     default:
       return null;
   }
+}
+
+const thumbUp =
+  "M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z";
+const thumbDown =
+  "M17 14V2M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z";
+
+/** The result of the seer or the investigator as a large sign: thumb down in red for a werewolf, thumb up in green. */
+function Verdict({ state }: { readonly state: WerewolfState }) {
+  const { t } = useTranslation();
+  const verdict =
+    state.status === "vision"
+      ? { wolf: state.isWolf, key: "vision" as const }
+      : state.status === "investigation"
+        ? { wolf: state.isWolfNearby, key: "investigation" as const }
+        : null;
+  if (!verdict) return null;
+  return (
+    <div className="ww-verdict" data-wolf={verdict.wolf}>
+      <svg aria-hidden="true" fill="none" height="72" viewBox="0 0 24 24" width="72">
+        <path
+          d={verdict.wolf ? thumbDown : thumbUp}
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.6"
+        />
+      </svg>
+      <strong>
+        {t(`werewolfNarrator.guide.verdict.${verdict.key}.${verdict.wolf ? "wolf" : "village"}`)}
+      </strong>
+    </div>
+  );
 }
 
 function PlainBox({ view }: { readonly view: GuideView }) {

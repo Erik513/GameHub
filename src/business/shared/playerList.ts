@@ -20,6 +20,19 @@ export function addPlayersToText(text: string, input: string): string {
   return players.join("\n");
 }
 
+/** The names typed into the "add player" field that are already in the list (ignoring case), each once. */
+export function duplicatePlayerNames(text: string, input: string): string[] {
+  const players = parsePlayers(text);
+  const found: string[] = [];
+  for (const part of input.split(/[\n,;]/u)) {
+    const name = capitalizePlayerName(normalizePlayerName(part));
+    if (name === "" || name.length > maxPlayerNameLength) continue;
+    const existing = players.find((player) => same(player, name));
+    if (existing && !found.includes(existing)) found.push(existing);
+  }
+  return found;
+}
+
 /** Removes a player from the text of the player list. */
 export function removePlayerFromText(text: string, name: string): string {
   return parsePlayers(text)

@@ -416,7 +416,9 @@ function withSelection(guide: Guide, selection: GuideSelection): Guide {
 }
 
 /** The narrator taps an ability. Healing is a switch; the others open their targets. */
-export function chooseAbility(guide: Guide, id: CardAbilityId): Guide {
+export function chooseAbility(original: Guide, id: CardAbilityId): Guide {
+  // The result of the seer is already in the game: looking again takes that step back first, then the choice is open.
+  const guide = takeBackVision(original, id);
   const state = guide.session.present;
   // The role is awake until the narrator goes on: after the choice was confirmed ("asleep") an ability can still be
   // tapped to change the choice; the step is open again and the new choice replaces the old one.
@@ -439,6 +441,21 @@ export function chooseAbility(guide: Guide, id: CardAbilityId): Guide {
     return withSelection(reopened, next);
   }
   return withSelection(reopened, { ...selection, ability: id, none: false, picks: [] });
+}
+
+function takeBackVision(guide: Guide, id: CardAbilityId): Guide {
+  const frame = current(guide);
+  if (id !== "inspect" || guide.session.present.status !== "vision" || frame.phase !== "act")
+    return guide;
+  const undone = undoWerewolfSession(guide.session);
+  if (!undone.ok) return guide;
+  return {
+    session: undone.session,
+    trail: [
+      ...guide.trail,
+      { ...frame, event: null, pastLength: undone.session.past.length, selection: emptySelection },
+    ],
+  };
 }
 
 /** The narrator closes the list of people again (an ability was tapped by mistake); the choices of it are dropped. */
@@ -552,6 +569,8 @@ export type GuideBack =
  * back from the next role. Inside one role (announcement, choice, falling asleep) back is always possible.
  */
 function backIsBlocked(guide: Guide): boolean {
+  // The role reveal has nothing to do with the game: back and forward are free until the narrator begins the game.
+  if (guide.session.present.status === "roles" || current(guide).phase === "ready") return false;
   const length = guide.session.past.length;
   const previous = guide.trail[guide.trail.length - 2];
   const leavesRole = previous ? previous.pastLength < length : length > 0;
@@ -574,7 +593,8 @@ export function backGuide(guide: Guide, confirmed = false): GuideBack {
         return { ok: false, reason: undone.reason === "emptyHistory" ? "atStart" : undone.reason };
       session = undone.session;
     }
-    const crossed = session !== guide.session;
+    // Coming back into the role reveal is not marked: there the way back has no limit.
+    const crossed = session !== guide.session && session.present.status !== "roles";
     return {
       guide: {
         session,

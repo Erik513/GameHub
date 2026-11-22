@@ -109,6 +109,10 @@ export const werewolfNarratorTexts = {
       },
       wolvesNoAttackDone: "Kein Angriff in dieser Nacht",
       wolvesNoAttack: "Die Werwölfe greifen erst ab Nacht 2 an",
+      verdict: {
+        vision: { wolf: "Werwolf", village: "Kein Werwolf" },
+        investigation: { wolf: "Werwolf in der Nähe", village: "Kein Werwolf in der Nähe" },
+      },
       pickAbility: "Tippe auf eine Fähigkeit",
       confirmDone: "Weiter, wenn erledigt",
       coverTitle: "Trotzdem fragen",

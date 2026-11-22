@@ -979,3 +979,13 @@ Technischer Vertrag: [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_
 We-03-68: Nachtlogik umgesetzt und gezielt in den Werwolf-UI-Arbeitsstand übernommen. Nicht gezogene Rollen, Lehrling und Trunkenbold werden übersprungen; vorhandene verdeckte Rollen behalten ihre Tarnaufrufe. Überflüssige Pool-Felder entfernt. Variable API beschreibt Claudes gewichtete Rollengruppen samt Beispielen und Heilergrenzen. Keine Produkt-UI oder Übersetzungen geändert.
 
 431 Werwolf-Tests inklusive 100 kompletter Partien und Ziehungsprüfungen bestanden. Nachtmodul 100 % Zeilen/Zweige; geprüfte kritische Logik insgesamt 99,73 % Zeilen / 98,15 % Zweige. Typprüfung im Logik-Arbeitsordner, ESLint, Format und Schichtprüfung erfolgreich. Breiter Testlauf dort: 1.091 Tests; aktueller UI-Arbeitsstand: 1.472 Tests erfolgreich. Lange Forschungs-/Balance-Simulationen ausgenommen. Gesamt-Typprüfung im UI-Arbeitsstand meldet fünf nachweislich vorbestehende UI-Fehler (auch mit ursprünglichen Logikdateien reproduziert); Übergabe enthält Fundstellen. Keine UI-Fehler in dieser Aufgabe verändert.
+
+
+### We-03-69 – gezielte Prüfung des direkten Nachtstarts
+
+We-03-69 abgeschlossen: Wegfall von amuletIntro gezielt geprüft, 8 Tests bestanden. Nach der Rollenverteilung beginnt unmittelbar der normale erste Nachtschritt; Besitz und Weitergabe des Amuletts bleiben unverändert. Keine Produktionslogik geändert. Die breite Simulation wurde auf Wunsch des Auftraggebers gestoppt; keine neue Balanceberechnung.
+
+Gezielte Abnahme nach Einschränkung durch den Auftraggeber: 8 Tests bestanden (sechs direkte Nachtstart-Varianten mit Amulett, bestehende Startvergabe und Weitergabe am Nachtende). Typprüfung, ESLint und Formatprüfung erfolgreich. Keine Produktionslogik geändert. Breiter Lauf auf Wunsch des Auftraggebers abgebrochen, Änderungen an balance.test.ts und simulation.test.ts zurückgenommen; keine vollständige Balance-/Simulationsabnahme behauptet.
+
+
+Nachtrag zu We-03-69: Entscheidende Ergebnisunterschiede, Aussagegrenzen des abgebrochenen Gesamtlaufs und die weiterhin veralteten Heilungs-Testmodelle sind oben in GAMEHUB_WERWOLF_HANDOFF.md und in GAMEHUB_WERWOLF_CODEX_AUFGABE_NACHT.md gegenübergestellt.

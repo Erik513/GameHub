@@ -162,7 +162,14 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
       ];
     case "seer":
     case "apprenticeSeer":
-      return [{ available: state.status === "seer", id: "inspect", symbol: "seer" }];
+      return [
+        {
+          // After the result was shown the narrator can still look at another person (a wrong person was chosen).
+          available: state.status === "seer" || state.status === "vision",
+          id: "inspect",
+          symbol: "seer",
+        },
+      ];
     case "paranormalInvestigator":
       return [{ available: !state.investigationUsed, id: "investigate", symbol: "investigation" }];
     case "witch":

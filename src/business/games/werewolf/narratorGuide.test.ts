@@ -562,14 +562,13 @@ describe("narrator guide", () => {
       if (!result.ok) return;
       back = result.guide;
     }
-    // ... up to the waiting step before the first role, but the role reveal cannot be reached from there.
+    // ... up to the waiting step before the first role; from there the role reveal is free (it has no limit).
     const waiting = backGuide(back, true);
     expect(waiting.ok).toBe(true);
     if (!waiting.ok) return;
     back = waiting.guide;
     expect(describeGuide(back).phase).toBe("ready");
-    expect(describeGuide(back).canGoBack).toBe(false);
-    expect(backGuide(back, true)).toEqual({ ok: false, reason: "limit" });
+    expect(describeGuide(back).canGoBack).toBe(true);
     // After the game moved on, the narrator may go back one role again.
     let ahead = back;
     for (let i = 0; i < 20 && describeGuide(ahead).card?.role !== roles[1]; i += 1)
@@ -597,5 +596,38 @@ describe("narrator guide", () => {
     const events = guide.session.past.length;
     expect(events).toBeGreaterThan(0);
     expect(JSON.stringify(guide.session.present.history)).toContain(targets[1]!);
+  });
+
+  it("lets the seer look again after the result: the step is taken back and another person can be chosen", () => {
+    let guide = continueGuide(game([], { attackOnFirstNight: true }));
+    for (let step = 0; step < 100 && describeGuide(guide).card?.role !== "seer"; step += 1)
+      guide = forward(guide)!;
+    guide = continueGuide(guide);
+    guide = chooseAbility(guide, "inspect");
+    const [first, second] = describeGuide(guide).targets;
+    guide = choosePlayer(guide, first!);
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).state.status).toBe("vision");
+    guide = chooseAbility(guide, "inspect");
+    const view = describeGuide(guide);
+    expect(view.state.status).toBe("seer");
+    expect(view.selection.picks).toEqual([]);
+    guide = choosePlayer(guide, second!);
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).state.status).toBe("vision");
+  });
+
+  it("lets the narrator go back and forth in the role reveal as often as wanted", () => {
+    let guide = game();
+    for (let round = 0; round < 3; round += 1) {
+      const next = continueGuide(guide);
+      const back = backGuide(next, true);
+      expect(back.ok).toBe(true);
+      if (!back.ok) return;
+      guide = back.guide;
+      const again = continueGuide(guide);
+      const twice = backGuide(again, true);
+      expect(twice.ok).toBe(true);
+    }
   });
 });

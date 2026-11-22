@@ -1,9 +1,13 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { addPlayersToText, removePlayerFromText } from "../../business/shared/playerList";
+import {
+  addPlayersToText,
+  duplicatePlayerNames,
+  removePlayerFromText,
+} from "../../business/shared/playerList";
 import { parsePlayers } from "../../business/shared/players";
 import type { TeamSetupValue } from "../../business/shared/teamSetup";
-import { Icon } from "../components";
+import { Icon, Toast } from "../components";
 import { PlayerAdder } from "./PlayerAdder";
 import { RosterPicker } from "./RosterPicker";
 import { TabPane } from "./TabPane";
@@ -23,6 +27,7 @@ interface PlayersSetupProps {
  */
 export function PlayersSetup({ above, onChange, value }: PlayersSetupProps) {
   const { i18n, t } = useTranslation();
+  const [duplicate, setDuplicate] = useState<{ id: number; names: string } | null>(null);
   // The list is always in alphabetical order of the interface language.
   const players = parsePlayers(value.playersText).sort(new Intl.Collator(i18n.language).compare);
 
@@ -40,7 +45,23 @@ export function PlayersSetup({ above, onChange, value }: PlayersSetupProps) {
       header={
         <div className="kit-pane__stack">
           {above}
-          <PlayerAdder onAdd={(input) => setText(addPlayersToText(value.playersText, input))} />
+          <PlayerAdder
+            onAdd={(input) => {
+              // A name that is in the game already is not added twice; the narrator is told.
+              const names = duplicatePlayerNames(value.playersText, input);
+              if (names.length > 0)
+                setDuplicate((current) => ({
+                  id: (current?.id ?? 0) + 1,
+                  names: names.join(", "),
+                }));
+              setText(addPlayersToText(value.playersText, input));
+            }}
+          />
+          {duplicate && (
+            <Toast key={duplicate.id} tone="error">
+              {t("kitPlayers.duplicate", { names: duplicate.names })}
+            </Toast>
+          )}
           <div className="kit-players__actions">
             <RosterPicker onChange={setText} value={value.playersText} />
           </div>

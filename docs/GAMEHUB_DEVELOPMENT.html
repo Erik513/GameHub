@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T20:00:00.000Z",
+    "updatedAt": "2026-11-22T01:44:12.910Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 282,
-      "totalTasks": 336,
-      "percent": 83.9
+      "completedTasks": 286,
+      "totalTasks": 340,
+      "percent": 84.1
     }
   },
   "environment": {
@@ -1809,6 +1809,24 @@
           "title": "Hinweis für den Erzähler: Werwölfe greifen erst ab Nacht 2 an",
           "status": "done",
           "validation": "Ist eingestellt, dass die Werwölfe in der ersten Nacht nicht angreifen, steht im Schritt der Werwölfe der Hinweis „Die Werwölfe greifen erst ab Nacht 2 an“ (englisch gleichwertig) statt „Tippe auf eine Fähigkeit“, und unten steht „Kein Angriff in dieser Nacht“ statt „Nichts gewählt – die Rolle verzichtet“; Test der Oberfläche; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-99",
+          "title": "Ergebnis der Seherin und des Ermittlers als großes Zeichen",
+          "status": "done",
+          "validation": "Das Ergebnis der Seherin steht zusätzlich als großes Zeichen in der Box: Daumen runter und „Werwolf“ in roter Schrift, Daumen hoch und „Kein Werwolf“ in grüner Schrift; der Paranormale Ermittler zeigt entsprechend „Werwolf in der Nähe“ / „Kein Werwolf in der Nähe“; der Satz in der Überschrift bleibt; Texte deutsch und englisch; Test; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-100",
+          "title": "Seherin kann nach dem Ergebnis erneut schauen",
+          "status": "done",
+          "validation": "Nach dem Ergebnis der Seherin ist „Schauen“ wieder antippbar (vorher gesperrt, die Bedienung wirkte festgefahren): der Ergebnisschritt wird im Spiel zurückgenommen und eine andere Person kann gewählt werden; Test; Tests, tsc, eslint; nicht im Browser angesehen. Der gemeldete Hänger selbst ließ sich im Test nicht nachstellen. Annahme: Das war der gesperrte Knopf."
+        },
+        {
+          "id": "We-01-101",
+          "title": "Doppelter Name zeigt eine Meldung; Rollenverteilung ohne Zurück-Grenze",
+          "status": "done",
+          "validation": "Wird beim Hinzufügen ein Name eingegeben, der schon in der Spielerliste ist (Groß-/Kleinschreibung egal), erscheint eine Meldung „… ist schon dabei“ (deutsch und englisch; gilt in der gemeinsamen Spielerliste und im Spieler-Reiter von Werwolf, der eine eigene Liste hat); in der Rollenverteilung und im Wartebildschirm davor kann man beliebig oft vor und zurück, die Grenze „nur eine Rolle zurück“ gilt erst, wenn der Erzähler das Spiel beginnt; Tests; 1586 Tests (mit Oberflächentest der Meldung im Werwolf-Reiter), tsc -b, eslint sauber; nicht im Browser angesehen."
         }
       ]
     },
@@ -2187,6 +2205,12 @@
           "title": "Nicht gezogene Rollen im Nachtskript überspringen und variable Ziehung dokumentieren",
           "status": "done",
           "validation": "431 Werwolf-Tests inklusive 100 kompletter Partien und Ziehungsprüfungen bestanden. Nachtmodul 100 % Zeilen/Zweige; geprüfte kritische Logik insgesamt 99,73 % Zeilen / 98,15 % Zweige. Typprüfung im Logik-Arbeitsordner, ESLint, Format und Schichtprüfung erfolgreich. Breiter Testlauf dort: 1.091 Tests; aktueller UI-Arbeitsstand: 1.472 Tests erfolgreich. Lange Forschungs-/Balance-Simulationen ausgenommen. Gesamt-Typprüfung im UI-Arbeitsstand meldet fünf nachweislich vorbestehende UI-Fehler (auch mit ursprünglichen Logikdateien reproduziert); Übergabe enthält Fundstellen. Keine UI-Fehler in dieser Aufgabe verändert."
+        },
+        {
+          "id": "We-03-69",
+          "title": "Direkten Nachtstart ohne Amulett-Intro gezielt prüfen",
+          "status": "done",
+          "validation": "Gezielte Abnahme nach Einschränkung durch den Auftraggeber: 8 Tests bestanden (sechs direkte Nachtstart-Varianten mit Amulett, bestehende Startvergabe und Weitergabe am Nachtende). Typprüfung, ESLint und Formatprüfung erfolgreich. Keine Produktionslogik geändert. Breiter Lauf auf Wunsch des Auftraggebers abgebrochen, Änderungen an balance.test.ts und simulation.test.ts zurückgenommen; keine vollständige Balance-/Simulationsabnahme behauptet. Ergebnisunterschiede und Grenzen für Claude in Übergabe und Nacht-Aufgabe ausdrücklich dokumentiert."
         }
       ]
     },
@@ -2366,6 +2390,14 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-22",
+      "summary": "We-03-69 ergänzt: Vergleich der bestätigten Nachtstart-Ergebnisse mit den veralteten Heilungs-Prüferwartungen und dem abgebrochenen Gesamtlauf für Claude festgehalten. Kein neuer Balancebefund; Produktionscode unverändert."
+    },
+    {
+      "date": "2026-11-22",
+      "summary": "We-03-69 abgeschlossen: Wegfall von amuletIntro gezielt geprüft, 8 Tests bestanden. Nach der Rollenverteilung beginnt unmittelbar der normale erste Nachtschritt; Besitz und Weitergabe des Amuletts bleiben unverändert. Keine Produktionslogik geändert. Die breite Simulation wurde auf Wunsch des Auftraggebers gestoppt; keine neue Balanceberechnung."
+    },
     {
       "date": "2026-11-21",
       "summary": "We-03-68: Nachtlogik umgesetzt und gezielt in den Werwolf-UI-Arbeitsstand übernommen. Nicht gezogene Rollen, Lehrling und Trunkenbold werden übersprungen; vorhandene verdeckte Rollen behalten ihre Tarnaufrufe. Überflüssige Pool-Felder entfernt. Variable API beschreibt Claudes gewichtete Rollengruppen samt Beispielen und Heilergrenzen. Keine Produkt-UI oder Übersetzungen geändert."

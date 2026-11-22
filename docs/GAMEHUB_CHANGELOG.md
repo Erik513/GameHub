@@ -1,6 +1,27 @@
 # GameHub Changelog
 
+## 2026-11-22
+
+### We-03-69: Gezielte Amulett-Nachtstartprüfung
+
+- Nachtrag für Claude: Acht erfolgreiche gezielte Tests klar vom abgebrochenen Gesamtlauf getrennt; Heilungserwartung victim/wolfTarget und noch unveränderte Forschungsmodelle dokumentiert. Keine neuen Balance-Schlüsse.
+
+- We-03-69 abgeschlossen: Wegfall von amuletIntro gezielt geprüft, 8 Tests bestanden. Nach der Rollenverteilung beginnt unmittelbar der normale erste Nachtschritt; Besitz und Weitergabe des Amuletts bleiben unverändert. Keine Produktionslogik geändert. Die breite Simulation wurde auf Wunsch des Auftraggebers gestoppt; keine neue Balanceberechnung.
+- Gezielte Abnahme nach Einschränkung durch den Auftraggeber: 8 Tests bestanden (sechs direkte Nachtstart-Varianten mit Amulett, bestehende Startvergabe und Weitergabe am Nachtende). Typprüfung, ESLint und Formatprüfung erfolgreich. Keine Produktionslogik geändert. Breiter Lauf auf Wunsch des Auftraggebers abgebrochen, Änderungen an balance.test.ts und simulation.test.ts zurückgenommen; keine vollständige Balance-/Simulationsabnahme behauptet.
+
 ## 2026-11-21
+
+### We-01-101: Doppelter Name und freie Rollenverteilung
+
+- Doppelter Spielername: Meldung statt stillem Ignorieren. Rollenverteilung: beliebig oft vor und zurück bis zum Beginn.
+
+### We-01-100: Seherin schaut erneut
+
+- Nach dem Ergebnis kann die Seherin erneut „Schauen“ antippen und eine andere Person wählen.
+
+### We-01-99: Ergebnis der Seherin deutlicher
+
+- Großes Zeichen für das Ergebnis: Daumen runter in Rot (Werwolf), Daumen hoch in Grün; ebenso beim Paranormalen Ermittler.
 
 ### We-01-98: Werwolf-Hinweis Nacht 1
 

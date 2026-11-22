@@ -35,6 +35,7 @@ export const kitTexts = {
     someAdded: "Nur {{added}} von {{total}} Namen hinzugefügt: Die Liste ist voll.",
     addButton: "Hinzufügen",
     removeLabel: "{{player}} entfernen",
+    duplicate: "{{names}} ist schon dabei",
     removePlayer: "Spieler entfernen",
     noTeam: "Ohne Team",
     count: "Spieler: {{count}}",

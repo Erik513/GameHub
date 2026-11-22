@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addPlayersToText, removePlayerFromText } from "./playerList";
+import { addPlayersToText, removePlayerFromText, duplicatePlayerNames } from "./playerList";
 
 describe("addPlayersToText", () => {
   it("adds a name with a capital first letter", () => {
@@ -27,5 +27,12 @@ describe("removePlayerFromText", () => {
     expect(removePlayerFromText("Anna\nBen\nClara", "ben")).toBe("Anna\nClara");
     expect(removePlayerFromText("Anna", "Ben")).toBe("Anna");
     expect(removePlayerFromText("Anna", "Anna")).toBe("");
+  });
+});
+
+describe("duplicatePlayerNames", () => {
+  it("names the typed players that are in the list already, ignoring case, each once", () => {
+    expect(duplicatePlayerNames("Anna, Ben", "anna, Cleo; ANNA")).toEqual(["Anna"]);
+    expect(duplicatePlayerNames("Anna", "Ben")).toEqual([]);
   });
 });

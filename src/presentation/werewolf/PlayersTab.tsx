@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   addParticipants,
@@ -8,8 +9,9 @@ import {
   setParticipants,
   type WerewolfLineup,
 } from "../../business/games/werewolf/lineup";
+import { duplicatePlayerNames } from "../../business/shared/playerList";
 import { parsePlayers } from "../../business/shared/players";
-import { Icon } from "../components";
+import { Icon, Toast } from "../components";
 import { PlayerAdder, RosterPicker, TabPane } from "../game-kit";
 import { NarratorPicker } from "./NarratorPicker";
 
@@ -24,6 +26,7 @@ interface PlayersTabProps {
  */
 export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
   const { i18n, t } = useTranslation();
+  const [duplicate, setDuplicate] = useState<{ id: number; names: string } | null>(null);
   const sorted = [...lineup.participants].sort(new Intl.Collator(i18n.language).compare);
 
   return (
@@ -37,9 +40,23 @@ export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
             participants={lineup.participants}
           />
           <PlayerAdder
-            onAdd={(input) => onChange(addParticipants(lineup, parsePlayers(input)))}
+            onAdd={(input) => {
+              // A name that takes part already is not added twice; the narrator is told.
+              const names = duplicatePlayerNames(lineup.participants.join(", "), input);
+              if (names.length > 0)
+                setDuplicate((current) => ({
+                  id: (current?.id ?? 0) + 1,
+                  names: names.join(", "),
+                }));
+              onChange(addParticipants(lineup, parsePlayers(input)));
+            }}
             room={maxWerewolfParticipants - lineup.participants.length}
           />
+          {duplicate && (
+            <Toast key={duplicate.id} tone="error">
+              {t("kitPlayers.duplicate", { names: duplicate.names })}
+            </Toast>
+          )}
           <div className="kit-players__actions">
             <RosterPicker
               limit={maxWerewolfParticipants}

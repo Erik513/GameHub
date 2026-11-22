@@ -1,5 +1,20 @@
 # Werwolf – technischer Einstieg für Claude Code
 
+## Entscheidende Ergebnisunterschiede für Claude (Nachtrag zu We-03-69, 22.11.2026)
+
+| Punkt | Ergebnis und Konsequenz |
+| --- | --- |
+| Entferntes Amulett-Intro | Nach dem letzten roleSeen folgt unmittelbar der reguläre erste Nachtschritt. Es wird weder amuletIntro noch amuletReady benötigt. Geprüft mit Wölfen, Amor, Leibwächter und Dorfmatratze als Einstieg. |
+| Amulettbesitz und Nachtende | Startbesitz bleibt bestehen; amuletPass ist weiterhin der reguläre letzte Nachtschritt. Der weggefallene Benachrichtigungsschritt ändert keine Schutz- oder Weitergaberegel. |
+| Gezielte Prüfung | Acht Tests bestanden: sechs Nachtstart-Varianten und die bestehenden Prüfungen für Startvergabe und Weitergabe am Nachtende. Typprüfung, ESLint und Formatprüfung bestanden. Neue Regressionen stehen ausschließlich in src/business/games/werewolf/amulet.test.ts. |
+| Anfängliche Simulationsfehler | Reproduziert bei Sechser-Aufstellungen mit Leibwächter beziehungsweise Amulett: simulation.test.ts erwartete fälschlich eine Ablehnung von Heilung, wenn victim null war. Bei abgewehrtem Angriff ist wolfTarget aber gesetzt; Heilung ist nach bestätigter Regel gültig und verbraucht die Ressource. Das war eine veraltete Prüferwartung, kein durch den Intro-Wegfall nachgewiesener Fehler der Produktionslogik. |
+| Abgebrochener Gesamtlauf | Auf ausdrücklichen Wunsch des Auftraggebers gestoppt. Kein erfolgreich abgeschlossener Gesamtlauf und keine neue Balance-Abnahme. Teilweise ausgegebene Modellquoten sind kein belastbarer Vorher-/Nachher-Vergleich. Daraus keine Wolfszahlen, Rollenpunkte oder Gewinnwahrscheinlichkeiten ändern. |
+
+**Bei späteren Arbeiten an den langen Simulationen beachten:** Die kurzzeitig korrigierten Testdateien wurden vollständig auf den Ausgangsstand zurückgesetzt. In simulation.test.ts verwenden die Heilungs-Erwartungen für Hexe und Magier weiterhin victim statt wolfTarget. Auch die simulierten Heilerentscheidungen in balance.test.ts greifen noch auf victim zu und kennen damit den tatsächlichen Schutzstatus, den diese Rollen nach aktueller Regel nicht erfahren sollen. Erst diese Prüferwartungen/Modelle anpassen, bevor ein späterer breiter Lauf interpretiert wird. Das ist unabhängig vom entfallenen Amulett-Intro und wurde in der gezielten Aufgabe nicht umgesetzt.
+
+**Produktionscode:** Durch We-03-69 unverändert. Historische Simulationsarchive und Balance-Kalibrierung ebenfalls unverändert. Die acht erfolgreichen Tests belegen den eingegrenzten Übergang und die geprüfte Amulettweitergabe; sie sind kein Beweis für sämtliche möglichen Spielverläufe.
+
+
 Beschluss des Auftraggebers vom 21.11.2026 (We-01-54): Hexe und Magier sehen immer die angegriffene Person als Wolfsopfer, auch wenn das Amulett oder der Leibwächter den Angriff abgefangen hat. Der Zustand hat dafür das Feld `wolfTarget` (die angegriffene Person) neben `victim` (wer wirklich stirbt); Heilen prüft `wolfTarget`. Ein Angriff auf die abwesende Dorfmatratze geht weiter ins Leere (kein Opfer). Die frühere Aussage, sie sähen nach einem abgefangenen Angriff kein Opfer, ist ersetzt.
 
 Beschluss des Auftraggebers vom 21.11.2026 (We-01-53): Die Einstellung „Rollen nach dem Ausscheiden“ (Aufdecken oder Geheim) entfällt. Das Spiel nennt nie die Rolle einer ausgeschiedenen Person (Ansagen enthalten nur Namen; `werewolfAnnouncement` liefert `{ name }`). Der Erzähler weckt nur Rollen, die noch leben; es gibt keine Tarnaufrufe für Tote mehr. Erhalten bleiben die Aufrufe für lebende Rollen mit verbrauchter Fähigkeit (Hexe ohne Tränke, Magier ohne Zauber, Bürgermeister nach dem Hammer) und für einen noch nicht enthüllten Trunkenbold. Wer am Tag ausscheidet, darf seine Rolle aufdecken, muss es aber nicht; das regeln die Spieler selbst, die App verlangt nichts. Die Gruppe leitet aus den Aufrufen der Nacht ab, wer fehlt. Der Jäger verrät sich durch seinen Schuss; das ist gewollt. Ältere Aussagen zu offener oder geheimer Aufdeckung und zu Tarnaufrufen für Ausgeschiedene sind damit ersetzt. Gespeicherte Entwürfe mit dem alten Feld werden weiter gelesen, das Feld wird ignoriert.

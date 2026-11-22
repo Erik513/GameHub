@@ -114,5 +114,29 @@ Beschluss des Auftraggebers: Der Amulettträger wird **nicht mehr vor der ersten
 
 - Der Zustand `amuletIntro` und das Ereignis `amuletReady` sind entfernt (`stateMachine.ts`). Nach dem letzten `roleSeen` beginnt die Nacht sofort (`startNight`), auch mit Amulett.
 - `wakingPlayers` liefert den Träger nur noch im Zustand `amuletPass`. Der Schritt am Nachtende (`amuletPass`, in jeder Nacht, solange ein Träger lebt) bleibt unverändert.
-- Angepasst: `amulet.test.ts` (der Träger wird vor der ersten Nacht nicht geweckt), `narrator.test.ts`, `narratorCard.test.ts`; in den langen Simulationen `simulation.test.ts` und `balance.test.ts` wurden die Hilfsfunktionen angepasst (sie kompilieren, sind aber nicht gelaufen, weil sie über zehn Minuten brauchen). **Bitte einmal `pnpm test:werewolf-simulation` laufen lassen** und prüfen, ob die Ablaufprüfungen (kein festhängender Zustand, jede Partie endet) weiter stimmen.
+- Angepasst: `amulet.test.ts` (der Träger wird vor der ersten Nacht nicht geweckt), `narrator.test.ts`, `narratorCard.test.ts`; in den langen Simulationen `simulation.test.ts` und `balance.test.ts` wurden die Hilfsfunktionen angepasst (sie kompilieren, sind aber nicht gelaufen, weil sie über zehn Minuten brauchen). **Durch den Auftraggeber am 22.11.2026 eingegrenzt und gezielt geprüft (We-03-69):** Kein voller Balance-/Simulationslauf nötig. Nur den direkten Nachtstart nach der Rollenverteilung und die unveränderte Amulettweitergabe prüfen; acht Tests bestanden (Ergebnis unten).
 - Dokumentation angepasst: `GAMEHUB_WERWOLF.md` (Abschnitt Schutzamulett), `GAMEHUB_WERWOLF_HANDOFF.md`, `GAMEHUB_WERWOLF_NARRATOR_API.md`. Gespeicherte Spielstände mit dem Zustand `amuletIntro` können nicht mehr geladen werden (Versionsnummer des gespeicherten Spiels in `narratorGame.ts` bei Bedarf erhöhen).
+
+
+## Gezielte Abnahme des entfallenen Amulett-Intros (We-03-69, 22.11.2026)
+
+Gezielte Abnahme nach Einschränkung durch den Auftraggeber: 8 Tests bestanden (sechs direkte Nachtstart-Varianten mit Amulett, bestehende Startvergabe und Weitergabe am Nachtende). Typprüfung, ESLint und Formatprüfung erfolgreich. Keine Produktionslogik geändert. Breiter Lauf auf Wunsch des Auftraggebers abgebrochen, Änderungen an balance.test.ts und simulation.test.ts zurückgenommen; keine vollständige Balance-/Simulationsabnahme behauptet.
+
+Der Auftraggeber hat die frühere Aufforderung zum vollständigen Simulationslauf eingeschränkt: Nur die durch den entfernten Benachrichtigungsschritt betroffenen Abläufe prüfen. Der weggefallene Schritt verändert weder Rollenregeln noch Schutzwirkung. Dauerhafte Regressionstests stehen in src/business/games/werewolf/amulet.test.ts: direkter Start mit Wölfen, Amor, Leibwächter oder Dorfmatratze, auch in Kombination mit weiteren Rollen, bestehender Amulettbesitz sowie Übergabe am Nachtende. Die acht gezielten Tests liefen erfolgreich in rund einer Sekunde.
+
+Im anfänglichen breiten Lauf wurden zudem veraltete Heilungs-Prüferwartungen (victim statt wolfTarget) entdeckt. Dieser breite Lauf wurde nicht abgeschlossen und wird ausdrücklich nicht als bestanden ausgegeben. Seine Testdateien sind unverändert wiederhergestellt; diese ältere Forschungshilfe ist kein Bestandteil der vorliegenden gezielten Abnahme. Historische Archive und Rollenbewertungen bleiben unverändert.
+
+
+## Entscheidende Ergebnisunterschiede für Claude (Nachtrag zu We-03-69, 22.11.2026)
+
+| Punkt | Ergebnis und Konsequenz |
+| --- | --- |
+| Entferntes Amulett-Intro | Nach dem letzten roleSeen folgt unmittelbar der reguläre erste Nachtschritt. Es wird weder amuletIntro noch amuletReady benötigt. Geprüft mit Wölfen, Amor, Leibwächter und Dorfmatratze als Einstieg. |
+| Amulettbesitz und Nachtende | Startbesitz bleibt bestehen; amuletPass ist weiterhin der reguläre letzte Nachtschritt. Der weggefallene Benachrichtigungsschritt ändert keine Schutz- oder Weitergaberegel. |
+| Gezielte Prüfung | Acht Tests bestanden: sechs Nachtstart-Varianten und die bestehenden Prüfungen für Startvergabe und Weitergabe am Nachtende. Typprüfung, ESLint und Formatprüfung bestanden. Neue Regressionen stehen ausschließlich in src/business/games/werewolf/amulet.test.ts. |
+| Anfängliche Simulationsfehler | Reproduziert bei Sechser-Aufstellungen mit Leibwächter beziehungsweise Amulett: simulation.test.ts erwartete fälschlich eine Ablehnung von Heilung, wenn victim null war. Bei abgewehrtem Angriff ist wolfTarget aber gesetzt; Heilung ist nach bestätigter Regel gültig und verbraucht die Ressource. Das war eine veraltete Prüferwartung, kein durch den Intro-Wegfall nachgewiesener Fehler der Produktionslogik. |
+| Abgebrochener Gesamtlauf | Auf ausdrücklichen Wunsch des Auftraggebers gestoppt. Kein erfolgreich abgeschlossener Gesamtlauf und keine neue Balance-Abnahme. Teilweise ausgegebene Modellquoten sind kein belastbarer Vorher-/Nachher-Vergleich. Daraus keine Wolfszahlen, Rollenpunkte oder Gewinnwahrscheinlichkeiten ändern. |
+
+**Bei späteren Arbeiten an den langen Simulationen beachten:** Die kurzzeitig korrigierten Testdateien wurden vollständig auf den Ausgangsstand zurückgesetzt. In simulation.test.ts verwenden die Heilungs-Erwartungen für Hexe und Magier weiterhin victim statt wolfTarget. Auch die simulierten Heilerentscheidungen in balance.test.ts greifen noch auf victim zu und kennen damit den tatsächlichen Schutzstatus, den diese Rollen nach aktueller Regel nicht erfahren sollen. Erst diese Prüferwartungen/Modelle anpassen, bevor ein späterer breiter Lauf interpretiert wird. Das ist unabhängig vom entfallenen Amulett-Intro und wurde in der gezielten Aufgabe nicht umgesetzt.
+
+**Produktionscode:** Durch We-03-69 unverändert. Historische Simulationsarchive und Balance-Kalibrierung ebenfalls unverändert. Die acht erfolgreichen Tests belegen den eingegrenzten Übergang und die geprüfte Amulettweitergabe; sie sind kein Beweis für sämtliche möglichen Spielverläufe.

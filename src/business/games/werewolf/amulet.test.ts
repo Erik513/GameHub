@@ -73,6 +73,22 @@ it("privately assigns the amulet to a nonwolf even when the drunk conceals a wol
   expect(werewolfAnnouncement(s)).toEqual([]);
 });
 
+it.each([
+  [[], "wolves"],
+  [["cupid"], "cupid"],
+  [["bodyguard"], "bodyguard"],
+  [["nightGuest"], "nightGuest"],
+  [["cupid", "bodyguard", "witch"], "cupid"],
+  [["cupid", "nightGuest", "witch"], "cupid"],
+] as const)("starts the first night directly with an amulet and roles %s", (roles, first) => {
+  const seats = [...names, "Gia", "Hugo", "Ira", "Jan", "Kim", "Lea"];
+  const state = deal("Eva", [...roles], {}, seats);
+  expect(state.status).toBe(first);
+  expect(state.night).toBe(1);
+  expect(state.alive).toHaveLength(seats.length);
+  expect(state.amulet).toEqual({ holder: "Eva", mustPass: false });
+});
+
 it("offers a voluntary transfer at every night end and requires transfer after protection", () => {
   const first = firstNight(open(deal("Cam")));
   expect(first.status).toBe("amuletPass");

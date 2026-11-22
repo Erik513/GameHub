@@ -109,6 +109,10 @@ export const werewolfNarratorTexts = {
       },
       wolvesNoAttackDone: "No attack in this night",
       wolvesNoAttack: "The werewolves attack only from night 2",
+      verdict: {
+        vision: { wolf: "Werewolf", village: "Not a werewolf" },
+        investigation: { wolf: "Werewolf nearby", village: "No werewolf nearby" },
+      },
       pickAbility: "Tap an ability",
       confirmDone: "Continue when done",
       coverTitle: "Ask anyway",

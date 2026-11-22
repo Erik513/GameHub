@@ -142,6 +142,8 @@ describe("NarratorView choices", () => {
     expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
     await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
     expect(screen.getByText(new RegExp(`${person} is (not )?a werewolf`))).toBeInTheDocument();
+    // The result is also shown as a large sign: red with the wolf, green with the villager.
+    expect(screen.getByText(/^(Werewolf|Not a werewolf)$/)).toBeInTheDocument();
   });
 
   it("lists the people in alphabetical order, all equally, and closes the list with the X", async () => {
