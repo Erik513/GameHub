@@ -72,16 +72,17 @@ export function dayPrompt(view: GuideView, t: TFunction): string | null {
 
 /** The heading of the box: the ask of the step, what the narrator reads out, or what to do next. */
 export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
-  const { card, selection, state } = view;
+  const { card, selection } = view;
   if (!card) return null;
   if (card.cover) return t("werewolfNarrator.guide.coverTitle");
-  // The witch is asked two questions, always both: first the victim, then the poison.
+  // The witch is asked two questions, always both: the script of the narrator. Hints (the victim, a used potion) stand
+  // below the choice with a yellow border.
   if (view.question !== null && selection.ability === null)
-    return view.question === "heal"
-      ? state.wolfTarget
-        ? t("werewolfNarrator.guide.witch.healAsk", { name: state.wolfTarget.name })
-        : t("werewolfNarrator.guide.witch.healAskNone")
-      : t("werewolfNarrator.guide.witch.poisonAsk");
+    return t(
+      view.question === "heal"
+        ? "werewolfNarrator.guide.witch.healAsk"
+        : "werewolfNarrator.guide.witch.poisonAsk",
+    );
   const info = actInfo(view, t) ?? dayPrompt(view, t);
   if (info !== null) return <ResultText step={step} text={info} />;
   if (selection.ability)
@@ -98,13 +99,27 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
   const { card, selection, state } = view;
   if (!card) return [];
   return [
-    !card.cover && step.showsVictim && view.question === null && (
+    !card.cover && step.showsVictim && (
       <span className="ww-guide__victim" key="victim">
         {state.wolfTarget
           ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
           : t("werewolfNarrator.guide.noVictim")}
       </span>
     ),
+    // A potion of the witch that is used up: the reason why the button cannot be used.
+    ...(!card.cover && state.status === "witch"
+      ? card.abilities
+          .filter((ability) => ability.unavailable === "used")
+          .map((ability) => (
+            <span className="ww-guide__victim" key={"used-" + ability.id}>
+              {t(
+                ability.id === "heal"
+                  ? "werewolfNarrator.guide.witch.healUsed"
+                  : "werewolfNarrator.guide.witch.poisonUsed",
+              )}
+            </span>
+          ))
+      : []),
     !card.cover && selection.heal && state.wolfTarget && (
       <span className="ww-guide__victim" key="heal">
         {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}

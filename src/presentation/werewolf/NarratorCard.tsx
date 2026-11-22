@@ -17,6 +17,11 @@ interface NarratorCardProps {
   readonly settled?: boolean;
   /** The narrator has decided: no ability can be tapped any more (the way back opens the decision again). */
   readonly locked?: boolean;
+  /**
+   * The ability the narrator asks about now (the witch is asked about the healing potion first, then about the poison):
+   * all abilities stay visible, but only this one is framed and can be tapped; "skip" answers the question.
+   */
+  readonly asked?: CardAbilityId | null;
   /** The abilities are the next thing to tap: the ones that can be used get a blue frame. */
   readonly next?: boolean;
   /** The role may do nothing: a button "skip" stands next to the abilities (the narrator decides in this box). */
@@ -45,6 +50,7 @@ export function NarratorCard({
   pressed = [],
   settled = false,
   locked = false,
+  asked = null,
   spellsUsed = 0,
   next = false,
   onAbility,
@@ -111,11 +117,18 @@ export function NarratorCard({
                       : (ability.unavailable ?? "blocked")
                 }
                 // An ability that cannot be used is asked as well: it gets a thinner frame.
-                data-next={next && !settled ? (ability.available ? "full" : "thin") : undefined}
+                data-next={
+                  (asked === null ? next : asked === ability.id) && !settled
+                    ? ability.available
+                      ? "full"
+                      : "thin"
+                    : undefined
+                }
                 data-settled={settled || undefined}
                 disabled={
                   !ability.available ||
                   locked ||
+                  (asked !== null && asked !== ability.id) ||
                   (ability.count !== undefined &&
                     ability.count - spellsUsed <= 0 &&
                     !pressed.includes(ability.id))

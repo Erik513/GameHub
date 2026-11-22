@@ -51,7 +51,8 @@ function Harness({ attack }: { readonly attack: boolean }) {
 }
 
 const abilityButtons = () => [...document.querySelectorAll<HTMLButtonElement>(".ww-ability")];
-const question = () => document.querySelector(".ww-guide__text");
+const steps = () => [...document.querySelectorAll<HTMLElement>(".ww-script__step")];
+const state = (index: number) => steps()[index]?.getAttribute("data-state");
 
 async function open(attack: boolean) {
   const i18n = await createGameHubI18n("en");
@@ -63,41 +64,59 @@ async function open(attack: boolean) {
   fireEvent.click(document.querySelector(".ww-guide--tap")!);
 }
 
-it("asks both questions one after the other, each with its own pair of buttons in blue frames", async () => {
+it("shows all options above at all times and the two questions as boxes below, the open one in blue", async () => {
   await open(true);
-  // First question: the victim; the heading stands in a frame; the buttons are "Heal" and "Skip", both framed.
-  expect(question()?.textContent).toMatch(/Victim of the wolves: .*save/);
-  expect(question()).toHaveAttribute("data-next");
-  expect(abilityButtons().map((button) => button.textContent)).toEqual(["Heal", "Skip"]);
-  for (const button of abilityButtons()) expect(button).toHaveAttribute("data-next");
-  // "Heal" answers the question with yes and goes on to the second one.
-  fireEvent.click(abilityButtons()[0]!);
-  expect(question()?.textContent).toMatch(/poison somebody/);
-  expect(abilityButtons().map((button) => button.textContent)).toEqual(["Poison", "Skip"]);
-  for (const button of abilityButtons()) expect(button).toHaveAttribute("data-next");
+  // Above: Heal, Poison and Skip stay visible; in the first question Heal and Skip are framed, Poison waits.
+  const names = () => abilityButtons().map((button) => button.textContent);
+  expect(names()).toEqual(["Heal", "Poison", "Skip"]);
+  const [heal, poison, skip] = abilityButtons();
+  expect(heal).toHaveAttribute("data-next");
+  expect(skip).toHaveAttribute("data-next");
+  expect(poison).not.toHaveAttribute("data-next");
+  expect(poison).toBeDisabled();
+  // Below: two boxes, the first one is open; the hint with the victim stands below with its own border.
+  expect(steps().map((step) => step.textContent)).toEqual([
+    "Does the witch want to save the victim?",
+    "Does the witch want to poison somebody? Then she points at a person.",
+  ]);
+  expect([state(0), state(1)]).toEqual(["active", "pending"]);
+  expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked/);
+  // "Heal" answers the first question with yes; the second box opens, all options are still there.
+  fireEvent.click(heal!);
+  expect(names()).toEqual(["Heal", "Poison", "Skip"]);
+  expect([state(0), state(1)]).toEqual(["done", "active"]);
+  expect(abilityButtons()[1]).toHaveAttribute("data-next");
+  expect(abilityButtons()[0]).not.toHaveAttribute("data-next");
   // "Poison" opens the list of people; a person and the check mark finish the step.
-  fireEvent.click(abilityButtons()[0]!);
+  fireEvent.click(abilityButtons()[1]!);
   fireEvent.click(document.querySelector(".ww-person")!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   expect(screen.getByText(/Chosen: .*Healed.*Poisoned/)).toBeInTheDocument();
+  // After the decision the hint stays (yellow border) and the blue summary stands below it, at the very bottom.
+  const footer = document.querySelector(".ww-guide__extra")!;
+  const children = [...footer.children].map((child) => child.className);
+  expect(children[0]).toContain("ww-guide__victim");
+  expect(children.at(-1)).toContain("ww-guide__chosen");
 });
 
 it("answers both questions with skip: nothing is used and the step is finished with two taps", async () => {
   await open(true);
-  fireEvent.click(abilityButtons()[1]!);
-  expect(question()?.textContent).toMatch(/poison somebody/);
-  fireEvent.click(abilityButtons()[1]!);
+  fireEvent.click(abilityButtons()[2]!);
+  expect([state(0), state(1)]).toEqual(["done", "active"]);
+  fireEvent.click(abilityButtons()[2]!);
   expect(screen.getByText(/Nothing chosen/)).toBeInTheDocument();
 });
 
-it("asks about the healing potion although nobody was attacked: the potion has a thin frame and cannot be used, skip answers", async () => {
+it("asks about the healing potion although nobody was attacked: the hint says why the potion cannot be used, skip answers", async () => {
   await open(false);
-  expect(question()?.textContent).toMatch(/No victim tonight/);
-  const [heal, skip] = abilityButtons();
+  const [heal, , skip] = abilityButtons();
+  // The potion cannot be used: it is disabled but carries the thinner blue frame, because the question is asked anyway.
   expect(heal).toBeDisabled();
   expect(heal).toHaveAttribute("data-next", "thin");
   expect(skip).toBeEnabled();
   expect(skip).toHaveAttribute("data-next");
+  // The reason stands below as a hint with its own (yellow) border.
+  expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked nobody/);
   fireEvent.click(skip!);
-  expect(question()?.textContent).toMatch(/poison somebody/);
+  expect([state(0), state(1)]).toEqual(["done", "active"]);
 });

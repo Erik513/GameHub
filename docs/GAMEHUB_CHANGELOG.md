@@ -13,7 +13,7 @@
 
 ### We-01-135: Hexe mit zwei festen Fragen
 
-- Erst die Frage nach dem Retten, dann nach dem Vergiften, immer beide, mit Fragetext und Knöpfen im blauen Rahmen; nicht verfügbare Fähigkeiten mit dünnerem Rahmen.
+- Oben bleiben alle Optionen sichtbar, die der offenen Frage sind blau gerahmt; unten stehen die zwei Fragen als Boxen von oben nach unten, Hinweise mit gelbem Rand darunter.
 
 ### We-01-134: Magier beide Zauber in einer Nacht
 

@@ -2420,3 +2420,25 @@ button.ww-guide__strip[data-next] {
   outline-offset: 2px;
   border-radius: var(--radius-md);
 }
+
+/* The script of a role with several steps: one box for every step, from top to bottom; the open step is framed blue. */
+.ww-script {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ww-script__step {
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+.ww-script__step[data-state="active"] {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.ww-script__step[data-state="done"],
+.ww-script__step[data-state="pending"] {
+  opacity: 0.55;
+}

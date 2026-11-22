@@ -149,8 +149,9 @@ export const werewolfNarratorTexts = {
         idle: "Tap “Vote” when somebody is nominated. Otherwise: end the day.",
       },
       witch: {
-        healAsk: "Victim of the wolves: {{name}}. Does the witch want to save them?",
-        healAskNone: "No victim tonight. Ask the witch anyway whether she wants to save.",
+        healAsk: "Does the witch want to save the victim?",
+        healUsed: "The healing potion is used up",
+        poisonUsed: "The poison is used up",
         poisonAsk: "Does the witch want to poison somebody? Then she points at a person.",
       },
       ballots: "Votes",

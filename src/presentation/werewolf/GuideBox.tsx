@@ -76,8 +76,10 @@ export function GuideBox({
         </header>
         <div className="ww-guide__body" />
         <footer className="ww-guide__extra">
-          <Summary onReopen={onReopen} view={view} />
+          {/* The hints stay (yellow border); the summary of the decision (blue border) stands at the very bottom. */}
+          {stepExtras(view, describeRoleStep(state), t)}
           {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
+          <Summary onReopen={onReopen} view={view} />
         </footer>
       </section>
     );
@@ -96,12 +98,11 @@ export function GuideBox({
   return (
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
-        <strong
-          className="ww-guide__text"
-          data-next={(view.question !== null && selection.ability === null) || undefined}
-        >
-          {stepTitle(view, step, t)}
-        </strong>
+        {view.question !== null && !card.cover ? (
+          <Script view={view} />
+        ) : (
+          <strong className="ww-guide__text">{stepTitle(view, step, t)}</strong>
+        )}
         <span className="ww-guide__tools">
           {(selection.ability !== null || view.canUndo) && (
             <button
@@ -374,6 +375,38 @@ function Ballots({
         </li>
       ))}
     </ul>
+  );
+}
+
+/**
+ * The script of a role with several steps (the witch): one box for every question, from top to bottom, the open one
+ * framed in blue; the ones that are done or still to come are dim.
+ */
+function Script({ view }: { readonly view: GuideView }) {
+  const { t } = useTranslation();
+  const { question, selection } = view;
+  const steps = [
+    { id: "heal", text: t("werewolfNarrator.guide.witch.healAsk") },
+    {
+      id: "poison",
+      text:
+        selection.ability === "poison"
+          ? t("werewolfNarrator.guide.ask.poison")
+          : t("werewolfNarrator.guide.witch.poisonAsk"),
+    },
+  ] as const;
+  return (
+    <div className="ww-script">
+      {steps.map((step) => (
+        <div
+          className="ww-script__step"
+          data-state={step.id === question ? "active" : step.id === "heal" ? "done" : "pending"}
+          key={step.id}
+        >
+          <strong className="ww-guide__text">{step.text}</strong>
+        </div>
+      ))}
+    </div>
   );
 }
 
