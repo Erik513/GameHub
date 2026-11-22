@@ -60,7 +60,7 @@ Die zentrale Erzähleransicht rendert den aktuellen `status`; die folgenden Eint
 | Zustand | Anzeige / einzureichendes Ereignis |
 | --- | --- |
 | `roles` | `currentWerewolfRole(state)` nur der angezeigten Person zeigen; nach tatsächlicher Betrachtung `roleSeen` mit `player`. Gehaltene Hochziehkarte gemäß UI-Vorgabe separat gestalten. |
-| `amuletIntro` / `amuletPass` | Erste Mitteilung `amuletReady`; spätere Übergabe `passAmulet` mit `target`. `mustPass` beachten. |
+| `amuletPass` | Übergabe `passAmulet` mit `target`. `mustPass` beachten. Eine Mitteilung zu Beginn (`amuletIntro`, `amuletReady`) gibt es seit dem 22.11.2026 nicht mehr; der Träger sieht das Amulett auf seiner Rollenkarte. |
 | `cupid` / `lovers` | Zwei gültige Namen durch `bond` mit `players:[a,b]`; Kennenlernen durch `loversReady` abschließen. |
 | `drunkReveal` / `drunkHunter` | `werewolfDrunkReveal(state)` privat anzeigen; Bestätigung `drunkReady`. Bei `drunkHunter` anschließend den echten Jägerschritt abwarten. |
 | `mayor` | `hammer` mit `target` oder `null` für Nichtgebrauch. Kein zusätzliches doppeltes Stimmrecht in Hammer-Variante. |

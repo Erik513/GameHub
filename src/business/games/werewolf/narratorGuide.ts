@@ -137,8 +137,6 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       return { night, type: "acknowledgeCall" };
     case "lovers":
       return { night, type: "loversReady" };
-    case "amuletIntro":
-      return { night, type: "amuletReady" };
     case "drunkReveal":
     case "drunkHunter":
       return { night, type: "drunkReady" };

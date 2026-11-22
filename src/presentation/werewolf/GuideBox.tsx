@@ -216,7 +216,6 @@ function actInfo(view: GuideView, t: TFunction): string | null {
           })
         : null;
     }
-    case "amuletIntro":
     case "amuletPass":
       return t("werewolfNarrator.guide.amuletHolder", { name: state.amulet.holder });
     default:

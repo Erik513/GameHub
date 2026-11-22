@@ -17,7 +17,6 @@ export type CardRoleSymbol =
   | "magician"
   | "lovers"
   | "drunk"
-  | "amulet"
   | "amuletPass"
   | "day";
 export type CardAbilityId =
@@ -141,8 +140,6 @@ function cardRole(state: WerewolfState): CardRoleSymbol | null {
     case "hunter":
     case "drunkHunter":
       return "hunter";
-    case "amuletIntro":
-      return "amulet";
     case "amuletPass":
       return "amuletPass";
     case "day":

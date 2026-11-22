@@ -121,7 +121,7 @@ describe("isDayStep", () => {
     const at = (status: string) => ({ ...state, status }) as unknown as WerewolfState;
     for (const status of ["morning", "day", "vote", "exile", "hunter", "drunkHunter", "finished"])
       expect(isDayStep(at(status)), status).toBe(true);
-    for (const status of ["roles", "wolves", "witch", "nightCall", "amuletIntro", "cupid"])
+    for (const status of ["roles", "wolves", "witch", "nightCall", "cupid"])
       expect(isDayStep(at(status)), status).toBe(false);
   });
 });

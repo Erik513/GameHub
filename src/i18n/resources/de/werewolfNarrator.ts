@@ -70,7 +70,6 @@ export const werewolfNarratorTexts = {
         hunter: "Der Jäger ist an der Reihe",
         lovers: "Die Verliebten erwachen",
         drunk: "Der Trunkenbold erwacht",
-        amulet: "Der Amulett-Träger erwacht",
         amuletPass: "Der Amulett-Träger erwacht",
       },
       sleep: {
@@ -89,7 +88,6 @@ export const werewolfNarratorTexts = {
         hunter: "Der Jäger hat geschossen",
         lovers: "Die Verliebten schlafen wieder ein",
         drunk: "Der Trunkenbold schläft wieder ein",
-        amulet: "Der Amulett-Träger schläft wieder ein",
         amuletPass: "Der Amulett-Träger schläft wieder ein",
       },
       ask: {

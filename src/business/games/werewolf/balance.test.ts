@@ -169,8 +169,6 @@ function decision(
       return { type: "acknowledgeCall", night };
     case "roles":
       return { type: "roleSeen", player: state.players[state.index]!.name };
-    case "amuletIntro":
-      return { type: "amuletReady", night };
     case "amuletPass": {
       const { holder, mustPass } = state.amulet;
       const target =

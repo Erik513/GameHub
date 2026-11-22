@@ -228,8 +228,6 @@ function choices(s: WerewolfState): WerewolfEvent[] {
       return [{ type: "roleSeen", player: s.players[s.index]!.name }];
     case "nightCall":
       return [{ type: "acknowledgeCall", night }];
-    case "amuletIntro":
-      return [{ type: "amuletReady", night }];
     case "amuletPass":
       return choose("passAmulet");
     case "cupid":

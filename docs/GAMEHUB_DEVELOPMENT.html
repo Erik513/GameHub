@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T16:00:00.000Z",
+    "updatedAt": "2026-11-22T16:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 269,
-      "totalTasks": 323,
+      "completedTasks": 270,
+      "totalTasks": 324,
       "percent": 83.3
     }
   },
@@ -1731,6 +1731,12 @@
           "title": "Wartebild: Symbol, Überschrift und Hinweis mit Handsymbol, ohne Effekte im Stil der übrigen Oberfläche",
           "status": "done",
           "validation": "Grundaufbau nach Vorschlag 1, 2 und 5: Kartensymbol in einer flachen Fläche wie das Symbol der Rollenkarte, Überschrift, unten der Hinweis mit Handsymbol in einer gestrichelten Zeile wie die anderen Hinweise; Schein, Verlauf, Schatten und Haken verworfen (passten nicht zur übrigen Oberfläche); Handsymbol neu in der Symbolsammlung; Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-86",
+          "title": "Amulett-Schritt vor der ersten Nacht streichen: der Träger erfährt es auf seiner Rollenkarte",
+          "status": "done",
+          "validation": "Auf Beschluss des Auftraggebers (22.11.2026) entfallen Zustand amuletIntro und Ereignis amuletReady in der Zustandsmaschine, im Nachtskript der Erzählersicht, in den Texten und in den Tests; nach der Rollenverteilung beginnt die Nacht sofort mit der ersten Rolle; der Schritt am Nachtende (amuletPass) bleibt; Dokumentation (Regeln, Übergabe, Erzähler-Schnittstelle) angepasst; 1567 Tests, tsc -b, eslint, Schichtprüfung sauber; die langen Simulationen (simulation.test.ts, balance.test.ts) wurden mit angepasst und kompilieren, sind aber nicht gelaufen (über zehn Minuten, nicht im normalen Lauf)."
         }
       ]
     },

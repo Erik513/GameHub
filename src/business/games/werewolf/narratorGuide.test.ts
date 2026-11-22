@@ -279,19 +279,14 @@ describe("narrator guide", () => {
     });
   });
 
-  it("announces the amulet holder at the start and lets the holder pass the amulet at the end of the night", () => {
+  it("does not call the amulet holder at the start, only at the end of the night, where the holder passes the amulet", () => {
     let guide = game([], { amulet: true, attackOnFirstNight: true });
-    const holder = guide.session.present.amulet!.holder;
-    for (let step = 0; step < 300 && guide.session.present.status !== "amuletIntro"; step += 1)
+    // The holder knows it from the card of the role reveal: the first call of the night is a role, not the amulet.
+    for (let step = 0; step < 300 && describeGuide(guide).phase !== "ready"; step += 1)
       guide = forward(guide)!;
-    expect(guide.session.present.status).toBe("amuletIntro");
-    // The amulet holder is the first to be announced, after the narrator has begun the game.
-    if (describeGuide(guide).phase === "ready") guide = continueGuide(guide);
-    expect(describeGuide(guide).card?.role).toBe("amulet");
-    expect(describeGuide(guide).card?.actors).toEqual([holder]);
     guide = continueGuide(guide);
-    expect(describeGuide(guide).phase).toBe("act");
-    expect(describeGuide(guide).canContinue).toBe(true);
+    expect(describeGuide(guide).phase).toBe("intro");
+    expect(describeGuide(guide).card?.role).not.toBe("amuletPass");
     // The night goes on until the end step: the holder passes the amulet, the next morning follows.
     for (let step = 0; step < 300 && guide.session.present.status !== "amuletPass"; step += 1) {
       const next = forward(guide);

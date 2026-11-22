@@ -39,7 +39,8 @@ function deal(
   return apply(setup, ...seats.map((player) => ({ type: "roleSeen", player }) as const));
 }
 
-const open = (state: WerewolfState) => apply(state, { type: "amuletReady", night: 1 });
+// The holder learns about the amulet from the card of the role reveal: the night begins at once.
+const open = (state: WerewolfState) => state;
 const vision = (state: WerewolfState) =>
   apply(
     state,
@@ -64,11 +65,12 @@ const nightTwo = (s: WerewolfState, target = s.amulet!.holder) =>
 
 it("privately assigns the amulet to a nonwolf even when the drunk conceals a wolf", () => {
   const s = deal("Cam", [], { drunk: true }, [...names, "Gia", "Hugo", "Ira"]);
-  expect(s.status).toBe("amuletIntro");
+  // No call of the holder before the first night.
+  expect(s.status).toBe("wolves");
   expect(s.drunk?.player).toBe("Ada");
-  expect(wakingPlayers(s)).toEqual(["Cam"]);
+  expect(s.amulet?.holder).toBe("Cam");
+  expect(wakingPlayers(s)).not.toContain("Cam");
   expect(werewolfAnnouncement(s)).toEqual([]);
-  expect(open(s).status).toBe("wolves");
 });
 
 it("offers a voluntary transfer at every night end and requires transfer after protection", () => {

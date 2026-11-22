@@ -105,15 +105,11 @@ function decisions(state: WerewolfState): Decision[] {
         name === state.players[state.index]?.name
           ? state.index + 1 < state.players.length
             ? "roles"
-            : state.amulet
-              ? "amuletIntro"
-              : alive.some((p) => p.role === "cupid")
-                ? "cupid"
-                : beforeWolves
+            : alive.some((p) => p.role === "cupid")
+              ? "cupid"
+              : beforeWolves
           : null,
       ]);
-    case "amuletIntro":
-      return [[{ type: "amuletReady", night }, state.status]];
     case "amuletPass":
       return names.map((target) => [
         { type: "passAmulet", night, target },

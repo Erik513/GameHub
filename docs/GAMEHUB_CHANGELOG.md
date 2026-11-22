@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-86: Kein Amulett-Schritt vor der ersten Nacht
+
+- Der Amulettträger wird nicht mehr vor der ersten Nacht geweckt; er erfährt es auf seiner Rollenkarte. Zustand `amuletIntro` und Ereignis `amuletReady` entfallen. Der Schritt am Nachtende bleibt.
+
 ### We-01-85: Wartebild mit Symbol, ohne Effekte
 
 - Das Wartebild zeigt das Kartensymbol in einer flachen Fläche (wie das Symbol der Rollenkarte), die Überschrift und unten den Hinweis mit Handsymbol. Schein und Verlauf entfallen, damit es zur übrigen Oberfläche passt.

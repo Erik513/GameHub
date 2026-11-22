@@ -69,7 +69,6 @@ export type WerewolfState = Match &
   (
     | { readonly status: "roles"; readonly index: number }
     | { readonly status: "nightCall"; readonly call: NightRole; readonly resume: WerewolfState }
-    | { readonly status: "amuletIntro"; readonly amulet: Amulet }
     | {
         readonly status: "amuletPass";
         readonly amulet: Amulet;
@@ -129,7 +128,6 @@ export type WerewolfEvent =
         | "closeVision"
         | "closeInvestigation"
         | "drunkReady"
-        | "amuletReady"
         | "announceMorning"
         | "endDay"
         | "announceExile";
@@ -265,7 +263,6 @@ export function werewolfDrunkReveal(state: WerewolfState): Player | null {
 
 export function wakingPlayers(state: WerewolfState): readonly string[] {
   switch (state.status) {
-    case "amuletIntro":
     case "amuletPass":
       return [state.amulet.holder];
     case "wolves":
@@ -623,11 +620,8 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       if (event.type !== "roleSeen" || state.players[state.index]?.name !== event.player)
         return state;
       if (state.index + 1 < state.players.length) return { ...state, index: state.index + 1 };
-      return state.amulet
-        ? { ...state, status: "amuletIntro", amulet: state.amulet }
-        : startNight(state, state.night);
-    case "amuletIntro":
-      return event.type === "amuletReady" ? startNight(state, state.night) : state;
+      // The holder of the amulet learns it from the card of the role reveal: the night begins at once.
+      return startNight(state, state.night);
     case "amuletPass":
       if (
         event.type !== "passAmulet" ||

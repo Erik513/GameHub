@@ -172,7 +172,7 @@ Nach dem persönlichen Sieg läuft die Partie bis zum Sieg des Dorfs oder der We
 
 ## Schutzamulett
 
-- Das Amulett ist ein zusätzlicher Gegenstand und belegt keinen Rollenplatz. Wenn die Spielleitung es aktiviert, lost die App den ersten Träger unter allen Spielern aus, deren tatsächliche Rolle kein Werwolf ist. Der Erzähler informiert ihn zu Beginn der ersten Nacht heimlich.
+- Das Amulett ist ein zusätzlicher Gegenstand und belegt keinen Rollenplatz. Wenn die Spielleitung es aktiviert, lost die App den ersten Träger unter allen Spielern aus, deren tatsächliche Rolle kein Werwolf ist. Der Träger erfährt es auf seiner Rollenkarte in der Rollenverteilung (Beschluss vom 22.11.2026; vorher wurde er zu Beginn der ersten Nacht geweckt).
 - Das Amulett fängt ausschließlich nächtlichen Wolfsangriff, Hexengift und Magiertodeszauber ab. Es verhindert weder Hammer noch Tagesabstimmung noch Jägerschuss. Abgewehrte Tränke und Zauber gelten als verbraucht. Ein Gerber gewinnt nur durch tatsächliches Ausscheiden.
 - Das Amulett wird vor der Abwehr des Leibwächters und vor der Umleitung durch die Dorfmatratze geprüft. Das Amulett kann den Gastgeber oder die Dorfmatratze vor einem umgeleiteten Angriff schützen. Ein direkter Angriff auf die abwesende Dorfmatratze geht ins Leere und löst ihr Amulett nicht aus. Hexe und Magier sehen auch nach einem abgefangenen Wolfsangriff die angegriffene Person als Wolfsopfer (Beschluss vom 21.11.2026, `wolfTarget`), damit niemand aus dem Opfer ablesen kann, ob ein Schutz gewirkt hat. Sie dürfen sie heilen; der Trank oder Zauber ist dann verbraucht, ohne dass sich für die Person etwas ändert. Das gilt ebenso für den Schutz durch den Leibwächter.
 - Stirbt der Liebespartner, stirbt der Träger durch Liebeskummer mit. Liebeskummer erzeugt keine Weitergabepflicht, auch nicht nachts. Der Träger darf das Amulett behalten oder freiwillig weitergeben. Stirbt er mit dem Amulett, verschwindet es. Hammer, Abstimmung, Jägerschuss und bereits ausgelöste Verwundungen werden ebenfalls nicht durch das Amulett verhindert.
@@ -180,7 +180,7 @@ Nach dem persönlichen Sieg läuft die Partie bis zum Sieg des Dorfs oder der We
 
 ### Anbindung für Claude Code
 
-- Das fünfte Argument von `createWerewolf` aktiviert den Gegenstand mit `amulet: true`. `amuletIntro` ist die private Startbenachrichtigung, die mit `amuletReady` bestätigt wird. `amuletPass` ist der letzte Nachtschritt vor der Morgenauflösung, solange ein Träger vorhanden ist. `wakingPlayers` liefert in beiden Schritten den aktuellen Träger.
+- Das fünfte Argument von `createWerewolf` aktiviert den Gegenstand mit `amulet: true`. Den Schritt `amuletIntro` (Ereignis `amuletReady`) gibt es seit dem 22.11.2026 nicht mehr: Nach der Rollenverteilung beginnt die Nacht sofort. `amuletPass` ist der letzte Nachtschritt vor der Morgenauflösung, solange ein Träger vorhanden ist. `wakingPlayers` liefert in diesem Schritt den aktuellen Träger.
 - `passAmulet` nimmt einen Namen aus den lebenden Spielern entgegen. `amulet.mustPass` zeigt der Spielleitung, ob die Selbstwahl gesperrt ist. Beide Felder sind privat. Eine erfolgreiche Abstimmung wird trotz Amulett normal aufgelöst und mit werewolfAnnouncement bekannt gegeben. exile ist keine verdeckte Amulett-Abwehr mehr.
 
 ## Geplante Konfiguration der Startaufstellung

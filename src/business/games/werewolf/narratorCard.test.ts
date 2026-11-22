@@ -17,7 +17,6 @@ function stepFields(state: WerewolfState, status: string): Record<string, unknow
   const person = state.players[0]!;
   return (
     {
-      amuletIntro: { amulet: { holder: person.name, mustPass: false } },
       amuletPass: { amulet: { holder: person.name, mustPass: true }, poisoned: null, victim: null },
       drunkHunter: { hunter: person, next: "day" },
       hunter: { hunter: person, next: "day" },
@@ -96,7 +95,6 @@ describe("describeNarratorCard", () => {
       ["drunkReveal", "drunk"],
       ["hunter", "hunter"],
       ["drunkHunter", "hunter"],
-      ["amuletIntro", "amulet"],
       ["amuletPass", "amuletPass"],
     ];
     for (const [status, role] of roles)
