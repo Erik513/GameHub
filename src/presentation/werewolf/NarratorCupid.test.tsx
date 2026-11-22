@@ -45,7 +45,7 @@ function Harness() {
 }
 
 const boxes = () =>
-  [...document.querySelectorAll(".ww-guide__head .ww-script__row")].map((row) => ({
+  [...document.querySelectorAll(".ww-guide__head .ww-script__row")].slice(1).map((row) => ({
     text: row.querySelector(".ww-script__step")?.textContent,
     button: row.querySelector("button")?.getAttribute("aria-label") ?? null,
     disabled: row.querySelector("button")?.hasAttribute("disabled") ?? null,
@@ -75,16 +75,23 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeDisabled();
   fireEvent.click(people[1]!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
-  // The check closes the list only; the names stand in the third box, the step is not finished.
+  // The check closes the list only; the names stand in the third box. The decision is confirmed with the check of the first box.
   expect(boxes()[2]!.text).toMatch(/^Touch P\d+ and P\d+ lightly on the shoulder\.$/);
-  expect(boxes().map((box) => box.disabled)).toEqual([false, false, true]);
-  // The check of the second box (Cupid sleeps) opens the third; its check finishes the step.
-  fireEvent.click(document.querySelectorAll<HTMLElement>(".ww-script__check")[0]!);
-  expect(boxes().map((box) => box.disabled)).toEqual([false, true, false]);
-  fireEvent.click(document.querySelectorAll<HTMLElement>(".ww-script__check")[1]!);
+  expect(boxes().map((box) => box.disabled)).toEqual([false, true, true]);
+  expect(document.querySelector(".ww-guide__chosen")).toBeNull();
+  const checks = () =>
+    document.querySelectorAll<HTMLElement>(".ww-script__check:not(.ww-script__wake)");
+  fireEvent.click(checks()[0]!);
+  // Now the blue summary stands below; the first box can take the decision back, the second one (Cupid sleeps) is open.
   const summary = document.querySelector(".ww-guide__chosen");
   expect(summary?.textContent).toMatch(/^In love: P\d+, P\d+$/);
   expect(summary?.querySelector("svg")).not.toBeNull();
+  expect(boxes().map((box) => box.button)).toEqual(["Undo", "Task done", "Task done"]);
+  expect(boxes().map((box) => box.disabled)).toEqual([false, false, true]);
+  // Cupid sleeps, the lovers are touched: the last check finishes the step.
+  fireEvent.click(checks()[0]!);
+  expect(boxes().map((box) => box.disabled)).toEqual([false, true, false]);
+  fireEvent.click(checks()[1]!);
   // The lovers wake up: their script is a list, too (the names are the second task).
   fireEvent.click(screen.getByRole("button", { name: "Next" }));
   fireEvent.click(document.querySelector(".ww-script__wake")!);
@@ -93,4 +100,40 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   );
   expect(items[0]).toBe("The lovers open their eyes and look at each other.");
   expect(items[1]).toMatch(/^In love: P\d+ and P\d+$/);
+});
+
+it("takes the choice of the lovers back with the first box, while the script runs and after the step is finished", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <Harness />
+    </I18nextProvider>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: /^Begin$/ }));
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
+  const choose = () => {
+    fireEvent.click(screen.getByRole("button", { name: /^Make lovers/ }));
+    const people = [...document.querySelectorAll<HTMLElement>(".ww-person")];
+    fireEvent.click(people[0]!);
+    fireEvent.click(people[1]!);
+    fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  };
+  const checks = () =>
+    document.querySelectorAll<HTMLElement>(".ww-script__check:not(.ww-script__wake)");
+  const undo = () => screen.getByRole("button", { name: "Undo" });
+  // While the script runs: confirm the choice, then take it back.
+  choose();
+  fireEvent.click(checks()[0]!);
+  expect(document.querySelector(".ww-guide__chosen")).not.toBeNull();
+  fireEvent.click(undo());
+  expect(document.querySelector(".ww-guide__chosen")).toBeNull();
+  expect(screen.getByRole("button", { name: /^Make lovers/ })).toBeEnabled();
+  // Again, and the whole script to the end; then take the choice back after the step.
+  choose();
+  fireEvent.click(checks()[0]!);
+  fireEvent.click(checks()[0]!);
+  fireEvent.click(checks()[1]!);
+  fireEvent.click(undo());
+  expect(screen.getByRole("button", { name: /^Make lovers/ })).toBeEnabled();
+  expect(document.querySelector(".ww-guide__chosen")).toBeNull();
 });

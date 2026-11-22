@@ -121,6 +121,8 @@ export interface ScriptBox {
   /** The button right of the box: take the decision back, or confirm that the task is done; none for the last box. */
   readonly button: "check" | "undo" | null;
   readonly enabled: boolean;
+  /** The symbol of the ability that the box is about, shown before the text. */
+  readonly symbol?: string;
   /** Player names in the texts of the box: they are shown in bold. */
   readonly names?: readonly string[];
   readonly state: "active" | "done" | "pending";
@@ -133,17 +135,42 @@ export interface ScriptBox {
  */
 export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox[] | null {
   const boxes = roleBoxes(view, step, t);
-  if (!boxes || view.phase !== "intro" || !view.card) return boxes;
-  // Before the role is shown, the box "the role wakes up" stands first, with the check that shows the role; all others wait.
+  const { card } = view;
+  if (!boxes || !card) return boxes;
+  const intro = view.phase === "intro";
+  // The box "the role wakes up" stays the first box of the script: its check shows the role, afterwards it is done.
+  const wake: ScriptBox = {
+    button: "check",
+    enabled: intro,
+    id: "wake",
+    items: [t(`werewolfNarrator.guide.wake.${card.role}`)],
+    state: intro ? "active" : "done",
+  };
+  const symbolOf = (id: ScriptBox["id"]): string | undefined => {
+    const wanted =
+      id === "heal"
+        ? "heal"
+        : id === "poison"
+          ? "poison"
+          : id === "show" || id === "touch"
+            ? "bond"
+            : view.selection.ability;
+    return (
+      card.abilities.find((ability) => ability.id === wanted)?.symbol ??
+      card.abilities.find((ability) => ability.id !== "heal")?.symbol ??
+      card.abilities[0]?.symbol
+    );
+  };
   return [
-    {
-      button: "check",
-      enabled: true,
-      id: "wake",
-      items: [t(`werewolfNarrator.guide.wake.${view.card.role}`)],
-      state: "active",
-    },
-    ...boxes.map((box) => ({ ...box, enabled: false, state: "pending" as const })),
+    wake,
+    ...boxes.map((box) => {
+      const symbol = box.id === "asleep" ? undefined : symbolOf(box.id);
+      return {
+        ...box,
+        ...(symbol ? { symbol } : {}),
+        ...(intro ? { enabled: false, state: "pending" as const } : {}),
+      };
+    }),
   ];
 }
 
@@ -191,25 +218,26 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
   // Cupid: point at two people, falling asleep, touching the two (the names stand once they are chosen).
   if (state.status === "cupid") {
     const decided = selection.picks.length === 2;
-    const progress = view.progress;
+    const progress = outro ? 3 : view.progress;
     return [
       {
-        button: "undo",
-        enabled: decided,
+        // The decision is confirmed here; after that the box can take it back.
+        button: progress >= 1 ? "undo" : "check",
+        enabled: progress >= 1 || decided,
         id: "show",
         items: [t("werewolfNarrator.guide.cupid.show")],
-        state: decided ? "done" : "active",
+        state: progress >= 1 ? "done" : "active",
       },
       {
         button: "check",
-        enabled: !outro && decided && progress === 0,
+        enabled: progress === 1,
         id: "asleep",
         items: [t("werewolfNarrator.guide.sleep.cupid")],
-        state: outro || (decided && progress > 0) ? "done" : decided ? "active" : "pending",
+        state: progress >= 2 ? "done" : progress === 1 ? "active" : "pending",
       },
       {
         button: "check",
-        enabled: !outro && decided && progress === 1,
+        enabled: progress === 2,
         id: "touch",
         ...(decided ? { names: selection.picks } : {}),
         items: [
@@ -220,7 +248,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
               })
             : t("werewolfNarrator.guide.cupid.touchAny"),
         ],
-        state: outro ? "done" : progress === 1 ? "active" : "pending",
+        state: progress >= 3 ? "done" : progress === 2 ? "active" : "pending",
       },
     ];
   }

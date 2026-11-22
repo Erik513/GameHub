@@ -66,6 +66,7 @@ export function GuideBox({
               onReopen={onReopen}
               onUndo={onUndo}
               onUndoQuestion={onUndoQuestion}
+              outro={view.phase === "outro"}
               role={card.role}
             />
           )}
@@ -91,6 +92,7 @@ export function GuideBox({
               onReopen={onReopen}
               onUndo={onUndo}
               onUndoQuestion={onUndoQuestion}
+              outro={view.phase === "outro"}
               role={card.role}
             />
           )}
@@ -153,6 +155,7 @@ export function GuideBox({
             onReopen={onReopen}
             onUndo={onUndo}
             onUndoQuestion={onUndoQuestion}
+            outro={view.phase === "outro"}
             role={card.role}
           />
         ) : (
@@ -213,9 +216,11 @@ export function GuideBox({
           </div>
         )}
       </div>
-      {(extras.length > 0 || selection.ability !== null) && (
+      {(extras.length > 0 || selection.ability !== null || view.progress >= 1) && (
         <footer className="ww-guide__extra">
           {!showPeople && extras}
+          {/* Cupid: once the choice is confirmed in the first box, the summary stands here. */}
+          {view.progress >= 1 && <Summary view={view} />}
           {/* The choice of people (also at the day) is confirmed with the check below the list. */}
           {selection.ability !== null && (
             <button
@@ -412,8 +417,10 @@ function RoleScript({
   onReopen,
   onUndo,
   onUndoQuestion,
+  outro,
   role,
 }: {
+  readonly outro: boolean;
   readonly boxes: readonly ScriptBox[];
   readonly onCheck: () => void;
   readonly onContinue: () => void;
@@ -436,8 +443,8 @@ function RoleScript({
   const press = (box: ScriptBox) => {
     if (box.id === "heal" || box.id === "poison") onUndoQuestion(box.id);
     else if (box.button === "check")
-      (box.id === "asleep" || box.id === "touch" ? onCheck : onContinue)();
-    else if (box.id === "show") onUndo();
+      (box.id === "asleep" || box.id === "touch" || box.id === "show" ? onCheck : onContinue)();
+    else if (box.id === "show") (outro ? onReopen : onUndo)();
     else onReopen();
   };
   return (
@@ -453,16 +460,21 @@ function RoleScript({
                 </strong>
                 {box.hint && <span className="ww-guide__sub">{box.hint}</span>}
               </span>
-            ) : box.items.length > 1 ? (
-              <ul className="ww-script__items">
-                {box.items.map((item, index) => (
-                  <li className="ww-script__item" key={index}>
-                    {withNames(item, box.names)}
-                  </li>
-                ))}
-              </ul>
             ) : (
-              <strong className="ww-guide__text">{withNames(box.items[0], box.names)}</strong>
+              <span className="ww-script__content">
+                {box.symbol && <WerewolfSymbol id={box.symbol as SymbolId} size={28} />}
+                {box.items.length > 1 ? (
+                  <ul className="ww-script__items">
+                    {box.items.map((item, index) => (
+                      <li className="ww-script__item" key={index}>
+                        {withNames(item, box.names)}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <strong className="ww-guide__text">{withNames(box.items[0], box.names)}</strong>
+                )}
+              </span>
             )}
           </div>
           {box.button !== null && (

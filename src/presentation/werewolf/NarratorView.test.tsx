@@ -117,7 +117,7 @@ async function toSeer(user: ReturnType<typeof userEvent.setup>) {
   for (let guard = 0; guard < 60 && !screen.queryByText(/seer wakes up/); guard += 1) {
     const next = screen.queryByRole("button", { name: "Next" });
     const done = screen.queryByRole("button", { name: "Task done" });
-    const wake = screen.queryByText(/wake up|wakes up/);
+    const wake = document.querySelector(".ww-script__wake:not(:disabled)");
     if (screen.queryByText("All roles are dealt")) await beginGame(user);
     else if (wake) await user.click(document.querySelector(".ww-script__wake")!);
     else if (done && !(done as HTMLButtonElement).disabled) await user.click(done);
@@ -257,7 +257,7 @@ describe("NarratorView choices", () => {
       const confirm = screen.queryByRole("button", { name: "Confirm the choice" });
       const next = screen.queryByRole("button", { name: "Next" });
       const done = screen.queryByRole("button", { name: "Task done" });
-      const wake = screen.queryByText(/wake up|wakes up/);
+      const wake = document.querySelector(".ww-script__wake:not(:disabled)");
       if (screen.queryByText("All roles are dealt")) await beginGame(user);
       else if (confirm && !(confirm as HTMLButtonElement).disabled) await user.click(confirm);
       else if (confirm) {

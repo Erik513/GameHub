@@ -474,8 +474,8 @@ export function reopenDecision(guide: Guide): Guide {
 
 /**
  * Cupid's script has three boxes: pointing at the two people, falling asleep, touching the two. The people are chosen
- * with the first; the check of the second says that Cupid sleeps, the check of the third that the lovers were touched,
- * which finishes the step.
+ * in the list; the check of the first box confirms the decision, the check of the second says that Cupid sleeps, the
+ * check of the third that the lovers were touched, which finishes the step.
  */
 export function checkScript(guide: Guide): Guide {
   const frame = current(guide);
@@ -484,9 +484,9 @@ export function checkScript(guide: Guide): Guide {
   if (frame.phase !== "act" || state.status !== "cupid" || selection.ability !== null) return guide;
   if (selection.picks.length < 2) return guide;
   const progress = selection.progress ?? 0;
-  if (progress === 0) return withSelection(guide, { ...selection, progress: 1 });
-  // The last check: the step is finished; the summary and "next" follow.
-  return continueGuide(withSelection(guide, { ...selection, progress: 2 }));
+  // 0 -> 1: the choice of the two is confirmed; 1 -> 2: Cupid sleeps; the last check (the lovers are touched) finishes the step.
+  if (progress < 2) return withSelection(guide, { ...selection, progress: progress + 1 });
+  return continueGuide(withSelection(guide, { ...selection, progress: 3 }));
 }
 
 /**

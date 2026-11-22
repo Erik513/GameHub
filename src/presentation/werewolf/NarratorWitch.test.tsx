@@ -51,7 +51,8 @@ function Harness({ attack }: { readonly attack: boolean }) {
 }
 
 const abilityButtons = () => [...document.querySelectorAll<HTMLButtonElement>(".ww-ability")];
-const steps = () => [...document.querySelectorAll<HTMLElement>(".ww-script__step")];
+// The first box (the role wakes up) is not part of what these tests look at.
+const steps = () => [...document.querySelectorAll<HTMLElement>(".ww-script__step")].slice(1);
 const state = (index: number) => steps()[index]?.getAttribute("data-state");
 
 async function open(attack: boolean) {
@@ -162,7 +163,7 @@ it("has an undo button right of every box with a decision, as high as the box; t
   expect(sleepBox.textContent).toMatch(/schläft wieder ein|goes back to sleep/);
   // Both boxes of the script have an undo button, in a row with the box.
   expect(document.querySelector(".ww-guide__chosen button")).toBeNull();
-  const rows = [...document.querySelectorAll(".ww-script > .ww-script__row")];
+  const rows = [...document.querySelectorAll(".ww-script > .ww-script__row")].slice(1);
   expect(rows).toHaveLength(3);
   for (const row of rows.slice(0, 2)) {
     expect(row.querySelector(".ww-script__step")).not.toBeNull();
