@@ -600,12 +600,15 @@ export function backGuide(guide: Guide, confirmed = false): GuideBack {
     }
     // Coming back into the role reveal is not marked: there the way back has no limit.
     const crossed = session !== guide.session && session.present.status !== "roles";
+    // Back from the next step reopens the decision of the role at once (not the "asleep" step, which is locked).
+    const reopened =
+      crossed && previous.phase === "outro" && trail.length > 1 ? trail.slice(0, -1) : trail;
     return {
       guide: {
         session,
         // All steps of the role are marked, so the mark stays while the narrator goes back inside the role.
         trail: crossed
-          ? trail.map((frame) =>
+          ? reopened.map((frame) =>
               frame.pastLength === previous.pastLength ? { ...frame, returned: true } : frame,
             )
           : trail,

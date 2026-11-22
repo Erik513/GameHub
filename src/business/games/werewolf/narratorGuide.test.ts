@@ -166,7 +166,9 @@ describe("narrator guide", () => {
         expect(back.ok).toBe(true);
         if (!back.ok) break;
         expect(back.guide.session.present).toEqual(guide.session.present);
-        expect(back.guide.trail.at(-1)?.phase).toBe(describeGuide(guide).phase);
+        // From the next step back reopens the decision of the role ("act"), not the locked "asleep" step.
+        const before = describeGuide(guide).phase;
+        expect(back.guide.trail.at(-1)?.phase).toBe(before === "outro" ? "act" : before);
         guide = next;
       }
       expect(guide.session.past.length).toBeGreaterThan(0);
@@ -648,5 +650,23 @@ describe("narrator guide", () => {
     // Skipping hands "nobody" to the game: no result is shown.
     const done = continueGuide(guide);
     expect(describeGuide(done).state.status).not.toBe("investigation");
+  });
+
+  it("restores the spell when the narrator goes back from the next step: the decision is open again", () => {
+    let guide = game(["magician"], { attackOnFirstNight: true });
+    for (let step = 0; step < 200 && describeGuide(guide).card?.role !== "magician"; step += 1)
+      guide = forward(guide)!;
+    guide = continueGuide(guide);
+    guide = chooseAbility(guide, "kill");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    guide = continueGuide(guide);
+    guide = continueGuide(guide);
+    const back = backGuide(guide, true);
+    expect(back.ok).toBe(true);
+    if (!back.ok) return;
+    const view = describeGuide(back.guide);
+    expect(view.phase).toBe("act");
+    expect(view.state.status).toBe("magician");
+    expect(view.card?.abilities.every((ability) => ability.available)).toBe(true);
   });
 });

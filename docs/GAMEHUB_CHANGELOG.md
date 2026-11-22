@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-112: Zurück öffnet die Entscheidung
+
+- Zurück aus dem nächsten Schritt führt direkt in die offene Entscheidung der Rolle.
+
 ### We-01-111: Nach der Entscheidung gesperrt
 
 - Nach einer Entscheidung (Fähigkeit oder Verzichten) sind alle Fähigkeiten gesperrt; „Zurück“ macht sie wieder frei.

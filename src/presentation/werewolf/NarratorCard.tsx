@@ -93,9 +93,6 @@ export function NarratorCard({
                   <WerewolfSymbol id={ability.symbol} size={24} />
                 </span>
                 <span>{name}</span>
-                {ability.count !== undefined && (
-                  <span className="ww-ability__count">{ability.count}</span>
-                )}
               </button>
             );
           })}

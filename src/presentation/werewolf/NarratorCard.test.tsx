@@ -49,7 +49,7 @@ describe("NarratorCard", () => {
     );
   });
 
-  it("shows the counter of the magician on both spells, and German texts", async () => {
+  it("shows both spells of the magician without a counter, and German texts", async () => {
     const magician: Card = {
       abilities: [
         { available: true, count: 2, id: "heal", symbol: "heal" },
@@ -63,9 +63,7 @@ describe("NarratorCard", () => {
     const { container } = await inLanguage("de", <NarratorCard card={magician} />);
     expect(screen.getByText("Magier")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Heilen: bereit" })).toBeTruthy();
-    expect([...container.querySelectorAll(".ww-ability__count")].map((c) => c.textContent)).toEqual(
-      ["2", "2"],
-    );
+    expect(container.querySelector(".ww-ability__count")).toBeNull();
   });
 
   it("shows a cover call without a name and without buttons for a role without abilities", async () => {

@@ -1183,20 +1183,6 @@
   display: inline-grid;
 }
 
-.ww-ability__count {
-  position: absolute;
-  right: -12px;
-  bottom: -6px;
-  min-width: 18px;
-  padding: 0 4px;
-  border: 1px solid currentColor;
-  border-radius: 9px;
-  background: var(--color-ink);
-  font-size: var(--text-xs);
-  line-height: 16px;
-  text-align: center;
-}
-
 /* The narrator view: the card on top, the guide below it, back and next at the bottom edge. */
 .ww-night__stage {
   display: grid;
@@ -2306,20 +2292,4 @@ button.ww-guide__strip[data-next] {
   color: var(--color-ink-muted);
   opacity: 0.6;
   cursor: default;
-}
-
-/* What is left of a limited ability stands as a small number behind the name, in line with it. */
-.ww-ability .ww-ability__count {
-  position: static;
-  display: inline-grid;
-  place-items: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 var(--space-1);
-  border: 1px solid currentColor;
-  border-radius: 10px;
-  background: transparent;
-  color: inherit;
-  font-size: var(--text-xs);
-  line-height: 1;
 }
