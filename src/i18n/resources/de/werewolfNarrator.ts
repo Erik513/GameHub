@@ -162,6 +162,7 @@ export const werewolfNarratorTexts = {
       },
       witch: {
         showVictim: "Zeige das Opfer: {{name}}",
+        noVictimWord: "kein Opfer",
         showNoVictim: "Zeige das Opfer: kein Opfer",
         healAsk: "Will die Hexe das Opfer retten?",
         healUsed: "Der Heiltrank ist verbraucht",

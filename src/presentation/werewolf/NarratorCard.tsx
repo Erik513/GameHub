@@ -17,6 +17,8 @@ interface NarratorCardProps {
   readonly settled?: boolean;
   /** The narrator has decided: no ability can be tapped any more (the way back opens the decision again). */
   readonly locked?: boolean;
+  /** The script has not reached the decision yet (the witch: the victim is not shown yet): nothing can be pressed. */
+  readonly waiting?: boolean;
   /**
    * The ability the narrator asks about now (the witch is asked about the healing potion first, then about the poison):
    * all abilities stay visible, but only this one is framed and can be tapped; "skip" answers the question.
@@ -50,6 +52,7 @@ export function NarratorCard({
   pressed = [],
   settled = false,
   locked = false,
+  waiting = false,
   asked = null,
   spellsUsed = 0,
   next = false,
@@ -108,6 +111,8 @@ export function NarratorCard({
                 // Once the narrator has decided the abilities look used up (neutral); "reset" makes them green again.
                 data-state={
                   locked ||
+                  // Not yet the turn of the decision: dark like a used ability, so it does not look pressable.
+                  waiting ||
                   (ability.count !== undefined &&
                     ability.count - spellsUsed <= 0 &&
                     !pressed.includes(ability.id))
@@ -118,7 +123,7 @@ export function NarratorCard({
                 }
                 // An ability that cannot be used is asked as well: it gets a thinner frame.
                 data-next={
-                  (asked === null ? next : asked === ability.id) && !settled
+                  (asked === null ? next : asked === ability.id) && !settled && !waiting
                     ? ability.available
                       ? "full"
                       : "thin"
@@ -128,6 +133,7 @@ export function NarratorCard({
                 disabled={
                   !ability.available ||
                   locked ||
+                  waiting ||
                   (asked !== null && asked !== ability.id) ||
                   (ability.count !== undefined &&
                     ability.count - spellsUsed <= 0 &&

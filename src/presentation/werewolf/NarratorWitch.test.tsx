@@ -55,6 +55,10 @@ const abilityButtons = () => [...document.querySelectorAll<HTMLButtonElement>(".
 const steps = () => [...document.querySelectorAll<HTMLElement>(".ww-script__step")].slice(1);
 const state = (index: number) => steps()[index]?.getAttribute("data-state");
 
+/** The narrator shows the victim (the check of the first box of the script): only then the witch is asked. */
+const showVictim = () =>
+  fireEvent.click(document.querySelector(".ww-script__check:not(.ww-script__wake)")!);
+
 async function open(attack: boolean) {
   const i18n = await createGameHubI18n("en");
   render(
@@ -67,6 +71,12 @@ async function open(attack: boolean) {
 
 it("shows all options above at all times and the two questions as boxes below, the open one in blue", async () => {
   await open(true);
+  // Until the narrator has shown the victim the buttons above wait: nothing can be pressed and nothing is framed.
+  for (const button of abilityButtons()) {
+    expect(button).toBeDisabled();
+    expect(button).not.toHaveAttribute("data-next");
+  }
+  showVictim();
   // Above: Heal, Poison and Skip stay visible; in the first question Heal and Skip are framed, Poison waits.
   const names = () => abilityButtons().map((button) => button.textContent);
   expect(names()).toEqual(["Heal", "Poison", "Skip"]);
@@ -75,27 +85,20 @@ it("shows all options above at all times and the two questions as boxes below, t
   expect(skip).toHaveAttribute("data-next");
   expect(poison).not.toHaveAttribute("data-next");
   expect(poison).toBeDisabled();
-  // Below: two boxes, the first one is open; the hint with the victim stands below with its own border.
-  // The first box holds two tasks as a list (show the victim, ask), the second one task.
-  expect(
-    steps()
-      .slice(0, 2)
-      .map((step) =>
-        [...step.querySelectorAll(".ww-script__item")].map((item) => item.textContent),
-      ),
-  ).toEqual([
-    [expect.stringMatching(/^Show the victim: P\d+$/), "Does the witch want to save the victim?"],
-    [],
-  ]);
-  expect(steps()[1]?.textContent).toBe(
+  // Below: three boxes (show the victim, the first question, the second question), the first one is open. The name
+  // of the victim is underlined; the hint with the victim stands below with its own border.
+  expect(steps()[0]?.textContent).toMatch(/^Show the victim: P[0-9]+$/);
+  expect(steps()[0]?.querySelector(".ww-name")).not.toBeNull();
+  expect(steps()[1]?.textContent).toBe("Does the witch want to save the victim?");
+  expect(steps()[2]?.textContent).toBe(
     "Does the witch want to poison somebody? Then she points at a person",
   );
-  expect([state(0), state(1)]).toEqual(["active", "pending"]);
+  expect([state(0), state(1), state(2)]).toEqual(["done", "active", "pending"]);
   expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked/);
   // "Heal" answers the first question with yes; the second box opens, all options are still there.
   fireEvent.click(heal!);
   expect(names()).toEqual(["Heal", "Poison", "Skip"]);
-  expect([state(0), state(1)]).toEqual(["done", "active"]);
+  expect([state(0), state(1), state(2)]).toEqual(["done", "done", "active"]);
   expect(abilityButtons()[1]).toHaveAttribute("data-next");
   expect(abilityButtons()[0]).not.toHaveAttribute("data-next");
   // "Poison" opens the list of people; a person and the check mark finish the step.
@@ -114,14 +117,16 @@ it("shows all options above at all times and the two questions as boxes below, t
 
 it("answers both questions with skip: nothing is used and the step is finished with two taps", async () => {
   await open(true);
+  showVictim();
   fireEvent.click(abilityButtons()[2]!);
-  expect([state(0), state(1)]).toEqual(["done", "active"]);
+  expect([state(0), state(1), state(2)]).toEqual(["done", "done", "active"]);
   fireEvent.click(abilityButtons()[2]!);
   expect(screen.getByText(/Nothing chosen/)).toBeInTheDocument();
 });
 
 it("asks about the healing potion although nobody was attacked: the hint says why the potion cannot be used, skip answers", async () => {
   await open(false);
+  showVictim();
   const [heal, , skip] = abilityButtons();
   // The potion cannot be used: it is disabled but carries the thinner blue frame, because the question is asked anyway.
   expect(heal).toBeDisabled();
@@ -130,25 +135,27 @@ it("asks about the healing potion although nobody was attacked: the hint says wh
   expect(skip).toHaveAttribute("data-next");
   // The reason stands below as a hint with its own (yellow) border.
   expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked nobody/);
-  expect(steps()[0]!.querySelector(".ww-script__item")?.textContent).toBe(
-    "Show the victim: no victim",
-  );
+  expect(steps()[0]!.textContent).toBe("Show the victim: no victim");
+  // "No victim" is shown in red.
+  expect(steps()[0]!.querySelector(".ww-red")?.textContent).toBe("no victim");
   fireEvent.click(skip!);
-  expect([state(0), state(1)]).toEqual(["done", "active"]);
+  expect([state(0), state(1), state(2)]).toEqual(["done", "done", "active"]);
 });
 
 it("has an undo button right of every box with a decision, as high as the box; the blue summary only sums up", async () => {
   await open(true);
-  // The undo buttons are always there (nothing moves): switched off while nothing is decided.
+  // The undo buttons are always there (nothing moves): switched off while nothing is decided. The first box has a
+  // check mark (the victim is shown) until it is done.
   for (const button of screen.getAllByRole("button", { name: "Undo" }))
     expect(button).toBeDisabled();
+  showVictim();
   fireEvent.click(abilityButtons()[0]!);
-  // The first question is answered: its undo button is on, the one of the open second box stays off.
+  // The first question is answered: the undo buttons of the first two boxes are on, the one of the open third box stays off.
   expect(
     screen
       .getAllByRole("button", { name: "Undo" })
       .map((button) => (button as HTMLButtonElement).disabled),
-  ).toEqual([false, true]);
+  ).toEqual([false, false, true]);
   fireEvent.click(abilityButtons()[1]!);
   fireEvent.click(document.querySelector(".ww-person")!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
@@ -164,23 +171,24 @@ it("has an undo button right of every box with a decision, as high as the box; t
   // Both boxes of the script have an undo button, in a row with the box.
   expect(document.querySelector(".ww-guide__chosen button")).toBeNull();
   const rows = [...document.querySelectorAll(".ww-script > .ww-script__row")].slice(1);
-  expect(rows).toHaveLength(3);
-  for (const row of rows.slice(0, 2)) {
+  expect(rows).toHaveLength(4);
+  for (const row of rows.slice(0, 3)) {
     expect(row.querySelector(".ww-script__step")).not.toBeNull();
     expect(row.querySelector(".ww-script__undo")).not.toBeNull();
   }
-  // The undo of the second box asks the poison question again, the answer to the first question stays.
-  fireEvent.click(rows[1]!.querySelector(".ww-script__undo")!);
-  expect([state(0), state(1)]).toEqual(["done", "active"]);
+  // The undo of the third box asks the poison question again, the answer to the first question stays.
+  fireEvent.click(rows[2]!.querySelector(".ww-script__undo")!);
+  expect([state(0), state(1), state(2)]).toEqual(["done", "done", "active"]);
   expect(abilityButtons()[1]).toHaveAttribute("data-next");
-  // The undo of the first box asks the first question again.
-  fireEvent.click(screen.getAllByRole("button", { name: "Undo" })[0]!);
-  expect([state(0), state(1)]).toEqual(["active", "pending"]);
+  // The undo of the second box asks the first question again (the victim stays shown).
+  fireEvent.click(rows[1]!.querySelector(".ww-script__undo")!);
+  expect([state(0), state(1), state(2)]).toEqual(["done", "active", "pending"]);
   expect(abilityButtons()[0]).toHaveAttribute("data-next");
 });
 
 it("lets the list of people cover the whole lower box: no script and no hint while people are chosen", async () => {
   await open(true);
+  showVictim();
   fireEvent.click(abilityButtons()[0]!);
   // The poison is used: the list of people opens.
   fireEvent.click(abilityButtons()[1]!);

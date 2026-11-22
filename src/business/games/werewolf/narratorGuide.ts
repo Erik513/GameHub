@@ -473,7 +473,7 @@ export function reopenDecision(guide: Guide): Guide {
 }
 
 /**
- * Cupid's script has three boxes: pointing at the two people, falling asleep, touching the two. The people are chosen
+ * The check of a box of a script that is not decided by a choice: Cupid's script has three boxes: pointing at the two people, falling asleep, touching the two. The people are chosen
  * in the list; the check of the first box confirms the decision, the check of the second says that Cupid sleeps, the
  * check of the third that the lovers were touched, which finishes the step.
  */
@@ -481,6 +481,12 @@ export function checkScript(guide: Guide): Guide {
   const frame = current(guide);
   const state = guide.session.present;
   const { selection } = frame;
+  // The witch: the narrator has shown the victim (the check of the first box of her script).
+  if (frame.phase === "act" && state.status === "witch" && selection.ability === null) {
+    return (selection.progress ?? 0) >= 1 || selection.question !== "heal"
+      ? guide
+      : withSelection(guide, { ...selection, progress: 1 });
+  }
   if (frame.phase !== "act" || state.status !== "cupid" || selection.ability !== null) return guide;
   if (selection.picks.length < 2) return guide;
   const progress = selection.progress ?? 0;
@@ -500,9 +506,10 @@ export function undoQuestion(guide: Guide, question: "heal" | "poison"): Guide {
   if (state.status !== "witch" || frame.selection.question === undefined) return guide;
   const initial = initialSelection(state);
   const selection =
+    // The victim was shown already: a question that is asked again does not take the first box back.
     question === "heal"
-      ? initial
-      : { ...initial, heal: frame.selection.heal, question: "poison" as const };
+      ? { ...initial, progress: 1 }
+      : { ...initial, heal: frame.selection.heal, progress: 1, question: "poison" as const };
   if (frame.phase === "outro")
     return {
       ...guide,

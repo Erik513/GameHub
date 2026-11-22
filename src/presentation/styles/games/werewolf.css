@@ -2578,3 +2578,7 @@ button.ww-guide__strip[data-next] {
   margin-right: 3px;
   vertical-align: -2px;
 }
+
+.ww-red {
+  color: var(--color-danger);
+}

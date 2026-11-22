@@ -137,6 +137,8 @@ export interface ScriptBox {
   readonly symbol?: string;
   /** Player names in the texts of the box: they are shown in bold. */
   readonly names?: readonly string[];
+  /** A part of the text that is shown in red ("no victim"). */
+  readonly red?: string;
   readonly state: "active" | "done" | "pending";
 }
 
@@ -178,7 +180,11 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
     ...boxes.map((box) => {
       // The wolves who only look at each other (no attack in the first night) have no ability to show.
       const symbol =
-        box.id === "asleep" || step.statement === "noAttack" ? undefined : symbolOf(box.id);
+        box.id === "asleep" ||
+        step.statement === "noAttack" ||
+        (box.id === "show" && view.state.status === "witch")
+          ? undefined
+          : symbolOf(box.id);
       return {
         ...box,
         ...(symbol ? { symbol } : {}),
@@ -200,22 +206,32 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
     state: outro ? "active" : "pending",
   };
 
-  // The witch: two questions, then falling asleep.
+  // The witch: show the victim, two questions, then falling asleep.
   if (view.question !== null && !card.cover) {
     const victim = state.wolfTarget;
+    // The first box is done once the narrator has shown the victim (its check) or the first question is answered.
+    const shown = outro || view.progress >= 1 || view.question === "poison";
     return [
       {
-        button: "undo",
-        enabled: outro || view.question === "poison",
-        id: "heal",
-        ...(victim ? { names: [victim.name] } : {}),
+        button: shown ? "undo" : "check",
+        enabled: true,
+        id: "show",
+        ...(victim
+          ? { names: [victim.name] }
+          : { red: t("werewolfNarrator.guide.witch.noVictimWord") }),
         items: [
           victim
             ? t("werewolfNarrator.guide.witch.showVictim", { name: victim.name })
             : t("werewolfNarrator.guide.witch.showNoVictim"),
-          t("werewolfNarrator.guide.witch.healAsk"),
         ],
-        state: outro || view.question === "poison" ? "done" : "active",
+        state: shown ? "done" : "active",
+      },
+      {
+        button: "undo",
+        enabled: outro || view.question === "poison",
+        id: "heal",
+        items: [t("werewolfNarrator.guide.witch.healAsk")],
+        state: outro || view.question === "poison" ? "done" : shown ? "active" : "pending",
       },
       {
         button: "undo",

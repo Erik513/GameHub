@@ -68,6 +68,7 @@ export function GuideBox({
               onUndo={onUndo}
               onUndoQuestion={onUndoQuestion}
               outro={view.phase === "outro"}
+              question={view.question}
               role={card.role}
             />
           )}
@@ -94,6 +95,7 @@ export function GuideBox({
               onUndo={onUndo}
               onUndoQuestion={onUndoQuestion}
               outro={view.phase === "outro"}
+              question={view.question}
               role={card.role}
             />
           )}
@@ -159,6 +161,7 @@ export function GuideBox({
             onUndo={onUndo}
             onUndoQuestion={onUndoQuestion}
             outro={view.phase === "outro"}
+            question={view.question}
             role={card.role}
           />
         ) : (
@@ -404,7 +407,17 @@ function Ballots({
 }
 
 /** A text with the player names in bold, so they stand out when the narrator reads. */
-function withNames(text: ReactNode, names: readonly string[] | undefined): ReactNode {
+function withNames(text: ReactNode, names: readonly string[] | undefined, red?: string): ReactNode {
+  if (typeof text === "string" && red && text.includes(red)) {
+    const at = text.indexOf(red);
+    return (
+      <>
+        {text.slice(0, at)}
+        <span className="ww-red">{red}</span>
+        {text.slice(at + red.length)}
+      </>
+    );
+  }
   if (typeof text !== "string" || !names || names.length === 0) return text;
   const escaped = names.map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
   return text.split(new RegExp("(" + escaped.join("|") + ")")).map((part, index) =>
@@ -430,9 +443,12 @@ function RoleScript({
   onUndo,
   onUndoQuestion,
   outro,
+  question,
   role,
 }: {
   readonly outro: boolean;
+  /** The question of the witch that is open (null for every other role). */
+  readonly question: "heal" | "poison" | null;
   readonly boxes: readonly ScriptBox[];
   readonly onCheck: () => void;
   readonly onContinue: () => void;
@@ -456,6 +472,7 @@ function RoleScript({
     if (box.id === "heal" || box.id === "poison") onUndoQuestion(box.id);
     else if (box.button === "check")
       (box.id === "asleep" || box.id === "touch" || box.id === "show" ? onCheck : onContinue)();
+    else if (box.id === "show" && question !== null) (outro ? onReopen : onUndo)();
     else if (box.id === "show") (outro ? onReopen : onUndo)();
     else onReopen();
   };
@@ -478,12 +495,14 @@ function RoleScript({
                   <ul className="ww-script__items">
                     {box.items.map((item, index) => (
                       <li className="ww-script__item" key={index}>
-                        {withNames(item, box.names)}
+                        {withNames(item, box.names, box.red)}
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <strong className="ww-guide__text">{withNames(box.items[0], box.names)}</strong>
+                  <strong className="ww-guide__text">
+                    {withNames(box.items[0], box.names, box.red)}
+                  </strong>
                 )}
               </span>
             )}

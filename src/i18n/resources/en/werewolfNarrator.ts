@@ -162,6 +162,7 @@ export const werewolfNarratorTexts = {
       },
       witch: {
         showVictim: "Show the victim: {{name}}",
+        noVictimWord: "no victim",
         showNoVictim: "Show the victim: no victim",
         healAsk: "Does the witch want to save the victim?",
         healUsed: "The healing potion is used up",

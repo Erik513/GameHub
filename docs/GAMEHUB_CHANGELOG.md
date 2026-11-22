@@ -4,6 +4,7 @@
 
 ### We-01-139: Erwachen als erste Skriptbox
 
+- Hexe: Skript in drei Boxen (Opfer zeigen mit Haken, Frage Retten, Frage Vergiften), Name unterstrichen, „kein Opfer“ rot; Knöpfe oben erst nach dem Zeigen des Opfers bedienbar und bis dahin dunkel.
 - Ergebnisse (Seherin, Seher-Lehrling, Ermittler, Betrunkener) stehen in der Zusammenfassung statt im Skript; Daumen und Farbe; Amulett-Status als Hinweis.
 - Skripttexte enden einheitlich ohne Punkt.
 - Werwölfe (Nacht 1 ohne Angriff): Skript „Die Werwölfe schauen sich an.“, „… erst ab Nacht 2“ als gelber Hinweis.

@@ -31,6 +31,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
   const { t } = useTranslation();
   const guide = useNarratorGuide(session, onSession, trail);
   const { view } = guide;
+  // The witch is asked only when the script has got there: first the victim is shown (the check of her first box).
+  const witchWaiting =
+    view.phase === "act" && view.question === "heal" && view.progress < 1 && !view.card?.cover;
   return (
     <section
       aria-label={t("werewolfNarrator.view")}
@@ -88,6 +91,8 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               }
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               locked={view.phase === "outro"}
+              // The witch: the abilities wait until the narrator has shown the victim (the check of the first box).
+              waiting={witchWaiting}
               skip={
                 (view.phase === "act" || view.phase === "outro") &&
                 describeRoleStep(view.state).skippable
@@ -95,11 +100,13 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                       // The button stays where it is (the controls do not jump); it is only switched off when it
                       // does not apply: after the step was left, or while a choice is made.
                       disabled:
+                        witchWaiting ||
                         view.phase === "outro" ||
                         view.selection.ability !== null ||
                         (view.question === null &&
                           (view.selection.picks.length > 0 || view.selection.heal)),
                       framed:
+                        !witchWaiting &&
                         view.phase === "act" &&
                         (view.question !== null
                           ? view.selection.ability === null
