@@ -2621,3 +2621,11 @@ button.ww-guide__strip[data-next] {
   cursor: default;
   filter: brightness(0.55);
 }
+
+/* The three buttons of the choice of people (undo, close, confirm) are as big as the buttons of the bar at the top. */
+.ww-guide__tools--bar .ww-guide__close,
+.ww-guide__confirm {
+  width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+}
