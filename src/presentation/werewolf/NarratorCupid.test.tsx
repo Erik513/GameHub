@@ -62,7 +62,7 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   fireEvent.click(document.querySelector(".ww-script__wake")!);
   // Before the choice: three boxes, no button can be pressed yet (no reset or X beside the script).
   expect(boxes().map((box) => box.text)).toEqual([
-    "Make two people fall in love (point)",
+    "Choose two people to fall in love (point)",
     expect.stringMatching(/goes back to sleep|falls asleep|sleep/i),
     "Touch both of them lightly on the shoulder",
   ]);
