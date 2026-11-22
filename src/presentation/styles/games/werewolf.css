@@ -2490,3 +2490,9 @@ button.ww-guide__strip[data-next] {
   align-items: stretch;
   gap: var(--space-2);
 }
+
+.ww-script__undo:disabled,
+.ww-script__row .ww-guide__close:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

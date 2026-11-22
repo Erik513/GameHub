@@ -152,7 +152,8 @@ describe("NarratorView choices", () => {
     const user = await renderView("en");
     await toSeer(user);
     await user.click(screen.getByText(/seer wakes up/));
-    expect(screen.queryByRole("button", { name: "Close the selection" })).toBeNull();
+    // The buttons of the script are always there, switched off while nothing is open.
+    expect(screen.getByRole("button", { name: "Close the selection" })).toBeDisabled();
     await user.click(screen.getByRole("button", { name: /Look: ready/ }));
     const people = screen
       .getAllByRole("button")
@@ -164,7 +165,7 @@ describe("NarratorView choices", () => {
     expect(
       screen.queryAllByRole("button").filter((button) => button.classList.contains("ww-person")),
     ).toHaveLength(0);
-    expect(screen.queryByRole("button", { name: "Close the selection" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Close the selection" })).toBeDisabled();
   });
 
   it("leads the narrator with a blue frame: the ability, then the check mark once the choice is complete", async () => {

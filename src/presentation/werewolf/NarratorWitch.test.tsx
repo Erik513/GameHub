@@ -131,16 +131,25 @@ it("asks about the healing potion although nobody was attacked: the hint says wh
 
 it("has an undo button right of every box with a decision, as high as the box; the blue summary only sums up", async () => {
   await open(true);
-  // Nothing decided yet: no undo button.
-  expect(screen.queryAllByRole("button", { name: "Undo" })).toHaveLength(0);
+  // The undo buttons are always there (nothing moves): switched off while nothing is decided.
+  for (const button of screen.getAllByRole("button", { name: "Undo" }))
+    expect(button).toBeDisabled();
   fireEvent.click(abilityButtons()[0]!);
-  // The first question is answered: its box has the undo button, the open second one has none.
-  expect(screen.getAllByRole("button", { name: "Undo" })).toHaveLength(1);
+  // The first question is answered: its undo button is on, the one of the open second box stays off.
+  expect(
+    screen
+      .getAllByRole("button", { name: "Undo" })
+      .map((button) => (button as HTMLButtonElement).disabled),
+  ).toEqual([false, true]);
   fireEvent.click(abilityButtons()[1]!);
   fireEvent.click(document.querySelector(".ww-person")!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   expect(screen.getByText(/Chosen: .*Healed.*Poisoned/)).toBeInTheDocument();
-  // The summary has no button; both boxes have one, in a row with the box.
+  // The box that says the witch sleeps again stands below the script, in the blue frame; the summary has no button.
+  const stack = document.querySelector(".ww-guide__head .ww-script")!;
+  expect(stack.lastElementChild?.getAttribute("data-state")).toBe("active");
+  expect(stack.lastElementChild?.textContent).toMatch(/schläft wieder ein|goes back to sleep/);
+  // Both boxes of the script have an undo button, in a row with the box.
   expect(document.querySelector(".ww-guide__chosen button")).toBeNull();
   const rows = [...document.querySelectorAll(".ww-script > .ww-script__row")];
   expect(rows).toHaveLength(2);
@@ -153,7 +162,7 @@ it("has an undo button right of every box with a decision, as high as the box; t
   expect([state(0), state(1)]).toEqual(["done", "active"]);
   expect(abilityButtons()[1]).toHaveAttribute("data-next");
   // The undo of the first box asks the first question again.
-  fireEvent.click(screen.getByRole("button", { name: "Undo" }));
+  fireEvent.click(screen.getAllByRole("button", { name: "Undo" })[0]!);
   expect([state(0), state(1)]).toEqual(["active", "pending"]);
   expect(abilityButtons()[0]).toHaveAttribute("data-next");
 });
