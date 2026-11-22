@@ -1,16 +1,15 @@
 import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
 import { describeWinners, type GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
 import {
   currentWerewolfRole,
   werewolfAnnouncement,
-  werewolfDrunkReveal,
   type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
 import { Icon } from "../components";
 import { DealCard } from "./DealCard";
 import { variantOfRole } from "./roleAbilities";
+import { stepExtras, stepTitle } from "./stepText";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface GuideBoxProps {
@@ -80,7 +79,6 @@ export function GuideBox({
   }
 
   const step = describeRoleStep(state);
-  const info = actInfo(view, t) ?? dayPrompt(view, t);
   const showPeople =
     selection.ability !== null &&
     (view.targets.length > 0 || selection.picks.length > 0 || view.canChooseNobody);
@@ -89,44 +87,11 @@ export function GuideBox({
   const hasChoice = card.abilities.some((ability) => ability.available);
   const confirmReady =
     view.canContinue && (selection.ability !== null || selection.heal || !hasChoice);
-  const extras = [
-    !card.cover && step.showsVictim && (
-      <span className="ww-guide__victim" key="victim">
-        {state.wolfTarget
-          ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
-          : t("werewolfNarrator.guide.noVictim")}
-      </span>
-    ),
-    !card.cover && selection.heal && state.wolfTarget && (
-      <span className="ww-guide__victim" key="heal">
-        {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}
-      </span>
-    ),
-    !card.cover && step.showsVictim && !selection.heal && selection.picks.length === 0 && (
-      <small key="skip">{t("werewolfNarrator.guide.skipHint")}</small>
-    ),
-    view.notes.restricted && (
-      <small key="restricted">
-        {t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}
-      </small>
-    ),
-    (state.status === "day" || state.status === "vote") && <DayNotes key="notes" view={view} />,
-  ].filter(Boolean);
+  const extras = stepExtras(view, step, t);
   return (
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
-        <strong className="ww-guide__text">
-          {card.cover
-            ? t("werewolfNarrator.guide.coverTitle")
-            : ((info !== null ? <ResultText state={state} text={info} /> : null) ??
-              (selection.ability
-                ? t(
-                    `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,
-                  )
-                : card.abilities.length > 0
-                  ? t("werewolfNarrator.guide.pickAbility")
-                  : t("werewolfNarrator.guide.confirmDone")))}
-        </strong>
+        <strong className="ww-guide__text">{stepTitle(view, step, t)}</strong>
         <span className="ww-guide__tools">
           {(selection.ability !== null || view.canUndo) && (
             <button
@@ -243,84 +208,6 @@ export function GuideBox({
   );
 }
 
-/** The result of a step in which the narrator reads something out (what the seer sees, who is in love). */
-function actInfo(view: GuideView, t: TFunction): string | null {
-  const { state } = view;
-  switch (state.status) {
-    case "vision":
-      return t(
-        state.isWolf
-          ? "werewolfNarrator.guide.vision.wolf"
-          : "werewolfNarrator.guide.vision.village",
-        { name: state.target },
-      );
-    case "investigation":
-      return t(
-        state.isWolfNearby
-          ? "werewolfNarrator.guide.investigation.yes"
-          : "werewolfNarrator.guide.investigation.no",
-        { name: state.target },
-      );
-    case "lovers":
-      return t("werewolfNarrator.guide.lovers", {
-        first: state.lovers[0],
-        second: state.lovers[1],
-      });
-    case "drunkReveal":
-    case "drunkHunter": {
-      const player = werewolfDrunkReveal(state);
-      return player
-        ? t("werewolfNarrator.guide.drunk", {
-            name: player.name,
-            role: t(`werewolfSymbols.items.${player.role}.name`),
-          })
-        : null;
-    }
-    case "wolves":
-      // The setting "attack from night 2": in the first night the wolves only get to know each other.
-      return describeRoleStep(state).variant === "wolvesNoAttack"
-        ? t("werewolfNarrator.guide.wolvesNoAttack")
-        : null;
-    case "amuletPass":
-      return t("werewolfNarrator.guide.amuletHolder", { name: state.amulet.holder });
-    default:
-      return null;
-  }
-}
-
-const thumbUp =
-  "M7 10v12M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z";
-const thumbDown =
-  "M17 14V2M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z";
-
-/**
- * The result of the seer or the investigator in front of the sentence: a thumb up in green when a werewolf was found,
- * a thumb down in red when not. Other steps show the text alone.
- */
-function ResultText({ state, text }: { readonly state: WerewolfState; readonly text: string }) {
-  const found =
-    state.status === "vision"
-      ? state.isWolf
-      : state.status === "investigation"
-        ? state.isWolfNearby
-        : null;
-  if (found === null) return <>{text}</>;
-  return (
-    <span className="ww-verdict" data-wolf={found}>
-      <svg aria-hidden="true" fill="none" height="40" viewBox="0 0 24 24" width="40">
-        <path
-          d={found ? thumbUp : thumbDown}
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.8"
-        />
-      </svg>
-      {text}
-    </span>
-  );
-}
-
 function PlainBox({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { state } = view;
@@ -388,19 +275,6 @@ function PlainBox({ view }: { readonly view: GuideView }) {
   }
   if (state.status === "finished") return <WinnerList state={state} />;
   return null;
-}
-
-/** What the narrator reads or does during the day: nominate (three choices), vote, or end the day. */
-function dayPrompt(view: GuideView, t: TFunction): string | null {
-  const { selection, state } = view;
-  if (state.status === "vote") return t("werewolfNarrator.guide.day.voters");
-  if (state.status !== "day") return null;
-  if (selection.ability !== "vote") return t("werewolfNarrator.guide.day.idle");
-  const [target, nominator, seconder] = selection.picks;
-  if (target === undefined) return t("werewolfNarrator.guide.day.nominee");
-  if (nominator === undefined) return t("werewolfNarrator.guide.day.nominator");
-  if (seconder === undefined) return t("werewolfNarrator.guide.day.seconder");
-  return t("werewolfNarrator.guide.day.chosen", { nominator, seconder, target });
 }
 
 /** The winner view at the very end: every group of winners with the names of its players. */
@@ -505,21 +379,6 @@ function DeathDetails({ deaths }: { readonly deaths: GuideView["deaths"] }) {
         ))}
       </ul>
     </div>
-  );
-}
-
-/** What the narrator has to keep in mind during the day: who is silenced, who is wounded. */
-function DayNotes({ view }: { readonly view: GuideView }) {
-  const { t } = useTranslation();
-  const { silenced, wounded } = view.notes;
-  if (!silenced && wounded.length === 0) return null;
-  return (
-    <ul className="ww-guide__notes">
-      {silenced && <li>{t("werewolfNarrator.guide.silenced", { name: silenced })}</li>}
-      {wounded.length > 0 && (
-        <li>{t("werewolfNarrator.guide.wounded", { names: wounded.join(", ") })}</li>
-      )}
-    </ul>
   );
 }
 

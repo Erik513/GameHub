@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 291,
+      "completedTasks": 292,
       "totalTasks": 346,
-      "percent": 84.1
+      "percent": 84.4
     }
   },
   "environment": {
@@ -1860,8 +1860,9 @@
         },
         {
           "id": "We-01-107",
-          "title": "Umbau Stufe 2b: Texte (Überschrift, Frage, Ergebnis) und Zusatzzeilen aller Ansichten in die Rollenbeschreibung, gemeinsamer Baustein „Rollenschritt“ statt der Fallunterscheidung in GuideBox",
-          "status": "planned"
+          "title": "Umbau Stufe 2b: Texte (Überschrift, Frage, Ergebnis) und Zusatzzeilen aller Ansichten aus der Rollenbeschreibung, GuideBox als gemeinsamer Baustein",
+          "status": "done",
+          "validation": "Überschrift, Ergebnisse, Tagestexte und Zusatzzeilen stehen jetzt in eigenen Dateien (stepText.tsx mit stepTitle und stepExtras, RoleStepContent.tsx mit ResultText und DayNotes) und werden über die Beschreibung des Schritts (describeRoleStep) gewählt; GuideBox enthält nur noch den gemeinsamen Aufbau (Kopf, Auswahl, Streifen, Haken); Verhalten unverändert; 1592 Tests, tsc -b, eslint sauber; nicht im Browser angesehen. Offen: die Texte selbst (Übersetzungsschlüssel je Rolle) stehen weiter in den Übersetzungsdateien, nicht in der Beschreibung."
         }
       ]
     },

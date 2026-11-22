@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-107: GuideBox als gemeinsamer Baustein
+
+- Rollentexte und Zusatzzeilen in eigenen Dateien, gewählt über die Beschreibung des Schritts; GuideBox hat nur noch den gemeinsamen Aufbau.
+
 ### We-01-106: Jäger mit zwei Ansichten
 
 - Schuss freiwillig oder Pflicht als eigene Ansichten; die Regel „Niemand“ kommt aus der Rollenbeschreibung. Texte und Zusatzzeilen folgen (We-01-107).

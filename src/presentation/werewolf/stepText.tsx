@@ -1,0 +1,113 @@
+import type { TFunction } from "i18next";
+import type { GuideView } from "../../business/games/werewolf/narratorGuide";
+import { describeRoleStep, type RoleStepSpec } from "../../business/games/werewolf/roleStep";
+import { werewolfDrunkReveal } from "../../business/games/werewolf/stateMachine";
+import { DayNotes, ResultText } from "./RoleStepContent";
+
+/*
+ * What a role says in the box: the heading and the lines under the choice, chosen by the description of the step
+ * (`describeRoleStep`). The box itself is one building block for every role.
+ */
+
+/** The result of a step in which the narrator reads something out (what the seer sees, who is in love). */
+export function actInfo(view: GuideView, t: TFunction): string | null {
+  const { state } = view;
+  switch (state.status) {
+    case "vision":
+      return t(
+        state.isWolf
+          ? "werewolfNarrator.guide.vision.wolf"
+          : "werewolfNarrator.guide.vision.village",
+        { name: state.target },
+      );
+    case "investigation":
+      return t(
+        state.isWolfNearby
+          ? "werewolfNarrator.guide.investigation.yes"
+          : "werewolfNarrator.guide.investigation.no",
+        { name: state.target },
+      );
+    case "lovers":
+      return t("werewolfNarrator.guide.lovers", {
+        first: state.lovers[0],
+        second: state.lovers[1],
+      });
+    case "drunkReveal":
+    case "drunkHunter": {
+      const player = werewolfDrunkReveal(state);
+      return player
+        ? t("werewolfNarrator.guide.drunk", {
+            name: player.name,
+            role: t(`werewolfSymbols.items.${player.role}.name`),
+          })
+        : null;
+    }
+    case "wolves":
+      // The setting "attack from night 2": in the first night the wolves only get to know each other.
+      return describeRoleStep(state).variant === "wolvesNoAttack"
+        ? t("werewolfNarrator.guide.wolvesNoAttack")
+        : null;
+    case "amuletPass":
+      return t("werewolfNarrator.guide.amuletHolder", { name: state.amulet.holder });
+    default:
+      return null;
+  }
+}
+
+/** What the narrator reads or does during the day: nominate (three choices), vote, or end the day. */
+export function dayPrompt(view: GuideView, t: TFunction): string | null {
+  const { selection, state } = view;
+  if (state.status === "vote") return t("werewolfNarrator.guide.day.voters");
+  if (state.status !== "day") return null;
+  if (selection.ability !== "vote") return t("werewolfNarrator.guide.day.idle");
+  const [target, nominator, seconder] = selection.picks;
+  if (target === undefined) return t("werewolfNarrator.guide.day.nominee");
+  if (nominator === undefined) return t("werewolfNarrator.guide.day.nominator");
+  if (seconder === undefined) return t("werewolfNarrator.guide.day.seconder");
+  return t("werewolfNarrator.guide.day.chosen", { nominator, seconder, target });
+}
+
+/** The heading of the box: the ask of the step, what the narrator reads out, or what to do next. */
+export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
+  const { card, selection, state } = view;
+  if (!card) return null;
+  if (card.cover) return t("werewolfNarrator.guide.coverTitle");
+  const info = actInfo(view, t) ?? dayPrompt(view, t);
+  if (info !== null) return <ResultText state={state} step={step} text={info} />;
+  if (selection.ability)
+    return t(
+      `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,
+    );
+  return card.abilities.length > 0
+    ? t("werewolfNarrator.guide.pickAbility")
+    : t("werewolfNarrator.guide.confirmDone");
+}
+
+/** The lines under the choice: the victim of the wolves, the hint to skip, a restriction, the notes of the day. */
+export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
+  const { card, selection, state } = view;
+  if (!card) return [];
+  return [
+    !card.cover && step.showsVictim && (
+      <span className="ww-guide__victim" key="victim">
+        {state.wolfTarget
+          ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
+          : t("werewolfNarrator.guide.noVictim")}
+      </span>
+    ),
+    !card.cover && selection.heal && state.wolfTarget && (
+      <span className="ww-guide__victim" key="heal">
+        {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}
+      </span>
+    ),
+    !card.cover && step.showsVictim && !selection.heal && selection.picks.length === 0 && (
+      <small key="skip">{t("werewolfNarrator.guide.skipHint")}</small>
+    ),
+    view.notes.restricted && (
+      <small key="restricted">
+        {t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}
+      </small>
+    ),
+    (state.status === "day" || state.status === "vote") && <DayNotes key="notes" view={view} />,
+  ].filter(Boolean);
+}
