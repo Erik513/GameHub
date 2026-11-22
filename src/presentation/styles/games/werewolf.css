@@ -2652,11 +2652,8 @@ button.ww-guide__strip[data-next] {
 }
 
 /* The hunter is the only one whose role is told: symbol and name of the role stand in his box. */
+/* The box of the hunter has a frame of its own; the content (name, role, reason below) is laid out like every other box. */
 .ww-guide__dead li[data-role="hunter"] {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
   border-color: var(--color-warning);
 }
 
@@ -2666,4 +2663,35 @@ button.ww-guide__strip[data-next] {
   gap: var(--space-1);
   color: var(--color-warning);
   font-size: 0.9rem;
+}
+
+/* A person of the morning is a button: a tap shows the reason of death in the box, another tap covers it again. */
+.ww-guide__dead li {
+  padding: 0;
+}
+
+.ww-guide__dead li > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ww-guide__dead-causes {
+  display: grid;
+  gap: var(--space-1);
+  padding: 0 var(--space-3) var(--space-3);
+  font-size: 0.95rem;
+}
+
+.ww-guide__dead-causes small {
+  color: var(--color-ink-muted);
 }

@@ -180,6 +180,7 @@ export const werewolfNarratorTexts = {
       },
       victim: "Die Werwölfe haben {{name}} angegriffen",
       noVictim: "Die Werwölfe haben niemanden angegriffen",
+      causesHint: "Name antippen zeigt oder verdeckt die Ursache",
       causesTitle: "Ursache – nur für dich, nicht vorlesen",
       abilityDone: {
         vote: "Abstimmung",

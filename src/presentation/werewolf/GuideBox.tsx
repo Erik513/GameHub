@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { describeWinners, type GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
@@ -247,6 +247,8 @@ export function GuideBox({
 function PlainBox({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { state } = view;
+  // The people of the morning whose reason of death is shown: a tap shows it, another tap covers it again.
+  const [shown, setShown] = useState<readonly string[]>([]);
   if (state.status === "roles") {
     const dealt = currentWerewolfRole(state);
     if (!dealt) return null;
@@ -277,6 +279,7 @@ function PlainBox({ view }: { readonly view: GuideView }) {
             // Every dead person in a box of their own, one below the other: only names, never a role.
             <div className="ww-guide__dead">
               <strong>{t("werewolfNarrator.guide.morning.died")}</strong>
+              <small>{t("werewolfNarrator.guide.causesHint")}</small>
               <ul>
                 {names.map((name) => {
                   // The hunter gives himself away with his shot: his role is public, so his box says it.
@@ -285,12 +288,34 @@ function PlainBox({ view }: { readonly view: GuideView }) {
                   );
                   return (
                     <li data-role={hunter ? "hunter" : undefined} key={name}>
-                      <span>{name}</span>
-                      {hunter && (
-                        <span className="ww-guide__dead-role">
-                          <WerewolfSymbol id="hunter" size={22} />
-                          {t("werewolfSymbols.items.hunter.name")}
-                        </span>
+                      <button
+                        aria-expanded={shown.includes(name)}
+                        onClick={() =>
+                          setShown((now) =>
+                            now.includes(name)
+                              ? now.filter((other) => other !== name)
+                              : [...now, name],
+                          )
+                        }
+                        type="button"
+                      >
+                        <span>{name}</span>
+                        {hunter && (
+                          <span className="ww-guide__dead-role">
+                            <WerewolfSymbol id="hunter" size={22} />
+                            {t("werewolfSymbols.items.hunter.name")}
+                          </span>
+                        )}
+                      </button>
+                      {shown.includes(name) && (
+                        <div className="ww-guide__dead-causes">
+                          <small>{t("werewolfNarrator.guide.causesTitle")}</small>
+                          <span>
+                            {(view.deaths.find((death) => death.name === name)?.causes ?? [])
+                              .map((cause) => t(`werewolfNarrator.cause.${cause}`))
+                              .join(", ")}
+                          </span>
+                        </div>
                       )}
                     </li>
                   );
@@ -299,11 +324,6 @@ function PlainBox({ view }: { readonly view: GuideView }) {
             </div>
           )}
         </div>
-        {view.deaths.length > 0 && (
-          <footer className="ww-guide__extra">
-            <DeathDetails deaths={view.deaths} />
-          </footer>
-        )}
       </section>
     );
   }

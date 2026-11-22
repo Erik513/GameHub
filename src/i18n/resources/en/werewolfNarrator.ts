@@ -180,6 +180,7 @@ export const werewolfNarratorTexts = {
       },
       victim: "The werewolves attacked {{name}}",
       noVictim: "The werewolves attacked nobody",
+      causesHint: "Tap a name to show or hide the reason",
       causesTitle: "Reason – for you only, do not read out",
       abilityDone: {
         vote: "Vote",
