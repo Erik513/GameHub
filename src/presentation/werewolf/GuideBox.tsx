@@ -408,16 +408,19 @@ function Ballots({
 
 /** A text with the player names in bold, so they stand out when the narrator reads. */
 function withNames(text: ReactNode, names: readonly string[] | undefined, red?: string): ReactNode {
-  // "[thumb]" in a text is the sign of a thumb up.
-  if (typeof text === "string" && text.includes("[thumb]")) {
-    const [before = "", after = ""] = text.split("[thumb]");
-    return (
-      <>
-        {before}
-        <ThumbIcon />
-        {after}
-      </>
-    );
+  // "[thumb]" in a text is the sign of a thumb up, "[br]" a line break.
+  if (typeof text === "string" && /\[(thumb|br)\]/.test(text)) {
+    return text
+      .split(/(\[thumb\]|\[br\])/)
+      .map((part, index) =>
+        part === "[thumb]" ? (
+          <ThumbIcon key={index} />
+        ) : part === "[br]" ? (
+          <br key={index} />
+        ) : (
+          part
+        ),
+      );
   }
   if (typeof text === "string" && red && text.includes(red)) {
     const at = text.indexOf(red);

@@ -110,7 +110,7 @@ it("shows the script of the magician as boxes: the victim, the first question, t
   const texts = [...document.querySelectorAll(".ww-script__step")].map((step) => step.textContent);
   expect(texts.slice(1)).toEqual([
     expect.stringMatching(/^Show the victim: /),
-    "Save the victim () or kill somebody (point)?",
+    "Save the victim () orkill somebody (point)?",
     "Use the second spell (point)?",
     expect.stringMatching(/magician goes back to sleep/i),
   ]);

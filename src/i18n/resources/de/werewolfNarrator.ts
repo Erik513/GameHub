@@ -109,7 +109,7 @@ export const werewolfNarratorTexts = {
         passAmulet: "Der Träger gibt das Amulett weiter (zeigen)",
       },
       magician: {
-        firstAsk: "Opfer retten ([thumb]) oder jemanden töten (zeigen)?",
+        firstAsk: "Opfer retten ([thumb]) oder[br]jemanden töten (zeigen)?",
         secondAsk: "Zweiten Zauber nutzen (zeigen)?",
       },
       choose: {
