@@ -167,7 +167,9 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
   const { night } = state;
   const first = selection.picks[0];
   const target = first ?? null;
-  const decided = first !== undefined || selection.none;
+  // A role that may also do nothing (the investigator, the mayor, the old hag) is finished without any choice: "skip".
+  const mayPass = ["investigator", "mayor", "spellcaster"].includes(state.status);
+  const decided = first !== undefined || selection.none || (mayPass && selection.ability === null);
   switch (state.status) {
     case "roles": {
       const player = state.players[state.index];

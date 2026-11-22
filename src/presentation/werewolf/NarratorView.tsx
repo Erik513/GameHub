@@ -62,6 +62,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                 view.phase === "act" &&
                 !view.card.cover &&
                 view.card.role !== "day" &&
+                view.state.status !== "vision" &&
                 view.selection.ability === null &&
                 !view.selection.heal
               }

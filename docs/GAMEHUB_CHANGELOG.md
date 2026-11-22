@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-104: Verzichten bei freiwilligen Rollen
+
+- Rollen, die nichts tun dürfen: Fähigkeit und der Knopf „Verzichten“ unten haben beide den blauen Rahmen.
+
 ### We-01-103: Zusammenfassung nach dem Ergebnis
 
 - Seherin und Ermittler: unten steht die Wahl (Geschaut/Geprüft: Name) statt „Nichts gewählt“.

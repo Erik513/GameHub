@@ -220,12 +220,19 @@ export function GuideBox({
             ) : (
               <button
                 className="ww-guide__strip"
-                data-next={(view.canContinue && (selection.heal || !hasChoice)) || undefined}
+                // A role that may do nothing (the investigator, the witch): the ability and this strip both have the frame.
+                data-next={view.canContinue || undefined}
                 disabled={!view.canContinue}
                 onClick={onContinue}
                 type="button"
               >
-                <span>{t("werewolfNarrator.guide.done")}</span>
+                <span>
+                  {t(
+                    hasChoice && !selection.heal && state.status !== "vision"
+                      ? "werewolfNarrator.guide.skip"
+                      : "werewolfNarrator.guide.done",
+                  )}
+                </span>
                 <Icon name="check" />
               </button>
             ))}

@@ -189,6 +189,7 @@ export const werewolfNarratorTexts = {
         outroSub: "Press “Next” to go on",
       },
       confirm: "Confirm the choice",
+      skip: "Skip",
       done: "Done",
       left: "Left the game: {{names}}",
       exile: "{{name}} leaves the game",

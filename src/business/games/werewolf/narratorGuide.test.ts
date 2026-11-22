@@ -630,4 +630,23 @@ describe("narrator guide", () => {
       expect(twice.ok).toBe(true);
     }
   });
+
+  it("lets the investigator skip: the step is complete without any choice, and the ability still works", () => {
+    let guide = game(["paranormalInvestigator"], { attackOnFirstNight: true });
+    for (
+      let step = 0;
+      step < 100 && describeGuide(guide).card?.role !== "paranormalInvestigator";
+      step += 1
+    )
+      guide = forward(guide)!;
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).selection.ability).toBeNull();
+    expect(describeGuide(guide).canContinue).toBe(true);
+    // Opening the ability asks for a choice again.
+    const opened = chooseAbility(guide, "investigate");
+    expect(describeGuide(opened).canContinue).toBe(false);
+    // Skipping hands "nobody" to the game: no result is shown.
+    const done = continueGuide(guide);
+    expect(describeGuide(done).state.status).not.toBe("investigation");
+  });
 });
