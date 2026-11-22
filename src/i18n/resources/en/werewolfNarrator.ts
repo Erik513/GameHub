@@ -192,6 +192,7 @@ export const werewolfNarratorTexts = {
       },
       confirm: "Confirm the choice",
       reopen: "Take the decision back",
+      noVote: "No vote",
       skip: "Skip",
       done: "Done",
       left: "Left the game: {{names}}",

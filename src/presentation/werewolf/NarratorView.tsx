@@ -62,7 +62,6 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               next={
                 view.phase === "act" &&
                 !view.card.cover &&
-                view.card.role !== "day" &&
                 view.state.status !== "vision" &&
                 view.selection.ability === null &&
                 !view.selection.heal
@@ -81,9 +80,15 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                         view.selection.ability !== null ||
                         view.selection.heal,
                       framed: view.phase === "act" && view.canContinue,
-                      ...(describeRoleStep(view.state).skip.label === "keep"
-                        ? { label: t("werewolfNarrator.guide.keep") }
-                        : {}),
+                      ...(describeRoleStep(view.state).skip.label === "skip"
+                        ? {}
+                        : {
+                            label: t(
+                              describeRoleStep(view.state).skip.label === "keep"
+                                ? "werewolfNarrator.guide.keep"
+                                : "werewolfNarrator.guide.noVote",
+                            ),
+                          }),
                       onSkip: guide.continueGuide,
                     }
                   : undefined

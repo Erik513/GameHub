@@ -51,31 +51,37 @@ export function NarratorCard({
   // The amulet is no role: its holder is shown with his own role.
   const shownRole = (card.holderRole ?? card.role) as SymbolId;
   const roleName = t(`werewolfSymbols.items.${shownRole}.name`);
+  const isDay = card.role === "day";
   const slots = Array.from({ length: slotCount }, (_, index) => card.effects[index] ?? null);
   return (
     <section aria-label={roleName} className="ww-role-card" data-cover={card.cover}>
-      <header className="ww-role-card__head">
-        <span className="ww-role-card__role">
-          <WerewolfSymbol id={shownRole} size={40} />
-        </span>
-        <span className="ww-role-card__who">
-          <strong>{roleName}</strong>
-          {card.actors.length > 0 && <small>{card.actors.join(", ")}</small>}
-        </span>
-        <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
-          {slots.map((effect, index) => (
-            <li className="ww-role-card__slot" data-empty={effect === null} key={index}>
-              {effect && (
-                <WerewolfSymbol
-                  id={effect}
-                  label={t(`werewolfSymbols.items.${effect}.name`)}
-                  size={22}
-                />
-              )}
-            </li>
-          ))}
-        </ul>
-      </header>
+      {/* The day is no role: without a person (the vote has the nominated one) there is no head at all. */}
+      {(!isDay || card.actors.length > 0) && (
+        <header className="ww-role-card__head">
+          {!isDay && (
+            <span className="ww-role-card__role">
+              <WerewolfSymbol id={shownRole} size={40} />
+            </span>
+          )}
+          <span className="ww-role-card__who">
+            {isDay ? <strong>{card.actors.join(", ")}</strong> : <strong>{roleName}</strong>}
+            {!isDay && card.actors.length > 0 && <small>{card.actors.join(", ")}</small>}
+          </span>
+          <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
+            {slots.map((effect, index) => (
+              <li className="ww-role-card__slot" data-empty={effect === null} key={index}>
+                {effect && (
+                  <WerewolfSymbol
+                    id={effect}
+                    label={t(`werewolfSymbols.items.${effect}.name`)}
+                    size={22}
+                  />
+                )}
+              </li>
+            ))}
+          </ul>
+        </header>
+      )}
       {card.abilities.length > 0 && (
         <div className="ww-role-card__abilities">
           {card.abilities.map((ability) => {

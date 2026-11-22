@@ -192,6 +192,7 @@ export const werewolfNarratorTexts = {
       },
       confirm: "Auswahl bestätigen",
       reopen: "Entscheidung zurücknehmen",
+      noVote: "Keine Abstimmung",
       skip: "Verzichten",
       done: "Erledigt",
       left: "Ausgeschieden: {{names}}",

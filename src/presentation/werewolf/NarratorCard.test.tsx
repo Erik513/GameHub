@@ -113,4 +113,54 @@ describe("NarratorCard", () => {
     fireEvent.click(heal);
     expect(onAbility).not.toHaveBeenCalled();
   });
+
+  it("shows the day without a role: no head and no slots, only the vote button", async () => {
+    const day: Card = {
+      abilities: [{ available: true, id: "vote", symbol: "vote" }],
+      actors: [],
+      cover: false,
+      effects: [],
+      role: "day",
+    };
+    const { container } = await inLanguage("en", <NarratorCard card={day} />);
+    expect(container.querySelector(".ww-role-card__head")).toBeNull();
+    expect(container.querySelectorAll(".ww-role-card__slot")).toHaveLength(0);
+    expect(screen.getByRole("button", { name: /Vote/ })).toBeTruthy();
+  });
+
+  it("names only the nominated person at the vote, without a role symbol", async () => {
+    const vote: Card = {
+      abilities: [],
+      actors: ["Anna"],
+      cover: false,
+      effects: ["amulet"],
+      role: "day",
+    };
+    const { container } = await inLanguage("en", <NarratorCard card={vote} />);
+    expect(screen.getByText("Anna")).toBeTruthy();
+    expect(container.querySelector(".ww-role-card__role")).toBeNull();
+    expect(container.querySelectorAll(".ww-role-card__slot")).toHaveLength(3);
+  });
+
+  it('shows the vote button together with a button "no vote" at the bottom of the day box', async () => {
+    const day: Card = {
+      abilities: [{ available: true, id: "vote", symbol: "vote" }],
+      actors: [],
+      cover: false,
+      effects: [],
+      role: "day",
+    };
+    const onSkip = vi.fn();
+    await inLanguage(
+      "en",
+      <NarratorCard
+        card={day}
+        skip={{ disabled: false, framed: true, label: "No vote", onSkip }}
+      />,
+    );
+    const noVote = screen.getByRole("button", { name: "No vote" });
+    expect(noVote).toHaveAttribute("data-next");
+    fireEvent.click(noVote);
+    expect(onSkip).toHaveBeenCalledOnce();
+  });
 });

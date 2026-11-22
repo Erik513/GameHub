@@ -112,4 +112,12 @@ describe("describeRoleStep", () => {
     expect(describeRoleStep(at({ status: "day" })).compound).toBe("nominate");
     expect(describeRoleStep(at({ status: "vote" })).compound).toBe("vote");
   });
+
+  it("lets the day be skipped (no vote), but not the vote itself", () => {
+    expect(describeRoleStep(at({ status: "day" }))).toMatchObject({
+      skip: { label: "noVote" },
+      skippable: true,
+    });
+    expect(describeRoleStep(at({ status: "vote" })).skippable).toBe(false);
+  });
 });

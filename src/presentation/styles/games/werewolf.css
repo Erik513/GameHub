@@ -2315,3 +2315,9 @@ button.ww-guide__strip[data-next] {
   color: var(--color-ink);
   cursor: pointer;
 }
+
+/* The buttons always stand at the bottom of the upper box, also when the box has no head (the day). */
+.ww-night__stage[data-layout="act"] .ww-role-card__abilities {
+  grid-row: 2;
+  align-self: end;
+}

@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 309,
-      "totalTasks": 363,
-      "percent": 85.1
+      "completedTasks": 311,
+      "totalTasks": 365,
+      "percent": 85.2
     }
   },
   "environment": {
@@ -1732,6 +1732,18 @@
           "title": "Tag und Nacht als Box in der oberen Leiste: Nacht dunkel, Tag hell mit dunklem Symbol und Text",
           "status": "done",
           "validation": "Der Hintergrund der Erzähleransicht bleibt auch am Tag dunkel (Entscheidung des Auftraggebers geändert); Mond oder Sonne mit Text stehen in einer Box in der oberen Leiste, deren Hintergrund die Zeit anzeigt: Nacht dunkel, Tag hell mit dunklem Symbol und dunkler Schrift; reine Stiländerung; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-125",
+          "title": "Tag ist keine Rolle: obere Box ohne Rollenkopf am Tag",
+          "status": "done",
+          "validation": "Am Tag zeigt die obere Box keinen Rollenkopf mehr (kein Symbol „Tag“, kein Name, keine drei leeren Felder), nur den Knopf „Abstimmung“; bei der Abstimmung steht nur die nominierte Person mit ihren Effekten, ohne Rollensymbol; zwei Tests; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-126",
+          "title": "Tag: Abstimmung unten in der oberen Box, dazu der Knopf „Keine Abstimmung“",
+          "status": "done",
+          "validation": "Am Tag steht der Knopf „Abstimmung“ unten in der oberen Box (wie die Fähigkeiten der Rollen), daneben der Knopf „Keine Abstimmung“ (englisch „No vote“), weil die Abstimmung freiwillig ist; beide stehen unten in der Box (auch ohne Rollenkopf liegen die Knöpfe in der zweiten Zeile am unteren Rand, vorher standen sie oben) und haben den blauen Rahmen, solange der Tag weitergeführt werden kann; „Keine Abstimmung“ beendet den Tag (Ereignis endDay) und ist gesperrt, solange eine Abstimmung offen ist; die Beschreibung roleStep nennt den Tag als überspringbar (Beschriftung noVote), die Abstimmung selbst nicht; Tests; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

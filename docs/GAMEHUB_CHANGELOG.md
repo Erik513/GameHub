@@ -11,6 +11,14 @@
 
 ## 2026-11-21
 
+### We-01-126: Keine Abstimmung
+
+- Am Tag neben „Abstimmung“ der Knopf „Keine Abstimmung“ in der oberen Box.
+
+### We-01-125: Tag ohne Rollenkopf
+
+- Am Tag keine Rollenkarte mehr; bei der Abstimmung nur die nominierte Person.
+
 ### We-01-124: Tag und Nacht als Box
 
 - Der Hintergrund bleibt am Tag dunkel; Sonne oder Mond mit Text stehen in einer Box, die am Tag hell ist.

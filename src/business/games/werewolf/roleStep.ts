@@ -111,7 +111,10 @@ export interface RoleStepSpec {
   /** Present while the step names one person. */
   readonly pick?: PickSpec;
   /** How the button of a skippable step is called, and what the summary says after it was pressed. */
-  readonly skip: { readonly label: "keep" | "skip"; readonly summary: "kept" | "noChoice" };
+  readonly skip: {
+    readonly label: "keep" | "noVote" | "skip";
+    readonly summary: "kept" | "noChoice";
+  };
   /** What the role saw, in a result step: who was looked at, with which ability, and whether a werewolf was found. */
   readonly result?: {
     readonly ability: "inspect" | "investigate";
@@ -301,7 +304,11 @@ function baseStep(state: WerewolfState): RoleStepSpec {
             skippable: true,
           });
     case "day":
-      return spec("day", "day");
+      // The vote is not compulsory: next to the button "vote" there is the button "no vote", which ends the day.
+      return spec("day", "day", {
+        skip: { label: "noVote", summary: "noChoice" },
+        skippable: true,
+      });
     case "vote":
       return spec("vote", "day");
     default:
