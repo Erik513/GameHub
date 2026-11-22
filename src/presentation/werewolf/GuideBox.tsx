@@ -170,10 +170,11 @@ export function GuideBox({
           </div>
         )}
       </div>
-      {(extras.length > 0 || card.role !== "day") && (
+      {(extras.length > 0 || card.role !== "day" || selection.ability !== null) && (
         <footer className="ww-guide__extra">
           {extras}
-          {card.role !== "day" &&
+          {/* The day has no strip, but the choice of people (nomination, vote) is confirmed like every other choice. */}
+          {(card.role !== "day" || selection.ability !== null) &&
             !(selection.ability === null && step.skippable && !selection.heal) &&
             (selection.ability !== null ? (
               <button

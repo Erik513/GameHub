@@ -245,4 +245,42 @@ describe("NarratorView choices", () => {
     expect(screen.getByRole("button", { name: /Look: ready/ })).toBeEnabled();
     expect(screen.queryByRole("button", { name: "Take the decision back" })).toBeNull();
   });
+
+  it("confirms the choice of people for a nomination with the check mark, and shows no note while people are chosen", async () => {
+    const user = await renderView("en");
+    for (
+      let guard = 0;
+      guard < 80 && !screen.queryByRole("button", { name: /^Vote/ });
+      guard += 1
+    ) {
+      const lookReady = screen.queryByRole("button", { name: /Look: ready/ });
+      const confirm = screen.queryByRole("button", { name: "Confirm the choice" });
+      const next = screen.queryByRole("button", { name: "Next" });
+      const done = screen.queryByRole("button", { name: "Done" });
+      const wake = screen.queryByText(/wake up|wakes up/);
+      if (screen.queryByText("All roles are dealt")) await beginGame(user);
+      else if (confirm && !(confirm as HTMLButtonElement).disabled) await user.click(confirm);
+      else if (confirm) {
+        const person = document.querySelector(".ww-person:not([aria-pressed='true'])")!;
+        await user.click(person);
+      } else if (done && !(done as HTMLButtonElement).disabled) await user.click(done);
+      else if (lookReady && !(lookReady as HTMLButtonElement).disabled) await user.click(lookReady);
+      else if (wake) await user.click(wake);
+      else if (next && !(next as HTMLButtonElement).disabled) await user.click(next);
+      else throw new Error("the walk to the day is stuck");
+    }
+    console.log(
+      "DOMBTN",
+      [...document.querySelectorAll("button")]
+        .map((b) => b.getAttribute("aria-label") ?? b.textContent)
+        .join(" | "),
+    );
+    // The day: the vote button and "no vote" stand in the upper box; no check mark while nothing is open.
+    expect(screen.getByRole("button", { name: "No vote" })).toBeEnabled();
+    expect(screen.queryByRole("button", { name: "Confirm the choice" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: /^Vote/ }));
+    // The people are chosen: the check mark is there (switched off until the choice is complete).
+    expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "No vote" })).toBeDisabled();
+  });
 });

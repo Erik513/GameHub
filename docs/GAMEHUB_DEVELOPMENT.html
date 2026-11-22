@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 311,
-      "totalTasks": 365,
+      "completedTasks": 312,
+      "totalTasks": 366,
       "percent": 85.2
     }
   },
@@ -1977,6 +1977,12 @@
           "title": "Tag: Abstimmung unten in der oberen Box, dazu der Knopf „Keine Abstimmung“",
           "status": "done",
           "validation": "Am Tag steht der Knopf „Abstimmung“ unten in der oberen Box (wie die Fähigkeiten der Rollen), daneben der Knopf „Keine Abstimmung“ (englisch „No vote“), weil die Abstimmung freiwillig ist; beide stehen unten in der Box (auch ohne Rollenkopf liegen die Knöpfe in der zweiten Zeile am unteren Rand, vorher standen sie oben) und haben den blauen Rahmen, solange der Tag weitergeführt werden kann; „Keine Abstimmung“ beendet den Tag (Ereignis endDay) und ist gesperrt, solange eine Abstimmung offen ist; die Beschreibung roleStep nennt den Tag als überspringbar (Beschriftung noVote), die Abstimmung selbst nicht; Tests; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-127",
+          "title": "Tag: Bestätigen-Knopf bei der Personenwahl, keine Hinweise während der Wahl",
+          "status": "done",
+          "validation": "Bei der Wahl der Personen am Tag (Nominierung, Abstimmung) steht wie bei den Rollen der grüne Haken zum Bestätigen unten rechts (gesperrt, bis die Wahl vollständig ist, dann mit blauem Rahmen); solange die Abstimmung offen ist und niemand genannt wurde, kann der Tag nicht beendet werden (vorher hätte der Haken den Tag beendet); der Hinweis „Heute stumm …“ steht nur, solange nichts gewählt wird; Test über den Weg bis zum Tag; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

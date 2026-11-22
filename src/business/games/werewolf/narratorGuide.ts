@@ -181,7 +181,9 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
     }
     case "nominate":
       // Nobody named: the day ends. Three people (nominee, nominator, seconder): a nomination.
-      if (selection.picks.length === 0) return { night, type: "endDay" };
+      // Ending the day needs no open vote: while the vote is open (nobody named yet) nothing can be confirmed.
+      if (selection.picks.length === 0)
+        return selection.ability === null ? { night, type: "endDay" } : null;
       return selection.picks.length === 3
         ? {
             night,

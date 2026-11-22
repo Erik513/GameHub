@@ -157,3 +157,25 @@ Für Codex festgehalten, damit die Logik dazu passt. Die Oberfläche liest das a
 ### Entscheidung: Magier nach geheilter Hexe (22.11.2026)
 
 Der Auftraggeber hat entschieden: Der Magier sieht das Wolfsopfer auch dann, wenn die Hexe es in derselben Nacht geheilt hat, und sein Heilzauber bleibt wählbar. Er ist dann verbraucht, ohne dass sich für die Person etwas ändert (wie bei Amulett und Leibwächter). Grund: Niemand soll aus der Anzeige ablesen können, ob eine Heilung oder ein Schutz gewirkt hat (Beschluss vom 21.11.2026, `wolfTarget`). Die Logik verhält sich schon so (`castSpells` prüft nur `wolfTarget`, nicht `victim`); der frühere Satz im Magier-Abschnitt von `GAMEHUB_WERWOLF.md` („eine bereits durch die Hexe geheilte Person steht nicht erneut als Heilziel zur Verfügung“) ist angepasst. Bitte bei künftigen Änderungen an Hexe und Magier beachten und keinen Test schreiben, der das Gegenteil verlangt.
+
+
+## Aufgabe für Codex: neue Tagesabstimmung (Claude, 22.11.2026, Entwurf nach Angabe des Auftraggebers)
+
+Der Auftraggeber will die Tagesabstimmung nach dem Original umbauen. Die Oberfläche baut Claude, sobald die Logik steht. **Noch zu bestätigen** sind die mit „offen“ markierten Punkte; bitte nicht raten, sondern beim Auftraggeber nachfragen.
+
+**Ablauf (Wunsch des Auftraggebers):**
+
+1. Der Erzähler wählt **höchstens drei nominierte Personen** und bestätigt. Es gibt keinen Nominierenden und keinen Unterstützer mehr (bisher: `nominate` mit `target`, `nominator`, `seconder`). Offen: Genügt eine nominierte Person, und gibt es weiterhin die Möglichkeit, den Tag ohne Abstimmung zu beenden (Knopf „Keine Abstimmung“, Ereignis `endDay`)?
+2. **Jeder abstimmende Spieler gibt genau eine Stimme für eine nominierte Person ab.** Der Erzähler trägt je lebendem Spieler ein, wen er gewählt hat; bestätigt werden kann erst, wenn **alle** eingetragen sind (bisher: `vote` mit `yesVoters`, also eine Ja/Nein-Abstimmung zu einer Nominierung).
+3. **Bürgermeister mit doppelter Stimme:** Seine Stimme zählt doppelt. Der Erzähler muss ausdrücklich angeben, **für wen der Bürgermeister gestimmt hat** (der Name des Gewählten), er ist also ein normaler Eintrag in der Liste mit Gewicht 2.
+4. Die meisten Stimmen scheiden aus. Offen: **Gleichstand** (niemand scheidet aus, neue Abstimmung, Stichwahl unter den Gleichauf liegenden?).
+
+**Offene Fragen an den Auftraggeber, bevor Codex beginnt:**
+
+- Dorftrottel: Bisher muss er in der Ja/Nein-Abstimmung mit Ja stimmen. Was gilt in der neuen Abstimmung (zum Beispiel muss er für die nominierte Person mit den meisten Stimmen stimmen, oder entfällt die Pflicht)?
+- Stumm gemachte Personen: Bisher geben sie keine Stimme ab. Bleibt das, und zählt „jeder muss abstimmen“ dann nur für alle anderen lebenden Spieler?
+- Dürfen die nominierten Personen selbst abstimmen, und für wen?
+- Bleibt der Hammer des Bürgermeisters unverändert?
+- Verliebte, Amulett und Jäger: Folgen des Ausscheidens bleiben wie bisher (Ausscheiden durch Abstimmung, Amulett wirkt nicht).
+
+**Wirkung auf die Oberfläche** (Claude): Nominierung mit Haken (höchstens drei); danach eine Liste aller abstimmenden Spieler, je Spieler die Wahl unter den Nominierten; Zusatz für den Bürgermeister; „Bestätigen“ erst, wenn alle abgestimmt haben. Die Beschreibung `roleStep.ts` nimmt die neuen Schritte auf.

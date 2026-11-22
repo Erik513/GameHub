@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-127: Bestätigen bei der Tageswahl
+
+- Haken zum Bestätigen bei Nominierung und Abstimmung; Hinweise erscheinen nicht während der Wahl.
+
 ### We-01-126: Keine Abstimmung
 
 - Am Tag neben „Abstimmung“ der Knopf „Keine Abstimmung“ in der oberen Box.

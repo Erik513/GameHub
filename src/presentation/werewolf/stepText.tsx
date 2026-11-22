@@ -104,6 +104,9 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
         {t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}
       </small>
     ),
-    (state.status === "day" || state.status === "vote") && <DayNotes key="notes" view={view} />,
+    // The notes of the day stand while nobody is chosen; they do not disturb the choice of people.
+    (state.status === "day" || state.status === "vote") && selection.ability === null && (
+      <DayNotes key="notes" view={view} />
+    ),
   ].filter(Boolean);
 }
