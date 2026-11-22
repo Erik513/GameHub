@@ -185,7 +185,6 @@ export const werewolfNarratorTexts = {
         silence: "Silenced",
         stayWith: "Guest",
       },
-      chosen: "Chosen: {{items}}",
       noChoice: "Nothing chosen – the role passes",
       silenced: "Silenced today: {{name}} (no speech, nomination or vote)",
       wounded: "Wounded, dies in the next night: {{names}}",

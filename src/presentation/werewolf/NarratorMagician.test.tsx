@@ -79,7 +79,7 @@ it("lets the magician use a spell twice and both spells in one night; the 2 goes
   // Both spells are used: the healing spell cannot be chosen any more, the step is confirmed with "done".
   expect(heal).toBeDisabled();
   fireEvent.click(screen.getByRole("button", { name: "Done" }));
-  expect(screen.getByText(/Chosen: .*Killed/)).toBeInTheDocument();
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(/Killed: P\d+, P\d+/);
 });
 
 it("lets the magician heal and kill in the same night", async () => {
@@ -95,5 +95,7 @@ it("lets the magician heal and kill in the same night", async () => {
   fireEvent.click(persons()[0]!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   fireEvent.click(screen.getByRole("button", { name: "Done" }));
-  expect(screen.getByText(/Chosen: .*Healed.*Killed/)).toBeInTheDocument();
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
+    /Healed: P\d+Killed: P\d+/,
+  );
 });

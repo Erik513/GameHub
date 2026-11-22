@@ -11,6 +11,7 @@ import { Icon } from "../components";
 import { DealCard } from "./DealCard";
 import { variantOfRole } from "./roleAbilities";
 import { stepExtras, stepTitle } from "./stepText";
+import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface GuideBoxProps {
@@ -476,9 +477,8 @@ function ScriptRows({
     {
       id: "poison",
       items: [
-        selection.ability === "poison"
-          ? t("werewolfNarrator.guide.ask.poison")
-          : t("werewolfNarrator.guide.witch.poisonAsk"),
+        // The script always shows the question; the list of people (with its own heading) covers the box.
+        t("werewolfNarrator.guide.witch.poisonAsk"),
       ],
     },
   ] as const;
@@ -538,11 +538,7 @@ function Mark({ view, name }: { readonly view: GuideView; readonly name: string 
 
 /** The blue box of the summary: it only sums up the decisions; taking them back is the job of the undo buttons at the script. */
 function Chosen({ children }: { readonly children: ReactNode }) {
-  return (
-    <span className="ww-guide__chosen">
-      <span>{children}</span>
-    </span>
-  );
+  return <span className="ww-guide__chosen">{children}</span>;
 }
 
 /** What the narrator chose in this step, so it can be checked before the role falls asleep. */
@@ -550,20 +546,29 @@ function Summary({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { card, selection } = view;
   if (!card || card.cover || card.abilities.length === 0) return null;
-  // The werewolves do not attack in the first night (setting): the role does not "pass", there is simply no attack.
   const step = describeRoleStep(view.state);
+  // What was used, as the symbol of the ability, its name and the person: no prefix ("chosen").
+  const part = (symbol: string, label: string, people: string) => (
+    <span className="ww-guide__chosen-part" key={symbol + label}>
+      <WerewolfSymbol id={symbol as SymbolId} size={20} />
+      <span>
+        <strong>{label}</strong>
+        {": "}
+        {people}
+      </span>
+    </span>
+  );
+  const symbolOf = (id: string) =>
+    card.abilities.find((ability) => ability.id === id)?.symbol ?? "vote";
+  // The werewolves do not attack in the first night (setting): the role does not "pass", there is simply no attack.
   if (step.statement === "noAttack")
-    return (
-      <span className="ww-guide__chosen">{t("werewolfNarrator.guide.wolvesNoAttackDone")}</span>
-    );
+    return <Chosen>{t("werewolfNarrator.guide.wolvesNoAttackDone")}</Chosen>;
   // The result of the seer or the investigator is shown: the choice is already in the game, not in the selection.
   if (step.result) {
     const { ability, name } = step.result;
     return (
       <Chosen>
-        {t("werewolfNarrator.guide.chosen", {
-          items: `${t(`werewolfNarrator.guide.abilityDone.${ability}`)}: ${name}`,
-        })}
+        {part(symbolOf(ability), t(`werewolfNarrator.guide.abilityDone.${ability}`), name)}
       </Chosen>
     );
   }
@@ -571,11 +576,23 @@ function Summary({ view }: { readonly view: GuideView }) {
   if (step.skip.summary === "kept" && selection.picks.length === 0)
     return (
       <Chosen>
-        {t("werewolfNarrator.guide.amuletKept", { name: view.state.amulet?.holder ?? "" })}
+        <span className="ww-guide__chosen-part">
+          <WerewolfSymbol id="amuletPass" size={20} />
+          <span>
+            {t("werewolfNarrator.guide.amuletKept", { name: view.state.amulet?.holder ?? "" })}
+          </span>
+        </span>
       </Chosen>
     );
-  const parts: string[] = [];
-  if (selection.heal) parts.push(t("werewolfNarrator.guide.abilityDone.heal"));
+  const parts: ReactNode[] = [];
+  if (selection.heal)
+    parts.push(
+      part(
+        symbolOf("heal"),
+        t("werewolfNarrator.guide.abilityDone.heal"),
+        view.state.wolfTarget?.name ?? t("werewolfNarrator.guide.nobody"),
+      ),
+    );
   // The witch and the magician close the list of people with the check mark: the people stay chosen for their spell.
   const chosenAbility =
     selection.ability !== null && selection.ability !== "heal"
@@ -592,15 +609,15 @@ function Summary({ view }: { readonly view: GuideView }) {
       selection.none || selection.picks.length === 0
         ? t("werewolfNarrator.guide.nobody")
         : selection.picks.join(", ");
-    parts.push(`${t(`werewolfNarrator.guide.abilityDone.${chosenAbility}`)}: ${people}`);
+    parts.push(
+      part(
+        symbolOf(chosenAbility),
+        t(`werewolfNarrator.guide.abilityDone.${chosenAbility}`),
+        people,
+      ),
+    );
   }
-  return (
-    <Chosen>
-      {parts.length > 0
-        ? t("werewolfNarrator.guide.chosen", { items: parts.join(" · ") })
-        : t("werewolfNarrator.guide.noChoice")}
-    </Chosen>
-  );
+  return <Chosen>{parts.length > 0 ? parts : t("werewolfNarrator.guide.noChoice")}</Chosen>;
 }
 
 /** Why somebody leaves the game: for the narrator only, not to be read out. */

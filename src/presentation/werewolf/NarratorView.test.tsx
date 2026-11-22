@@ -144,7 +144,9 @@ describe("NarratorView choices", () => {
     expect(document.querySelector(".ww-verdict")).not.toBeNull();
     // When the seer falls asleep, the box names what was chosen, not "nothing chosen".
     await user.click(screen.getByRole("button", { name: "Done" }));
-    expect(screen.getByText(new RegExp(`Chosen: Looked at: ${person}`))).toBeInTheDocument();
+    // The summary shows the symbol, the name of the ability and the person: no prefix.
+    expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(`Looked at: ${person}`);
+    expect(document.querySelector(".ww-guide__chosen svg")).not.toBeNull();
     expect(screen.queryByText(/the role passes/)).toBeNull();
   });
 

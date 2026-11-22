@@ -2510,3 +2510,17 @@ button.ww-guide__strip[data-next] {
   width: 100%;
   min-width: 0;
 }
+
+/* The summary: for every ability that was used the symbol, its name and the person; two used abilities stand in two lines. */
+.ww-guide__chosen {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--space-1);
+}
+
+.ww-guide__chosen-part {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}

@@ -96,7 +96,9 @@ it("shows all options above at all times and the two questions as boxes below, t
   fireEvent.click(abilityButtons()[1]!);
   fireEvent.click(document.querySelector(".ww-person")!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
-  expect(screen.getByText(/Chosen: .*Healed.*Poisoned/)).toBeInTheDocument();
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
+    /Healed: P\d+Poisoned: P\d+/,
+  );
   // After the decision the hint stays (yellow border) and the blue summary stands below it, at the very bottom.
   const footer = document.querySelector(".ww-guide__extra")!;
   const children = [...footer.children].map((child) => child.className);
@@ -144,7 +146,9 @@ it("has an undo button right of every box with a decision, as high as the box; t
   fireEvent.click(abilityButtons()[1]!);
   fireEvent.click(document.querySelector(".ww-person")!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
-  expect(screen.getByText(/Chosen: .*Healed.*Poisoned/)).toBeInTheDocument();
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
+    /Healed: P\d+Poisoned: P\d+/,
+  );
   // The box that says the witch sleeps again stands below the script, in the blue frame; the summary has no button.
   const stack = document.querySelector(".ww-guide__head .ww-script")!;
   expect(stack.lastElementChild?.getAttribute("data-state")).toBe("active");
