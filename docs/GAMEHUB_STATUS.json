@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 297,
-      "totalTasks": 351,
-      "percent": 84.6
+      "completedTasks": 298,
+      "totalTasks": 352,
+      "percent": 84.7
     }
   },
   "environment": {
@@ -1660,6 +1660,12 @@
           "title": "Zurück aus dem nächsten Schritt öffnet die Entscheidung der Rolle wieder",
           "status": "done",
           "validation": "Geht der Erzähler aus dem nächsten Schritt zurück, landet er direkt in der offenen Entscheidung der Rolle (Fähigkeiten frei, Auswahl behalten) statt im gesperrten Schritt „schläft wieder ein“; der Zauber des Magiers (und der Trank der Hexe) ist dabei wiederhergestellt; Test; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-113",
+          "title": "Alte Vettel: Stummschalten ist Pflicht",
+          "status": "done",
+          "validation": "Das Stummschalten der Alten Vettel ist Pflicht (Entscheidung des Auftraggebers): kein Knopf „Verzichten“ und kein „Niemand“ in der Auswahl; nur wenn niemand wählbar ist (praktisch nur bei zwei Lebenden, wenn die einzige andere Person in der Vornacht stumm war und Selbstwahl aus ist), darf der Schritt übersprungen werden; Beschreibung roleStep und Test; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

@@ -1,4 +1,5 @@
 import { describeNarratorCard } from "./narratorCard";
+import { validTargets } from "./selectors";
 import type { WerewolfState } from "./stateMachine";
 
 /**
@@ -89,7 +90,10 @@ export function describeRoleStep(state: WerewolfState): RoleStepSpec {
     case "cupid":
       return spec("cupidBond", "choose");
     case "spellcaster":
-      return spec("spellcasterSilence", "choose", { skippable: true });
+      // The old hag has to silence somebody; only when nobody can be chosen (very rare) the step may be skipped.
+      return spec("spellcasterSilence", "choose", {
+        skippable: validTargets(state, "silence").length === 0,
+      });
     case "mayor":
       return usable
         ? spec("mayorHammer", "choose", { skippable: true })

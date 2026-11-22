@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-113: Alte Vettel Pflicht
+
+- Stummschalten ist Pflicht; Verzichten nur, wenn niemand wählbar ist.
+
 ### We-01-112: Zurück öffnet die Entscheidung
 
 - Zurück aus dem nächsten Schritt führt direkt in die offene Entscheidung der Rolle.

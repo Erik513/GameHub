@@ -28,7 +28,8 @@ describe("describeRoleStep", () => {
       kind: "choose",
       skippable: true,
     });
-    expect(describeRoleStep(at({ status: "spellcaster" })).skippable).toBe(true);
+    // The old hag has to silence somebody: no skipping while somebody can be chosen.
+    expect(describeRoleStep(at({ status: "spellcaster" })).skippable).toBe(false);
     expect(describeRoleStep(at({ status: "bodyguard" })).skippable).toBe(false);
     expect(describeRoleStep(at({ lovers: ["Anna", "Ben"], status: "lovers" })).kind).toBe("info");
     expect(describeRoleStep(at({ status: "morning" })).kind).toBe("plain");
@@ -53,5 +54,21 @@ describe("describeRoleStep", () => {
       skippable: false,
       variant: "hunterRequired",
     });
+  });
+
+  it("lets the old hag skip only when nobody can be chosen", () => {
+    const base = at({ status: "spellcaster" }, { allowSelfSilence: false });
+    const [hag, other] = base.players.map((player, index) => ({
+      ...player,
+      role: index === 0 ? "spellcaster" : player.role,
+    }));
+    const alone = {
+      ...base,
+      alive: [hag!, other!],
+      players: [hag!, other!],
+      silencedPlayer: other!.name,
+    };
+    expect(describeRoleStep(alone).skippable).toBe(true);
+    expect(describeRoleStep({ ...alone, silencedPlayer: null }).skippable).toBe(false);
   });
 });

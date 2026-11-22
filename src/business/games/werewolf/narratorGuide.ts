@@ -76,13 +76,7 @@ const abilityAction: Partial<Record<CardAbilityId, WerewolfTargetAction>> = {
   stayWith: "stayWith",
 };
 /** Abilities that may also be used on nobody. */
-const mayChooseNobody: readonly CardAbilityId[] = [
-  "attack",
-  "hammer",
-  "investigate",
-  "shot",
-  "silence",
-];
+const mayChooseNobody: readonly CardAbilityId[] = ["attack", "hammer", "investigate", "shot"];
 
 function phaseOf(state: WerewolfState): GuidePhase {
   const card = describeNarratorCard(state);
