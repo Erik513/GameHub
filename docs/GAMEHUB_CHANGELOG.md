@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-110: Verzichten deaktivieren statt ausblenden
+
+- Der Knopf bleibt stehen und wird nur grau, damit die Oberfläche stabil bleibt.
+
 ### We-01-109: Hexe, drei Zustände
 
 - Nur ein Weg zu verzichten; Fähigkeiten grün, neutral (benutzt) oder gestrichelt gelb (nicht möglich).

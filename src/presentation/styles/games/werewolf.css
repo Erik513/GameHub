@@ -2307,3 +2307,28 @@ button.ww-guide__strip[data-next] {
   color: var(--color-warning);
   opacity: 1;
 }
+
+/* A skip button that does not apply stays in place, but is switched off. */
+.ww-ability--skip:disabled {
+  border-color: var(--color-line);
+  background: transparent;
+  color: var(--color-ink-muted);
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* What is left of a limited ability stands as a small number behind the name, in line with it. */
+.ww-ability .ww-ability__count {
+  position: static;
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--space-1);
+  border: 1px solid currentColor;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font-size: var(--text-xs);
+  line-height: 1;
+}

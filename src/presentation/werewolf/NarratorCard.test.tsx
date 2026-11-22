@@ -79,7 +79,10 @@ describe("NarratorCard", () => {
 
   it('has a button "skip" in the card for a role that may do nothing, with the frame when the step can be left', async () => {
     const onSkip = vi.fn();
-    await inLanguage("en", <NarratorCard card={witch} skip={{ framed: true, onSkip }} />);
+    await inLanguage(
+      "en",
+      <NarratorCard card={witch} skip={{ disabled: false, framed: true, onSkip }} />,
+    );
     const skip = screen.getByRole("button", { name: "Skip" });
     expect(skip).toHaveAttribute("data-next");
     fireEvent.click(skip);
@@ -89,5 +92,18 @@ describe("NarratorCard", () => {
   it('has no button "skip" for a role that has to decide', async () => {
     await inLanguage("en", <NarratorCard card={witch} />);
     expect(screen.queryByRole("button", { name: "Skip" })).toBeNull();
+  });
+
+  it('keeps the button "skip" in place but switched off when it does not apply', async () => {
+    const onSkip = vi.fn();
+    await inLanguage(
+      "en",
+      <NarratorCard card={witch} skip={{ disabled: true, framed: false, onSkip }} />,
+    );
+    const skip = screen.getByRole("button", { name: "Skip" });
+    expect(skip).toBeDisabled();
+    expect(skip).not.toHaveAttribute("data-next");
+    fireEvent.click(skip);
+    expect(onSkip).not.toHaveBeenCalled();
   });
 });

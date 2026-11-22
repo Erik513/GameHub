@@ -69,11 +69,18 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               }
               settled={view.phase === "outro"}
               skip={
-                view.phase === "act" &&
-                describeRoleStep(view.state).skippable &&
-                view.selection.ability === null &&
-                !view.selection.heal
-                  ? { framed: view.canContinue, onSkip: guide.continueGuide }
+                (view.phase === "act" || view.phase === "outro") &&
+                describeRoleStep(view.state).skippable
+                  ? {
+                      // The button stays where it is (the controls do not jump); it is only switched off when it
+                      // does not apply: after the step was left, or while a choice is made.
+                      disabled:
+                        view.phase === "outro" ||
+                        view.selection.ability !== null ||
+                        view.selection.heal,
+                      framed: view.phase === "act" && view.canContinue,
+                      onSkip: guide.continueGuide,
+                    }
                   : undefined
               }
               card={view.card}

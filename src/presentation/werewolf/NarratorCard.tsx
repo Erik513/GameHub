@@ -15,7 +15,9 @@ interface NarratorCardProps {
   /** The abilities are the next thing to tap: the ones that can be used get a blue frame. */
   readonly next?: boolean;
   /** The role may do nothing: a button "skip" stands next to the abilities (the narrator decides in this box). */
-  readonly skip?: { readonly framed: boolean; readonly onSkip: () => void } | undefined;
+  readonly skip?:
+    | { readonly disabled: boolean; readonly framed: boolean; readonly onSkip: () => void }
+    | undefined;
   /** Called when the narrator taps an ability that can be used. */
   readonly onAbility?: (id: CardAbilityId) => void;
 }
@@ -86,11 +88,11 @@ export function NarratorCard({
               >
                 <span className="ww-ability__symbol">
                   <WerewolfSymbol id={ability.symbol} size={24} />
-                  {ability.count !== undefined && (
-                    <span className="ww-ability__count">{ability.count}</span>
-                  )}
                 </span>
                 <span>{name}</span>
+                {ability.count !== undefined && (
+                  <span className="ww-ability__count">{ability.count}</span>
+                )}
               </button>
             );
           })}
@@ -98,6 +100,7 @@ export function NarratorCard({
             <button
               className="ww-ability ww-ability--skip"
               data-next={skip.framed || undefined}
+              disabled={skip.disabled}
               onClick={skip.onSkip}
               type="button"
             >

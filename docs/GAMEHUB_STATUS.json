@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 294,
-      "totalTasks": 348,
+      "completedTasks": 295,
+      "totalTasks": 349,
       "percent": 84.5
     }
   },
@@ -1642,6 +1642,12 @@
           "title": "Hexe: nur ein Weg zu verzichten, drei Zustände der Fähigkeitsknöpfe",
           "status": "done",
           "validation": "Der Hinweis „Ohne Auswahl wird nichts eingesetzt.“ entfällt; „Niemand“ in der Auswahl entfällt bei Rollen mit „Verzichten“, damit der Knopf der einzige Weg ist; jede Fähigkeit hat drei Zustände: grün (nutzbar), neutral grau und gesperrt (schon benutzt: Gift oder Heiltrank verbraucht, Zauber aufgebraucht, Ermittler benutzt, Hammer benutzt) und gestrichelt gelb (gerade nicht möglich: Heilen ohne Opfer der Wölfe, Opfer in Nacht 1, Hammer vor Nacht 2); neues Feld unavailable der Rollenkarte; Tests der drei Zustände; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-110",
+          "title": "Verzichten bleibt stehen und wird deaktiviert statt zu verschwinden",
+          "status": "done",
+          "validation": "Der Knopf „Verzichten“ bleibt in der Rollenkarte an seinem Platz und wird nur deaktiviert (grau), nachdem er gedrückt wurde (Rolle schläft ein) und solange eine Fähigkeit geöffnet oder die Heilung gewählt ist; die Bedienelemente springen nicht mehr; die Restzahl der Zauber steht als kleine Zahl hinter dem Namen statt über dem Symbol; Test; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },
