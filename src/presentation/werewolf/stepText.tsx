@@ -3,53 +3,61 @@ import type { TFunction } from "i18next";
 import type { GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep, type RoleStepSpec } from "../../business/games/werewolf/roleStep";
 import { werewolfDrunkReveal } from "../../business/games/werewolf/stateMachine";
-import { DayNotes, ResultText } from "./RoleStepContent";
+import { DayNotes } from "./RoleStepContent";
 
 /*
  * What a role says in the box: the heading and the lines under the choice, chosen by the description of the step
  * (`describeRoleStep`). The box itself is one building block for every role.
  */
 
-/** The result of a step in which the narrator reads something out (what the seer sees, who is in love). */
+/** The text of a step in which the narrator only reads something out (the lovers, the wolves who look at each other). */
 export function actInfo(view: GuideView, t: TFunction): string | null {
   const { state } = view;
-  const { result } = describeRoleStep(state);
-  if (result)
-    return t(
-      result.ability === "inspect"
-        ? `werewolfNarrator.guide.vision.${result.found ? "wolf" : "village"}`
-        : `werewolfNarrator.guide.investigation.${result.found ? "yes" : "no"}`,
-      { name: result.name },
-    );
   switch (state.status) {
     case "lovers":
       return t("werewolfNarrator.guide.lovers");
-    case "drunkReveal":
-    case "drunkHunter": {
-      const player = werewolfDrunkReveal(state);
-      return player
-        ? t("werewolfNarrator.guide.drunk", {
-            name: player.name,
-            role: t(`werewolfSymbols.items.${player.role}.name`),
-          })
-        : null;
-    }
     case "wolves":
       // The setting "attack from night 2": in the first night the wolves only get to know each other (the script);
       // that they do not attack is a hint below the script (see `stepExtras`).
       return describeRoleStep(state).statement === "noAttack"
         ? t("werewolfNarrator.guide.wolvesLook")
         : null;
-    case "amuletPass":
-      return t(
-        state.amulet.mustPass
-          ? "werewolfNarrator.guide.amuletMust"
-          : "werewolfNarrator.guide.amuletMay",
-        { name: state.amulet.holder },
-      );
     default:
       return null;
   }
+}
+
+/**
+ * What a role found out, for the summary box: the verdict of the seer or the investigator (green when a werewolf was
+ * found, red when not), or who the drunk really is. It is a result, not a script, so it never stands in the box of the
+ * script. null where the step has no result.
+ */
+export function factOf(view: GuideView, t: TFunction): { text: string; wolf?: boolean } | null {
+  const { state } = view;
+  const { result } = describeRoleStep(state);
+  if (result) {
+    const kind =
+      result.ability === "inspect"
+        ? result.found
+          ? "wolf"
+          : "village"
+        : result.found
+          ? "near"
+          : "clear";
+    return { text: t(`werewolfNarrator.guide.verdict.${kind}`), wolf: result.found };
+  }
+  if (state.status === "drunkReveal" || state.status === "drunkHunter") {
+    const player = werewolfDrunkReveal(state);
+    return player
+      ? {
+          text: t("werewolfNarrator.guide.drunk", {
+            name: player.name,
+            role: t(`werewolfSymbols.items.${player.role}.name`),
+          }),
+        }
+      : null;
+  }
+  return null;
 }
 
 /** What the narrator reads or does during the day: nominate (three choices), vote, or end the day. */
@@ -71,7 +79,7 @@ export function dayPrompt(view: GuideView, t: TFunction): string | null {
 
 /** The heading of the box: the ask of the step, what the narrator reads out, or what to do next. */
 export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
-  const { card, selection } = view;
+  const { card, selection, state } = view;
   if (!card) return null;
   if (card.cover) return t("werewolfNarrator.guide.coverTitle");
   // The witch is asked two questions, always both: the script of the narrator. Hints (the victim, a used potion) stand
@@ -82,8 +90,19 @@ export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
         ? "werewolfNarrator.guide.witch.healAsk"
         : "werewolfNarrator.guide.witch.poisonAsk",
     );
+  // What the narrator does when a result is shown: the result itself stands in the summary box.
+  if (step.result)
+    return t(
+      card.role === "paranormalInvestigator"
+        ? "werewolfNarrator.guide.resultScript.paranormalInvestigator"
+        : card.role === "apprenticeSeer"
+          ? "werewolfNarrator.guide.resultScript.apprenticeSeer"
+          : "werewolfNarrator.guide.resultScript.seer",
+    );
+  if (state.status === "drunkReveal" || state.status === "drunkHunter")
+    return t("werewolfNarrator.guide.drunkScript");
   const info = actInfo(view, t) ?? dayPrompt(view, t);
-  if (info !== null) return <ResultText step={step} text={info} />;
+  if (info !== null) return info;
   if (selection.ability)
     return t(
       `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,
@@ -285,6 +304,17 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
         {state.wolfTarget
           ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
           : t("werewolfNarrator.guide.noVictim")}
+      </span>
+    ),
+    // The holder of the amulet was attacked, or may keep it: what the narrator has to know, below the script.
+    state.status === "amuletPass" && (
+      <span className="ww-guide__victim" key="amulet">
+        {t(
+          state.amulet.mustPass
+            ? "werewolfNarrator.guide.amuletMust"
+            : "werewolfNarrator.guide.amuletMay",
+          { name: state.amulet.holder },
+        )}
       </span>
     ),
     step.statement === "noAttack" && (

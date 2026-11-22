@@ -121,13 +121,17 @@ export const werewolfNarratorTexts = {
       undo: "Undo",
       back: "Back",
       next: "Next",
-      vision: {
-        wolf: "{{name}} is a werewolf",
-        village: "{{name}} is not a werewolf",
+      resultScript: {
+        seer: "Show the seer the result with a thumb",
+        apprenticeSeer: "Show the apprentice seer the result with a thumb",
+        paranormalInvestigator: "Show the investigator the result with a thumb",
       },
-      investigation: {
-        yes: "There is a werewolf at {{name}} or next to them",
-        no: "There is no werewolf at {{name}} or next to them",
+      drunkScript: "Tell the drunk his real role",
+      verdict: {
+        wolf: "Werewolf",
+        village: "Not a werewolf",
+        near: "Werewolf nearby",
+        clear: "No werewolf nearby",
       },
       lovers: "The lovers look at each other",
       cupid: {

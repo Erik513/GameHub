@@ -9,8 +9,9 @@ import {
 } from "../../business/games/werewolf/stateMachine";
 import { Icon } from "../components";
 import { DealCard } from "./DealCard";
+import { Verdict } from "./RoleStepContent";
 import { variantOfRole } from "./roleAbilities";
-import { scriptOf, stepExtras, stepTitle, type ScriptBox } from "./stepText";
+import { factOf, scriptOf, stepExtras, stepTitle, type ScriptBox } from "./stepText";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
@@ -119,6 +120,8 @@ export function GuideBox({
     view.canContinue && (selection.ability !== null || selection.heal || !hasChoice);
   const extras = stepExtras(view, step, t);
   const script = scriptOf(view, step, t);
+  // A step with a result (what the seer sees, who the drunk is): the summary box shows it at once.
+  const showFact = factOf(view, t) !== null;
   return (
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
@@ -225,11 +228,11 @@ export function GuideBox({
           </div>
         )}
       </div>
-      {(extras.length > 0 || selection.ability !== null || view.progress >= 1) && (
+      {(extras.length > 0 || selection.ability !== null || view.progress >= 1 || showFact) && (
         <footer className="ww-guide__extra">
           {!showPeople && extras}
           {/* Cupid: once the choice is confirmed in the first box, the summary stands here. */}
-          {view.progress >= 1 && <Summary view={view} />}
+          {(view.progress >= 1 || showFact) && <Summary view={view} />}
           {/* The choice of people (also at the day) is confirmed with the check below the list. */}
           {selection.ability !== null && (
             <button
@@ -527,8 +530,14 @@ function Chosen({ children }: { readonly children: ReactNode }) {
 function Summary({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { card, selection } = view;
-  if (!card || card.cover || card.abilities.length === 0) return null;
+  if (!card || card.cover) return null;
   const step = describeRoleStep(view.state);
+  const fact = factOf(view, t);
+  // The drunk has no ability: the summary only says who he really is.
+  if (card.abilities.length === 0)
+    return view.state.status === "drunkReveal" || view.state.status === "drunkHunter" ? (
+      <Chosen>{fact?.text}</Chosen>
+    ) : null;
   // What was used, as the symbol of the ability, its name and the person: no prefix ("chosen").
   const part = (symbol: string, label: string, people: string) => (
     <span className="ww-guide__chosen-part" key={symbol + label}>
@@ -550,7 +559,22 @@ function Summary({ view }: { readonly view: GuideView }) {
     const { ability, name } = step.result;
     return (
       <Chosen>
-        {part(symbolOf(ability), t(`werewolfNarrator.guide.abilityDone.${ability}`), name)}
+        {/* "Looked at: Josie (Not a werewolf)": the verdict stands in the summary, green for a werewolf, red if not. */}
+        <span className="ww-guide__chosen-part">
+          <WerewolfSymbol id={symbolOf(ability)} ring size={20} />
+          <span>
+            <strong>{t(`werewolfNarrator.guide.abilityDone.${ability}`)}</strong>
+            {": "}
+            {name}
+            {fact && (
+              <>
+                {" ("}
+                <Verdict found={fact.wolf === true} text={fact.text} />
+                {")"}
+              </>
+            )}
+          </span>
+        </span>
       </Chosen>
     );
   }

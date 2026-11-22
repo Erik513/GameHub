@@ -139,13 +139,19 @@ describe("NarratorView choices", () => {
     expect(screen.getByRole("button", { name: "Undo" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
     await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
-    expect(screen.getByText(new RegExp(`${person} is (not )?a werewolf`))).toBeInTheDocument();
-    // The result is also shown as a large sign: red with the wolf, green with the villager.
-    expect(document.querySelector(".ww-verdict")).not.toBeNull();
+    expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
+      new RegExp("Looked at: " + person + " [(](Not a werewolf|Werewolf)[)]"),
+    );
+    // The result stands in the summary box with a thumb: green and up for a werewolf, red and down if not.
+    expect(document.querySelector(".ww-guide__chosen .ww-verdict svg")).not.toBeNull();
+    // The script does not hold the result, it says what the narrator does.
+    expect(document.querySelector(".ww-script")?.textContent).toContain("with a thumb");
     // When the seer falls asleep, the box names what was chosen, not "nothing chosen".
     await user.click(screen.getByRole("button", { name: "Task done" }));
     // The summary shows the symbol, the name of the ability and the person: no prefix.
-    expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(`Looked at: ${person}`);
+    expect(document.querySelector(".ww-guide__chosen")?.textContent).toContain(
+      `Looked at: ${person} (`,
+    );
     expect(document.querySelector(".ww-guide__chosen svg")).not.toBeNull();
     expect(screen.queryByText(/the role passes/)).toBeNull();
   });
@@ -191,7 +197,9 @@ describe("NarratorView choices", () => {
     expect(confirm).toBeEnabled();
     expect(confirm).toHaveAttribute("data-next");
     await user.click(confirm);
-    expect(screen.getByText(new RegExp(`${person} is (not )?a werewolf`))).toBeInTheDocument();
+    expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
+      new RegExp("Looked at: " + person + " [(](Not a werewolf|Werewolf)[)]"),
+    );
   });
 
   it("changes from one role to the next only with the button next, which then has the blue frame", async () => {

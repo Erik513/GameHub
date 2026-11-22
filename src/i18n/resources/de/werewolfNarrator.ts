@@ -121,13 +121,17 @@ export const werewolfNarratorTexts = {
       undo: "Rückgängig",
       back: "Zurück",
       next: "Weiter",
-      vision: {
-        wolf: "{{name}} ist ein Werwolf",
-        village: "{{name}} ist kein Werwolf",
+      resultScript: {
+        seer: "Zeige der Seherin das Ergebnis mit dem Daumen",
+        apprenticeSeer: "Zeige dem Seher-Lehrling das Ergebnis mit dem Daumen",
+        paranormalInvestigator: "Zeige dem Ermittler das Ergebnis mit dem Daumen",
       },
-      investigation: {
-        yes: "Bei {{name}} und den Nachbarn ist ein Werwolf",
-        no: "Bei {{name}} und den Nachbarn ist kein Werwolf",
+      drunkScript: "Sage dem Betrunkenen seine wahre Rolle",
+      verdict: {
+        wolf: "Werwolf",
+        village: "Kein Werwolf",
+        near: "Werwolf in der Nähe",
+        clear: "Kein Werwolf in der Nähe",
       },
       lovers: "Die Verliebten schauen sich an",
       cupid: {

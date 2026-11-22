@@ -2219,10 +2219,14 @@ button.ww-guide__strip[data-next] {
 
 /* The result of the seer: a thumb in front of the sentence, green when a werewolf was found, red when not. */
 .ww-verdict {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
+  /* Inline with the text around it (the brackets in the summary): thumb and word on the same baseline. */
+  display: inline;
   color: var(--color-danger);
+}
+
+.ww-verdict svg {
+  margin-right: 4px;
+  vertical-align: -3px;
 }
 
 .ww-verdict[data-wolf="true"] {
