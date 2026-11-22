@@ -2,7 +2,7 @@ import { createFixedWerewolf } from "./fixedSetup";
 import { fixedConfigurationSettings, type FixedDraft } from "./fixedConfiguration";
 import type { WerewolfLineup } from "./lineup";
 import { createWerewolfSession, type WerewolfSession } from "./session";
-import type { WerewolfState } from "./stateMachine";
+import { isRemovedAmuletIntro, leaveRemovedAmuletIntro, type WerewolfState } from "./stateMachine";
 import { variableSelectionOf, type VariableDraft } from "./variableConfiguration";
 import { createVariableWerewolf } from "./variableSetup";
 
@@ -79,5 +79,10 @@ export function parseSavedWerewolfSession(raw: unknown): WerewolfSession | undef
     return undefined;
   const { present, past } = session as Partial<WerewolfSession>;
   if (!isState(present) || !Array.isArray(past) || !past.every(isState)) return undefined;
-  return { past, present };
+  // The step before the first night that called the holder of the amulet no longer exists: a game saved in it goes on
+  // with the first night, and the step is no longer part of the way back.
+  return {
+    past: past.filter((state) => !isRemovedAmuletIntro(state)),
+    present: leaveRemovedAmuletIntro(present),
+  };
 }

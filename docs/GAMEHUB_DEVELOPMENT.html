@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T16:30:00.000Z",
+    "updatedAt": "2026-11-22T17:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 270,
-      "totalTasks": 324,
-      "percent": 83.3
+      "completedTasks": 271,
+      "totalTasks": 325,
+      "percent": 83.4
     }
   },
   "environment": {
@@ -1737,6 +1737,12 @@
           "title": "Amulett-Schritt vor der ersten Nacht streichen: der Träger erfährt es auf seiner Rollenkarte",
           "status": "done",
           "validation": "Auf Beschluss des Auftraggebers (22.11.2026) entfallen Zustand amuletIntro und Ereignis amuletReady in der Zustandsmaschine, im Nachtskript der Erzählersicht, in den Texten und in den Tests; nach der Rollenverteilung beginnt die Nacht sofort mit der ersten Rolle; der Schritt am Nachtende (amuletPass) bleibt; Dokumentation (Regeln, Übergabe, Erzähler-Schnittstelle) angepasst; 1567 Tests, tsc -b, eslint, Schichtprüfung sauber; die langen Simulationen (simulation.test.ts, balance.test.ts) wurden mit angepasst und kompilieren, sind aber nicht gelaufen (über zehn Minuten, nicht im normalen Lauf)."
+        },
+        {
+          "id": "We-01-87",
+          "title": "Leere Seite nach „Beginnen“ bei einem Spielstand aus dem entfernten Amulett-Schritt beheben",
+          "status": "done",
+          "validation": "Ursache: Ein vor dem Entfernen des Amulett-Schritts gespeichertes Spiel stand im Zustand amuletIntro, den es nicht mehr gibt; nach Beginnen blieb die Ansicht leer. Beim Laden eines gespeicherten Spiels geht ein solcher Stand jetzt mit der ersten Nacht weiter und der alte Schritt fällt aus dem Weg zurück (leaveRemovedAmuletIntro); Test; 1568 Tests, tsc -b, eslint, Schichtprüfung sauber; Spielstand und Versionsnummer unverändert, damit das offene Spiel des Auftraggebers erhalten bleibt."
         }
       ]
     },

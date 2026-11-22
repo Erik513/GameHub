@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-87: Alter Spielstand im Amulett-Schritt
+
+- Ein Spielstand, der im entfernten Amulett-Schritt gespeichert war, ging nach „Beginnen“ in eine leere Seite. Er geht jetzt beim Laden mit der ersten Nacht weiter.
+
 ### We-01-86: Kein Amulett-Schritt vor der ersten Nacht
 
 - Der Amulettträger wird nicht mehr vor der ersten Nacht geweckt; er erfährt es auf seiner Rollenkarte. Zustand `amuletIntro` und Ereignis `amuletReady` entfallen. Der Schritt am Nachtende bleibt.

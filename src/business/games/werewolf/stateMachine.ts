@@ -335,6 +335,18 @@ function enterCall(
   return call.mode === "cover" ? { ...resume, status: "nightCall", call: role, resume } : resume;
 }
 
+/**
+ * A game that was saved while the holder of the amulet was still called before the first night (a step that no longer
+ * exists) goes on with the first night. Only the loading of saved games uses this.
+ */
+export function leaveRemovedAmuletIntro(state: WerewolfState): WerewolfState {
+  return (state.status as string) === "amuletIntro" ? startNight(state, state.night) : state;
+}
+
+export function isRemovedAmuletIntro(state: WerewolfState): boolean {
+  return (state.status as string) === "amuletIntro";
+}
+
 function startNight(state: Match, night: number): WerewolfState {
   const next = {
     ...state,

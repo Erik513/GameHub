@@ -85,4 +85,30 @@ describe("saved game", () => {
       }),
     ).toBeUndefined();
   });
+
+  it("lets a game saved in the removed amulet step go on with the first night", () => {
+    // The role reveal of a game with the amulet, once with the old step in between.
+    const first = startWerewolfGame({
+      ...input,
+      fixedDraft: { ...emptyFixedDraft, settings: { ...emptyFixedDraft.settings, amulet: true } },
+    })!;
+    let session = first;
+    while (session.present.status === "roles") {
+      const player = session.present.players[session.present.index]!.name;
+      session = advanceWerewolfSession(session, { player, type: "roleSeen" });
+    }
+    const roleReveal = session.past[session.past.length - 1]!;
+    const legacy = {
+      past: [...session.past, roleReveal],
+      present: { ...session.present, status: "amuletIntro" },
+    };
+    const loaded = parseSavedWerewolfSession(
+      JSON.parse(JSON.stringify({ session: legacy, version: savedSessionVersion })),
+    );
+    expect(loaded?.present.status).not.toBe("amuletIntro");
+    expect(loaded?.present.status).toBe(session.present.status);
+    expect(loaded?.present.night).toBe(1);
+    // The old step is no longer in the way back.
+    expect(loaded?.past.some((state) => (state.status as string) === "amuletIntro")).toBe(false);
+  });
 });
