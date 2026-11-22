@@ -2582,3 +2582,16 @@ button.ww-guide__strip[data-next] {
 .ww-red {
   color: var(--color-danger);
 }
+
+.ww-thumb {
+  margin: 0 2px;
+  vertical-align: -4px;
+}
+
+/* Several symbols before a script (the magician's first question) stand one above the other. */
+.ww-script__symbols {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 2px;
+}

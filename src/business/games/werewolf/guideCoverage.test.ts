@@ -71,13 +71,24 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
         else failure = pick(event.poison);
       }
       break;
-    case "castSpells":
-      if (event.heal && !open("heal")) failure = "heal not available";
-      if (!failure && event.kill.length > 0) {
+    case "castSpells": {
+      // The magician is asked two questions: the healing spell or a death spell, then a second death spell.
+      const [firstKill, ...restKill] = event.kill;
+      if (event.heal) {
+        if (!open("heal")) failure = "heal not available";
+      } else if (firstKill !== undefined) {
         if (!open("kill")) failure = "kill not available";
-        for (const name of event.kill) failure = failure ?? pick(name);
+        else failure = pick(firstKill);
+        if (!failure) guide = continueGuide(guide);
+      } else guide = answerQuestion(guide, "skip");
+      const second = event.heal ? event.kill : restKill;
+      for (const name of second) {
+        if (failure) break;
+        if (!open("kill")) failure = "second kill not available";
+        else failure = pick(name);
       }
       break;
+    }
     case "bond":
       if (!open("bond")) failure = "bond not available";
       for (const name of event.players) failure = failure ?? pick(name);

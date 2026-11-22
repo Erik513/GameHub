@@ -135,6 +135,8 @@ export interface ScriptBox {
   readonly enabled: boolean;
   /** The symbol of the ability that the box is about, shown before the text. */
   readonly symbol?: string;
+  /** Several symbols before the text (the magician's first question: the healing and the death spell). */
+  readonly symbols?: readonly string[];
   /** Player names in the texts of the box: they are shown in bold. */
   readonly names?: readonly string[];
   /** A part of the text that is shown in red ("no victim"). */
@@ -179,15 +181,24 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
     wake,
     ...boxes.map((box) => {
       // The wolves who only look at each other (no attack in the first night) have no ability to show.
+      const showsVictim =
+        box.id === "show" && (view.state.status === "witch" || view.state.status === "magician");
       const symbol =
-        box.id === "asleep" ||
-        step.statement === "noAttack" ||
-        (box.id === "show" && view.state.status === "witch")
+        box.id === "asleep" || step.statement === "noAttack"
           ? undefined
-          : symbolOf(box.id);
+          : showsVictim
+            ? // Showing the victim is about the attack of the wolves: their symbol, not an ability of the role.
+              "attacked"
+            : symbolOf(box.id);
+      // The first question of the magician is about both spells: the healing and the death spell.
+      const both =
+        box.id === "heal" && view.state.status === "magician"
+          ? card.abilities.map((ability) => ability.symbol)
+          : undefined;
       return {
         ...box,
         ...(symbol ? { symbol } : {}),
+        ...(both ? { symbols: both } : {}),
         ...(intro ? { enabled: false, state: "pending" as const } : {}),
       };
     }),
@@ -206,7 +217,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
     state: outro ? "active" : "pending",
   };
 
-  // The witch: show the victim, two questions, then falling asleep.
+  // The witch and the magician: show the victim, two questions, then falling asleep.
   if (view.question !== null && !card.cover) {
     const victim = state.wolfTarget;
     // The first box is done once the narrator has shown the victim (its check) or the first question is answered.
@@ -230,14 +241,26 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         button: "undo",
         enabled: outro || view.question === "poison",
         id: "heal",
-        items: [t("werewolfNarrator.guide.witch.healAsk")],
+        items: [
+          t(
+            state.status === "magician"
+              ? "werewolfNarrator.guide.magician.firstAsk"
+              : "werewolfNarrator.guide.witch.healAsk",
+          ),
+        ],
         state: outro || view.question === "poison" ? "done" : shown ? "active" : "pending",
       },
       {
         button: "undo",
         enabled: outro || selection.ability === "poison",
         id: "poison",
-        items: [t("werewolfNarrator.guide.witch.poisonAsk")],
+        items: [
+          t(
+            state.status === "magician"
+              ? "werewolfNarrator.guide.magician.secondAsk"
+              : "werewolfNarrator.guide.witch.poisonAsk",
+          ),
+        ],
         state: outro ? "done" : view.question === "poison" ? "active" : "pending",
       },
       asleep,

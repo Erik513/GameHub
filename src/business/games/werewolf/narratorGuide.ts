@@ -39,6 +39,11 @@ export interface GuideSelection {
    * somebody. This is the question that is open now.
    */
   readonly question?: "heal" | "poison";
+  /**
+   * The magician is asked in two rounds as well: first the healing spell or a death spell ("heal"), then a second
+   * death spell ("poison"). The number of people of the first spell, who stay chosen in the second round.
+   */
+  readonly spellPicks?: number;
   /** The boxes of the script that the narrator has confirmed with a check (Cupid: the sleeping, then the touching). */
   readonly progress?: number;
   /** At the vote: what each voter chose (voter to candidate). */
@@ -90,7 +95,8 @@ function phaseOf(state: WerewolfState): GuidePhase {
 
 /** The vote opens at once; nobody has chosen yet. */
 function initialSelection(state: WerewolfState): GuideSelection {
-  if (state.status === "witch") return { ...emptySelection, question: "heal" };
+  if (state.status === "witch" || state.status === "magician")
+    return { ...emptySelection, question: "heal" };
   return state.status === "vote" ? { ...emptySelection, ability: "vote" } : emptySelection;
 }
 
@@ -176,6 +182,9 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       if (selection.question === "heal") return null;
       return { heal: selection.heal, night, poison: target, type: "potions" };
     case "castSpells":
+      // The magician has to answer the first question before the step can be confirmed (an open list of people is
+      // closed with the check mark first).
+      if (selection.question === "heal" && selection.ability === null) return null;
       return { heal: selection.heal, kill: selection.picks, night, type: "castSpells" };
     case "bond": {
       const [one, two] = selection.picks;
@@ -263,7 +272,7 @@ export interface GuideView {
   readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
   /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
   readonly ballotRows: readonly BallotRow[];
-  /** The question the witch is asked now (heal or poison), or null. */
+  /** The question the witch or the magician is asked now (first or second), or null. */
   readonly question: "heal" | "poison" | null;
   /** How many boxes of the script of Cupid are confirmed (0, 1). */
   readonly progress: number;
@@ -362,7 +371,8 @@ export function describeGuide(guide: Guide): GuideView {
     },
     ballotRows: ballotRowsOf(state, selection),
     progress: selection.progress ?? 0,
-    question: state.status === "witch" ? (selection.question ?? null) : null,
+    question:
+      state.status === "witch" || state.status === "magician" ? (selection.question ?? null) : null,
     voterNotes: voterNotesOf(state),
     nextKind:
       frame.phase === "ready"
@@ -420,6 +430,17 @@ export function chooseAbility(original: Guide, id: CardAbilityId): Guide {
     }
     if (selection.question !== "poison") return guide;
   }
+  // The magician: the healing spell belongs to the first question, a death spell to either of the two.
+  if (state.status === "magician" && selection.question !== undefined && id === "heal") {
+    if (selection.question !== "heal") return guide;
+    const next = {
+      ...selection,
+      heal: true,
+      question: "poison" as const,
+      spellPicks: selection.picks.length,
+    };
+    return acceptedEvent(state, next) ? withSelection(reopened, next) : guide;
+  }
   if (id === "heal") {
     const next = { ...selection, heal: !selection.heal };
     // The game decides whether there is somebody to heal; a choice it would refuse is not taken.
@@ -465,16 +486,20 @@ export function reopenDecision(guide: Guide): Guide {
   if (frame.phase !== "outro") return guide;
   const initial = initialSelection(guide.session.present);
   // One decision back per tap: the witch is asked the last question again, her earlier answer stays.
+  const magician = guide.session.present.status === "magician";
   const selection =
-    frame.selection.question !== undefined
-      ? { ...initial, heal: frame.selection.heal, question: "poison" as const }
-      : initial;
+    frame.selection.question === undefined
+      ? initial
+      : magician
+        ? // The magician starts again with the first question (the victim stays shown).
+          { ...initial, progress: 1 }
+        : { ...initial, heal: frame.selection.heal, question: "poison" as const };
   return { ...guide, trail: [...guide.trail, { ...frame, event: null, phase: "act", selection }] };
 }
 
 /**
- * The check of a box of a script that is not decided by a choice: Cupid's script has three boxes: pointing at the two people, falling asleep, touching the two. The people are chosen
- * in the list; the check of the first box confirms the decision, the check of the second says that Cupid sleeps, the
+ * The check of a box of a script that is not decided by a choice. The witch and the magician: the victim is shown.
+ * Cupid's script has three boxes: pointing at the two people, falling asleep, touching the two. The people are chosen in the list; the check of the first box confirms the decision, the check of the second says that Cupid sleeps, the
  * check of the third that the lovers were touched, which finishes the step.
  */
 export function checkScript(guide: Guide): Guide {
@@ -482,7 +507,11 @@ export function checkScript(guide: Guide): Guide {
   const state = guide.session.present;
   const { selection } = frame;
   // The witch: the narrator has shown the victim (the check of the first box of her script).
-  if (frame.phase === "act" && state.status === "witch" && selection.ability === null) {
+  if (
+    frame.phase === "act" &&
+    (state.status === "witch" || state.status === "magician") &&
+    selection.ability === null
+  ) {
     return (selection.progress ?? 0) >= 1 || selection.question !== "heal"
       ? guide
       : withSelection(guide, { ...selection, progress: 1 });
@@ -503,13 +532,26 @@ export function checkScript(guide: Guide): Guide {
 export function undoQuestion(guide: Guide, question: "heal" | "poison"): Guide {
   const frame = current(guide);
   const state = guide.session.present;
-  if (state.status !== "witch" || frame.selection.question === undefined) return guide;
+  if (
+    (state.status !== "witch" && state.status !== "magician") ||
+    frame.selection.question === undefined
+  )
+    return guide;
   const initial = initialSelection(state);
   const selection =
     // The victim was shown already: a question that is asked again does not take the first box back.
     question === "heal"
       ? { ...initial, progress: 1 }
-      : { ...initial, heal: frame.selection.heal, progress: 1, question: "poison" as const };
+      : {
+          ...initial,
+          heal: frame.selection.heal,
+          picks: frame.selection.picks.slice(0, frame.selection.spellPicks ?? 0),
+          progress: 1,
+          question: "poison" as const,
+          ...(frame.selection.spellPicks === undefined
+            ? {}
+            : { spellPicks: frame.selection.spellPicks }),
+        };
   if (frame.phase === "outro")
     return {
       ...guide,
@@ -528,12 +570,21 @@ export function answerQuestion(guide: Guide, answer: "skip" | "use"): Guide {
   const frame = current(guide);
   const state = guide.session.present;
   const question = frame.selection.question;
-  if (frame.phase !== "act" || state.status !== "witch" || question === undefined) return guide;
+  const magician = state.status === "magician";
+  if (frame.phase !== "act" || (state.status !== "witch" && !magician) || question === undefined)
+    return guide;
   if (question === "heal") {
     if (answer === "use") return chooseAbility(guide, "heal");
-    return withSelection(guide, { ...frame.selection, heal: false, question: "poison" });
+    return withSelection(guide, {
+      ...frame.selection,
+      heal: false,
+      question: "poison",
+      ...(magician ? { spellPicks: frame.selection.picks.length } : {}),
+    });
   }
-  return answer === "use" ? chooseAbility(guide, "poison") : continueGuide(guide);
+  return answer === "use"
+    ? chooseAbility(guide, magician ? "kill" : "poison")
+    : continueGuide(guide);
 }
 
 /** The narrator closes the list of people again (an ability was tapped by mistake); the choices of it are dropped. */
@@ -551,7 +602,11 @@ export function choosePlayer(guide: Guide, name: string): Guide {
   const view = describeGuide(guide);
   if (!view.targets.includes(name)) return guide;
   const { selection } = view;
-  const limit = pickLimitOf(view.state, selection.ability, selection.heal);
+  // The magician names one person per spell: the first question takes one, the second one more.
+  const limit =
+    view.state.status === "magician" && selection.question !== undefined
+      ? (selection.spellPicks ?? 0) + 1
+      : pickLimitOf(view.state, selection.ability, selection.heal);
   const picks = limit === 1 ? [name] : [...selection.picks, name].slice(0, limit);
   return withSelection(guide, { ...selection, none: false, picks });
 }
@@ -559,6 +614,12 @@ export function choosePlayer(guide: Guide, name: string): Guide {
 /** The narrator removes a chosen person again. */
 export function unchoosePlayer(guide: Guide, name: string): Guide {
   const { selection } = current(guide);
+  // The person of the first spell stays chosen while the second one is chosen (undo takes that back).
+  if (
+    selection.question === "poison" &&
+    selection.picks.indexOf(name) < (selection.spellPicks ?? 0)
+  )
+    return guide;
   return withSelection(guide, {
     ...selection,
     picks: selection.picks.filter((pick) => pick !== name),
@@ -594,8 +655,12 @@ export function undoSelection(guide: Guide): Guide {
     if (selection.ability !== null)
       return withSelection(
         guide,
-        selection.picks.length > 0
-          ? { ...selection, none: false, picks: [] }
+        selection.picks.length > (selection.spellPicks ?? 0)
+          ? {
+              ...selection,
+              none: false,
+              picks: selection.picks.slice(0, selection.spellPicks ?? 0),
+            }
           : { ...selection, ability: null, none: false },
       );
     return withSelection(guide, initial);
@@ -642,15 +707,30 @@ export function continueGuide(guide: Guide): Guide {
       // The magician and Cupid choose in parts: the check mark of an open choice only closes it, the choice stays; the
       // step itself is confirmed later (the magician with "done", Cupid with the checks of the script).
       const compound = describeRoleStep(state).compound;
+      // The list of the second round of the magician finishes the step instead.
       if (
         frame.phase === "act" &&
-        (compound === "castSpells" || compound === "bond") &&
+        (compound === "bond" ||
+          (compound === "castSpells" && frame.selection.question !== "poison")) &&
         frame.selection.ability !== null &&
         frame.selection.ability !== "heal"
       )
         return {
           ...guide,
-          trail: [...guide.trail, { ...frame, selection: { ...frame.selection, ability: null } }],
+          trail: [
+            ...guide.trail,
+            {
+              ...frame,
+              selection: {
+                ...frame.selection,
+                ability: null,
+                // The first spell is done: the second question follows.
+                ...(compound === "castSpells"
+                  ? { question: "poison" as const, spellPicks: frame.selection.picks.length }
+                  : {}),
+              },
+            },
+          ],
         };
       const event = acceptedEvent(state, frame.selection);
       if (!event) return guide;

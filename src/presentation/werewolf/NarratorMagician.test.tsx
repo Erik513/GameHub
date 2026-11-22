@@ -47,9 +47,10 @@ function Harness() {
 }
 
 const counts = () => document.querySelectorAll(".ww-ability__count").length;
-const persons = () => [...document.querySelectorAll<HTMLElement>(".ww-person")];
+const persons = () => [...document.querySelectorAll<HTMLElement>(".ww-person:not(:disabled)")];
+const abilities = () => [...document.querySelectorAll<HTMLButtonElement>(".ww-ability")];
 
-it("lets the magician use a spell twice and both spells in one night; the 2 goes only once a choice is confirmed", async () => {
+async function open() {
   const i18n = await createGameHubI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
@@ -57,45 +58,69 @@ it("lets the magician use a spell twice and both spells in one night; the 2 goes
     </I18nextProvider>,
   );
   fireEvent.click(document.querySelector(".ww-script__wake")!);
+  // The victim is shown (the check of the first box): only then the magician is asked.
+  fireEvent.click(document.querySelector(".ww-script__check:not(.ww-script__wake)")!);
+}
+
+it("asks the magician two questions: heal or kill first, then a second death spell; the 2 goes once a spell is cast", async () => {
+  await open();
   // Both spells are there: a 2 on both buttons.
   expect(counts()).toBe(2);
-  // Kill: the list opens, one person is chosen: the 2 stays until the choice is confirmed.
+  // First question: Kill; the list opens, one person is chosen, the check mark closes it and the second question follows.
   fireEvent.click(screen.getByRole("button", { name: /^Kill/ }));
   fireEvent.click(persons()[0]!);
   expect(counts()).toBe(2);
-  // The check mark confirms the choice: the 2 is gone on both buttons, both spells are still usable.
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   expect(counts()).toBe(0);
+  // Second question: only the death spell (and skip) can be pressed, the healing spell waits.
+  expect(screen.getByRole("button", { name: /^Heal/ })).toBeDisabled();
   const kill = screen.getByRole("button", { name: /^Kill/ });
-  const heal = screen.getByRole("button", { name: /^Heal/ });
   expect(kill).toBeEnabled();
-  expect(heal).toBeEnabled();
-  // The same spell a second time: the first person stays chosen, a second one is added.
   fireEvent.click(kill);
   expect(document.querySelectorAll(".ww-person[aria-pressed='true']")).toHaveLength(1);
   fireEvent.click(persons().find((person) => person.getAttribute("aria-pressed") !== "true")!);
   expect(document.querySelectorAll(".ww-person[aria-pressed='true']")).toHaveLength(2);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
-  // Both spells are used: the healing spell cannot be chosen any more, the step is confirmed with "done".
-  expect(heal).toBeDisabled();
-  fireEvent.click(screen.getByRole("button", { name: "Task done" }));
+  // Both questions are answered: the step is finished.
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(/Killed: P\d+, P\d+/);
 });
 
-it("lets the magician heal and kill in the same night", async () => {
-  const i18n = await createGameHubI18n("en");
-  render(
-    <I18nextProvider i18n={i18n}>
-      <Harness />
-    </I18nextProvider>,
-  );
-  fireEvent.click(document.querySelector(".ww-script__wake")!);
+it("lets the magician heal in the first question and kill in the second", async () => {
+  await open();
   fireEvent.click(screen.getByRole("button", { name: /^Heal/ }));
+  // The second question: Kill and Skip are open.
+  expect(abilities().filter((button) => !button.disabled).length).toBe(2);
   fireEvent.click(screen.getByRole("button", { name: /^Kill/ }));
   fireEvent.click(persons()[0]!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
-  fireEvent.click(screen.getByRole("button", { name: "Task done" }));
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
     /Healed: P\d+Killed: P\d+/,
   );
+});
+
+it("lets the magician skip both questions: nothing is cast", async () => {
+  await open();
+  fireEvent.click(screen.getByRole("button", { name: /^Skip/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Skip/ }));
+  expect(screen.getByText(/Nothing chosen/)).toBeInTheDocument();
+});
+
+it("shows the script of the magician as boxes: the victim, the first question, the second question, falling asleep", async () => {
+  await open();
+  const texts = [...document.querySelectorAll(".ww-script__step")].map((step) => step.textContent);
+  expect(texts.slice(1)).toEqual([
+    expect.stringMatching(/^Show the victim: /),
+    "Save the victim () or kill somebody (point)?",
+    "Use the second spell (point)?",
+    expect.stringMatching(/magician goes back to sleep/i),
+  ]);
+  // The victim is about the attack of the wolves; the first question shows both spells and a thumb up as a sign.
+  const steps = [...document.querySelectorAll(".ww-script__step")].slice(1);
+  expect(steps[0]!.querySelector("[data-symbol]")?.getAttribute("data-symbol")).toBe("attacked");
+  expect(
+    [...steps[1]!.querySelectorAll("[data-symbol]")].map((symbol) =>
+      symbol.getAttribute("data-symbol"),
+    ),
+  ).toEqual(["heal", "kill"]);
+  expect(steps[1]!.querySelector(".ww-thumb")).not.toBeNull();
 });

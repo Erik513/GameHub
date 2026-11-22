@@ -9,7 +9,7 @@ import {
 } from "../../business/games/werewolf/stateMachine";
 import { Icon } from "../components";
 import { DealCard } from "./DealCard";
-import { Verdict } from "./RoleStepContent";
+import { ThumbIcon, Verdict } from "./RoleStepContent";
 import { variantOfRole } from "./roleAbilities";
 import { factOf, scriptOf, stepExtras, stepTitle, type ScriptBox } from "./stepText";
 import type { SymbolId } from "./symbols/catalog";
@@ -408,6 +408,17 @@ function Ballots({
 
 /** A text with the player names in bold, so they stand out when the narrator reads. */
 function withNames(text: ReactNode, names: readonly string[] | undefined, red?: string): ReactNode {
+  // "[thumb]" in a text is the sign of a thumb up.
+  if (typeof text === "string" && text.includes("[thumb]")) {
+    const [before = "", after = ""] = text.split("[thumb]");
+    return (
+      <>
+        {before}
+        <ThumbIcon />
+        {after}
+      </>
+    );
+  }
   if (typeof text === "string" && red && text.includes(red)) {
     const at = text.indexOf(red);
     return (
@@ -490,7 +501,15 @@ function RoleScript({
               </span>
             ) : (
               <span className="ww-script__content">
-                {box.symbol && <WerewolfSymbol id={box.symbol as SymbolId} ring size={28} />}
+                {box.symbols ? (
+                  <span className="ww-script__symbols">
+                    {box.symbols.map((symbol) => (
+                      <WerewolfSymbol id={symbol as SymbolId} key={symbol} ring size={24} />
+                    ))}
+                  </span>
+                ) : (
+                  box.symbol && <WerewolfSymbol id={box.symbol as SymbolId} ring size={28} />
+                )}
                 {box.items.length > 1 ? (
                   <ul className="ww-script__items">
                     {box.items.map((item, index) => (

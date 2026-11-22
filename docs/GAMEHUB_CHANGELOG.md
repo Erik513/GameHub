@@ -4,6 +4,10 @@
 
 ### We-01-139: Erwachen als erste Skriptbox
 
+- Skripte kurz: Hexe und Magier gekürzt, „(zeigen)“ am Ende aller Skripte mit Personenwahl, Symbole des Magiers untereinander.
+- Magier/Hexe: „Opfer zeigen“ mit Angriffssymbol, erste Magier-Frage mit beiden Fähigkeitssymbolen und Daumen-Symbol, zweite Frage gekürzt.
+- Notiert (We-01-140, geplant): Anleitung soll erklären, dass das Erzählerskript immer gleich ist und nur lebende Personen geweckt werden.
+- Magier: Fragenskript wie die Hexe (Opfer zeigen, erste Frage Heilen/Töten, zweite Frage Töten, Einschlafen).
 - Hexe: Skript in drei Boxen (Opfer zeigen mit Haken, Frage Retten, Frage Vergiften), Name unterstrichen, „kein Opfer“ rot; Knöpfe oben erst nach dem Zeigen des Opfers bedienbar und bis dahin dunkel.
 - Ergebnisse (Seherin, Seher-Lehrling, Ermittler, Betrunkener) stehen in der Zusammenfassung statt im Skript; Daumen und Farbe; Amulett-Status als Hinweis.
 - Skripttexte enden einheitlich ohne Punkt.

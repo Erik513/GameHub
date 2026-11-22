@@ -79,7 +79,16 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               }
               // The witch is asked one question at a time: all options stay in the box, only the ones of the question
               // are framed and can be used.
-              asked={view.question !== null && view.phase === "act" ? view.question : null}
+              asked={
+                view.question === null || view.phase !== "act"
+                  ? null
+                  : view.state.status === "magician"
+                    ? // First question: the healing spell or a death spell; second question: a death spell.
+                      view.question === "heal"
+                      ? ["heal", "kill"]
+                      : ["kill"]
+                    : [view.question]
+              }
               settled={view.phase === "outro"}
               // The spells of the magician chosen in this step (the healing spell and every person to kill).
               spellsUsed={

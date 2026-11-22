@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   backGuide,
   answerQuestion,
+  checkScript,
   chooseAbility,
   closeAbility,
   chooseNobody,
@@ -690,47 +691,63 @@ describe("narrator guide", () => {
     expect(describeGuide(ahead).canGoBack).toBe(true);
   });
 
-  it("lets the magician use both spells in one night: the healing spell and one death spell, or two death spells", () => {
+  it("asks the magician two questions: the healing spell or a death spell first, then a second death spell", () => {
     const toMagician = () => {
       let guide = game(["magician"], { attackOnFirstNight: true });
       for (let step = 0; step < 200 && describeGuide(guide).card?.role !== "magician"; step += 1)
         guide = forward(guide)!;
-      return continueGuide(guide);
+      // The victim is shown (the check of the first box); then the first question is open.
+      return checkScript(continueGuide(guide));
     };
-    // Heal and kill together.
+    // The healing spell answers the first question; the second one is a death spell.
     let guide = toMagician();
+    expect(describeGuide(guide).question).toBe("heal");
     guide = chooseAbility(guide, "heal");
+    expect(describeGuide(guide)).toMatchObject({ question: "poison" });
+    // The healing spell cannot be cast in the second question, a death spell can.
+    expect(chooseAbility(guide, "heal")).toBe(guide);
     guide = chooseAbility(guide, "kill");
     guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
     // With the healing spell only one more spell is left: no second person.
     expect(describeGuide(guide).targets).toEqual([]);
     guide = continueGuide(guide);
-    expect(describeGuide(guide).phase).toBe("act");
-    expect(describeGuide(guide).selection).toMatchObject({ ability: null, heal: true });
-    guide = continueGuide(guide);
     expect(describeGuide(guide).phase).toBe("outro");
     expect(guide.trail.at(-1)?.event).toMatchObject({ heal: true, type: "castSpells" });
     expect((guide.trail.at(-1)?.event as unknown as { kill: string[] }).kill).toHaveLength(1);
-    // One spell twice: the first cast is confirmed with the check mark, the second is added to it.
+    // A death spell in the first question: the list closes with the check mark and the second question follows.
     guide = toMagician();
     guide = chooseAbility(guide, "kill");
     guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    // The first question takes one person only.
+    expect(describeGuide(guide).targets.length).toBeGreaterThan(0);
     const first = describeGuide(guide).selection.picks[0]!;
     guide = continueGuide(guide);
+    expect(describeGuide(guide)).toMatchObject({ phase: "act", question: "poison" });
     expect(describeGuide(guide).selection).toMatchObject({ ability: null, picks: [first] });
+    // The second death spell adds one more person; the person of the first spell cannot be taken back here.
     guide = chooseAbility(guide, "kill");
     expect(describeGuide(guide).selection.picks).toEqual([first]);
-    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
-    expect(describeGuide(guide).selection.picks).toHaveLength(2);
-    expect(describeGuide(guide).selection.picks[0]).toBe(first);
-    // Two death spells: then the healing spell cannot be added any more.
-    guide = toMagician();
-    guide = chooseAbility(guide, "kill");
-    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    expect(unchoosePlayer(guide, first)).toBe(guide);
     guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
     expect(describeGuide(guide).selection.picks).toHaveLength(2);
     guide = continueGuide(guide);
-    expect(chooseAbility(guide, "heal")).toBe(guide);
+    expect(describeGuide(guide).phase).toBe("outro");
+    expect((guide.trail.at(-1)?.event as unknown as { kill: string[] }).kill).toHaveLength(2);
+    // Skipping both questions: nothing is cast.
+    guide = toMagician();
+    guide = answerQuestion(guide, "skip");
+    guide = answerQuestion(guide, "skip");
+    expect(describeGuide(guide).phase).toBe("outro");
+    expect(guide.trail.at(-1)?.event).toMatchObject({ heal: false, kill: [], type: "castSpells" });
+    // Undo: the second question is asked again, the first answer stays.
+    guide = toMagician();
+    guide = chooseAbility(guide, "kill");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    guide = continueGuide(guide);
+    guide = answerQuestion(guide, "use");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    guide = undoSelection(guide);
+    expect(describeGuide(guide).selection.picks).toHaveLength(1);
   });
 
   it("takes the decisions of the witch back one by one: the last question is asked again, then the one before", () => {

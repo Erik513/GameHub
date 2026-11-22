@@ -183,3 +183,8 @@ Der Auftraggeber hat entschieden, dass **Claude** die Logik der neuen Tagesabsti
 - **Lange Simulationen (`simulation.test.ts`, `balance.test.ts`):** Wegen der neuen Typen so angepasst, dass sie wieder übersetzen. `simulation.test.ts` rechnet die Regel für Stimmzettel unabhängig nach. **`balance.test.ts` bildet die Abstimmung nicht mehr nach**: Der Tisch nominiert eine Person und alle anderen stimmen für sie, die Wahrscheinlichkeit „Ja“ zu stimmen entfällt. Die Balance-Zahlen der alten Ja/Nein-Abstimmung sind damit nicht vergleichbar; ein neues Abstimmungsmodell ist offen (Codex). Die langen Läufe wurden nicht ausgeführt.
 - Oberfläche (Claude): Nominierung mit Haken (höchstens drei), danach eine Liste aller abstimmenden Spieler mit einer Taste je nominierter Person, Kennzeichnung „zählt doppelt“ und „Stimme vom Erzähler gesetzt“; Bestätigen erst, wenn alle abgestimmt haben.
 
+
+
+## Hinweis für Codex (22.11.2026): Magier im Fragenmodell
+
+Die Führung des Erzählers (`narratorGuide.ts`) fragt den Magier wie die Hexe in zwei Runden: Frage 1 (Heilzauber oder ein Todeszauber), Frage 2 (ein weiterer Todeszauber). Die Spielregeln (`castSpells`, `spellsRemaining`) sind unverändert. Neu in der Auswahl der Führung: `spellPicks` (Personen des ersten Zaubers). Heilen ist nur in der ersten Frage wählbar, weil es pro Nacht nur ein Opfer gibt.

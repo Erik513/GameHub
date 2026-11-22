@@ -89,10 +89,8 @@ it("shows all options above at all times and the two questions as boxes below, t
   // of the victim is underlined; the hint with the victim stands below with its own border.
   expect(steps()[0]?.textContent).toMatch(/^Show the victim: P[0-9]+$/);
   expect(steps()[0]?.querySelector(".ww-name")).not.toBeNull();
-  expect(steps()[1]?.textContent).toBe("Does the witch want to save the victim?");
-  expect(steps()[2]?.textContent).toBe(
-    "Does the witch want to poison somebody? Then she points at a person",
-  );
+  expect(steps()[1]?.textContent).toBe("Save the victim?");
+  expect(steps()[2]?.textContent).toBe("Poison somebody (point)?");
   expect([state(0), state(1), state(2)]).toEqual(["done", "active", "pending"]);
   expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked/);
   // "Heal" answers the first question with yes; the second box opens, all options are still there.
