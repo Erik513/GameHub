@@ -117,7 +117,7 @@ export function GuideBox({
         <strong className="ww-guide__text">
           {card.cover
             ? t("werewolfNarrator.guide.coverTitle")
-            : (info ??
+            : ((info !== null ? <ResultText state={state} text={info} /> : null) ??
               (selection.ability
                 ? t(
                     `werewolfNarrator.guide.ask.${selection.ability === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : selection.ability}`,
@@ -153,7 +153,6 @@ export function GuideBox({
         </span>
       </header>
       <div className="ww-guide__body">
-        <Verdict state={state} />
         {card.cover && (
           <ul className="ww-guide__rows">
             {card.abilities.map((ability) => (
@@ -286,31 +285,31 @@ const thumbUp =
 const thumbDown =
   "M17 14V2M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z";
 
-/** The result of the seer or the investigator as a large sign: thumb down in red for a werewolf, thumb up in green. */
-function Verdict({ state }: { readonly state: WerewolfState }) {
-  const { t } = useTranslation();
-  const verdict =
+/**
+ * The result of the seer or the investigator in front of the sentence: a thumb up in green when a werewolf was found,
+ * a thumb down in red when not. Other steps show the text alone.
+ */
+function ResultText({ state, text }: { readonly state: WerewolfState; readonly text: string }) {
+  const found =
     state.status === "vision"
-      ? { wolf: state.isWolf, key: "vision" as const }
+      ? state.isWolf
       : state.status === "investigation"
-        ? { wolf: state.isWolfNearby, key: "investigation" as const }
+        ? state.isWolfNearby
         : null;
-  if (!verdict) return null;
+  if (found === null) return <>{text}</>;
   return (
-    <div className="ww-verdict" data-wolf={verdict.wolf}>
-      <svg aria-hidden="true" fill="none" height="72" viewBox="0 0 24 24" width="72">
+    <span className="ww-verdict" data-wolf={found}>
+      <svg aria-hidden="true" fill="none" height="40" viewBox="0 0 24 24" width="40">
         <path
-          d={verdict.wolf ? thumbDown : thumbUp}
+          d={found ? thumbUp : thumbDown}
           stroke="currentColor"
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeWidth="1.6"
+          strokeWidth="1.8"
         />
       </svg>
-      <strong>
-        {t(`werewolfNarrator.guide.verdict.${verdict.key}.${verdict.wolf ? "wolf" : "village"}`)}
-      </strong>
-    </div>
+      {text}
+    </span>
   );
 }
 
@@ -455,6 +454,17 @@ function Summary({ view }: { readonly view: GuideView }) {
     return (
       <span className="ww-guide__chosen">{t("werewolfNarrator.guide.wolvesNoAttackDone")}</span>
     );
+  // The result of the seer or the investigator is shown: the choice is already in the game, not in the selection.
+  if (view.state.status === "vision" || view.state.status === "investigation") {
+    const ability = view.state.status === "vision" ? "inspect" : "investigate";
+    return (
+      <span className="ww-guide__chosen">
+        {t("werewolfNarrator.guide.chosen", {
+          items: `${t(`werewolfNarrator.guide.abilityDone.${ability}`)}: ${view.state.target}`,
+        })}
+      </span>
+    );
+  }
   const parts: string[] = [];
   if (selection.heal) parts.push(t("werewolfNarrator.guide.abilityDone.heal"));
   if (selection.ability && selection.ability !== "heal") {

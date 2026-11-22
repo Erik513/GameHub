@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-103: Zusammenfassung nach dem Ergebnis
+
+- Seherin und Ermittler: unten steht die Wahl (Geschaut/Geprüft: Name) statt „Nichts gewählt“.
+
 ### We-01-102: Gemeinsame Effekte bei mehreren Wachen
 
 - Bei mehreren wachen Personen zeigt die Karte nur Effekte, die alle betreffen (zum Beispiel nicht das Amulett eines der Verliebten).
@@ -25,7 +29,7 @@
 
 ### We-01-99: Ergebnis der Seherin deutlicher
 
-- Großes Zeichen für das Ergebnis: Daumen runter in Rot (Werwolf), Daumen hoch in Grün; ebenso beim Paranormalen Ermittler.
+- Großes Zeichen für das Ergebnis: Daumen hoch in Grün (Werwolf gefunden), Daumen runter in Rot (keiner), vor dem Satz; ebenso beim Paranormalen Ermittler.
 
 ### We-01-98: Werwolf-Hinweis Nacht 1
 

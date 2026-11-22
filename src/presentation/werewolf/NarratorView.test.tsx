@@ -143,7 +143,11 @@ describe("NarratorView choices", () => {
     await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
     expect(screen.getByText(new RegExp(`${person} is (not )?a werewolf`))).toBeInTheDocument();
     // The result is also shown as a large sign: red with the wolf, green with the villager.
-    expect(screen.getByText(/^(Werewolf|Not a werewolf)$/)).toBeInTheDocument();
+    expect(document.querySelector(".ww-verdict")).not.toBeNull();
+    // When the seer falls asleep, the box names what was chosen, not "nothing chosen".
+    await user.click(screen.getByRole("button", { name: "Done" }));
+    expect(screen.getByText(new RegExp(`Chosen: Looked at: ${person}`))).toBeInTheDocument();
+    expect(screen.queryByText(/the role passes/)).toBeNull();
   });
 
   it("lists the people in alphabetical order, all equally, and closes the list with the X", async () => {
