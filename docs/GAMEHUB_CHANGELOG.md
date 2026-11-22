@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-121: Regelprüfung der Erzähleransicht
+
+- Liste je Rolle in docs/GAMEHUB_WERWOLF_REGELPRUEFUNG.md; fünf offene Punkte.
+
 ### We-01-120: Umbau Schritt 5, Tag, Abstimmung, Bestätigungen
 
 - Das Ereignis jedes Schritts kommt aus roleStep.
