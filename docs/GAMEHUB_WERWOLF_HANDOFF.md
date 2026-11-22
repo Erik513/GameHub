@@ -1,5 +1,34 @@
 # Werwolf – technischer Einstieg für Claude Code
 
+## Umgesetzte Ergänzungen für Codex und Claude (We-03-70, 23.11.2026)
+
+We-03-70 abgeschlossen: Alte Vettel muss bei vorhandenem Ziel stummschalten; null nur noch als Notausgang ohne gültiges Ziel. Forschungsmodell auf 1–3 Nominierte, einzelne gewichtete Stimmzettel und Stichwahlen angepasst; Heilungsmodelle verwenden wolfTarget. 104 gezielte Tests und 24 kurze Modellpartien erfolgreich. Keine langen Balance-Läufe, keine UI- oder Kalibrierungsänderungen.
+
+| Bereich | Aktueller Anschluss |
+| --- | --- |
+| Alte Vettel | stateMachine.ts weist silence mit target:null zurück, sobald ein gültiges lebendes Ziel existiert. Selbstwahl und Sperre der Vornacht bleiben unverändert. Nur ohne gültiges Ziel bleibt null als technischer Notausgang erlaubt; describeRoleStep kann diesen Fall weiterhin darstellen. Kein neues Einstellungsfeld. |
+| Ereignisauswahl | eventChoices.ts bietet silence:null ausschließlich ohne wählbare Person an. Die Erzähleransicht bleibt unverändert. |
+| Forschungs-Abstimmung | Neue Datei simulationVoting.ts: drawSimulationNominees und drawSimulationBallots. balance.test.ts nutzt diese Funktionen statt der früheren automatischen Verurteilung eines einzigen Kandidaten. |
+| Veraltete Heilungsmodelle | simulation.test.ts und die simulierten Hexen-/Magierentscheidungen in balance.test.ts verwenden wolfTarget. Die im Nachtrag vom 22.11.2026 beschriebenen victim-Prüferwartungen sind damit korrigiert. |
+| Schon von Claude umgesetzt | Neue echte Tagesabstimmung, Fragenmodell des Magiers, Rollen-Varianten, Verlauf und Todesreihenfolge wurden erhalten. An diesen produktiven Schnittstellen wurde nichts erneut implementiert. |
+
+### Annahmen des Forschungsmodells
+
+Die Kandidatenanzahl wird gleichverteilt zwischen eins und höchstens drei verschiedenen Personen aus dem zulässigen Verdachtspool gezogen. Der Pool darf öffentliche Verdachtsgewichte enthalten. Jeder berechtigte Wähler zieht einen zulässigen Kandidaten ohne Selbstwahl; Stummgeschaltete sind ausgeschlossen. Ein Kandidat ohne fremde Wahlmöglichkeit gibt keinen Stimmzettel ab. Im Zufallsmodell sind seine Wahlmöglichkeiten gleich wahrscheinlich, in Hinweismodellen proportional zu 1 + öffentlichem Verdachtswert. Die Bürgermeisterstimme zählt weiterhin allein durch die bestehende Spiellogik zweifach. Die simulierte Dorftrottel-Stimme setzt der Erzähler nach derselben Modellstrategie; die frühere Pflicht-Ja-Regel und eine daraus abgeleitete sichere Rollenidentifikation werden nicht verwendet. Historische Statistikfelder für diese Inferenz bleiben als Kompatibilitätsfelder mit null Treffern erhalten.
+
+Die vorhandene Spiel-Logik entscheidet über Stichwahl und Ausscheiden. Bei erneutem Gleichstand geht der Tag weiter; das Forschungsmodell erlaubt höchstens einen weiteren Nominierungsversuch und beendet danach den Tag. Nacht, Nominierungskennung und Stichwahlrunde fließen in die reproduzierbaren Zufallsentscheidungen ein, damit eine Stichwahl nicht zwangsläufig dieselben Stimmen wiederholt. Diese Heuristiken sind Modellannahmen, keine zusätzlichen Spielregeln und keine vollständige Abbildung menschlicher Strategien oder koordinierter Wolfsabsprachen.
+
+### Gezielte Prüfung und Aussagegrenzen
+
+104 gezielte Tests und zwei gezielte Simulations-Kurzprüfungen mit zusammen 24 vollständigen Modellpartien bestanden. Kein Kombinations- oder Balance-Gesamtlauf. Neues Abstimmungsmodell: 100 % Zeilen, Zweige, Funktionen und Anweisungen abgedeckt. Typprüfung, ESLint, Format- und Schichtprüfung erfolgreich. Bestehende Magierführung, Tagesabstimmung und Todesreihenfolge erhalten und mitgeprüft. Keine neue Kalibrierung oder Änderung von Rollenpunkten/Wolfsgrenzen.
+
+Neue Tests: requiredSilence.test.ts und simulationVoting.test.ts. Mitgeprüft: narrator, roleStep, narratorGuide, magician, combinedHealers, deathOrder und deathOrderGame. Die 22 vorhandenen Heiler-Tests sichern zusätzlich ausdrücklich ab, dass der Magier nach Hexenheilung wolfTarget behält und eine wirkungslose weitere Heilung einen Zauber verbraucht. Der bestehende Hammer-Integrationstest wählt jetzt ein tatsächliches Stummschaltungsziel statt freiwillig zu verzichten. Die lange Ablaufprüfung kontrolliert die Menge der Todesansagen unabhängig von ihrer separat in deathOrder geprüften Reihenfolge.
+
+Für spätere schnelle Modellprüfungen nur die beiden Tests mit dem Namensanfang smoke-checks aus balance.test.ts und simulation.test.ts auswählen und WEREWOLF_SIMULATION=1 setzen. Jede dieser Kurzprüfungen spielt zwölf reproduzierbare Partien. Keine vollständigen Forschungsdateien starten, solange der Auftraggeber keinen breiten Lauf verlangt.
+
+Historische Ja/Nein-Balancewerte und das neue Modell sind nicht direkt vergleichbar. Es wurden keine neuen Gewinnwahrscheinlichkeiten abgeleitet, keine Simulationsarchive überschrieben und keine Wolfsempfehlungen oder Rollenwerte neu kalibriert. Vorleseskript und weitere UI-Arbeiten bleiben wie vereinbart separat. Quelländerungen liegen direkt im aktuellen Branch game/werewolf-ui unter C:/Users/Kosta/source/repos/GameHub; der ältere isolierte Logik-Arbeitsordner wurde nicht über diesen neueren Code kopiert.
+
+
 ## Entscheidende Ergebnisunterschiede für Claude (Nachtrag zu We-03-69, 22.11.2026)
 
 | Punkt | Ergebnis und Konsequenz |

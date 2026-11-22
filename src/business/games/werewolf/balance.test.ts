@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import { drawSimulationNominees, drawSimulationBallots } from "./simulationVoting";
 import assert from "node:assert/strict";
 import { it } from "vitest";
 import { availableWerewolfRoles } from "./configuration";
@@ -46,8 +47,6 @@ interface Clues {
   reportedNonwolves: Set<string>;
   savedByWitch: Set<string>;
   confirmedNominations: number;
-  idiotCandidates: Set<string>;
-  inferredIdiot: string | undefined;
   waitsOnQuietSecondDay: boolean;
   reachedQuietSecondDay: boolean;
   nominatedOnQuietSecondDay: boolean;
@@ -90,10 +89,12 @@ function randomFrom(seed: number) {
 function phaseRandom(seed: number, state: WerewolfState) {
   // Extra phases must not change the random decisions shared by both lineups.
   let key = Math.imul(seed, 0x9e3779b1) ^ state.night;
-  const phase =
+  let phase =
     state.status === "magician" && !state.players.some((player) => player.role === "witch")
       ? "witch"
       : state.status;
+  if (state.status === "vote") phase += `:${state.nomination}:${state.round}`;
+  else if (state.status === "day") phase += `:${state.nomination}`;
   for (const character of phase) key = Math.imul(key ^ character.charCodeAt(0), 16777619);
   return randomFrom(key);
 }
@@ -120,12 +121,7 @@ function nominationPool(state: WerewolfState, clues: Clues, model: Model, random
   });
 }
 
-/*
- * NOTE for Codex (22.11.2026): the vote changed (up to three nominated people, every voter names one of them, the most
- * votes win, a tie votes again once). This simulation no longer models how likely a villager is to vote "yes" for a
- * suspect: here the table nominates one person and everybody else votes for that person, so a nomination always leads
- * to an exile. The balance numbers of the old yes/no vote are therefore not comparable. A new voting model is open.
- */
+/** Public nomination weights and independent ballots model the current one-to-three-candidate vote. */
 function decision(
   state: WerewolfState,
   clues: Clues,
@@ -231,16 +227,16 @@ function decision(
     case "magician": {
       const magician = state.status === "magician";
       const careful = usesCarefulWitch(model);
-      const healChance = careful ? (state.victim?.role === state.status ? 1 : 0.9) : 0.7;
+      const healChance = careful ? (state.wolfTarget?.role === state.status ? 1 : 0.9) : 0.7;
       const canHeal = magician ? state.spellsRemaining > 0 : state.potions.heal;
-      const heal = canHeal && !!state.victim && random() < healChance;
-      if (heal && state.victim && sharesWitchKnowledge(model)) {
-        clues.savedByWitch.add(state.victim.name);
+      const heal = canHeal && !!state.wolfTarget && random() < healChance;
+      if (heal && state.wolfTarget && sharesWitchKnowledge(model)) {
+        clues.savedByWitch.add(state.wolfTarget.name);
       }
       const targets = alive.filter(
         (player) =>
           player.role !== state.status &&
-          player !== state.victim &&
+          player !== state.wolfTarget &&
           (!careful || (clues.publicSuspicion.get(player.name) ?? 0) >= 2),
       );
       const canHarm = magician ? state.spellsRemaining > Number(heal) : state.potions.poison;
@@ -263,10 +259,9 @@ function decision(
     case "morning":
       return { type: "announceMorning", night };
     case "day": {
-      const speakers = alive.filter((player) => player.name !== state.silencedPlayer);
       const quietSecondDay = night === 2 && clues.morningDeaths === 0;
       if (quietSecondDay) clues.reachedQuietSecondDay = true;
-      if (state.nomination > 0 || alive.length < 3 || speakers.length < 2) {
+      if (state.nomination > 1 || alive.length < 3) {
         return { type: "endDay", night };
       }
       if (usesCredibleSeer(model)) {
@@ -286,14 +281,6 @@ function decision(
           alive.some((player) => player.role === "witch" || player.role === "magician")
         ) {
           for (const saved of clues.savedByWitch) clues.reportedNonwolves.add(saved);
-        }
-      }
-      if (usesIdiotInference(model)) {
-        const candidates = alive.filter((player) => clues.idiotCandidates.has(player.name));
-        if (candidates.length === 1 && candidates[0]) {
-          assert.equal(candidates[0].role, "idiot");
-          clues.inferredIdiot = candidates[0].name;
-          clues.reportedNonwolves.add(candidates[0].name);
         }
       }
       const investigation = clues.investigation;
@@ -317,11 +304,7 @@ function decision(
           }
         }
       }
-      const canNominate = (player: (typeof alive)[number]) =>
-        speakers.length >= 3 || player.name === state.silencedPlayer;
-      const confirmed = alive.filter(
-        (player) => canNominate(player) && clues.reportedWolves.has(player.name),
-      );
+      const confirmed = alive.filter((player) => clues.reportedWolves.has(player.name));
       if (
         !confirmed.length &&
         night === 1 &&
@@ -334,9 +317,7 @@ function decision(
       if (!confirmed.length && quietSecondDay && clues.waitsOnQuietSecondDay) {
         return { type: "endDay", night };
       }
-      let pool = confirmed.length
-        ? confirmed
-        : nominationPool(state, clues, model, random).filter(canNominate);
+      let pool = confirmed.length ? confirmed : nominationPool(state, clues, model, random);
       const uncleared = pool.filter((player) => !clues.reportedNonwolves.has(player.name));
       if (uncleared.length) pool = uncleared;
       if (confirmed.length) {
@@ -355,24 +336,27 @@ function decision(
           for (const suspect of pool) clues.publicSuspicion.set(suspect.name, 2);
         }
       }
-      const target = pick(pool, random);
+      const nominees = drawSimulationNominees(
+        pool.map((player) => player.name),
+        random,
+      );
+      if (!nominees.length) return { type: "endDay", night };
       if (quietSecondDay) clues.nominatedOnQuietSecondDay = true;
       if (usesCarefulWitch(model)) {
-        clues.publicSuspicion.set(target.name, (clues.publicSuspicion.get(target.name) ?? 0) + 1);
+        for (const name of nominees)
+          clues.publicSuspicion.set(name, (clues.publicSuspicion.get(name) ?? 0) + 1);
       }
-      return { type: "nominate", night, nominees: [target.name] };
+      return { type: "nominate", night, nominees };
     }
     case "vote":
-      // Everybody who can vote for somebody else votes for the nominated person (the first candidate).
       return {
         type: "vote",
         night,
         nomination: state.nomination,
-        ballots: Object.fromEntries(
-          alive
-            .filter(({ name }) => name !== state.silencedPlayer)
-            .filter(({ name }) => state.candidates.some((candidate) => candidate !== name))
-            .map(({ name }) => [name, state.candidates.find((candidate) => candidate !== name)!]),
+        ballots: drawSimulationBallots(
+          state,
+          random,
+          model === "random" ? new Map() : clues.publicSuspicion,
         ),
       };
     case "exile":
@@ -427,14 +411,6 @@ function play(
     reportedNonwolves: new Set(),
     savedByWitch: new Set(),
     confirmedNominations: 0,
-    idiotCandidates: new Set(
-      usesIdiotInference(model) &&
-        !initial.settings.drunk &&
-        initial.players.some((player) => player.role === "idiot")
-        ? initial.players.map((player) => player.name)
-        : [],
-    ),
-    inferredIdiot: undefined,
     waitsOnQuietSecondDay:
       model === "earlyAttackQuietSecondDay" && randomFrom(seed ^ 0x5273c9a3)() < 0.8,
     reachedQuietSecondDay: false,
@@ -452,7 +428,7 @@ function play(
         healUsed: !state.potions.heal,
         poisonUsed: !state.potions.poison,
         confirmedNominations: clues.confirmedNominations,
-        inferredIdiot: clues.inferredIdiot !== undefined,
+        inferredIdiot: false,
         reachedQuietSecondDay: clues.reachedQuietSecondDay,
         nominatedOnQuietSecondDay: clues.nominatedOnQuietSecondDay,
         exiledOnQuietSecondDay: clues.exiledOnQuietSecondDay,
@@ -482,7 +458,6 @@ function play(
       for (const { name } of event.type === "announceMorning" ? [] : announcements) {
         const role = state.players.find((player) => player.name === name)?.role;
         if (role === "wolf") clues.livingWolves--;
-        if (role === "idiot") clues.idiotCandidates.clear();
         if (
           role === "witch" ||
           role === "magician" ||
@@ -1983,3 +1958,25 @@ it.each(smallTableRechecks)(
   },
   180_000,
 );
+
+it("smoke-checks current research decisions without a balance sweep", () => {
+  for (const model of ["random", "sharedKnowledge"] as const) {
+    for (let seed = 1; seed <= 6; seed++) {
+      const initial = createWerewolf(
+        playerNames(14),
+        "Narrator",
+        randomFrom(seed),
+        ["witch", "magician", "spellcaster", "mayor", "idiot"],
+        {
+          wolfCount: 4,
+          amulet: true,
+          mayor: seed % 2 ? "hammer" : "doubleVote",
+          attackOnFirstNight: true,
+        },
+      )!;
+      assert(initial);
+      const result = play(initial, model, seed);
+      assert(["wolves", "village"].includes(result.winner));
+    }
+  }
+});

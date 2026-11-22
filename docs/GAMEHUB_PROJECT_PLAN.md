@@ -989,3 +989,10 @@ Gezielte Abnahme nach Einschränkung durch den Auftraggeber: 8 Tests bestanden (
 
 
 Nachtrag zu We-03-69: Entscheidende Ergebnisunterschiede, Aussagegrenzen des abgebrochenen Gesamtlaufs und die weiterhin veralteten Heilungs-Testmodelle sind oben in GAMEHUB_WERWOLF_HANDOFF.md und in GAMEHUB_WERWOLF_CODEX_AUFGABE_NACHT.md gegenübergestellt.
+
+
+### We-03-70 – Pflichtaktion und aktuelle Forschungsmodelle
+
+We-03-70 abgeschlossen: Alte Vettel muss bei vorhandenem Ziel stummschalten; null nur noch als Notausgang ohne gültiges Ziel. Forschungsmodell auf 1–3 Nominierte, einzelne gewichtete Stimmzettel und Stichwahlen angepasst; Heilungsmodelle verwenden wolfTarget. 104 gezielte Tests und 24 kurze Modellpartien erfolgreich. Keine langen Balance-Läufe, keine UI- oder Kalibrierungsänderungen.
+
+104 gezielte Tests und zwei gezielte Simulations-Kurzprüfungen mit zusammen 24 vollständigen Modellpartien bestanden. Kein Kombinations- oder Balance-Gesamtlauf. Neues Abstimmungsmodell: 100 % Zeilen, Zweige, Funktionen und Anweisungen abgedeckt. Typprüfung, ESLint, Format- und Schichtprüfung erfolgreich. Bestehende Magierführung, Tagesabstimmung und Todesreihenfolge erhalten und mitgeprüft. Keine neue Kalibrierung oder Änderung von Rollenpunkten/Wolfsgrenzen.

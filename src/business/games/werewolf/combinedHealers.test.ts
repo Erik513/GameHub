@@ -49,7 +49,7 @@ describe.each([
     ).toEqual(["Player 8", "Player 9"]);
   });
 
-  it("passes the wolf victim to the magician only if the witch has not healed it", () => {
+  it("keeps the wolf target available to the magician even after the witch heals it", () => {
     const seats = Array.from({ length: players }, (_, i) => "Player " + (i + 1));
     const game = createWerewolf(seats.join(","), "Narrator", () => 0.99, ["witch", "magician"], {
       attackOnFirstNight: true,
@@ -62,9 +62,27 @@ describe.each([
       { type: "closeVision", night: 1 },
     ];
     const witch = events.reduce(transitionWerewolf, game);
-    expect(
-      transitionWerewolf(witch, { type: "potions", night: 1, heal: true, poison: null }),
-    ).toMatchObject({ status: "magician", victim: null });
+    const healed = transitionWerewolf(witch, {
+      type: "potions",
+      night: 1,
+      heal: true,
+      poison: null,
+    });
+    expect(healed).toMatchObject({
+      status: "magician",
+      victim: null,
+      wolfTarget: { name: "Player 8" },
+      potions: { heal: false },
+    });
+    const healedAgain = transitionWerewolf(healed, {
+      type: "castSpells",
+      night: 1,
+      heal: true,
+      kill: [],
+    });
+    expect(healedAgain).not.toBe(healed);
+    expect(healedAgain.spellsRemaining).toBe(healed.spellsRemaining - 1);
+    expect(werewolfAnnouncement(healedAgain)).toEqual([]);
     const magician = transitionWerewolf(witch, {
       type: "potions",
       night: 1,

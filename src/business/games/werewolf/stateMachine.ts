@@ -827,6 +827,15 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       if (event.type !== "silence") return state;
       const { target } = event;
       if (
+        target === null &&
+        state.alive.some(
+          (player) =>
+            player.name !== state.silencedPlayer &&
+            (player.role !== "spellcaster" || state.settings.allowSelfSilence),
+        )
+      )
+        return state;
+      if (
         target !== null &&
         (target === state.silencedPlayer ||
           !state.alive.some(

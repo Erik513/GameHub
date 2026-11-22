@@ -222,7 +222,7 @@ function decisions(state: WerewolfState): Decision[] {
       return [false, true].flatMap((heal) =>
         [null, ...names].map((poison): Decision => [
           { type: "potions", night, heal, poison },
-          (!heal || (state.potions.heal && state.victim)) &&
+          (!heal || (state.potions.heal && state.wolfTarget)) &&
           (poison === null || (state.potions.poison && player(poison)))
             ? state.status
             : null,
@@ -238,7 +238,7 @@ function decisions(state: WerewolfState): Decision[] {
         kills.map((kill): Decision => [
           { type: "castSpells", night, heal, kill },
           kill.length + Number(heal) <= state.spellsRemaining &&
-          (!heal || state.victim) &&
+          (!heal || state.wolfTarget) &&
           new Set(kill).size === kill.length &&
           kill.every(player)
             ? state.status
@@ -249,10 +249,17 @@ function decisions(state: WerewolfState): Decision[] {
     case "spellcaster":
       return [null, ...names].map((target) => [
         { type: "silence", night, target },
-        target === null ||
-        (target !== state.silencedPlayer &&
-          player(target) &&
-          (state.settings.allowSelfSilence || player(target)?.role !== "spellcaster"))
+        (
+          target === null
+            ? !alive.some(
+                (p) =>
+                  p.name !== state.silencedPlayer &&
+                  (state.settings.allowSelfSilence || p.role !== "spellcaster"),
+              )
+            : target !== state.silencedPlayer &&
+              player(target) &&
+              (state.settings.allowSelfSilence || player(target)?.role !== "spellcaster")
+        )
           ? state.amulet
             ? "amuletPass"
             : "morning"
@@ -395,8 +402,10 @@ function checkTransition(state: WerewolfState, [event, expected]: Decision) {
         (event.type === "announceMorning" && state.nightDeaths.includes(p)),
     );
     assert.deepEqual(
-      werewolfAnnouncement(event.type === "shot" ? next : state),
-      losses.map(({ name }) => ({ name })),
+      werewolfAnnouncement(event.type === "shot" ? next : state)
+        .map(({ name }) => name)
+        .sort(),
+      losses.map(({ name }) => name).sort(),
       "The public announcement does not match the deaths",
     );
   }
@@ -721,3 +730,22 @@ it.each([1, 2])(
   },
   120_000,
 );
+
+it("smoke-checks updated healing and silence rules without a combination sweep", () => {
+  const lineups: readonly (readonly WerewolfSpecialRole[])[] = [
+    ["bodyguard", "witch", "spellcaster"],
+    ["nightGuest", "magician", "cupid", "spellcaster"],
+  ];
+  for (const selected of lineups)
+    for (let seed = 1; seed <= 6; seed++)
+      assert(
+        ["wolves", "village"].includes(
+          play(
+            14,
+            selected,
+            { amulet: true, attackOnFirstNight: true, allowSelfSilence: Boolean(seed % 2) },
+            700000 + seed,
+          ),
+        ),
+      );
+});

@@ -132,7 +132,7 @@ describe("narrator business contract", () => {
       s,
       { type: "potions", night: 1, heal: false, poison: null },
       { type: "castSpells", night: 1, heal: false, kill: [] },
-      { type: "silence", night: 1, target: null },
+      { type: "silence", night: 1, target: s.players.find((p) => p.role === "mayor")!.name },
     );
     s = nextNight(s);
     const mayor = s.players.find((p) => p.role === "mayor")!.name;

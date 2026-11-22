@@ -77,7 +77,7 @@ export function eventChoices(s: WerewolfState): WerewolfEvent[] {
         )
         .filter((e) => transitionWerewolf(s, e) !== s);
     case "spellcaster":
-      return [...choose("silence"), { type: "silence", night, target: null }];
+      return targets.length ? choose("silence") : [{ type: "silence", night, target: null }];
     case "morning":
       return [{ type: "announceMorning", night }];
     case "day":

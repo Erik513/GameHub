@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T01:44:12.910Z",
+    "updatedAt": "2026-11-22T23:38:00.612Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 323,
-      "totalTasks": 379,
-      "percent": 85.2
+      "completedTasks": 324,
+      "totalTasks": 380,
+      "percent": 85.3
     }
   },
   "environment": {
@@ -2210,6 +2210,12 @@
           "title": "Direkten Nachtstart ohne Amulett-Intro gezielt prüfen",
           "status": "done",
           "validation": "Gezielte Abnahme nach Einschränkung durch den Auftraggeber: 8 Tests bestanden (sechs direkte Nachtstart-Varianten mit Amulett, bestehende Startvergabe und Weitergabe am Nachtende). Typprüfung, ESLint und Formatprüfung erfolgreich. Keine Produktionslogik geändert. Breiter Lauf auf Wunsch des Auftraggebers abgebrochen, Änderungen an balance.test.ts und simulation.test.ts zurückgenommen; keine vollständige Balance-/Simulationsabnahme behauptet. Ergebnisunterschiede und Grenzen für Claude in Übergabe und Nacht-Aufgabe ausdrücklich dokumentiert."
+        },
+        {
+          "id": "We-03-70",
+          "title": "Beschlossene Rollenpflicht und neue Abstimmungsmodelle gezielt vervollständigen",
+          "status": "done",
+          "validation": "104 gezielte Tests und zwei gezielte Simulations-Kurzprüfungen mit zusammen 24 vollständigen Modellpartien bestanden. Kein Kombinations- oder Balance-Gesamtlauf. Neues Abstimmungsmodell: 100 % Zeilen, Zweige, Funktionen und Anweisungen abgedeckt. Typprüfung, ESLint, Format- und Schichtprüfung erfolgreich. Bestehende Magierführung, Tagesabstimmung und Todesreihenfolge erhalten und mitgeprüft. Keine neue Kalibrierung oder Änderung von Rollenpunkten/Wolfsgrenzen."
         }
       ]
     },
@@ -2389,6 +2395,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-23",
+      "summary": "We-03-70 abgeschlossen: Alte Vettel muss bei vorhandenem Ziel stummschalten; null nur noch als Notausgang ohne gültiges Ziel. Forschungsmodell auf 1–3 Nominierte, einzelne gewichtete Stimmzettel und Stichwahlen angepasst; Heilungsmodelle verwenden wolfTarget. 104 gezielte Tests und 24 kurze Modellpartien erfolgreich. Keine langen Balance-Läufe, keine UI- oder Kalibrierungsänderungen."
+    },
     {
       "date": "2026-11-22",
       "summary": "We-03-69 ergänzt: Vergleich der bestätigten Nachtstart-Ergebnisse mit den veralteten Heilungs-Prüferwartungen und dem abgebrochenen Gesamtlauf für Claude festgehalten. Kein neuer Balancebefund; Produktionscode unverändert."
