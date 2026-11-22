@@ -2243,3 +2243,52 @@ button.ww-guide__strip[data-next] {
 .ww-verdict[data-wolf="true"] {
   color: var(--color-success);
 }
+
+/* The ability buttons are compact: symbol and name in one row, at the bottom of the card, never stretched. */
+.ww-role-card__abilities,
+.ww-night__stage[data-layout="act"] .ww-role-card__abilities {
+  align-items: center;
+  align-content: end;
+}
+
+.ww-ability,
+.ww-night__stage[data-layout="act"] .ww-ability {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 0;
+  height: 40px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+/* "Skip" is red and gets the frame when the step can be left. */
+.ww-ability--skip {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+  color: var(--color-accent-contrast);
+}
+
+.ww-ability--skip[data-next] {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* The buttons share the whole width evenly. */
+.ww-role-card__abilities > .ww-ability,
+.ww-night__stage[data-layout="act"] .ww-role-card__abilities > .ww-ability {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* An ability that is used up or not possible is neutral and cannot be tapped. */
+.ww-ability[data-available="false"] {
+  border-color: var(--color-line);
+  background: transparent;
+  color: var(--color-ink-muted);
+  cursor: default;
+  opacity: 0.7;
+}

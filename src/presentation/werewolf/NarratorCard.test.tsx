@@ -76,4 +76,18 @@ describe("NarratorCard", () => {
     const plain = await inLanguage("en", <NarratorCard card={{ ...witch, abilities: [] }} />);
     expect(plain.container.querySelector(".ww-role-card__abilities")).toBeNull();
   });
+
+  it('has a button "skip" in the card for a role that may do nothing, with the frame when the step can be left', async () => {
+    const onSkip = vi.fn();
+    await inLanguage("en", <NarratorCard card={witch} skip={{ framed: true, onSkip }} />);
+    const skip = screen.getByRole("button", { name: "Skip" });
+    expect(skip).toHaveAttribute("data-next");
+    fireEvent.click(skip);
+    expect(onSkip).toHaveBeenCalledOnce();
+  });
+
+  it('has no button "skip" for a role that has to decide', async () => {
+    await inLanguage("en", <NarratorCard card={witch} />);
+    expect(screen.queryByRole("button", { name: "Skip" })).toBeNull();
+  });
 });

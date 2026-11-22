@@ -171,6 +171,7 @@ export function GuideBox({
         <footer className="ww-guide__extra">
           {extras}
           {card.role !== "day" &&
+            !(selection.ability === null && step.skippable && !selection.heal) &&
             (selection.ability !== null ? (
               <button
                 aria-label={t("werewolfNarrator.guide.confirm")}

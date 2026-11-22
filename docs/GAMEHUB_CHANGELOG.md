@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-108: Verzichten in der oberen Box
+
+- „Verzichten“ neben den Fähigkeiten in der Rollenkarte; Fähigkeitsknöpfe kleiner.
+
 ### We-01-107: GuideBox als gemeinsamer Baustein
 
 - Rollentexte und Zusatzzeilen in eigenen Dateien, gewählt über die Beschreibung des Schritts; GuideBox hat nur noch den gemeinsamen Aufbau.

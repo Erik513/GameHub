@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 292,
-      "totalTasks": 346,
+      "completedTasks": 293,
+      "totalTasks": 347,
       "percent": 84.4
     }
   },
@@ -1863,6 +1863,12 @@
           "title": "Umbau Stufe 2b: Texte (Überschrift, Frage, Ergebnis) und Zusatzzeilen aller Ansichten aus der Rollenbeschreibung, GuideBox als gemeinsamer Baustein",
           "status": "done",
           "validation": "Überschrift, Ergebnisse, Tagestexte und Zusatzzeilen stehen jetzt in eigenen Dateien (stepText.tsx mit stepTitle und stepExtras, RoleStepContent.tsx mit ResultText und DayNotes) und werden über die Beschreibung des Schritts (describeRoleStep) gewählt; GuideBox enthält nur noch den gemeinsamen Aufbau (Kopf, Auswahl, Streifen, Haken); Verhalten unverändert; 1592 Tests, tsc -b, eslint sauber; nicht im Browser angesehen. Offen: die Texte selbst (Übersetzungsschlüssel je Rolle) stehen weiter in den Übersetzungsdateien, nicht in der Beschreibung."
+        },
+        {
+          "id": "We-01-108",
+          "title": "Verzichten in der oberen Box, kleinere Fähigkeitsknöpfe",
+          "status": "done",
+          "validation": "Der Knopf „Verzichten“ steht für Rollen, die auch nichts tun dürfen, in der oberen Box neben den Fähigkeiten (mit blauem Rahmen, solange der Schritt verlassen werden kann); der Streifen unten entfällt dort, solange nichts gewählt ist (er bleibt für „Erledigt“ bei Pflichtrollen, Ergebnissen und gewählter Heilung); „Verzichten“ ist rot; benutzte oder nicht mögliche Fähigkeiten sind neutral (grau umrandet) und gesperrt; die Knöpfe teilen die Breite gleichmäßig; sie sind kompakt (Symbol und Name in einer Zeile, 40 statt 72 Pixel hoch, am unteren Rand der Karte und nicht mehr in die Höhe gezogen); zwei Tests des Knopfes; 1594 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
         }
       ]
     },

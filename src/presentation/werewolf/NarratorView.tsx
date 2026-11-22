@@ -4,6 +4,7 @@ import type { WerewolfSession } from "../../business/games/werewolf/session";
 import { Button } from "../components";
 import { ActionRow, StartBar } from "../game-kit";
 import { isDayStep } from "../../business/games/werewolf/narratorGuide";
+import { describeRoleStep } from "../../business/games/werewolf/roleStep";
 import { GuideBox } from "./GuideBox";
 import { NarratorBar } from "./NarratorBar";
 import { NarratorCard } from "./NarratorCard";
@@ -67,6 +68,14 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                 !view.selection.heal
               }
               settled={view.phase === "outro"}
+              skip={
+                view.phase === "act" &&
+                describeRoleStep(view.state).skippable &&
+                view.selection.ability === null &&
+                !view.selection.heal
+                  ? { framed: view.canContinue, onSkip: guide.continueGuide }
+                  : undefined
+              }
               card={view.card}
               onAbility={guide.ability}
             />
