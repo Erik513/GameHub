@@ -109,17 +109,22 @@ export function NarratorCard({
                 className="ww-ability"
                 data-available={ability.available}
                 // Once the narrator has decided the abilities look used up (neutral); "reset" makes them green again.
+                // Four states: ready (green), used up for good (grey, struck through), not possible now because of the
+                // situation (amber, dashed) and "dim": it is not the turn of this ability (a different question is asked,
+                // the script has not got there, the decision is made); "reset" brings it back.
                 data-state={
-                  locked ||
-                  // Not yet the turn of the decision: dark like a used ability, so it does not look pressable.
-                  waiting ||
+                  ability.unavailable === "used" ||
                   (ability.count !== undefined &&
                     ability.count - spellsUsed <= 0 &&
                     !pressed.includes(ability.id))
                     ? "used"
-                    : ability.available
-                      ? "ready"
-                      : (ability.unavailable ?? "blocked")
+                    : ability.unavailable === "blocked"
+                      ? "blocked"
+                      : locked || waiting || (asked !== null && !asked.includes(ability.id))
+                        ? "dim"
+                        : ability.available
+                          ? "ready"
+                          : "blocked"
                 }
                 // An ability that cannot be used is asked as well: it gets a thinner frame.
                 data-next={

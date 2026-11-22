@@ -181,10 +181,10 @@ describe("NarratorCard", () => {
     expect(onSkip).toHaveBeenCalledOnce();
   });
 
-  it("shows the abilities as used up once the narrator has decided, and as ready again afterwards", async () => {
+  it("dims the abilities once the narrator has decided (not struck through), and shows them as ready again afterwards", async () => {
     const { container, rerender } = await inLanguage("en", <NarratorCard card={witch} locked />);
     for (const button of container.querySelectorAll(".ww-ability"))
-      expect(button.getAttribute("data-state")).toBe("used");
+      expect(button.getAttribute("data-state")).toBe("dim");
     rerender(<NarratorCard card={witch} />);
     expect(container.querySelector(".ww-ability")?.getAttribute("data-state")).toBe("ready");
   });

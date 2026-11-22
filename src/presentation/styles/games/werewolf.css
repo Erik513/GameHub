@@ -2595,3 +2595,29 @@ button.ww-guide__strip[data-next] {
   flex-direction: column;
   gap: 2px;
 }
+
+/* Used up for good: grey and struck through with a diagonal line. */
+.ww-ability[data-state="used"] {
+  position: relative;
+  overflow: hidden;
+}
+
+.ww-ability[data-state="used"]::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 1px),
+    currentColor calc(50% - 1px),
+    currentColor calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+  content: "";
+  pointer-events: none;
+}
+
+/* Not the turn of this ability: darker than normal, nothing else changes (like the button "next" below). */
+.ww-ability[data-state="dim"] {
+  cursor: default;
+  filter: brightness(0.55);
+}

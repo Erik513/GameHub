@@ -85,6 +85,8 @@ it("shows all options above at all times and the two questions as boxes below, t
   expect(skip).toHaveAttribute("data-next");
   expect(poison).not.toHaveAttribute("data-next");
   expect(poison).toBeDisabled();
+  // The poison does not belong to the first question: it is dimmed (not struck through, that is for used up), so the focus stays on Heal and Skip.
+  expect(poison).toHaveAttribute("data-state", "dim");
   // Below: three boxes (show the victim, the first question, the second question), the first one is open. The name
   // of the victim is underlined; the hint with the victim stands below with its own border.
   expect(steps()[0]?.textContent).toMatch(/^Show the victim: P[0-9]+$/);

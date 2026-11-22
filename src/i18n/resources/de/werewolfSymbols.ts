@@ -3,7 +3,7 @@ export const werewolfSymbolsTexts = {
   werewolfSymbols: {
     tab: "Symbole",
     intro:
-      "Diese Symbole zeigt dir der Erzähler, wenn eine Rolle aufwacht oder eine Person betroffen ist. Gleiche Bedeutung heißt gleiches Zeichen. Eine Rolle steht frei, ihre Fähigkeit im Kreis.",
+      "Diese Symbole zeigt dir der Erzähler, wenn eine Rolle aufwacht oder eine Person betroffen ist. Gleiche Bedeutung heißt gleiches Zeichen. Eine Rolle steht frei, ihre Fähigkeit im Kreis. Eine durchgestrichene Fähigkeit ist verbraucht; eine mit gelb gestricheltem Rahmen geht gerade nicht.",
     credits:
       "Wolfskopf: „Wolf head“ von Lorc, game-icons.net, Lizenz CC BY 3.0. Übrige Zeichnungen: Tabler Icons, Lizenz MIT.",
     groups: {
