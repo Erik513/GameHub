@@ -4,6 +4,7 @@
 
 ### We-01-139: Erwachen als erste Skriptbox
 
+- Tests zur Todesreihenfolge im Spielablauf (Magier mit Verliebten, Hexe mit Verliebten, Harter Bursche in der Folgenacht).
 - Todesreihenfolge verfeinert: der verzögerte Tod des Harten Burschen steht ganz vorn, bei Verliebten das Opfer zuerst und direkt danach die Person aus Liebeskummer; das erste Todesurteil zählt (ein späterer Angriff auf den Partner ändert die Todeszeit nicht). Neue Datei deathOrder.ts mit Tests.
 - Morgen: jede gestorbene Person in einer eigenen Box, der Jäger mit Rolle gekennzeichnet; die Toten stehen in der Reihenfolge ihres Todes (Werwolfopfer, Gift der Hexe, Zauber des Magiers, Hammer, verzögerter Tod des Harten Burschen; ein Liebespartner direkt nach der geliebten Person), auch im Ereignisprotokoll.
 - Amulett-Träger: Skript „Amulett weitergeben (zeigen)?“ mit Fragezeichen.
