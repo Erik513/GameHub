@@ -101,7 +101,7 @@ export const werewolfNarratorTexts = {
         kill: "Todeszauber: Personen wählen",
         poison: "Gifttrank: eine Person wählen",
         protect: "Person schützen (zeigen)",
-        stayWith: "Bei einer Person übernachten (zeigen)",
+        stayWith: "Person zum Übernachten wählen (zeigen)",
         bond: "Zwei Personen verlieben (zeigen)",
         hammer: "Person wählen (zeigen)",
         silence: "Person stummschalten (zeigen)",
