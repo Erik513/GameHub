@@ -66,7 +66,18 @@ export interface PickSpec {
 }
 
 /** The steps with a choice of several parts: the potions of the witch, the spells of the magician, the pair of Cupid. */
-export type CompoundEvent = "bond" | "castSpells" | "potions";
+export type CompoundEvent = "bond" | "castSpells" | "nominate" | "potions" | "vote";
+
+/** The events of the steps that the narrator only confirms: nothing is chosen, something is read out or shown. */
+export type ConfirmEvent =
+  | "acknowledgeCall"
+  | "announceExile"
+  | "announceMorning"
+  | "closeInvestigation"
+  | "closeVision"
+  | "drunkReady"
+  | "loversReady"
+  | "wolvesReady";
 
 /**
  * How many people an ability takes. The spells of the magician are shared between healing and killing: a healing
@@ -95,6 +106,8 @@ export interface RoleStepSpec {
   readonly showsVictim: boolean;
   /** Present while the choice has several parts (potions, spells, the pair of Cupid). */
   readonly compound?: CompoundEvent;
+  /** Present while the narrator only confirms the step (nothing is chosen). */
+  readonly confirm?: ConfirmEvent;
   /** Present while the step names one person. */
   readonly pick?: PickSpec;
   /** How the button of a skippable step is called, and what the summary says after it was pressed. */
@@ -127,10 +140,12 @@ export function describeRoleStep(state: WerewolfState): RoleStepSpec {
   const base = baseStep(state);
   const pick = pickOf(state, base.skippable);
   const compound = compoundOf(state);
+  const confirm = confirmOf(state);
   const result = resultOf(state);
   return {
     ...base,
     ...(compound ? { compound } : {}),
+    ...(confirm ? { confirm } : {}),
     ...(pick ? { pick } : {}),
     ...(result ? { result } : {}),
   };
@@ -182,6 +197,35 @@ function compoundOf(state: WerewolfState): CompoundEvent | undefined {
       return "castSpells";
     case "cupid":
       return "bond";
+    case "day":
+      return "nominate";
+    case "vote":
+      return "vote";
+    default:
+      return undefined;
+  }
+}
+
+function confirmOf(state: WerewolfState): ConfirmEvent | undefined {
+  switch (state.status) {
+    case "nightCall":
+      return "acknowledgeCall";
+    case "lovers":
+      return "loversReady";
+    case "drunkReveal":
+    case "drunkHunter":
+      return "drunkReady";
+    case "vision":
+      return "closeVision";
+    case "investigation":
+      return "closeInvestigation";
+    case "morning":
+      return "announceMorning";
+    case "exile":
+      return "announceExile";
+    case "wolves":
+      // Without an attack in the first night the wolves only get to know each other.
+      return state.night === 1 && !state.settings.attackOnFirstNight ? "wolvesReady" : undefined;
     default:
       return undefined;
   }

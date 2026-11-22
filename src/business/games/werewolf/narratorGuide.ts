@@ -179,30 +179,8 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       const [one, two] = selection.picks;
       return one && two ? { night, players: [one, two], type: "bond" } : null;
     }
-    default:
-      break;
-  }
-  switch (state.status) {
-    case "roles": {
-      const player = state.players[state.index];
-      return player ? { player: player.name, type: "roleSeen" } : null;
-    }
-    case "nightCall":
-      return { night, type: "acknowledgeCall" };
-    case "lovers":
-      return { night, type: "loversReady" };
-    case "drunkReveal":
-    case "drunkHunter":
-      return { night, type: "drunkReady" };
-    case "vision":
-      return { night, type: "closeVision" };
-    case "investigation":
-      return { night, type: "closeInvestigation" };
-    case "morning":
-      return { night, type: "announceMorning" };
-    case "exile":
-      return { night, type: "announceExile" };
-    case "day":
+    case "nominate":
+      // Nobody named: the day ends. Three people (nominee, nominator, seconder): a nomination.
       if (selection.picks.length === 0) return { night, type: "endDay" };
       return selection.picks.length === 3
         ? {
@@ -214,13 +192,18 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
           }
         : null;
     case "vote":
+      if (state.status !== "vote") return null;
       return { night, nomination: state.nomination, type: "vote", yesVoters: selection.picks };
-    case "wolves":
-      // Without an attack in the first night the wolves only get to know each other.
-      return { night, type: "wolvesReady" };
     default:
-      return null;
+      break;
   }
+  // A step that the narrator only confirms.
+  if (step.confirm) return { night, type: step.confirm };
+  if (state.status === "roles") {
+    const player = state.players[state.index];
+    return player ? { player: player.name, type: "roleSeen" } : null;
+  }
+  return null;
 }
 
 /** The event only counts when the game accepts it. */

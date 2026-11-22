@@ -103,4 +103,13 @@ describe("describeRoleStep", () => {
     expect(pickLimitOf(magician, "bond", false, 0)).toBe(2);
     expect(pickLimitOf(magician, "poison", false, 0)).toBe(1);
   });
+
+  it("names the event of a step that the narrator only confirms, and of the day and the vote", () => {
+    expect(describeRoleStep(at({ status: "vision" })).confirm).toBe("closeVision");
+    expect(describeRoleStep(at({ status: "morning" })).confirm).toBe("announceMorning");
+    expect(describeRoleStep(at({ status: "wolves" })).confirm).toBe("wolvesReady");
+    expect(describeRoleStep(at({ night: 2, status: "wolves" })).confirm).toBeUndefined();
+    expect(describeRoleStep(at({ status: "day" })).compound).toBe("nominate");
+    expect(describeRoleStep(at({ status: "vote" })).compound).toBe("vote");
+  });
 });

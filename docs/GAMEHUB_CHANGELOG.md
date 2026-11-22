@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-120: Umbau Schritt 5, Tag, Abstimmung, Bestätigungen
+
+- Das Ereignis jedes Schritts kommt aus roleStep.
+
 ### We-01-119: Umbau Schritt 4, Hexe, Magier, Amor
 
 - Wahl in mehreren Teilen und die Zahl der Personen je Fähigkeit kommen aus roleStep.
