@@ -71,4 +71,21 @@ describe("describeRoleStep", () => {
     expect(describeRoleStep(alone).skippable).toBe(true);
     expect(describeRoleStep({ ...alone, silencedPlayer: null }).skippable).toBe(false);
   });
+
+  it("says for every step that names one person which event it hands to the game, and what skip stands for", () => {
+    expect(describeRoleStep(at({ status: "seer", victim: null })).pick).toMatchObject({
+      event: "inspect",
+      nobody: false,
+    });
+    expect(describeRoleStep(at({ night: 2, status: "wolves" })).pick).toMatchObject({
+      event: "attack",
+      nobody: true,
+    });
+    expect(describeRoleStep(at({ status: "wolves" })).pick).toBeUndefined();
+    expect(describeRoleStep(at({ status: "investigator", victim: null })).pick).toMatchObject({
+      event: "investigate",
+      skipTarget: null,
+    });
+    expect(describeRoleStep(at({ status: "morning" })).pick).toBeUndefined();
+  });
 });

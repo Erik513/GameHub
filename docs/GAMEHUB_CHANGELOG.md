@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-116: Umbau Schritt 1, Zielpersonen aus der Beschreibung
+
+- Ereignis, „Niemand“, Verzichten/Behalten und Ausnahmen der Liste kommen für alle Rollen mit einer Zielperson aus roleStep.
+
 ### We-01-115: Amulettträger mit eigener Rolle
 
 - Die Karte zeigt die Rolle des Trägers statt „Amulettträger“; Hinweis, ob er abgeben muss (Angriff) oder darf.

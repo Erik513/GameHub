@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 300,
-      "totalTasks": 354,
-      "percent": 84.7
+      "completedTasks": 301,
+      "totalTasks": 355,
+      "percent": 84.8
     }
   },
   "environment": {
@@ -1678,6 +1678,12 @@
           "title": "Amulettträger: eigene Rolle auf der Karte, Behalten ohne Angriff, Abgeben nur nach Angriff Pflicht",
           "status": "done",
           "validation": "Im Schritt des Amulettträgers zeigt die Rollenkarte die echte Rolle des Trägers (Amulett ist nur ein Zusatz und steht als Effekt) statt „Amulettträger“; wurde der Träger angegriffen (das Amulett hat den Angriff gestoppt), erscheint zusätzlich der Effekt „angegriffen“ und der Text „… wurde angegriffen und muss das Amulett abgeben“; sonst „… darf das Amulett behalten oder weitergeben“ mit dem Knopf „Behalten“ in der Karte (Regel in GAMEHUB_WERWOLF.md: Liebeskummer und fehlender Angriff erzeugen keine Weitergabepflicht; die Logik nimmt dabei den Träger selbst als Ziel, die Oberfläche nimmt ihn aus der Liste); Zusammenfassung „Das Amulett bleibt bei …“; Test; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-116",
+          "title": "Umbau Schritt 1: Rollen mit einer Zielperson aus der Beschreibung (pick) statt aus Einzelregeln",
+          "status": "done",
+          "validation": "Für die Schritte mit einer Zielperson (Wölfe, Seherin, Ermittler, Leibwächter, Dorfmatratze, Bürgermeister, Alte Vettel, Jäger, Amulett) liefert die Beschreibung roleStep das Ereignis, ob „Niemand“ eine eigene Wahl ist, was „Verzichten“ oder „Behalten“ an das Spiel gibt und wer nicht in der Liste steht (pick); narratorGuide erzeugt daraus das Ereignis, die Regel für „Niemand“ und die Ausnahme in der Liste und hat dafür keine Einzelfälle je Rolle mehr; Verhalten unverändert; Test der Beschreibung; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

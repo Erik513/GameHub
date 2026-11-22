@@ -75,9 +75,6 @@ const abilityAction: Partial<Record<CardAbilityId, WerewolfTargetAction>> = {
   silence: "silence",
   stayWith: "stayWith",
 };
-/** Abilities that may also be used on nobody. */
-const mayChooseNobody: readonly CardAbilityId[] = ["attack", "hammer", "investigate", "shot"];
-
 function phaseOf(state: WerewolfState): GuidePhase {
   const card = describeNarratorCard(state);
   // Nobody wakes up during the day: its card is open at once.
@@ -162,9 +159,17 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
   const { night } = state;
   const first = selection.picks[0];
   const target = first ?? null;
-  // A role that may also do nothing (the investigator, the mayor, the old hag) is finished without any choice: "skip".
-  const mayPass = describeRoleStep(state).skippable;
-  const decided = first !== undefined || selection.none || (mayPass && selection.ability === null);
+  // A step that names one person: the description says what it hands to the game (see roleStep.ts).
+  const step = describeRoleStep(state);
+  if (step.pick) {
+    const { event, nobody, skipTarget } = step.pick;
+    if (first !== undefined) return { night, target: first, type: event };
+    if (nobody && selection.none) return { night, target: null, type: event } as WerewolfEvent;
+    // The button "skip" (a role that may do nothing, the holder who keeps the amulet): the step is complete.
+    if (step.skippable && selection.ability === null)
+      return { night, target: skipTarget, type: event } as WerewolfEvent;
+    return null;
+  }
   switch (state.status) {
     case "roles": {
       const player = state.players[state.index];
@@ -199,33 +204,12 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
     case "vote":
       return { night, nomination: state.nomination, type: "vote", yesVoters: selection.picks };
     case "wolves":
-      if (state.night === 1 && !state.settings.attackOnFirstNight)
-        return { night, type: "wolvesReady" };
-      return decided ? { night, target, type: "attack" } : null;
+      // Without an attack in the first night the wolves only get to know each other.
+      return { night, type: "wolvesReady" };
     case "witch":
       return { heal: selection.heal, night, poison: target, type: "potions" };
     case "magician":
       return { heal: selection.heal, kill: selection.picks, night, type: "castSpells" };
-    case "seer":
-      return first ? { night, target: first, type: "inspect" } : null;
-    case "investigator":
-      return decided ? { night, target, type: "investigate" } : null;
-    case "bodyguard":
-      return first ? { night, target: first, type: "protect" } : null;
-    case "nightGuest":
-      return first ? { night, target: first, type: "stayWith" } : null;
-    case "mayor":
-      return decided ? { night, target, type: "hammer" } : null;
-    case "spellcaster":
-      return decided ? { night, target, type: "silence" } : null;
-    case "hunter":
-      return decided ? { night, target, type: "shot" } : null;
-    case "amuletPass":
-      // Keeping the amulet is the step "skip": the logic takes the holder himself as the target.
-      if (first) return { night, target: first, type: "passAmulet" };
-      return mayPass && selection.ability === null
-        ? { night, target: state.amulet.holder, type: "passAmulet" }
-        : null;
     case "cupid": {
       const [one, two] = selection.picks;
       return one && two ? { night, players: [one, two], type: "bond" } : null;
@@ -339,9 +323,9 @@ export function describeGuide(guide: Guide): GuideView {
       heal: selection.heal,
       selected: selection.ability === "bond" ? selection.picks.slice(0, 1) : selection.picks,
     }).filter((name) => !selection.picks.includes(name));
-  // Keeping the amulet is the button "keep"; the holder himself is not in the list of people.
-  if (state.status === "amuletPass" && describeRoleStep(state).skippable)
-    targets = targets.filter((name) => name !== state.amulet.holder);
+  // Whoever cannot be named (the holder who keeps the amulet with the button "keep") is not in the list.
+  const excluded = describeRoleStep(state).pick?.excludes;
+  if (excluded !== undefined) targets = targets.filter((name) => name !== excluded);
   const canContinue =
     frame.phase === "ready" ||
     state.status === "finished" ||
@@ -359,10 +343,7 @@ export function describeGuide(guide: Guide): GuideView {
     canChooseNobody:
       frame.phase === "act" &&
       selection.ability !== null &&
-      mayChooseNobody.includes(selection.ability) &&
-      // A role that may skip has the button "skip" for that; "nobody" would be a second way.
-      !describeRoleStep(state).skippable &&
-      selection.ability !== "shot",
+      describeRoleStep(state).pick?.nobody === true,
     canCloseAbility: frame.phase === "act" && state.status !== "vote" && selection.ability !== null,
     canContinue,
     canNext,

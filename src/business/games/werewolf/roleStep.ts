@@ -40,6 +40,31 @@ export type RoleStepVariant =
   | "vote"
   | "plain";
 
+/** The events of the steps in which the narrator names one person. */
+export type PickEvent =
+  | "attack"
+  | "hammer"
+  | "inspect"
+  | "investigate"
+  | "passAmulet"
+  | "protect"
+  | "shot"
+  | "silence"
+  | "stayWith";
+
+/**
+ * How a step that names one person works: the event it hands to the game, whether "nobody" is a choice of its own (the
+ * wolves), the person the button "skip" stands for (nobody, or the holder himself who keeps the amulet), and who
+ * cannot be named in the list.
+ */
+export interface PickSpec {
+  readonly event: PickEvent;
+  readonly nobody: boolean;
+  /** What "skip" hands to the game as the target. */
+  readonly skipTarget: string | null;
+  readonly excludes?: string;
+}
+
 export interface RoleStepSpec {
   readonly variant: RoleStepVariant;
   readonly kind: "choose" | "result" | "info" | "day" | "plain";
@@ -47,6 +72,8 @@ export interface RoleStepSpec {
   readonly skippable: boolean;
   /** The victim of the wolves is named in the step (the witch and the magician decide about it). */
   readonly showsVictim: boolean;
+  /** Present while the step names one person. */
+  readonly pick?: PickSpec;
 }
 
 const spec = (
@@ -57,6 +84,50 @@ const spec = (
 
 /** How the guide shows the step of the game that is about to be played. */
 export function describeRoleStep(state: WerewolfState): RoleStepSpec {
+  const base = baseStep(state);
+  const pick = pickOf(state, base.skippable);
+  return pick ? { ...base, pick } : base;
+}
+
+function pickOf(state: WerewolfState, skippable: boolean): PickSpec | undefined {
+  const one = (event: PickEvent, more: Partial<PickSpec> = {}): PickSpec => ({
+    event,
+    nobody: false,
+    skipTarget: null,
+    ...more,
+  });
+  switch (state.status) {
+    case "wolves":
+      // Only an attack names a person; the first night without attack is a step of its own.
+      return state.night === 1 && !state.settings.attackOnFirstNight
+        ? undefined
+        : one("attack", { nobody: true });
+    case "seer":
+      return one("inspect");
+    case "investigator":
+      return one("investigate");
+    case "bodyguard":
+      return one("protect");
+    case "nightGuest":
+      return one("stayWith");
+    case "mayor":
+      return one("hammer");
+    case "spellcaster":
+      return one("silence");
+    case "hunter":
+      return one("shot");
+    case "amuletPass":
+      // Keeping the amulet: the holder is his own target; he is not in the list of people then.
+      return one("passAmulet", {
+        skipTarget: state.amulet.holder,
+        ...(skippable ? { excludes: state.amulet.holder } : {}),
+      });
+    default:
+      return undefined;
+  }
+}
+
+function baseStep(state: WerewolfState): RoleStepSpec {
   const usable =
     describeNarratorCard(state)?.abilities.some((ability) => ability.available) ?? false;
   switch (state.status) {
