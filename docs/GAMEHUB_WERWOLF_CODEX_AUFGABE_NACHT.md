@@ -153,3 +153,7 @@ Für Codex festgehalten, damit die Logik dazu passt. Die Oberfläche liest das a
 - **Drei Zustände je Fähigkeit** in der Rollenkarte (`unavailable`): nutzbar, `used` (dauerhaft verbraucht) und `blocked` (gerade nicht möglich, zum Beispiel Heilen ohne Opfer der Wölfe). Wer neue Fähigkeiten oder Rollen ergänzt, setzt dort den passenden Grund.
 - **Zurück in der Erzähleransicht** geht höchstens eine Rolle weit; in der Rollenverteilung ist es unbegrenzt. Der Erzählerverlauf (jeder Schritt mit seiner Auswahl) wird mit dem Spielstand gespeichert (Feld `trail`); er ist als Grundlage für späteres Log und Ereignisanzeige gedacht.
 - **Offen für später:** das Vorleseskript des Erzählers fehlt noch (zweite Runde).
+
+### Entscheidung: Magier nach geheilter Hexe (22.11.2026)
+
+Der Auftraggeber hat entschieden: Der Magier sieht das Wolfsopfer auch dann, wenn die Hexe es in derselben Nacht geheilt hat, und sein Heilzauber bleibt wählbar. Er ist dann verbraucht, ohne dass sich für die Person etwas ändert (wie bei Amulett und Leibwächter). Grund: Niemand soll aus der Anzeige ablesen können, ob eine Heilung oder ein Schutz gewirkt hat (Beschluss vom 21.11.2026, `wolfTarget`). Die Logik verhält sich schon so (`castSpells` prüft nur `wolfTarget`, nicht `victim`); der frühere Satz im Magier-Abschnitt von `GAMEHUB_WERWOLF.md` („eine bereits durch die Hexe geheilte Person steht nicht erneut als Heilziel zur Verfügung“) ist angepasst. Bitte bei künftigen Änderungen an Hexe und Magier beachten und keinen Test schreiben, der das Gegenteil verlangt.

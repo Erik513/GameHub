@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-123: Magier nach geheilter Hexe festgehalten
+
+- Der Magier kann auch nach einer Heilung durch die Hexe heilen; Regeltext und Notiz für Codex angepasst.
+
 ### We-01-122: Fragen ohne „oder verzichtet“
 
 - Ermittler und Bürgermeister: nur noch der Knopf verzichtet.

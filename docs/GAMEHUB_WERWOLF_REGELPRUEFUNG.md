@@ -19,7 +19,7 @@ Verglichen wurden die Regeln in `GAMEHUB_WERWOLF.md` mit dem, was die Erzählera
 
 ## Offene Punkte (Entscheidung nötig)
 
-1. **Magier nach geheilter Hexe.** Die Regel (`GAMEHUB_WERWOLF.md`, Abschnitt Magier) sagt, eine durch die Hexe geheilte Person steht nicht erneut als Heilziel zur Verfügung. Die Logik lässt den Heilzauber des Magiers aber zu, solange `wolfTarget` gesetzt ist (Beschluss 21.11.2026: Hexe und Magier sehen das Opfer auch nach abgewehrtem Angriff). Im Probelauf mit Hexe und Magier blieb „Heilen“ des Magiers nach der Heilung durch die Hexe nutzbar. Zu klären: gilt der Satz im Magier-Abschnitt noch, oder wurde er durch den Beschluss vom 21.11. ersetzt? Gehört zur Logik (Codex).
+1. **Magier nach geheilter Hexe.** Entschieden am 22.11.2026: Der Magier sieht das Wolfsopfer auch nach einer Heilung durch die Hexe, der Heilzauber bleibt wählbar (verbraucht ohne Wirkung). Grund: Niemand soll aus der Anzeige ablesen können, ob eine Heilung oder ein Schutz gewirkt hat (Beschluss 21.11.2026). Die Logik verhält sich schon so; geändert wurde nur der Satz im Magier-Abschnitt von `GAMEHUB_WERWOLF.md`.
 2. **Texte „oder verzichtet“.** Erledigt (We-01-122): Der Zusatz ist aus den Fragen für Ermittler und Bürgermeister gestrichen, „Verzichten“ ist nur noch der Knopf in der Karte.
 3. **Trunkenbold.** Regel: Fähigkeiten ruhen bis zur Enthüllung in Nacht 3. In der Ansicht nicht geprüft (nur in der Logik getestet).
 4. **Harter Bursche und Verwundete.** Der Verwundete erscheint als Notiz am Tag, aber nicht als Effekt in der Rollenkarte. Vorschlag: nur ergänzen, wenn gewünscht.
