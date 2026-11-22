@@ -44,7 +44,7 @@ export function actInfo(view: GuideView, t: TFunction): string | null {
     }
     case "wolves":
       // The setting "attack from night 2": in the first night the wolves only get to know each other.
-      return describeRoleStep(state).variant === "wolvesNoAttack"
+      return describeRoleStep(state).statement === "noAttack"
         ? t("werewolfNarrator.guide.wolvesNoAttack")
         : null;
     case "amuletPass":

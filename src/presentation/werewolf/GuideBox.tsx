@@ -358,7 +358,7 @@ function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReop
   if (!card || card.cover || card.abilities.length === 0) return null;
   // The werewolves do not attack in the first night (setting): the role does not "pass", there is simply no attack.
   const step = describeRoleStep(view.state);
-  if (step.variant === "wolvesNoAttack")
+  if (step.statement === "noAttack")
     return (
       <span className="ww-guide__chosen">{t("werewolfNarrator.guide.wolvesNoAttackDone")}</span>
     );
@@ -374,7 +374,7 @@ function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReop
     );
   }
   // The holder of the amulet decided to keep it.
-  if (step.variant === "amuletPassMay" && selection.picks.length === 0)
+  if (step.skip.summary === "kept" && selection.picks.length === 0)
     return (
       <Chosen onReopen={onReopen}>
         {t("werewolfNarrator.guide.amuletKept", { name: view.state.amulet?.holder ?? "" })}

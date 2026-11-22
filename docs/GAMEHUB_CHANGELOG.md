@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-117: Umbau Schritt 2, Beschriftungen aus der Beschreibung
+
+- Verzichten/Behalten, Zusammenfassung und die Aussage der Wölfe kommen aus roleStep.
+
 ### We-01-116: Umbau Schritt 1, Zielpersonen aus der Beschreibung
 
 - Ereignis, „Niemand“, Verzichten/Behalten und Ausnahmen der Liste kommen für alle Rollen mit einer Zielperson aus roleStep.

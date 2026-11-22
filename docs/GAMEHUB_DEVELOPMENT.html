@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 301,
-      "totalTasks": 355,
+      "completedTasks": 302,
+      "totalTasks": 356,
       "percent": 84.8
     }
   },
@@ -1917,6 +1917,12 @@
           "title": "Umbau Schritt 1: Rollen mit einer Zielperson aus der Beschreibung (pick) statt aus Einzelregeln",
           "status": "done",
           "validation": "Für die Schritte mit einer Zielperson (Wölfe, Seherin, Ermittler, Leibwächter, Dorfmatratze, Bürgermeister, Alte Vettel, Jäger, Amulett) liefert die Beschreibung roleStep das Ereignis, ob „Niemand“ eine eigene Wahl ist, was „Verzichten“ oder „Behalten“ an das Spiel gibt und wer nicht in der Liste steht (pick); narratorGuide erzeugt daraus das Ereignis, die Regel für „Niemand“ und die Ausnahme in der Liste und hat dafür keine Einzelfälle je Rolle mehr; Verhalten unverändert; Test der Beschreibung; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-117",
+          "title": "Umbau Schritt 2: Beschriftung von Verzichten/Behalten und Zusammenfassungen aus der Beschreibung",
+          "status": "done",
+          "validation": "Die Beschreibung roleStep nennt auch, wie der Knopf eines überspringbaren Schritts heißt (Verzichten oder Behalten), was die Zusammenfassung danach sagt (nichts gewählt oder Amulett bleibt) und ob der Schritt selbst eine Aussage ist (kein Angriff in Nacht 1); Oberfläche (Knopf, Zusammenfassung, Überschrift der Wölfe) vergleicht keine Ansichten mehr mit Namen; Verhalten unverändert; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

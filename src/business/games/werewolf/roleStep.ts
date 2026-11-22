@@ -74,13 +74,24 @@ export interface RoleStepSpec {
   readonly showsVictim: boolean;
   /** Present while the step names one person. */
   readonly pick?: PickSpec;
+  /** How the button of a skippable step is called, and what the summary says after it was pressed. */
+  readonly skip: { readonly label: "keep" | "skip"; readonly summary: "kept" | "noChoice" };
+  /** The summary is a statement of the step itself, not the choice of the narrator (no attack in the first night). */
+  readonly statement?: "noAttack";
 }
 
 const spec = (
   variant: RoleStepVariant,
   kind: RoleStepSpec["kind"],
-  more: Partial<Pick<RoleStepSpec, "showsVictim" | "skippable">> = {},
-): RoleStepSpec => ({ kind, showsVictim: false, skippable: false, variant, ...more });
+  more: Partial<Pick<RoleStepSpec, "showsVictim" | "skip" | "skippable" | "statement">> = {},
+): RoleStepSpec => ({
+  kind,
+  showsVictim: false,
+  skip: { label: "skip", summary: "noChoice" },
+  skippable: false,
+  variant,
+  ...more,
+});
 
 /** How the guide shows the step of the game that is about to be played. */
 export function describeRoleStep(state: WerewolfState): RoleStepSpec {
@@ -135,7 +146,7 @@ function baseStep(state: WerewolfState): RoleStepSpec {
       return spec("cover", "info");
     case "wolves":
       return state.night === 1 && !state.settings.attackOnFirstNight
-        ? spec("wolvesNoAttack", "info")
+        ? spec("wolvesNoAttack", "info", { statement: "noAttack" })
         : spec("wolvesAttack", "choose");
     case "seer":
       return spec("seerChoose", "choose");
@@ -184,7 +195,10 @@ function baseStep(state: WerewolfState): RoleStepSpec {
       // After an attack the holder has to pass the amulet on; otherwise he may keep it (the logic takes himself as the target).
       return state.amulet.mustPass
         ? spec("amuletPassMust", "choose")
-        : spec("amuletPassMay", "choose", { skippable: true });
+        : spec("amuletPassMay", "choose", {
+            skip: { label: "keep", summary: "kept" },
+            skippable: true,
+          });
     case "day":
       return spec("day", "day");
     case "vote":

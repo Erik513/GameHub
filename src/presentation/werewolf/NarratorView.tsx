@@ -81,7 +81,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                         view.selection.ability !== null ||
                         view.selection.heal,
                       framed: view.phase === "act" && view.canContinue,
-                      ...(describeRoleStep(view.state).variant === "amuletPassMay"
+                      ...(describeRoleStep(view.state).skip.label === "keep"
                         ? { label: t("werewolfNarrator.guide.keep") }
                         : {}),
                       onSkip: guide.continueGuide,
