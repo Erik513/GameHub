@@ -495,4 +495,107 @@ describe("narrator guide", () => {
     // The steps without a role (the role reveal, the morning) are left with "next", too.
     expect(describeGuide(game()).canNext).toBe(true);
   });
+
+  it("restores the saved checkpoints: the steps and the choices come back after a reload, and can be changed", () => {
+    let guide = game([], { attackOnFirstNight: true });
+    for (let step = 0; step < 100 && describeGuide(guide).card?.role !== "seer"; step += 1)
+      guide = forward(guide)!;
+    guide = continueGuide(guide);
+    guide = chooseAbility(guide, "inspect");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    const first = describeGuide(guide).selection.picks[0]!;
+    expect(first).toBeDefined();
+    guide = continueGuide(guide);
+    guide = continueGuide(guide);
+    // Reload: the trail goes through JSON and comes back with the game.
+    const saved = JSON.parse(JSON.stringify(guide.trail)) as unknown;
+    const restored = createGuide(guide.session, saved);
+    expect(restored.trail).toEqual(guide.trail);
+    // Going back finds the choice of the wolves again; another person overwrites it.
+    let back = restored;
+    for (let i = 0; i < 4 && describeGuide(back).selection.picks[0] !== first; i += 1) {
+      const result = backGuide(back, true);
+      if (!result.ok) break;
+      back = result.guide;
+    }
+    expect(describeGuide(back).selection.picks).toEqual([first]);
+    const other = describeGuide(back).targets.find((name) => name !== first)!;
+    back = choosePlayer(unchoosePlayer(back, first), other);
+    expect(describeGuide(back).selection.picks).toEqual([other]);
+  });
+
+  it("ignores saved checkpoints that do not belong to the game", () => {
+    const guide = game();
+    const other = forward(forward(guide)!)!;
+    expect(createGuide(guide.session, other.trail).trail).toEqual(guide.trail);
+    expect(createGuide(guide.session, "garbage").trail).toEqual(guide.trail);
+    expect(createGuide(guide.session, []).trail).toEqual(guide.trail);
+    expect(createGuide(guide.session, [{ phase: "x" }]).trail).toEqual(guide.trail);
+  });
+
+  it("goes back one role at most: from role 2 to role 1, then no further until the game has moved on again", () => {
+    let guide = game([], { attackOnFirstNight: true });
+    const roles: string[] = [];
+    for (let step = 0; step < 200 && roles.length < 2; step += 1) {
+      guide = forward(guide)!;
+      const view = describeGuide(guide);
+      if (view.phase === "intro" && view.card && !roles.includes(view.card.role))
+        roles.push(view.card.role);
+    }
+    expect(roles).toHaveLength(2);
+    // Back to the start of the third role, then into the second role: that is one role back.
+    const goBackUntil = (from: Guide, role: string): Guide => {
+      let g = from;
+      for (let i = 0; i < 20 && describeGuide(g).card?.role !== role; i += 1) {
+        const result = backGuide(g, true);
+        if (!result.ok) break;
+        g = result.guide;
+      }
+      return g;
+    };
+    let back = goBackUntil(guide, roles[0]!);
+    expect(describeGuide(back).card?.role).toBe(roles[0]);
+    // Inside the second role back still works (the choice, the announcement) ...
+    while (describeGuide(back).phase !== "intro") {
+      const result = backGuide(back, true);
+      expect(result.ok).toBe(true);
+      if (!result.ok) return;
+      back = result.guide;
+    }
+    // ... up to the waiting step before the first role, but the role reveal cannot be reached from there.
+    const waiting = backGuide(back, true);
+    expect(waiting.ok).toBe(true);
+    if (!waiting.ok) return;
+    back = waiting.guide;
+    expect(describeGuide(back).phase).toBe("ready");
+    expect(describeGuide(back).canGoBack).toBe(false);
+    expect(backGuide(back, true)).toEqual({ ok: false, reason: "limit" });
+    // After the game moved on, the narrator may go back one role again.
+    let ahead = back;
+    for (let i = 0; i < 20 && describeGuide(ahead).card?.role !== roles[1]; i += 1)
+      ahead = forward(ahead) ?? ahead;
+    expect(describeGuide(ahead).canGoBack).toBe(true);
+  });
+
+  it("lets the narrator tap the ability again after the choice was confirmed and replaces the choice", () => {
+    let guide = game([], { attackOnFirstNight: true });
+    for (let step = 0; step < 100 && describeGuide(guide).card?.role !== "wolf"; step += 1)
+      guide = forward(guide)!;
+    guide = continueGuide(guide);
+    guide = chooseAbility(guide, "attack");
+    const targets = describeGuide(guide).targets;
+    guide = choosePlayer(guide, targets[0]!);
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).phase).toBe("outro");
+    // The ability opens the choice again; nothing of the game has moved yet.
+    guide = chooseAbility(guide, "attack");
+    expect(describeGuide(guide).phase).toBe("act");
+    expect(describeGuide(guide).selection.picks).toEqual([]);
+    guide = choosePlayer(guide, targets[1]!);
+    guide = continueGuide(guide);
+    guide = continueGuide(guide);
+    const events = guide.session.past.length;
+    expect(events).toBeGreaterThan(0);
+    expect(JSON.stringify(guide.session.present.history)).toContain(targets[1]!);
+  });
 });

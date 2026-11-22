@@ -2,6 +2,18 @@
 
 ## 2026-11-21
 
+### We-01-96: Fähigkeit erneut antippen
+
+- Nach dem Bestätigen kann die Fähigkeit erneut angetippt werden, um die Auswahl zu ändern, ohne zurückzugehen.
+
+### We-01-95: Zurück nur eine Rolle weit
+
+- Zurück führt höchstens in die vorherige Rolle; weiter zurück geht erst, wenn das Spiel wieder vorangekommen ist.
+
+### We-01-94: Zwischenspeicher des Erzählers
+
+- Der Verlauf mit allen Auswahlen wird mit dem Spiel gespeichert und nach einem Neuladen wiederhergestellt; beim Zurückgehen sind frühere Entscheidungen sichtbar und überschreibbar.
+
 ### We-01-93: Zusammenfassung mit Ergebnisform
 
 - „Gewählt: Geschützt: Louis“ statt „Schützen: Louis“; für alle Fähigkeiten eine passende Form, deutsch und englisch.

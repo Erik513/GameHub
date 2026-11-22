@@ -75,7 +75,7 @@ export function NarratorCard({
                 data-available={ability.available}
                 data-next={(next && ability.available && !settled) || undefined}
                 data-settled={settled || undefined}
-                disabled={!ability.available || settled}
+                disabled={!ability.available}
                 key={ability.id}
                 onClick={() => onAbility?.(ability.id)}
                 type="button"

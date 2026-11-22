@@ -1706,10 +1706,6 @@
   font-weight: var(--weight-bold);
 }
 
-.ww-ability[data-settled]:not([aria-pressed="true"]) {
-  opacity: 0.45;
-}
-
 .ww-ability[data-settled][aria-pressed="true"] {
   opacity: 1;
 }

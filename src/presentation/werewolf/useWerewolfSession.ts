@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import {
   parseSavedWerewolfSession,
+  savedTrailOf,
   serializeWerewolfSession,
   startWerewolfGame,
   type StartWerewolfGameInput,
@@ -24,10 +25,11 @@ export function useWerewolfSession() {
     () => null,
     (raw) => {
       const session = parseSavedWerewolfSession(raw);
-      return session ? serializeWerewolfSession(session) : undefined;
+      return session ? serializeWerewolfSession(session, savedTrailOf(raw)) : undefined;
     },
   );
   const session: WerewolfSession | null = saved ? saved.session : null;
+  const trail: unknown = saved?.trail;
 
   /** Deals the roles and starts the game; false when the setup cannot be played. */
   const start = useCallback(
@@ -61,9 +63,9 @@ export function useWerewolfSession() {
   );
   /** Takes over a game state that the narrator view moved on. */
   const replace = useCallback(
-    (next: WerewolfSession) => setSaved(serializeWerewolfSession(next)),
+    (next: WerewolfSession, trail?: unknown) => setSaved(serializeWerewolfSession(next, trail)),
     [setSaved],
   );
   const end = useCallback(() => setSaved(null), [setSaved]);
-  return { advance, end, replace, session, start, undo };
+  return { advance, end, replace, session, start, trail, undo };
 }

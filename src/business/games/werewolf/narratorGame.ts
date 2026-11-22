@@ -56,10 +56,19 @@ export const savedSessionVersion = 1;
 interface SavedSession {
   readonly version: number;
   readonly session: WerewolfSession;
+  /** The checkpoints of the narrator (the steps of the guide with their choices); checked by `parseSavedTrail`. */
+  readonly trail?: unknown;
 }
 
-export function serializeWerewolfSession(session: WerewolfSession): SavedSession {
-  return { session, version: savedSessionVersion };
+export function serializeWerewolfSession(session: WerewolfSession, trail?: unknown): SavedSession {
+  return trail === undefined
+    ? { session, version: savedSessionVersion }
+    : { session, trail, version: savedSessionVersion };
+}
+
+/** The saved checkpoints of the narrator, or undefined. */
+export function savedTrailOf(raw: unknown): unknown {
+  return typeof raw === "object" && raw !== null ? (raw as Partial<SavedSession>).trail : undefined;
 }
 
 const isState = (value: unknown): value is WerewolfState =>

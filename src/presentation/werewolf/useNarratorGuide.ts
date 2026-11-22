@@ -22,9 +22,10 @@ import type { WerewolfSession } from "../../business/games/werewolf/session";
  */
 export function useNarratorGuide(
   session: WerewolfSession,
-  onSession: (next: WerewolfSession) => void,
+  onSession: (next: WerewolfSession, trail: unknown) => void,
+  savedTrail?: unknown,
 ) {
-  const [guide, setGuide] = useState(() => createGuide(session));
+  const [guide, setGuide] = useState(() => createGuide(session, savedTrail));
   const [confirmBack, setConfirmBack] = useState(false);
 
   const update = useCallback(
@@ -32,7 +33,8 @@ export function useNarratorGuide(
       const next = change(guide);
       if (next === guide) return;
       setGuide(next);
-      if (next.session !== guide.session) onSession(next.session);
+      // Every change is a checkpoint: the game and the choices of the narrator are saved together.
+      onSession(next.session, next.trail);
     },
     [guide, onSession],
   );
@@ -45,7 +47,7 @@ export function useNarratorGuide(
       }
       setConfirmBack(false);
       setGuide(result.guide);
-      if (result.guide.session !== guide.session) onSession(result.guide.session);
+      onSession(result.guide.session, result.guide.trail);
     },
     [guide, onSession],
   );

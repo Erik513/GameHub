@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 277,
-      "totalTasks": 331,
-      "percent": 83.7
+      "completedTasks": 280,
+      "totalTasks": 334,
+      "percent": 83.8
     }
   },
   "environment": {
@@ -1779,6 +1779,24 @@
           "title": "Zusammenfassung „Gewählt“ nennt das Ergebnis statt der Fähigkeit (Geschützt, Verliebt, Vergiftet, …)",
           "status": "done",
           "validation": "Die Zeile „Gewählt: …“ nach der Auswahl benutzt für jede Fähigkeit eine Partizipform (Verliebt, Geschützt, Geschaut, Geprüft, Getötet, Vergiftet, Geschossen, Abgegeben, Geheilt; englisch In love, Protected, Looked at, …) statt des Knopfnamens; Übersetzungsschlüssel in beiden Sprachen; Tests der Werwolf-, Business- und i18n-Ordner grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-94",
+          "title": "Zwischenspeicher des Erzählers: Schritte und Auswahl bleiben nach Neuladen erhalten und sind beim Zurückgehen überschreibbar",
+          "status": "done",
+          "validation": "Mit dem Spielstand wird bei jeder Änderung auch der Verlauf des Erzählers (jeder Schritt mit seiner Auswahl, also nach jedem Rollen-, Nacht- und Tagwechsel) gespeichert; nach einem Neuladen kommt er zurück (nur wenn er zum gespeicherten Spiel gehört, sonst verworfen), Zurückgehen zeigt die frühere Entscheidung wieder an, und eine andere Auswahl überschreibt sie; Tests für Wiederherstellen, Zurückgehen mit Überschreiben und Ablehnen fremder Verläufe; 1573 Tests, tsc -b, eslint sauber; nicht im Browser angesehen. Offen: Entscheidungen späterer Rollen werden beim Zurückgehen weiterhin verworfen (kein Vorwärts-Wiederherstellen)."
+        },
+        {
+          "id": "We-01-95",
+          "title": "Zurück nur bis zur vorherigen Rolle",
+          "status": "done",
+          "validation": "Der Knopf „Zurück“ führt von einer Rolle höchstens in die vorherige Rolle (bei Rolle 2 nur zu Rolle 1, bei Rolle 3 nur zu Rolle 2 und so weiter); innerhalb einer Rolle (Ankündigung, Auswahl, Einschlafen) bleibt Zurück möglich; erst wenn das Spiel wieder weitergegangen ist, kann man erneut eine Rolle zurück; die Sperre wird mit dem Verlauf gespeichert (Markierung returned) und gilt auch nach Neuladen; Knopf gesperrt, Grund „limit“; Test; 1574 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-96",
+          "title": "Fähigkeit nach dem Bestätigen erneut antippbar, um die Auswahl zu ändern",
+          "status": "done",
+          "validation": "Solange die Rolle nicht mit „Weiter“ verlassen wurde (auch im Schritt „schläft wieder ein“), sind die Fähigkeitsknöpfe der Karte antippbar: ein Tipp öffnet die Auswahl erneut (Schritt wieder offen, Spielstand unverändert) und die neue Auswahl ersetzt die alte; das Abdunkeln der nicht gewählten Fähigkeiten im Schritt entfällt; Test; 1575 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
         }
       ]
     },

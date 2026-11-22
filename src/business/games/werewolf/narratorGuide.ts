@@ -51,6 +51,8 @@ export interface GuideFrame {
   readonly selection: GuideSelection;
   /** The event that the outro hands to the game. */
   readonly event: WerewolfEvent | null;
+  /** The narrator came back to this step from the next role: from here the way back stops (one role at most). */
+  readonly returned?: boolean;
 }
 
 export interface Guide {
@@ -110,7 +112,45 @@ function justDealt(session: WerewolfSession): boolean {
   return last?.status === "roles" && session.present.status !== "roles";
 }
 
-export function createGuide(session: WerewolfSession): Guide {
+const guidePhases: readonly unknown[] = ["intro", "act", "outro", "plain", "ready"];
+const maxSavedTrail = 2000;
+
+function isSavedFrame(value: unknown): value is GuideFrame {
+  if (typeof value !== "object" || value === null) return false;
+  const frame = value as Partial<GuideFrame>;
+  const selection = frame.selection as Partial<GuideSelection> | undefined;
+  return (
+    guidePhases.includes(frame.phase) &&
+    Number.isInteger(frame.pastLength) &&
+    (frame.event === null || (typeof frame.event === "object" && frame.event !== undefined)) &&
+    typeof selection === "object" &&
+    selection !== null &&
+    (selection.ability === null || typeof selection.ability === "string") &&
+    typeof selection.heal === "boolean" &&
+    typeof selection.none === "boolean" &&
+    Array.isArray(selection.picks) &&
+    selection.picks.every((pick) => typeof pick === "string")
+  );
+}
+
+/**
+ * Reads the saved trail of the guide (the checkpoints of the narrator: every step with its choice). It is only taken
+ * when it belongs to the saved game, that is when its last step is the present of the game; otherwise undefined.
+ */
+export function parseSavedTrail(
+  raw: unknown,
+  session: WerewolfSession,
+): readonly GuideFrame[] | undefined {
+  if (!Array.isArray(raw) || raw.length === 0 || raw.length > maxSavedTrail) return undefined;
+  if (!raw.every(isSavedFrame)) return undefined;
+  const last = raw[raw.length - 1]!;
+  return last.pastLength === session.past.length ? raw : undefined;
+}
+
+/** Starts the guide; a saved trail brings back the steps and the choices made before a reload. */
+export function createGuide(session: WerewolfSession, savedTrail?: unknown): Guide {
+  const trail = parseSavedTrail(savedTrail, session);
+  if (trail) return { session, trail };
   const frame = frameOf(session.present, session.past.length);
   return {
     session,
@@ -320,7 +360,7 @@ export function describeGuide(guide: Guide): GuideView {
     canCloseAbility: frame.phase === "act" && state.status !== "vote" && selection.ability !== null,
     canContinue,
     canNext,
-    canGoBack: guide.trail.length > 1 || guide.session.past.length > 0,
+    canGoBack: (guide.trail.length > 1 || guide.session.past.length > 0) && !backIsBlocked(guide),
     canUndo:
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
@@ -377,8 +417,17 @@ function withSelection(guide: Guide, selection: GuideSelection): Guide {
 
 /** The narrator taps an ability. Healing is a switch; the others open their targets. */
 export function chooseAbility(guide: Guide, id: CardAbilityId): Guide {
-  const frame = current(guide);
   const state = guide.session.present;
+  // The role is awake until the narrator goes on: after the choice was confirmed ("asleep") an ability can still be
+  // tapped to change the choice; the step is open again and the new choice replaces the old one.
+  const reopened =
+    current(guide).phase === "outro"
+      ? {
+          ...guide,
+          trail: [...guide.trail, { ...current(guide), event: null, phase: "act" as const }],
+        }
+      : guide;
+  const frame = current(reopened);
   if (frame.phase !== "act") return guide;
   const card = describeNarratorCard(state);
   if (!card?.abilities.some((ability) => ability.id === id && ability.available)) return guide;
@@ -387,9 +436,9 @@ export function chooseAbility(guide: Guide, id: CardAbilityId): Guide {
     const next = { ...selection, heal: !selection.heal };
     // The game decides whether there is somebody to heal; a choice it would refuse is not taken.
     if (next.heal && eventOf(state, next) && !acceptedEvent(state, next)) return guide;
-    return withSelection(guide, next);
+    return withSelection(reopened, next);
   }
-  return withSelection(guide, { ...selection, ability: id, none: false, picks: [] });
+  return withSelection(reopened, { ...selection, ability: id, none: false, picks: [] });
 }
 
 /** The narrator closes the list of people again (an ability was tapped by mistake); the choices of it are dropped. */
@@ -495,10 +544,26 @@ export function continueGuide(guide: Guide): Guide {
 
 export type GuideBack =
   | { readonly ok: true; readonly guide: Guide }
-  | { readonly ok: false; readonly reason: "atStart" | "confirmationRequired" };
+  | { readonly ok: false; readonly reason: "atStart" | "confirmationRequired" | "limit" };
 
-/** "Back": exactly one step; a step that the game already took is undone in the game. */
+/**
+ * Back may leave the step of a role (go to the previous role) only once: after coming back to a role the narrator
+ * decides again (or goes forward); further back is not possible until the game has moved on and the narrator comes
+ * back from the next role. Inside one role (announcement, choice, falling asleep) back is always possible.
+ */
+function backIsBlocked(guide: Guide): boolean {
+  const length = guide.session.past.length;
+  const previous = guide.trail[guide.trail.length - 2];
+  const leavesRole = previous ? previous.pastLength < length : length > 0;
+  return (
+    leavesRole &&
+    guide.trail.some((frame) => frame.returned === true && frame.pastLength === length)
+  );
+}
+
+/** "Back": exactly one step; a step that the game already took is undone in the game, but only one role back. */
 export function backGuide(guide: Guide, confirmed = false): GuideBack {
+  if (backIsBlocked(guide)) return { ok: false, reason: "limit" };
   if (guide.trail.length > 1) {
     const trail = guide.trail.slice(0, -1);
     const previous = trail[trail.length - 1]!;
@@ -509,7 +574,19 @@ export function backGuide(guide: Guide, confirmed = false): GuideBack {
         return { ok: false, reason: undone.reason === "emptyHistory" ? "atStart" : undone.reason };
       session = undone.session;
     }
-    return { guide: { session, trail }, ok: true };
+    const crossed = session !== guide.session;
+    return {
+      guide: {
+        session,
+        // All steps of the role are marked, so the mark stays while the narrator goes back inside the role.
+        trail: crossed
+          ? trail.map((frame) =>
+              frame.pastLength === previous.pastLength ? { ...frame, returned: true } : frame,
+            )
+          : trail,
+      },
+      ok: true,
+    };
   }
   const undone = undoWerewolfSession(guide.session, confirmed);
   if (!undone.ok)
@@ -520,7 +597,12 @@ export function backGuide(guide: Guide, confirmed = false): GuideBack {
   return {
     guide: {
       session: undone.session,
-      trail: [frame.phase === "intro" ? { ...frame, phase: "act" } : frame],
+      trail: [
+        {
+          ...(frame.phase === "intro" ? { ...frame, phase: "act" as const } : frame),
+          returned: true,
+        },
+      ],
     },
     ok: true,
   };

@@ -84,6 +84,7 @@ export function WerewolfGame() {
       onRules={() => setRulesOpen(true)}
       onSession={game.replace}
       session={game.session}
+      trail={game.trail}
     />
   ) : configuring ? (
     <WerewolfConfiguration

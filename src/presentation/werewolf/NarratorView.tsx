@@ -11,7 +11,10 @@ import { useNarratorGuide } from "./useNarratorGuide";
 
 interface NarratorViewProps {
   readonly session: WerewolfSession;
-  readonly onSession: (next: WerewolfSession) => void;
+  /** Saves the game and the checkpoints of the narrator after every change. */
+  readonly onSession: (next: WerewolfSession, trail: unknown) => void;
+  /** The checkpoints saved with the game: after a reload the narrator finds every step and choice again. */
+  readonly trail?: unknown;
   /** Leaves the game (after the narrator confirmed). */
   readonly onEnd: () => void;
   /** Opens the rules of the game. */
@@ -23,9 +26,9 @@ interface NarratorViewProps {
  * leads through the night. At the bottom only "Back" and "Next": back is exactly one step, next only where the
  * step is complete.
  */
-export function NarratorView({ session, onSession, onEnd, onRules }: NarratorViewProps) {
+export function NarratorView({ session, trail, onSession, onEnd, onRules }: NarratorViewProps) {
   const { t } = useTranslation();
-  const guide = useNarratorGuide(session, onSession);
+  const guide = useNarratorGuide(session, onSession, trail);
   const { view } = guide;
   return (
     <section
