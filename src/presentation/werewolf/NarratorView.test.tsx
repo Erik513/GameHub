@@ -222,7 +222,18 @@ describe("NarratorView choices", () => {
       else await user.click(screen.getByRole("button", { name: "Next" }));
     }
     await user.click(document.querySelector(".ww-script__wake")!);
-    expect(screen.getByText("The werewolves attack only from night 2")).toBeInTheDocument();
+    // The script says what the narrator does (the wolves look at each other); that they do not attack is a hint.
+    expect(screen.getByText("The werewolves look at each other")).toBeInTheDocument();
+    // No ability, so no symbol in front of the script (the wake box has the symbol of the role).
+    expect(
+      screen
+        .getByText("The werewolves look at each other")
+        .closest(".ww-script__step")
+        ?.querySelector("svg"),
+    ).toBeNull();
+    expect(document.querySelector(".ww-guide__victim")?.textContent).toBe(
+      "The werewolves attack only from night 2",
+    );
     await user.click(screen.getByRole("button", { name: "Task done" }));
     expect(screen.getByText("No attack in this night")).toBeInTheDocument();
     expect(screen.queryByText(/the role passes/)).toBeNull();

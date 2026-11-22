@@ -35,9 +35,10 @@ export function actInfo(view: GuideView, t: TFunction): string | null {
         : null;
     }
     case "wolves":
-      // The setting "attack from night 2": in the first night the wolves only get to know each other.
+      // The setting "attack from night 2": in the first night the wolves only get to know each other (the script);
+      // that they do not attack is a hint below the script (see `stepExtras`).
       return describeRoleStep(state).statement === "noAttack"
-        ? t("werewolfNarrator.guide.wolvesNoAttack")
+        ? t("werewolfNarrator.guide.wolvesLook")
         : null;
     case "amuletPass":
       return t(
@@ -156,7 +157,9 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
   return [
     wake,
     ...boxes.map((box) => {
-      const symbol = box.id === "asleep" ? undefined : symbolOf(box.id);
+      // The wolves who only look at each other (no attack in the first night) have no ability to show.
+      const symbol =
+        box.id === "asleep" || step.statement === "noAttack" ? undefined : symbolOf(box.id);
       return {
         ...box,
         ...(symbol ? { symbol } : {}),
@@ -282,6 +285,11 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
         {state.wolfTarget
           ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })
           : t("werewolfNarrator.guide.noVictim")}
+      </span>
+    ),
+    step.statement === "noAttack" && (
+      <span className="ww-guide__victim" key="noAttack">
+        {t("werewolfNarrator.guide.wolvesNoAttack")}
       </span>
     ),
     // A potion of the witch that is used up: the reason why the button cannot be used.

@@ -4,6 +4,8 @@
 
 ### We-01-139: Erwachen als erste Skriptbox
 
+- Skripttexte enden einheitlich ohne Punkt.
+- Werwölfe (Nacht 1 ohne Angriff): Skript „Die Werwölfe schauen sich an.“, „… erst ab Nacht 2“ als gelber Hinweis.
 - Personenauswahl: immer alle Spieler in fester Reihenfolge; Tote grau, gesperrte gelb gestrichelt, lange Namen zweizeilig.
 - Symbole: Fähigkeiten stehen im Kreis, Rollen frei (Eigenschaft ring, Legende, Test).
 - „Tippe auf eine Fähigkeit“ entfernt: rollenspezifische Anweisungen im Skript (Leibwächter: „… wählt eine Person aus, die er schützen will.“).

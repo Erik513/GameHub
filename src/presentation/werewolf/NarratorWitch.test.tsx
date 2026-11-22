@@ -88,7 +88,7 @@ it("shows all options above at all times and the two questions as boxes below, t
     [],
   ]);
   expect(steps()[1]?.textContent).toBe(
-    "Does the witch want to poison somebody? Then she points at a person.",
+    "Does the witch want to poison somebody? Then she points at a person",
   );
   expect([state(0), state(1)]).toEqual(["active", "pending"]);
   expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked/);
