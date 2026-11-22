@@ -86,6 +86,8 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   expect(summary?.querySelector("svg")).not.toBeNull();
   expect(boxes().map((box) => box.button)).toEqual(["Undo", "Task done", "Task done"]);
   expect(boxes().map((box) => box.disabled)).toEqual([false, false, true]);
+  // The lovers are set: the ability cannot be pressed again until the decision is taken back.
+  expect(screen.getByRole("button", { name: /^Make lovers/ })).toBeDisabled();
   // Cupid sleeps, the lovers are touched: the last check finishes the step.
   fireEvent.click(checks()[0]!);
   expect(boxes().map((box) => box.disabled)).toEqual([false, true, false]);

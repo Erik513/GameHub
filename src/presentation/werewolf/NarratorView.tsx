@@ -99,7 +99,10 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                   : 0
               }
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
-              locked={view.phase === "outro"}
+              // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
+              locked={
+                view.phase === "outro" || (view.state.status === "cupid" && view.progress >= 1)
+              }
               // The witch: the abilities wait until the narrator has shown the victim (the check of the first box).
               waiting={witchWaiting}
               skip={
