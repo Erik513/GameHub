@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 315,
-      "totalTasks": 369,
+      "completedTasks": 316,
+      "totalTasks": 370,
       "percent": 85.4
     }
   },
@@ -2001,6 +2001,12 @@
           "title": "Prüfung des variablen Modus: Entwürfe, Ziehung, Spiel mit der Erzähleransicht",
           "status": "done",
           "validation": "Neue Prüfungen variableCoverage.test.ts: 300 zufällige Entwürfe, wie sie die Konfigurationsansicht zulässt (nur freigegebene Einträge, Nebenoptionen, Zusätze, Wolfszahlen, Spielregel, Spanne), wurden mit startWerewolfGame gezogen (je drei Ziehungen): wenn die Ansicht den Start erlaubt, startet auch die Logik; das Spiel folgt dem Entwurf (Muss-Rollen enthalten, keine Rollen außerhalb des Entwurfs, gezogene Rollen innerhalb der Spanne, Wolfszahl aus der Auswahl, Trunkenbold und Amulett wie gewählt, Regel Angriff in Nacht 1 übernommen, Optionen der Rollen übernommen); 40 gezogene Spiele werden mit der Erzähleransicht allein bis zum Ende gespielt, ohne Hänger und mit richtigen Aufgeweckten; Oberflächentest: Spiel mit variablen Rollen (Hexe als Muss) aus der Aufstellung starten, Rollenverteilung, Beginn, Übersicht zeigt die Hexe; Ergebnis: keine Abweichung gefunden; nicht von Hand im Browser gespielt; Aussehen und Ziehen per Maus nicht geprüft."
+        },
+        {
+          "id": "We-01-131",
+          "title": "Fähigkeit der Werwölfe heißt „Angriff“ statt „Opfer“",
+          "status": "done",
+          "validation": "Der Knopf der Werwölfe heißt „Angriff“ (englisch „Attack“), die Zusammenfassung nach der Wahl „Angegriffen: Name“ („Attacked“); die Frage „Die Werwölfe wählen ihr Opfer“ bleibt; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

@@ -39,7 +39,7 @@ export const werewolfNarratorTexts = {
     ability: {
       vote: "Abstimmung",
       doubleVote: "Doppelte Stimme",
-      attack: "Opfer",
+      attack: "Angriff",
       bond: "Verlieben",
       heal: "Heilen",
       hammer: "Hammer",
@@ -162,7 +162,7 @@ export const werewolfNarratorTexts = {
       abilityDone: {
         vote: "Abstimmung",
         doubleVote: "Doppelte Stimme",
-        attack: "Opfer",
+        attack: "Angegriffen",
         bond: "Verliebt",
         heal: "Geheilt",
         hammer: "Hammer",

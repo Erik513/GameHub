@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-131: Angriff statt Opfer
+
+- Fähigkeit der Werwölfe heißt „Angriff“, die Zusammenfassung „Angegriffen“.
+
 ### We-01-130: Variabler Modus geprüft
 
 - Zufällige Entwürfe werden gezogen und gespielt; das Spiel folgt dem Entwurf, die Erzähleransicht kommt ans Ende. Keine Abweichung.
