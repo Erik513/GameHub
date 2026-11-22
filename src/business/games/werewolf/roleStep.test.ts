@@ -41,7 +41,8 @@ describe("describeRoleStep", () => {
     const empty = describeRoleStep(
       at({ potions: { heal: false, poison: false }, status: "witch", victim: null }),
     );
-    expect(empty).toMatchObject({ skippable: false, variant: "witchEmpty" });
+    // Nothing to use, but the questions are asked all the same: "skip" answers them.
+    expect(empty).toMatchObject({ skippable: true, variant: "witchEmpty" });
   });
 
   it("has two views for the hunter: the shot may be left out, or is required", () => {
@@ -79,7 +80,7 @@ describe("describeRoleStep", () => {
     });
     expect(describeRoleStep(at({ night: 2, status: "wolves" })).pick).toMatchObject({
       event: "attack",
-      nobody: true,
+      nobody: false,
     });
     expect(describeRoleStep(at({ status: "wolves" })).pick).toBeUndefined();
     expect(describeRoleStep(at({ status: "investigator", victim: null })).pick).toMatchObject({

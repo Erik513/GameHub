@@ -195,6 +195,8 @@ it("lets the list of people cover the whole lower box: no script and no hint whi
   expect(document.querySelectorAll(".ww-person").length).toBeGreaterThan(5);
   expect(document.querySelector(".ww-script")).toBeNull();
   expect(document.querySelector(".ww-guide__victim")).toBeNull();
+  // The blue summary does not stand there either while people are chosen.
+  expect(document.querySelector(".ww-guide__chosen")).toBeNull();
   // Only the buttons on top (undo, close) and the check mark below remain.
   expect(screen.getByRole("button", { name: "Close the selection" })).toBeEnabled();
   expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeInTheDocument();
@@ -202,4 +204,17 @@ it("lets the list of people cover the whole lower box: no script and no hint whi
   fireEvent.click(screen.getByRole("button", { name: "Close the selection" }));
   expect(document.querySelector(".ww-script")).not.toBeNull();
   expect(document.querySelector(".ww-guide__victim")).not.toBeNull();
+});
+
+it("never confirms a list of people without a choice, and the list holds only the players", async () => {
+  await open(true);
+  showVictim();
+  fireEvent.click(abilityButtons()[2]!);
+  fireEvent.click(abilityButtons()[1]!);
+  // The list is open: every player is there, nothing else ("nobody" is no entry), and nobody is chosen.
+  expect(document.querySelector(".ww-person--nobody")).toBeNull();
+  expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeDisabled();
+  // Whoever wants nobody leaves the list and skips the ability.
+  fireEvent.click(screen.getByRole("button", { name: "Close the selection" }));
+  expect(abilityButtons()[2]).toBeEnabled();
 });

@@ -22,7 +22,6 @@ interface GuideBoxProps {
   readonly onCloseAbility: () => void;
   readonly onContinue: () => void;
   readonly onBallot: (voter: string, candidate: string) => void;
-  readonly onNobody: () => void;
   readonly onReopen: () => void;
   readonly onUndoQuestion: (question: "heal" | "poison") => void;
   readonly onUndo: () => void;
@@ -40,7 +39,6 @@ export function GuideBox({
   onCloseAbility,
   onContinue,
   onBallot,
-  onNobody,
   onReopen,
   onUndo,
   onUndoQuestion,
@@ -218,16 +216,6 @@ export function GuideBox({
                   </button>
                 );
               })}
-            {view.canChooseNobody && (
-              <button
-                aria-pressed={selection.none}
-                className="ww-person ww-person--nobody"
-                onClick={onNobody}
-                type="button"
-              >
-                <span className="ww-person__name">{t("werewolfNarrator.guide.nobody")}</span>
-              </button>
-            )}
           </div>
         )}
       </div>
@@ -235,7 +223,7 @@ export function GuideBox({
         <footer className="ww-guide__extra">
           {!showPeople && extras}
           {/* Cupid: once the choice is confirmed in the first box, the summary stands here. */}
-          {(view.progress >= 1 || showFact) && <Summary view={view} />}
+          {!showPeople && (view.progress >= 1 || showFact) && <Summary view={view} />}
           {/* The choice of people (also at the day) is confirmed with the check below the list. */}
           {selection.ability !== null && (
             <button

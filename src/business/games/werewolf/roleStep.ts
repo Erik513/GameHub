@@ -163,9 +163,7 @@ function pickOf(state: WerewolfState, skippable: boolean): PickSpec | undefined 
   switch (state.status) {
     case "wolves":
       // Only an attack names a person; the first night without attack is a step of its own.
-      return state.night === 1 && !state.settings.attackOnFirstNight
-        ? undefined
-        : one("attack", { nobody: true });
+      return state.night === 1 && !state.settings.attackOnFirstNight ? undefined : one("attack");
     case "seer":
       return one("inspect");
     case "investigator":
@@ -250,7 +248,8 @@ function baseStep(state: WerewolfState): RoleStepSpec {
     case "wolves":
       return state.night === 1 && !state.settings.attackOnFirstNight
         ? spec("wolvesNoAttack", "info", { statement: "noAttack" })
-        : spec("wolvesAttack", "choose");
+        : // Nobody is not a choice in the list: the wolves who do not attack skip the step.
+          spec("wolvesAttack", "choose", { skippable: true });
     case "seer":
       return spec("seerChoose", "choose");
     case "vision":
@@ -264,11 +263,12 @@ function baseStep(state: WerewolfState): RoleStepSpec {
     case "witch":
       return usable
         ? spec("witchPotions", "choose", { showsVictim: true, skippable: true })
-        : spec("witchEmpty", "info", { showsVictim: true });
+        : // Nothing to use, but both questions are asked all the same: "skip" answers them.
+          spec("witchEmpty", "info", { showsVictim: true, skippable: true });
     case "magician":
       return usable
         ? spec("magicianSpells", "choose", { showsVictim: true, skippable: true })
-        : spec("magicianEmpty", "info", { showsVictim: true });
+        : spec("magicianEmpty", "info", { showsVictim: true, skippable: true });
     case "bodyguard":
       return spec("bodyguardProtect", "choose");
     case "nightGuest":

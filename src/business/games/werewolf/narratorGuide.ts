@@ -319,13 +319,21 @@ export function describeGuide(guide: Guide): GuideView {
   // Whoever cannot be named (the holder who keeps the amulet with the button "keep") is not in the list.
   const excluded = describeRoleStep(state).pick?.excludes;
   if (excluded !== undefined) targets = targets.filter((name) => name !== excluded);
+  // A list of people is open and nobody is chosen: it cannot be confirmed (whoever wants nobody skips the ability).
+  const choosingNobody =
+    frame.phase === "act" &&
+    selection.ability !== null &&
+    state.status !== "vote" &&
+    selection.picks.length === 0 &&
+    !selection.none;
   const canContinue =
-    frame.phase === "ready" ||
-    state.status === "finished" ||
-    frame.phase === "intro" ||
-    frame.phase === "outro" ||
-    ((frame.phase === "act" || frame.phase === "plain") &&
-      acceptedEvent(state, selection) !== null);
+    !choosingNobody &&
+    (frame.phase === "ready" ||
+      state.status === "finished" ||
+      frame.phase === "intro" ||
+      frame.phase === "outro" ||
+      ((frame.phase === "act" || frame.phase === "plain") &&
+        acceptedEvent(state, selection) !== null));
   const dayCard = frame.phase === "act" && describeNarratorCard(state)?.role === "day";
   const canNext =
     frame.phase === "ready" ||
@@ -707,6 +715,15 @@ export function continueGuide(guide: Guide): Guide {
       // The magician and Cupid choose in parts: the check mark of an open choice only closes it, the choice stays; the
       // step itself is confirmed later (the magician with "done", Cupid with the checks of the script).
       const compound = describeRoleStep(state).compound;
+      // An open list of people is not confirmed without a choice.
+      if (
+        frame.phase === "act" &&
+        frame.selection.ability !== null &&
+        state.status !== "vote" &&
+        frame.selection.picks.length === 0 &&
+        !frame.selection.none
+      )
+        return guide;
       // The list of the second round of the magician finishes the step instead.
       if (
         frame.phase === "act" &&

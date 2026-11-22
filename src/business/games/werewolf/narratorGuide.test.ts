@@ -50,7 +50,13 @@ function forward(guide: Guide): Guide | null {
   const view = describeGuide(guide);
   // The narrator begins the game on purpose after the role reveal.
   if (view.phase === "ready") return continueGuide(guide);
-  const prepared = view.phase === "act" && !view.canContinue ? decide(guide) : guide;
+  // The wolves attack somebody (they could skip, but the game goes on with a victim).
+  const wolvesToChoose =
+    view.state.status === "wolves" &&
+    view.selection.ability === null &&
+    view.selection.picks.length === 0;
+  const prepared =
+    view.phase === "act" && (!view.canContinue || wolvesToChoose) ? decide(guide) : guide;
   if (!describeGuide(prepared).canContinue) return null;
   const next = continueGuide(prepared);
   return next === prepared ? null : next;
@@ -112,8 +118,12 @@ describe("narrator guide", () => {
     expect(describeGuide(guide).phase).toBe("intro");
     guide = continueGuide(guide);
     expect(describeGuide(guide).phase).toBe("act");
-    expect(describeGuide(guide).canContinue).toBe(false);
+    // The wolves may skip (no attack): that is the only way to choose nobody.
+    expect(describeGuide(guide).canContinue).toBe(true);
     guide = chooseAbility(guide, "attack");
+    // An open list cannot be confirmed without a person.
+    expect(describeGuide(guide).canContinue).toBe(false);
+    expect(continueGuide(guide)).toBe(guide);
     const victim = describeGuide(guide).targets[0]!;
     expect(describeGuide(guide).targets).not.toContain("Max");
     guide = choosePlayer(guide, victim);
@@ -137,8 +147,8 @@ describe("narrator guide", () => {
     guide = undoSelection(guide);
     expect(describeGuide(guide).selection.picks).toEqual([]);
     expect(describeGuide(guide).canContinue).toBe(false);
-    guide = chooseNobody(guide);
-    expect(describeGuide(guide).canContinue).toBe(true);
+    // "Nobody" is no choice of its own in the list.
+    expect(describeGuide(guide).canChooseNobody).toBe(false);
     guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
     expect(describeGuide(guide).selection.none).toBe(false);
     const person = describeGuide(guide).selection.picks[0]!;
