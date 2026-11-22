@@ -408,17 +408,13 @@ function Summary({ view }: { readonly view: GuideView }) {
   const { card, selection } = view;
   if (!card || card.cover || card.abilities.length === 0) return null;
   const parts: string[] = [];
-  if (selection.heal) parts.push(t("werewolfNarrator.ability.heal"));
+  if (selection.heal) parts.push(t("werewolfNarrator.guide.abilityDone.heal"));
   if (selection.ability && selection.ability !== "heal") {
     const people =
       selection.none || selection.picks.length === 0
         ? t("werewolfNarrator.guide.nobody")
         : selection.picks.join(", ");
-    const label =
-      selection.ability === "bond"
-        ? t("werewolfNarrator.guide.bondDone")
-        : t(`werewolfNarrator.ability.${selection.ability}`);
-    parts.push(`${label}: ${people}`);
+    parts.push(`${t(`werewolfNarrator.guide.abilityDone.${selection.ability}`)}: ${people}`);
   }
   return (
     <span className="ww-guide__chosen">

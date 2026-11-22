@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-93: Zusammenfassung mit Ergebnisform
+
+- „Gewählt: Geschützt: Louis“ statt „Schützen: Louis“; für alle Fähigkeiten eine passende Form, deutsch und englisch.
+
 ### We-01-92: Amor verliebt
 
 - Statt „Verbinden“ heißt die Fähigkeit von Amor „Verlieben“ (Knopf, Frage, Symbolbedeutung; englisch „Make lovers“).
