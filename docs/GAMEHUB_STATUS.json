@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 295,
-      "totalTasks": 349,
-      "percent": 84.5
+      "completedTasks": 296,
+      "totalTasks": 350,
+      "percent": 84.6
     }
   },
   "environment": {
@@ -1648,6 +1648,12 @@
           "title": "Verzichten bleibt stehen und wird deaktiviert statt zu verschwinden",
           "status": "done",
           "validation": "Der Knopf „Verzichten“ bleibt in der Rollenkarte an seinem Platz und wird nur deaktiviert (grau), nachdem er gedrückt wurde (Rolle schläft ein) und solange eine Fähigkeit geöffnet oder die Heilung gewählt ist; die Bedienelemente springen nicht mehr; die Restzahl der Zauber steht als kleine Zahl hinter dem Namen statt über dem Symbol; Test; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-111",
+          "title": "Nach der Entscheidung sind alle Fähigkeiten gesperrt, Zurück macht sie wieder frei",
+          "status": "done",
+          "validation": "Hat sich der Erzähler entschieden (Fähigkeit bestätigt oder „Verzichten“), sind alle Fähigkeitsknöpfe der Karte gesperrt; die Entscheidung ändert nur „Zurück“, dann sind die Optionen wieder frei (das erneute Antippen nach dem Bestätigen aus We-01-96 entfällt damit in der Oberfläche, die Logik kann es weiter); Test; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

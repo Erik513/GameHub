@@ -12,6 +12,8 @@ interface NarratorCardProps {
   readonly pressed?: readonly CardAbilityId[];
   /** The step is done: the buttons no longer invite a tap and only show what was chosen. */
   readonly settled?: boolean;
+  /** The narrator has decided: no ability can be tapped any more (the way back opens the decision again). */
+  readonly locked?: boolean;
   /** The abilities are the next thing to tap: the ones that can be used get a blue frame. */
   readonly next?: boolean;
   /** The role may do nothing: a button "skip" stands next to the abilities (the narrator decides in this box). */
@@ -33,6 +35,7 @@ export function NarratorCard({
   card,
   pressed = [],
   settled = false,
+  locked = false,
   next = false,
   onAbility,
   skip,
@@ -81,7 +84,7 @@ export function NarratorCard({
                 data-state={ability.available ? "ready" : (ability.unavailable ?? "blocked")}
                 data-next={(next && ability.available && !settled) || undefined}
                 data-settled={settled || undefined}
-                disabled={!ability.available}
+                disabled={!ability.available || locked}
                 key={ability.id}
                 onClick={() => onAbility?.(ability.id)}
                 type="button"

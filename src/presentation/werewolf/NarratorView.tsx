@@ -68,6 +68,8 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                 !view.selection.heal
               }
               settled={view.phase === "outro"}
+              // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
+              locked={view.phase === "outro"}
               skip={
                 (view.phase === "act" || view.phase === "outro") &&
                 describeRoleStep(view.state).skippable

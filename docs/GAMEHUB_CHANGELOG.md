@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-111: Nach der Entscheidung gesperrt
+
+- Nach einer Entscheidung (Fähigkeit oder Verzichten) sind alle Fähigkeiten gesperrt; „Zurück“ macht sie wieder frei.
+
 ### We-01-110: Verzichten deaktivieren statt ausblenden
 
 - Der Knopf bleibt stehen und wird nur grau, damit die Oberfläche stabil bleibt.

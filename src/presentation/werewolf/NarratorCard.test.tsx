@@ -106,4 +106,13 @@ describe("NarratorCard", () => {
     fireEvent.click(skip);
     expect(onSkip).not.toHaveBeenCalled();
   });
+
+  it("switches off every ability once the narrator has decided", async () => {
+    const onAbility = vi.fn();
+    await inLanguage("en", <NarratorCard card={witch} locked onAbility={onAbility} />);
+    const heal = screen.getByRole("button", { name: /^Heal/ });
+    expect(heal).toBeDisabled();
+    fireEvent.click(heal);
+    expect(onAbility).not.toHaveBeenCalled();
+  });
 });
