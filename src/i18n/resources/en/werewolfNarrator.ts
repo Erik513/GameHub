@@ -106,7 +106,7 @@ export const werewolfNarratorTexts = {
         hammer: "Choose a person (point)",
         silence: "Silence a person (point)",
         shot: "Shoot a person (point)",
-        passAmulet: "Pass on the amulet (point)",
+        passAmulet: "Pass on the amulet (point)?",
       },
       magician: {
         firstAsk: "Save the victim ([thumb]) or[br]kill somebody (point)?",
