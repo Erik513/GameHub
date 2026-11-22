@@ -2137,3 +2137,10 @@
   grid-template-rows: minmax(0, 1fr);
   grid-auto-rows: auto;
 }
+
+/* The symbol of the role stands in front of the announcement. */
+.ww-guide--tap .ww-guide__text {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}

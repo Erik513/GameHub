@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T17:30:00.000Z",
+    "updatedAt": "2026-11-22T18:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 272,
-      "totalTasks": 326,
-      "percent": 83.4
+      "completedTasks": 273,
+      "totalTasks": 327,
+      "percent": 83.5
     }
   },
   "environment": {
@@ -1516,6 +1516,12 @@
           "title": "Ankündigung harmonischer: gleiche Boxen, Symbol statt Fragezeichen, kleinere Überschrift mit Unterzeile, Zeile unten als Knopf",
           "status": "done",
           "validation": "Beide Boxen der Ankündigung haben denselben dünnen durchgezogenen Rahmen und dieselbe Fläche, die untere trägt einen dezenten Akzentrand; die verdeckte Karte zeigt ein gedämpftes geschlossenes Auge statt des Fragezeichens; Überschrift kleiner (etwa 1,25 bis 1,6 Rem) mit gedämpfter Unterzeile („Tippe, um die Rolle zu zeigen“); unten eine volle Zeile mit Pfeil („Rolle zeigen“, beim Einschlafen „Weiter“) statt Kleinschrift; der X-Knopf bleibt rot (Auftraggeber); Deutsch und Englisch; Tests, tsc -b, eslint sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
+        },
+        {
+          "id": "We-01-89",
+          "title": "Rollensymbol vor der Ansage jeder erwachenden Rolle",
+          "status": "done",
+          "validation": "Vor „… erwacht“ und „… schläft wieder ein“ steht das Symbol der Rolle (Wolfskopf, Auge, Flasche, Zauberstab, Schild, Bett, Herz und so weiter, auch Verliebte, Trunkenbold und Amulettweitergabe); Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
         }
       ]
     },

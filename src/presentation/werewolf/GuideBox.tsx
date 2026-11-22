@@ -47,7 +47,10 @@ export function GuideBox({
     return (
       <button className="ww-guide ww-guide--tap" onClick={onContinue} type="button">
         <span className="ww-guide__heading">
-          <strong className="ww-guide__text">{text}</strong>
+          <strong className="ww-guide__text">
+            <WerewolfSymbol id={card.role} size={32} />
+            {text}
+          </strong>
           <span className="ww-guide__sub">{t(`werewolfNarrator.guide.tap.${phase}Sub`)}</span>
         </span>
         {(phase === "outro" || view.deaths.length > 0) && (

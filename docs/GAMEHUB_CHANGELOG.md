@@ -2,6 +2,10 @@
 
 ## 2026-11-21
 
+### We-01-89: Rollensymbol vor der Ansage
+
+- Vor der Ansage jeder erwachenden Rolle steht ihr Symbol.
+
 ### We-01-88: Ankündigung harmonischer
 
 - Beide Boxen haben denselben Rahmen und dieselbe Fläche; die verdeckte Karte zeigt ein gedämpftes geschlossenes Auge; Überschrift kleiner mit Unterzeile; unten eine Zeile mit Pfeil als Hinweis zum Tippen.
