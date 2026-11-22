@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 280,
-      "totalTasks": 334,
-      "percent": 83.8
+      "completedTasks": 282,
+      "totalTasks": 336,
+      "percent": 83.9
     }
   },
   "environment": {
@@ -1564,6 +1564,18 @@
           "title": "Fähigkeit nach dem Bestätigen erneut antippbar, um die Auswahl zu ändern",
           "status": "done",
           "validation": "Solange die Rolle nicht mit „Weiter“ verlassen wurde (auch im Schritt „schläft wieder ein“), sind die Fähigkeitsknöpfe der Karte antippbar: ein Tipp öffnet die Auswahl erneut (Schritt wieder offen, Spielstand unverändert) und die neue Auswahl ersetzt die alte; das Abdunkeln der nicht gewählten Fähigkeiten im Schritt entfällt; Test; 1575 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-97",
+          "title": "Rollensymbol steht in der Ankündigung auf gleicher Höhe wie der Text",
+          "status": "done",
+          "validation": "Die Überschrift der Ankündigung (erwacht / schläft wieder ein) setzt Symbol und Text in eine Zeile mit mittiger Ausrichtung statt auf die Grundlinie, für alle Rollen; reine Stilkorrektur; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-98",
+          "title": "Hinweis für den Erzähler: Werwölfe greifen erst ab Nacht 2 an",
+          "status": "done",
+          "validation": "Ist eingestellt, dass die Werwölfe in der ersten Nacht nicht angreifen, steht im Schritt der Werwölfe der Hinweis „Die Werwölfe greifen erst ab Nacht 2 an“ (englisch gleichwertig) statt „Tippe auf eine Fähigkeit“, und unten steht „Kein Angriff in dieser Nacht“ statt „Nichts gewählt – die Rolle verzichtet“; Test der Oberfläche; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

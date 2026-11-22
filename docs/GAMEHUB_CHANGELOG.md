@@ -2,6 +2,14 @@
 
 ## 2026-11-21
 
+### We-01-98: Werwolf-Hinweis Nacht 1
+
+- Im Schritt der Werwölfe steht in der ersten Nacht, dass sie erst ab Nacht 2 angreifen, wenn das so eingestellt ist.
+
+### We-01-97: Symbol auf Textebene
+
+- Das Rollensymbol vor „… schläft wieder ein“ / „… erwacht“ ist mittig zur Zeile ausgerichtet.
+
 ### We-01-96: Fähigkeit erneut antippen
 
 - Nach dem Bestätigen kann die Fähigkeit erneut angetippt werden, um die Auswahl zu ändern, ohne zurückzugehen.

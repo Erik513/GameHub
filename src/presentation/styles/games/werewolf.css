@@ -2224,3 +2224,10 @@ button.ww-guide__strip[data-next] {
   align-content: start;
   gap: var(--space-1);
 }
+
+/* The role symbol stands level with the text of the announcement, not on its baseline. */
+.ww-guide__heading .ww-guide__text {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}

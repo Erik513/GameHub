@@ -268,6 +268,11 @@ function actInfo(view: GuideView, t: TFunction): string | null {
           })
         : null;
     }
+    case "wolves":
+      // The setting "attack from night 2": in the first night the wolves only get to know each other.
+      return state.night === 1 && !state.settings.attackOnFirstNight
+        ? t("werewolfNarrator.guide.wolvesNoAttack")
+        : null;
     case "amuletPass":
       return t("werewolfNarrator.guide.amuletHolder", { name: state.amulet.holder });
     default:
@@ -407,6 +412,15 @@ function Summary({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { card, selection } = view;
   if (!card || card.cover || card.abilities.length === 0) return null;
+  // The werewolves do not attack in the first night (setting): the role does not "pass", there is simply no attack.
+  if (
+    view.state.status === "wolves" &&
+    view.state.night === 1 &&
+    !view.state.settings.attackOnFirstNight
+  )
+    return (
+      <span className="ww-guide__chosen">{t("werewolfNarrator.guide.wolvesNoAttackDone")}</span>
+    );
   const parts: string[] = [];
   if (selection.heal) parts.push(t("werewolfNarrator.guide.abilityDone.heal"));
   if (selection.ability && selection.ability !== "heal") {

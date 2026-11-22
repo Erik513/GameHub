@@ -107,6 +107,8 @@ export const werewolfNarratorTexts = {
         shot: "Der Jäger schießt auf eine Person",
         passAmulet: "Der Träger gibt das Amulett weiter",
       },
+      wolvesNoAttackDone: "Kein Angriff in dieser Nacht",
+      wolvesNoAttack: "Die Werwölfe greifen erst ab Nacht 2 an",
       pickAbility: "Tippe auf eine Fähigkeit",
       confirmDone: "Weiter, wenn erledigt",
       coverTitle: "Trotzdem fragen",

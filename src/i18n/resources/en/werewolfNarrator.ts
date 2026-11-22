@@ -107,6 +107,8 @@ export const werewolfNarratorTexts = {
         shot: "The hunter shoots a person",
         passAmulet: "The holder passes on the amulet",
       },
+      wolvesNoAttackDone: "No attack in this night",
+      wolvesNoAttack: "The werewolves attack only from night 2",
       pickAbility: "Tap an ability",
       confirmDone: "Continue when done",
       coverTitle: "Ask anyway",

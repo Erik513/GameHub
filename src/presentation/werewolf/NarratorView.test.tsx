@@ -210,4 +210,18 @@ describe("NarratorView choices", () => {
     await user.click(next);
     expect(screen.queryByText(/seer goes back to sleep/)).toBeNull();
   });
+
+  it("tells the narrator that the werewolves attack only from night 2 when the setting says so", async () => {
+    const user = await renderView("en");
+    for (let guard = 0; guard < 30 && !screen.queryByText(/werewolves wake up/); guard += 1) {
+      if (screen.queryByText("All roles are dealt")) await beginGame(user);
+      else await user.click(screen.getByRole("button", { name: "Next" }));
+    }
+    await user.click(screen.getByText(/werewolves wake up/));
+    expect(screen.getByText("The werewolves attack only from night 2")).toBeInTheDocument();
+    expect(screen.queryByText("Tap an ability")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Done" }));
+    expect(screen.getByText("No attack in this night")).toBeInTheDocument();
+    expect(screen.queryByText(/the role passes/)).toBeNull();
+  });
 });
