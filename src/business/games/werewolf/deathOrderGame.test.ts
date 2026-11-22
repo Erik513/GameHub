@@ -1,5 +1,7 @@
 import { expect, it } from "vitest";
 import { eventChoices } from "./eventChoices";
+import { createGuide, describeGuide } from "./narratorGuide";
+import { createWerewolfSession } from "./session";
 import {
   createWerewolf,
   transitionWerewolf,
@@ -132,4 +134,20 @@ it("names the delayed death of the tough guy first, before the victim of the wol
     toughGuy,
     victim,
   ]);
+});
+
+it("lists every reason when a person is attacked more than once, in the order of the night, and names the person once", () => {
+  const dealt = deal(["witch"]);
+  const { other } = lovers(dealt, ["witch"]);
+  // The wolves attack him and the witch poisons him as well (she does not save him): one death with two reasons.
+  const state = nightToMorning(dealt, (current) => {
+    const night = current.night;
+    if (current.status === "wolves") return { night, target: other, type: "attack" };
+    if (current.status === "witch") return { heal: false, night, poison: other, type: "potions" };
+    return undefined;
+  });
+  expect(werewolfAnnouncement(state).map((entry) => entry.name)).toEqual([other]);
+  const view = describeGuide(createGuide(createWerewolfSession(state)));
+  expect(view.deaths).toHaveLength(1);
+  expect(view.deaths[0]).toMatchObject({ causes: ["wolves", "witchPoison"], name: other });
 });
