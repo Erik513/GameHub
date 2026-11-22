@@ -11,6 +11,18 @@
 
 ## 2026-11-21
 
+### We-01-135: Hexe mit zwei festen Fragen
+
+- Erst die Frage nach dem Retten, dann nach dem Vergiften, immer beide, mit Fragetext und Knöpfen im blauen Rahmen; nicht verfügbare Fähigkeiten mit dünnerem Rahmen.
+
+### We-01-134: Magier beide Zauber in einer Nacht
+
+- Haken schließt nur die Auswahl, „Erledigt“ bestätigt; beide Zauber in einer Nacht; die 2 verschwindet erst nach der Bestätigung der Auswahl; derselbe Zauber kann zweimal gewirkt werden.
+
+### We-01-133: Entschiedene Fähigkeiten sehen verbraucht aus
+
+- Nach der Entscheidung sind alle Fähigkeiten neutral grau; Rückgängig macht sie wieder grün mit blauem Rahmen. Beim Magier steht eine 2 auf beiden Zaubern, solange beide da sind; mit einem übrigen Zauber verschwindet sie bei beiden.
+
 ### We-01-132: Fragezeichen beim Trunkenbold
 
 - Die Karte des Trunkenbolds zeigt bei den Fähigkeiten ein Fragezeichen („Unbekannt“).

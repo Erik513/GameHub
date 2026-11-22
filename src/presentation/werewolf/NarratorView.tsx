@@ -55,18 +55,46 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
             </div>
           ) : (
             <NarratorCard
+              // The witch is asked one question at a time: only the ability of the question stands in the box.
+              card={
+                view.question && view.phase === "act" && !view.card.cover
+                  ? {
+                      ...view.card,
+                      abilities: view.card.abilities.filter(
+                        (ability) => ability.id === view.question,
+                      ),
+                    }
+                  : view.card
+              }
               pressed={[
                 ...(view.selection.ability ? [view.selection.ability] : []),
                 ...(view.selection.heal ? (["heal"] as const) : []),
+                // A potion or spell whose people were chosen stays marked after its list was closed.
+                ...(view.selection.ability === null && view.selection.picks.length > 0
+                  ? view.state.status === "magician"
+                    ? (["kill"] as const)
+                    : view.state.status === "witch"
+                      ? (["poison"] as const)
+                      : []
+                  : []),
               ]}
               next={
                 view.phase === "act" &&
                 !view.card.cover &&
                 view.state.status !== "vision" &&
                 view.selection.ability === null &&
-                !view.selection.heal
+                ((view.selection.picks.length === 0 && !view.selection.heal) ||
+                  view.question !== null)
               }
               settled={view.phase === "outro"}
+              // The spells of the magician chosen in this step (the healing spell and every person to kill).
+              spellsUsed={
+                view.state.status === "magician"
+                  ? // The healing spell counts when it is switched on; the death spells only when their list is closed (confirmed).
+                    Number(view.selection.heal) +
+                    (view.selection.ability === null ? view.selection.picks.length : 0)
+                  : 0
+              }
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               locked={view.phase === "outro"}
               skip={
@@ -78,8 +106,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                       disabled:
                         view.phase === "outro" ||
                         view.selection.ability !== null ||
-                        view.selection.heal,
-                      framed: view.phase === "act" && view.canContinue,
+                        (view.question === null &&
+                          (view.selection.picks.length > 0 || view.selection.heal)),
+                      framed: view.phase === "act" && (view.question !== null || view.canContinue),
                       ...(describeRoleStep(view.state).skip.label === "skip"
                         ? {}
                         : {
@@ -89,11 +118,11 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                                 : "werewolfNarrator.guide.noVote",
                             ),
                           }),
-                      onSkip: guide.continueGuide,
+                      onSkip:
+                        view.question !== null ? () => guide.answer("skip") : guide.continueGuide,
                     }
                   : undefined
               }
-              card={view.card}
               onAbility={guide.ability}
             />
           ))}

@@ -148,6 +148,11 @@ export const werewolfNarratorTexts = {
         votersAgain: "Gleichstand: neue Abstimmung unter den Gleichauf liegenden",
         idle: "Tippe auf „Abstimmung“, wenn jemand nominiert wird. Sonst: Tag beenden.",
       },
+      witch: {
+        healAsk: "Opfer der Wölfe: {{name}}. Will die Hexe die Person retten?",
+        healAskNone: "Kein Opfer in dieser Nacht. Frage die Hexe trotzdem, ob sie retten will.",
+        poisonAsk: "Will die Hexe jemanden vergiften? Dann zeigt sie auf eine Person.",
+      },
       ballots: "Stimmen",
       ballotFor: "{{name}} wählt {{candidate}}",
       nextKind: {

@@ -96,7 +96,12 @@ export function GuideBox({
   return (
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
-        <strong className="ww-guide__text">{stepTitle(view, step, t)}</strong>
+        <strong
+          className="ww-guide__text"
+          data-next={(view.question !== null && selection.ability === null) || undefined}
+        >
+          {stepTitle(view, step, t)}
+        </strong>
         <span className="ww-guide__tools">
           {(selection.ability !== null || view.canUndo) && (
             <button
@@ -178,7 +183,13 @@ export function GuideBox({
           {extras}
           {/* The day has no strip, but the choice of people (nomination, vote) is confirmed like every other choice. */}
           {(card.role !== "day" || selection.ability !== null) &&
-            !(selection.ability === null && step.skippable && !selection.heal) &&
+            !(selection.ability === null && view.question !== null) &&
+            !(
+              selection.ability === null &&
+              step.skippable &&
+              !selection.heal &&
+              selection.picks.length === 0
+            ) &&
             (selection.ability !== null ? (
               <button
                 aria-label={t("werewolfNarrator.guide.confirm")}
@@ -202,7 +213,7 @@ export function GuideBox({
               >
                 <span>
                   {t(
-                    step.skippable && !selection.heal
+                    step.skippable && !selection.heal && selection.picks.length === 0
                       ? "werewolfNarrator.guide.skip"
                       : "werewolfNarrator.guide.done",
                   )}
@@ -431,12 +442,23 @@ function Summary({ view, onReopen }: { readonly view: GuideView; readonly onReop
     );
   const parts: string[] = [];
   if (selection.heal) parts.push(t("werewolfNarrator.guide.abilityDone.heal"));
-  if (selection.ability && selection.ability !== "heal") {
+  // The witch and the magician close the list of people with the check mark: the people stay chosen for their spell.
+  const chosenAbility =
+    selection.ability !== null && selection.ability !== "heal"
+      ? selection.ability
+      : selection.ability === null && selection.picks.length > 0
+        ? step.compound === "castSpells"
+          ? "kill"
+          : step.compound === "potions"
+            ? "poison"
+            : null
+        : null;
+  if (chosenAbility) {
     const people =
       selection.none || selection.picks.length === 0
         ? t("werewolfNarrator.guide.nobody")
         : selection.picks.join(", ");
-    parts.push(`${t(`werewolfNarrator.guide.abilityDone.${selection.ability}`)}: ${people}`);
+    parts.push(`${t(`werewolfNarrator.guide.abilityDone.${chosenAbility}`)}: ${people}`);
   }
   return (
     <Chosen onReopen={onReopen}>

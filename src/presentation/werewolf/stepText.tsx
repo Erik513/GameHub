@@ -72,9 +72,16 @@ export function dayPrompt(view: GuideView, t: TFunction): string | null {
 
 /** The heading of the box: the ask of the step, what the narrator reads out, or what to do next. */
 export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
-  const { card, selection } = view;
+  const { card, selection, state } = view;
   if (!card) return null;
   if (card.cover) return t("werewolfNarrator.guide.coverTitle");
+  // The witch is asked two questions, always both: first the victim, then the poison.
+  if (view.question !== null && selection.ability === null)
+    return view.question === "heal"
+      ? state.wolfTarget
+        ? t("werewolfNarrator.guide.witch.healAsk", { name: state.wolfTarget.name })
+        : t("werewolfNarrator.guide.witch.healAskNone")
+      : t("werewolfNarrator.guide.witch.poisonAsk");
   const info = actInfo(view, t) ?? dayPrompt(view, t);
   if (info !== null) return <ResultText step={step} text={info} />;
   if (selection.ability)
@@ -91,7 +98,7 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
   const { card, selection, state } = view;
   if (!card) return [];
   return [
-    !card.cover && step.showsVictim && (
+    !card.cover && step.showsVictim && view.question === null && (
       <span className="ww-guide__victim" key="victim">
         {state.wolfTarget
           ? t("werewolfNarrator.guide.victim", { name: state.wolfTarget.name })

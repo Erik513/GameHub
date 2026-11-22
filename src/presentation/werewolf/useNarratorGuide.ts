@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import {
+  answerQuestion,
   backGuide,
   chooseAbility,
   closeAbility,
@@ -64,6 +65,7 @@ export function useNarratorGuide(
       update(continueGuide);
     },
     goBack,
+    answer: (answer: "skip" | "use") => update((g) => answerQuestion(g, answer)),
     ballot: (voter: string, candidate: string) => update((g) => setBallot(g, voter, candidate)),
     nobody: () => update(chooseNobody),
     reopen: () => update(reopenDecision),

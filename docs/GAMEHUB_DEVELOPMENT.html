@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 317,
-      "totalTasks": 371,
-      "percent": 85.4
+      "completedTasks": 320,
+      "totalTasks": 375,
+      "percent": 85.3
     }
   },
   "environment": {
@@ -2013,6 +2013,29 @@
           "title": "Rollenkarte des Trunkenbolds: Fragezeichen bei den Fähigkeiten",
           "status": "done",
           "validation": "Die Rollenkarte der Rollenverteilung zeigt beim Trunkenbold bei den Fähigkeiten ein Fragezeichen mit der Unterschrift „Unbekannt“ („Unknown“) statt „Keine besondere Fähigkeit“, weil er seine Fähigkeiten bis zur Enthüllung nicht kennt; nicht antippbar, gestrichelter Rahmen; Test; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-133",
+          "title": "Nach der Entscheidung sehen die Fähigkeiten verbraucht aus, nach Rückgängig wieder grün mit blauem Rahmen",
+          "status": "done",
+          "validation": "Hat der Erzähler seine Entscheidung getroffen (Schritt „schläft wieder ein“), zeigen alle Fähigkeiten der Karte den Zustand „verbraucht“ (neutral, grau, auch die gewählte, ohne Rahmen); der Rücknahme-Knopf macht sie wieder grün mit blauem Rahmen; beim Magier steht auf Heilen und Töten eine 2, solange beide Zauber noch da sind; ist nur noch einer übrig, verschwindet die 2 bei beiden; Tests; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-134",
+          "title": "Magier und Hexe: Wahl in Teilen, beide Zauber in einer Nacht, die 2 verschwindet nach dem ersten Zauber",
+          "status": "done",
+          "validation": "Der Haken einer geöffneten Auswahl bei Hexe und Magier schließt nur die Liste, die Wahl bleibt; der Schritt wird einmal mit „Erledigt“ bestätigt. So kann der Magier Heilzauber und einen Todeszauber (oder zwei Todeszauber) in derselben Nacht wirken; mit zwei Todeszaubern ist der Heilzauber nicht mehr wählbar und umgekehrt (nach Kosten); die 2 auf Heilen und Töten verschwindet bei beiden erst nach der Bestätigung der Auswahl mit dem Haken (der Heilzauber hat keine Liste und zählt beim Einschalten); derselbe Zauber kann ein zweites Mal gewirkt werden: die Personen des ersten Wirkens bleiben gewählt, wenn der Zauber wieder angetippt wird, die zweite wird dazugenommen; die Zusammenfassung nennt die Personen auch nach dem Schließen der Liste; ein nicht gewählter Zauber sieht verbraucht aus, wenn keiner mehr übrig ist; die gewählten Knöpfe bleiben markiert; Verzichten bleibt gesperrt, sobald etwas gewählt ist; Tests (Führung, Karte, Abdeckungsprüfung angepasst, Oberflächentest des Magiers: zweimal derselbe Zauber, Heilen und Töten zusammen, die 2 bleibt bis zur Bestätigung); Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-135",
+          "title": "Hexe: zwei feste Fragen (Retten, Vergiften), immer beide, mit Fragetext und Knöpfen im blauen Rahmen",
+          "status": "done",
+          "validation": "Der Ablauf der Hexe folgt der Praxis des Erzählers: erste Frage „Opfer der Wölfe: Name. Will die Hexe die Person retten?“ (ohne Opfer „Kein Opfer in dieser Nacht. Frage die Hexe trotzdem …“) mit den Knöpfen Heilen und Verzichten in der oberen Box; zweite Frage „Will die Hexe jemanden vergiften? …“ mit Gifttrank und Verzichten; es werden immer beide Fragen gestellt (also zwei Tipps pro Nacht), auch wenn ein Trank nicht verfügbar ist (dann ist die Fähigkeit gesperrt, trägt einen dünneren blauen Rahmen, und nur Verzichten beantwortet die Frage); der Fragetext in der unteren Box steht im blauen Rahmen, die Knöpfe der Frage ebenfalls; Gifttrank öffnet die Personenauswahl, Haken bestätigt und beendet den Schritt; Verzichten bei der zweiten Frage beendet ihn ohne Gift; der Streifen „Erledigt“ entfällt während der Fragen; Logik der Führung (answerQuestion, question, initiale Frage), Tests für Führung, Oberfläche (drei Fälle), Abdeckungsprüfungen angepasst; Tests, tsc, eslint; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-136",
+          "title": "Magier: gleiches Fragenskript wie die Hexe, damit niemand an der Abfolge erkennen kann, ob ein Zauber verbraucht ist; Verzichten nach einem Zauber klickbar",
+          "status": "planned"
         }
       ]
     },

@@ -34,6 +34,11 @@ export interface GuideSelection {
   readonly picks: readonly string[];
   /** The narrator chose "nobody" where that is allowed. */
   readonly none: boolean;
+  /**
+   * The witch is asked in two rounds, always both: first whether she saves the victim (heal), then whether she poisons
+   * somebody. This is the question that is open now.
+   */
+  readonly question?: "heal" | "poison";
   /** At the vote: what each voter chose (voter to candidate). */
   readonly ballots?: Readonly<Record<string, string>>;
 }
@@ -83,6 +88,7 @@ function phaseOf(state: WerewolfState): GuidePhase {
 
 /** The vote opens at once; nobody has chosen yet. */
 function initialSelection(state: WerewolfState): GuideSelection {
+  if (state.status === "witch") return { ...emptySelection, question: "heal" };
   return state.status === "vote" ? { ...emptySelection, ability: "vote" } : emptySelection;
 }
 
@@ -164,6 +170,8 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
   }
   switch (step.compound) {
     case "potions":
+      // The witch has to answer the first question (heal or not) before the step can be confirmed.
+      if (selection.question === "heal") return null;
       return { heal: selection.heal, night, poison: target, type: "potions" };
     case "castSpells":
       return { heal: selection.heal, kill: selection.picks, night, type: "castSpells" };
@@ -253,6 +261,8 @@ export interface GuideView {
   readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
   /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
   readonly ballotRows: readonly BallotRow[];
+  /** The question the witch is asked now (heal or poison), or null. */
+  readonly question: "heal" | "poison" | null;
   readonly phase: GuidePhase;
   readonly state: WerewolfState;
   /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */
@@ -346,6 +356,7 @@ export function describeGuide(guide: Guide): GuideView {
         .map((player) => player.name),
     },
     ballotRows: ballotRowsOf(state, selection),
+    question: state.status === "witch" ? (selection.question ?? null) : null,
     voterNotes: voterNotesOf(state),
     nextKind:
       frame.phase === "ready"
@@ -393,13 +404,35 @@ export function chooseAbility(original: Guide, id: CardAbilityId): Guide {
   const card = describeNarratorCard(state);
   if (!card?.abilities.some((ability) => ability.id === id && ability.available)) return guide;
   const { selection } = frame;
+  // The witch is asked in two rounds: the healing potion belongs to the first question, the poison to the second.
+  if (state.status === "witch" && selection.question !== undefined) {
+    if (id === "heal") {
+      if (selection.question !== "heal") return guide;
+      const next = { ...selection, heal: true, question: "poison" as const };
+      // The game decides whether there is somebody to heal; a choice it would refuse is not taken.
+      return acceptedEvent(state, next) ? withSelection(reopened, next) : guide;
+    }
+    if (selection.question !== "poison") return guide;
+  }
   if (id === "heal") {
     const next = { ...selection, heal: !selection.heal };
     // The game decides whether there is somebody to heal; a choice it would refuse is not taken.
     if (next.heal && eventOf(state, next) && !acceptedEvent(state, next)) return guide;
     return withSelection(reopened, next);
   }
-  return withSelection(reopened, { ...selection, ability: id, none: false, picks: [] });
+  // The magician casts a spell twice: the people of the first cast stay chosen when the spell is tapped again, and
+  // the second cast is added to them (the number of spells left limits the list).
+  const compound = describeRoleStep(state).compound;
+  const adds =
+    (compound === "castSpells" || compound === "potions") &&
+    selection.ability === null &&
+    selection.picks.length > 0;
+  return withSelection(reopened, {
+    ...selection,
+    ability: id,
+    none: false,
+    picks: adds ? selection.picks : [],
+  });
 }
 
 function takeBackVision(guide: Guide, id: CardAbilityId): Guide {
@@ -431,6 +464,24 @@ export function reopenDecision(guide: Guide): Guide {
       { ...frame, event: null, phase: "act", selection: initialSelection(guide.session.present) },
     ],
   };
+}
+
+/**
+ * The witch is always asked both questions: "save the victim?" and then "poison somebody?". "Use" saves the victim in the
+ * first round and opens the list of people in the second; "skip" says no in either round (after the second one the step is
+ * complete and goes to "asleep"). An ability that cannot be used (no victim, no potion left) is still asked: the narrator
+ * answers it with "skip".
+ */
+export function answerQuestion(guide: Guide, answer: "skip" | "use"): Guide {
+  const frame = current(guide);
+  const state = guide.session.present;
+  const question = frame.selection.question;
+  if (frame.phase !== "act" || state.status !== "witch" || question === undefined) return guide;
+  if (question === "heal") {
+    if (answer === "use") return chooseAbility(guide, "heal");
+    return withSelection(guide, { ...frame.selection, heal: false, question: "poison" });
+  }
+  return answer === "use" ? chooseAbility(guide, "poison") : continueGuide(guide);
 }
 
 /** The narrator closes the list of people again (an ability was tapped by mistake); the choices of it are dropped. */
@@ -517,12 +568,28 @@ export function continueGuide(guide: Guide): Guide {
     case "intro":
       return {
         ...guide,
-        trail: [...guide.trail, { ...frame, event: null, phase: "act", selection: emptySelection }],
+        trail: [
+          ...guide.trail,
+          { ...frame, event: null, phase: "act", selection: initialSelection(state) },
+        ],
       };
     case "outro":
       return frame.event ? commit(guide, frame.event) : guide;
     case "act":
     case "plain": {
+      // The magician chooses in parts (a spell with its people, the heal): the check mark of an open choice only closes
+      // it, the choice stays; the step itself is confirmed once, with "done".
+      const compound = describeRoleStep(state).compound;
+      if (
+        frame.phase === "act" &&
+        compound === "castSpells" &&
+        frame.selection.ability !== null &&
+        frame.selection.ability !== "heal"
+      )
+        return {
+          ...guide,
+          trail: [...guide.trail, { ...frame, selection: { ...frame.selection, ability: null } }],
+        };
       const event = acceptedEvent(state, frame.selection);
       if (!event) return guide;
       const next = transitionWerewolf(state, event);

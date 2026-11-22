@@ -49,7 +49,7 @@ describe("NarratorCard", () => {
     );
   });
 
-  it("shows both spells of the magician without a counter, and German texts", async () => {
+  it("shows a 2 on both spells while both are there, and German texts", async () => {
     const magician: Card = {
       abilities: [
         { available: true, count: 2, id: "heal", symbol: "heal" },
@@ -63,6 +63,23 @@ describe("NarratorCard", () => {
     const { container } = await inLanguage("de", <NarratorCard card={magician} />);
     expect(screen.getByText("Magier")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Heilen: bereit" })).toBeTruthy();
+    expect([...container.querySelectorAll(".ww-ability__count")].map((c) => c.textContent)).toEqual(
+      ["2", "2"],
+    );
+  });
+
+  it("shows no 2 when only one spell is left, on neither of the two buttons", async () => {
+    const one: Card = {
+      abilities: [
+        { available: true, count: 1, id: "heal", symbol: "heal" },
+        { available: true, count: 1, id: "kill", symbol: "kill" },
+      ],
+      actors: ["Ben"],
+      cover: false,
+      effects: [],
+      role: "magician",
+    };
+    const { container } = await inLanguage("en", <NarratorCard card={one} />);
     expect(container.querySelector(".ww-ability__count")).toBeNull();
   });
 
@@ -162,5 +179,37 @@ describe("NarratorCard", () => {
     expect(noVote).toHaveAttribute("data-next");
     fireEvent.click(noVote);
     expect(onSkip).toHaveBeenCalledOnce();
+  });
+
+  it("shows the abilities as used up once the narrator has decided, and as ready again afterwards", async () => {
+    const { container, rerender } = await inLanguage("en", <NarratorCard card={witch} locked />);
+    for (const button of container.querySelectorAll(".ww-ability"))
+      expect(button.getAttribute("data-state")).toBe("used");
+    rerender(<NarratorCard card={witch} />);
+    expect(container.querySelector(".ww-ability")?.getAttribute("data-state")).toBe("ready");
+  });
+
+  it("takes the 2 away from both spells once one of them is chosen, and shows the other still usable", async () => {
+    const two: Card = {
+      abilities: [
+        { available: true, count: 2, id: "heal", symbol: "heal" },
+        { available: true, count: 2, id: "kill", symbol: "kill" },
+      ],
+      actors: ["Ben"],
+      cover: false,
+      effects: [],
+      role: "magician",
+    };
+    const { container, rerender } = await inLanguage("en", <NarratorCard card={two} />);
+    expect(container.querySelectorAll(".ww-ability__count")).toHaveLength(2);
+    rerender(<NarratorCard card={two} pressed={["heal"]} spellsUsed={1} />);
+    expect(container.querySelector(".ww-ability__count")).toBeNull();
+    // The other spell can still be used; with both gone the unchosen one looks used up.
+    const kill = [...container.querySelectorAll(".ww-ability")][1]!;
+    expect(kill.getAttribute("data-state")).toBe("ready");
+    rerender(<NarratorCard card={two} pressed={["kill"]} spellsUsed={2} />);
+    const heal = [...container.querySelectorAll(".ww-ability")][0]!;
+    expect(heal.getAttribute("data-state")).toBe("used");
+    expect(heal).toBeDisabled();
   });
 });

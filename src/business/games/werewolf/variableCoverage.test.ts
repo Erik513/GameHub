@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import { emptyFixedDraft } from "./fixedConfiguration";
 import {
+  answerQuestion,
   chooseAbility,
   chooseNobody,
   choosePlayer,
@@ -245,6 +246,7 @@ it("plays games of the variable mode to the end with the guide alone, without a 
         add(next);
       }
       if (view.phase === "act") {
+        if (view.question !== null) add(answerQuestion(guide, "skip"));
         for (const ability of view.card?.abilities ?? [])
           if (ability.available) add(chooseAbility(guide, ability.id));
         for (const name of view.targets) add(choosePlayer(guide, name));

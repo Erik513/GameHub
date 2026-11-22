@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   backGuide,
+  answerQuestion,
   chooseAbility,
   closeAbility,
   chooseNobody,
@@ -201,20 +202,61 @@ describe("narrator guide", () => {
     expect(refused).toEqual({ ok: false, reason: "atStart" });
   });
 
-  it("keeps the healing potion as a switch of the witch", () => {
-    let guide = game(["witch"], { attackOnFirstNight: true });
+  it("asks the witch both questions, always: save the victim, then poison somebody", () => {
+    const toWitch = () => {
+      let guide = game(["witch"], { attackOnFirstNight: true });
+      for (let step = 0; step < 200 && guide.session.present.status !== "witch"; step += 1)
+        guide = forward(guide)!;
+      expect(guide.session.present.status).toBe("witch");
+      return continueGuide(guide);
+    };
+    const guide = toWitch();
+    expect(describeGuide(guide).phase).toBe("act");
+    // The first question is open: nothing can be confirmed before it is answered.
+    expect(describeGuide(guide).question).toBe("heal");
+    expect(describeGuide(guide).canContinue).toBe(false);
+    // The poison belongs to the second question.
+    expect(chooseAbility(guide, "poison")).toBe(guide);
+    // "Skip" answers the first question with no; the second one follows.
+    const skipped = answerQuestion(guide, "skip");
+    expect(describeGuide(skipped).question).toBe("poison");
+    expect(describeGuide(skipped).selection.heal).toBe(false);
+    expect(describeGuide(skipped).canContinue).toBe(true);
+    // The healing potion saves the victim, then the second question follows.
+    const healed = answerQuestion(guide, "use");
+    expect(describeGuide(healed).question).toBe("poison");
+    expect(describeGuide(healed).selection.heal).toBe(true);
+    // The second question: "use" opens the list of people; one person and the check mark finish the step.
+    let poison = answerQuestion(healed, "use");
+    expect(describeGuide(poison).selection.ability).toBe("poison");
+    const victim = describeGuide(poison).targets[0]!;
+    poison = choosePlayer(poison, victim);
+    expect(describeGuide(poison).selection.picks).toEqual([victim]);
+    poison = continueGuide(poison);
+    expect(describeGuide(poison).phase).toBe("outro");
+    expect(poison.trail.at(-1)?.event).toMatchObject({
+      heal: true,
+      poison: victim,
+      type: "potions",
+    });
+    // "Skip" at the second question finishes the step without poison.
+    const done = answerQuestion(skipped, "skip");
+    expect(describeGuide(done).phase).toBe("outro");
+    expect(done.trail.at(-1)?.event).toMatchObject({ heal: false, poison: null, type: "potions" });
+  });
+
+  it('asks the witch about the healing potion even when nobody was attacked, and only "skip" answers it', () => {
+    let guide = game(["witch"], { attackOnFirstNight: false });
     for (let step = 0; step < 200 && guide.session.present.status !== "witch"; step += 1)
       guide = forward(guide)!;
-    expect(guide.session.present.status).toBe("witch");
     guide = continueGuide(guide);
-    expect(describeGuide(guide).phase).toBe("act");
-    expect(describeGuide(guide).canContinue).toBe(true);
-    const healed = chooseAbility(guide, "heal");
-    expect(describeGuide(healed).selection.heal).toBe(true);
-    expect(describeGuide(chooseAbility(healed, "heal")).selection.heal).toBe(false);
-    const poison = chooseAbility(guide, "poison");
-    const victim = describeGuide(poison).targets[0]!;
-    expect(describeGuide(choosePlayer(poison, victim)).selection.picks).toEqual([victim]);
+    expect(describeGuide(guide).question).toBe("heal");
+    // There is no victim: the potion cannot be used, the question is asked anyway.
+    expect(describeGuide(guide).card?.abilities.find((a) => a.id === "heal")?.available).toBe(
+      false,
+    );
+    expect(answerQuestion(guide, "use")).toBe(guide);
+    expect(describeGuide(answerQuestion(guide, "skip")).question).toBe("poison");
   });
 
   describe("the day", () => {
@@ -611,6 +653,10 @@ describe("narrator guide", () => {
     guide = continueGuide(guide);
     guide = chooseAbility(guide, "kill");
     guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    // The check mark closes the list of people (the choice stays); "done" confirms the step.
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).phase).toBe("act");
+    expect(describeGuide(guide).selection.picks).toHaveLength(1);
     guide = continueGuide(guide);
     expect(describeGuide(guide).phase).toBe("outro");
     guide = reopenDecision(guide);
@@ -642,5 +688,48 @@ describe("narrator guide", () => {
     // When the game has moved on again, one role back is possible again.
     const ahead = forward(forward(first.guide)!)!;
     expect(describeGuide(ahead).canGoBack).toBe(true);
+  });
+
+  it("lets the magician use both spells in one night: the healing spell and one death spell, or two death spells", () => {
+    const toMagician = () => {
+      let guide = game(["magician"], { attackOnFirstNight: true });
+      for (let step = 0; step < 200 && describeGuide(guide).card?.role !== "magician"; step += 1)
+        guide = forward(guide)!;
+      return continueGuide(guide);
+    };
+    // Heal and kill together.
+    let guide = toMagician();
+    guide = chooseAbility(guide, "heal");
+    guide = chooseAbility(guide, "kill");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    // With the healing spell only one more spell is left: no second person.
+    expect(describeGuide(guide).targets).toEqual([]);
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).phase).toBe("act");
+    expect(describeGuide(guide).selection).toMatchObject({ ability: null, heal: true });
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).phase).toBe("outro");
+    expect(guide.trail.at(-1)?.event).toMatchObject({ heal: true, type: "castSpells" });
+    expect((guide.trail.at(-1)?.event as unknown as { kill: string[] }).kill).toHaveLength(1);
+    // One spell twice: the first cast is confirmed with the check mark, the second is added to it.
+    guide = toMagician();
+    guide = chooseAbility(guide, "kill");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    const first = describeGuide(guide).selection.picks[0]!;
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).selection).toMatchObject({ ability: null, picks: [first] });
+    guide = chooseAbility(guide, "kill");
+    expect(describeGuide(guide).selection.picks).toEqual([first]);
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    expect(describeGuide(guide).selection.picks).toHaveLength(2);
+    expect(describeGuide(guide).selection.picks[0]).toBe(first);
+    // Two death spells: then the healing spell cannot be added any more.
+    guide = toMagician();
+    guide = chooseAbility(guide, "kill");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    expect(describeGuide(guide).selection.picks).toHaveLength(2);
+    guide = continueGuide(guide);
+    expect(chooseAbility(guide, "heal")).toBe(guide);
   });
 });

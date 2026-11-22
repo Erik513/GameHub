@@ -148,6 +148,11 @@ export const werewolfNarratorTexts = {
         votersAgain: "Tie: a new vote among the tied people",
         idle: "Tap “Vote” when somebody is nominated. Otherwise: end the day.",
       },
+      witch: {
+        healAsk: "Victim of the wolves: {{name}}. Does the witch want to save them?",
+        healAskNone: "No victim tonight. Ask the witch anyway whether she wants to save.",
+        poisonAsk: "Does the witch want to poison somebody? Then she points at a person.",
+      },
       ballots: "Votes",
       ballotFor: "{{name}} votes for {{candidate}}",
       nextKind: {

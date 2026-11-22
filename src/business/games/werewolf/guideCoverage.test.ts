@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import { eventChoices } from "./eventChoices";
 import {
+  answerQuestion,
   chooseAbility,
   chooseNobody,
   choosePlayer,
@@ -61,7 +62,10 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
   let failure: string | null = null;
   switch (event.type) {
     case "potions":
-      if (event.heal && !open("heal")) failure = "heal not available";
+      // The witch is asked two questions: the healing potion first (answered with "use" or "skip"), then the poison.
+      if (event.heal) {
+        if (!open("heal")) failure = "heal not available";
+      } else guide = answerQuestion(guide, "skip");
       if (!failure && event.poison) {
         if (!open("poison")) failure = "poison not available";
         else failure = pick(event.poison);
@@ -117,12 +121,15 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
   if (failure) return failure;
   if (!describeGuide(guide).canContinue) return "cannot confirm";
   let next = continueGuide(guide);
-  const frame = next.trail[next.trail.length - 1]!;
-  // The role falls asleep first: the event waits in the frame and is handed to the game with the next "continue".
-  if (frame.phase === "outro" && frame.event) return transitionWerewolf(state, frame.event);
-  // A cover call or a step of its own: one more "continue".
-  if (frame.phase === "act" && next.session.present === state && describeGuide(next).canContinue)
-    next = continueGuide(next);
+  // The role falls asleep first: the event waits in the frame and is handed to the game with the next "continue". A
+  // choice in parts (witch, magician) first closes the list of people; a cover call or a step of its own needs one more.
+  for (let round = 0; round < 3; round++) {
+    const frame = next.trail[next.trail.length - 1]!;
+    if (frame.phase === "outro" && frame.event) return transitionWerewolf(state, frame.event);
+    if (frame.phase === "act" && next.session.present === state && describeGuide(next).canContinue)
+      next = continueGuide(next);
+    else break;
+  }
   return next.session.present;
 }
 
@@ -222,6 +229,7 @@ it("reaches every event of the game through the operations of the guide, in rand
       state = transitionWerewolf(state, events[Math.floor(random() * events.length)]!);
     }
   }
+  expect([...checked].filter((key) => key.startsWith("witch:"))).toEqual(["witch:potions"]);
   expect(checked.size).toBeGreaterThan(20);
   expect([...problems.entries()]).toEqual([]);
 }, 120000);
@@ -354,6 +362,7 @@ it("lets a narrator play whole games with the guide alone: never stuck, who wake
         add(next);
       }
       if (view.phase === "act") {
+        if (view.question !== null) add(answerQuestion(guide, "skip"));
         for (const ability of view.card?.abilities ?? [])
           if (ability.available) add(chooseAbility(guide, ability.id));
         for (const name of view.targets) add(choosePlayer(guide, name));

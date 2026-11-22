@@ -11,6 +11,8 @@ interface NarratorCardProps {
   /** The ability the narrator has opened (its content is in the lower box). */
   /** The abilities the narrator has chosen (the open one, the healing switch). */
   readonly pressed?: readonly CardAbilityId[];
+  /** How many of the spells of the magician are chosen in this step: with one gone, the 2 goes on both buttons. */
+  readonly spellsUsed?: number;
   /** The step is done: the buttons no longer invite a tap and only show what was chosen. */
   readonly settled?: boolean;
   /** The narrator has decided: no ability can be tapped any more (the way back opens the decision again). */
@@ -43,6 +45,7 @@ export function NarratorCard({
   pressed = [],
   settled = false,
   locked = false,
+  spellsUsed = 0,
   next = false,
   onAbility,
   skip,
@@ -96,10 +99,27 @@ export function NarratorCard({
                 aria-pressed={pressed.includes(ability.id)}
                 className="ww-ability"
                 data-available={ability.available}
-                data-state={ability.available ? "ready" : (ability.unavailable ?? "blocked")}
-                data-next={(next && ability.available && !settled) || undefined}
+                // Once the narrator has decided the abilities look used up (neutral); "reset" makes them green again.
+                data-state={
+                  locked ||
+                  (ability.count !== undefined &&
+                    ability.count - spellsUsed <= 0 &&
+                    !pressed.includes(ability.id))
+                    ? "used"
+                    : ability.available
+                      ? "ready"
+                      : (ability.unavailable ?? "blocked")
+                }
+                // An ability that cannot be used is asked as well: it gets a thinner frame.
+                data-next={next && !settled ? (ability.available ? "full" : "thin") : undefined}
                 data-settled={settled || undefined}
-                disabled={!ability.available || locked}
+                disabled={
+                  !ability.available ||
+                  locked ||
+                  (ability.count !== undefined &&
+                    ability.count - spellsUsed <= 0 &&
+                    !pressed.includes(ability.id))
+                }
                 key={ability.id}
                 onClick={() => onAbility?.(ability.id)}
                 type="button"
@@ -108,6 +128,10 @@ export function NarratorCard({
                   <WerewolfSymbol id={ability.symbol} size={24} />
                 </span>
                 <span>{name}</span>
+                {/* Both spells are still there: a 2 on both buttons. With one left the 2 is gone on both. */}
+                {ability.count === 2 && spellsUsed === 0 && (
+                  <span className="ww-ability__count">2</span>
+                )}
               </button>
             );
           })}
