@@ -2502,3 +2502,11 @@ button.ww-guide__strip[data-next] {
   justify-content: flex-end;
   width: 100%;
 }
+
+/* The script always takes the whole width of the box, whatever the text says: nothing shrinks or leaves a gap. */
+.ww-guide__head > .ww-script,
+.ww-guide__head > .ww-script__row {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
