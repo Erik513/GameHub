@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-122: Fragen ohne „oder verzichtet“
+
+- Ermittler und Bürgermeister: nur noch der Knopf verzichtet.
+
 ### We-01-121: Regelprüfung der Erzähleransicht
 
 - Liste je Rolle in docs/GAMEHUB_WERWOLF_REGELPRUEFUNG.md; fünf offene Punkte.
