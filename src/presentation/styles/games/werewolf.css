@@ -2374,3 +2374,16 @@ button.ww-guide__strip[data-next] {
   color: var(--color-accent-contrast);
   font-weight: 600;
 }
+
+/* The drunk does not know his abilities yet: a question mark where the symbols of the abilities stand. */
+.ww-deal__unknown {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px dashed currentColor;
+  border-radius: var(--radius-md);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+}

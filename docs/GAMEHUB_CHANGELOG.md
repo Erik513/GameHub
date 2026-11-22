@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-132: Fragezeichen beim Trunkenbold
+
+- Die Karte des Trunkenbolds zeigt bei den Fähigkeiten ein Fragezeichen („Unbekannt“).
+
 ### We-01-131: Angriff statt Opfer
 
 - Fähigkeit der Werwölfe heißt „Angriff“, die Zusammenfassung „Angegriffen“.

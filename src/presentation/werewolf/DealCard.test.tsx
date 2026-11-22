@@ -120,4 +120,26 @@ describe("DealCard", () => {
       }
     },
   );
+
+  it("shows a question mark for the abilities of the drunk, who does not know them yet", async () => {
+    const i18n = await createGameHubI18n("en");
+    const user = userEvent.setup();
+    render(
+      <I18nextProvider i18n={i18n}>
+        <DealCard
+          amulet={false}
+          mayor="doubleVote"
+          name="Anna"
+          position={1}
+          role="drunk"
+          total={9}
+          variant={null}
+        />
+      </I18nextProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: /Tap/ }));
+    expect(screen.getByText("?")).toBeInTheDocument();
+    expect(screen.getByText("Unknown")).toBeInTheDocument();
+    expect(screen.queryByText("No special ability")).toBeNull();
+  });
 });

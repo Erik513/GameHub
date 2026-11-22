@@ -5,6 +5,7 @@ export const werewolfNarratorTexts = {
     deal: {
       count: "Player: {{current}}/{{total}}",
       noAbility: "No special ability",
+      unknownAbility: "Unknown",
       amulet: "You hold the protective amulet",
       hide: "Tap: cover the role",
       hint: "Hand the device to this person.",

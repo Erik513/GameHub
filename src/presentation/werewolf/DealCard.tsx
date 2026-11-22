@@ -63,7 +63,15 @@ export function DealCard({ name, role, amulet, mayor, position, total, variant }
               </span>
               <span className="ww-deal__zone">
                 <span className="ww-deal__abilities">
-                  {abilities.length === 0 ? (
+                  {role === "drunk" ? (
+                    // The drunk does not know his abilities yet: they rest until the narrator shows his real role.
+                    <span className="ww-deal__ability" data-unknown>
+                      <span aria-hidden="true" className="ww-deal__unknown">
+                        ?
+                      </span>
+                      <small>{t("werewolfNarrator.deal.unknownAbility")}</small>
+                    </span>
+                  ) : abilities.length === 0 ? (
                     <small>{t("werewolfNarrator.deal.noAbility")}</small>
                   ) : (
                     abilities.map((entry) => (
