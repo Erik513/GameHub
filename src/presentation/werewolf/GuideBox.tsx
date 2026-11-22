@@ -44,18 +44,21 @@ export function GuideBox({
 
   if (phase === "intro" || phase === "outro") {
     const text = t(`werewolfNarrator.guide.${phase === "intro" ? "wake" : "sleep"}.${card.role}`);
-    const hint = t(
-      phase === "intro"
-        ? "werewolfNarrator.guide.tapToShow"
-        : "werewolfNarrator.guide.tapToContinue",
-    );
     return (
       <button className="ww-guide ww-guide--tap" onClick={onContinue} type="button">
-        <strong className="ww-guide__text">{text}</strong>
-        <span className="ww-guide__extra">
-          {phase === "outro" && <Summary view={view} />}
-          {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
-          <small>{hint}</small>
+        <span className="ww-guide__heading">
+          <strong className="ww-guide__text">{text}</strong>
+          <span className="ww-guide__sub">{t(`werewolfNarrator.guide.tap.${phase}Sub`)}</span>
+        </span>
+        {(phase === "outro" || view.deaths.length > 0) && (
+          <span className="ww-guide__extra">
+            {phase === "outro" && <Summary view={view} />}
+            {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
+          </span>
+        )}
+        <span className="ww-guide__strip">
+          <span>{t(`werewolfNarrator.guide.tap.${phase}Action`)}</span>
+          <Icon name="chevronRight" />
         </span>
       </button>
     );

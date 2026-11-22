@@ -107,8 +107,6 @@ export const werewolfNarratorTexts = {
         shot: "Der Jäger schießt auf eine Person",
         passAmulet: "Der Träger gibt das Amulett weiter",
       },
-      tapToShow: "Tippen: Rolle zeigen",
-      tapToContinue: "Tippen: weiter",
       pickAbility: "Tippe auf eine Fähigkeit",
       confirmDone: "Weiter, wenn erledigt",
       coverTitle: "Trotzdem fragen",
@@ -166,6 +164,12 @@ export const werewolfNarratorTexts = {
       ready: {
         title: "Alle Rollen sind verteilt",
         hint: "Gib das Gerät jetzt an den Erzähler zurück. Nur der Erzähler beginnt das Spiel.",
+      },
+      tap: {
+        introSub: "Tippe, um die Rolle zu zeigen",
+        outroSub: "Tippe, um weiterzumachen",
+        introAction: "Rolle zeigen",
+        outroAction: "Weiter",
       },
       left: "Ausgeschieden: {{names}}",
       exile: "{{name}} scheidet aus",

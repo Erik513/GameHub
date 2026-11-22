@@ -107,8 +107,6 @@ export const werewolfNarratorTexts = {
         shot: "The hunter shoots a person",
         passAmulet: "The holder passes on the amulet",
       },
-      tapToShow: "Tap: show the role",
-      tapToContinue: "Tap: continue",
       pickAbility: "Tap an ability",
       confirmDone: "Continue when done",
       coverTitle: "Ask anyway",
@@ -166,6 +164,12 @@ export const werewolfNarratorTexts = {
       ready: {
         title: "All roles are dealt",
         hint: "Hand the device back to the narrator now. Only the narrator begins the game.",
+      },
+      tap: {
+        introSub: "Tap to show the role",
+        outroSub: "Tap to go on",
+        introAction: "Show the role",
+        outroAction: "Next",
       },
       left: "Left the game: {{names}}",
       exile: "{{name}} leaves the game",

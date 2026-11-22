@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import type { WerewolfSession } from "../../business/games/werewolf/session";
 import { Button } from "../components";
 import { ActionRow, StartBar } from "../game-kit";
@@ -46,7 +47,7 @@ export function NarratorView({ session, onSession, onEnd, onRules }: NarratorVie
         {view.card &&
           (view.phase === "intro" ? (
             <div aria-hidden="true" className="ww-role-card ww-role-card--hidden">
-              ?
+              <WerewolfSymbol id="apprenticeSeer" size={56} />
             </div>
           ) : (
             <NarratorCard

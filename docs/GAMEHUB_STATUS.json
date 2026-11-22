@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T17:00:00.000Z",
+    "updatedAt": "2026-11-22T17:30:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 271,
-      "totalTasks": 325,
+      "completedTasks": 272,
+      "totalTasks": 326,
       "percent": 83.4
     }
   },
@@ -1510,6 +1510,12 @@
           "title": "Leere Seite nach „Beginnen“ bei einem Spielstand aus dem entfernten Amulett-Schritt beheben",
           "status": "done",
           "validation": "Ursache: Ein vor dem Entfernen des Amulett-Schritts gespeichertes Spiel stand im Zustand amuletIntro, den es nicht mehr gibt; nach Beginnen blieb die Ansicht leer. Beim Laden eines gespeicherten Spiels geht ein solcher Stand jetzt mit der ersten Nacht weiter und der alte Schritt fällt aus dem Weg zurück (leaveRemovedAmuletIntro); Test; 1568 Tests, tsc -b, eslint, Schichtprüfung sauber; Spielstand und Versionsnummer unverändert, damit das offene Spiel des Auftraggebers erhalten bleibt."
+        },
+        {
+          "id": "We-01-88",
+          "title": "Ankündigung harmonischer: gleiche Boxen, Symbol statt Fragezeichen, kleinere Überschrift mit Unterzeile, Zeile unten als Knopf",
+          "status": "done",
+          "validation": "Beide Boxen der Ankündigung haben denselben dünnen durchgezogenen Rahmen und dieselbe Fläche, die untere trägt einen dezenten Akzentrand; die verdeckte Karte zeigt ein gedämpftes geschlossenes Auge statt des Fragezeichens; Überschrift kleiner (etwa 1,25 bis 1,6 Rem) mit gedämpfter Unterzeile („Tippe, um die Rolle zu zeigen“); unten eine volle Zeile mit Pfeil („Rolle zeigen“, beim Einschlafen „Weiter“) statt Kleinschrift; der X-Knopf bleibt rot (Auftraggeber); Deutsch und Englisch; Tests, tsc -b, eslint sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
         }
       ]
     },
