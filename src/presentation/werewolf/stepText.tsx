@@ -100,9 +100,6 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
         {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}
       </span>
     ),
-    !card.cover && step.showsVictim && !selection.heal && selection.picks.length === 0 && (
-      <small key="skip">{t("werewolfNarrator.guide.skipHint")}</small>
-    ),
     view.notes.restricted && (
       <small key="restricted">
         {t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}

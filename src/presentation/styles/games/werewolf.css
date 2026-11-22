@@ -2292,3 +2292,18 @@ button.ww-guide__strip[data-next] {
   cursor: default;
   opacity: 0.7;
 }
+
+/* Three states of an ability: green (can be used), neutral (used up) and dashed amber (not possible now). */
+.ww-ability[data-state="used"] {
+  border: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-ink-muted);
+  opacity: 0.6;
+}
+
+.ww-ability[data-state="blocked"] {
+  border: 2px dashed var(--color-warning);
+  background: transparent;
+  color: var(--color-warning);
+  opacity: 1;
+}

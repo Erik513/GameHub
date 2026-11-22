@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 293,
-      "totalTasks": 347,
-      "percent": 84.4
+      "completedTasks": 294,
+      "totalTasks": 348,
+      "percent": 84.5
     }
   },
   "environment": {
@@ -1869,6 +1869,12 @@
           "title": "Verzichten in der oberen Box, kleinere Fähigkeitsknöpfe",
           "status": "done",
           "validation": "Der Knopf „Verzichten“ steht für Rollen, die auch nichts tun dürfen, in der oberen Box neben den Fähigkeiten (mit blauem Rahmen, solange der Schritt verlassen werden kann); der Streifen unten entfällt dort, solange nichts gewählt ist (er bleibt für „Erledigt“ bei Pflichtrollen, Ergebnissen und gewählter Heilung); „Verzichten“ ist rot; benutzte oder nicht mögliche Fähigkeiten sind neutral (grau umrandet) und gesperrt; die Knöpfe teilen die Breite gleichmäßig; sie sind kompakt (Symbol und Name in einer Zeile, 40 statt 72 Pixel hoch, am unteren Rand der Karte und nicht mehr in die Höhe gezogen); zwei Tests des Knopfes; 1594 Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-109",
+          "title": "Hexe: nur ein Weg zu verzichten, drei Zustände der Fähigkeitsknöpfe",
+          "status": "done",
+          "validation": "Der Hinweis „Ohne Auswahl wird nichts eingesetzt.“ entfällt; „Niemand“ in der Auswahl entfällt bei Rollen mit „Verzichten“, damit der Knopf der einzige Weg ist; jede Fähigkeit hat drei Zustände: grün (nutzbar), neutral grau und gesperrt (schon benutzt: Gift oder Heiltrank verbraucht, Zauber aufgebraucht, Ermittler benutzt, Hammer benutzt) und gestrichelt gelb (gerade nicht möglich: Heilen ohne Opfer der Wölfe, Opfer in Nacht 1, Hammer vor Nacht 2); neues Feld unavailable der Rollenkarte; Tests der drei Zustände; Tests, tsc, eslint; nicht im Browser angesehen."
         }
       ]
     },

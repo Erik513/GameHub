@@ -56,6 +56,11 @@ export interface CardAbility {
   readonly symbol: CardAbilitySymbol;
   /** Green when true (the narrator can use it now), red when false (used up or not possible). */
   readonly available: boolean;
+  /**
+   * Why it cannot be used: "used" (used up for good, neutral) or "blocked" (possible in principle, but not now, for
+   * example the healing potion when the wolves did not attack). Absent while it can be used.
+   */
+  readonly unavailable?: "blocked" | "used";
   /** What is left of a limited ability, like the spells of the magician. */
   readonly count?: number;
 }
@@ -150,71 +155,94 @@ function cardRole(state: WerewolfState): CardRoleSymbol | null {
   }
 }
 
+/** One ability; `why` says why it cannot be used (undefined: it can). */
+function ability(
+  id: CardAbilityId,
+  symbol: CardAbilitySymbol,
+  why?: "blocked" | "used",
+  count?: number,
+): CardAbility {
+  return {
+    available: why === undefined,
+    id,
+    symbol,
+    ...(why === undefined ? {} : { unavailable: why }),
+    ...(count === undefined ? {} : { count }),
+  };
+}
+
 function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardAbility[] {
   switch (role) {
     case "wolf":
       return [
-        {
-          available: state.night > 1 || state.settings.attackOnFirstNight,
-          id: "attack",
-          symbol: "attacked",
-        },
+        ability(
+          "attack",
+          "attacked",
+          state.night > 1 || state.settings.attackOnFirstNight ? undefined : "blocked",
+        ),
       ];
     case "seer":
     case "apprenticeSeer":
+      // After the result was shown the narrator can still look at another person (a wrong person was chosen).
       return [
-        {
-          // After the result was shown the narrator can still look at another person (a wrong person was chosen).
-          available: state.status === "seer" || state.status === "vision",
-          id: "inspect",
-          symbol: "seer",
-        },
+        ability(
+          "inspect",
+          "seer",
+          state.status === "seer" || state.status === "vision" ? undefined : "blocked",
+        ),
       ];
     case "paranormalInvestigator":
-      return [{ available: !state.investigationUsed, id: "investigate", symbol: "investigation" }];
+      return [
+        ability("investigate", "investigation", state.investigationUsed ? "used" : undefined),
+      ];
     case "witch":
       return [
-        { available: state.potions.heal, id: "heal", symbol: "heal" },
-        { available: state.potions.poison, id: "poison", symbol: "kill" },
+        ability(
+          "heal",
+          "heal",
+          !state.potions.heal ? "used" : state.wolfTarget ? undefined : "blocked",
+        ),
+        ability("poison", "kill", state.potions.poison ? undefined : "used"),
       ];
-    case "magician":
+    case "magician": {
+      const left = state.spellsRemaining;
       return [
-        {
-          available: state.spellsRemaining > 0,
-          count: state.spellsRemaining,
-          id: "heal",
-          symbol: "heal",
-        },
-        {
-          available: state.spellsRemaining > 0,
-          count: state.spellsRemaining,
-          id: "kill",
-          symbol: "kill",
-        },
+        ability(
+          "heal",
+          "heal",
+          left <= 0 ? "used" : state.wolfTarget ? undefined : "blocked",
+          left,
+        ),
+        ability("kill", "kill", left <= 0 ? "used" : undefined, left),
       ];
+    }
     case "bodyguard":
-      return [{ available: true, id: "protect", symbol: "protected" }];
+      return [ability("protect", "protected")];
     case "nightGuest":
-      return [{ available: true, id: "stayWith", symbol: "guest" }];
+      return [ability("stayWith", "guest")];
     case "cupid":
-      return [{ available: true, id: "bond", symbol: "lovers" }];
+      return [ability("bond", "lovers")];
     case "mayor":
       return [
-        {
-          available: state.settings.mayor === "hammer" && !state.hammerUsed && state.night >= 2,
-          id: "hammer",
-          symbol: "hammer",
-        },
+        ability(
+          "hammer",
+          "hammer",
+          state.hammerUsed
+            ? "used"
+            : state.settings.mayor === "hammer" && state.night >= 2
+              ? undefined
+              : "blocked",
+        ),
       ];
     case "spellcaster":
-      return [{ available: true, id: "silence", symbol: "silenced" }];
+      return [ability("silence", "silenced")];
     case "hunter":
-      return [{ available: true, id: "shot", symbol: "shotDuty" }];
+      return [ability("shot", "shotDuty")];
     case "amuletPass":
-      return [{ available: true, id: "passAmulet", symbol: "amuletPass" }];
+      return [ability("passAmulet", "amuletPass")];
     case "day":
       // The vote itself needs no button: the narrator only names who votes yes.
-      return state.status === "day" ? [{ available: true, id: "vote", symbol: "vote" }] : [];
+      return state.status === "day" ? [ability("vote", "vote")] : [];
     default:
       return [];
   }
@@ -257,7 +285,9 @@ export function describeNarratorCard(state: WerewolfState): NarratorCard | null 
   const actors = cover ? [] : state.status === "vote" ? [state.target] : wakingPlayers(state);
   return {
     abilities: abilitiesOf(state, role).map((ability) =>
-      cover ? { ...ability, available: false } : ability,
+      cover
+        ? { ...ability, available: false, unavailable: ability.unavailable ?? "blocked" }
+        : ability,
     ),
     actors,
     cover,

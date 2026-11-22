@@ -11,6 +11,10 @@
 
 ## 2026-11-21
 
+### We-01-109: Hexe, drei Zustände
+
+- Nur ein Weg zu verzichten; Fähigkeiten grün, neutral (benutzt) oder gestrichelt gelb (nicht möglich).
+
 ### We-01-108: Verzichten in der oberen Box
 
 - „Verzichten“ neben den Fähigkeiten in der Rollenkarte; Fähigkeitsknöpfe kleiner.

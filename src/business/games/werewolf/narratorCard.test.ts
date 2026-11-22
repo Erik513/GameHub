@@ -38,7 +38,9 @@ describe("describeNarratorCard", () => {
     const quiet = describeNarratorCard(at(start([]), { status: "wolves" }))!;
     expect(quiet.role).toBe("wolf");
     expect(quiet.actors.length).toBeGreaterThan(0);
-    expect(quiet.abilities).toEqual([{ available: false, id: "attack", symbol: "attacked" }]);
+    expect(quiet.abilities).toEqual([
+      { available: false, id: "attack", symbol: "attacked", unavailable: "blocked" },
+    ]);
     const attacking = describeNarratorCard(
       at(start([], { attackOnFirstNight: true }), { status: "wolves" }),
     )!;
@@ -49,11 +51,24 @@ describe("describeNarratorCard", () => {
 
   it("gives the witch two potion buttons and marks a used potion", () => {
     const state = at(start(["witch"]), { status: "witch", victim: null });
-    const witch = describeNarratorCard(state)!;
+    const victim = state.players[0]!;
+    const attacked = { ...state, wolfTarget: victim } as WerewolfState;
+    const witch = describeNarratorCard(attacked)!;
     expect(witch.abilities.map((a) => a.id)).toEqual(["heal", "poison"]);
     expect(witch.abilities.every((a) => a.available)).toBe(true);
-    const spent = describeNarratorCard({ ...state, potions: { heal: false, poison: true } })!;
-    expect(spent.abilities.map((a) => a.available)).toEqual([false, true]);
+    // Used up for good: neutral.
+    const spent = describeNarratorCard({ ...attacked, potions: { heal: false, poison: true } })!;
+    expect(spent.abilities.map((a) => [a.available, a.unavailable])).toEqual([
+      [false, "used"],
+      [true, undefined],
+    ]);
+  });
+
+  it("marks the healing potion as not possible (not used) when the wolves did not attack", () => {
+    const state = at(start(["witch"]), { status: "witch", victim: null, wolfTarget: null });
+    const [heal, poison] = describeNarratorCard(state)!.abilities;
+    expect(heal).toMatchObject({ available: false, id: "heal", unavailable: "blocked" });
+    expect(poison).toMatchObject({ available: true, id: "poison" });
   });
 
   it("shows both spells of the magician with the same counter", () => {

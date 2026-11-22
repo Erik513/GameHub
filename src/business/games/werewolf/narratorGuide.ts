@@ -359,7 +359,9 @@ export function describeGuide(guide: Guide): GuideView {
       frame.phase === "act" &&
       selection.ability !== null &&
       mayChooseNobody.includes(selection.ability) &&
-      !(selection.ability === "shot" && !describeRoleStep(state).skippable),
+      // A role that may skip has the button "skip" for that; "nobody" would be a second way.
+      !describeRoleStep(state).skippable &&
+      selection.ability !== "shot",
     canCloseAbility: frame.phase === "act" && state.status !== "vote" && selection.ability !== null,
     canContinue,
     canNext,

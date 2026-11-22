@@ -173,7 +173,6 @@ export const werewolfNarratorTexts = {
       },
       chosen: "Chosen: {{items}}",
       noChoice: "Nothing chosen – the role passes",
-      skipHint: "Without a choice nothing is used.",
       silenced: "Silenced today: {{name}} (no speech, nomination or vote)",
       wounded: "Wounded, dies in the next night: {{names}}",
       restricted: "Not allowed: {{name}} (chosen last night already)",

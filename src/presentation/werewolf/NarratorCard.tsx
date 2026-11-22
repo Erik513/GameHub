@@ -76,6 +76,7 @@ export function NarratorCard({
                 aria-pressed={pressed.includes(ability.id)}
                 className="ww-ability"
                 data-available={ability.available}
+                data-state={ability.available ? "ready" : (ability.unavailable ?? "blocked")}
                 data-next={(next && ability.available && !settled) || undefined}
                 data-settled={settled || undefined}
                 disabled={!ability.available}
