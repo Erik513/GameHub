@@ -2040,3 +2040,58 @@
   justify-self: stretch;
   width: 100%;
 }
+
+/* The waiting step after the role reveal: the symbol in a flat box like the symbol of the role card, the title, and the
+   hint to hand the device back at the bottom, in the style of the other notes of the boxes. */
+.ww-night__stage[data-layout="plain"] .ww-guide.ww-ready {
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-content: stretch;
+  justify-items: stretch;
+  text-align: center;
+}
+
+.ww-ready__stage {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-4);
+  min-height: 0;
+}
+
+.ww-ready__symbol {
+  display: grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.ww-ready__symbol .icon {
+  width: 64px;
+  height: 64px;
+}
+
+.ww-ready__title {
+  font-size: clamp(1.75rem, 8vw, 2.25rem);
+  line-height: 1.15;
+}
+
+.ww-ready__hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-2);
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink-muted);
+  text-align: left;
+}
+
+.ww-ready__hint .icon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+}

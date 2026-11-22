@@ -416,13 +416,17 @@ function DayNotes({ view }: { readonly view: GuideView }) {
 function ReadyBox() {
   const { t } = useTranslation();
   return (
-    <section className="ww-guide ww-guide--sheet">
-      <header className="ww-guide__head">
-        <strong className="ww-guide__text">{t("werewolfNarrator.guide.ready.title")}</strong>
-      </header>
-      <div className="ww-guide__body">
-        <span className="ww-guide__lead">{t("werewolfNarrator.guide.ready.hint")}</span>
+    <section className="ww-guide ww-ready">
+      <div className="ww-ready__stage">
+        <span aria-hidden="true" className="ww-ready__symbol">
+          <Icon name="cards" />
+        </span>
+        <strong className="ww-ready__title">{t("werewolfNarrator.guide.ready.title")}</strong>
       </div>
+      <p className="ww-ready__hint">
+        <Icon name="hand" />
+        <span>{t("werewolfNarrator.guide.ready.hint")}</span>
+      </p>
     </section>
   );
 }

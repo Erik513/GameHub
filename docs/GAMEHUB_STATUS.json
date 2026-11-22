@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-22T14:30:00.000Z",
+    "updatedAt": "2026-11-22T16:00:00.000Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 268,
-      "totalTasks": 322,
-      "percent": 83.2
+      "completedTasks": 269,
+      "totalTasks": 323,
+      "percent": 83.3
     }
   },
   "environment": {
@@ -1492,6 +1492,12 @@
           "title": "Wartebild zwischen Rollenverteilung und Spielbeginn: der Erzähler beginnt das Spiel bewusst",
           "status": "done",
           "validation": "Nach dem letzten Spieler zeigt die Ansicht „Alle Rollen sind verteilt – Gib das Gerät jetzt an den Erzähler zurück“ ohne Spielinformationen (keine Rollenkarte, Leiste weiter nur „Rollenverteilung“ ohne Übersicht und Regeln, der untere Knopf heißt dort „Beginnen“ und startet das Spiel (Auftraggeber: kein eigener Knopf in der Box), danach wieder „Weiter“; Zurück führt von der ersten Ansage in das Wartebild und von dort zum letzten Spieler; wird das Spiel direkt nach der Rollenverteilung geladen, erscheint wieder das Wartebild; Tests für Logik und Oberfläche in beiden Sprachen; 1567 Tests, tsc -b, eslint sauber; nicht im Browser angesehen, um das offene Spiel nicht zu stören."
+        },
+        {
+          "id": "We-01-85",
+          "title": "Wartebild: Symbol, Überschrift und Hinweis mit Handsymbol, ohne Effekte im Stil der übrigen Oberfläche",
+          "status": "done",
+          "validation": "Grundaufbau nach Vorschlag 1, 2 und 5: Kartensymbol in einer flachen Fläche wie das Symbol der Rollenkarte, Überschrift, unten der Hinweis mit Handsymbol in einer gestrichelten Zeile wie die anderen Hinweise; Schein, Verlauf, Schatten und Haken verworfen (passten nicht zur übrigen Oberfläche); Handsymbol neu in der Symbolsammlung; Tests, tsc -b, eslint sauber; nicht im Browser angesehen."
         }
       ]
     },
