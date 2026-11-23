@@ -1,5 +1,10 @@
 # Aufgabe für Codex: Nachtskript und Dokumentation des variablen Modus
 
+## Nachprüfung des roten Rollentests (We-03-70, 23.11.2026)
+
+advancedRoles.test.ts enthielt noch die alte Erwartung, dass die Alte Vettel mit silence:null freiwillig verzichten darf. Der gezielte ursprüngliche Prüflauf hatte diese Datei nicht erfasst. Die Erwartung wurde korrigiert: null wird bei vorhandenem Ziel abgewiesen, anschließend wird eine andere erlaubte Person stummgeschaltet. Alle 14 Tests dieser Datei bestehen wieder; Format und ESLint ebenfalls. Keine Produktionslogik geändert. Ergänzend zu den zuvor geprüften 104 Tests sind damit 14 weitere Tests nachgeprüft; die frühere Fehlermeldung ist behoben.
+
+
 ## Umgesetzte Ergänzungen für Codex und Claude (We-03-70, 23.11.2026)
 
 We-03-70 abgeschlossen: Alte Vettel muss bei vorhandenem Ziel stummschalten; null nur noch als Notausgang ohne gültiges Ziel. Forschungsmodell auf 1–3 Nominierte, einzelne gewichtete Stimmzettel und Stichwahlen angepasst; Heilungsmodelle verwenden wolfTarget. 104 gezielte Tests und 24 kurze Modellpartien erfolgreich. Keine langen Balance-Läufe, keine UI- oder Kalibrierungsänderungen.
@@ -222,3 +227,7 @@ Die Führung des Erzählers (`narratorGuide.ts`) fragt den Magier wie die Hexe i
 ## Hinweis für Codex (23.11.2026): Reihenfolge der Toten
 
 `werewolfAnnouncement` und die Todeseinträge im Ereignisprotokoll nennen mehrere Tote in der Reihenfolge ihres Todes (neue Datei `deathOrder.ts`, genutzt von `stateMachine.ts` und `eventLog.ts`): erst der verzögerte Tod des nicht gerettete Harten Burschen (er stirbt zu Beginn der Nacht, vor jedem möglichen Angriff), dann das Werwolfopfer, das Gift der Hexe, die Zauber des Magiers, der Hammer des Bürgermeisters. Bei zwei Verliebten steht immer die zuerst gestorbene Person vorn und direkt danach die Person, die aus Liebeskummer stirbt. Das erste Todesurteil zählt: Wird der Partner später noch einmal angegriffen (Hexe, Magier), ändert das seine Todeszeit nicht. Gleiche Zeiten behalten die Sitzreihenfolge. Die Spielregeln sind unverändert, nur die Reihenfolge der Ausgabe; fünf bestehende Tests und fünf neue Tests (`deathOrder.test.ts`) sichern es ab.
+
+## Hinweis für Codex (23.11.2026): Jäger mit letztem Schuss (`lastShot`)
+
+Regel (vom Auftraggeber): Der Jäger, der gestorben ist, aber noch über seinen Schuss entscheiden muss, darf in der Oberfläche nicht als tot gelten. Die Spiellogik bleibt unverändert: Der Jäger ist beim Ansagen des Todes schon aus `state.alive` entfernt, der Schuss folgt danach (`status: "hunter"` oder `"drunkHunter"`). Neu in `selectors.ts`: `describePlayers(state)` liefert pro Person das zusätzliche Feld `lastShot` (true nur für den Jäger im Schritt des Schusses, auch beim betrunkenen Jäger); `alive` bleibt false. Die Übersicht „Alle Spieler und Rollen“ zeigt ihn mit dem Schuss-Symbol statt als tot, die Morgen-Ansicht hat die Kategorie „Letzter Schuss“. Wer später eine Anzeige mit Lebenden und Toten baut (zum Beispiel einen Kreis oder ein Protokoll), muss `lastShot` beachten. Test: `lastShot.test.ts`. Falls die Siegprüfung oder die Simulation den Jäger vor seiner Entscheidung als tot zählt, ist das so gewollt und unverändert.
