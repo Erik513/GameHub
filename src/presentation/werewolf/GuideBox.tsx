@@ -103,7 +103,6 @@ export function GuideBox({
         <footer className="ww-guide__extra">
           {/* The hints stay (yellow border); the summary of the decision (blue border) stands at the very bottom. */}
           {stepExtras(view, outroStep, t)}
-          {view.deaths.length > 0 && <DeathDetails deaths={view.deaths} />}
           <Summary view={view} />
         </footer>
       </section>
@@ -196,7 +195,12 @@ export function GuideBox({
               .sort((one, other) => one.localeCompare(other, undefined, { sensitivity: "base" }))
               .map((name) => {
                 const chosen = selection.picks.includes(name);
-                const dead = !state.alive.some((player) => player.name === name);
+                // The hunter who shoots is out of the game already, but he has not finished: he is not shown as dead (he
+                // cannot be chosen, so he stands there as "not possible").
+                const shooter =
+                  (state.status === "hunter" || state.status === "drunkHunter") &&
+                  state.hunter.name === name;
+                const dead = !state.alive.some((player) => player.name === name) && !shooter;
                 const blocked = !dead && !chosen && !view.targets.includes(name);
                 return (
                   <button
