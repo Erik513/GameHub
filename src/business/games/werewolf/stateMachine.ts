@@ -894,6 +894,8 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
     case "investigator": {
       if (event.type !== "investigate") return state;
       if (event.target === null) return afterInvestigation(state, state.victim);
+      // The ability can be used once: afterwards the investigator is still called, but he can only skip.
+      if (state.investigationUsed) return state;
       const { alive } = state;
       const seat = alive.findIndex((player) => player.name === event.target);
       if (seat === -1) return state;

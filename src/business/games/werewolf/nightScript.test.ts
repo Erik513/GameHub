@@ -71,9 +71,10 @@ it("retains calls for masked roles and spent abilities of the living, and never 
   );
   const deadGuard = { ...initial, alive: initial.alive.filter((p) => p !== guard) };
   expect(mode(deadGuard, "bodyguard")).toBe("skip");
-  expect(mode({ ...initial, potions: { heal: false, poison: false } }, "witch")).toBe("cover");
-  expect(mode({ ...initial, spellsRemaining: 0 }, "magician")).toBe("cover");
-  expect(mode({ ...initial, night: 2, hammerUsed: true }, "mayor")).toBe("cover");
+  // A used-up ability of a living role: the same script as before (active), the narrator skips it.
+  expect(mode({ ...initial, potions: { heal: false, poison: false } }, "witch")).toBe("active");
+  expect(mode({ ...initial, spellsRemaining: 0 }, "magician")).toBe("active");
+  expect(mode({ ...initial, night: 2, hammerUsed: true }, "mayor")).toBe("active");
   expect(
     mode({ ...initial, night: 2, settings: { ...initial.settings, mayor: "doubleVote" } }, "mayor"),
   ).toBe("skip");

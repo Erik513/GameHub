@@ -223,7 +223,8 @@ it("resolves the hammer only at morning and keeps spent living calls as cover", 
   expect(hit.alive.map((p) => p.name)).toContain("Ada");
   expect(werewolfAnnouncement(hit)).toEqual([{ name: "Ira" }, { name: "Ada" }]);
   const nextNight = see(attack(dusk(day(hit)), null), "Bea");
-  expect(nextNight.status).toBe("nightCall");
+  // The used hammer: the mayor is called with his whole script all the same (skipped), and the hammer is refused.
+  expect(nextNight.status).toBe("mayor");
   expect(hammer(nextNight, "Bea")).toBe(nextNight);
 });
 

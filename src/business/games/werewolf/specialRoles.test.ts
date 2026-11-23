@@ -138,8 +138,9 @@ it("lets the investigator wait, skips dead neighbors, wraps the circle and spend
   expect(werewolfAnnouncement(state)).toEqual([]);
   state = morning(act(state, { type: "closeInvestigation", night: 3 }));
   const cover = sight(attack(endDay(state), null));
-  expect(cover.status).toBe("nightCall");
-  expect(act(cover, { type: "acknowledgeCall", night: 4 }).status).toBe("morning");
+  // The ability is used up: the investigator is called with the whole script all the same, and skips it.
+  expect(cover.status).toBe("investigator");
+  expect(act(cover, { type: "investigate", night: 4, target: null }).status).toBe("morning");
 });
 
 it("fills optional roles once and rejects duplicate selections", () => {
@@ -241,8 +242,9 @@ it("lets the witch heal and poison in one night and consumes both potions exactl
   state = sight(act(state, { type: "attack", night: 3, target: "Eva" }));
   expect(act(state, { type: "potions", night: 3, heal: true, poison: null })).toBe(state);
   expect(act(state, { type: "potions", night: 3, heal: false, poison: "Dan" })).toBe(state);
-  expect(state.status).toBe("nightCall");
-  state = act(state, { type: "acknowledgeCall", night: 3 });
+  // Both potions are used up: the witch is called with the whole script all the same, and skips it.
+  expect(state.status).toBe("witch");
+  state = act(state, { type: "potions", night: 3, heal: false, poison: null });
   expect(state).toMatchObject({ status: "morning", poisoned: null });
   expect(morning(state).alive.map((player) => player.name)).toEqual(["Ada", "Bea", "Cam", "Dan"]);
 });

@@ -37,13 +37,10 @@ export function nightScript(state: WerewolfState): readonly NightCall[] {
     // Only a role that is alive is called: a drunk who does not know the role yet is called as a cover, the dead
     // are not called (the players find out who is gone by who is no longer woken).
     const hidden = state.alive.some((p) => p.role === role && masked(p.name));
-    const mode = !enabled
-      ? "skip"
-      : actors.length && !spent
-        ? "active"
-        : actors.length || hidden
-          ? "cover"
-          : "skip";
+    // A living role is always called with its whole script, also when its ability is used up (the narrator then asks
+    // the same questions and skips them): only a drunk who does not know his role yet is a cover call.
+    void spent;
+    const mode = !enabled ? "skip" : actors.length ? "active" : hidden ? "cover" : "skip";
     calls.push({ id, announcementRole: id, mode, actors: mode === "active" ? actors : [] });
   };
   add("cupid", "cupid", visible("cupid"), state.night === 1);

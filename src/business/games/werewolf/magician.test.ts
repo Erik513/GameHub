@@ -94,8 +94,11 @@ it("can heal the magician and a different wolf victim over two nights", () => {
   const spent = attack(afterMorning(secondHeal), "P7");
   expect(cast(spent, true)).toBe(spent);
   expect(cast(spent, false, "P1")).toBe(spent);
-  expect(spent.status).toBe("nightCall");
-  expect(play(spent, { type: "acknowledgeCall", night: spent.night }).status).toBe("morning");
+  // No spell is left: the magician is called with his whole script all the same, and skips it.
+  expect(spent.status).toBe("magician");
+  expect(
+    play(spent, { type: "castSpells", night: spent.night, heal: false, kill: [] }).status,
+  ).toBe("morning");
 });
 
 it("can target the wolf victim and resolves the death only once", () => {

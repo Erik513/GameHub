@@ -94,8 +94,9 @@ describe("narrator business contract", () => {
       hammerUsed: true,
       night: 2,
     };
+    // A living role with a used-up ability is called with its whole script (not as a cover call).
     for (const role of ["witch", "magician", "investigator", "mayor"])
-      expect(nightScript(spent).find((c) => c.id === role)?.mode).toBe("cover");
+      expect(nightScript(spent).find((c) => c.id === role)?.mode).toBe("active");
   });
 
   it("skips undrawn variable roles throughout the actual night", () => {

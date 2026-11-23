@@ -258,7 +258,8 @@ function baseStep(state: WerewolfState): RoleStepSpec {
     case "investigator":
       return usable
         ? spec("investigatorChoose", "choose", { skippable: true })
-        : spec("investigatorUsed", "info");
+        : // Used up: the narrator asks the same question and skips it (the same script as before).
+          spec("investigatorUsed", "choose", { skippable: true });
     case "investigation":
       return spec("investigatorResult", "result");
     case "witch":
@@ -284,7 +285,8 @@ function baseStep(state: WerewolfState): RoleStepSpec {
     case "mayor":
       return usable
         ? spec("mayorHammer", "choose", { skippable: true })
-        : spec("mayorUnavailable", "info");
+        : // Used up: the narrator asks the same question and skips it (the same script as before).
+          spec("mayorUnavailable", "choose", { skippable: true });
     case "hunter":
     case "drunkHunter":
       // The setting decides: the hunter may leave the shot out, or has to shoot.
