@@ -765,6 +765,12 @@ function Summary({ view }: { readonly view: GuideView }) {
         view.state.wolfTarget?.name ?? t("werewolfNarrator.guide.nobody"),
       ),
     );
+  // The witch and the magician: the first question was answered with "skip" (the second one is open or answered): the
+  // summary says so for the healing, too, not only when somebody was healed.
+  const caster = view.state.status === "witch" || view.state.status === "magician";
+  const skipped = t("werewolfNarrator.guide.answeredNo");
+  if (caster && !selection.heal && (view.question === "poison" || view.phase === "outro"))
+    parts.push(part(symbolOf("heal"), t("werewolfNarrator.ability.heal"), skipped));
   // The witch and the magician close the list of people with the check mark: the people stay chosen for their spell.
   const chosenAbility =
     selection.ability !== null && selection.ability !== "heal"
@@ -791,7 +797,11 @@ function Summary({ view }: { readonly view: GuideView }) {
       ),
     );
   }
-  // The first question is answered with "skip": that is a decision as well, the second question is still open.
+  // The second question was answered with "skip": a decision as well (the poison or the death spell is left out).
+  if (caster && !chosenAbility && view.phase === "outro") {
+    const second = view.state.status === "witch" ? "poison" : "kill";
+    parts.push(part(symbolOf(second), t(`werewolfNarrator.ability.${second}`), skipped));
+  }
   const answeredNo = view.phase === "act" && view.question === "poison";
   return (
     <Chosen>

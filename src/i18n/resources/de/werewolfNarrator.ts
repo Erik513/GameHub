@@ -208,7 +208,6 @@ export const werewolfNarratorTexts = {
       silenced: "Heute stumm: {{name}}\n(kein Reden, Nominieren oder Abstimmen)",
       wounded: "Verwundet, stirbt in der nächsten Nacht: {{names}}",
       restricted: "Nicht wählbar: {{name}} (schon in der letzten Nacht gewählt)",
-      healChosen: "Heilen gewählt: {{name}} wird gerettet",
       vote: {
         heading: "Abstimmung",
         again: "Neue Abstimmung",

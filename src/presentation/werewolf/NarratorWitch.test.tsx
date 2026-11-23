@@ -121,7 +121,10 @@ it("answers both questions with skip: nothing is used and the step is finished w
   fireEvent.click(abilityButtons()[2]!);
   expect([state(0), state(1), state(2)]).toEqual(["done", "done", "active"]);
   fireEvent.click(abilityButtons()[2]!);
-  expect(screen.getByText(/Nothing chosen/)).toBeInTheDocument();
+  // The blue summary names both decisions: the healing and the poison are both skipped.
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(
+    "Heal: SkippedPoison: Skipped",
+  );
 });
 
 it("asks about the healing potion although nobody was attacked: the hint says why the potion cannot be used, skip answers", async () => {
@@ -224,9 +227,13 @@ it("sums up every answer at once: after the first question the blue summary says
   showVictim();
   // Skipped: the summary says so (the second question is still open).
   fireEvent.click(abilityButtons()[2]!);
-  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("Skipped");
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("Heal: Skipped");
   // Taken back and healed: the summary names the healed person.
   fireEvent.click(screen.getAllByRole("button", { name: "Undo" })[0]!);
   fireEvent.click(abilityButtons()[0]!);
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(/^Healed: P[0-9]+$/);
+  // The healing stands in the summary only, there is no extra note "Healing chosen".
+  expect(
+    [...document.querySelectorAll(".ww-guide__victim")].map((note) => note.textContent).join(),
+  ).not.toMatch(/Healing chosen/);
 });

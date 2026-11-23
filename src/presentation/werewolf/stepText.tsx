@@ -414,7 +414,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
 
 /** The lines under the choice: the victim of the wolves, the hint to skip, a restriction, the notes of the day. */
 export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
-  const { card, selection, state } = view;
+  const { card, state } = view;
   if (!card) return [];
   return [
     !card.cover && step.showsVictim && (
@@ -449,11 +449,7 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
       </span>
     ),
     // (A potion that is used up has no note: the button of the ability shows it, struck through.)
-    !card.cover && selection.heal && state.wolfTarget && (
-      <span className="ww-guide__victim" key="heal">
-        {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}
-      </span>
-    ),
+    // (The chosen healing stands in the blue summary box, not as a note.)
     view.notes.restricted && (
       <small key="restricted">
         {t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}

@@ -102,7 +102,10 @@ it("lets the magician skip both questions: nothing is cast", async () => {
   await open();
   fireEvent.click(screen.getByRole("button", { name: /^Skip/ }));
   fireEvent.click(screen.getByRole("button", { name: /^Skip/ }));
-  expect(screen.getByText(/Nothing chosen/)).toBeInTheDocument();
+  // The blue summary names both decisions: the healing and the death spell are both skipped.
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(
+    "Heal: SkippedKill: Skipped",
+  );
 });
 
 it("shows the script of the magician as boxes: the victim, the first question, the second question, falling asleep", async () => {
