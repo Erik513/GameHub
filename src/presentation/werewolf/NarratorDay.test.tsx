@@ -50,7 +50,10 @@ it("shows the script of the day and lets the day end only after an option was ch
   );
   const texts = () =>
     [...document.querySelectorAll(".ww-script__step")].map((box) => box.textContent);
-  expect(texts()).toEqual(["Nominate somebody?(up to 3 people)", "The day ends"]);
+  expect(texts()).toEqual([
+    "Nominate somebody?(up to 3 people)",
+    "Announce the summary and end the day",
+  ]);
   const next = () => screen.getByRole("button", { name: /^(End the day|Next)/ });
   // The question has the symbol of the vote; the card of the day has no slots for effects.
   expect(document.querySelector(".ww-script__step [data-symbol='vote']")).not.toBeNull();
@@ -70,7 +73,7 @@ it("shows the script of the day and lets the day end only after an option was ch
   // The blue summary says what was chosen: the symbol of the vote and "No nomination" (not "nothing chosen").
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("No nomination");
   expect(document.querySelector(".ww-guide__chosen svg")).not.toBeNull();
-  // The vote cannot be used any more and has no frame; "The day ends" is the next step and has the blue frame.
+  // The vote cannot be used any more and has no frame; "Announce the summary and end the day" is the next step and has the blue frame.
   expect(screen.getByRole("button", { name: /^Nomination/ })).toBeDisabled();
   expect(screen.getByRole("button", { name: /^Nomination/ })).not.toHaveAttribute("data-next");
   expect([...document.querySelectorAll(".ww-script__step")].at(-1)).toHaveAttribute(

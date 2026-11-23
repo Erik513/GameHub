@@ -76,7 +76,6 @@ export const werewolfNarratorTexts = {
       },
       sleep: {
         apprenticeSeer: "The apprentice seer goes back to sleep",
-        day: "The day ends",
         wolf: "The werewolves go back to sleep",
         seer: "The seer goes back to sleep",
         witch: "The witch goes back to sleep",

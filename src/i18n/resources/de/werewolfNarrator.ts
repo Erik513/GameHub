@@ -76,7 +76,6 @@ export const werewolfNarratorTexts = {
       },
       sleep: {
         apprenticeSeer: "Der Seher-Lehrling schläft wieder ein",
-        day: "Der Tag endet",
         wolf: "Die Werwölfe schlafen wieder ein",
         seer: "Die Seherin schläft wieder ein",
         witch: "Die Hexe schläft wieder ein",

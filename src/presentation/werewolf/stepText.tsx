@@ -230,13 +230,8 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         button: null,
         enabled: false,
         id: "asleep",
-        items: [
-          t(
-            view.exiledToday.length > 0
-              ? "werewolfNarrator.guide.day.summaryEnd"
-              : "werewolfNarrator.guide.sleep.day",
-          ),
-        ],
+        // Always the same words: the narrator announces the summary of the day (who left, who is silenced) and ends it.
+        items: [t("werewolfNarrator.guide.day.summaryEnd")],
         // Once "no vote" is chosen (or the vote is done) the day can end: this box is what comes next (blue frame).
         state: settled ? "active" : "pending",
       },
