@@ -815,6 +815,8 @@ function ReadyBox() {
           <Icon name="cards" />
         </span>
         <strong className="ww-ready__title">{t("werewolfNarrator.guide.ready.title")}</strong>
+        {/* The first words of the narrator before the night begins: everybody goes to sleep. */}
+        <p className="ww-ready__script">{t("werewolfNarrator.guide.day.villageSleeps")}</p>
       </div>
       <p className="ww-ready__hint">
         <Icon name="hand" />

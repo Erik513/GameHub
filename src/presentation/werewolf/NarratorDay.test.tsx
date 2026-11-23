@@ -53,6 +53,7 @@ it("shows the script of the day and lets the day end only after an option was ch
   expect(texts()).toEqual([
     "Nominate somebody?(up to 3 people)",
     "Announce the summary and end the day",
+    "Everybody closes their eyes, the village falls asleep",
   ]);
   const next = () => screen.getByRole("button", { name: /^(End the day|Next)/ });
   // The question has the symbol of the vote; the card of the day has no slots for effects.
@@ -76,9 +77,14 @@ it("shows the script of the day and lets the day end only after an option was ch
   // The vote cannot be used any more and has no frame; "Announce the summary and end the day" is the next step and has the blue frame.
   expect(screen.getByRole("button", { name: /^Nomination/ })).toBeDisabled();
   expect(screen.getByRole("button", { name: /^Nomination/ })).not.toHaveAttribute("data-next");
-  expect([...document.querySelectorAll(".ww-script__step")].at(-1)).toHaveAttribute(
+  // (the last box, "the village falls asleep", only waits behind it).
+  expect([...document.querySelectorAll(".ww-script__step")].at(-2)).toHaveAttribute(
     "data-state",
     "active",
+  );
+  expect([...document.querySelectorAll(".ww-script__step")].at(-1)).toHaveAttribute(
+    "data-state",
+    "pending",
   );
   expect(screen.getByRole("button", { name: "No nomination" })).not.toHaveAttribute("data-next");
   fireEvent.click(screen.getByRole("button", { name: "Undo" }));

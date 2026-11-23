@@ -130,7 +130,16 @@ export function askText(view: GuideView, t: TFunction): string | null {
 /** One box of the script of a role: the tasks of the narrator, the button right of it and where the script stands. */
 export interface ScriptBox {
   readonly id:
-    "asleep" | "wake" | "confirm" | "decide" | "discuss" | "heal" | "poison" | "show" | "touch";
+    | "asleep"
+    | "wake"
+    | "confirm"
+    | "decide"
+    | "discuss"
+    | "heal"
+    | "poison"
+    | "show"
+    | "touch"
+    | "villageSleeps";
   readonly items: readonly ReactNode[];
   /** The button right of the box: take the decision back, or confirm that the task is done; none for the last box. */
   readonly button: "check" | "undo" | null;
@@ -239,6 +248,14 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         items: [t("werewolfNarrator.guide.day.summaryEnd")],
         // Once "no vote" is chosen (or the vote is done) the day can end: this box is what comes next (blue frame).
         state: settled ? "active" : "pending",
+      },
+      {
+        // The last words of the day: the narrator asks everybody to go to sleep (the night begins with the next step).
+        button: null,
+        enabled: false,
+        id: "villageSleeps",
+        items: [t("werewolfNarrator.guide.day.villageSleeps")],
+        state: "pending",
       },
     ];
   }
