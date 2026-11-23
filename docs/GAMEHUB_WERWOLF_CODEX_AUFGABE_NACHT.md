@@ -285,3 +285,8 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 
 - Im Guide gibt es zwei neue Felder: `sleeping` (Tag: die Zusammenfassung wurde angesagt, die letzte Box „alle schließen die Augen“ ist offen) und `votedToday` (Tag nach einer Abstimmung). Das Ereignis `endDay` wird im Guide erst nach dem Haken (`checkScript` am Tag) angenommen; die Spiellogik selbst ist unverändert.
 - `undoSelection` am Tag nimmt nach einer Abstimmung die Spiel-Schritte Nominierung, Abstimmung und Ausscheiden zurück (`undoWerewolfSession` mit Bestätigung), damit der Erzähler bei „Jemanden nominieren?“ landet.
+
+## Die Werwölfe müssen angreifen (2026-11-23, Claude)
+
+- `applyEvent` im Zustand `wolves`: `attack` mit `target: null` wird nur noch angenommen, wenn es keine mögliche Person gibt (nur noch Werwölfe leben). Sonst bleibt der Zustand unverändert. Nacht 1 ohne Angriff (Einstellung) läuft unverändert über `wolvesReady`.
+- `describeRoleStep`: `skippable` der Werwölfe ist nur ohne mögliches Opfer wahr; `eventChoices` bietet „niemanden“ nur dann an. Simulation und Forschungsmodelle, die einen Angriff auf niemanden würfeln, müssen stattdessen ein Opfer wählen.
