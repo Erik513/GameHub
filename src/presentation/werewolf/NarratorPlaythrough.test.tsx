@@ -67,6 +67,8 @@ function candidates(): { element: Element; weight: number }[] {
   add(".ww-guide__reset", 1);
   // A list of people that has nobody to choose is closed again (the ability is then skipped).
   add(".ww-guide__close", 0.5);
+  // The window with the true role of the drunk is closed with its cross.
+  add(".ww-truerole__close", 4);
   // Begin after the role reveal is the button "next" with the text "Begin": covered by .ww-nav .button.
   return all;
 }

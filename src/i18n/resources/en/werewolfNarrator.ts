@@ -126,6 +126,7 @@ export const werewolfNarratorTexts = {
       back: "Back",
       next: "Next",
       resultScript: "Show the result with a thumb",
+      trueRole: { show: "Show the true role", close: "Close the card" },
       drunkScript: "Tell the real role",
       verdict: {
         wolf: "Werewolf",

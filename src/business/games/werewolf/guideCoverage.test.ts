@@ -4,6 +4,7 @@ import {
   answerQuestion,
   chooseAbility,
   checkScript,
+  markRoleShown,
   chooseNoVote,
   chooseNobody,
   choosePlayer,
@@ -122,6 +123,10 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
         }
         if (second !== undefined) guide = setVoteBonus(guide, second);
       }
+      break;
+    case "drunkReady":
+      // The true role is shown first (the window is closed), then the check of the step can be used.
+      guide = markRoleShown(guide);
       break;
     case "vote":
       for (const [voter, choice] of Object.entries(event.ballots)) {

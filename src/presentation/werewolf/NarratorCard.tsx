@@ -1,3 +1,4 @@
+import { Icon } from "../components";
 import { useTranslation } from "react-i18next";
 import type {
   CardAbilityId,
@@ -27,6 +28,20 @@ interface NarratorCardProps {
   readonly notes?: readonly string[];
   /** The heading of the upper box at the day ("Nomination"); the upper box has a heading in every view of the day. */
   readonly heading?: string;
+  /**
+   * The drunk: a button where the other roles have their abilities opens the window with the true role; right of it a
+   * check that can be used once the window was closed.
+   */
+  readonly reveal?: {
+    readonly label: string;
+    readonly checkLabel: string;
+    /** The window was closed: the check can be used. */
+    readonly checkEnabled: boolean;
+    /** The step is done (the next box is open): both buttons are switched off. */
+    readonly settled: boolean;
+    readonly onOpen: () => void;
+    readonly onCheck: () => void;
+  };
   /** The script has not reached the decision yet (the witch: the victim is not shown yet): nothing can be pressed. */
   readonly waiting?: boolean;
   /**
@@ -116,6 +131,7 @@ export function NarratorCard({
   settled = false,
   locked = false,
   notes = [],
+  reveal,
   heading,
   votes,
   waiting = false,
@@ -201,6 +217,34 @@ export function NarratorCard({
               ))}
             </div>
           )}
+        </div>
+      )}
+      {reveal && (
+        <div className="ww-role-card__abilities ww-role-card__reveal">
+          <button
+            className="ww-ability"
+            data-next={(!reveal.settled && !reveal.checkEnabled) || undefined}
+            data-state={reveal.settled ? "dim" : "ready"}
+            disabled={reveal.settled}
+            onClick={reveal.onOpen}
+            type="button"
+          >
+            <span className="ww-ability__symbol">
+              <WerewolfSymbol id="drunk" ring size={24} />
+            </span>
+            <span className="ww-ability__name">{reveal.label}</span>
+          </button>
+          <button
+            aria-label={reveal.checkLabel}
+            className="ww-ability ww-ability--skip ww-ability--check"
+            data-next={(!reveal.settled && reveal.checkEnabled) || undefined}
+            disabled={reveal.settled || !reveal.checkEnabled}
+            onClick={reveal.onCheck}
+            title={reveal.checkLabel}
+            type="button"
+          >
+            <Icon name="check" />
+          </button>
         </div>
       )}
       {card.abilities.length > 0 && (

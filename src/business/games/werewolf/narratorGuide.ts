@@ -235,8 +235,11 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
     default:
       break;
   }
-  // A step that the narrator only confirms.
-  if (step.confirm) return { night, type: step.confirm };
+  // A step that the narrator only confirms. The drunk: first the true role has to be shown to him (the window is closed).
+  if (step.confirm) {
+    if (state.status === "drunkReveal" && (selection.progress ?? 0) < 1) return null;
+    return { night, type: step.confirm };
+  }
   if (state.status === "roles") {
     const player = state.players[state.index];
     return player ? { player: player.name, type: "roleSeen" } : null;
@@ -651,6 +654,18 @@ export function checkScript(guide: Guide): Guide {
   // 0 -> 1: the choice of the two is confirmed; 1 -> 2: Cupid sleeps; the last check (the lovers are touched) finishes the step.
   if (progress < 2) return withSelection(guide, { ...selection, progress: progress + 1 });
   return continueGuide(withSelection(guide, { ...selection, progress: 3 }));
+}
+
+/**
+ * The drunk: the true role was shown to him (the window with the card was closed), so the check of the step can be used.
+ * It is taken back with the undo button of the box (the role can be shown once more).
+ */
+export function markRoleShown(guide: Guide): Guide {
+  const frame = current(guide);
+  if (frame.phase !== "act" || guide.session.present.status !== "drunkReveal") return guide;
+  return (frame.selection.progress ?? 0) >= 1
+    ? guide
+    : withSelection(guide, { ...frame.selection, progress: 1 });
 }
 
 /**

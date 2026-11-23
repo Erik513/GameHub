@@ -17,6 +17,8 @@ interface DealCardProps {
   /** The option the role is played with in this game (for example with the duty to shoot), if it has one. */
   readonly variant: RoleVariant | null;
   readonly total: number;
+  /** The card is open and stays open (the narrator shows the true role of the drunk): a tap does not cover it. */
+  readonly open?: boolean;
 }
 
 /**
@@ -24,16 +26,25 @@ interface DealCardProps {
  * name, abilities, an "i" that explains the role) and a second tap covers it again, so the device can be passed on.
  * The card is covered whenever the app goes to the background.
  */
-export function DealCard({ name, role, amulet, mayor, position, total, variant }: DealCardProps) {
+export function DealCard({
+  name,
+  role,
+  amulet,
+  mayor,
+  position,
+  total,
+  variant,
+  open = false,
+}: DealCardProps) {
   const { t } = useTranslation();
-  const [shown, setShown] = useState(false);
+  const [shown, setShown] = useState(open);
   useEffect(() => {
     const cover = () => {
-      if (document.hidden) setShown(false);
+      if (document.hidden && !open) setShown(false);
     };
     document.addEventListener("visibilitychange", cover);
     return () => document.removeEventListener("visibilitychange", cover);
-  }, []);
+  }, [open]);
   const roleName = t(`werewolfSymbols.items.${role}.name`);
   const abilities = abilitiesOfRole(role, mayor);
   return (
@@ -41,7 +52,7 @@ export function DealCard({ name, role, amulet, mayor, position, total, variant }
       <button
         aria-pressed={shown}
         className="ww-deal__face"
-        onClick={() => setShown((current) => !current)}
+        onClick={() => !open && setShown((current) => !current)}
         type="button"
       >
         <span className="ww-deal__body">
@@ -101,9 +112,11 @@ export function DealCard({ name, role, amulet, mayor, position, total, variant }
             </>
           )}
         </span>
-        <small className="ww-deal__tap">
-          {t(shown ? "werewolfNarrator.deal.hide" : "werewolfNarrator.deal.show")}
-        </small>
+        {!open && (
+          <small className="ww-deal__tap">
+            {t(shown ? "werewolfNarrator.deal.hide" : "werewolfNarrator.deal.show")}
+          </small>
+        )}
       </button>
       {!shown && (
         <small className="ww-deal__count">

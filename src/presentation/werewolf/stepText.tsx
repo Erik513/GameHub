@@ -369,6 +369,20 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
     ];
   }
 
+  // The drunk: the true role is shown to him with the button in the upper box; the box says what the narrator tells him and
+  // has an undo button (the role can be shown once more, to be sure).
+  if (state.status === "drunkReveal")
+    return [
+      {
+        button: "undo",
+        enabled: outro,
+        id: "decide",
+        items: [t("werewolfNarrator.guide.drunkScript")],
+        state: outro ? "done" : "active",
+      },
+      asleep,
+    ];
+
   // A step in which the narrator only reads something out or shows something: the check says it is done and stays a
   // check. A result (the seer, the investigator) comes after a decision: its box with the undo button leads back to it.
   return [

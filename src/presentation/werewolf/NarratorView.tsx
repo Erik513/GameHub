@@ -1,4 +1,5 @@
 import type { TFunction } from "i18next";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import type { WerewolfSession } from "../../business/games/werewolf/session";
@@ -6,9 +7,12 @@ import { Button } from "../components";
 import { StartBar } from "../game-kit";
 import { isDayStep, type GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
+import { werewolfDrunkReveal } from "../../business/games/werewolf/stateMachine";
 import { GuideBox } from "./GuideBox";
 import { NarratorBar } from "./NarratorBar";
 import { NarratorCard, type VoteProps } from "./NarratorCard";
+import { variantOfRole } from "./roleAbilities";
+import { TrueRoleWindow } from "./TrueRoleWindow";
 import { useNarratorGuide } from "./useNarratorGuide";
 
 interface NarratorViewProps {
@@ -127,6 +131,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
   const { t } = useTranslation();
   const guide = useNarratorGuide(session, onSession, trail);
   const { view } = guide;
+  // The drunk: the window with the card of his true role (the narrator shows it to him).
+  const [revealOpen, setRevealOpen] = useState(false);
+  const drunk = view.state.status === "drunkReveal" ? werewolfDrunkReveal(view.state) : null;
   // The witch is asked only when the script has got there: first the victim is shown (the check of her first box).
   const witchWaiting =
     view.phase === "act" && view.question === "heal" && view.progress < 1 && !view.card?.cover;
@@ -272,6 +279,18 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
               {...(votes ? { votes } : {})}
+              {...(drunk
+                ? {
+                    reveal: {
+                      checkEnabled: view.phase === "act" && view.progress >= 1,
+                      checkLabel: t("werewolfNarrator.guide.taskDone"),
+                      label: t("werewolfNarrator.guide.trueRole.show"),
+                      onCheck: guide.continueGuide,
+                      onOpen: () => setRevealOpen(true),
+                      settled: view.phase === "outro",
+                    },
+                  }
+                : {})}
               {...(view.state.status === "day"
                 ? { heading: dayHeading(view, t), notes: voteHints }
                 : {})}
@@ -339,6 +358,19 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           view={view}
         />
       </div>
+      {revealOpen && drunk && (
+        <TrueRoleWindow
+          amulet={view.state.amulet?.holder === drunk.name}
+          mayor={view.state.settings.mayor}
+          name={drunk.name}
+          onClose={() => {
+            guide.roleShown();
+            setRevealOpen(false);
+          }}
+          role={drunk.role}
+          variant={variantOfRole(drunk.role, view.state.settings)}
+        />
+      )}
       <StartBar>
         <div className="ww-nav">
           <Button disabled={!view.canGoBack} onClick={guide.goBack} variant="secondary">
