@@ -3319,3 +3319,23 @@ button.ww-guide__strip[data-next] {
   flex-direction: column;
   gap: var(--space-2);
 }
+
+/* The heading and the notes stand at exactly the same place at the day and at the vote: the same gap below the heading
+   (the card of the vote has 6px between its parts), the same gap between the notes and the same size of the notes. */
+.ww-role-card__top {
+  gap: 6px;
+}
+
+.ww-role-card__notes,
+.ww-vote__hints {
+  gap: var(--space-1);
+}
+
+.ww-role-card__notes .ww-guide__victim,
+.ww-role-card[data-vote] .ww-guide__victim {
+  box-sizing: border-box;
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.85rem;
+  line-height: 1.25;
+  white-space: pre-line;
+}
