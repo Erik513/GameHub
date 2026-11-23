@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 330,
-      "totalTasks": 386,
-      "percent": 85.5
+      "completedTasks": 332,
+      "totalTasks": 388,
+      "percent": 85.6
     }
   },
   "environment": {
@@ -1849,13 +1849,25 @@
           "id": "We-01-144",
           "title": "Erzähleransicht: Tag mit Skript, Nominierung nur mit Wahl, Zusammenfassung nach jeder Entscheidung",
           "status": "done",
-          "validation": "Skript „Jemanden nominieren? (bis zu 3 Personen)“ mit Überschrift „Das Dorf diskutiert“ in der oberen Box; „Nominierung“ und „Keine Nominierung“; der Tag endet nur nach einer gewählten Option; Reset-Knopf; blaue Zusammenfassung nach jeder Entscheidung (Tag, Hexe und Magier nach der ersten Antwort, Nominierte, Werwölfe ohne Angriff); Stumm-Hinweis mit Zeilenumbruch; ohne Icon-Plätze am Tag. Test NarratorDay.test.tsx. Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
+          "validation": "Skript „Jemanden nominieren? (bis zu 3 Personen)“ (die Überschrift „Das Dorf diskutiert“ wurde später entfernt); „Nominierung“ und „Keine Nominierung“; der Tag endet nur nach einer gewählten Option; Reset-Knopf; blaue Zusammenfassung nach jeder Entscheidung (Tag, Hexe und Magier nach der ersten Antwort, Nominierte, Werwölfe ohne Angriff); Stumm-Hinweis mit Zeilenumbruch; ohne Icon-Plätze am Tag. Test NarratorDay.test.tsx. Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
         },
         {
           "id": "We-01-145",
           "title": "Abstimmung mit Stimmenzahlen je nominierter Person (Ja/Nein bei einer Person wie in Ultimate Werewolf)",
           "status": "done",
-          "validation": "Der Erzähler trägt in der oberen Box die Stimmenzahl je nominierter Person ein; Bestätigen erst, wenn alle Stimmen (Bürgermeister doppelt) addiert sind; bei einer Person nur Ja-Stimmen, Ausscheiden bei mehr als der Hälfte aller Stimmen, sonst geht der Tag weiter; zwei oder drei Nominierte: meiste Stimmen, Stichwahl, danach bleiben alle. Neues Ereignis voteCount in der Spiellogik (das alte vote bleibt), voteTotal und voteNeeded; Annahme: die Schwelle gilt für alle Abstimmenden einschließlich der nominierten Person. Test voteCount.test.ts, Abdeckungsprüfung erweitert; Codex hat Simulation und Protokoll angepasst (We-03-71). Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
+          "validation": "Der Erzähler trägt die Stimmenzahl je nominierter Person ein (später in die untere Box verlegt, siehe We-01-146); Bestätigen erst, wenn alle Stimmen (Bürgermeister doppelt) addiert sind; bei einer Person nur Ja-Stimmen, Ausscheiden bei mehr als der Hälfte der abgegebenen Stimmen (ohne die nominierte Person, geändert am 23.11.2026), Gleichstand: zweite Abstimmung, sonst geht der Tag weiter; zwei oder drei Nominierte: meiste Stimmen, Stichwahl, danach bleiben alle. Neues Ereignis voteCount in der Spiellogik (das alte vote bleibt), voteTotal und voteNeeded; Die Schwelle zählt nur die abgegebenen Stimmen. Test voteCount.test.ts, Abdeckungsprüfung erweitert; Codex hat Simulation und Protokoll angepasst (We-03-71). Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-146",
+          "title": "Abstimmung: Eingabe unten, Anzeige oben, Legende, Gleichstand und feste Maße",
+          "status": "done",
+          "validation": "Untere Box: Frage links oben, Abbrechen rechts oben, Zeilen mit − und + für bis zu drei Nominierte (feste Größe, Platz für drei Zeilen), zweite Stimme des Bürgermeisters als Chips (Person bekommt blaue Zahlenbox; mit Doppelstimme sind die Zahlen nur bis „alle Stimmen minus 1“ möglich, Obergrenze je Person), Bestätigen rechts unten mit Box „Person mit Mehrheit / Gleichstand / scheidet aus“ daneben. Eine nominierte Person: Tabelle „Ja-Stimmen | Ergebnis“ (bleibt / Gleichstand / scheidet aus, aus dem Spielstand berechnet), nur abgegebene Stimmen zählen, bei Gleichstand eine zweite Abstimmung mit Wiederholen-Symbol am Bestätigen-Knopf (der Gleichstand bleibt im Spielverlauf). Obere Box nur Anzeige: Überschrift, gelbe Hinweise, blaue Summenbox bei mehreren Nominierten. Spiellogik: voteMaximum, voteTieAt, tie-Zweig in countVotes. Tests voteCount.test.ts, NarratorView.test.tsx, simulationVoting.test.ts. Tests, Typprüfung und ESLint zuletzt grün (1691 Tests); nicht im Browser angesehen (Wunsch des Auftraggebers)."
+        },
+        {
+          "id": "We-01-147",
+          "title": "Erzähleransicht: Skript-Regeln für alle Rollen, Tagesabschluss und Rückkehr nach der Abstimmung",
+          "status": "done",
+          "validation": "Zwei Arten von Skript-Boxen: Entscheidung (Zurück-Knopf, klickbar nach bestätigter Entscheidung, führt zu seiner Box zurück) und Aufgabe des Erzählers (Haken bleibt Haken, nur klickbar solange die Box offen ist); letzte Box „schläft wieder ein“, danach wird der Weiter-Knopf frei. Tag: drei Boxen (nominieren, Zusammenfassung verkünden, Dorf schläft ein), „Tag beenden“ erst danach; nach einer Abstimmung kehrt der Erzähler zum Tages-Skript zurück (Ausscheiden wird sofort angesagt, Nominierung gesperrt, blaue Zusammenfassung, Zurück nimmt die Abstimmung zurück); Satz „Alle Spieler schließen die Augen“ auch vor der ersten Nacht; Weiter-Knopf am Tag immer „Tag beenden“ und bei Nominierung und Abstimmung gesperrt; Seherin und Ermittler mit Entscheidungs-Box vor dem Ergebnis; Anleitung: Abschnitt „Fähigkeiten“ in der Symbol-Liste. Tests NarratorDay, NarratorWitch, narratorGuide, voteCount, guideCoverage. Tests, Typprüfung und ESLint zuletzt grün (1691 Tests); nicht im Browser angesehen."
         }
       ]
     },
@@ -3280,5 +3292,6 @@
     "proposal": "Bestätigte drei Bereiche: Hauptansicht, Konfiguration und zentraler Spielablauf mit abschließender Gewinneransicht. Technische Übergabe enthält Dateipfade, feste/variable Einstiege, Fachereignisse, Zustandsfelder, Prüfungen und offene Grenzen. Live-Kreis bleibt erster Entwurf mit ungefähr 60–70 % Platz, gehaltenen Details und separater Legende. Aufgabenliste auf aktuellen Stand abgeglichen.",
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
-  }
+  },
+  "updatedAt": "2026-11-23T16:46:29.450Z"
 }
