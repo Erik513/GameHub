@@ -325,3 +325,29 @@ it("shows the witch the attacked holder although the amulet stops the attack, an
     potions: { heal: false },
   });
 });
+
+it.each([
+  ["a tough guy", null],
+  ["a tough guy who is the drunk (not revealed yet)", { revealed: false }],
+  ["a tough guy who is the drunk (revealed)", { revealed: true }],
+] as const)(
+  "lets the amulet take the attack of the werewolves before the tough guy rule: %s keeps his life and gets no wound",
+  (_label, drunk) => {
+    // The holder of the amulet is the tough guy (who is hurt only by the werewolves).
+    const probe = deal("Eva", ["toughGuy"], { toughGuy: "wolfOnly" });
+    const tough = probe.players.find((player) => player.role === "toughGuy")!.name;
+    const dealt = deal(tough, ["toughGuy"], { toughGuy: "wolfOnly" });
+    expect(dealt.amulet?.holder).toBe(tough);
+    const start = drunk ? { ...dealt, drunk: { player: tough, ...drunk } } : dealt;
+    const night = nightTwo(start);
+    const attacked = attack(night, tough);
+    // The amulet takes the attack: nobody is the victim, nobody is wounded, the holder has to pass the amulet on.
+    expect(attacked).toMatchObject({ status: "amuletPass", victim: null });
+    const morning = transfer(attacked, tough);
+    expect(werewolfAnnouncement(morning)).toEqual([]);
+    const day = dawn(morning);
+    expect(day.alive.map((player) => player.name)).toContain(tough);
+    expect(day.history.some((entry) => entry.kind === "injury")).toBe(false);
+    expect(day.toughGuyDiesOn ?? null).toBeNull();
+  },
+);
