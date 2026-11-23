@@ -37,7 +37,7 @@ describe("NarratorCard", () => {
     );
   });
 
-  it("shows an ability that is used up for good without a frame (no next step)", async () => {
+  it("frames an ability that is used up but asked now with the thin frame, and without a frame when it is not asked", async () => {
     const investigator: Card = {
       abilities: [
         { available: false, id: "investigate", symbol: "investigation", unavailable: "used" },
@@ -47,12 +47,16 @@ describe("NarratorCard", () => {
       effects: [],
       role: "paranormalInvestigator",
     };
-    await inLanguage("en", <NarratorCard card={investigator} next />);
-    const used = document.querySelector<HTMLElement>(".ww-ability")!;
-    expect(used.getAttribute("data-state")).toBe("used");
-    expect(used.hasAttribute("data-next")).toBe(false);
-    // Only the name is struck through (by the style), there is no diagonal line element.
-    expect(used.querySelector(".ww-ability__name")).not.toBeNull();
+    const { unmount } = await inLanguage("en", <NarratorCard card={investigator} next />);
+    // Theoretically possible (asked), practically not (used up): dark button with the thin blue frame.
+    const asked = document.querySelector<HTMLElement>(".ww-ability")!;
+    expect(asked.getAttribute("data-state")).toBe("used");
+    expect(asked.getAttribute("data-next")).toBe("thin");
+    expect(asked.querySelector(".ww-ability__name")).not.toBeNull();
+    unmount();
+    await inLanguage("en", <NarratorCard card={investigator} />);
+    // Not asked (for example the result is shown): no frame.
+    expect(document.querySelector(".ww-ability")!.hasAttribute("data-next")).toBe(false);
   });
 
   it("calls back only for an ability that can be used and marks the open one", async () => {

@@ -267,11 +267,9 @@ export function NarratorCard({
                 data-state={abilityState}
                 // An ability that cannot be used is asked as well: it gets a thinner frame.
                 data-next={
-                  // (An ability that is used up for good is no next step: no frame.)
-                  (asked === null ? next : asked.includes(ability.id)) &&
-                  !settled &&
-                  !waiting &&
-                  abilityState !== "used"
+                  // The frame says what the role could decide in theory now, the look of the button what is possible in
+                  // practice: an ability that is used up (dark) but asked now keeps the thin frame.
+                  (asked === null ? next : asked.includes(ability.id)) && !settled && !waiting
                     ? ability.available
                       ? "full"
                       : "thin"
