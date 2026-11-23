@@ -53,10 +53,8 @@ export function eventChoices(s: WerewolfState): WerewolfEvent[] {
     case "wolves":
       return night === 1 && !s.settings.attackOnFirstNight
         ? [{ type: "wolvesReady", night }]
-        : // The werewolves have to attack: "nobody" is only offered when there is no possible victim.
-          choose("attack").length > 0
-          ? choose("attack")
-          : [{ type: "attack", night, target: null }];
+        : // The werewolves have to attack: "nobody" is never offered.
+          choose("attack");
     case "seer":
       return choose("inspect");
     case "vision":

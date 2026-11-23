@@ -245,8 +245,6 @@ it("reaches every event of the game through the operations of the guide, in rand
         for (const event of sample(eventsToCheck(state), 12, random)) {
           // The old hag has to silence somebody: the logic keeps "nobody" only as an emergency exit (decision 22.11.2026).
           if (event.type === "silence" && event.target === null) continue;
-          // The werewolves have to attack somebody (no skipping in the narrator view): "nobody" is only an exit of the logic.
-          if (event.type === "attack" && event.target === null) continue;
           const key = state.status + ":" + event.type;
           checked.add(key);
           const outcome = viaGuide(state, event);

@@ -249,10 +249,8 @@ function baseStep(state: WerewolfState): RoleStepSpec {
       return state.night === 1 && !state.settings.attackOnFirstNight
         ? spec("wolvesNoAttack", "info", { statement: "noAttack" })
         : // Nobody is not a choice in the list: the wolves who do not attack skip the step.
-          // The werewolves have to attack: they cannot skip (only without a possible victim).
-          spec("wolvesAttack", "choose", {
-            skippable: !state.alive.some((player) => player.role !== "wolf"),
-          });
+          // The werewolves have to attack: they cannot skip.
+          spec("wolvesAttack", "choose");
     case "seer":
       return spec("seerChoose", "choose");
     case "vision":

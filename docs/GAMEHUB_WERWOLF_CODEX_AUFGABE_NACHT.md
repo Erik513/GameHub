@@ -288,5 +288,5 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 
 ## Die Werwölfe müssen angreifen (2026-11-23, Claude)
 
-- `applyEvent` im Zustand `wolves`: `attack` mit `target: null` wird nur noch angenommen, wenn es keine mögliche Person gibt (nur noch Werwölfe leben). Sonst bleibt der Zustand unverändert. Nacht 1 ohne Angriff (Einstellung) läuft unverändert über `wolvesReady`.
-- `describeRoleStep`: `skippable` der Werwölfe ist nur ohne mögliches Opfer wahr; `eventChoices` bietet „niemanden“ nur dann an. Simulation und Forschungsmodelle, die einen Angriff auf niemanden würfeln, müssen stattdessen ein Opfer wählen.
+- `applyEvent` im Zustand `wolves`: `attack` mit `target: null` wird nie mehr angenommen (der Zustand bleibt unverändert; das Spiel endet vorher, bevor kein Opfer mehr übrig ist). Nacht 1 ohne Angriff (Einstellung) läuft unverändert über `wolvesReady`.
+- `describeRoleStep`: `skippable` der Werwölfe ist nie wahr; `eventChoices` bietet „niemanden“ nicht mehr an. Simulation und Forschungsmodelle, die einen Angriff auf niemanden würfeln, müssen stattdessen ein Opfer wählen.

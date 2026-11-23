@@ -867,10 +867,9 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
         return event.type === "wolvesReady" ? afterWolves(state, null) : state;
       }
       if (event.type !== "attack") return state;
-      // The werewolves have to attack somebody (no skipping); "nobody" is only an emergency exit without a possible victim
-      // (the first night without an attack has its own event, wolvesReady).
-      if (event.target === null)
-        return state.alive.some((p) => p.role !== "wolf") ? state : afterWolves(state, null);
+      // The werewolves have to attack somebody: there is no way to skip (the game ends before no victim is left; the first
+      // night without an attack has its own event, wolvesReady).
+      if (event.target === null) return state;
       const victim = state.alive.find((p) => p.name === event.target && p.role !== "wolf");
       if (!victim) return state;
       if (state.hostPlayer && victim.role === "nightGuest") return afterWolves(state, null);

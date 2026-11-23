@@ -2106,7 +2106,7 @@
           "id": "We-01-148",
           "title": "Werwölfe müssen angreifen (kein Verzichten)",
           "status": "done",
-          "validation": "Ab Nacht 2 (oder Nacht 1 mit Angriff) gibt es in der Erzähleransicht kein „Verzichten“, Bestätigen nur mit gewähltem Opfer; Spiellogik und eventChoices nehmen einen Angriff auf niemanden nur ohne mögliches Opfer an; rund 20 Tests angepasst (greifen jetzt die erste lebende Nicht-Werwolf-Person an), guideCoverage überspringt den Angriff auf niemanden. Tests, Typprüfung und ESLint grün (1693 Tests); nicht im Browser angesehen."
+          "validation": "Ab Nacht 2 (oder Nacht 1 mit Angriff) gibt es in der Erzähleransicht kein „Verzichten“, Bestätigen nur mit gewähltem Opfer; Spiellogik und eventChoices nehmen einen Angriff auf niemanden nie an (das Spiel endet vorher); rund 20 Tests angepasst (greifen jetzt die erste lebende Nicht-Werwolf-Person an), guideCoverage überspringt den Angriff auf niemanden. Tests, Typprüfung und ESLint grün (1693 Tests); nicht im Browser angesehen."
         }
       ]
     },
@@ -3532,7 +3532,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-23T17:47:41.185Z"
+  "updatedAt": "2026-11-23T17:50:06.903Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
