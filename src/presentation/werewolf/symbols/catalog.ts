@@ -66,3 +66,25 @@ export function symbolOf(id: SymbolId): SymbolDefinition {
 }
 
 export const symbolGroups: readonly SymbolGroup[] = ["role", "resource", "extra", "state"];
+
+/** The abilities of the roles as the narrator view draws them (in a circle): the ability and the drawing it uses. */
+export const abilityLegend = [
+  { ability: "attack", symbol: "attacked" },
+  { ability: "inspect", symbol: "seer" },
+  { ability: "investigate", symbol: "investigation" },
+  { ability: "heal", symbol: "heal" },
+  { ability: "poison", symbol: "kill" },
+  { ability: "kill", symbol: "kill" },
+  { ability: "protect", symbol: "protected" },
+  { ability: "stayWith", symbol: "guest" },
+  { ability: "bond", symbol: "lovers" },
+  { ability: "hammer", symbol: "hammer" },
+  { ability: "silence", symbol: "silenced" },
+  { ability: "shot", symbol: "shotDuty" },
+  { ability: "passAmulet", symbol: "amuletPass" },
+  { ability: "vote", symbol: "vote" },
+  { ability: "doubleVote", symbol: "doubleVote" },
+] as const satisfies readonly { readonly ability: string; readonly symbol: SymbolId }[];
+
+/** Symbols that the legend lists as an ability (in a circle) and not a second time as a state. */
+export const legendHidden: ReadonlySet<SymbolId> = new Set<SymbolId>(["vote", "amuletPass"]);

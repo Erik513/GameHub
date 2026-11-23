@@ -320,7 +320,9 @@ describe("NarratorView choices", () => {
     // The vote is confirmed with the check mark only: the button "next" waits.
     expect(screen.getByRole("button", { name: /^End the vote|Next/ })).toBeDisabled();
     await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
-    // The exile view does not repeat the reason (it is the vote).
+    // After the vote the narrator is back at the script of the day (one yes vote is not enough: nobody leaves).
+    expect(screen.getByRole("button", { name: /^Nomination/ })).toBeInTheDocument();
+    expect(document.body.textContent).toContain("Nominate somebody?");
     expect(document.querySelector(".ww-guide__causes")).toBeNull();
   });
 });

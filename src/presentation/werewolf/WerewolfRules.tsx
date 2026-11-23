@@ -4,7 +4,7 @@ import { Dialog } from "../components";
 import { RulesSection, SetupTabs } from "../game-kit";
 import { ConfigInfoParts, type ConfigInfoId } from "./ConfigInfo";
 import { teamOf } from "./roleTeam";
-import { symbolGroups, symbols } from "./symbols/catalog";
+import { abilityLegend, legendHidden, symbolGroups, symbols } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import { symbolOfInfo } from "./infoSymbol";
 
@@ -142,23 +142,40 @@ export function WerewolfRulesDialog({ onClose, open }: WerewolfRulesDialogProps)
   const legend = (
     <>
       <p className="kit-rules-intro">{t("werewolfSymbols.intro")}</p>
-      {symbolGroups.map((group) => (
-        <RulesSection key={group} title={t(`werewolfSymbols.groups.${group}`)}>
-          <ul className="ww-legend">
-            {symbols
-              .filter((entry) => entry.group === group)
-              .map((entry) => (
-                <li className="ww-legend__item" key={entry.id}>
-                  <WerewolfSymbol id={entry.id} size={28} />
-                  <span>
-                    <strong>{t(`werewolfSymbols.items.${entry.id}.name`)}</strong>
-                    <small>{t(`werewolfSymbols.items.${entry.id}.meaning`)}</small>
-                  </span>
-                </li>
-              ))}
-          </ul>
-        </RulesSection>
-      ))}
+      {/* The old group of the means of a role is gone: the abilities have their own part below (in a circle). */}
+      {symbolGroups
+        .filter((group) => group !== "resource")
+        .map((group) => (
+          <RulesSection key={group} title={t(`werewolfSymbols.groups.${group}`)}>
+            <ul className="ww-legend">
+              {symbols
+                .filter((entry) => entry.group === group && !legendHidden.has(entry.id))
+                .map((entry) => (
+                  <li className="ww-legend__item" key={entry.id}>
+                    <WerewolfSymbol id={entry.id} size={28} />
+                    <span>
+                      <strong>{t(`werewolfSymbols.items.${entry.id}.name`)}</strong>
+                      <small>{t(`werewolfSymbols.items.${entry.id}.meaning`)}</small>
+                    </span>
+                  </li>
+                ))}
+            </ul>
+          </RulesSection>
+        ))}
+      {/* The abilities: the same drawings as the states, but in a circle (as in the narrator view). */}
+      <RulesSection title={t("werewolfSymbols.abilities.title")}>
+        <ul className="ww-legend">
+          {abilityLegend.map((entry) => (
+            <li className="ww-legend__item" key={entry.ability}>
+              <WerewolfSymbol id={entry.symbol} ring size={28} />
+              <span>
+                <strong>{t(`werewolfNarrator.ability.${entry.ability}`)}</strong>
+                <small>{t(`werewolfSymbols.abilities.items.${entry.ability}`)}</small>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </RulesSection>
       <p className="ww-legend__credits">{t("werewolfSymbols.credits")}</p>
     </>
   );

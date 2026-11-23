@@ -3,9 +3,29 @@ export const werewolfSymbolsTexts = {
   werewolfSymbols: {
     tab: "Symbols",
     intro:
-      "The narrator shows you these symbols when a role wakes up or a person is affected. The same meaning always has the same sign. A role is drawn as it is; its ability stands in a circle. An ability that is struck through is used up for good; one with a dashed amber frame is not possible right now.",
+      "The narrator shows you these symbols when a role wakes up or a person is affected. The same meaning always has the same sign. A role is drawn as it is; its ability stands in a circle. A green ability can be used now; one that is struck through is used up for good; one with a dashed amber frame is not possible right now; a dimmed one is not its turn yet. A blue frame marks the next step, yellow boxes are notes for you (for example who is silenced today), and the blue box below sums a decision up once more. The closed and open eye shows the cause of death of the dead only on a tap.",
     credits:
       'Wolf head: "Wolf head" by Lorc, game-icons.net, license CC BY 3.0. Other drawings: Tabler Icons, MIT license.',
+    abilities: {
+      title: "Abilities",
+      items: {
+        attack: "The werewolves choose their victim",
+        inspect: "The seer looks at one person",
+        investigate: "The investigator checks a group of people (once)",
+        heal: "Saves the victim of the werewolves",
+        poison: "Kills one person (once)",
+        kill: "A death spell of the magician",
+        protect: "The bodyguard protects one person",
+        stayWith: "The night guest sleeps at another person",
+        bond: "Cupid makes two people fall in love",
+        hammer: "The mayor strikes with the hammer",
+        silence: "The old hag silences one person for the day",
+        shot: "The hunter shoots one person",
+        passAmulet: "The holder passes the amulet on",
+        vote: "Nominate up to 3 people, then the village votes",
+        doubleVote: "The mayor assigns his second vote",
+      },
+    },
     groups: {
       extra: "Extras",
       resource: "Own means",
@@ -39,7 +59,7 @@ export const werewolfSymbolsTexts = {
       },
       day: {
         name: "Day",
-        meaning: "Sun: the village talks and votes",
+        meaning: "Sun: the village talks, nominates and votes",
       },
       dead: {
         name: "Dead",
@@ -47,7 +67,7 @@ export const werewolfSymbolsTexts = {
       },
       doubleVote: {
         name: "Double vote",
-        meaning: "Two: the vote counts twice",
+        meaning: "Two: the vote counts twice (the second vote is assigned to a nominated person)",
       },
       drunk: {
         name: "Drunk",
@@ -150,8 +170,8 @@ export const werewolfSymbolsTexts = {
         meaning: "Wolf head: hunts at night",
       },
       vote: {
-        name: "Vote",
-        meaning: "Slip into a box: nominate a person and vote",
+        name: "Nomination and vote",
+        meaning: "Slip into a ballot box: nominate up to 3 people, then the village votes",
       },
       wounded: {
         name: "Wounded",

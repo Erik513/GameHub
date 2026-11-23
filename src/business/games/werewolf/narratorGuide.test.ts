@@ -373,7 +373,7 @@ describe("narrator guide", () => {
       view = describeGuide(guide);
       expect(view.canContinue).toBe(true);
       guide = continueGuide(guide);
-      expect(["vote", "exile"]).toContain(guide.session.present.status);
+      expect(["vote", "day"]).toContain(guide.session.present.status);
     });
   });
 

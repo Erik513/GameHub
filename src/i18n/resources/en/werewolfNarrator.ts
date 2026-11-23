@@ -154,6 +154,7 @@ export const werewolfNarratorTexts = {
         lastShot: "Last shot",
       },
       day: {
+        summaryEnd: "Announce the summary and end the day",
         nominee: "Who is nominated? (up to 3)",
         more: "Nominated: {{names}}. Nominate another person or confirm",
         chosen: "Nominated: {{names}}",

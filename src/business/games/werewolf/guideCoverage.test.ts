@@ -251,7 +251,13 @@ it("reaches every event of the game through the operations of the guide, in rand
             if (!problems.has(key + ":" + outcome))
               problems.set(key + ":" + outcome, JSON.stringify(event).slice(0, 160));
           } else {
-            const expected = transitionWerewolf(state, event);
+            // The guide announces the result of a vote at once (the day goes on): the same as two steps of the game.
+            let expected = transitionWerewolf(state, event);
+            if (expected.status === "exile")
+              expected = transitionWerewolf(expected, {
+                type: "announceExile",
+                night: expected.night,
+              });
             try {
               expect(outcome).toEqual(expected);
             } catch {

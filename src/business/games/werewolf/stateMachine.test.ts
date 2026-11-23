@@ -91,6 +91,8 @@ it("keeps parity separate from nomination validation and skips an eliminated see
   ).toBe(state);
   state = transitionWerewolf(state, { type: "vote", night: 1, nomination: 1, ballots: complete });
   state = transitionWerewolf(state, { type: "announceExile", night: 1 });
+  // The day goes on after the exile: the narrator ends it.
+  state = transitionWerewolf(state, { type: "endDay", night: 1 });
   expect(transitionWerewolf(state, { type: "attack", night: 2, target: "Ada" })).toBe(state);
   state = transitionWerewolf(state, { type: "attack", night: 2, target: null });
   expect(state).toMatchObject({ status: "morning", victim: null });

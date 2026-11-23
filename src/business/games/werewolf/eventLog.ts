@@ -71,7 +71,7 @@ export function recordWerewolfTransition(
           ? "setup"
           : ["day", "vote", "exile"].includes(before.status) ||
               ((before.status === "hunter" || before.status === "drunkHunter") &&
-                before.next === "wolves")
+                before.inDay === true)
             ? "day"
             : "night",
     });

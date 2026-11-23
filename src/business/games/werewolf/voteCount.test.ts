@@ -143,7 +143,7 @@ it("enters the yes votes through the guide: the vote can be confirmed at any num
   expect(continueGuide(guide).session.present.status).toBe("day");
   // Enough: he leaves.
   guide = setVoteCount(guide, nominee, view.voteNeeded);
-  expect(continueGuide(guide).session.present.status).toBe("exile");
+  expect(describeGuide(continueGuide(guide))).toMatchObject({ exiledToday: [expect.any(String)] });
 });
 
 it("enters the votes of several nominated people through the guide: all votes have to be added up", () => {
@@ -157,7 +157,7 @@ it("enters the votes of several nominated people through the guide: all votes ha
   expect(describeGuide(guide).canContinue).toBe(false);
   guide = setVoteCount(guide, two, 3);
   expect(describeGuide(guide)).toMatchObject({ canContinue: true, voteSum: view.voteTotal });
-  expect(continueGuide(guide).session.present.status).toBe("exile");
+  expect(describeGuide(continueGuide(guide))).toMatchObject({ exiledToday: [expect.any(String)] });
 });
 
 it("does not attribute a counted runoff to the voters of an earlier named ballot", () => {
@@ -248,7 +248,7 @@ it("assigns the second vote of the mayor with the double vote: the vote can only
   // Tapping the same person again takes it back; a person who is not nominated cannot get it.
   expect(describeGuide(setVoteBonus(guide, bonusFor)).voteBonus?.chosen).toBeNull();
   expect(setVoteBonus(guide, "Nobody")).toBe(guide);
-  expect(continueGuide(guide).session.present.status).toBe("exile");
+  expect(describeGuide(continueGuide(guide))).toMatchObject({ exiledToday: [expect.any(String)] });
 });
 
 it("keeps one vote free for the second vote of the mayor: the numbers add up to all votes minus one at most", () => {
@@ -284,5 +284,5 @@ it("gives the second vote of the mayor in the vote about one person as an additi
   expect(continueGuide(guide).session.present.status).toBe("day");
   guide = setVoteBonus(guide, nominee);
   expect(describeGuide(guide).voteSum).toBe(needed);
-  expect(continueGuide(guide).session.present.status).toBe("exile");
+  expect(describeGuide(continueGuide(guide))).toMatchObject({ exiledToday: [expect.any(String)] });
 });

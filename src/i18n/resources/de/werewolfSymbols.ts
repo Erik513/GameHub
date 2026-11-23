@@ -3,9 +3,29 @@ export const werewolfSymbolsTexts = {
   werewolfSymbols: {
     tab: "Symbole",
     intro:
-      "Diese Symbole zeigt dir der Erzähler, wenn eine Rolle aufwacht oder eine Person betroffen ist. Gleiche Bedeutung heißt gleiches Zeichen. Eine Rolle steht frei, ihre Fähigkeit im Kreis. Eine durchgestrichene Fähigkeit ist verbraucht; eine mit gelb gestricheltem Rahmen geht gerade nicht.",
+      "Diese Symbole zeigt dir der Erzähler, wenn eine Rolle aufwacht oder eine Person betroffen ist. Gleiche Bedeutung heißt gleiches Zeichen. Eine Rolle steht frei, ihre Fähigkeit im Kreis. Eine grüne Fähigkeit kannst du jetzt nutzen; eine durchgestrichene ist verbraucht; eine mit gelb gestricheltem Rahmen geht gerade nicht; eine abgedunkelte ist noch nicht dran. Ein blauer Rahmen zeigt den nächsten Schritt, gelbe Kästen sind Hinweise für dich (zum Beispiel wer heute stumm ist), die blaue Box unten fasst eine Entscheidung noch einmal zusammen. Das geschlossene und offene Auge zeigt bei den Toten die Todesursache nur auf Antippen.",
     credits:
       "Wolfskopf: „Wolf head“ von Lorc, game-icons.net, Lizenz CC BY 3.0. Übrige Zeichnungen: Tabler Icons, Lizenz MIT.",
+    abilities: {
+      title: "Fähigkeiten",
+      items: {
+        attack: "Die Werwölfe wählen ihr Opfer",
+        inspect: "Die Seherin schaut eine Person an",
+        investigate: "Der Ermittler prüft eine Gruppe von Personen (einmal)",
+        heal: "Rettet das Opfer der Werwölfe",
+        poison: "Tötet eine Person (einmal)",
+        kill: "Ein Todeszauber des Magiers",
+        protect: "Der Leibwächter schützt eine Person",
+        stayWith: "Der Nachtgast schläft bei einer anderen Person",
+        bond: "Amor verliebt zwei Personen",
+        hammer: "Der Bürgermeister schlägt mit dem Hammer zu",
+        silence: "Die Alte Vettel macht eine Person für den Tag stumm",
+        shot: "Der Jäger schießt auf eine Person",
+        passAmulet: "Der Besitzer gibt das Amulett weiter",
+        vote: "Bis zu 3 Personen nominieren, danach stimmt das Dorf ab",
+        doubleVote: "Der Bürgermeister weist seine zweite Stimme zu",
+      },
+    },
     groups: {
       extra: "Zusätze",
       resource: "Eigene Mittel",
@@ -39,7 +59,7 @@ export const werewolfSymbolsTexts = {
       },
       day: {
         name: "Tag",
-        meaning: "Sonne: das Dorf spricht und stimmt ab",
+        meaning: "Sonne: das Dorf spricht, nominiert und stimmt ab",
       },
       dead: {
         name: "Tot",
@@ -47,7 +67,8 @@ export const werewolfSymbolsTexts = {
       },
       doubleVote: {
         name: "Doppelte Stimme",
-        meaning: "Zwei: die Stimme zählt doppelt",
+        meaning:
+          "Zwei: die Stimme zählt doppelt (die zweite Stimme wird einer nominierten Person zugewiesen)",
       },
       drunk: {
         name: "Trunkenbold",
@@ -150,8 +171,8 @@ export const werewolfSymbolsTexts = {
         meaning: "Wolfskopf: jagt nachts",
       },
       vote: {
-        name: "Abstimmung",
-        meaning: "Zettel in einer Urne: eine Person nominieren und abstimmen",
+        name: "Nominierung und Abstimmung",
+        meaning: "Zettel in einer Urne: bis zu 3 Personen nominieren, danach stimmt das Dorf ab",
       },
       wounded: {
         name: "Verwundet",

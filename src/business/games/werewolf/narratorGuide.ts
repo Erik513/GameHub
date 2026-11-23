@@ -296,6 +296,8 @@ export interface GuideView {
   /** Facts the narrator has to keep in mind during the day (silenced, wounded) and who a choice may not name. */
   readonly notes: GuideNotes;
   /** The votes that do not count once: the mayor twice, the village idiot has to vote yes. */
+  /** The day after a vote: who left the game in this day (the summary of the day says so). */
+  readonly exiledToday: readonly string[];
   readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
   /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
   readonly ballotRows: readonly BallotRow[];
@@ -447,6 +449,15 @@ export function describeGuide(guide: Guide): GuideView {
     progress: selection.progress ?? 0,
     question:
       state.status === "witch" || state.status === "magician" ? (selection.question ?? null) : null,
+    exiledToday:
+      state.status === "day"
+        ? state.history
+            .filter(
+              (entry) =>
+                entry.kind === "death" && entry.phase === "exile" && entry.night === state.night,
+            )
+            .map((entry) => (entry.kind === "death" ? entry.player : ""))
+        : [],
     voterNotes: voterNotesOf(state),
     nextKind:
       frame.phase === "ready"
@@ -825,7 +836,14 @@ export function undoSelection(guide: Guide): Guide {
 }
 
 function commit(guide: Guide, event: WerewolfEvent): Guide {
-  const session = advanceWerewolfSession(guide.session, event);
+  let session = advanceWerewolfSession(guide.session, event);
+  // The result of a vote is announced at once: the narrator comes back to the script of the day, where the blue box
+  // sums up who left the game (there is no view of its own for it).
+  if (session.present.status === "exile")
+    session = advanceWerewolfSession(session, {
+      type: "announceExile",
+      night: session.present.night,
+    });
   const frame = frameOf(session.present, session.past.length);
   return {
     session,

@@ -40,7 +40,12 @@ const attack = (state: WerewolfState, target: string | null) =>
   vision(play(state, { type: "attack", night: state.night, target }));
 
 function exile(state: WerewolfState, target: string) {
-  return play(state, ...lynchEvents(state, target), { type: "announceExile", night: state.night });
+  return play(
+    state,
+    ...lynchEvents(state, target),
+    { type: "announceExile", night: state.night },
+    { type: "endDay", night: state.night },
+  );
 }
 
 it.each(["anyDeath", "voteOnly"] as const)(

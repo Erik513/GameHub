@@ -37,6 +37,18 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
   // The day: once "no vote" is chosen the day can end (and the options are used).
   const dayDecided = view.state.status === "day" && view.progress >= 1;
   const nextFree = view.canNext && view.state.status !== "vote";
+  // The yellow notes of the vote (also shown at the result): what the narrator has to keep in mind.
+  const voteHints: string[] = [
+    ...Object.entries(view.voterNotes).map(([name, note]) =>
+      t(`werewolfNarrator.guide.vote.hint.${note}`, { name }),
+    ),
+    ...(view.notes.silenced
+      ? [t("werewolfNarrator.guide.silenced", { name: view.notes.silenced })]
+      : []),
+    ...(view.notes.wounded.length > 0
+      ? [t("werewolfNarrator.guide.wounded", { names: view.notes.wounded.join(", ") })]
+      : []),
+  ];
   // The vote: the upper box shows the votes, the lower box is where they are entered.
   const votes: VoteProps | undefined =
     view.state.status === "vote"
@@ -73,17 +85,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               }
             : {}),
           heading: t("werewolfNarrator.guide.vote.heading"),
-          hints: [
-            ...Object.entries(view.voterNotes).map(([name, note]) =>
-              t(`werewolfNarrator.guide.vote.hint.${note}`, { name }),
-            ),
-            ...(view.notes.silenced
-              ? [t("werewolfNarrator.guide.silenced", { name: view.notes.silenced })]
-              : []),
-            ...(view.notes.wounded.length > 0
-              ? [t("werewolfNarrator.guide.wounded", { names: view.notes.wounded.join(", ") })]
-              : []),
-          ],
+          hints: voteHints,
           onCancel: guide.goBack,
           onConfirm: guide.continueGuide,
           names: view.state.candidates,
@@ -239,7 +241,10 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           </Button>
           <Button
             // The vote is confirmed with the check mark (like every list of people): the button "next" waits.
-            data-next={(nextFree && (view.phase !== "act" || dayDecided)) || undefined}
+            data-next={
+              (nextFree && (view.phase !== "act" || dayDecided || view.exiledToday.length > 0)) ||
+              undefined
+            }
             disabled={!nextFree}
             onClick={view.nextKind === "finish" ? onEnd : guide.continueGuide}
             variant="success"

@@ -70,7 +70,12 @@ it("keeps a masked wolf detectable, skips a hunt without an active wolf and wake
   );
   expect(firstVision).toMatchObject({ status: "vision", isWolf: true });
   const day = dawn(play(firstVision, { type: "closeVision", night: 1 }));
-  const secondNight = play(day, ...lynchEvents(day, "Bea"), { type: "announceExile", night: 1 });
+  const secondNight = play(
+    day,
+    ...lynchEvents(day, "Bea"),
+    { type: "announceExile", night: 1 },
+    { type: "endDay", night: 1 },
+  );
   expect(secondNight).toMatchObject({
     status: "nightCall",
     night: 2,

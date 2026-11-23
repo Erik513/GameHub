@@ -110,7 +110,8 @@ it.each(["day", "morning"] as const)(
       actors: [hunter],
       period: period === "day" ? "day" : "night",
     });
-    if (period === "morning") s = dusk(s);
+    // The day goes on after the shot: the narrator ends it (in both cases the hunter shot before the night).
+    s = dusk(s);
     s = dawn(attack(s, null));
     expect(s.alive.some((p) => p.name === tough)).toBe(false);
   },

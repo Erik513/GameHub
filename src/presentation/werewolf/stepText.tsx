@@ -212,6 +212,8 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
   if (card.role === "day") {
     if (state.status !== "day" || view.phase !== "act") return null;
     const progress = view.progress;
+    // After a vote somebody may have left the game: the narrator lands at the second box (announce, end the day).
+    const settled = progress >= 1 || view.exiledToday.length > 0;
     return [
       {
         // One box: the village discusses, then somebody is nominated or not. The options above are free at once; its
@@ -222,15 +224,21 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         items: [t("werewolfNarrator.guide.day.nominateAsk")],
         // The vote: the symbol of the ability.
         symbol: "vote",
-        state: progress >= 1 ? "done" : "active",
+        state: settled ? "done" : "active",
       },
       {
         button: null,
         enabled: false,
         id: "asleep",
-        items: [t("werewolfNarrator.guide.sleep.day")],
-        // Once "no vote" is chosen the day can end: this box is what comes next (blue frame).
-        state: progress >= 1 ? "active" : "pending",
+        items: [
+          t(
+            view.exiledToday.length > 0
+              ? "werewolfNarrator.guide.day.summaryEnd"
+              : "werewolfNarrator.guide.sleep.day",
+          ),
+        ],
+        // Once "no vote" is chosen (or the vote is done) the day can end: this box is what comes next (blue frame).
+        state: settled ? "active" : "pending",
       },
     ];
   }

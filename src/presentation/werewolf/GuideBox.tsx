@@ -132,6 +132,8 @@ export function GuideBox({
   const showSummary =
     showFact ||
     ((state.status === "cupid" || state.status === "day") && view.progress >= 1) ||
+    // The day after a vote: who left the game.
+    (state.status === "day" && view.exiledToday.length > 0) ||
     // The witch and the magician: after the answer to the first question the summary already says what was decided.
     ((state.status === "witch" || state.status === "magician") && view.question === "poison") ||
     false;
@@ -660,12 +662,20 @@ function Summary({ view }: { readonly view: GuideView }) {
     );
   // The day: the only thing to sum up is "no vote" (the vote itself has its own steps).
   if (view.state.status === "day")
-    return view.progress >= 1 ? (
+    return view.progress >= 1 || view.exiledToday.length > 0 ? (
       <Chosen>
-        <span className="ww-guide__chosen-part">
-          <WerewolfSymbol id="vote" ring size={20} />
-          <strong>{t("werewolfNarrator.guide.noVote")}</strong>
-        </span>
+        {view.exiledToday.map((name) => (
+          <span className="ww-guide__chosen-part" key={name}>
+            <WerewolfSymbol id="vote" ring size={20} />
+            <span>{t("werewolfNarrator.guide.exile", { name })}</span>
+          </span>
+        ))}
+        {view.progress >= 1 && (
+          <span className="ww-guide__chosen-part">
+            <WerewolfSymbol id="vote" ring size={20} />
+            <strong>{t("werewolfNarrator.guide.noVote")}</strong>
+          </span>
+        )}
       </Chosen>
     ) : null;
   // The wolves who skipped: no attack.

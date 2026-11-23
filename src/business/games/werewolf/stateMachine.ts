@@ -64,6 +64,8 @@ interface Match {
 interface HunterTurn {
   readonly hunter: Player;
   readonly next: "day" | "wolves";
+  /** The hunter was voted out in the day: his shot belongs to the day (the day goes on after it). */
+  readonly inDay?: boolean;
 }
 
 export type WerewolfState = Match &
@@ -605,7 +607,13 @@ function announce(
   const resolved = applyDeaths(state, deaths, votedOut);
   const hunter = deaths.find((player) => player.role === "hunter");
   return hunter
-    ? { ...resolved, status: isMasked(state, hunter) ? "drunkHunter" : "hunter", hunter, next }
+    ? {
+        ...resolved,
+        status: isMasked(state, hunter) ? "drunkHunter" : "hunter",
+        hunter,
+        next,
+        ...(votedOut ? { inDay: true } : {}),
+      }
     : finishResolution(resolved, next);
 }
 
@@ -983,7 +991,8 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
     }
     case "exile": {
       if (event.type !== "announceExile") return state;
-      return announce(state, relatedDeaths(state, [state.victim]), "wolves", state.victim);
+      // The day goes on: the narrator comes back to the script of the day (nominate again, or end the day).
+      return announce(state, relatedDeaths(state, [state.victim]), "day", state.victim);
     }
     case "hunter": {
       if (event.type !== "shot") return state;
