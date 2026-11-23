@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-23T14:17:01.301Z",
+    "updatedAt": "2026-11-23T21:36:08.684Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 334,
-      "totalTasks": 390,
-      "percent": 85.6
+      "completedTasks": 354,
+      "totalTasks": 410,
+      "percent": 86.3
     }
   },
   "environment": {
@@ -716,19 +716,66 @@
       "id": "Al-06",
       "name": "Spätere Erweiterungen: Multiplayer und weitere Spiele",
       "area": "general",
-      "status": "planned",
+      "status": "in_progress",
       "tasks": [
         {
           "id": "Al-06-01",
           "title": "Multiplayer-Discovery und ADR",
-          "status": "planned"
+          "status": "done",
+          "validation": "Architektur mit OnlineGame, HTTP-API, SQLite und Client abgeglichen. Server-TypeScript, 19 Server- und SQLite-Tests sowie 10 gezielte Lobby- und Sitzungstests bestanden. Architekturentscheidung: ADR-011."
         },
         {
           "id": "Al-06-02",
           "title": "Spielmodulvertrag überprüfen und erweitern",
-          "status": "planned"
+          "status": "done",
+          "validation": "Tabu und ein eigenständiges Beispielmodul über GameModule geprüft. Schwimmen-Adapter und Testspiel über OnlineGame geprüft. App- und Server-Typprüfung, Architekturprüfung sowie die betroffenen App- und Online-Tests bestanden. Bestehende Verträge genügen."
+        },
+        {
+          "id": "Al-06-03",
+          "title": "Online-Lobby mit Raumcode, Sitzrechten und Bereitschaft",
+          "status": "done"
+        },
+        {
+          "id": "Al-06-04",
+          "title": "Revisionsbasierte Synchronisierung und Wiederbeitritt",
+          "status": "done"
+        },
+        {
+          "id": "Al-06-05",
+          "title": "Schwimmen an die Online-Sitzung anbinden",
+          "status": "done"
+        },
+        {
+          "id": "Al-06-06",
+          "title": "LAN-Mehrspieler mit Host-Gerät planen, umsetzen und abnehmen",
+          "status": "in_progress",
+          "document": "GAMEHUB_MULTIPLAYER.md",
+          "validation": "Host-Modell bestätigt. Planung dokumentiert. Der direkte Beitritt und die Hostübergabe müssen auf Smartphones geprüft und umgesetzt werden."
+        },
+        {
+          "id": "Al-06-07",
+          "title": "Online-Logik, Synchronisation und Sonderfälle gezielt prüfen",
+          "status": "done",
+          "validation": "Prüfung abgeschlossen: 8 vorhandene Tests und 11 isolierte Zusatzproben bestanden, zusätzlich 7 Übersetzungstests; TypeScript, ESLint und Architekturprüfung erfolgreich. ON-R1/ON-R2 bleiben als offene Folgeaufgaben; kein Produktionscode geändert. Bericht: GAMEHUB_ONLINE_LOGIC_REVIEW.json. Aufgabenbestand mit dem Multiplayer-Branch abgeglichen; Haupt- und gemeinsame HTML enthalten alle neun Aufgaben.",
+          "document": "GAMEHUB_MULTIPLAYER.md"
+        },
+        {
+          "id": "Al-06-08",
+          "title": "Lobby-Beitritt bei verlorener Antwort wiederholbar machen und dauerhaft testen",
+          "status": "done",
+          "validation": "19 dauerhafte Server-/SQLite-Tests und 10 Business-/Sitzungstests bestanden; zusätzlich 7 Übersetzungstests und echter Schwimmen-Kern über lokale HTTP-Verbindungen einschließlich Hostwechsel und vollständiger Runde geprüft. Server-/Frontend-TypeScript, gezieltes ESLint, Architektur- und Formatprüfung erfolgreich. Business/Sitzung: 100 % Zeilen/Zweige. Server 97,18 % Zeilen/80,77 % Zweige; SQLite 100 %/94,12 %; Client 100 %/91,94 %.",
+          "document": "GAMEHUB_MULTIPLAYER.md"
+        },
+        {
+          "id": "Al-06-09",
+          "title": "Hostübergabe bei Verbindungsabbruch und laufender Partie festlegen, implementieren und testen",
+          "status": "done",
+          "validation": "19 dauerhafte Server-/SQLite-Tests und 10 Business-/Sitzungstests bestanden; zusätzlich 7 Übersetzungstests und echter Schwimmen-Kern über lokale HTTP-Verbindungen einschließlich Hostwechsel und vollständiger Runde geprüft. Server-/Frontend-TypeScript, gezieltes ESLint, Architektur- und Formatprüfung erfolgreich. Business/Sitzung: 100 % Zeilen/Zweige. Server 97,18 % Zeilen/80,77 % Zweige; SQLite 100 %/94,12 %; Client 100 %/91,94 %.",
+          "document": "GAMEHUB_MULTIPLAYER.md"
         }
-      ]
+      ],
+      "document": "GAMEHUB_MULTIPLAYER.md",
+      "description": "Die gemeinsame Mehrspieler-Grundlage ist im Multiplayer-Branch geprüft. Der nächste Schritt ist eine LAN-Lobby, bei der das Gerät des Lobby-Erstellers die Partie führt."
     },
     {
       "id": "Ta-01",
@@ -2112,7 +2159,7 @@
           "id": "We-01-149",
           "title": "Trunkenbold: wahre Rolle in einem Vollbildfenster zeigen",
           "status": "done",
-          "validation": "Knopf „Wahre Rolle zeigen“ in der oberen Box (an der Stelle der Fähigkeiten) mit gesperrtem Haken rechts daneben; das Vollbildfenster zeigt die Karte der echten Rolle, das Kreuz oben rechts schließt es und macht den Haken klickbar; „Wahre Rolle sagen“ hat einen Zurück-Knopf, damit die Rolle erneut gezeigt werden kann; ohne Zeigen kein Bestätigen (Guide: markRoleShown). Test NarratorDrunk.test.tsx, Durchspiel-Test angepasst. Tests, Typprüfung und ESLint grün (1695 Tests); nicht im Browser angesehen. Offen: der Trunkenbold-Jäger (eigener Schritt)."
+          "validation": "Knopf „Wahre Rolle zeigen“ in der oberen Box (an der Stelle der Fähigkeiten) mit gesperrtem Haken rechts daneben; das Vollbildfenster zeigt die Karte der echten Rolle, das Kreuz oben rechts schließt es und macht den Haken klickbar; „Wahre Rolle sagen“ hat einen Zurück-Knopf, damit die Rolle erneut gezeigt werden kann; ohne Zeigen kein Bestätigen (Guide: markRoleShown). Test NarratorDrunk.test.tsx, Durchspiel-Test angepasst. Tests, Typprüfung und ESLint grün (1695 Tests); nicht im Browser angesehen. Offen: der Trunkenbold-Jäger (eigener Schritt). Das Fenster hat das Handyformat (Breite der App-Spalte, am PC zentriert, Rest abgedunkelt); der Haken hat die Form des Fähigkeiten-Knopfs in Grün."
         }
       ]
     },
@@ -2685,9 +2732,213 @@
           "status": "planned"
         }
       ]
+    },
+    {
+      "id": "Ta-11",
+      "title": "Tabu – Logikprüfung und Sonderfälle",
+      "area": "taboo",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "Ta-11-01",
+          "title": "Tabu: Regeln, Sonderfälle und vorhandene Tests überprüfen",
+          "status": "done",
+          "validation": "391 vorhandene Tests und 3 isolierte Zusatzproben; statischer Regelabgleich abgeschlossen. Befunde und Entscheidungen in GAMEHUB_GAME_LOGIC_REVIEW.json. Keine Produktionsänderungen."
+        },
+        {
+          "id": "Ta-11-02",
+          "title": "Zeitmodi gegen doppelte/verspätete Aktionen und Antworten nach Stechen-Zeitlimit absichern",
+          "status": "done",
+          "validation": "435 Business- und betroffene UI-Tests bestanden; TypeScript und ESLint erfolgreich. Coverage der drei betroffenen Logikmodule: 100 % Zeilen, 95,12 % Zweige."
+        }
+      ],
+      "name": "Tabu – Logikprüfung und Sonderfälle",
+      "document": "GAMEHUB_TABOO_LOGIC.md",
+      "description": "Tabu: RaceEvent verlangt bei answerCard und restartRun eine actionId von raceActionId(active). CountdownEvent verlangt bei answerCard und timeUp die active.actionId; sie wechselt bei jeder neuen Karte. Die vorhandenen UI-Aufrufer sind angepasst. Alte oder doppelte Ereignisse werden unverändert zurückgewiesen, auch nach automatischem Teamwechsel. stepTiebreak beendet bei elapsedMs >= 90000 den Versuch ohne zusätzliche Wertung und begrenzt die Zeit auf 90000. Die bestätigte Korrekturregel gilt unverändert nur für ursprünglich richtige Karten. Umsetzung ausschließlich auf game/taboo."
+    },
+    {
+      "id": "Wb-02",
+      "title": "Wortbombe – Logikprüfung und Sonderfälle",
+      "area": "word-bomb",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "Wb-02-01",
+          "title": "Wortbombe: Regeln, Sonderfälle und vorhandene Tests überprüfen",
+          "status": "done",
+          "validation": "4 vorhandene Tests und 4 isolierte Zusatzproben; statischer Regelabgleich abgeschlossen. Befunde und Entscheidungen in GAMEHUB_GAME_LOGIC_REVIEW.json. Keine Produktionsänderungen."
+        },
+        {
+          "id": "Wb-02-02",
+          "title": "Kartendaten und Zufallsquellen prüfen sowie zusätzliche Sonderfälle dauerhaft testen",
+          "status": "done",
+          "validation": "13 Tests bestanden; TypeScript und ESLint erfolgreich; Coverage: 100 % Zeilen, 97,1 % Zweige."
+        }
+      ],
+      "name": "Wortbombe – Logikprüfung und Sonderfälle",
+      "document": "GAMEHUB_WORTBOMBE.md",
+      "description": "Wortbombe: Ungültige Zufallswerte und doppelte/ungültige Aufgabenkarten werden ausdrücklich abgewiesen. Zusätzliche dauerhafte Tests sichern Rundenwechsel, mehrfaches Bestätigen, Zurück und Kartenzyklen ab. drawFuseSeconds/drawPrompt werfen bei fehlerhaften Anbietern oder Kartendaten RangeError; keine passende Karte bleibt undefined."
+    },
+    {
+      "id": "Im-02",
+      "title": "Imposter – Logikprüfung und Sonderfälle",
+      "area": "imposter",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "Im-02-01",
+          "title": "Imposter: Regeln, Sonderfälle und vorhandene Tests überprüfen",
+          "status": "done",
+          "validation": "3 vorhandene Tests und 4 isolierte Zusatzproben; statischer Regelabgleich abgeschlossen. Befunde und Entscheidungen in GAMEHUB_GAME_LOGIC_REVIEW.json. Keine Produktionsänderungen."
+        },
+        {
+          "id": "Im-02-02",
+          "title": "Konfiguration absichern und zusätzliche Siegerpfade dauerhaft testen",
+          "status": "done",
+          "validation": "11 Tests bestanden; TypeScript und ESLint erfolgreich; Coverage der Zustandsmaschine: 100 % Zeilen und Zweige."
+        }
+      ],
+      "name": "Imposter – Logikprüfung und Sonderfälle",
+      "document": "GAMEHUB_IMPOSTER.md",
+      "description": "Imposter: Ungültige Abstimmungsmodi, Hinweiseinstellungen und Zufallswerte erzeugen keine Partie mehr. Dauerhafte Tests decken erfolgreichen letzten Rateversuch, geheimen Frühgleichstand und erfolgreiche Stichwahl ab. Die öffentlichen Schnittstellen bleiben erhalten; ungültige Konfiguration liefert null."
+    },
+    {
+      "id": "Lb-02",
+      "title": "Liar’s Bar – Logikprüfung und Sonderfälle",
+      "area": "liars-bar",
+      "status": "in_progress",
+      "tasks": [
+        {
+          "id": "Lb-02-01",
+          "title": "Liar’s Bar: Regeln, Sonderfälle und vorhandene Tests überprüfen",
+          "status": "done",
+          "validation": "6 vorhandene Tests und 3 isolierte Zusatzproben; statischer Regelabgleich abgeschlossen. Befunde und Entscheidungen in GAMEHUB_GAME_LOGIC_REVIEW.json. Keine Produktionsänderungen."
+        },
+        {
+          "id": "Lb-02-02",
+          "title": "Öffentlichen Tischwert im Herausforderungsergebnis erhalten",
+          "status": "done",
+          "validation": "9 Tests, TypeScript und ESLint bestanden. Coverage: 100 % Zeilen, 95,65 % Zweige."
+        },
+        {
+          "id": "Lb-02-03",
+          "title": "Noch offene Risikoregel verbindlich festlegen",
+          "status": "planned"
+        },
+        {
+          "id": "Lb-02-04",
+          "title": "Optionale spätere Kartenmodi dokumentieren",
+          "status": "done",
+          "validation": "Dokumentation abgeglichen: klassischer Modus aktuell ausreichend; alle vier Varianten ausdrücklich optional. Keine Quellcodeänderung. Entwicklungs-HTML synchronisiert und Statusgleichheit geprüft."
+        }
+      ],
+      "name": "Liar’s Bar – Logikprüfung und Sonderfälle",
+      "document": "GAMEHUB_LIARS_BAR.md",
+      "description": "Liar's Bar: Ergebniszustand und Projektion behalten Tischwert und Wahrheitsurteil. Risikoregel bleibt offen. Liar’s Bar: Aktueller Umfang bleibt der klassische Kartenmodus Liar’s Deck. Devil, Chaos, Deck 2 und Chaos 2 als optionale spätere Erweiterungen vorgemerkt; noch keine Umsetzung oder verbindliche Regelplanung."
+    },
+    {
+      "id": "Sw-06",
+      "title": "Schwimmen – Logikprüfung und Sonderfälle",
+      "area": "schwimmen",
+      "status": "done",
+      "tasks": [
+        {
+          "id": "Sw-06-01",
+          "title": "Schwimmen: Regeln, Sonderfälle und vorhandene Tests überprüfen",
+          "status": "done",
+          "validation": "11 vorhandene Tests und 7 isolierte Zusatzproben; statischer Regelabgleich abgeschlossen. Befunde und Entscheidungen in GAMEHUB_GAME_LOGIC_REVIEW.json. Keine Produktionsänderungen."
+        },
+        {
+          "id": "Sw-06-02",
+          "title": "Bei Blitz und 31-Ansage nur die niedrigste übrige Hand als Verlierer bestimmen",
+          "status": "done",
+          "validation": "38 Spiel- und Sitzungstests bestanden; TypeScript, ESLint und Architekturprüfung erfolgreich. Coverage: 100 % Zeilen, 97,27 % Zweige insgesamt; Spiellogik 96,89 % Zweige."
+        },
+        {
+          "id": "Sw-06-03",
+          "title": "Ungültige Onlinekommandos vor Ausführung eindeutig abweisen",
+          "status": "done",
+          "validation": "38 Spiel- und Sitzungstests bestanden; TypeScript, ESLint und Architekturprüfung erfolgreich. Coverage: 100 % Zeilen, 97,27 % Zweige insgesamt; Spiellogik 96,89 % Zweige."
+        }
+      ],
+      "name": "Schwimmen – Logikprüfung und Sonderfälle",
+      "document": "GAMEHUB_SCHWIMMEN.md",
+      "description": "Schwimmen: Bei Blitz und 31-Ansage verliert ausschließlich die niedrigste übrige Hand, bei Gleichstand mehrere. Drillingränge und das laufende Klopfen ändern diese Sofortregel nicht. decodeSchwimmenCommand prüft unbekannte Befehle, Parameter, eindeutige Kartenauswahl und Kartennummern. transitionSchwimmen nimmt untrusted command als unknown entgegen und dekodiert vor jeder Änderung; ungültige Onlinebefehle ergeben invalid ohne Zustands- oder Revisionsänderung. Kartenrecycling bleibt wie vorläufig vereinbart."
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-23",
+      "summary": "Die Person, die eine Lobby erstellt, hostet die Partie auf ihrem eigenen Gerät. Der erste Einsatz ist im selben WLAN vorgesehen. Der Beitritt soll ohne Konto, Abo, Zahlungskarte oder kostenpflichtigen Dienst funktionieren."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "GameHub unterstützt mehrere unabhängige Online-Partien gleichzeitig. Jede Lobby hat einen eigenen Raumcode und Spielstand. Für die öffentliche Abnahme werden parallele Partien, Raumtrennung und die Belastbarkeit des Dienstes geprüft."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "GameHub bleibt für Spieler kostenlos und ohne Konto, Anmeldung oder Abo. Für Online-Partien genügen Anzeigename und Raumcode oder Einladungslink. Die öffentliche Abnahme bleibt offen, bis ein geeigneter Betreiber den Mehrspieler-Dienst bereitstellt. Das lokal geprüfte Serverpaket kann für Selbsthosting genutzt werden."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Al-06-06: Beim lokalen Neustart mit echtem Schwimmen-Kern und derselben SQLite-Datei kehrten beide Sitze mit unveränderten Handkarten und demselben Spielstand zurück. Der nächste Zug wurde angenommen. Eine öffentliche Dienstadresse ist im Projekt nicht hinterlegt."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Al-06-06 in Arbeit. Der Abnahmelauf für den Mehrspieler-Dienst ist vorbereitet und lief lokal mit echtem Schwimmen-Kern und SQLite erfolgreich. Für die öffentliche Abnahme fehlt eine HTTPS-Adresse mit dauerhaftem Dateispeicher."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Al-06-02 abgeschlossen. Der lokale Spielmodulvertrag und der Online-Adapter decken die geprüften Anforderungen ab. Die öffentliche Abnahme bleibt offen."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Al-06-01 abgeschlossen. Die bereits erprobte Architektur des gemeinsamen Mehrspieler-Dienstes ist in ADR-011 festgehalten. Spielmodulvertrag und öffentliche Abnahme bleiben eigene Aufgaben."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Online-Korrekturen Al-06-08/09 abgeschlossen: Wiederholbarer Beitritt nach Antwortverlust; Hostübergabe nach 30 Sekunden ohne neue Anfrage oder sofort beim ausdrücklichen Verlassen. Verbundene Nachfolger werden in Sitzreihenfolge gewählt. Der bisherige Host behält während der Partie seinen Spielerplatz und erhält bei Rückkehr keinen automatischen Vorrang. Spielstand bleibt erhalten. Umsetzung auf feature/multiplayer, öffentliche Abnahme und Online-Oberfläche bleiben ausstehend."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Al-06-08: Wiederholbarer Beitritt umgesetzt. prepareRoomJoin erzeugt vor dem Versand einen geheimen Zugang; join verwendet ihn bei Wiederholung weiter. Mit demselben Zugang und Namen liefert der Server denselben Sitz ohne zusätzliche Revision, auch nach Serverneustart oder Spielstart. Der Server speichert weiterhin nur den Token-Hash. Für Wiederherstellung nach Neuladen muss die spätere UI den vorbereiteten Beitrittsversuch vorher lokal sichern. POST join verlangt jetzt name und token. Vier neue und vier vorhandene HTTP-Tests sowie beide TypeScript-Prüfungen und gezieltes ESLint bestanden. Al-06-09: Auftraggeber bestätigt 30 Sekunden bis zur automatischen Hostübergabe; Spielerplatz bleibt reserviert, bisheriger Host erhält bei Rückkehr keine automatische Vorrangstellung."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Multiplayer-Status abgeglichen: Die Hauptübersicht enthielt die bereits erledigten Schritte Al-06-03 bis Al-06-05 und die offene öffentliche Abnahme Al-06-06 nicht. Alle neun Aufgaben aus feature/multiplayer sind nun sichtbar, davon vier erledigt. Umsetzung liegt weiterhin im eigenen Multiplayer-Branch; die öffentliche Abnahme und die beiden Befundbehebungen bleiben offen."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Online-Prüfung auf feature/multiplayer abgeschlossen: 8 vorhandene Logik-/Servertests und 11 gezielte Zusatzproben bestanden, einschließlich echter Schwimmen-Partie über lokale HTTP-Verbindungen. Zwei offene Befunde: verlorene Beitrittsantwort kann einen unerreichbaren Sitz erzeugen; automatische Hostübergabe bei Verbindungsabbruch und während einer laufenden Partie fehlt. Kein Produktionscode geändert; öffentliche Online-Abnahme bleibt offen."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Liar’s Bar: Aktueller Umfang bleibt der klassische Kartenmodus Liar’s Deck. Devil, Chaos, Deck 2 und Chaos 2 als optionale spätere Erweiterungen vorgemerkt; noch keine Umsetzung oder verbindliche Regelplanung."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Schwimmen: Bei Blitz und 31-Ansage verliert ausschließlich die niedrigste übrige Hand, bei Gleichstand mehrere. Drillingränge und das laufende Klopfen ändern diese Sofortregel nicht. decodeSchwimmenCommand prüft unbekannte Befehle, Parameter, eindeutige Kartenauswahl und Kartennummern. transitionSchwimmen nimmt untrusted command als unknown entgegen und dekodiert vor jeder Änderung; ungültige Onlinebefehle ergeben invalid ohne Zustands- oder Revisionsänderung. Kartenrecycling bleibt wie vorläufig vereinbart."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Tabu: RaceEvent verlangt bei answerCard und restartRun eine actionId von raceActionId(active). CountdownEvent verlangt bei answerCard und timeUp die active.actionId; sie wechselt bei jeder neuen Karte. Die vorhandenen UI-Aufrufer sind angepasst. Alte oder doppelte Ereignisse werden unverändert zurückgewiesen, auch nach automatischem Teamwechsel. stepTiebreak beendet bei elapsedMs >= 90000 den Versuch ohne zusätzliche Wertung und begrenzt die Zeit auf 90000. Die bestätigte Korrekturregel gilt unverändert nur für ursprünglich richtige Karten. Umsetzung ausschließlich auf game/taboo."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Liar's Bar: Ergebniszustand und Projektion behalten Tischwert und Wahrheitsurteil. Risikoregel bleibt offen."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Imposter: Ungültige Abstimmungsmodi, Hinweiseinstellungen und Zufallswerte erzeugen keine Partie mehr. Dauerhafte Tests decken erfolgreichen letzten Rateversuch, geheimen Frühgleichstand und erfolgreiche Stichwahl ab. Die öffentlichen Schnittstellen bleiben erhalten; ungültige Konfiguration liefert null."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Wortbombe: Ungültige Zufallswerte und doppelte/ungültige Aufgabenkarten werden ausdrücklich abgewiesen. Zusätzliche dauerhafte Tests sichern Rundenwechsel, mehrfaches Bestätigen, Zurück und Kartenzyklen ab. drawFuseSeconds/drawPrompt werfen bei fehlerhaften Anbietern oder Kartendaten RangeError; keine passende Karte bleibt undefined."
+    },
+    {
+      "date": "2026-11-23",
+      "summary": "Spielweise Logikprüfung außer Werwolf abgeschlossen: 415 vorhandene Business-/Sitzungstests bestanden und 21 kleine Zusatzproben ausgeführt. Zusatzproben reproduzieren auch Fehler und sind deshalb kein Beleg für fehlerfreie Spiele. Bestätigte Abweichung bei Schwimmen (Blitz/31-Verlierer), Eingabelücke vor Online-Anbindung, fehlende Ereignisabsicherung in Tabu-Zeitmodi und fehlender öffentlicher Tischwert im Ergebnis von Liar’s Bar. Wortbombe/Imposter-Kernregeln in den geprüften Fällen konsistent. Nutzerentscheidungen dokumentiert; Liar’s-Bar-Risikoregel bleibt offen. Keine Produktionslogik geändert, keine langen Simulationen."
+    },
     {
       "date": "2026-11-23",
       "summary": "We-03-71 abgeschlossen: Forschungssimulation verwendet voteCount statt erzwungener Verurteilung bei einem Nominierten. Stimmengewichte und Ja/Nein-Mehrheit stimmen mit der Erzähleransicht überein; alte benannte Stimmen werden nach einer Stimmenzahl-Abstimmung nicht als aktuelle Abstimmende protokolliert. lastShot für den betrunkenen Jäger abgesichert. 84 gezielte Tests und 24 kurze Modellpartien bestanden; keine langen Balance-Läufe."
@@ -3538,7 +3789,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-23T18:36:57.624Z"
+  "updatedAt": "2026-11-23T21:42:06.327Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

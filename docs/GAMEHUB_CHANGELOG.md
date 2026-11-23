@@ -2,6 +2,12 @@
 
 ## 2026-11-23
 
+### Spielweise Logikprüfung: Tabu, Wortbombe, Imposter, Liar’s Bar und Schwimmen
+
+- Spielweise Logikprüfung außer Werwolf abgeschlossen: 415 vorhandene Business-/Sitzungstests bestanden und 21 kleine Zusatzproben ausgeführt. Zusatzproben reproduzieren auch Fehler und sind deshalb kein Beleg für fehlerfreie Spiele. Bestätigte Abweichung bei Schwimmen (Blitz/31-Verlierer), Eingabelücke vor Online-Anbindung, fehlende Ereignisabsicherung in Tabu-Zeitmodi und fehlender öffentlicher Tischwert im Ergebnis von Liar’s Bar. Wortbombe/Imposter-Kernregeln in den geprüften Fällen konsistent. Nutzerentscheidungen dokumentiert; Liar’s-Bar-Risikoregel bleibt offen. Keine Produktionslogik geändert, keine langen Simulationen.
+- Bestätigt: Tabu-Korrektur nur ursprünglich richtiger Karten; Schwimmen-31 nur eigener Zug und bei Blitz/31 nur niedrigste übrige Hand verliert. Weitere Schwimmen-Prototypvorgaben bestätigt, Wiederverwendung abgelegter Tischkarten vorläufiger Reservefall.
+
+
 ### We-01-139 (Fortsetzung): Erzähleransicht – Spielerauswahl, Morgen, Tag und Abstimmung
 
 Alle Angaben ohne Sichtprüfung im Browser; Tests, Typprüfung und ESLint waren jeweils grün.
@@ -30,7 +36,7 @@ Alle Angaben ohne Sichtprüfung im Browser; Tests, Typprüfung und ESLint waren 
 - Tag und Abstimmung, feste Position: Überschrift und Hinweisboxen der oberen Box stehen am Tag und bei der Abstimmung an derselben Stelle (gleicher Abstand unter der Überschrift, gleicher Abstand und gleiches Maß der Hinweise, gleicher Zeilenumbruch bei „Heute stumm“); neue Hinweise werden unten angehängt. Hinweis zur Technik: Der Entwicklungsserver lieferte zweimal eine veraltete Fassung einer Datei aus, wenn sie kurz hintereinander zweimal geschrieben wurde; nach größeren Änderungen wird die ausgelieferte Fassung geprüft.
 - Werwölfe müssen angreifen (Auftraggeber, 23.11.2026): Ab Nacht 2 (oder in Nacht 1 mit der Einstellung „Angriff in der ersten Nacht“) können die Werwölfe nicht verzichten. Erzähleransicht: kein Knopf „Verzichten“, Bestätigen nur mit gewähltem Opfer. Spiellogik: Ein Angriff „auf niemanden“ wird nie angenommen (das Spiel endet vorher, bevor kein Opfer mehr übrig ist); die erste Nacht ohne Angriff läuft über wolvesReady; eventChoices bietet „niemanden“ nicht mehr an. Rund 20 Tests, die „niemanden angreifen“ als Abkürzung nutzten, greifen jetzt die erste lebende Nicht-Werwolf-Person an (sieben Erwartungen angepasst).
 - Verbrauchte Fähigkeiten (alle Rollen, eine gemeinsame Darstellung): grau, ohne Rahmen und mit durchgestrichenem Namen; die Diagonale über dem ganzen Knopf und der blaue Rahmen (nächster Schritt) entfallen. Gesperrte (gelb gestrichelt) und abgedunkelte Fähigkeiten bleiben unverändert. Test in NarratorCard.test.tsx.
-- Trunkenbold: In der oberen Box steht an der Stelle der Fähigkeiten der Knopf „Wahre Rolle zeigen“, rechts daneben ein gesperrter Haken. Der Knopf öffnet ein Vollbildfenster mit der Karte der echten Rolle (gleiche Karte wie bei der Rollenverteilung, bleibt offen); das Kreuz oben rechts schließt es, danach ist der Haken klickbar und geht zum nächsten Schritt. Die Box „Wahre Rolle sagen“ hat einen Zurück-Knopf (klickbar nach dem Haken), der zum Knopf zurückführt, damit die Rolle erneut gezeigt werden kann. Guide: markRoleShown; ohne Zeigen wird der Schritt nicht bestätigt. Test NarratorDrunk.test.tsx. Der Trunkenbold-Jäger (eigener Schritt) ist nicht umgestellt.
+- Trunkenbold: In der oberen Box steht an der Stelle der Fähigkeiten der Knopf „Wahre Rolle zeigen“, rechts daneben ein gesperrter Haken. Der Knopf öffnet ein Vollbildfenster mit der Karte der echten Rolle (gleiche Karte wie bei der Rollenverteilung, bleibt offen); das Kreuz oben rechts schließt es, danach ist der Haken klickbar und geht zum nächsten Schritt. Die Box „Wahre Rolle sagen“ hat einen Zurück-Knopf (klickbar nach dem Haken), der zum Knopf zurückführt, damit die Rolle erneut gezeigt werden kann. Guide: markRoleShown; ohne Zeigen wird der Schritt nicht bestätigt. Test NarratorDrunk.test.tsx. Der Trunkenbold-Jäger (eigener Schritt) ist nicht umgestellt. Das Fenster hat das Handyformat (Breite der App-Spalte, am PC zentriert, der Rest abgedunkelt, auf dem Handy fast bildschirmfüllend, kleiner Rand); der Haken hat die Form des Fähigkeiten-Knopfs in Grün.
 - Prüfung: alle 1695 Tests, tsc, ESLint und Prettier grün. Die Oberfläche wurde zuletzt nicht mehr im Browser angesehen (Wunsch des Auftraggebers).
 - Notizen: Livetiker und Multiplayer in GAMEHUB_WERWOLF_LIVETICKER_VISION.md festgehalten (noch nicht begonnen); We-01-140 (Anleitung: Skript immer gleich, nur Lebende werden geweckt) geplant.
 
@@ -1609,3 +1615,102 @@ Es wurden keine Spiele, keine KI-Anbindung und kein Multiplayer implementiert.
 
 
 Nachprüfung advancedRoles.test.ts: 14 weitere Tests zu We-03-70 bestanden. Veraltete Verzichtserwartung an die Pflichtregel der Alten Vettel angepasst; keine Produktionslogik geändert.
+
+
+### Fehlerbehebung Wb-02 vom 23.11.2026
+
+Wortbombe: Ungültige Zufallswerte und doppelte/ungültige Aufgabenkarten werden ausdrücklich abgewiesen. Zusätzliche dauerhafte Tests sichern Rundenwechsel, mehrfaches Bestätigen, Zurück und Kartenzyklen ab. drawFuseSeconds/drawPrompt werfen bei fehlerhaften Anbietern oder Kartendaten RangeError; keine passende Karte bleibt undefined.
+
+Prüfung: 13 Tests bestanden; TypeScript und ESLint erfolgreich; Coverage: 100 % Zeilen, 97,1 % Zweige.
+
+
+### Fehlerbehebung Im-02 vom 23.11.2026
+
+Imposter: Ungültige Abstimmungsmodi, Hinweiseinstellungen und Zufallswerte erzeugen keine Partie mehr. Dauerhafte Tests decken erfolgreichen letzten Rateversuch, geheimen Frühgleichstand und erfolgreiche Stichwahl ab. Die öffentlichen Schnittstellen bleiben erhalten; ungültige Konfiguration liefert null.
+
+Prüfung: 11 Tests bestanden; TypeScript und ESLint erfolgreich; Coverage der Zustandsmaschine: 100 % Zeilen und Zweige.
+
+
+### Fehlerbehebung Lb-02 vom 23.11.2026
+
+Liar's Bar: Ergebniszustand und Projektion behalten Tischwert und Wahrheitsurteil. Risikoregel bleibt offen.
+
+Prüfung: 9 Tests, TypeScript und ESLint bestanden. Coverage: 100 % Zeilen, 95,65 % Zweige.
+
+
+### Fehlerbehebung Ta-11 vom 23.11.2026
+
+Tabu: RaceEvent verlangt bei answerCard und restartRun eine actionId von raceActionId(active). CountdownEvent verlangt bei answerCard und timeUp die active.actionId; sie wechselt bei jeder neuen Karte. Die vorhandenen UI-Aufrufer sind angepasst. Alte oder doppelte Ereignisse werden unverändert zurückgewiesen, auch nach automatischem Teamwechsel. stepTiebreak beendet bei elapsedMs >= 90000 den Versuch ohne zusätzliche Wertung und begrenzt die Zeit auf 90000. Die bestätigte Korrekturregel gilt unverändert nur für ursprünglich richtige Karten. Umsetzung ausschließlich auf game/taboo.
+
+Prüfung: 435 Business- und betroffene UI-Tests bestanden; TypeScript und ESLint erfolgreich. Coverage der drei betroffenen Logikmodule: 100 % Zeilen, 95,12 % Zweige.
+
+
+### Fehlerbehebung Sw-06 vom 23.11.2026
+
+Schwimmen: Bei Blitz und 31-Ansage verliert ausschließlich die niedrigste übrige Hand, bei Gleichstand mehrere. Drillingränge und das laufende Klopfen ändern diese Sofortregel nicht. decodeSchwimmenCommand prüft unbekannte Befehle, Parameter, eindeutige Kartenauswahl und Kartennummern. transitionSchwimmen nimmt untrusted command als unknown entgegen und dekodiert vor jeder Änderung; ungültige Onlinebefehle ergeben invalid ohne Zustands- oder Revisionsänderung. Kartenrecycling bleibt wie vorläufig vereinbart.
+
+Prüfung: 38 Spiel- und Sitzungstests bestanden; TypeScript, ESLint und Architekturprüfung erfolgreich. Coverage: 100 % Zeilen, 97,27 % Zweige insgesamt; Spiellogik 96,89 % Zweige.
+
+
+### Lb-02-04 – Spätere Kartenvarianten vorgemerkt (23.11.2026)
+
+Liar’s Bar: Aktueller Umfang bleibt der klassische Kartenmodus Liar’s Deck. Devil, Chaos, Deck 2 und Chaos 2 als optionale spätere Erweiterungen vorgemerkt; noch keine Umsetzung oder verbindliche Regelplanung.
+
+
+### Al-06-07 – Online-Logik geprüft (23.11.2026)
+
+Online-Prüfung auf feature/multiplayer abgeschlossen: 8 vorhandene Logik-/Servertests und 11 gezielte Zusatzproben bestanden, einschließlich echter Schwimmen-Partie über lokale HTTP-Verbindungen. Zwei offene Befunde: verlorene Beitrittsantwort kann einen unerreichbaren Sitz erzeugen; automatische Hostübergabe bei Verbindungsabbruch und während einer laufenden Partie fehlt. Kein Produktionscode geändert; öffentliche Online-Abnahme bleibt offen.
+
+
+### Al-06-07 – Multiplayer-Fortschritt vervollständigt (23.11.2026)
+
+Multiplayer-Status abgeglichen: Die Hauptübersicht enthielt die bereits erledigten Schritte Al-06-03 bis Al-06-05 und die offene öffentliche Abnahme Al-06-06 nicht. Alle neun Aufgaben aus feature/multiplayer sind nun sichtbar, davon vier erledigt. Umsetzung liegt weiterhin im eigenen Multiplayer-Branch; die öffentliche Abnahme und die beiden Befundbehebungen bleiben offen.
+
+
+### Beitrittskorrektur und bestätigte Hostübergabe (23.11.2026)
+
+Al-06-08: Wiederholbarer Beitritt umgesetzt. prepareRoomJoin erzeugt vor dem Versand einen geheimen Zugang; join verwendet ihn bei Wiederholung weiter. Mit demselben Zugang und Namen liefert der Server denselben Sitz ohne zusätzliche Revision, auch nach Serverneustart oder Spielstart. Der Server speichert weiterhin nur den Token-Hash. Für Wiederherstellung nach Neuladen muss die spätere UI den vorbereiteten Beitrittsversuch vorher lokal sichern. POST join verlangt jetzt name und token. Vier neue und vier vorhandene HTTP-Tests sowie beide TypeScript-Prüfungen und gezieltes ESLint bestanden. Al-06-09: Auftraggeber bestätigt 30 Sekunden bis zur automatischen Hostübergabe; Spielerplatz bleibt reserviert, bisheriger Host erhält bei Rückkehr keine automatische Vorrangstellung.
+
+
+### Online-Korrekturen Al-06-08/09 abgeschlossen (23.11.2026)
+
+Online-Korrekturen Al-06-08/09 abgeschlossen: Wiederholbarer Beitritt nach Antwortverlust; Hostübergabe nach 30 Sekunden ohne neue Anfrage oder sofort beim ausdrücklichen Verlassen. Verbundene Nachfolger werden in Sitzreihenfolge gewählt. Der bisherige Host behält während der Partie seinen Spielerplatz und erhält bei Rückkehr keinen automatischen Vorrang. Spielstand bleibt erhalten. Umsetzung auf feature/multiplayer, öffentliche Abnahme und Online-Oberfläche bleiben ausstehend.
+
+19 dauerhafte Server-/SQLite-Tests und 10 Business-/Sitzungstests bestanden; zusätzlich 7 Übersetzungstests und echter Schwimmen-Kern über lokale HTTP-Verbindungen einschließlich Hostwechsel und vollständiger Runde geprüft. Server-/Frontend-TypeScript, gezieltes ESLint, Architektur- und Formatprüfung erfolgreich. Business/Sitzung: 100 % Zeilen/Zweige. Server 97,18 % Zeilen/80,77 % Zweige; SQLite 100 %/94,12 %; Client 100 %/91,94 %.
+
+Details und UI-Vertrag: [GAMEHUB_MULTIPLAYER.md](GAMEHUB_MULTIPLAYER.md).
+
+
+### Al-06-01 – Online-Architektur dokumentiert (23.11.2026)
+
+Al-06-01 abgeschlossen. Die bereits erprobte Architektur des gemeinsamen Mehrspieler-Dienstes ist in ADR-011 festgehalten. Spielmodulvertrag und öffentliche Abnahme bleiben eigene Aufgaben.
+
+
+### Al-06-02 – Spielmodulvertrag geprüft (23.11.2026)
+
+Al-06-02 abgeschlossen. Der lokale Spielmodulvertrag und der Online-Adapter decken die geprüften Anforderungen ab. Die öffentliche Abnahme bleibt offen.
+
+
+### Al-06-06 – Öffentliche Abnahme vorbereitet (23.11.2026)
+
+Al-06-06 in Arbeit. Der Abnahmelauf für den Mehrspieler-Dienst ist vorbereitet und lief lokal mit echtem Schwimmen-Kern und SQLite erfolgreich. Für die öffentliche Abnahme fehlt eine HTTPS-Adresse mit dauerhaftem Dateispeicher.
+
+
+### Al-06-06 – Lokaler Neustartnachweis (23.11.2026)
+
+Al-06-06: Beim lokalen Neustart mit echtem Schwimmen-Kern und derselben SQLite-Datei kehrten beide Sitze mit unveränderten Handkarten und demselben Spielstand zurück. Der nächste Zug wurde angenommen. Eine öffentliche Dienstadresse ist im Projekt nicht hinterlegt.
+
+
+GameHub bleibt für Spieler kostenlos und ohne Konto, Anmeldung oder Abo. Für Online-Partien genügen Anzeigename und Raumcode oder Einladungslink. Die öffentliche Abnahme bleibt offen, bis ein geeigneter Betreiber den Mehrspieler-Dienst bereitstellt. Das lokal geprüfte Serverpaket kann für Selbsthosting genutzt werden.
+
+
+### Gleichzeitige Nutzung (Al-06-06)
+
+GameHub unterstützt mehrere unabhängige Online-Partien gleichzeitig. Jede Lobby hat einen eigenen Raumcode und Spielstand. Für die öffentliche Abnahme werden parallele Partien, Raumtrennung und die Belastbarkeit des Dienstes geprüft. Die nachhaltig unterstützte Nutzerzahl hängt vom öffentlichen Betrieb ab und wird dort ermittelt.
+
+
+### Al-06-06 – LAN-Lobby auf dem Host-Gerät
+
+Die Person, die eine Lobby erstellt, hostet die Partie auf ihrem eigenen Gerät. Der erste Einsatz ist im selben WLAN vorgesehen. Der Beitritt soll ohne Konto, Abo, Zahlungskarte oder kostenpflichtigen Dienst funktionieren.
+
+[Technischer Prüfplan](GAMEHUB_MULTIPLAYER.md).
