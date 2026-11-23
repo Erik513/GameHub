@@ -2,6 +2,21 @@
 
 ## 2026-11-23
 
+### We-01-139 (Fortsetzung): Erzähleransicht – Spielerauswahl, Morgen, Tag und Abstimmung
+
+Alle Angaben ohne Sichtprüfung im Browser; Tests, Typprüfung und ESLint waren jeweils grün.
+
+- Fähigkeiten: vier Zustände (grün wählbar, grau durchgestrichen verbraucht, gelb gestrichelt rollenbedingt nicht möglich, abgedunkelt wenn die Fähigkeit nicht dran ist); Fähigkeiten stehen im Kreis, Rollen frei; Gifttrank bei der ersten Hexenfrage abgedunkelt; Amors Fähigkeit nach den Verliebten gesperrt.
+- Anweisungen statt „Tippe auf eine Fähigkeit“, ohne Rollennamen und mit „wählen“ (zum Beispiel „Person zum Schützen wählen (zeigen)“); Dorfmatratze: „Übernachten“ / „Stay over“; Jäger ohne Aufwachbox und ohne „(zeigen)“, mit Hinweis ob er schießen muss oder darf.
+- Spielerauswahl: immer alle Spieler in fester Reihenfolge, Tote grau, rollenbedingt gesperrte gelb gestrichelt, lange Namen zweizeilig; nie bestätigen ohne Auswahl, kein „Niemand“-Eintrag (Werwölfe verzichten mit „Verzichten“); drei gleich große Knöpfe; Zusammenfassung während der Wahl ausgeblendet; Verzichten bei leerer Hexe oder leerem Magier möglich (vorher Sackgasse).
+- Morgen: jede gestorbene Person in einer eigenen Box, Kategorien „Gestorben“ und „Letzter Schuss“ (nur der Jäger, mit Rolle), Todesursache erst auf Antippen (geschlossenes und offenes Auge), nach dem Schuss des Jägers keine Ursache; „Zurück“ fragt nie nach.
+- Todesreihenfolge (neue Datei deathOrder.ts): verzögerter Tod des Harten Burschen zuerst, dann Werwolfopfer, Gift, Zauber, Hammer; bei Verliebten das Opfer zuerst und die Person aus Liebeskummer direkt danach; das erste Todesurteil zählt. Tests für die Regel und für ganze Nächte.
+- Übersicht „Alle Spieler und Rollen“: Tote der Morgen-Ansicht gelten schon in der Ansage als tot, der Jäger mit letztem Schuss (`lastShot`) wird erst nach seiner Entscheidung als tot gezeigt; auch in der Spielerliste für den Schuss.
+- Tag: Skript mit der Frage „Jemanden nominieren? (bis zu 3 Personen)“ und Überschrift „Das Dorf diskutiert“ in der oberen Box; „Nominierung“ und „Keine Nominierung“ (vorher Abstimmung); der Tag endet nur nach einer gewählten Option; Reset-Knopf; Zusammenfassung nach jeder Entscheidung (Tag, Hexe und Magier nach der ersten Antwort, Werwölfe ohne Angriff, Nominierte); ohne Icon-Plätze am Tag; Stumm-Hinweis mit Zeilenumbruch.
+- Abstimmung: der Erzähler trägt die Stimmenzahl je nominierter Person in der oberen Box ein und kann erst bestätigen, wenn alle Stimmen (Bürgermeister doppelt) zusammen eingetragen sind; bei einer nominierten Person Ja/Nein mit Mehrheit aller Stimmen wie in Ultimate Werewolf; neues Ereignis voteCount in der Spiellogik, das alte vote bleibt gültig. Tests voteCount.test.ts, Abdeckungsprüfung angepasst.
+- Notizen: Livetiker und Multiplayer in GAMEHUB_WERWOLF_LIVETICKER_VISION.md festgehalten (noch nicht begonnen); We-01-140 (Anleitung: Skript immer gleich, nur Lebende werden geweckt) geplant.
+
+
 ### We-03-71: Stimmenzahl-Simulation und unbekannte Abstimmende
 
 - We-03-71 abgeschlossen: Forschungssimulation verwendet voteCount statt erzwungener Verurteilung bei einem Nominierten. Stimmengewichte und Ja/Nein-Mehrheit stimmen mit der Erzähleransicht überein; alte benannte Stimmen werden nach einer Stimmenzahl-Abstimmung nicht als aktuelle Abstimmende protokolliert. lastShot für den betrunkenen Jäger abgesichert. 84 gezielte Tests und 24 kurze Modellpartien bestanden; keine langen Balance-Läufe.
