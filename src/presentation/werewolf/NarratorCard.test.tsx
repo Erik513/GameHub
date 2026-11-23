@@ -131,7 +131,7 @@ describe("NarratorCard", () => {
     expect(onAbility).not.toHaveBeenCalled();
   });
 
-  it("shows the day without a role: no head and no slots, only the vote button", async () => {
+  it("shows the day without a role: no head and no slots, only the nomination button", async () => {
     const day: Card = {
       abilities: [{ available: true, id: "vote", symbol: "vote" }],
       actors: [],
@@ -142,7 +142,7 @@ describe("NarratorCard", () => {
     const { container } = await inLanguage("en", <NarratorCard card={day} />);
     expect(container.querySelector(".ww-role-card__head")).toBeNull();
     expect(container.querySelectorAll(".ww-role-card__slot")).toHaveLength(0);
-    expect(screen.getByRole("button", { name: /Vote/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Nomination/ })).toBeTruthy();
   });
 
   it("names only the nominated person at the vote, without a role symbol", async () => {
@@ -172,10 +172,10 @@ describe("NarratorCard", () => {
       "en",
       <NarratorCard
         card={day}
-        skip={{ disabled: false, framed: true, label: "No vote", onSkip }}
+        skip={{ disabled: false, framed: true, label: "No nomination", onSkip }}
       />,
     );
-    const noVote = screen.getByRole("button", { name: "No vote" });
+    const noVote = screen.getByRole("button", { name: "No nomination" });
     expect(noVote).toHaveAttribute("data-next");
     fireEvent.click(noVote);
     expect(onSkip).toHaveBeenCalledOnce();

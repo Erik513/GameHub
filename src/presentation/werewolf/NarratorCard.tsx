@@ -26,6 +26,17 @@ interface NarratorCardProps {
    * all abilities stay visible, but only this one is framed and can be tapped; "skip" answers the question.
    */
   readonly asked?: readonly string[] | null;
+  /**
+   * The vote: the nominated people stand one below the other, and the narrator enters how many votes each one got. The
+   * number of all votes is fixed (`total`); `sum` is what was entered so far.
+   */
+  readonly votes?: {
+    readonly counts: Readonly<Record<string, number>>;
+    readonly names: readonly string[];
+    readonly onCount: (name: string, count: number) => void;
+    readonly sum: number;
+    readonly total: number;
+  };
   /** The abilities are the next thing to tap: the ones that can be used get a blue frame. */
   readonly next?: boolean;
   /** The role may do nothing: a button "skip" stands next to the abilities (the narrator decides in this box). */
@@ -55,6 +66,7 @@ export function NarratorCard({
   settled = false,
   locked = false,
   heading,
+  votes,
   waiting = false,
   asked = null,
   spellsUsed = 0,
@@ -70,8 +82,42 @@ export function NarratorCard({
   const slots = Array.from({ length: slotCount }, (_, index) => card.effects[index] ?? null);
   return (
     <section aria-label={roleName} className="ww-role-card" data-cover={card.cover}>
+      {/* The vote: every nominated person in a row of their own, the votes entered on the right. */}
+      {votes && (
+        <ul aria-label={t("werewolfNarrator.guide.vote.nominees")} className="ww-nominees">
+          {votes.names.map((name) => {
+            const count = votes.counts[name] ?? 0;
+            return (
+              <li className="ww-nominee" key={name}>
+                <strong className="ww-nominee__name">{name}</strong>
+                <span className="ww-nominee__count">
+                  <button
+                    aria-label={t("werewolfNarrator.guide.vote.fewer", { name })}
+                    disabled={count <= 0}
+                    onClick={() => votes.onCount(name, count - 1)}
+                    type="button"
+                  >
+                    −
+                  </button>
+                  <output aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}>
+                    {count}
+                  </output>
+                  <button
+                    aria-label={t("werewolfNarrator.guide.vote.more", { name })}
+                    disabled={votes.sum >= votes.total}
+                    onClick={() => votes.onCount(name, count + 1)}
+                    type="button"
+                  >
+                    +
+                  </button>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
       {/* The day is no role: without a person (the vote has the nominated one) there is no head at all. */}
-      {(!isDay || card.actors.length > 0 || heading) && (
+      {!votes && (!isDay || card.actors.length > 0 || heading) && (
         <header className="ww-role-card__head">
           {!isDay && (
             <span className="ww-role-card__role">

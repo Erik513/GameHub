@@ -39,7 +39,7 @@ export const werewolfNarratorTexts = {
       unavailable: "not possible",
     },
     ability: {
-      vote: "Vote",
+      vote: "Nomination",
       doubleVote: "Double vote",
       attack: "Attack",
       bond: "Make lovers",
@@ -94,7 +94,7 @@ export const werewolfNarratorTexts = {
       },
       ask: {
         inspectApprentice: "Choose a person to look at (point)",
-        vote: "Vote",
+        vote: "Nomination",
         attack: "Choose the victim (point)",
         inspect: "Choose a person to look at (point)",
         investigate: "Choose a person to investigate (point)",
@@ -171,8 +171,6 @@ export const werewolfNarratorTexts = {
         poisonUsed: "The poison is used up",
         poisonAsk: "Poison somebody (point)?",
       },
-      ballots: "Votes",
-      ballotFor: "{{name}} votes for {{candidate}}",
       nextKind: {
         begin: "Begin",
         finish: "To the line-up",
@@ -185,7 +183,7 @@ export const werewolfNarratorTexts = {
       causesHint: "Tap a name to show or hide the reason",
       causesTitle: "Reason – for you only, do not read out",
       abilityDone: {
-        vote: "Vote",
+        vote: "Nomination",
         doubleVote: "Double vote",
         attack: "Attacked",
         bond: "In love",
@@ -207,6 +205,18 @@ export const werewolfNarratorTexts = {
       wounded: "Wounded, dies in the next night: {{names}}",
       restricted: "Not allowed: {{name}} (chosen last night already)",
       healChosen: "Healing chosen: {{name}} is saved",
+      vote: {
+        sum: "Votes entered: {{sum}} of {{total}}",
+        yes: "Yes votes: {{sum}} (more than half of all votes needed: {{needed}})",
+        nominees: "Nominated people",
+        fewer: "One vote less for {{name}}",
+        more: "One vote more for {{name}}",
+        votesOf: "Votes for {{name}}",
+        hint: {
+          double: "{{name}} (mayor) has two votes: watch whom the mayor votes for",
+          setByNarrator: "{{name}} (village idiot): the narrator sets the vote",
+        },
+      },
       voter: { double: "counts twice", setByNarrator: "vote set by the narrator" },
       closeSelection: "Close the selection",
       ready: {
@@ -216,7 +226,7 @@ export const werewolfNarratorTexts = {
       tap: {},
       confirm: "Confirm the choice",
       reopen: "Take the decision back",
-      noVote: "No vote",
+      noVote: "No nomination",
       skip: "Skip",
       taskDone: "Task done",
       showRole: "Show the role",

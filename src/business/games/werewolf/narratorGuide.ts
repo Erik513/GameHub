@@ -8,7 +8,13 @@ import {
 } from "./selectors";
 import { describeRoleStep, pickLimitOf } from "./roleStep";
 import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
-import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./stateMachine";
+import {
+  transitionWerewolf,
+  voteNeeded,
+  voteTotal,
+  type WerewolfEvent,
+  type WerewolfState,
+} from "./stateMachine";
 
 /**
  * The guide of the narrator: which instruction the lower box shows and what the narrator can do.
@@ -48,6 +54,8 @@ export interface GuideSelection {
   readonly progress?: number;
   /** At the vote: what each voter chose (voter to candidate). */
   readonly ballots?: Readonly<Record<string, string>>;
+  /** At the vote: the votes the narrator entered for each nominated person (candidate to number). */
+  readonly counts?: Readonly<Record<string, number>>;
 }
 
 export const emptySelection: GuideSelection = {
@@ -201,7 +209,17 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       return { night, nominees: selection.picks, type: "nominate" };
     case "vote":
       if (state.status !== "vote") return null;
-      return { ballots: ballotsOf(selection), night, nomination: state.nomination, type: "vote" };
+      // One ballot per voter (the old way) or the votes counted per candidate (the narrator enters numbers).
+      if (Object.keys(ballotsOf(selection)).length > 0)
+        return { ballots: ballotsOf(selection), night, nomination: state.nomination, type: "vote" };
+      return {
+        counts: Object.fromEntries(
+          state.candidates.map((name) => [name, selection.counts?.[name] ?? 0]),
+        ),
+        night,
+        nomination: state.nomination,
+        type: "voteCount",
+      };
     default:
       break;
   }
@@ -276,6 +294,12 @@ export interface GuideView {
   readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
   /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
   readonly ballotRows: readonly BallotRow[];
+  /** At the vote: the votes entered for each nominated person, how many votes there are and how many were entered. */
+  readonly voteCounts: Readonly<Record<string, number>>;
+  readonly voteTotal: number;
+  readonly voteSum: number;
+  /** One nominated person (yes or no): the yes votes he needs to leave the game; 0 when several are nominated. */
+  readonly voteNeeded: number;
   /** The question the witch or the magician is asked now (first or second), or null. */
   readonly question: "heal" | "poison" | null;
   /** How many boxes of the script of Cupid are confirmed (0, 1). */
@@ -359,7 +383,8 @@ export function describeGuide(guide: Guide): GuideView {
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
       selection.none ||
-      Object.keys(ballotsOf(selection)).length > 0,
+      Object.keys(ballotsOf(selection)).length > 0 ||
+      Object.values(selection.counts ?? {}).some((count) => count > 0),
     card: frame.phase === "ready" ? null : describeNarratorCard(state),
     deaths:
       state.status === "morning" || state.status === "exile"
@@ -383,6 +408,13 @@ export function describeGuide(guide: Guide): GuideView {
         .map((player) => player.name),
     },
     ballotRows: ballotRowsOf(state, selection),
+    voteCounts:
+      state.status === "vote"
+        ? Object.fromEntries(state.candidates.map((name) => [name, selection.counts?.[name] ?? 0]))
+        : {},
+    voteSum: Object.values(selection.counts ?? {}).reduce((sum, count) => sum + count, 0),
+    voteNeeded: voteNeeded(state),
+    voteTotal: voteTotal(state),
     progress: selection.progress ?? 0,
     question:
       state.status === "witch" || state.status === "magician" ? (selection.question ?? null) : null,
@@ -668,6 +700,26 @@ export function setBallot(guide: Guide, voter: string, candidate: string): Guide
   if (ballots[voter] === candidate) delete ballots[voter];
   else ballots[voter] = candidate;
   return withSelection(guide, { ...frame.selection, ballots });
+}
+
+/**
+ * At the vote: the narrator enters how many votes a nominated person got. The number is a whole number between 0 and the
+ * votes there are; whether all votes were added up is shown in the view (the vote can only be confirmed then).
+ */
+export function setVoteCount(guide: Guide, name: string, count: number): Guide {
+  const frame = current(guide);
+  const state = guide.session.present;
+  if (
+    frame.phase !== "act" ||
+    state.status !== "vote" ||
+    !state.candidates.includes(name) ||
+    !Number.isInteger(count) ||
+    count < 0 ||
+    count > voteTotal(state)
+  )
+    return guide;
+  const counts = { ...(frame.selection.counts ?? {}), [name]: count };
+  return withSelection(guide, { ...frame.selection, counts });
 }
 
 export function chooseNobody(guide: Guide): Guide {

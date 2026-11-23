@@ -265,7 +265,7 @@ describe("NarratorView choices", () => {
     const user = await renderView("en");
     for (
       let guard = 0;
-      guard < 80 && !screen.queryByRole("button", { name: /^Vote/ });
+      guard < 80 && !screen.queryByRole("button", { name: /^Nomination/ });
       guard += 1
     ) {
       const lookReady = screen.queryByRole("button", { name: /Look: ready/ });
@@ -285,25 +285,27 @@ describe("NarratorView choices", () => {
       else throw new Error("the walk to the day is stuck");
     }
     // The day: the options (vote, no vote) can be used at once; no check mark while nothing is open.
-    expect(screen.getByRole("button", { name: "No vote" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "No nomination" })).toBeEnabled();
     expect(screen.queryByRole("button", { name: "Confirm the choice" })).toBeNull();
-    await user.click(screen.getByRole("button", { name: /^Vote/ }));
+    await user.click(screen.getByRole("button", { name: /^Nomination/ }));
     // The people are chosen: the check mark is there (switched off until the choice is complete).
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "No vote" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "No nomination" })).toBeDisabled();
     // One person is named: the check mark confirms, the vote starts with one row for every voter.
     await user.click(document.querySelector(".ww-person")!);
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
     await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
     expect(screen.getByText("Everyone votes for a nominated person")).toBeInTheDocument();
-    const rows = document.querySelectorAll(".ww-ballot");
-    expect(rows.length).toBeGreaterThan(5);
-    // The check mark waits until every voter has chosen.
-    expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeDisabled();
-    for (const row of rows) {
-      const choice = row.querySelector<HTMLElement>(".ww-ballot__choice");
-      if (choice) await user.click(choice);
-    }
+    // The nominated person stands in the upper box with the yes votes on the right; he needs more than half of all votes.
+    expect(document.querySelectorAll(".ww-nominee")).toHaveLength(1);
+    expect(document.querySelector(".ww-guide__votesum")!.textContent).toContain(
+      "Yes votes: 0 (more than half",
+    );
+    // Any number of yes votes can be confirmed (no yes vote at all is a valid result).
+    expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
+    const more = document.querySelector<HTMLButtonElement>(".ww-nominee__count button:last-child")!;
+    await user.click(more);
+    expect(document.querySelector(".ww-guide__votesum")!.textContent).toContain("Yes votes: 1 ");
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
   });
 });

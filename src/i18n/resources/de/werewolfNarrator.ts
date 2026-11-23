@@ -39,7 +39,7 @@ export const werewolfNarratorTexts = {
       unavailable: "nicht möglich",
     },
     ability: {
-      vote: "Abstimmung",
+      vote: "Nominierung",
       doubleVote: "Doppelte Stimme",
       attack: "Angriff",
       bond: "Verlieben",
@@ -94,7 +94,7 @@ export const werewolfNarratorTexts = {
       },
       ask: {
         inspectApprentice: "Person zum Ansehen wählen (zeigen)",
-        vote: "Abstimmung",
+        vote: "Nominierung",
         attack: "Opfer wählen (zeigen)",
         inspect: "Person zum Ansehen wählen (zeigen)",
         investigate: "Person zum Untersuchen wählen (zeigen)",
@@ -171,8 +171,6 @@ export const werewolfNarratorTexts = {
         poisonUsed: "Der Gifttrank ist verbraucht",
         poisonAsk: "Jemanden vergiften (zeigen)?",
       },
-      ballots: "Stimmen",
-      ballotFor: "{{name}} wählt {{candidate}}",
       nextKind: {
         begin: "Beginnen",
         finish: "Zur Aufstellung",
@@ -185,7 +183,7 @@ export const werewolfNarratorTexts = {
       causesHint: "Name antippen zeigt oder verdeckt die Ursache",
       causesTitle: "Ursache – nur für dich, nicht vorlesen",
       abilityDone: {
-        vote: "Abstimmung",
+        vote: "Nominierung",
         doubleVote: "Doppelte Stimme",
         attack: "Angegriffen",
         bond: "Verliebt",
@@ -207,6 +205,18 @@ export const werewolfNarratorTexts = {
       wounded: "Verwundet, stirbt in der nächsten Nacht: {{names}}",
       restricted: "Nicht wählbar: {{name}} (schon in der letzten Nacht gewählt)",
       healChosen: "Heilen gewählt: {{name}} wird gerettet",
+      vote: {
+        sum: "Stimmen eingetragen: {{sum}} von {{total}}",
+        yes: "Ja-Stimmen: {{sum}} (mehr als die Hälfte aller Stimmen nötig: {{needed}})",
+        nominees: "Nominierte Personen",
+        fewer: "Eine Stimme weniger für {{name}}",
+        more: "Eine Stimme mehr für {{name}}",
+        votesOf: "Stimmen für {{name}}",
+        hint: {
+          double: "{{name}} (Bürgermeister) hat zwei Stimmen: achte darauf, für wen er stimmt",
+          setByNarrator: "{{name}} (Dorftrottel): die Stimme setzt der Erzähler",
+        },
+      },
       voter: { double: "zählt doppelt", setByNarrator: "Stimme vom Erzähler gesetzt" },
       closeSelection: "Auswahl schließen",
       ready: {
@@ -216,7 +226,7 @@ export const werewolfNarratorTexts = {
       tap: {},
       confirm: "Auswahl bestätigen",
       reopen: "Entscheidung zurücknehmen",
-      noVote: "Keine Abstimmung",
+      noVote: "Keine Nominierung",
       skip: "Verzichten",
       taskDone: "Aufgabe erledigt",
       showRole: "Rolle zeigen",

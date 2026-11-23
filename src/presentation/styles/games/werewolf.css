@@ -2716,3 +2716,61 @@ button.ww-guide__strip[data-next] {
 .ww-guide__notes li {
   white-space: pre-line;
 }
+
+/* The vote: every nominated person in a row, the votes entered on the right. */
+.ww-nominees {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-nominee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+.ww-nominee__count {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ww-nominee__count button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.ww-nominee__count button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.ww-nominee__count output {
+  min-width: 2ch;
+  font-size: 1.25rem;
+  font-weight: var(--weight-bold);
+  text-align: center;
+}
+
+/* How many of the votes were entered: framed in blue when all are there and the vote can be confirmed. */
+.ww-guide__votesum {
+  font-weight: var(--weight-medium);
+}
+
+.ww-guide__votesum[data-complete="true"] {
+  color: var(--color-success);
+}

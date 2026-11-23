@@ -22,7 +22,6 @@ interface GuideBoxProps {
   readonly onCheck: () => void;
   readonly onCloseAbility: () => void;
   readonly onContinue: () => void;
-  readonly onBallot: (voter: string, candidate: string) => void;
   readonly onReopen: () => void;
   readonly onUndoQuestion: (question: "heal" | "poison") => void;
   readonly onUndo: () => void;
@@ -39,7 +38,6 @@ export function GuideBox({
   onChoose,
   onCloseAbility,
   onContinue,
-  onBallot,
   onReopen,
   onUndo,
   onUndoQuestion,
@@ -195,7 +193,20 @@ export function GuideBox({
             ))}
           </ul>
         )}
-        {state.status === "vote" && <Ballots onBallot={onBallot} view={view} />}
+        {state.status === "vote" && (
+          <div
+            className="ww-guide__votesum"
+            data-complete={
+              view.voteNeeded > 0
+                ? view.voteSum >= view.voteNeeded
+                : view.voteSum === view.voteTotal
+            }
+          >
+            {view.voteNeeded > 0
+              ? t("werewolfNarrator.guide.vote.yes", { needed: view.voteNeeded, sum: view.voteSum })
+              : t("werewolfNarrator.guide.vote.sum", { sum: view.voteSum, total: view.voteTotal })}
+          </div>
+        )}
         {showPeople && (
           <div className="ww-guide__people">
             {/* Every player is always there, in the same order (alphabetical): the dead are grey, those whom the role
@@ -234,9 +245,19 @@ export function GuideBox({
           </div>
         )}
       </div>
-      {(extras.length > 0 || selection.ability !== null || showSummary) && (
+      {(extras.length > 0 ||
+        selection.ability !== null ||
+        showSummary ||
+        view.state.status === "vote") && (
         <footer className="ww-guide__extra">
           {!showPeople && extras}
+          {/* The vote: who needs the attention of the narrator while the votes are entered. */}
+          {state.status === "vote" &&
+            Object.entries(view.voterNotes).map(([name, note]) => (
+              <span className="ww-guide__victim" key={name}>
+                {t(`werewolfNarrator.guide.vote.hint.${note}`, { name })}
+              </span>
+            ))}
           {/* Cupid: once the choice is confirmed in the first box, the summary stands here. */}
           {!showPeople && showSummary && <Summary view={view} />}
           {/* The choice of people (also at the day) is confirmed with the check below the list. */}
@@ -426,46 +447,6 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
  * the double vote says that the vote counts twice; the village idiot does not decide, the narrator sets his vote (as in
  * the original rules). A voter without a choice is marked.
  */
-function Ballots({
-  onBallot,
-  view,
-}: {
-  readonly onBallot: (voter: string, candidate: string) => void;
-  readonly view: GuideView;
-}) {
-  const { t } = useTranslation();
-  return (
-    <ul aria-label={t("werewolfNarrator.guide.ballots")} className="ww-ballots">
-      {view.ballotRows.map((row) => (
-        <li
-          className="ww-ballot"
-          data-missing={(row.choice === null && row.choices.length > 0) || undefined}
-          key={row.name}
-        >
-          <span className="ww-ballot__name">
-            <strong>{row.name}</strong>
-            <Mark name={row.name} view={view} />
-          </span>
-          <span className="ww-ballot__choices">
-            {row.choices.map((candidate) => (
-              <button
-                aria-pressed={row.choice === candidate}
-                aria-label={t("werewolfNarrator.guide.ballotFor", { name: row.name, candidate })}
-                className="ww-ballot__choice"
-                key={candidate}
-                onClick={() => onBallot(row.name, candidate)}
-                type="button"
-              >
-                {candidate}
-              </button>
-            ))}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 /** A text with the player names in bold, so they stand out when the narrator reads. */
 function withNames(text: ReactNode, names: readonly string[] | undefined, red?: string): ReactNode {
   // "[thumb]" in a text is the sign of a thumb up, "[br]" a line break.

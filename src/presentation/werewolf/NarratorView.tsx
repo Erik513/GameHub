@@ -105,6 +105,17 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
               // The day while nobody is nominated: the heading of the box is what the village does.
+              {...(view.state.status === "vote"
+                ? {
+                    votes: {
+                      counts: view.voteCounts,
+                      names: view.state.candidates,
+                      onCount: guide.count,
+                      sum: view.voteSum,
+                      total: view.voteTotal,
+                    },
+                  }
+                : {})}
               {...(view.state.status === "day"
                 ? { heading: t("werewolfNarrator.guide.day.discuss") }
                 : {})}
@@ -163,7 +174,6 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           onChoose={guide.choose}
           onCloseAbility={guide.closeAbility}
           onContinue={guide.continueGuide}
-          onBallot={guide.ballot}
           onCheck={guide.check}
           onReopen={guide.reopen}
           onUndoQuestion={guide.undoQuestion}

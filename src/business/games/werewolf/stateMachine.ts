@@ -177,6 +177,17 @@ export type WerewolfEvent =
       readonly night: number;
       readonly nomination: number;
       readonly ballots: Readonly<Record<string, string>>;
+    }
+  | {
+      /**
+       * The vote counted per candidate: the narrator enters how many votes each candidate got. All votes of the voting
+       * people have to be added up (the mayor with the double vote counts twice), nobody votes for himself. Who voted
+       * for whom is not known then.
+       */
+      readonly type: "voteCount";
+      readonly night: number;
+      readonly nomination: number;
+      readonly counts: Readonly<Record<string, number>>;
     };
 
 export function createWerewolf(
@@ -633,7 +644,7 @@ function countBallots(
   state: Match,
   candidates: readonly string[],
   ballots: Readonly<Record<string, string>>,
-): { readonly leaders: readonly string[] } | null {
+): { readonly leaders: readonly string[]; readonly rejected?: true } | null {
   const voters = dayVoters(state);
   const mayor =
     state.settings.mayor === "doubleVote" ? findActiveRole(state, "mayor", voters) : undefined;
@@ -652,6 +663,85 @@ function countBallots(
   }
   const most = Math.max(...tally.values());
   return { leaders: candidates.filter((name) => tally.get(name) === most) };
+}
+
+/**
+ * The votes that have to be counted in a vote: the weights of all voting people who can vote for somebody other than
+ * themselves (the silenced person does not vote, the mayor with the double vote counts twice).
+ */
+export function voteTotal(state: WerewolfState): number {
+  if (state.status !== "vote") return 0;
+  // One nominated person: the votes to enter are the yes votes; he does not vote for his own execution.
+  if (state.candidates.length === 1) return singleVote(state).maxYes;
+  const voters = dayVoters(state);
+  const mayor =
+    state.settings.mayor === "doubleVote" ? findActiveRole(state, "mayor", voters) : undefined;
+  return voters
+    .filter((voter) => state.candidates.some((name) => name !== voter.name))
+    .reduce((sum, voter) => sum + (voter.name === mayor?.name ? 2 : 1), 0);
+}
+
+/**
+ * The vote about one nominated person (yes or no, as in Ultimate Werewolf): all people who vote count, the nominated
+ * person too, the silenced one not; the mayor with the double vote counts twice. The person leaves the game when more
+ * than half of those votes are yes.
+ */
+function singleVote(
+  state: Match,
+  candidates: readonly string[] = (state as { candidates?: readonly string[] }).candidates ?? [],
+): { readonly maxYes: number; readonly needed: number; readonly total: number } {
+  const voters = dayVoters(state);
+  const mayor =
+    state.settings.mayor === "doubleVote" ? findActiveRole(state, "mayor", voters) : undefined;
+  const weightOf = (name: string) => (name === mayor?.name ? 2 : 1);
+  const total = voters.reduce((sum, voter) => sum + weightOf(voter.name), 0);
+  const only = candidates[0];
+  // The nominated person does not vote for his own execution.
+  const own =
+    only !== undefined && voters.some((voter) => voter.name === only) ? weightOf(only) : 0;
+  return { maxYes: total - own, needed: Math.floor(total / 2) + 1, total };
+}
+
+/** The yes votes that are needed for the one nominated person to leave the game (0 when several are nominated). */
+export function voteNeeded(state: WerewolfState): number {
+  return state.status === "vote" && state.candidates.length === 1 ? singleVote(state).needed : 0;
+}
+
+/**
+ * Counts a vote that was entered per candidate. Several candidates: every candidate needs a whole number of votes, all
+ * votes have to be added up exactly, and nobody votes for himself (a candidate who votes cannot have all votes); the
+ * most votes win. One candidate: the yes votes are entered; he leaves the game when they are more than half of all
+ * votes (leaders is then empty when he stays).
+ */
+function countVotes(
+  state: Match,
+  candidates: readonly string[],
+  counts: Readonly<Record<string, number>>,
+): { readonly leaders: readonly string[]; readonly rejected?: true } | null {
+  if (Object.keys(counts).length !== candidates.length) return null;
+  if (!candidates.every((name) => Number.isInteger(counts[name]) && counts[name]! >= 0))
+    return null;
+  if (candidates.length === 1) {
+    const only = candidates[0]!;
+    const { maxYes, needed } = singleVote(state, candidates);
+    if (counts[only]! > maxYes) return null;
+    return counts[only]! >= needed ? { leaders: [only] } : { leaders: [], rejected: true };
+  }
+  const voters = dayVoters(state);
+  const mayor =
+    state.settings.mayor === "doubleVote" ? findActiveRole(state, "mayor", voters) : undefined;
+  const weightOf = (name: string) => (name === mayor?.name ? 2 : 1);
+  const withChoice = voters.filter((voter) => candidates.some((name) => name !== voter.name));
+  const total = withChoice.reduce((sum, voter) => sum + weightOf(voter.name), 0);
+  const sum = candidates.reduce((all, name) => all + counts[name]!, 0);
+  if (sum !== total) return null;
+  // A candidate does not vote for himself: he cannot get the votes of everybody including his own.
+  for (const name of candidates) {
+    const own = withChoice.find((voter) => voter.name === name);
+    if (counts[name]! > total - (own ? weightOf(name) : 0)) return null;
+  }
+  const most = Math.max(...candidates.map((name) => counts[name]!));
+  return { leaders: candidates.filter((name) => counts[name] === most) };
 }
 
 export function transitionWerewolf(state: WerewolfState, event: WerewolfEvent): WerewolfState {
@@ -869,9 +959,18 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       };
     }
     case "vote": {
-      if (event.type !== "vote" || event.nomination !== state.nomination) return state;
-      const result = countBallots(state, state.candidates, event.ballots);
+      if (
+        (event.type !== "vote" && event.type !== "voteCount") ||
+        event.nomination !== state.nomination
+      )
+        return state;
+      const result =
+        event.type === "vote"
+          ? countBallots(state, state.candidates, event.ballots)
+          : countVotes(state, state.candidates, event.counts);
       if (!result) return state;
+      // One nominated person who did not get enough yes votes stays in the game: the day goes on.
+      if (result.rejected) return { ...state, status: "day" };
       const [leader] = result.leaders;
       if (result.leaders.length === 1 && leader !== undefined) {
         const victim = state.alive.find((p) => p.name === leader);

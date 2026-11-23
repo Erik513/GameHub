@@ -80,7 +80,8 @@ export function recordWerewolfTransition(
   if ("target" in event && event.target !== null) targets.push(event.target);
   if (event.type === "bond") targets.push(...event.players);
   if (event.type === "roleSeen") targets.push(event.player);
-  if (event.type === "vote" && before.status === "vote") targets.push(...before.candidates);
+  if ((event.type === "vote" || event.type === "voteCount") && before.status === "vote")
+    targets.push(...before.candidates);
   if (event.type === "potions") {
     if (event.poison) targets.push(event.poison);
     if (event.heal && before.status === "witch" && before.wolfTarget)

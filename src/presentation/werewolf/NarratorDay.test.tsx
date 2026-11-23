@@ -57,30 +57,30 @@ it("shows the script of the day and lets the day end only after an option was ch
   expect(document.querySelector(".ww-role-card__slots")).toBeNull();
   // The heading of the upper box says what the village does; "no vote" has the blue frame as an option to choose.
   expect(document.querySelector(".ww-role-card__who")?.textContent).toBe("The village discusses");
-  expect(screen.getByRole("button", { name: "No vote" })).toHaveAttribute("data-next");
+  expect(screen.getByRole("button", { name: "No nomination" })).toHaveAttribute("data-next");
   // Nothing chosen: the options above can be used at once, but the day cannot end and the reset is switched off.
-  expect(screen.getByRole("button", { name: /^Vote/ })).toBeEnabled();
-  expect(screen.getByRole("button", { name: "No vote" })).toBeEnabled();
+  expect(screen.getByRole("button", { name: /^Nomination/ })).toBeEnabled();
+  expect(screen.getByRole("button", { name: "No nomination" })).toBeEnabled();
   expect(next()).toBeDisabled();
   expect(screen.getByRole("button", { name: "Undo" })).toBeDisabled();
-  // "No vote" is an option: now the day can end; the reset of the box takes it back.
-  fireEvent.click(screen.getByRole("button", { name: "No vote" }));
+  // "No nomination" is an option: now the day can end; the reset of the box takes it back.
+  fireEvent.click(screen.getByRole("button", { name: "No nomination" }));
   expect(next()).toBeEnabled();
-  expect(screen.getByRole("button", { name: "No vote" })).toBeDisabled();
-  // The blue summary says what was chosen: the symbol of the vote and "No vote" (not "nothing chosen").
-  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("No vote");
+  expect(screen.getByRole("button", { name: "No nomination" })).toBeDisabled();
+  // The blue summary says what was chosen: the symbol of the vote and "No nomination" (not "nothing chosen").
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("No nomination");
   expect(document.querySelector(".ww-guide__chosen svg")).not.toBeNull();
   // The vote cannot be used any more and has no frame; "The day ends" is the next step and has the blue frame.
-  expect(screen.getByRole("button", { name: /^Vote/ })).toBeDisabled();
-  expect(screen.getByRole("button", { name: /^Vote/ })).not.toHaveAttribute("data-next");
+  expect(screen.getByRole("button", { name: /^Nomination/ })).toBeDisabled();
+  expect(screen.getByRole("button", { name: /^Nomination/ })).not.toHaveAttribute("data-next");
   expect([...document.querySelectorAll(".ww-script__step")].at(-1)).toHaveAttribute(
     "data-state",
     "active",
   );
-  expect(screen.getByRole("button", { name: "No vote" })).not.toHaveAttribute("data-next");
+  expect(screen.getByRole("button", { name: "No nomination" })).not.toHaveAttribute("data-next");
   fireEvent.click(screen.getByRole("button", { name: "Undo" }));
   expect(next()).toBeDisabled();
-  expect(screen.getByRole("button", { name: "No vote" })).toBeEnabled();
+  expect(screen.getByRole("button", { name: "No nomination" })).toBeEnabled();
   // Taken back: nothing to sum up again.
   expect(document.querySelector(".ww-guide__chosen")).toBeNull();
 });
