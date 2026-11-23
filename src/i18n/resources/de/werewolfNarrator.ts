@@ -18,6 +18,7 @@ export const werewolfNarratorTexts = {
       day: "Tag {{count}}",
       night: "Nacht {{count}}",
       overview: "Alle Spieler und Rollen",
+      lastShot: "Letzter Schuss steht noch aus",
       overviewHint: "Nur für den Erzähler",
       close: "Spiel beenden",
     },

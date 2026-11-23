@@ -104,14 +104,25 @@ export function NarratorBar({
               one.name.localeCompare(other.name, undefined, { sensitivity: "base" }),
             )
             .map((player) => (
-              <li className="ww-overview__row" data-dead={!player.alive} key={player.name}>
+              <li
+                className="ww-overview__row"
+                data-dead={(!player.alive && !player.lastShot) || undefined}
+                key={player.name}
+              >
                 <WerewolfSymbol id={player.role} size={20} />
                 <span className="ww-overview__who">
                   <strong>{player.name}</strong>
                   <small>{t(`werewolfSymbols.items.${player.role}.name`)}</small>
                 </span>
                 <span className="ww-overview__marks">
-                  {!player.alive && (
+                  {player.lastShot && (
+                    <WerewolfSymbol
+                      id="shotDuty"
+                      label={t("werewolfNarrator.bar.lastShot")}
+                      size={14}
+                    />
+                  )}
+                  {!player.alive && !player.lastShot && (
                     <WerewolfSymbol
                       id="dead"
                       label={t("werewolfSymbols.items.dead.name")}

@@ -82,6 +82,10 @@ export function describePlayers(state: WerewolfState) {
       role: player.role,
       visibleRole: isDrunk ? ("drunk" as const) : player.role,
       alive,
+      // The hunter who has died but has not decided about his last shot yet: out of the game, but not finished.
+      lastShot:
+        (state.status === "hunter" || state.status === "drunkHunter") &&
+        state.hunter.name === player.name,
       death: death?.kind === "death" ? death : null,
       amulet: state.amulet?.holder === player.name,
       drunk: isDrunk || (death?.kind === "death" && death.diedMasked),
