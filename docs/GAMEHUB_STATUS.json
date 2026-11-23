@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 333,
-      "totalTasks": 389,
+      "completedTasks": 334,
+      "totalTasks": 390,
       "percent": 85.6
     }
   },
@@ -1874,6 +1874,12 @@
           "title": "Werwölfe müssen angreifen (kein Verzichten)",
           "status": "done",
           "validation": "Ab Nacht 2 (oder Nacht 1 mit Angriff) gibt es in der Erzähleransicht kein „Verzichten“, Bestätigen nur mit gewähltem Opfer; Spiellogik und eventChoices nehmen einen Angriff auf niemanden nie an (das Spiel endet vorher); rund 20 Tests angepasst (greifen jetzt die erste lebende Nicht-Werwolf-Person an), guideCoverage überspringt den Angriff auf niemanden. Tests, Typprüfung und ESLint grün (1693 Tests); nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-149",
+          "title": "Trunkenbold: wahre Rolle in einem Vollbildfenster zeigen",
+          "status": "done",
+          "validation": "Knopf „Wahre Rolle zeigen“ in der oberen Box (an der Stelle der Fähigkeiten) mit gesperrtem Haken rechts daneben; das Vollbildfenster zeigt die Karte der echten Rolle, das Kreuz oben rechts schließt es und macht den Haken klickbar; „Wahre Rolle sagen“ hat einen Zurück-Knopf, damit die Rolle erneut gezeigt werden kann; ohne Zeigen kein Bestätigen (Guide: markRoleShown). Test NarratorDrunk.test.tsx, Durchspiel-Test angepasst. Tests, Typprüfung und ESLint grün (1695 Tests); nicht im Browser angesehen. Offen: der Trunkenbold-Jäger (eigener Schritt)."
         }
       ]
     },
@@ -3299,5 +3305,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-23T18:00:01.335Z"
+  "updatedAt": "2026-11-23T18:36:57.624Z"
 }
