@@ -28,10 +28,12 @@ export function VoteInput({ votes }: { readonly votes: VoteProps }) {
                 >
                   −
                 </button>
-                {/* The second vote of the mayor that was given to this person: shown next to the number. */}
-                {votes.bonus?.chosen === name && <small className="ww-nominee__plus">+1</small>}
-                <output aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}>
-                  {count}
+                {/* The second vote of the mayor is assigned to this person: the number includes it and stands in a blue box. */}
+                <output
+                  aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}
+                  data-second={votes.bonus?.chosen === name || undefined}
+                >
+                  {count + (votes.bonus?.chosen === name ? 1 : 0)}
                 </output>
                 <button
                   aria-label={t("werewolfNarrator.guide.vote.more", { name })}

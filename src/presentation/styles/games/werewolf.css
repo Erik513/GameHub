@@ -2894,11 +2894,6 @@ button.ww-guide__strip[data-next] {
   height: 36px;
 }
 
-.ww-nominee__plus {
-  color: var(--color-accent);
-  font-weight: var(--weight-bold);
-}
-
 /* Long names: the rows and the buttons never grow. A name is cut with "…" (the full name stands in the title of the lists),
    the rows scroll if there are too many, and the line for the second vote, the sum and the buttons always stay in sight. */
 .ww-role-card[data-vote] {
@@ -3122,4 +3117,24 @@ button.ww-guide__strip[data-next] {
 .ww-nominees__bonus button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+/* The second vote of the mayor is assigned to this person: the number (it includes that vote) stands in a blue box. */
+.ww-nominee__count output[data-second] {
+  box-sizing: border-box;
+  min-width: 2rem;
+  padding: 0 var(--space-1);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+}
+
+/* Every number stands in a neutral box; the box turns blue for the person who got the second vote of the mayor. */
+.ww-nominee__count output {
+  box-sizing: border-box;
+  min-width: 2rem;
+  padding: 0 var(--space-1);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
 }
