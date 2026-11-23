@@ -1,4 +1,9 @@
-import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./stateMachine";
+import {
+  transitionWerewolf,
+  werewolfAnnouncement,
+  type WerewolfEvent,
+  type WerewolfState,
+} from "./stateMachine";
 
 export type WerewolfTargetAction =
   | "attack"
@@ -70,12 +75,19 @@ export function validTargets(
 
 /** Private, unlocalized facts. Color/slot priorities belong to the agreed presentation design. */
 export function describePlayers(state: WerewolfState) {
+  // Whoever is announced as dead in the morning or when leaving the village is shown as dead at once, in the view of the
+  // announcement already (the game itself removes them from the living only when the announcement is confirmed).
+  const announced = new Set(
+    state.status === "morning" || state.status === "exile"
+      ? werewolfAnnouncement(state).map((entry) => entry.name)
+      : [],
+  );
   return state.players.map((player, seat) => {
     const death = [...state.history]
       .reverse()
       .find((e) => e.kind === "death" && e.player === player.name);
     const isDrunk = state.drunk?.player === player.name && !state.drunk.revealed;
-    const alive = state.alive.some((p) => p.name === player.name);
+    const alive = state.alive.some((p) => p.name === player.name) && !announced.has(player.name);
     return {
       name: player.name,
       seat,
@@ -84,8 +96,9 @@ export function describePlayers(state: WerewolfState) {
       alive,
       // The hunter who has died but has not decided about his last shot yet: out of the game, but not finished.
       lastShot:
-        (state.status === "hunter" || state.status === "drunkHunter") &&
-        state.hunter.name === player.name,
+        ((state.status === "hunter" || state.status === "drunkHunter") &&
+          state.hunter.name === player.name) ||
+        (announced.has(player.name) && player.role === "hunter"),
       death: death?.kind === "death" ? death : null,
       amulet: state.amulet?.holder === player.name,
       drunk: isDrunk || (death?.kind === "death" && death.diedMasked),

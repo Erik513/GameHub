@@ -263,7 +263,12 @@ it("plays reproducible complete games across all roles, privacy modes and attack
         for (const source of death.sources) causes.add(source.cause);
       }
       const description = describePlayers(next);
-      expect(description.filter((p) => p.alive)).toHaveLength(next.alive.length);
+      // The announced dead of the morning or of the exile are shown as dead before the announcement is confirmed.
+      const announced =
+        next.status === "morning" || next.status === "exile"
+          ? werewolfAnnouncement(next).length
+          : 0;
+      expect(description.filter((p) => p.alive)).toHaveLength(next.alive.length - announced);
       expect(description.filter((p) => p.amulet).length).toBe(next.amulet ? 1 : 0);
       s = next;
     }

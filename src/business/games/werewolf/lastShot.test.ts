@@ -40,3 +40,23 @@ it("marks the hunter who has died but still has to decide about his shot, until 
     lastShot: false,
   });
 });
+
+it("shows the dead of the morning as dead in the overview while the announcement is still open, the hunter with his last shot", () => {
+  const { hunter, state } = toMorningWithDeadHunter();
+  expect(state.status).toBe("morning");
+  const rows = describePlayers(state);
+  // The announcement is not confirmed yet (the game still lists the hunter among the living), but the overview already
+  // shows what the morning says.
+  expect(state.alive.some((player) => player.name === hunter)).toBe(true);
+  expect(rows.find((player) => player.name === hunter)).toMatchObject({
+    alive: false,
+    lastShot: true,
+  });
+  expect(rows.filter((player) => !player.alive)).toHaveLength(1);
+  // The same after the announcement.
+  const asked = transitionWerewolf(state, { night: state.night, type: "announceMorning" });
+  expect(describePlayers(asked).find((player) => player.name === hunter)).toMatchObject({
+    alive: false,
+    lastShot: true,
+  });
+});
