@@ -224,7 +224,8 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         // One box: the village discusses, then somebody is nominated or not. The options above are free at once; its
         // reset button takes "no vote" back.
         button: "undo",
-        enabled: progress >= 1 || view.sleeping,
+        // The undo button works whenever its decision was confirmed: no nomination, or a vote.
+        enabled: progress >= 1 || view.votedToday,
         id: "discuss",
         items: [t("werewolfNarrator.guide.day.nominateAsk")],
         // The vote: the symbol of the ability.
@@ -270,8 +271,9 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
     const shown = outro || view.progress >= 1 || view.question === "poison";
     return [
       {
-        button: shown ? "undo" : "check",
-        enabled: true,
+        // A task of the narrator: the check stays a check and can only be tapped while this box is the open one.
+        button: "check",
+        enabled: !shown,
         id: "show",
         ...(victim
           ? { names: [victim.name] }
@@ -368,11 +370,23 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
     ];
   }
 
-  // A step in which the narrator only reads something out or shows something: the check says it is done.
+  // A step in which the narrator only reads something out or shows something: the check says it is done and stays a
+  // check. A result (the seer, the investigator) comes after a decision: its box with the undo button leads back to it.
   return [
+    ...(step.kind === "result"
+      ? [
+          {
+            button: "undo" as const,
+            enabled: true,
+            id: "decide" as const,
+            items: [askText(view, t) ?? stepTitle(view, step, t)],
+            state: "done" as const,
+          },
+        ]
+      : []),
     {
-      button: outro ? "undo" : "check",
-      enabled: outro || view.canContinue,
+      button: "check",
+      enabled: !outro && view.canContinue,
       id: "confirm",
       items: [stepTitle(view, step, t)],
       state: outro ? "done" : "active",

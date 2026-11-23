@@ -97,13 +97,14 @@ it("shows the script of the day and lets the day end only after an option was ch
   );
   expect(screen.getByRole("button", { name: "End the day" })).toBeEnabled();
   // A task of the narrator keeps its check (it cannot be tapped any more); the undo button of the first box (the
-  // decision) goes back one step per tap: first the check of the summary, then the decision.
+  // decision) leads back to that box, not to the step after it.
   expect(screen.getByRole("button", { name: "Task done" })).toBeDisabled();
   expect(screen.getAllByRole("button", { name: "Undo" })).toHaveLength(1);
   fireEvent.click(screen.getByRole("button", { name: "Undo" }));
-  expect(next()).toBeDisabled();
-  expect(screen.getByRole("button", { name: "Task done" })).toBeEnabled();
-  fireEvent.click(screen.getByRole("button", { name: "Undo" }));
+  expect([...document.querySelectorAll(".ww-script__step")][0]).toHaveAttribute(
+    "data-state",
+    "active",
+  );
   expect(next()).toBeDisabled();
   expect(screen.getByRole("button", { name: "No nomination" })).toBeEnabled();
   // Taken back: nothing to sum up again.

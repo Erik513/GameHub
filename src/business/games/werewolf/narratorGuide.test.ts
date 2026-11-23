@@ -311,10 +311,10 @@ describe("narrator guide", () => {
         nextKind: "endDay",
         canUndo: true,
       });
-      // One step back per undo: first the last box, then the decision.
+      // The undo button leads back to the first box: the decision is gone, too (not just the last box).
       expect(describeGuide(undoSelection(sleeping))).toMatchObject({
         sleeping: false,
-        progress: 1,
+        progress: 0,
       });
       const night = continueGuide(sleeping);
       expect(night.session.present.status).not.toBe("day");

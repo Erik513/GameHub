@@ -436,7 +436,7 @@ export function describeGuide(guide: Guide): GuideView {
       selection.question === "poison" ||
       (state.status === "day" &&
         selection.ability === null &&
-        ((selection.progress ?? 0) >= 1 || selection.sleeping === true)) ||
+        ((selection.progress ?? 0) >= 1 || votedToday(state))) ||
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
       selection.none ||
@@ -863,16 +863,31 @@ export function chooseNobody(guide: Guide): Guide {
   return withSelection(guide, { ...current(guide).selection, none: true, picks: [] });
 }
 
+/**
+ * The day after a vote: takes the vote back (the nomination, the counted votes, whoever left the game) and lands at the
+ * first box of the script of the day, where nobody is nominated yet.
+ */
+function undoDayVote(guide: Guide): Guide {
+  let session = guide.session;
+  for (let guard = 0; guard < 20; guard += 1) {
+    const undone = undoWerewolfSession(session, true);
+    if (!undone.ok) return guide;
+    session = undone.session;
+    if (session.present.status === "day" && !votedToday(session.present)) break;
+  }
+  const frame = frameOf(session.present, session.past.length);
+  return {
+    session,
+    trail: [...guide.trail.filter((entry) => entry.pastLength < session.past.length), frame],
+  };
+}
+
 /** Takes back the choice of this step (not the step itself). */
 export function undoSelection(guide: Guide): Guide {
   const { selection } = current(guide);
   const initial = initialSelection(guide.session.present);
-  // The day: one step back per tap, first the last box (everybody goes to sleep), then the decision of the first box.
-  if (guide.session.present.status === "day" && selection.sleeping === true) {
-    const { sleeping: previous, ...rest } = selection;
-    void previous;
-    return withSelection(guide, rest);
-  }
+  // The day after a vote: the undo button of the first box leads back to it (the vote is taken back).
+  if (votedToday(guide.session.present)) return undoDayVote(guide);
   // The witch is asked question by question: one decision back per tap (the people of the poison, then the open list,
   // then the second question back to the first one).
   if (selection.question !== undefined) {

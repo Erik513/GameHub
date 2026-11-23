@@ -155,7 +155,7 @@ it("has an undo button right of every box with a decision, as high as the box; t
     screen
       .getAllByRole("button", { name: "Undo" })
       .map((button) => (button as HTMLButtonElement).disabled),
-  ).toEqual([false, false, true]);
+  ).toEqual([false, true]);
   fireEvent.click(abilityButtons()[1]!);
   fireEvent.click(document.querySelector(".ww-person")!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
@@ -226,7 +226,7 @@ it("sums up every answer at once: after the first question the blue summary says
   fireEvent.click(abilityButtons()[2]!);
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("Skipped");
   // Taken back and healed: the summary names the healed person.
-  fireEvent.click(screen.getAllByRole("button", { name: "Undo" })[1]!);
+  fireEvent.click(screen.getAllByRole("button", { name: "Undo" })[0]!);
   fireEvent.click(abilityButtons()[0]!);
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(/^Healed: P[0-9]+$/);
 });

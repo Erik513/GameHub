@@ -10,6 +10,7 @@ import {
   describeGuide,
   setVoteBonus,
   setVoteCount,
+  undoSelection,
 } from "./narratorGuide";
 import { advanceWerewolfSession, createWerewolfSession } from "./session";
 import {
@@ -303,7 +304,25 @@ it("holds the vote about one person once more when the yes votes are as many as 
 });
 
 it("leads back to the script of the day after a vote: summary, everybody goes to sleep, then the night", () => {
-  let guide = createGuide(createWerewolfSession(toVote(2)));
+  // A game that was played through (the history is there), up to the vote about two nominated people.
+  let session = createWerewolfSession(
+    createWerewolf(names.join(","), "Max", () => 0.3, [], {
+      attackOnFirstNight: true,
+      wolfCount: 2,
+    })!,
+  );
+  for (let guard = 0; guard < 100 && session.present.status !== "day"; guard += 1) {
+    const events = eventChoices(session.present).filter(
+      (event) => !(event.type === "attack" && event.target === null),
+    );
+    session = advanceWerewolfSession(session, events[0]!);
+  }
+  session = advanceWerewolfSession(session, {
+    night: session.present.night,
+    nominees: session.present.alive.slice(0, 2).map((player) => player.name),
+    type: "nominate",
+  });
+  let guide = { ...createGuide(createWerewolfSession(session.present)), session };
   const view = describeGuide(guide);
   const [one, two] = (view.state as VoteState).candidates as [string, string];
   guide = setVoteCount(guide, one, view.voteTotal - 3);
@@ -319,6 +338,16 @@ it("leads back to the script of the day after a vote: summary, everybody goes to
     sleeping: false,
   });
   expect(continueGuide(guide)).toBe(guide);
+  // The undo button of the first box works as the vote was confirmed: it takes the vote back and leads to that box.
+  expect(day.canUndo).toBe(true);
+  const back = describeGuide(undoSelection(guide));
+  expect(back).toMatchObject({
+    votedToday: false,
+    exiledToday: [],
+    progress: 0,
+    canContinue: false,
+  });
+  expect(back.state.alive.length).toBe(day.state.alive.length + 1);
   // The check of the second box announces the summary; the last box (everybody goes to sleep) is open now.
   guide = checkScript(guide);
   expect(describeGuide(guide)).toMatchObject({ sleeping: true, canContinue: true });
