@@ -142,6 +142,8 @@ export const werewolfNarratorTexts = {
       drunk: "{{name}} ist {{role}}",
       amuletMust: "{{name}} wurde angegriffen und muss das Amulett abgeben",
       amuletMay: "{{name}} darf das Amulett behalten oder weitergeben",
+      hunterMust: "Der Jäger muss schießen",
+      hunterMay: "Der Jäger darf schießen oder verzichten",
       amuletKept: "Das Amulett bleibt bei {{name}}",
       keep: "Behalten",
       confirmBack: "Diese Ansage wird zurückgenommen. Wirklich zurück?",

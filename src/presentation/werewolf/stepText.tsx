@@ -352,6 +352,14 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
         )}
       </span>
     ),
+    // The option of the hunter: whether he has to shoot or may leave it out (the setting of the game).
+    (state.status === "hunter" || state.status === "drunkHunter") && (
+      <span className="ww-guide__victim" key="hunter">
+        {t(
+          step.skippable ? "werewolfNarrator.guide.hunterMay" : "werewolfNarrator.guide.hunterMust",
+        )}
+      </span>
+    ),
     step.statement === "noAttack" && (
       <span className="ww-guide__victim" key="noAttack">
         {t("werewolfNarrator.guide.wolvesNoAttack")}
