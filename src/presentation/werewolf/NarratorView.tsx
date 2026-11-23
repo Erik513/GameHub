@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import type { WerewolfSession } from "../../business/games/werewolf/session";
 import { Button } from "../components";
-import { ActionRow, StartBar } from "../game-kit";
+import { StartBar } from "../game-kit";
 import { isDayStep } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
 import { GuideBox } from "./GuideBox";
@@ -152,23 +152,10 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           onUnchoose={guide.unchoose}
           view={view}
         />
-        {guide.confirmBack && (
-          <div className="ww-guide ww-guide--confirm" role="alertdialog">
-            <strong>{t("werewolfNarrator.guide.confirmBack")}</strong>
-            <ActionRow>
-              <Button onClick={() => guide.goBack(true)} variant="danger">
-                {t("werewolfNarrator.guide.confirmYes")}
-              </Button>
-              <Button onClick={guide.cancelBack} variant="secondary">
-                {t("werewolfNarrator.guide.confirmNo")}
-              </Button>
-            </ActionRow>
-          </div>
-        )}
       </div>
       <StartBar>
         <div className="ww-nav">
-          <Button disabled={!view.canGoBack} onClick={() => guide.goBack()} variant="secondary">
+          <Button disabled={!view.canGoBack} onClick={guide.goBack} variant="secondary">
             {t("werewolfNarrator.guide.back")}
           </Button>
           <Button

@@ -22,8 +22,8 @@ import type { WerewolfSession } from "../../business/games/werewolf/session";
 
 /**
  * The guide of the narrator on screen. The steps are the logic of `narratorGuide`; this hook only keeps the guide in
- * the component and hands every new state of the game to `onSession` (which saves it). A step back that needs a
- * confirmation (a morning or an exile) waits in `confirmBack`.
+ * the component and hands every new state of the game to `onSession` (which saves it). Back never asks: the narrator
+ * taps "Back" on purpose.
  */
 export function useNarratorGuide(
   session: WerewolfSession,
@@ -31,7 +31,6 @@ export function useNarratorGuide(
   savedTrail?: unknown,
 ) {
   const [guide, setGuide] = useState(() => createGuide(session, savedTrail));
-  const [confirmBack, setConfirmBack] = useState(false);
 
   const update = useCallback(
     (change: (current: Guide) => Guide) => {
@@ -43,27 +42,18 @@ export function useNarratorGuide(
     },
     [guide, onSession],
   );
-  const goBack = useCallback(
-    (confirmed = false) => {
-      const result = backGuide(guide, confirmed);
-      if (!result.ok) {
-        setConfirmBack(result.reason === "confirmationRequired");
-        return;
-      }
-      setConfirmBack(false);
-      setGuide(result.guide);
-      onSession(result.guide.session, result.guide.trail);
-    },
-    [guide, onSession],
-  );
+  const goBack = useCallback(() => {
+    // Also a morning or an exile is taken back without a question.
+    const result = backGuide(guide, true);
+    if (!result.ok) return;
+    setGuide(result.guide);
+    onSession(result.guide.session, result.guide.trail);
+  }, [guide, onSession]);
   return {
     ability: (id: CardAbilityId) => update((g) => chooseAbility(g, id)),
-    cancelBack: () => setConfirmBack(false),
     closeAbility: () => update(closeAbility),
     choose: (name: string) => update((g) => choosePlayer(g, name)),
-    confirmBack,
     continueGuide: () => {
-      setConfirmBack(false);
       update(continueGuide);
     },
     goBack,

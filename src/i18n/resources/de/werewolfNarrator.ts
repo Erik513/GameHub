@@ -146,9 +146,6 @@ export const werewolfNarratorTexts = {
       hunterMay: "Der Jäger darf schießen oder verzichten",
       amuletKept: "Das Amulett bleibt bei {{name}}",
       keep: "Behalten",
-      confirmBack: "Diese Ansage wird zurückgenommen. Wirklich zurück?",
-      confirmYes: "Ja, zurück",
-      confirmNo: "Nein",
       morning: {
         title: "Der Morgen",
         nobody: "In dieser Nacht ist niemand gestorben",
