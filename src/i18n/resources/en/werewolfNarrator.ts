@@ -207,6 +207,7 @@ export const werewolfNarratorTexts = {
       restricted: "Not allowed: {{name}} (chosen last night already)",
       healChosen: "Healing chosen: {{name}} is saved",
       vote: {
+        heading: "Vote",
         sum: "Votes: {{sum}} of {{total}}",
         yes: "Yes votes: {{sum}} (more than half of all votes needed: {{needed}})",
         cancel: "Cancel the vote",
@@ -219,7 +220,7 @@ export const werewolfNarratorTexts = {
         more: "One vote more for {{name}}",
         votesOf: "Votes for {{name}}",
         hint: {
-          double: "{{name}} (mayor) has two votes: assign the second one above",
+          double: "{{name}} (mayor) has two votes: assign the second one below",
           setByNarrator: "{{name}} (village idiot): the narrator sets the vote",
         },
       },

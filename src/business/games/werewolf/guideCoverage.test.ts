@@ -10,6 +10,7 @@ import {
   createGuide,
   describeGuide,
   setBallot,
+  setVoteBonus,
   setVoteCount,
   type Guide,
 } from "./narratorGuide";
@@ -105,11 +106,20 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
       break;
     case "voteCount":
       // The narrator enters the votes of every nominated person.
-      for (const [name, count] of Object.entries(event.counts)) {
-        const next = setVoteCount(guide, name, count);
-        if (next === guide && (describeGuide(guide).voteCounts[name] ?? 0) !== count)
-          failure = failure ?? "no count";
-        guide = next;
+      // With the double vote of the mayor one vote is the second vote: the numbers add up to all votes minus one and
+      // the second vote is assigned to a person (the first one with votes).
+      {
+        const second = describeGuide(guide).voteBonus?.required
+          ? describeGuide(guide).voteBonus?.choices.find((name) => (event.counts[name] ?? 0) > 0)
+          : undefined;
+        for (const [name, count] of Object.entries(event.counts)) {
+          const wanted = name === second ? count - 1 : count;
+          const next = setVoteCount(guide, name, wanted);
+          if (next === guide && (describeGuide(guide).voteCounts[name] ?? 0) !== wanted)
+            failure = failure ?? "no count";
+          guide = next;
+        }
+        if (second !== undefined) guide = setVoteBonus(guide, second);
       }
       break;
     case "vote":

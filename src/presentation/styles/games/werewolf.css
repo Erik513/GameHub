@@ -3011,3 +3011,115 @@ button.ww-guide__strip[data-next] {
 .ww-nominees__mayor {
   color: var(--color-accent);
 }
+
+/* Row at the bottom: the sum of the votes in a box on the left (left-aligned), cancel and confirm side by side on the right. */
+.ww-nominees__sum {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 3rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  text-align: left;
+}
+
+/* The vote, upper box: only a display. The votes so far in small rows, the yellow notes, then sum, cancel and confirm. */
+.ww-tally {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.ww-tally__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.ww-tally__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ww-tally__count {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.ww-role-card[data-vote] .ww-guide__victim {
+  flex: none;
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.85rem;
+  line-height: 1.25;
+}
+
+/* The vote, lower box: the entry (rows with the buttons, the second vote of the mayor) gets the whole body. */
+.ww-voteinput {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+}
+
+/* The vote, upper box: the heading on top, the yellow notes below it, the box with the count of the votes at the bottom. */
+.ww-vote__heading {
+  flex: none;
+}
+
+.ww-vote__hints {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.ww-role-card[data-vote] .ww-nominees__sum {
+  flex: none;
+  justify-content: flex-start;
+}
+
+/* The vote, lower box: the question of the narrator at the top left, cancel at the top right. */
+.ww-vote__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.ww-vote__top .ww-guide__close {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+}
+
+/* The yellow notes keep their line breaks (the silenced person: the name, then the reason in the next line). */
+.ww-vote__hints .ww-guide__victim {
+  white-space: pre-line;
+}
+
+.ww-vote__sum {
+  flex-direction: row;
+  align-items: center;
+}
+
+.ww-nominees__bonus button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

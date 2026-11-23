@@ -297,16 +297,16 @@ describe("NarratorView choices", () => {
     await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
     // One nominated person: the question is yes or no about him (not "everybody votes for a nominated person").
     expect(screen.getByText(/^Who votes for .* to leave the game\?$/)).toBeInTheDocument();
-    // The nominated person stands in the upper box with the yes votes on the right; he needs more than half of all votes.
+    // The yes votes are entered in the lower box; the upper box shows the sum; he needs more than half of all votes.
     expect(document.querySelectorAll(".ww-nominee")).toHaveLength(1);
-    expect(document.querySelector(".ww-nominees__sum")!.textContent).toContain(
+    expect(document.querySelector(".ww-vote__sum")!.textContent).toContain(
       "Yes votes: 0 (more than half",
     );
     // Any number of yes votes can be confirmed (no yes vote at all is a valid result).
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
     // The number is the yes votes: a label in the row says so.
     expect(document.querySelector(".ww-nominee__yes")?.textContent).toBe("Yes");
-    // The vote can be broken off with the button in the upper box (back to the nomination); then it is made once more.
+    // The vote can be broken off with the button in the lower box (back to the nomination); then it is made once more.
     expect(screen.getByRole("button", { name: "Cancel the vote" })).toBeEnabled();
     await user.click(screen.getByRole("button", { name: "Cancel the vote" }));
     expect(document.querySelectorAll(".ww-nominee")).toHaveLength(0);
@@ -315,7 +315,7 @@ describe("NarratorView choices", () => {
     expect(document.querySelectorAll(".ww-nominee")).toHaveLength(1);
     const more = document.querySelector<HTMLButtonElement>(".ww-nominee__count button:last-child")!;
     await user.click(more);
-    expect(document.querySelector(".ww-nominees__sum")!.textContent).toContain("Yes votes: 1 ");
+    expect(document.querySelector(".ww-vote__sum")!.textContent).toContain("Yes votes: 1 ");
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
     // The vote is confirmed with the check mark only: the button "next" waits.
     expect(screen.getByRole("button", { name: /^End the vote|Next/ })).toBeDisabled();

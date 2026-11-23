@@ -207,6 +207,7 @@ export const werewolfNarratorTexts = {
       restricted: "Nicht wählbar: {{name}} (schon in der letzten Nacht gewählt)",
       healChosen: "Heilen gewählt: {{name}} wird gerettet",
       vote: {
+        heading: "Abstimmung",
         sum: "Stimmen: {{sum}} von {{total}}",
         yes: "Ja-Stimmen: {{sum}} (mehr als die Hälfte aller Stimmen nötig: {{needed}})",
         cancel: "Abstimmung abbrechen",
@@ -219,7 +220,7 @@ export const werewolfNarratorTexts = {
         more: "Eine Stimme mehr für {{name}}",
         votesOf: "Stimmen für {{name}}",
         hint: {
-          double: "{{name}} (Bürgermeister) hat zwei Stimmen: die zweite oben zuordnen",
+          double: "{{name}} (Bürgermeister) hat zwei Stimmen: die zweite unten zuordnen",
           setByNarrator: "{{name}} (Dorftrottel): die Stimme setzt der Erzähler",
         },
       },

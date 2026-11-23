@@ -369,8 +369,16 @@ export function describeGuide(guide: Guide): GuideView {
     state.status !== "vote" &&
     selection.picks.length === 0 &&
     !selection.none;
+  // The vote with the double vote of the mayor and several nominated people: the second vote has to be assigned first.
+  const bonusMissing =
+    state.status === "vote" &&
+    voteBonusOf(state, selection)?.required === true &&
+    selection.bonus === undefined &&
+    // (Named votes of the old kind have no second vote to assign.)
+    Object.keys(selection.ballots ?? {}).length === 0;
   const canContinue =
     !choosingNobody &&
+    !bonusMissing &&
     (frame.phase === "ready" ||
       state.status === "finished" ||
       frame.phase === "intro" ||
@@ -740,6 +748,12 @@ export function setVoteCount(guide: Guide, name: string, count: number): Guide {
   )
     return guide;
   const counts = { ...(frame.selection.counts ?? {}), [name]: count };
+  // With the double vote of the mayor the numbers can only add up to all votes minus one: the second vote is assigned
+  // separately (and counts as one vote as soon as it is). Without it the numbers add up to all votes.
+  const bonus = voteBonusOf(state, frame.selection);
+  const reserved = bonus?.required || (bonus && bonus.chosen !== null) ? 1 : 0;
+  const entered = Object.values(counts).reduce((sum, value) => sum + value, 0);
+  if (entered + reserved > voteTotal(state)) return guide;
   return withSelection(guide, { ...frame.selection, counts });
 }
 
@@ -769,6 +783,12 @@ export function setVoteBonus(guide: Guide, candidate: string | null): Guide {
   const bonus = voteBonusOf(state, frame.selection);
   if (frame.phase !== "act" || !bonus) return guide;
   if (candidate !== null && !bonus.choices.includes(candidate)) return guide;
+  // The second vote counts as one more vote: it is only possible while the numbers leave room for it.
+  const entered = Object.values(frame.selection.counts ?? {}).reduce(
+    (sum, value) => sum + value,
+    0,
+  );
+  if (candidate !== null && bonus.chosen === null && entered + 1 > voteTotal(state)) return guide;
   const { bonus: previous, ...rest } = frame.selection;
   void previous;
   const next =

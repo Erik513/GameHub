@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next";
-import { Icon } from "../components";
 import type {
   CardAbilityId,
   NarratorCard as Card,
 } from "../../business/games/werewolf/narratorCard";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
+
+/** The vote: what the upper box shows and what the lower box lets the narrator enter. */
+export type VoteProps = NonNullable<NarratorCardProps["votes"]>;
 
 interface NarratorCardProps {
   readonly card: Card;
@@ -56,7 +58,11 @@ interface NarratorCardProps {
       /** One nominated person: the choice is yes or no (the person is the yes). */
       readonly yesNo: boolean;
     };
-    /** Break the vote off (back to the nomination) and confirm the votes: both buttons stand below the rows. */
+    /** The heading of the upper box. */
+    readonly heading: string;
+    /** Cancel (top right) and confirm (bottom right) stand in the lower box, like at the choice of people. */
+    /** The yellow notes for the narrator (the mayor counts twice, the village idiot): shown, not entered, in this box. */
+    readonly hints: readonly string[];
     readonly onCancel: () => void;
     readonly onConfirm: () => void;
     readonly canConfirm: boolean;
@@ -114,104 +120,18 @@ export function NarratorCard({
       {/* The vote: every nominated person in a row of their own, the votes entered on the right. */}
       {votes && (
         <>
-          <ul aria-label={t("werewolfNarrator.guide.vote.nominees")} className="ww-nominees">
-            {votes.names.map((name) => {
-              const count = votes.counts[name] ?? 0;
-              return (
-                <li className="ww-nominee" key={name}>
-                  <strong className="ww-nominee__name">{name}</strong>
-                  <span className="ww-nominee__count">
-                    {votes.yesLabel && <small className="ww-nominee__yes">{votes.yesLabel}</small>}
-                    <button
-                      aria-label={t("werewolfNarrator.guide.vote.fewer", { name })}
-                      disabled={count <= 0}
-                      onClick={() => votes.onCount(name, count - 1)}
-                      type="button"
-                    >
-                      −
-                    </button>
-                    {/* The second vote of the mayor that was given to this person: shown next to the number. */}
-                    {votes.bonus?.chosen === name && <small className="ww-nominee__plus">+1</small>}
-                    <output aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}>
-                      {count}
-                    </output>
-                    <button
-                      aria-label={t("werewolfNarrator.guide.vote.more", { name })}
-                      disabled={votes.sum >= votes.total}
-                      onClick={() => votes.onCount(name, count + 1)}
-                      type="button"
-                    >
-                      +
-                    </button>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-          {votes.bonus && (
-            <div className="ww-nominees__bonus" role="group" aria-label={votes.bonus.label}>
-              <span className="ww-nominees__bonus-label">
-                <span className="ww-nominees__prefix">{votes.bonus.prefix}</span>
-                <b className="ww-name ww-nominees__mayor">{votes.bonus.mayor}</b>
+          {/* The upper box only shows: the heading, what the narrator has to keep in mind, the votes counted so far. */}
+          <strong className="ww-vote__heading">{votes.heading}</strong>
+          <div className="ww-vote__hints">
+            {votes.hints.map((hint) => (
+              <span className="ww-guide__victim" key={hint}>
+                {hint}
               </span>
-              <div className="ww-nominees__choices">
-                {votes.bonus.yesNo ? (
-                  <>
-                    <button
-                      aria-pressed={votes.bonus.chosen === null}
-                      onClick={() => votes.bonus?.onChoose(null)}
-                      type="button"
-                    >
-                      {votes.bonus.noLabel}
-                    </button>
-                    <button
-                      aria-pressed={votes.bonus.chosen !== null}
-                      onClick={() => votes.bonus?.onChoose(votes.bonus?.choices[0] ?? null)}
-                      type="button"
-                    >
-                      {votes.bonus.yesLabel}
-                    </button>
-                  </>
-                ) : (
-                  votes.bonus.choices.map((name) => (
-                    <button
-                      aria-pressed={votes.bonus?.chosen === name}
-                      key={name}
-                      onClick={() => votes.bonus?.onChoose(name)}
-                      type="button"
-                    >
-                      {name}
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
-          )}
-          <div className="ww-nominees__actions">
-            <button
-              aria-label={t("werewolfNarrator.guide.vote.cancel")}
-              className="ww-guide__close"
-              onClick={votes.onCancel}
-              title={t("werewolfNarrator.guide.vote.cancel")}
-              type="button"
-            >
-              <Icon name="close" />
-            </button>
-            <div className="ww-nominees__sum" data-complete={votes.complete}>
-              {votes.summary}
-            </div>
-            <button
-              aria-label={t("werewolfNarrator.guide.confirm")}
-              className="ww-guide__confirm"
-              data-next={votes.canConfirm || undefined}
-              disabled={!votes.canConfirm}
-              onClick={votes.onConfirm}
-              title={t("werewolfNarrator.guide.confirm")}
-              type="button"
-            >
-              <Icon name="check" />
-            </button>
+            ))}
           </div>
+          <span className="ww-guide__chosen ww-vote__sum" data-complete={votes.complete}>
+            {votes.summary}
+          </span>
         </>
       )}
       {/* The day is no role: without a person (the vote has the nominated one) there is no head at all. */}

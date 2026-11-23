@@ -7,7 +7,7 @@ import { isDayStep } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
 import { GuideBox } from "./GuideBox";
 import { NarratorBar } from "./NarratorBar";
-import { NarratorCard } from "./NarratorCard";
+import { NarratorCard, type VoteProps } from "./NarratorCard";
 import { useNarratorGuide } from "./useNarratorGuide";
 
 interface NarratorViewProps {
@@ -37,6 +37,64 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
   // The day: once "no vote" is chosen the day can end (and the options are used).
   const dayDecided = view.state.status === "day" && view.progress >= 1;
   const nextFree = view.canNext && view.state.status !== "vote";
+  // The vote: the upper box shows the votes, the lower box is where they are entered.
+  const votes: VoteProps | undefined =
+    view.state.status === "vote"
+      ? {
+          canConfirm: view.canContinue,
+          complete:
+            view.voteNeeded > 0 ? view.voteSum >= view.voteNeeded : view.voteSum === view.voteTotal,
+          counts: view.voteCounts,
+          summary:
+            view.voteNeeded > 0
+              ? t("werewolfNarrator.guide.vote.yes", {
+                  needed: view.voteNeeded,
+                  sum: view.voteSum,
+                })
+              : t("werewolfNarrator.guide.vote.sum", {
+                  sum: view.voteSum,
+                  total: view.voteTotal,
+                }),
+          ...(view.voteBonus
+            ? {
+                bonus: {
+                  chosen: view.voteBonus.chosen,
+                  choices: view.voteBonus.choices,
+                  label: t("werewolfNarrator.guide.vote.bonus", {
+                    name: view.voteBonus.mayor,
+                  }),
+                  mayor: view.voteBonus.mayor,
+                  noLabel: t("werewolfNarrator.guide.vote.no"),
+                  prefix: t("werewolfNarrator.guide.vote.bonusPrefix"),
+                  onChoose: guide.bonus,
+                  yesLabel: t("werewolfNarrator.guide.vote.yesLabel"),
+                  yesNo: view.state.candidates.length === 1,
+                },
+              }
+            : {}),
+          heading: t("werewolfNarrator.guide.vote.heading"),
+          hints: [
+            ...Object.entries(view.voterNotes).map(([name, note]) =>
+              t(`werewolfNarrator.guide.vote.hint.${note}`, { name }),
+            ),
+            ...(view.notes.silenced
+              ? [t("werewolfNarrator.guide.silenced", { name: view.notes.silenced })]
+              : []),
+            ...(view.notes.wounded.length > 0
+              ? [t("werewolfNarrator.guide.wounded", { names: view.notes.wounded.join(", ") })]
+              : []),
+          ],
+          onCancel: guide.goBack,
+          onConfirm: guide.continueGuide,
+          names: view.state.candidates,
+          onCount: guide.count,
+          ...(view.state.candidates.length === 1
+            ? { yesLabel: t("werewolfNarrator.guide.vote.yesLabel") }
+            : {}),
+          sum: view.voteSum,
+          total: view.voteTotal,
+        }
+      : undefined;
   return (
     <section
       aria-label={t("werewolfNarrator.view")}
@@ -106,54 +164,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
               // The day while nobody is nominated: the heading of the box is what the village does.
-              {...(view.state.status === "vote"
-                ? {
-                    votes: {
-                      canConfirm: view.canContinue,
-                      complete:
-                        view.voteNeeded > 0
-                          ? view.voteSum >= view.voteNeeded
-                          : view.voteSum === view.voteTotal,
-                      counts: view.voteCounts,
-                      summary:
-                        view.voteNeeded > 0
-                          ? t("werewolfNarrator.guide.vote.yes", {
-                              needed: view.voteNeeded,
-                              sum: view.voteSum,
-                            })
-                          : t("werewolfNarrator.guide.vote.sum", {
-                              sum: view.voteSum,
-                              total: view.voteTotal,
-                            }),
-                      ...(view.voteBonus
-                        ? {
-                            bonus: {
-                              chosen: view.voteBonus.chosen,
-                              choices: view.voteBonus.choices,
-                              label: t("werewolfNarrator.guide.vote.bonus", {
-                                name: view.voteBonus.mayor,
-                              }),
-                              mayor: view.voteBonus.mayor,
-                              noLabel: t("werewolfNarrator.guide.vote.no"),
-                              prefix: t("werewolfNarrator.guide.vote.bonusPrefix"),
-                              onChoose: guide.bonus,
-                              yesLabel: t("werewolfNarrator.guide.vote.yesLabel"),
-                              yesNo: view.state.candidates.length === 1,
-                            },
-                          }
-                        : {}),
-                      onCancel: guide.goBack,
-                      onConfirm: guide.continueGuide,
-                      names: view.state.candidates,
-                      onCount: guide.count,
-                      ...(view.state.candidates.length === 1
-                        ? { yesLabel: t("werewolfNarrator.guide.vote.yesLabel") }
-                        : {}),
-                      sum: view.voteSum,
-                      total: view.voteTotal,
-                    },
-                  }
-                : {})}
+              {...(votes ? { votes } : {})}
               {...(view.state.status === "day"
                 ? { heading: t("werewolfNarrator.guide.day.discuss") }
                 : {})}
@@ -209,6 +220,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
             />
           ))}
         <GuideBox
+          votes={votes}
           onChoose={guide.choose}
           onCloseAbility={guide.closeAbility}
           onContinue={guide.continueGuide}

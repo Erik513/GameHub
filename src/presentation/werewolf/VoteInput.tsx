@@ -1,0 +1,90 @@
+import { useTranslation } from "react-i18next";
+import type { VoteProps } from "./NarratorCard";
+
+/**
+ * The lower box at the vote: the narrator enters how many votes every nominated person got and, where the mayor has the
+ * double vote, whom the second vote goes to. The upper box only shows the result.
+ */
+export function VoteInput({ votes }: { readonly votes: VoteProps }) {
+  const { t } = useTranslation();
+  // With the double vote of the mayor (several nominated people) one vote is kept free for the second vote.
+  const limit =
+    votes.total - (votes.bonus && !votes.bonus.yesNo && votes.bonus.chosen === null ? 1 : 0);
+  return (
+    <div className="ww-voteinput">
+      <ul aria-label={t("werewolfNarrator.guide.vote.nominees")} className="ww-nominees">
+        {votes.names.map((name) => {
+          const count = votes.counts[name] ?? 0;
+          return (
+            <li className="ww-nominee" key={name}>
+              <strong className="ww-nominee__name">{name}</strong>
+              <span className="ww-nominee__count">
+                {votes.yesLabel && <small className="ww-nominee__yes">{votes.yesLabel}</small>}
+                <button
+                  aria-label={t("werewolfNarrator.guide.vote.fewer", { name })}
+                  disabled={count <= 0}
+                  onClick={() => votes.onCount(name, count - 1)}
+                  type="button"
+                >
+                  −
+                </button>
+                {/* The second vote of the mayor that was given to this person: shown next to the number. */}
+                {votes.bonus?.chosen === name && <small className="ww-nominee__plus">+1</small>}
+                <output aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}>
+                  {count}
+                </output>
+                <button
+                  aria-label={t("werewolfNarrator.guide.vote.more", { name })}
+                  disabled={votes.sum >= limit}
+                  onClick={() => votes.onCount(name, count + 1)}
+                  type="button"
+                >
+                  +
+                </button>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      {votes.bonus && (
+        <div className="ww-nominees__bonus" role="group" aria-label={votes.bonus.label}>
+          <span className="ww-nominees__bonus-label">
+            <span className="ww-nominees__prefix">{votes.bonus.prefix}</span>
+            <b className="ww-name ww-nominees__mayor">{votes.bonus.mayor}</b>
+          </span>
+          <div className="ww-nominees__choices">
+            {votes.bonus.yesNo ? (
+              <>
+                <button
+                  aria-pressed={votes.bonus.chosen === null}
+                  onClick={() => votes.bonus?.onChoose(null)}
+                  type="button"
+                >
+                  {votes.bonus.noLabel}
+                </button>
+                <button
+                  aria-pressed={votes.bonus.chosen !== null}
+                  onClick={() => votes.bonus?.onChoose(votes.bonus?.choices[0] ?? null)}
+                  type="button"
+                >
+                  {votes.bonus.yesLabel}
+                </button>
+              </>
+            ) : (
+              votes.bonus.choices.map((name) => (
+                <button
+                  aria-pressed={votes.bonus?.chosen === name}
+                  key={name}
+                  onClick={() => votes.bonus?.onChoose(name)}
+                  type="button"
+                >
+                  {name}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

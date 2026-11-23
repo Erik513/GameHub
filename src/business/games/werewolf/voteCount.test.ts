@@ -251,6 +251,25 @@ it("assigns the second vote of the mayor with the double vote: the vote can only
   expect(continueGuide(guide).session.present.status).toBe("exile");
 });
 
+it("keeps one vote free for the second vote of the mayor: the numbers add up to all votes minus one at most", () => {
+  const state = toVote(3, ["mayor"], { mayor: "doubleVote" });
+  let guide = createGuide(createWerewolfSession(state));
+  const total = describeGuide(guide).voteTotal;
+  const [first, second, third] = state.candidates as [string, string, string];
+  // All votes but one can be entered; the last one is the second vote.
+  guide = setVoteCount(guide, first, total - 3);
+  guide = setVoteCount(guide, second, 2);
+  expect(describeGuide(guide).voteSum).toBe(total - 1);
+  expect(setVoteCount(guide, third, 1)).toBe(guide);
+  // The vote cannot be confirmed before the second vote is assigned.
+  expect(describeGuide(guide).canContinue).toBe(false);
+  const choice = describeGuide(guide).voteBonus!.choices[0]!;
+  guide = setVoteBonus(guide, choice);
+  expect(describeGuide(guide)).toMatchObject({ canContinue: true, voteSum: total });
+  // With the second vote assigned, no further vote can be added.
+  expect(setVoteCount(guide, third, 1)).toBe(guide);
+});
+
 it("gives the second vote of the mayor in the vote about one person as an additional yes vote", () => {
   const state = toVote(1, ["mayor"], { mayor: "doubleVote" });
   let guide = createGuide(createWerewolfSession(state));

@@ -9,15 +9,19 @@ import {
 } from "../../business/games/werewolf/stateMachine";
 import { Icon } from "../components";
 import { DealCard } from "./DealCard";
+import type { VoteProps } from "./NarratorCard";
+import { VoteInput } from "./VoteInput";
 import { ThumbIcon, Verdict } from "./RoleStepContent";
 import { variantOfRole } from "./roleAbilities";
 import { lineGlyphs } from "./symbols/glyphs";
-import { factOf, scriptOf, stepExtras, stepTitle, type ScriptBox } from "./stepText";
+import { dayPrompt, factOf, scriptOf, stepExtras, stepTitle, type ScriptBox } from "./stepText";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface GuideBoxProps {
   readonly view: GuideView;
+  /** The vote: the lower box is where the votes are entered (the upper box only shows them). */
+  readonly votes?: VoteProps | undefined;
   readonly onChoose: (name: string) => void;
   readonly onCheck: () => void;
   readonly onCloseAbility: () => void;
@@ -34,6 +38,7 @@ interface GuideBoxProps {
  */
 export function GuideBox({
   view,
+  votes,
   onCheck,
   onChoose,
   onCloseAbility,
@@ -116,7 +121,8 @@ export function GuideBox({
   const hasChoice = card.abilities.some((ability) => ability.available);
   const confirmReady =
     view.canContinue && (selection.ability !== null || selection.heal || !hasChoice);
-  const extras = stepExtras(view, step, t);
+  const isVote = state.status === "vote" && votes !== undefined;
+  const extras = isVote ? [] : stepExtras(view, step, t);
   const script = scriptOf(view, step, t);
   // A step with a result (what the seer sees, who the drunk is): the summary box shows it at once.
   const showFact = factOf(view, t) !== null;
@@ -128,12 +134,25 @@ export function GuideBox({
     ((state.status === "cupid" || state.status === "day") && view.progress >= 1) ||
     // The witch and the magician: after the answer to the first question the summary already says what was decided.
     ((state.status === "witch" || state.status === "magician") && view.question === "poison") ||
-    // The vote: the nominated people were decided before it started.
-    state.status === "vote";
+    false;
   return (
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
-        {showPeople ? (
+        {isVote && votes ? (
+          // The vote works like the choice of people: cancel at the top right, confirm at the bottom right.
+          <span className="ww-vote__top">
+            <strong className="ww-guide__text">{dayPrompt(view, t)}</strong>
+            <button
+              aria-label={t("werewolfNarrator.guide.vote.cancel")}
+              className="ww-guide__close"
+              onClick={votes.onCancel}
+              title={t("werewolfNarrator.guide.vote.cancel")}
+              type="button"
+            >
+              <Icon name="close" />
+            </button>
+          </span>
+        ) : showPeople ? (
           // Choosing people: the list covers the whole box. Neither the script nor the hints stand there; only the
           // buttons to take the choice back and to close the list.
           <span className="ww-guide__tools ww-guide__tools--bar">
@@ -179,6 +198,7 @@ export function GuideBox({
         )}
       </header>
       <div className="ww-guide__body">
+        {isVote && votes && <VoteInput votes={votes} />}
         {card.cover && (
           <ul className="ww-guide__rows">
             {card.abilities.map((ability) => (
@@ -231,19 +251,22 @@ export function GuideBox({
           </div>
         )}
       </div>
-      {(extras.length > 0 ||
-        selection.ability !== null ||
-        showSummary ||
-        view.state.status === "vote") && (
+      {(extras.length > 0 || selection.ability !== null || showSummary || isVote) && (
         <footer className="ww-guide__extra">
           {!showPeople && extras}
-          {/* The vote: who needs the attention of the narrator while the votes are entered. */}
-          {state.status === "vote" &&
-            Object.entries(view.voterNotes).map(([name, note]) => (
-              <span className="ww-guide__victim" key={name}>
-                {t(`werewolfNarrator.guide.vote.hint.${note}`, { name })}
-              </span>
-            ))}
+          {isVote && votes && (
+            <button
+              aria-label={t("werewolfNarrator.guide.confirm")}
+              className="ww-guide__confirm"
+              data-next={votes.canConfirm || undefined}
+              disabled={!votes.canConfirm}
+              onClick={votes.onConfirm}
+              title={t("werewolfNarrator.guide.confirm")}
+              type="button"
+            >
+              <Icon name="check" />
+            </button>
+          )}
           {/* Cupid: once the choice is confirmed in the first box, the summary stands here. */}
           {!showPeople && showSummary && <Summary view={view} />}
           {/* The choice of people (also at the day) is confirmed with the check below the list. */}
