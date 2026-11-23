@@ -37,6 +37,24 @@ describe("NarratorCard", () => {
     );
   });
 
+  it("shows an ability that is used up for good without a frame (no next step)", async () => {
+    const investigator: Card = {
+      abilities: [
+        { available: false, id: "investigate", symbol: "investigation", unavailable: "used" },
+      ],
+      actors: ["Julia"],
+      cover: false,
+      effects: [],
+      role: "paranormalInvestigator",
+    };
+    await inLanguage("en", <NarratorCard card={investigator} next />);
+    const used = document.querySelector<HTMLElement>(".ww-ability")!;
+    expect(used.getAttribute("data-state")).toBe("used");
+    expect(used.hasAttribute("data-next")).toBe(false);
+    // Only the name is struck through (by the style), there is no diagonal line element.
+    expect(used.querySelector(".ww-ability__name")).not.toBeNull();
+  });
+
   it("calls back only for an ability that can be used and marks the open one", async () => {
     const onAbility = vi.fn();
     await inLanguage("en", <NarratorCard pressed={["heal"]} card={witch} onAbility={onAbility} />);

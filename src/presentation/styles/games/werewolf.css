@@ -2596,24 +2596,10 @@ button.ww-guide__strip[data-next] {
   gap: 2px;
 }
 
-/* Used up for good: grey and struck through with a diagonal line. */
-.ww-ability[data-state="used"] {
-  position: relative;
-  overflow: hidden;
-}
-
-.ww-ability[data-state="used"]::after {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top right,
-    transparent calc(50% - 1px),
-    currentColor calc(50% - 1px),
-    currentColor calc(50% + 1px),
-    transparent calc(50% + 1px)
-  );
-  content: "";
-  pointer-events: none;
+/* Used up for good: grey, no frame, and the name is struck through (no diagonal line over the whole button). */
+.ww-ability[data-state="used"] .ww-ability__name {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
 }
 
 /* Not the turn of this ability: darker than normal, nothing else changes (like the button "next" below). */

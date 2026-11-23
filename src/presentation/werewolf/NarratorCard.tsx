@@ -207,6 +207,19 @@ export function NarratorCard({
         <div className="ww-role-card__abilities">
           {card.abilities.map((ability) => {
             const name = t(`werewolfNarrator.ability.${ability.id}`);
+            const abilityState =
+              ability.unavailable === "used" ||
+              (ability.count !== undefined &&
+                ability.count - spellsUsed <= 0 &&
+                !pressed.includes(ability.id))
+                ? "used"
+                : ability.unavailable === "blocked"
+                  ? "blocked"
+                  : locked || waiting || (asked !== null && !asked.includes(ability.id))
+                    ? "dim"
+                    : ability.available
+                      ? "ready"
+                      : "blocked";
             return (
               <button
                 aria-label={`${name}: ${t(
@@ -221,23 +234,14 @@ export function NarratorCard({
                 // Four states: ready (green), used up for good (grey, struck through), not possible now because of the
                 // situation (amber, dashed) and "dim": it is not the turn of this ability (a different question is asked,
                 // the script has not got there, the decision is made); "reset" brings it back.
-                data-state={
-                  ability.unavailable === "used" ||
-                  (ability.count !== undefined &&
-                    ability.count - spellsUsed <= 0 &&
-                    !pressed.includes(ability.id))
-                    ? "used"
-                    : ability.unavailable === "blocked"
-                      ? "blocked"
-                      : locked || waiting || (asked !== null && !asked.includes(ability.id))
-                        ? "dim"
-                        : ability.available
-                          ? "ready"
-                          : "blocked"
-                }
+                data-state={abilityState}
                 // An ability that cannot be used is asked as well: it gets a thinner frame.
                 data-next={
-                  (asked === null ? next : asked.includes(ability.id)) && !settled && !waiting
+                  // (An ability that is used up for good is no next step: no frame.)
+                  (asked === null ? next : asked.includes(ability.id)) &&
+                  !settled &&
+                  !waiting &&
+                  abilityState !== "used"
                     ? ability.available
                       ? "full"
                       : "thin"
@@ -260,7 +264,7 @@ export function NarratorCard({
                 <span className="ww-ability__symbol">
                   <WerewolfSymbol id={ability.symbol} ring size={24} />
                 </span>
-                <span>{name}</span>
+                <span className="ww-ability__name">{name}</span>
                 {/* Both spells are still there: a 2 on both buttons. With one left the 2 is gone on both. */}
                 {ability.count === 2 && spellsUsed === 0 && (
                   <span className="ww-ability__count">2</span>
