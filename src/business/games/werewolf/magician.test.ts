@@ -40,8 +40,13 @@ const afterMorning = (state: WerewolfState) =>
     { type: "announceMorning", night: state.night },
     { type: "endDay", night: state.night },
   );
+/** The werewolves have to attack: where a test used to attack nobody, the first living non-wolf is the victim. */
+function firstVictim(state: WerewolfState): string {
+  return state.alive.find((player) => player.role !== "wolf")!.name;
+}
+
 const attack = (state: WerewolfState, target: string | null) =>
-  vision(play(state, { type: "attack", night: state.night, target }));
+  vision(play(state, { type: "attack", night: state.night, target: target ?? firstVictim(state) }));
 const cast = (state: WerewolfState, heal = false, ...kill: string[]) =>
   play(state, { type: "castSpells", night: state.night, heal, kill });
 
@@ -107,9 +112,15 @@ it("can kill the tough guy immediately or heal only his fresh wolf attack", () =
   expect(werewolfAnnouncement(cast(danger, false, "P6"))).toEqual([{ name: "P6" }]);
   const pending = cast(danger);
   expect(werewolfAnnouncement(pending)).toEqual([]);
-  const late = attack(afterMorning(pending), null);
-  expect(cast(late, true)).toBe(late);
-  expect(werewolfAnnouncement(cast(late))).toEqual([{ name: "P6" }]);
+  // The werewolves have to attack somebody else in the new night: the healing spell only saves this fresh attack, the old
+  // wound of the tough guy still ends his life.
+  const fresh = afterMorning(pending);
+  const other = fresh.alive.find((p) => p.role !== "wolf" && p.name !== "P6")!.name;
+  const late = attack(fresh, other);
+  expect(werewolfAnnouncement(cast(late, true))).toEqual([{ name: "P6" }]);
+  expect(werewolfAnnouncement(cast(late))).toEqual(
+    expect.arrayContaining([{ name: "P6" }, { name: other }]),
+  );
 });
 
 it("can heal the night guest and cast a death spell on the host", () => {

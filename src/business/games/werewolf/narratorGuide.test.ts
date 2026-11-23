@@ -18,6 +18,7 @@ import {
   unchoosePlayer,
   type Guide,
 } from "./narratorGuide";
+import { describeRoleStep } from "./roleStep";
 import { createWerewolfSession } from "./session";
 import { createWerewolf, type WerewolfState } from "./stateMachine";
 
@@ -119,8 +120,9 @@ describe("narrator guide", () => {
     expect(describeGuide(guide).phase).toBe("intro");
     guide = continueGuide(guide);
     expect(describeGuide(guide).phase).toBe("act");
-    // The wolves may skip (no attack): that is the only way to choose nobody.
-    expect(describeGuide(guide).canContinue).toBe(true);
+    // The wolves have to attack somebody: they cannot skip, nothing can be confirmed without a person.
+    expect(describeGuide(guide).canContinue).toBe(false);
+    expect(describeRoleStep(guide.session.present).skippable).toBe(false);
     guide = chooseAbility(guide, "attack");
     // An open list cannot be confirmed without a person.
     expect(describeGuide(guide).canContinue).toBe(false);

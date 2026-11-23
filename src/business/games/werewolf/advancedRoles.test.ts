@@ -31,8 +31,13 @@ function see(state: WerewolfState, target = "Ada") {
 const wolves = (state: WerewolfState) => act(state, { type: "wolvesReady", night: 1 });
 const day = (state: WerewolfState) => act(state, { type: "announceMorning", night: state.night });
 const dusk = (state: WerewolfState) => act(state, { type: "endDay", night: state.night });
+/** The werewolves have to attack: where a test used to attack nobody, the first living non-wolf is the victim. */
+function firstVictim(state: WerewolfState): string {
+  return state.alive.find((player) => player.role !== "wolf")!.name;
+}
+
 const attack = (state: WerewolfState, target: string | null) =>
-  act(state, { type: "attack", night: state.night, target });
+  act(state, { type: "attack", night: state.night, target: target ?? firstVictim(state) });
 const silence = (state: WerewolfState, target: string | null) =>
   act(state, { type: "silence", night: state.night, target });
 const hammer = (state: WerewolfState, target: string | null) =>

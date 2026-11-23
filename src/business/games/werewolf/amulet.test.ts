@@ -53,8 +53,15 @@ const firstNight = (state: WerewolfState) =>
 const dawn = (state: WerewolfState) =>
   apply(state, { type: "announceMorning", night: state.night });
 const dusk = (state: WerewolfState) => apply(state, { type: "endDay", night: state.night });
+/** The werewolves have to attack: where a test used to attack nobody, the first living non-wolf is the victim. */
+function firstVictim(state: WerewolfState): string {
+  return state.alive.find((player) => player.role !== "wolf")!.name;
+}
+
 const attack = (state: WerewolfState, target: string | null) =>
-  vision(apply(state, { type: "attack", night: state.night, target }));
+  vision(
+    apply(state, { type: "attack", night: state.night, target: target ?? firstVictim(state) }),
+  );
 const pass = (state: WerewolfState, target: string) =>
   apply(state, { type: "passAmulet", night: state.night, target });
 
@@ -238,7 +245,8 @@ it("cannot block a correct hammer strike or the mayor penalty", () => {
   });
   expect(hit.status).toBe("amuletPass");
   const hitMorning = transfer(hit, "Eva");
-  expect(werewolfAnnouncement(hitMorning)).toEqual([{ name: "Ada" }]);
+  // (The werewolves had to attack somebody, too: besides the victim of the hammer another person is in the list.)
+  expect(werewolfAnnouncement(hitMorning)).toContainEqual({ name: "Ada" });
   expect(dawn(hitMorning)).toMatchObject({
     status: "finished",
     winner: "village",
@@ -250,7 +258,8 @@ it("cannot block a correct hammer strike or the mayor penalty", () => {
     target: "Dan",
   });
   const missMorning = transfer(miss, "Eva");
-  expect(werewolfAnnouncement(missMorning)).toEqual([{ name: "Cam" }]);
+  // (The werewolves had to attack somebody, too: besides the mayor who died of the wrong strike another person is in the list.)
+  expect(werewolfAnnouncement(missMorning)).toContainEqual({ name: "Cam" });
   expect(dawn(missMorning).alive.map((p) => p.name)).toContain("Dan");
 });
 
@@ -259,7 +268,8 @@ it("cannot heal an existing tough-guy wound when acquired after the attack", () 
   const day = resolve(attack(night, "Cam"), "Cam");
   expect(day.toughGuyDiesOn).toBe(3);
   const morning = transfer(attack(dusk(day), null), "Cam");
-  expect(werewolfAnnouncement(morning)).toEqual([{ name: "Cam" }]);
+  // (The werewolves had to attack somebody in the new night, too.)
+  expect(werewolfAnnouncement(morning)).toContainEqual({ name: "Cam" });
   expect(dawn(morning).amulet).toBeNull();
 });
 

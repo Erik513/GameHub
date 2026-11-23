@@ -31,8 +31,13 @@ const vision = (s: WerewolfState) =>
     { type: "inspect", night: s.night, target: who(s, "wolf") },
     { type: "closeVision", night: s.night },
   );
+/** The werewolves have to attack: where a test used to attack nobody, the first living non-wolf is the victim. */
+function firstVictim(state: WerewolfState): string {
+  return state.alive.find((player) => player.role !== "wolf")!.name;
+}
+
 const attack = (s: WerewolfState, target: string | null) =>
-  vision(act(s, { type: "attack", night: s.night, target }));
+  vision(act(s, { type: "attack", night: s.night, target: target ?? firstVictim(s) }));
 function passRoles(s: WerewolfState): WerewolfState {
   const night = s.night;
   if (s.status === "witch")

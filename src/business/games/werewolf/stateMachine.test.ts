@@ -94,8 +94,11 @@ it("keeps parity separate from nomination validation and skips an eliminated see
   // The day goes on after the exile: the narrator ends it.
   state = transitionWerewolf(state, { type: "endDay", night: 1 });
   expect(transitionWerewolf(state, { type: "attack", night: 2, target: "Ada" })).toBe(state);
-  state = transitionWerewolf(state, { type: "attack", night: 2, target: null });
-  expect(state).toMatchObject({ status: "morning", victim: null });
+  // The werewolves have to attack somebody (nobody is not accepted while there is a possible victim).
+  expect(transitionWerewolf(state, { type: "attack", night: 2, target: null })).toBe(state);
+  const victim = state.alive.find((p) => p.role !== "wolf")!.name;
+  state = transitionWerewolf(state, { type: "attack", night: 2, target: victim });
+  expect(state.status).not.toBe("wolves");
 });
 
 it("validates role and phase access and applies the larger group role counts", () => {

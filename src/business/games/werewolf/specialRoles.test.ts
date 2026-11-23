@@ -32,8 +32,13 @@ const morning = (state: WerewolfState) =>
 const endDay = (state: WerewolfState) => act(state, { type: "endDay", night: state.night });
 
 const firstNight = (state: WerewolfState) => sight(act(state, { type: "wolvesReady", night: 1 }));
+/** The werewolves have to attack: where a test used to attack nobody, the first living non-wolf is the victim. */
+function firstVictim(state: WerewolfState): string {
+  return state.alive.find((player) => player.role !== "wolf")!.name;
+}
+
 const attack = (state: WerewolfState, target: string | null) =>
-  act(state, { type: "attack", night: state.night, target });
+  act(state, { type: "attack", night: state.night, target: target ?? firstVictim(state) });
 
 it("keeps the tough guy alive for the day and announces the delayed death once", () => {
   const secondNight = endDay(morning(firstNight(deal("toughGuy"))));
@@ -61,9 +66,10 @@ it("lets the witch heal the triggering attack and resolves poison immediately", 
   const attacked = sight(attack(endDay(day), "Cam"));
   const healed = morning(act(attacked, { type: "potions", night: 2, heal: true, poison: null }));
   const thirdNight = sight(attack(endDay(healed), null));
+  // The werewolves had to attack somebody in the third night; the healing potion is used up, so this person dies.
   expect(
     werewolfAnnouncement(act(thirdNight, { type: "potions", night: 3, heal: false, poison: null })),
-  ).toEqual([]);
+  ).toHaveLength(1);
   const poisoned = act(attacked, { type: "potions", night: 2, heal: false, poison: "Cam" });
   expect(werewolfAnnouncement(poisoned)).toEqual([{ name: "Cam" }]);
   expect(morning(poisoned).alive).toHaveLength(5);

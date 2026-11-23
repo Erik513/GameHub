@@ -372,6 +372,7 @@ it("does not keep the announcement of the hunter's victim into the next night", 
   // The dead are not called: the night goes straight to the wolves.
   expect(shot.status).toBe("wolves");
   expect(werewolfAnnouncement(shot)).toHaveLength(1);
-  const next = act(shot, { type: "attack", night: 2, target: null });
+  const victim = shot.alive.find((p) => p.role !== "wolf")!.name;
+  const next = act(shot, { type: "attack", night: 2, target: victim });
   expect(werewolfAnnouncement(next)).toEqual([]);
 });
