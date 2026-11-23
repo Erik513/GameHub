@@ -276,52 +276,63 @@ function PlainBox({ view }: { readonly view: GuideView }) {
           {names.length === 0 ? (
             <span className="ww-guide__lead">{t("werewolfNarrator.guide.morning.nobody")}</span>
           ) : (
-            // Every dead person in a box of their own, one below the other: only names, never a role.
-            <div className="ww-guide__dead">
-              <strong>{t("werewolfNarrator.guide.morning.died")}</strong>
-              <small>{t("werewolfNarrator.guide.causesHint")}</small>
-              <ul>
-                {names.map((name) => {
-                  // The hunter gives himself away with his shot: his role is public, so his box says it.
-                  const hunter = state.players.some(
-                    (player) => player.name === name && player.role === "hunter",
-                  );
-                  return (
-                    <li data-role={hunter ? "hunter" : undefined} key={name}>
-                      <button
-                        aria-expanded={shown.includes(name)}
-                        onClick={() =>
-                          setShown((now) =>
-                            now.includes(name)
-                              ? now.filter((other) => other !== name)
-                              : [...now, name],
-                          )
-                        }
-                        type="button"
-                      >
-                        <span>{name}</span>
-                        {hunter && (
-                          <span className="ww-guide__dead-role">
-                            <WerewolfSymbol id="hunter" size={22} />
-                            {t("werewolfSymbols.items.hunter.name")}
-                          </span>
-                        )}
-                      </button>
-                      {shown.includes(name) && (
-                        <div className="ww-guide__dead-causes">
-                          <small>{t("werewolfNarrator.guide.causesTitle")}</small>
-                          <span>
-                            {(view.deaths.find((death) => death.name === name)?.causes ?? [])
-                              .map((cause) => t(`werewolfNarrator.cause.${cause}`))
-                              .join(", ")}
-                          </span>
-                        </div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            // Every dead person in a box of their own, one below the other: only names, never a role. The hunter is
+            // dead but still shoots: he stands in a category of his own ("last shot"), and his role is public.
+            (() => {
+              const isHunter = (name: string) =>
+                state.players.some((player) => player.name === name && player.role === "hunter");
+              const dead = names.filter((name) => !isHunter(name));
+              const shooters = names.filter(isHunter);
+              const box = (name: string, hunter: boolean) => (
+                <li data-role={hunter ? "hunter" : undefined} key={name}>
+                  <button
+                    aria-expanded={shown.includes(name)}
+                    onClick={() =>
+                      setShown((now) =>
+                        now.includes(name) ? now.filter((other) => other !== name) : [...now, name],
+                      )
+                    }
+                    type="button"
+                  >
+                    <span>{name}</span>
+                    {hunter && (
+                      <span className="ww-guide__dead-role">
+                        <WerewolfSymbol id="hunter" size={22} />
+                        {t("werewolfSymbols.items.hunter.name")}
+                      </span>
+                    )}
+                  </button>
+                  {shown.includes(name) && (
+                    <div className="ww-guide__dead-causes">
+                      <small>{t("werewolfNarrator.guide.causesTitle")}</small>
+                      <span>
+                        {(view.deaths.find((death) => death.name === name)?.causes ?? [])
+                          .map((cause) => t(`werewolfNarrator.cause.${cause}`))
+                          .join(", ")}
+                      </span>
+                    </div>
+                  )}
+                </li>
+              );
+              return (
+                <>
+                  {dead.length > 0 && (
+                    <div className="ww-guide__dead">
+                      <strong>{t("werewolfNarrator.guide.morning.died")}</strong>
+                      <small>{t("werewolfNarrator.guide.causesHint")}</small>
+                      <ul>{dead.map((name) => box(name, false))}</ul>
+                    </div>
+                  )}
+                  {shooters.length > 0 && (
+                    <div className="ww-guide__dead">
+                      <strong>{t("werewolfNarrator.guide.morning.lastShot")}</strong>
+                      {dead.length === 0 && <small>{t("werewolfNarrator.guide.causesHint")}</small>}
+                      <ul>{shooters.map((name) => box(name, true))}</ul>
+                    </div>
+                  )}
+                </>
+              );
+            })()
           )}
         </div>
       </section>

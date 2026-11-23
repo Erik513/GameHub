@@ -16,21 +16,28 @@ import { NarratorView } from "./NarratorView";
 
 const names = Array.from({ length: 12 }, (_, index) => "P" + index).join(",");
 
-function toMorning(): WerewolfSession {
+/** The night to the morning; with `hunterDies` the wolves attack the hunter. */
+function toMorning(hunterDies = false): WerewolfSession {
   let session = createWerewolfSession(
-    createWerewolf(names, "Max", () => 0.3, [], { attackOnFirstNight: true, wolfCount: 2 })!,
+    createWerewolf(names, "Max", () => 0.3, hunterDies ? ["hunter"] : [], {
+      attackOnFirstNight: true,
+      wolfCount: 2,
+    })!,
   );
   for (let step = 0; step < 100 && session.present.status !== "morning"; step++) {
+    const hunter = session.present.players.find((player) => player.role === "hunter")?.name;
     const events = eventChoices(session.present).filter(
-      (event) => !(event.type === "attack" && event.target === null),
+      (event) =>
+        !(event.type === "attack" && event.target === null) &&
+        !(hunterDies && event.type === "attack" && event.target !== hunter),
     );
     session = advanceWerewolfSession(session, events[0]!);
   }
   return session;
 }
 
-function Harness() {
-  const [session, setSession] = useState<WerewolfSession>(toMorning);
+function Harness({ hunterDies = false }: { readonly hunterDies?: boolean }) {
+  const [session, setSession] = useState<WerewolfSession>(() => toMorning(hunterDies));
   return (
     <NarratorView
       onEnd={() => undefined}
@@ -59,4 +66,26 @@ it("hides the reason of death in the morning until the person is tapped, and cov
   expect(document.querySelector(".ww-guide__dead-causes")?.textContent).toMatch(/for you only/);
   fireEvent.click(person);
   expect(document.querySelector(".ww-guide__dead-causes")).toBeNull();
+});
+
+it("shows the category last shot only when the hunter dies, and then only him in it", async () => {
+  const i18n = await createGameHubI18n("en");
+  const first = render(
+    <I18nextProvider i18n={i18n}>
+      <Harness />
+    </I18nextProvider>,
+  );
+  // An ordinary morning: the dead, no last shot.
+  expect(screen.getByText("Died")).toBeInTheDocument();
+  expect(screen.queryByText("Last shot")).toBeNull();
+  first.unmount();
+  // The hunter dies: he stands alone in the category last shot, with his role; nobody else needs the category of the dead.
+  render(
+    <I18nextProvider i18n={i18n}>
+      <Harness hunterDies />
+    </I18nextProvider>,
+  );
+  expect(screen.getByText("Last shot")).toBeInTheDocument();
+  expect(document.querySelectorAll(".ww-guide__dead li[data-role='hunter']")).toHaveLength(1);
+  expect(screen.queryByText("Died")).toBeNull();
 });

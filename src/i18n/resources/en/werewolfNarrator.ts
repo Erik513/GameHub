@@ -150,6 +150,7 @@ export const werewolfNarratorTexts = {
         title: "The morning",
         nobody: "Nobody died tonight",
         died: "Died",
+        lastShot: "Last shot",
       },
       day: {
         nominee: "Who is nominated? (up to 3)",
