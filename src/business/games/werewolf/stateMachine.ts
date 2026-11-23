@@ -707,7 +707,10 @@ function singleVote(
   // The nominated person does not vote for his own execution.
   const own =
     only !== undefined && voters.some((voter) => voter.name === only) ? weightOf(only) : 0;
-  return { maxYes: total - own, needed: Math.floor(total / 2) + 1, total };
+  // Only the votes that can be cast count: the nominated person does not vote for his own execution. More yes than no
+  // votes among them (more than half) sends him out; as many yes as no votes is a tie.
+  const cast = total - own;
+  return { maxYes: cast, needed: Math.floor(cast / 2) + 1, total };
 }
 
 /**
@@ -724,6 +727,16 @@ export function voteMaximum(state: WerewolfState, name: string): number {
   return voteTotal(state) - (own ? (name === mayor?.name ? 2 : 1) : 0);
 }
 
+/**
+ * One nominated person: the number of yes votes that is a tie (as many yes as no votes), or null when there is none (an
+ * odd number of votes, or not one nominated person).
+ */
+export function voteTieAt(state: WerewolfState): number | null {
+  if (state.status !== "vote" || state.candidates.length !== 1) return null;
+  const { maxYes } = singleVote(state);
+  return maxYes > 0 && maxYes % 2 === 0 ? maxYes / 2 : null;
+}
+
 /** The yes votes that are needed for the one nominated person to leave the game (0 when several are nominated). */
 export function voteNeeded(state: WerewolfState): number {
   return state.status === "vote" && state.candidates.length === 1 ? singleVote(state).needed : 0;
@@ -732,14 +745,19 @@ export function voteNeeded(state: WerewolfState): number {
 /**
  * Counts a vote that was entered per candidate. Several candidates: every candidate needs a whole number of votes, all
  * votes have to be added up exactly, and nobody votes for himself (a candidate who votes cannot have all votes); the
- * most votes win. One candidate: the yes votes are entered; he leaves the game when they are more than half of all
- * votes (leaders is then empty when he stays).
+ * most votes win. One candidate: the yes votes are entered; he leaves the game when they are more than half of the
+ * votes cast (leaders is then empty when he stays; `tie` when yes and no votes are equal).
  */
 function countVotes(
   state: Match,
   candidates: readonly string[],
   counts: Readonly<Record<string, number>>,
-): { readonly leaders: readonly string[]; readonly rejected?: true } | null {
+): {
+  readonly leaders: readonly string[];
+  readonly rejected?: true;
+  /** One nominated person: exactly as many yes as no votes (the vote is held once more). */
+  readonly tie?: true;
+} | null {
   if (Object.keys(counts).length !== candidates.length) return null;
   if (!candidates.every((name) => Number.isInteger(counts[name]) && counts[name]! >= 0))
     return null;
@@ -747,7 +765,11 @@ function countVotes(
     const only = candidates[0]!;
     const { maxYes, needed } = singleVote(state, candidates);
     if (counts[only]! > maxYes) return null;
-    return counts[only]! >= needed ? { leaders: [only] } : { leaders: [], rejected: true };
+    if (counts[only]! >= needed) return { leaders: [only] };
+    // As many yes as no votes among the votes cast (the nominated person does not vote): a tie.
+    return maxYes > 0 && counts[only]! * 2 === maxYes
+      ? { leaders: [], rejected: true, tie: true }
+      : { leaders: [], rejected: true };
   }
   const voters = dayVoters(state);
   const mayor =
@@ -991,8 +1013,12 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
           ? countBallots(state, state.candidates, event.ballots)
           : countVotes(state, state.candidates, event.counts);
       if (!result) return state;
-      // One nominated person who did not get enough yes votes stays in the game: the day goes on.
-      if (result.rejected) return { ...state, status: "day" };
+      // One nominated person who did not get enough yes votes stays in the game: the day goes on. With as many yes as
+      // no votes the vote is held once more; a second tie leaves him in the game.
+      if (result.rejected)
+        return "tie" in result && state.round === 1
+          ? { ...state, round: 2 }
+          : { ...state, status: "day" };
       const [leader] = result.leaders;
       if (result.leaders.length === 1 && leader !== undefined) {
         const victim = state.alive.find((p) => p.name === leader);

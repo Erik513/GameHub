@@ -15,6 +15,7 @@ import {
   createWerewolf,
   transitionWerewolf,
   voteNeeded,
+  voteTieAt,
   voteTotal,
   type WerewolfSettings,
   type WerewolfSpecialRole,
@@ -101,19 +102,23 @@ it("counts the mayor with the double vote twice: the votes to enter are one more
   expect(voteTotal(doubled)).toBe(voteTotal(without) + 1);
 });
 
-it("votes yes or no about one nominated person: more than half of all votes make him leave the game", () => {
+it("votes yes or no about one nominated person: more than half of the votes cast make him leave the game", () => {
   const state = toVote(1);
   const [only] = state.candidates as [string];
-  const voters = state.alive.length; // all alive vote, the nominated person too (he does not vote for his own execution)
-  const needed = Math.floor(voters / 2) + 1;
+  const voters = state.alive.length; // all alive vote, but the nominated person does not vote for his own execution
+  const cast = voters - 1;
+  const needed = Math.floor(cast / 2) + 1;
   expect(voteNeeded(state)).toBe(needed);
-  expect(voteTotal(state)).toBe(voters - 1);
+  expect(voteTotal(state)).toBe(cast);
   // Enough yes votes: he leaves. One yes vote less: he stays and the day goes on. Zero yes votes is a valid result, too.
   expect(transitionWerewolf(state, countsEvent(state, { [only]: needed }))).toMatchObject({
     status: "exile",
     victim: { name: only },
   });
-  expect(transitionWerewolf(state, countsEvent(state, { [only]: needed - 1 })).status).toBe("day");
+  // One yes vote less: a tie when the yes votes are half of the votes cast, otherwise he stays.
+  expect(transitionWerewolf(state, countsEvent(state, { [only]: needed - 1 })).status).toBe(
+    voteTieAt(state) === needed - 1 ? "vote" : "day",
+  );
   expect(transitionWerewolf(state, countsEvent(state, { [only]: 0 })).status).toBe("day");
   // He does not vote for his own execution: more yes votes than the others have are refused.
   expect(transitionWerewolf(state, countsEvent(state, { [only]: voters }))).toBe(state);
@@ -123,7 +128,8 @@ it("counts the mayor with the double vote twice in the vote about one person", (
   const plain = toVote(1, ["mayor"], { mayor: "hammer" });
   const doubled = toVote(1, ["mayor"], { mayor: "doubleVote" });
   // One more vote: the threshold (more than half of all votes) may rise with it.
-  expect(voteNeeded(doubled)).toBe(Math.floor((plain.alive.length + 1) / 2) + 1);
+  expect(voteNeeded(doubled)).toBe(Math.floor(voteTotal(doubled) / 2) + 1);
+  expect(voteTotal(doubled)).toBe(voteTotal(plain) + 1);
 });
 
 it("enters the yes votes through the guide: the vote can be confirmed at any number, the person leaves with enough", () => {
@@ -140,7 +146,9 @@ it("enters the yes votes through the guide: the vote can be confirmed at any num
   // Too few yes votes: the vote can be confirmed, the person stays and the day goes on.
   guide = setVoteCount(guide, nominee, view.voteNeeded - 1);
   expect(describeGuide(guide).canContinue).toBe(true);
-  expect(continueGuide(guide).session.present.status).toBe("day");
+  expect(continueGuide(guide).session.present.status).toBe(
+    view.voteTieAt === view.voteNeeded - 1 ? "vote" : "day",
+  );
   // Enough: he leaves.
   guide = setVoteCount(guide, nominee, view.voteNeeded);
   expect(describeGuide(continueGuide(guide))).toMatchObject({ exiledToday: [expect.any(String)] });
@@ -270,6 +278,29 @@ it("keeps one vote free for the second vote of the mayor: the numbers add up to 
   expect(setVoteCount(guide, third, 1)).toBe(guide);
 });
 
+it("holds the vote about one person once more when the yes votes are as many as the no votes", () => {
+  // 11 people are alive: 10 votes can be cast (without the nominee), an even number.
+  const state = toVote(1);
+  let guide = createGuide(createWerewolfSession(state));
+  const view = describeGuide(guide);
+  const nominee = state.candidates[0]!;
+  // Even number of votes: half of them yes is a tie (more than half is needed).
+  expect(view.voteTieAt).not.toBeNull();
+  guide = setVoteCount(guide, nominee, view.voteTieAt!);
+  const again = describeGuide(continueGuide(guide));
+  expect(again.state).toMatchObject({ status: "vote", round: 2 });
+  expect(again.voteCounts[nominee]).toBe(0);
+  // The tie stays in the history for the replay of the game: the counts of the first round are logged.
+  expect(again.state.history.at(-1)).toMatchObject({
+    kind: "action",
+    event: { type: "voteCount", counts: { [nominee]: view.voteTieAt } },
+    phase: "vote",
+  });
+  // A second tie leaves him in the game: the day goes on.
+  guide = setVoteCount(continueGuide(guide), nominee, view.voteTieAt!);
+  expect(continueGuide(guide).session.present.status).toBe("day");
+});
+
 it("limits every nominated person to all votes minus his own, the second vote of the mayor included", () => {
   const state = toVote(3);
   let guide = createGuide(createWerewolfSession(state));
@@ -294,7 +325,6 @@ it("gives the second vote of the mayor in the vote about one person as an additi
   const needed = view.voteNeeded;
   // One yes vote short of the majority; the second vote of the mayor makes the difference.
   guide = setVoteCount(guide, nominee, needed - 1);
-  expect(continueGuide(guide).session.present.status).toBe("day");
   guide = setVoteBonus(guide, nominee);
   expect(describeGuide(guide).voteSum).toBe(needed);
   expect(describeGuide(continueGuide(guide))).toMatchObject({ exiledToday: [expect.any(String)] });

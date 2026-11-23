@@ -12,6 +12,7 @@ import {
   transitionWerewolf,
   voteMaximum,
   voteNeeded,
+  voteTieAt,
   voteTotal,
   type WerewolfEvent,
   type WerewolfState,
@@ -325,6 +326,8 @@ export interface GuideView {
   readonly voteSum: number;
   /** One nominated person (yes or no): the yes votes he needs to leave the game; 0 when several are nominated. */
   readonly voteNeeded: number;
+  /** One nominated person: the yes votes that make a tie (the vote is held once more); null when there is none. */
+  readonly voteTieAt: number | null;
   /**
    * The mayor with the double vote at the vote: his second vote goes to one nominated person (or, with one nominated person,
    * is a yes vote or not). `required` is true when the vote cannot be confirmed before it is assigned. null without.
@@ -463,6 +466,7 @@ export function describeGuide(guide: Guide): GuideView {
       Object.values(selection.counts ?? {}).reduce((sum, count) => sum + count, 0) +
       (selection.bonus === undefined ? 0 : 1),
     voteNeeded: voteNeeded(state),
+    voteTieAt: voteTieAt(state),
     voteTotal: voteTotal(state),
     voteMax:
       state.status === "vote"

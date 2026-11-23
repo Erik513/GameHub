@@ -271,3 +271,12 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Obergrenze pro nominierter Person (2026-11-23, Claude)
 
 - Neu `voteMaximum(state, name)` in `stateMachine.ts`: höchstens alle Stimmen minus die eigene (der nominierte Bürgermeister mit Doppelstimme: minus 2; bei einer nominierten Person die Ja-Stimmen `maxYes`). Der Guide (`setVoteCount`, `setVoteBonus`, Feld `voteMax`) begrenzt die Eingabe damit; `countVotes` prüfte dieselbe Grenze schon vorher. Die zweite Stimme des Bürgermeisters zählt zur Person dazu.
+
+## Gleichstand bei einer nominierten Person (2026-11-23, Claude)
+
+- Bei `voteCount` mit **einer** nominierten Person gilt: genau so viele Ja- wie Nein-Stimmen (Ja = Gesamt/2, nur bei gerader Gesamtzahl; die nominierte Person zählt als Nein) ist ein Gleichstand. Beim ersten Mal wird die Abstimmung wiederholt (`round: 2`, gleiche Nominierung), bei einem zweiten Gleichstand bleibt die Person im Spiel und der Tag geht weiter (Status `day`). Weniger Ja-Stimmen als die Hälfte: wie bisher sofort `day`.
+- Neu: `voteTieAt(state)` in `stateMachine.ts` (die Ja-Stimmen, die einen Gleichstand ergeben, sonst null) und das Feld `voteTieAt` im Guide. Test: `voteCount.test.ts`. Simulation/Forschungsmodelle, die bei einer Nominierten nur „angenommen oder abgelehnt“ kennen, müssen den Gleichstand mit einer zweiten Runde berücksichtigen.
+
+### Änderung (2026-11-23): Zählweise bei einer nominierten Person – nur abgegebene Stimmen
+
+- Auf Wunsch des Auftraggebers zählen bei einer nominierten Person nur die **abgegebenen** Stimmen (alle Abstimmenden ohne die nominierte Person; stumme Person nicht, Bürgermeister mit Doppelstimme zweifach). `voteTotal(state)` ist diese Zahl und zugleich das Maximum der Ja-Stimmen (`maxYes`). Mehr Ja als Nein (Schwelle `voteNeeded(state)` = ⌊abgegeben/2⌋ + 1): die Person scheidet aus; genau gleich viele (`voteTieAt(state)` = abgegeben/2, nur bei gerader Zahl): die Abstimmung wird einmal wiederholt, bei erneutem Gleichstand bleibt die Person; sonst bleibt sie. Das ersetzt „mehr als die Hälfte aller Spieler einschließlich der nominierten Person“ und die Gleichstandsregel mit „Gesamt/2“ weiter oben. Simulation/Forschungsmodelle müssen die Schwelle aus `voteNeeded` lesen.

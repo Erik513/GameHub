@@ -95,6 +95,24 @@ export function VoteInput({ votes }: { readonly votes: VoteProps }) {
           </div>
         </div>
       )}
+      {votes.legend && (
+        <table className="ww-vote__legend">
+          <thead>
+            <tr>
+              <th scope="col">{votes.legend.heading[0]}</th>
+              <th scope="col">{votes.legend.heading[1]}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {votes.legend.rows.map((row) => (
+              <tr data-kind={row.kind} key={row.range}>
+                <td>{row.range}</td>
+                <td>{row.result}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }

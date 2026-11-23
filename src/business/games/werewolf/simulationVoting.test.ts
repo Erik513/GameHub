@@ -103,7 +103,7 @@ it("models counted yes and no votes rather than forcing a sole candidate out", (
   const yes = drawSimulationVoteCounts(state, () => 0);
   expect(no).toEqual({ P0: 0 });
   expect(yes).toEqual({ P0: voteTotal(state) });
-  expect(voteNeeded(state)).toBe(6);
+  expect(voteNeeded(state)).toBe(Math.floor(voteTotal(state) / 2) + 1);
   for (const [counts, status] of [
     [no, "day"],
     [yes, "exile"],
@@ -143,7 +143,7 @@ it("counts a nominated mayor's votes only in the denominator and ignores a silen
   const mayor = initial.players.find((p) => p.role === "mayor")!.name;
   const state = { ...initial, candidates: [mayor] };
   expect(voteTotal(state)).toBe(9);
-  expect(voteNeeded(state)).toBe(6);
+  expect(voteNeeded(state)).toBe(Math.floor(voteTotal(state) / 2) + 1);
   expect(drawSimulationVoteCounts(state, () => 0)).toEqual({ [mayor]: 9 });
   const muted = { ...state, silencedPlayer: mayor };
   expect(voteNeeded(muted)).toBe(5);

@@ -299,9 +299,10 @@ describe("NarratorView choices", () => {
     expect(screen.getByText(/^Who votes for .* to leave the game\?$/)).toBeInTheDocument();
     // The yes votes are entered in the lower box; the upper box shows the sum; he needs more than half of all votes.
     expect(document.querySelectorAll(".ww-nominee")).toHaveLength(1);
-    expect(document.querySelector(".ww-vote__sum")!.textContent).toContain(
-      "Yes votes: 0 (more than half",
-    );
+    // One nominated person: no sum in the upper box; the table of the lower box says what the yes votes mean.
+    expect(document.querySelector(".ww-vote__sum")).toBeNull();
+    expect(document.querySelectorAll(".ww-vote__legend tbody tr").length).toBeGreaterThanOrEqual(2);
+    expect(document.querySelector(".ww-vote__legend tr[data-kind=leaves]")).not.toBeNull();
     // The box next to the check says what the votes mean right now: too few yes votes, he stays.
     expect(document.querySelector(".ww-vote__leader")!.textContent).toContain("stays in the game");
     // Any number of yes votes can be confirmed (no yes vote at all is a valid result).
@@ -317,7 +318,7 @@ describe("NarratorView choices", () => {
     expect(document.querySelectorAll(".ww-nominee")).toHaveLength(1);
     const more = document.querySelector<HTMLButtonElement>(".ww-nominee__count button:last-child")!;
     await user.click(more);
-    expect(document.querySelector(".ww-vote__sum")!.textContent).toContain("Yes votes: 1 ");
+    expect(document.querySelector(".ww-nominee output")!.textContent).toBe("1");
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
     // The vote is confirmed with the check mark only: the button that ends the day waits.
     expect(screen.getByRole("button", { name: "End the day" })).toBeDisabled();

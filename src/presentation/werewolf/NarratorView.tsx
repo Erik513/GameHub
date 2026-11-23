@@ -36,6 +36,14 @@ function voteLeaderText(view: GuideView, t: TFunction): string {
   const votesOf = (name: string) => (view.voteCounts[name] ?? 0) + (second === name ? 1 : 0);
   if (state.candidates.length === 1) {
     const name = state.candidates[0]!;
+    // As many yes as no votes: the vote is held once more; a second tie leaves him in the game.
+    if (votesOf(name) === view.voteTieAt)
+      return t(
+        state.round === 2
+          ? "werewolfNarrator.guide.vote.tieSingleAgain"
+          : "werewolfNarrator.guide.vote.tieSingle",
+        { name },
+      );
     return t(
       votesOf(name) >= view.voteNeeded
         ? "werewolfNarrator.guide.vote.leaves"
@@ -51,6 +59,60 @@ function voteLeaderText(view: GuideView, t: TFunction): string {
     state.round === 2 ? "werewolfNarrator.guide.vote.tieAgain" : "werewolfNarrator.guide.vote.tie",
     { names: leaders.join(", ") },
   );
+}
+
+/** The vote ends in a tie that is held once more (the first time): the check turns into the sign for "vote again". */
+function voteTies(view: GuideView): boolean {
+  const { state } = view;
+  if (state.status !== "vote" || state.round !== 1 || !view.canContinue) return false;
+  const second = view.voteBonus?.chosen ?? null;
+  const votesOf = (name: string) => (view.voteCounts[name] ?? 0) + (second === name ? 1 : 0);
+  if (state.candidates.length === 1) return votesOf(state.candidates[0]!) === view.voteTieAt;
+  const most = Math.max(...state.candidates.map(votesOf));
+  return most > 0 && state.candidates.filter((name) => votesOf(name) === most).length > 1;
+}
+
+/** One nominated person: what a number of yes votes means, as the rows of a small table (stays, tie, leaves). */
+function voteLegend(view: GuideView, t: TFunction): VoteProps["legend"] {
+  if (view.state.status !== "vote" || view.state.candidates.length !== 1) return undefined;
+  const most = view.voteTotal;
+  const needed = view.voteNeeded;
+  const tie = view.voteTieAt;
+  const range = (from: number, to: number) =>
+    from === to
+      ? String(from)
+      : from === 0
+        ? t("werewolfNarrator.guide.vote.legend.upTo", { count: to })
+        : to === most
+          ? t("werewolfNarrator.guide.vote.legend.from", { count: from })
+          : from + "–" + to;
+  const stays = tie === null ? needed - 1 : tie - 1;
+  const rows: { range: string; result: string; kind: "leaves" | "stays" | "tie" }[] = [];
+  if (stays >= 0)
+    rows.push({
+      kind: "stays",
+      range: range(0, stays),
+      result: t("werewolfNarrator.guide.vote.legend.stays"),
+    });
+  if (tie !== null)
+    rows.push({
+      kind: "tie",
+      range: String(tie),
+      result: t("werewolfNarrator.guide.vote.legend.tie"),
+    });
+  if (needed <= most)
+    rows.push({
+      kind: "leaves",
+      range: range(needed, most),
+      result: t("werewolfNarrator.guide.vote.legend.leaves"),
+    });
+  return {
+    heading: [
+      t("werewolfNarrator.guide.vote.legend.yes"),
+      t("werewolfNarrator.guide.vote.legend.result"),
+    ],
+    rows,
+  };
 }
 
 export function NarratorView({ session, trail, onSession, onEnd, onRules }: NarratorViewProps) {
@@ -85,6 +147,8 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
       ? {
           canConfirm: view.canContinue,
           leader: voteLeaderText(view, t),
+          tie: voteTies(view),
+          ...(voteLegend(view, t) ? { legend: voteLegend(view, t)! } : {}),
           max: view.voteMax,
           complete:
             view.voteNeeded > 0 ? view.voteSum >= view.voteNeeded : view.voteSum === view.voteTotal,

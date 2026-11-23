@@ -65,7 +65,12 @@ export function dayPrompt(view: GuideView, t: TFunction): string | null {
   const { selection, state } = view;
   // One nominated person: yes or no, so the question is about him, not "everybody votes for one".
   if (state.status === "vote" && state.candidates.length === 1)
-    return t("werewolfNarrator.guide.day.votersSingle", { name: state.candidates[0] });
+    return t(
+      state.round === 2
+        ? "werewolfNarrator.guide.day.votersSingleAgain"
+        : "werewolfNarrator.guide.day.votersSingle",
+      { name: state.candidates[0] },
+    );
   if (state.status === "vote")
     return t(
       state.round === 2

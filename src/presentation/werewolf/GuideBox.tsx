@@ -263,15 +263,19 @@ export function GuideBox({
           )}
           {isVote && votes && (
             <button
-              aria-label={t("werewolfNarrator.guide.confirm")}
+              aria-label={t(
+                votes.tie ? "werewolfNarrator.guide.vote.again" : "werewolfNarrator.guide.confirm",
+              )}
               className="ww-guide__confirm"
               data-next={votes.canConfirm || undefined}
               disabled={!votes.canConfirm}
               onClick={votes.onConfirm}
-              title={t("werewolfNarrator.guide.confirm")}
+              title={t(
+                votes.tie ? "werewolfNarrator.guide.vote.again" : "werewolfNarrator.guide.confirm",
+              )}
               type="button"
             >
-              <Icon name="check" />
+              <Icon name={votes.tie ? "repeat" : "check"} />
             </button>
           )}
           {/* Cupid: once the choice is confirmed in the first box, the summary stands here. */}

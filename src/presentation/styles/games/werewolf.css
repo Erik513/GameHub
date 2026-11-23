@@ -3166,3 +3166,48 @@ button.ww-guide__strip[data-next] {
 .ww-vote__leader[data-complete="true"] {
   border-color: var(--color-accent);
 }
+
+/* One nominated person: the small table in the lower box says what a number of yes votes means. */
+.ww-vote__legend {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ww-vote__legend th,
+.ww-vote__legend td {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-line);
+  text-align: left;
+}
+
+.ww-vote__legend th {
+  color: var(--color-ink-muted);
+  font-weight: var(--weight-medium);
+}
+
+.ww-vote__legend tr[data-kind="leaves"] td {
+  color: var(--color-danger, var(--color-ink));
+  font-weight: var(--weight-bold);
+}
+
+.ww-vote__legend tr[data-kind="tie"] td {
+  color: var(--color-accent);
+  font-weight: var(--weight-bold);
+}
+
+/* The table of the yes votes stands at the bottom of the lower box, right above the check. */
+.ww-guide__body:has(.ww-voteinput) {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ww-voteinput {
+  flex: 1 1 auto;
+}
+
+.ww-vote__legend {
+  margin-top: auto;
+}

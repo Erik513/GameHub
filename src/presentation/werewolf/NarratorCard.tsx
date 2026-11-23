@@ -61,6 +61,17 @@ interface NarratorCardProps {
     /** Cancel (top right) and confirm (bottom right) stand in the lower box, like at the choice of people. */
     /** The yellow notes for the narrator (the mayor counts twice, the village idiot): shown, not entered, in this box. */
     readonly hints: readonly string[];
+    /** The vote ends in a tie (the first time): the check turns into the sign for "vote again". */
+    readonly tie: boolean;
+    /** One nominated person: what a number of yes votes means (a small table in the lower box). */
+    readonly legend?: {
+      readonly heading: readonly [string, string];
+      readonly rows: readonly {
+        readonly range: string;
+        readonly result: string;
+        readonly kind: "leaves" | "stays" | "tie";
+      }[];
+    };
     readonly onCancel: () => void;
     readonly onConfirm: () => void;
     readonly canConfirm: boolean;
@@ -130,9 +141,12 @@ export function NarratorCard({
               </span>
             ))}
           </div>
-          <span className="ww-guide__chosen ww-vote__sum" data-complete={votes.complete}>
-            {votes.summary}
-          </span>
+          {/* One nominated person: the table of the lower box says what the yes votes mean, no sum is needed. */}
+          {votes.names.length > 1 && (
+            <span className="ww-guide__chosen ww-vote__sum" data-complete={votes.complete}>
+              {votes.summary}
+            </span>
+          )}
         </>
       )}
       {/* The day is no role: without a person (the vote has the nominated one) there is no head at all. */}
