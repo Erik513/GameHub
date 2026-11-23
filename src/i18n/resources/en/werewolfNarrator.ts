@@ -217,6 +217,7 @@ export const werewolfNarratorTexts = {
       noChoice: "Nothing chosen – the role passes",
       silenced: "{{name}} (silenced):\nno speech, nomination or vote",
       wounded: "{{names}} (wounded): dies in the next night",
+      tannerVote: "{{name}} (tanner): wins only by the vote",
       restricted: "{{name}} (not allowed): chosen last night already",
       vote: {
         heading: "Vote",

@@ -151,6 +151,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
     ...(view.notes.silenced
       ? [t("werewolfNarrator.guide.silenced", { name: view.notes.silenced })]
       : []),
+    ...(view.notes.tanner
+      ? [t("werewolfNarrator.guide.tannerVote", { name: view.notes.tanner })]
+      : []),
     ...(view.notes.wounded.length > 0
       ? [t("werewolfNarrator.guide.wounded", { names: view.notes.wounded.join(", ") })]
       : []),

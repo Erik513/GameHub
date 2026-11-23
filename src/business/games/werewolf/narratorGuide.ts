@@ -278,6 +278,8 @@ export interface DeathNote {
 
 export interface GuideNotes {
   readonly silenced: string | null;
+  /** The tanner who wins only by being voted out (the setting "vote only"): the narrator keeps him in mind during the day. */
+  readonly tanner: string | null;
   readonly wounded: readonly string[];
   /** The person the open choice may not name again (the bodyguard and the night guest need a new one every night). */
   readonly restricted: string | null;
@@ -463,6 +465,10 @@ export function describeGuide(guide: Guide): GuideView {
       silenced:
         state.silencedPlayer && state.alive.some((p) => p.name === state.silencedPlayer)
           ? state.silencedPlayer
+          : null,
+      tanner:
+        state.settings.tanner === "voteOnly"
+          ? (state.alive.find((player) => player.role === "tanner")?.name ?? null)
           : null,
       wounded: describePlayers(state)
         .filter((player) => player.alive && player.delayedDeathNight !== null)

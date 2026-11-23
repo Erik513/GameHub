@@ -29,6 +29,53 @@ function toDayWithSilencedPerson(): WerewolfSession {
   return { ...session, present: { ...session.present, silencedPlayer: silenced } };
 }
 
+/** The tanner who wins only by the vote is on the screen of the narrator from the beginning of the day. */
+function toDayWithTanner(mode: "anyDeath" | "voteOnly"): WerewolfSession {
+  let session = createWerewolfSession(
+    createWerewolf(names, "Max", () => 0.3, ["tanner"], {
+      attackOnFirstNight: true,
+      tanner: mode,
+      wolfCount: 2,
+    })!,
+  );
+  for (let step = 0; step < 100 && session.present.status !== "day"; step++) {
+    const events = eventChoices(session.present).filter(
+      (event) => !(event.type === "attack" && event.target === null),
+    );
+    session = advanceWerewolfSession(session, events[0]!);
+  }
+  return session;
+}
+
+it.each(["en", "de"] as const)(
+  "shows the tanner who wins only by the vote as a note in the upper box in %s, and not the other one",
+  async (language) => {
+    const i18n = await createGameHubI18n(language);
+    for (const mode of ["voteOnly", "anyDeath"] as const) {
+      const session = toDayWithTanner(mode);
+      const { unmount } = render(
+        <I18nextProvider i18n={i18n}>
+          <NarratorView
+            onEnd={() => undefined}
+            onRules={() => undefined}
+            onSession={() => undefined}
+            session={session}
+          />
+        </I18nextProvider>,
+      );
+      const notes = [...document.querySelectorAll(".ww-role-card__notes .ww-guide__victim")].map(
+        (note) => note.textContent,
+      );
+      const word = language === "en" ? "(tanner)" : "(Gerber)";
+      expect(
+        notes.some((note) => note?.includes(word)),
+        mode,
+      ).toBe(mode === "voteOnly");
+      unmount();
+    }
+  },
+);
+
 it.each(["en", "de"] as const)(
   "shows the silenced person in the upper box at the day in %s",
   async (language) => {

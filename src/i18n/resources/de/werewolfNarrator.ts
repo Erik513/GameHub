@@ -218,6 +218,7 @@ export const werewolfNarratorTexts = {
       noChoice: "Nichts gewählt – die Rolle verzichtet",
       silenced: "{{name}} (stumm):\nkein Reden, Nominieren oder Abstimmen",
       wounded: "{{names}} (verwundet): stirbt in der nächsten Nacht",
+      tannerVote: "{{name}} (Gerber): gewinnt nur durch die Abstimmung",
       restricted: "{{name}} (nicht wählbar): schon in der letzten Nacht gewählt",
       vote: {
         heading: "Abstimmung",
