@@ -83,7 +83,6 @@ export const abilityLegend = [
   { ability: "shot", symbol: "shotDuty" },
   { ability: "passAmulet", symbol: "amuletPass" },
   { ability: "vote", symbol: "vote" },
-  { ability: "doubleVote", symbol: "doubleVote" },
 ] as const satisfies readonly { readonly ability: string; readonly symbol: SymbolId }[];
 
 /** Symbols that the legend lists as an ability (in a circle) and not a second time as a state. */

@@ -23,7 +23,6 @@ export const werewolfSymbolsTexts = {
         shot: "The hunter shoots one person",
         passAmulet: "The holder passes the amulet on",
         vote: "Nominate up to 3 people, then the village votes",
-        doubleVote: "The mayor assigns his second vote",
       },
     },
     groups: {

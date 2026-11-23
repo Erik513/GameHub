@@ -3138,3 +3138,31 @@ button.ww-guide__strip[data-next] {
   border-radius: var(--radius-sm);
   background: var(--color-surface-muted);
 }
+
+/* The vote, lower box: next to the check a box says who has the majority right now (or the tie). */
+.ww-guide__extra:has(.ww-vote__leader) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.ww-vote__leader {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 3rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  font-size: 0.9rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+}
+
+.ww-vote__leader[data-complete="true"] {
+  border-color: var(--color-accent);
+}

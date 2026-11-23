@@ -209,6 +209,12 @@ export const werewolfNarratorTexts = {
       healChosen: "Healing chosen: {{name}} is saved",
       vote: {
         heading: "Vote",
+        leader: "Majority: {{name}}",
+        tie: "Tie: {{names}}",
+        tieAgain: "Tie again: nobody leaves",
+        noVotes: "No votes yet",
+        leaves: "{{name}} leaves the game",
+        stays: "{{name}} stays in the game",
         sum: "Votes: {{sum}} of {{total}}",
         yes: "Yes votes: {{sum}} (more than half of all votes needed: {{needed}})",
         cancel: "Cancel the vote",

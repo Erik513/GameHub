@@ -10,6 +10,7 @@ import { describeRoleStep, pickLimitOf } from "./roleStep";
 import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
 import {
   transitionWerewolf,
+  voteMaximum,
   voteNeeded,
   voteTotal,
   type WerewolfEvent,
@@ -304,6 +305,8 @@ export interface GuideView {
   /** At the vote: the votes entered for each nominated person, how many votes there are and how many were entered. */
   readonly voteCounts: Readonly<Record<string, number>>;
   readonly voteTotal: number;
+  /** At the vote: the most votes each nominated person can get (all votes minus his own). */
+  readonly voteMax: Readonly<Record<string, number>>;
   readonly voteSum: number;
   /** One nominated person (yes or no): the yes votes he needs to leave the game; 0 when several are nominated. */
   readonly voteNeeded: number;
@@ -446,6 +449,10 @@ export function describeGuide(guide: Guide): GuideView {
       (selection.bonus === undefined ? 0 : 1),
     voteNeeded: voteNeeded(state),
     voteTotal: voteTotal(state),
+    voteMax:
+      state.status === "vote"
+        ? Object.fromEntries(state.candidates.map((name) => [name, voteMaximum(state, name)]))
+        : {},
     progress: selection.progress ?? 0,
     question:
       state.status === "witch" || state.status === "magician" ? (selection.question ?? null) : null,
@@ -765,6 +772,8 @@ export function setVoteCount(guide: Guide, name: string, count: number): Guide {
   const reserved = bonus?.required || (bonus && bonus.chosen !== null) ? 1 : 0;
   const entered = Object.values(counts).reduce((sum, value) => sum + value, 0);
   if (entered + reserved > voteTotal(state)) return guide;
+  // Nobody can get more votes than all votes minus his own (the second vote of the mayor counts for the person too).
+  if (count + (frame.selection.bonus === name ? 1 : 0) > voteMaximum(state, name)) return guide;
   return withSelection(guide, { ...frame.selection, counts });
 }
 
@@ -800,6 +809,11 @@ export function setVoteBonus(guide: Guide, candidate: string | null): Guide {
     0,
   );
   if (candidate !== null && bonus.chosen === null && entered + 1 > voteTotal(state)) return guide;
+  if (
+    candidate !== null &&
+    (frame.selection.counts?.[candidate] ?? 0) + 1 > voteMaximum(state, candidate)
+  )
+    return guide;
   const { bonus: previous, ...rest } = frame.selection;
   void previous;
   const next =

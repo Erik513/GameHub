@@ -267,3 +267,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 
 - `announceExile` führt nicht mehr direkt in die Nacht, sondern zurück in den Tag (`next: "day"`); der Erzähler beendet den Tag danach mit `endDay` (oder nominiert erneut). Der Jäger-Schuss nach dem Ausscheiden gehört weiter zum Tag (`inDay` im Zustand `hunter`, Protokoll-Zeitraum `day`).
 - Angepasste Tests: drunk, ruleAdditions, stateMachine, tanner. Wenn die Simulation/Forschungsmodelle `announceExile` und danach direkt die Nacht erwarten, muss dazwischen `endDay` stehen.
+
+## Obergrenze pro nominierter Person (2026-11-23, Claude)
+
+- Neu `voteMaximum(state, name)` in `stateMachine.ts`: höchstens alle Stimmen minus die eigene (der nominierte Bürgermeister mit Doppelstimme: minus 2; bei einer nominierten Person die Ja-Stimmen `maxYes`). Der Guide (`setVoteCount`, `setVoteBonus`, Feld `voteMax`) begrenzt die Eingabe damit; `countVotes` prüfte dieselbe Grenze schon vorher. Die zweite Stimme des Bürgermeisters zählt zur Person dazu.

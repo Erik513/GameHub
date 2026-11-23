@@ -257,6 +257,11 @@ export function GuideBox({
         <footer className="ww-guide__extra">
           {!showPeople && extras}
           {isVote && votes && (
+            <span className="ww-vote__leader" data-complete={votes.complete}>
+              {votes.leader}
+            </span>
+          )}
+          {isVote && votes && (
             <button
               aria-label={t("werewolfNarrator.guide.confirm")}
               className="ww-guide__confirm"

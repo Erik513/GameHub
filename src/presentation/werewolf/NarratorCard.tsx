@@ -66,6 +66,10 @@ interface NarratorCardProps {
     readonly onCancel: () => void;
     readonly onConfirm: () => void;
     readonly canConfirm: boolean;
+    /** The most votes each nominated person can get (all votes minus his own). */
+    readonly max: Readonly<Record<string, number>>;
+    /** Who has the majority right now (or the tie, or whether the one nominated person leaves): shown next to the check. */
+    readonly leader: string;
   };
   /** The abilities are the next thing to tap: the ones that can be used get a blue frame. */
   readonly next?: boolean;

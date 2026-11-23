@@ -710,6 +710,20 @@ function singleVote(
   return { maxYes: total - own, needed: Math.floor(total / 2) + 1, total };
 }
 
+/**
+ * The most votes one nominated person can get in the vote: all votes minus his own (he does not vote for himself; the
+ * mayor with the double vote has two votes of his own). With one nominated person these are the yes votes.
+ */
+export function voteMaximum(state: WerewolfState, name: string): number {
+  if (state.status !== "vote") return 0;
+  if (state.candidates.length === 1) return singleVote(state).maxYes;
+  const voters = dayVoters(state);
+  const mayor =
+    state.settings.mayor === "doubleVote" ? findActiveRole(state, "mayor", voters) : undefined;
+  const own = voters.some((voter) => voter.name === name);
+  return voteTotal(state) - (own ? (name === mayor?.name ? 2 : 1) : 0);
+}
+
 /** The yes votes that are needed for the one nominated person to leave the game (0 when several are nominated). */
 export function voteNeeded(state: WerewolfState): number {
   return state.status === "vote" && state.candidates.length === 1 ? singleVote(state).needed : 0;

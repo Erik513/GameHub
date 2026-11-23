@@ -1,9 +1,10 @@
+import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import type { WerewolfSession } from "../../business/games/werewolf/session";
 import { Button } from "../components";
 import { StartBar } from "../game-kit";
-import { isDayStep } from "../../business/games/werewolf/narratorGuide";
+import { isDayStep, type GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
 import { GuideBox } from "./GuideBox";
 import { NarratorBar } from "./NarratorBar";
@@ -27,6 +28,31 @@ interface NarratorViewProps {
  * leads through the night. At the bottom only "Back" and "Next": back is exactly one step, next only where the
  * step is complete.
  */
+/** What the box next to the check says while the votes are entered: who has the majority, a tie, or the result about one person. */
+function voteLeaderText(view: GuideView, t: TFunction): string {
+  const { state } = view;
+  if (state.status !== "vote") return "";
+  const second = view.voteBonus?.chosen ?? null;
+  const votesOf = (name: string) => (view.voteCounts[name] ?? 0) + (second === name ? 1 : 0);
+  if (state.candidates.length === 1) {
+    const name = state.candidates[0]!;
+    return t(
+      votesOf(name) >= view.voteNeeded
+        ? "werewolfNarrator.guide.vote.leaves"
+        : "werewolfNarrator.guide.vote.stays",
+      { name },
+    );
+  }
+  const most = Math.max(...state.candidates.map(votesOf));
+  if (most === 0) return t("werewolfNarrator.guide.vote.noVotes");
+  const leaders = state.candidates.filter((name) => votesOf(name) === most);
+  if (leaders.length === 1) return t("werewolfNarrator.guide.vote.leader", { name: leaders[0] });
+  return t(
+    state.round === 2 ? "werewolfNarrator.guide.vote.tieAgain" : "werewolfNarrator.guide.vote.tie",
+    { names: leaders.join(", ") },
+  );
+}
+
 export function NarratorView({ session, trail, onSession, onEnd, onRules }: NarratorViewProps) {
   const { t } = useTranslation();
   const guide = useNarratorGuide(session, onSession, trail);
@@ -54,6 +80,8 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
     view.state.status === "vote"
       ? {
           canConfirm: view.canContinue,
+          leader: voteLeaderText(view, t),
+          max: view.voteMax,
           complete:
             view.voteNeeded > 0 ? view.voteSum >= view.voteNeeded : view.voteSum === view.voteTotal,
           counts: view.voteCounts,

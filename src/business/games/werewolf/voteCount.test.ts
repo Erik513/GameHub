@@ -270,6 +270,19 @@ it("keeps one vote free for the second vote of the mayor: the numbers add up to 
   expect(setVoteCount(guide, third, 1)).toBe(guide);
 });
 
+it("limits every nominated person to all votes minus his own, the second vote of the mayor included", () => {
+  const state = toVote(3);
+  let guide = createGuide(createWerewolfSession(state));
+  const view = describeGuide(guide);
+  const [first] = state.candidates as [string, string, string];
+  const max = view.voteMax[first]!;
+  // A nominated person who votes does not vote for himself.
+  expect(max).toBe(view.voteTotal - 1);
+  guide = setVoteCount(guide, first, max);
+  expect(describeGuide(guide).voteCounts[first]).toBe(max);
+  expect(setVoteCount(guide, first, max + 1)).toBe(guide);
+});
+
 it("gives the second vote of the mayor in the vote about one person as an additional yes vote", () => {
   const state = toVote(1, ["mayor"], { mayor: "doubleVote" });
   let guide = createGuide(createWerewolfSession(state));

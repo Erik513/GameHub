@@ -209,6 +209,12 @@ export const werewolfNarratorTexts = {
       healChosen: "Heilen gewählt: {{name}} wird gerettet",
       vote: {
         heading: "Abstimmung",
+        leader: "Person mit Mehrheit: {{name}}",
+        tie: "Gleichstand: {{names}}",
+        tieAgain: "Erneut Gleichstand: niemand scheidet aus",
+        noVotes: "Noch keine Stimmen",
+        leaves: "{{name}} scheidet aus",
+        stays: "{{name}} bleibt im Spiel",
         sum: "Stimmen: {{sum}} von {{total}}",
         yes: "Ja-Stimmen: {{sum}} (mehr als die Hälfte aller Stimmen nötig: {{needed}})",
         cancel: "Abstimmung abbrechen",

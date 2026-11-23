@@ -23,7 +23,6 @@ export const werewolfSymbolsTexts = {
         shot: "Der Jäger schießt auf eine Person",
         passAmulet: "Der Besitzer gibt das Amulett weiter",
         vote: "Bis zu 3 Personen nominieren, danach stimmt das Dorf ab",
-        doubleVote: "Der Bürgermeister weist seine zweite Stimme zu",
       },
     },
     groups: {

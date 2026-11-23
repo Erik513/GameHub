@@ -37,7 +37,11 @@ export function VoteInput({ votes }: { readonly votes: VoteProps }) {
                 </output>
                 <button
                   aria-label={t("werewolfNarrator.guide.vote.more", { name })}
-                  disabled={votes.sum >= limit}
+                  disabled={
+                    votes.sum >= limit ||
+                    count + (votes.bonus?.chosen === name ? 1 : 0) >=
+                      (votes.max[name] ?? votes.total)
+                  }
                   onClick={() => votes.onCount(name, count + 1)}
                   type="button"
                 >
@@ -76,6 +80,10 @@ export function VoteInput({ votes }: { readonly votes: VoteProps }) {
               votes.bonus.choices.map((name) => (
                 <button
                   aria-pressed={votes.bonus?.chosen === name}
+                  disabled={
+                    votes.bonus?.chosen !== name &&
+                    (votes.counts[name] ?? 0) + 1 > (votes.max[name] ?? votes.total)
+                  }
                   key={name}
                   onClick={() => votes.bonus?.onChoose(name)}
                   type="button"

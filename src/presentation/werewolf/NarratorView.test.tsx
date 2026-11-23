@@ -302,6 +302,8 @@ describe("NarratorView choices", () => {
     expect(document.querySelector(".ww-vote__sum")!.textContent).toContain(
       "Yes votes: 0 (more than half",
     );
+    // The box next to the check says what the votes mean right now: too few yes votes, he stays.
+    expect(document.querySelector(".ww-vote__leader")!.textContent).toContain("stays in the game");
     // Any number of yes votes can be confirmed (no yes vote at all is a valid result).
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
     // The number is the yes votes: a label in the row says so.
