@@ -19,6 +19,7 @@ import { useGameExit, useGameRulesButton } from "../GameChrome";
 import { usePersistentState } from "../game-kit";
 import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
 import { NarratorView } from "./NarratorView";
+import { NarratorErrorBoundary } from "./NarratorErrorBoundary";
 import { useWerewolfSession } from "./useWerewolfSession";
 import { WerewolfLineup } from "./WerewolfLineup";
 import { WerewolfRulesDialog } from "./WerewolfRules";
@@ -79,13 +80,15 @@ export function WerewolfGame() {
   useGameExit(game.session !== null, game.end);
 
   const view = game.session ? (
-    <NarratorView
-      onEnd={game.end}
-      onRules={() => setRulesOpen(true)}
-      onSession={game.replace}
-      session={game.session}
-      trail={game.trail}
-    />
+    <NarratorErrorBoundary>
+      <NarratorView
+        onEnd={game.end}
+        onRules={() => setRulesOpen(true)}
+        onSession={game.replace}
+        session={game.session}
+        trail={game.trail}
+      />
+    </NarratorErrorBoundary>
   ) : configuring ? (
     <WerewolfConfiguration
       draft={draft}

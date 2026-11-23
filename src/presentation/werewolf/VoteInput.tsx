@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { HoldButton } from "./HoldButton";
 import type { VoteProps } from "./NarratorCard";
 
 /**
@@ -20,14 +21,13 @@ export function VoteInput({ votes }: { readonly votes: VoteProps }) {
               <strong className="ww-nominee__name">{name}</strong>
               <span className="ww-nominee__count">
                 {votes.yesLabel && <small className="ww-nominee__yes">{votes.yesLabel}</small>}
-                <button
-                  aria-label={t("werewolfNarrator.guide.vote.fewer", { name })}
+                <HoldButton
                   disabled={count <= 0}
-                  onClick={() => votes.onCount(name, count - 1)}
-                  type="button"
+                  label={t("werewolfNarrator.guide.vote.fewer", { name })}
+                  onStep={() => votes.onCount(name, count - 1)}
                 >
                   −
-                </button>
+                </HoldButton>
                 {/* The second vote of the mayor is assigned to this person: the number includes it and stands in a blue box. */}
                 <output
                   aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}
@@ -35,18 +35,17 @@ export function VoteInput({ votes }: { readonly votes: VoteProps }) {
                 >
                   {count + (votes.bonus?.chosen === name ? 1 : 0)}
                 </output>
-                <button
-                  aria-label={t("werewolfNarrator.guide.vote.more", { name })}
+                <HoldButton
                   disabled={
                     votes.sum >= limit ||
                     count + (votes.bonus?.chosen === name ? 1 : 0) >=
                       (votes.max[name] ?? votes.total)
                   }
-                  onClick={() => votes.onCount(name, count + 1)}
-                  type="button"
+                  label={t("werewolfNarrator.guide.vote.more", { name })}
+                  onStep={() => votes.onCount(name, count + 1)}
                 >
                   +
-                </button>
+                </HoldButton>
               </span>
             </li>
           );

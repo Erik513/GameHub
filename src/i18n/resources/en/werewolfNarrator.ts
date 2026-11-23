@@ -2,6 +2,11 @@
 export const werewolfNarratorTexts = {
   werewolfNarrator: {
     view: "Narrator view",
+    crash: {
+      title: "The narrator view could not be drawn",
+      text: "The game is saved. Tell the developer this message:",
+      retry: "Try again",
+    },
     deal: {
       count: "Player: {{current}}/{{total}}",
       noAbility: "No special ability",
@@ -239,11 +244,11 @@ export const werewolfNarratorTexts = {
         more: "One vote more for {{name}}",
         votesOf: "Votes for {{name}}",
         hint: {
-          double: "{{name}} (mayor) has two votes: assign the second one below",
-          setByNarrator: "{{name}} (village idiot): the narrator sets the vote",
+          double: "{{name}} (mayor): has two votes",
+          setByNarrator: "{{name}} (village idiot): has to vote yes",
         },
       },
-      voter: { double: "counts twice", setByNarrator: "vote set by the narrator" },
+      voter: { double: "counts twice", setByNarrator: "has to vote yes" },
       closeSelection: "Close the selection",
       ready: {
         title: "All roles are dealt",

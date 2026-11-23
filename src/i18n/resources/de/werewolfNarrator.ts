@@ -2,6 +2,11 @@
 export const werewolfNarratorTexts = {
   werewolfNarrator: {
     view: "Erzählersicht",
+    crash: {
+      title: "Die Erzähleransicht konnte nicht angezeigt werden",
+      text: "Das Spiel ist gespeichert. Gib diese Meldung weiter:",
+      retry: "Erneut versuchen",
+    },
     deal: {
       count: "Spieler: {{current}}/{{total}}",
       noAbility: "Keine besondere Fähigkeit",
@@ -240,11 +245,11 @@ export const werewolfNarratorTexts = {
         more: "Eine Stimme mehr für {{name}}",
         votesOf: "Stimmen für {{name}}",
         hint: {
-          double: "{{name}} (Bürgermeister) hat zwei Stimmen: die zweite unten zuordnen",
-          setByNarrator: "{{name}} (Dorftrottel): die Stimme setzt der Erzähler",
+          double: "{{name}} (Bürgermeister): hat zwei Stimmen",
+          setByNarrator: "{{name}} (Dorftrottel): muss für Ja stimmen",
         },
       },
-      voter: { double: "zählt doppelt", setByNarrator: "Stimme vom Erzähler gesetzt" },
+      voter: { double: "zählt doppelt", setByNarrator: "muss für Ja stimmen" },
       closeSelection: "Auswahl schließen",
       ready: {
         title: "Alle Rollen sind verteilt",
