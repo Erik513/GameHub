@@ -62,7 +62,7 @@ it("shows the true role of the drunk in a window, then the check goes on, and th
   const check = () => screen.getByRole("button", { name: "Task done" });
   expect(show).toBeEnabled();
   // The check right of it is switched off until the window was opened and closed.
-  expect(document.querySelector(".ww-role-card__reveal .ww-ability--check")).toBeDisabled();
+  expect(document.querySelector(".ww-reveal__check")).toBeDisabled();
   expect(screen.getByRole("button", { name: "Undo" })).toBeDisabled();
   fireEvent.click(show);
   const dialog = screen.getByRole("dialog");

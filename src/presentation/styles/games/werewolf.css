@@ -3359,3 +3359,44 @@ button.ww-guide__strip[data-next] {
   background: var(--color-surface-muted);
   color: var(--color-ink);
 }
+
+/* The window with the true role fills the whole screen of the phone, only a small gap stays; the card inside fills the
+   window, and the cross at the top right sits on it (the info button of the card is not shown here). */
+.ww-truerole {
+  display: block;
+  padding: var(--space-2);
+  overflow: hidden;
+}
+
+.ww-truerole .ww-deal {
+  height: 100%;
+}
+
+.ww-truerole .ww-deal__face {
+  height: 100%;
+  min-height: 0;
+}
+
+.ww-truerole .ww-deal__info {
+  display: none;
+}
+
+.ww-truerole__close {
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 1;
+}
+
+/* The check next to the button of the drunk has the form of the ability button (same height and frame), only narrower. */
+.ww-role-card__reveal .ww-ability--check {
+  flex: none;
+  width: 4.5rem;
+}
+
+/* The window has the format of the phone (the width of the app column), centered on a wide screen; the rest of the screen
+   behind it is dimmed. On a phone it fills the whole screen. */
+.ww-truerole {
+  width: min(100%, var(--phone-width));
+  margin-inline: auto;
+  box-shadow: 0 0 0 100vmax rgb(0 0 0 / 0.65);
+}

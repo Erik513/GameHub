@@ -236,8 +236,10 @@ export function NarratorCard({
           </button>
           <button
             aria-label={reveal.checkLabel}
-            className="ww-ability ww-ability--skip ww-ability--check"
+            // The same form as the ability button next to it (box, border, height), in green like a button that can be used.
+            className="ww-ability ww-ability--check ww-reveal__check"
             data-next={(!reveal.settled && reveal.checkEnabled) || undefined}
+            data-state={reveal.settled || !reveal.checkEnabled ? "dim" : "ready"}
             disabled={reveal.settled || !reveal.checkEnabled}
             onClick={reveal.onCheck}
             title={reveal.checkLabel}
