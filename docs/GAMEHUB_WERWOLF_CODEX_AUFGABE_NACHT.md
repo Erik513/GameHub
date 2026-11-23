@@ -290,3 +290,8 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 
 - `applyEvent` im Zustand `wolves`: `attack` mit `target: null` wird nie mehr angenommen (der Zustand bleibt unverändert; das Spiel endet vorher, bevor kein Opfer mehr übrig ist). Nacht 1 ohne Angriff (Einstellung) läuft unverändert über `wolvesReady`.
 - `describeRoleStep`: `skippable` der Werwölfe ist nie wahr; `eventChoices` bietet „niemanden“ nicht mehr an. Simulation und Forschungsmodelle, die einen Angriff auf niemanden würfeln, müssen stattdessen ein Opfer wählen.
+
+## Verbrauchte Fähigkeiten: kein Tarnaufruf mehr (2026-11-23, Claude, vom Auftraggeber freigegeben)
+
+- `nightScript`: Eine lebende Rolle mit Akteuren ist immer `active`, auch wenn die Fähigkeit verbraucht ist (Hexe ohne Tränke, Magier ohne Zauber, Ermittler nach dem Prüfen, Bürgermeister nach dem Hammer). `cover` bleibt nur für einen Trunkenbold, der seine Rolle noch nicht kennt (und die mögliche Seher-Lehrling-Tarnung).
+- Die verbrauchten Schritte laufen über die vorhandenen Ereignisse mit „niemand“: `potions` ohne Auswahl, `castSpells` ohne Zauber, `investigate` mit `target: null`, `hammer` mit `target: null`. `investigate` mit Ziel wird nach dem Verbrauch abgelehnt (`investigationUsed`). `describeRoleStep`: `investigatorUsed` und `mayorUnavailable` sind jetzt `choose` mit `skippable`. Simulation und Forschungsmodelle, die bei verbrauchten Rollen `acknowledgeCall` erwarten, müssen stattdessen die Verzichts-Ereignisse senden.
