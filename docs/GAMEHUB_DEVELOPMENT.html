@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 325,
-      "totalTasks": 381,
-      "percent": 85.3
+      "completedTasks": 330,
+      "totalTasks": 386,
+      "percent": 85.5
     }
   },
   "environment": {
@@ -2059,6 +2059,36 @@
           "id": "We-01-140",
           "title": "Anleitung: Das Erzählerskript ist immer gleich (niemand erkennt, ob Fähigkeiten genutzt wurden) und es werden nur lebende Personen geweckt",
           "status": "planned"
+        },
+        {
+          "id": "We-01-141",
+          "title": "Erzähleransicht: Fähigkeiten in vier Zuständen, Fähigkeiten im Kreis, Anweisungen ohne Rollennamen",
+          "status": "done",
+          "validation": "Fähigkeiten: grün wählbar, grau durchgestrichen verbraucht, gelb gestrichelt rollenbedingt nicht möglich, abgedunkelt wenn nicht dran; Fähigkeiten stehen im Kreis, Rollen frei (Legende erklärt es); Anweisungen statt „Tippe auf eine Fähigkeit“, ohne Rollennamen, mit „wählen“ und „(zeigen)“; Jäger ohne Aufwachbox, ohne „(zeigen)“ und mit Hinweis Pflicht/freiwillig; Dorfmatratze „Übernachten“. Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-142",
+          "title": "Erzähleransicht: Spielerauswahl mit allen Spielern, gesperrte Namen, keine leere Bestätigung",
+          "status": "done",
+          "validation": "Immer alle Spieler in fester Reihenfolge; Tote grau, rollenbedingt gesperrte gelb gestrichelt, Jäger mit letztem Schuss nicht als tot; lange Namen zweizeilig; Bestätigen nur mit Auswahl (kein „Niemand“, Werwölfe verzichten); drei gleich große Knöpfe; Zusammenfassung während der Wahl ausgeblendet; Hexe und Magier ohne Tränke oder Zauber können verzichten (vorher Sackgasse). Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-143",
+          "title": "Erzähleransicht: Morgen mit Kategorien, Todesursache auf Antippen, Todesreihenfolge nach Todeszeit",
+          "status": "done",
+          "validation": "Jede gestorbene Person in einer eigenen Box, Kategorien „Gestorben“ und „Letzter Schuss“ (nur der Jäger), Ursache erst auf Antippen mit Auge, keine Ursache nach dem Jägerschuss, Zurück ohne Nachfrage; Reihenfolge der Toten nach Todeszeit (deathOrder.ts: Harter Bursche zuerst, dann Werwolfopfer, Gift, Zauber, Hammer; Liebespartner direkt nach dem zuerst Gestorbenen; erstes Todesurteil zählt) in Anzeige und Protokoll; Übersicht „Alle Spieler und Rollen“ zeigt die Toten schon in der Ansage, der Jäger mit lastShot erst nach der Entscheidung. Tests deathOrder.test.ts, deathOrderGame.test.ts, lastShot.test.ts, NarratorMorning.test.tsx. Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-144",
+          "title": "Erzähleransicht: Tag mit Skript, Nominierung nur mit Wahl, Zusammenfassung nach jeder Entscheidung",
+          "status": "done",
+          "validation": "Skript „Jemanden nominieren? (bis zu 3 Personen)“ mit Überschrift „Das Dorf diskutiert“ in der oberen Box; „Nominierung“ und „Keine Nominierung“; der Tag endet nur nach einer gewählten Option; Reset-Knopf; blaue Zusammenfassung nach jeder Entscheidung (Tag, Hexe und Magier nach der ersten Antwort, Nominierte, Werwölfe ohne Angriff); Stumm-Hinweis mit Zeilenumbruch; ohne Icon-Plätze am Tag. Test NarratorDay.test.tsx. Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-145",
+          "title": "Abstimmung mit Stimmenzahlen je nominierter Person (Ja/Nein bei einer Person wie in Ultimate Werewolf)",
+          "status": "done",
+          "validation": "Der Erzähler trägt in der oberen Box die Stimmenzahl je nominierter Person ein; Bestätigen erst, wenn alle Stimmen (Bürgermeister doppelt) addiert sind; bei einer Person nur Ja-Stimmen, Ausscheiden bei mehr als der Hälfte aller Stimmen, sonst geht der Tag weiter; zwei oder drei Nominierte: meiste Stimmen, Stichwahl, danach bleiben alle. Neues Ereignis voteCount in der Spiellogik (das alte vote bleibt), voteTotal und voteNeeded; Annahme: die Schwelle gilt für alle Abstimmenden einschließlich der nominierten Person. Test voteCount.test.ts, Abdeckungsprüfung erweitert; Codex hat Simulation und Protokoll angepasst (We-03-71). Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
         }
       ]
     },
