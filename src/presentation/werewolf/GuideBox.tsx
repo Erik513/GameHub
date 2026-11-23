@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { describeWinners, type GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
@@ -674,10 +674,19 @@ function Summary({ view }: { readonly view: GuideView }) {
     return view.progress >= 1 || view.votedToday ? (
       <Chosen>
         {view.exiledToday.map((name) => (
-          <span className="ww-guide__chosen-part" key={name}>
-            <WerewolfSymbol id="vote" ring size={20} />
-            <span>{t("werewolfNarrator.guide.exile", { name })}</span>
-          </span>
+          <Fragment key={name}>
+            <span className="ww-guide__chosen-part">
+              <WerewolfSymbol id="vote" ring size={20} />
+              <span>{t("werewolfNarrator.guide.exile", { name })}</span>
+            </span>
+            {/* The tanner who was voted out has won: he keeps his role secret until the end of the game. */}
+            {name === view.state.tannerWinner && (
+              <span className="ww-guide__chosen-part">
+                <WerewolfSymbol id="tanner" size={20} />
+                <span>{t("werewolfNarrator.guide.tannerWon", { name })}</span>
+              </span>
+            )}
+          </Fragment>
         ))}
         {/* A vote without anybody leaving (a tie, too few yes votes). */}
         {view.votedToday && view.exiledToday.length === 0 && (

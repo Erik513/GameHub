@@ -9,6 +9,14 @@ import {
 } from "../../business/games/werewolf/session";
 import { createWerewolf } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
+import {
+  chooseAbility,
+  choosePlayer,
+  continueGuide,
+  createGuide,
+  describeGuide,
+  setVoteCount,
+} from "../../business/games/werewolf/narratorGuide";
 import { NarratorView } from "./NarratorView";
 
 /** The notes of the day (who is silenced) stand in the upper box at the nomination, not in the lower box. */
@@ -46,6 +54,43 @@ function toDayWithTanner(mode: "anyDeath" | "voteOnly"): WerewolfSession {
   }
   return session;
 }
+
+it.each(["en", "de"] as const)(
+  "tells the narrator in the summary that a tanner who was voted out has won and keeps the role secret in %s",
+  async (language) => {
+    const i18n = await createGameHubI18n(language);
+    const day = toDayWithTanner("voteOnly");
+    const tanner = day.present.alive.find((player) => player.role === "tanner")!.name;
+    // The village votes about the tanner alone and sends him out (the yes votes are enough).
+    let guide = createGuide(day);
+    guide = chooseAbility(guide, "vote");
+    guide = choosePlayer(guide, tanner);
+    guide = continueGuide(guide);
+    guide = setVoteCount(guide, tanner, describeGuide(guide).voteNeeded);
+    guide = continueGuide(guide);
+    expect(guide.session.present.status).toBe("day");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <NarratorView
+          onEnd={() => undefined}
+          onRules={() => undefined}
+          onSession={() => undefined}
+          session={guide.session}
+        />
+      </I18nextProvider>,
+    );
+    const summary = document.querySelector(".ww-guide__chosen")?.textContent ?? "";
+    const expected = language === "en" ? "(tanner): has won" : "(Gerber): hat gewonnen";
+    expect(summary).toContain(tanner + " " + expected.split(" ")[0]);
+    expect(summary).toContain(expected);
+    // Not in the upper box any more: there stands only the note about the tanner who wins by the vote while he lives.
+    expect(
+      [...document.querySelectorAll(".ww-role-card__notes .ww-guide__victim")]
+        .map((note) => note.textContent ?? "")
+        .some((note) => note.includes(expected)),
+    ).toBe(false);
+  },
+);
 
 it.each(["en", "de"] as const)(
   "shows the tanner who wins only by the vote as a note in the upper box in %s, and not the other one",
