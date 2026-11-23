@@ -208,6 +208,12 @@ export const werewolfNarratorTexts = {
         stayWith: "Stayed with",
       },
       answeredNo: "Skipped",
+      summaryAsk: {
+        heal: "Save",
+        poison: "Poison",
+        magicianFirst: "Save or kill",
+        magicianSecond: "Second spell",
+      },
       noChoice: "Nothing chosen – the role passes",
       silenced: "Silenced today: {{name}}\n(no speech, nomination or vote)",
       wounded: "Wounded, dies in the next night: {{names}}",

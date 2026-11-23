@@ -123,7 +123,7 @@ it("answers both questions with skip: nothing is used and the step is finished w
   fireEvent.click(abilityButtons()[2]!);
   // The blue summary names both decisions: the healing and the poison are both skipped.
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(
-    "Heal: SkippedPoison: Skipped",
+    "Save: SkippedPoison: Skipped",
   );
 });
 
@@ -227,7 +227,7 @@ it("sums up every answer at once: after the first question the blue summary says
   showVictim();
   // Skipped: the summary says so (the second question is still open).
   fireEvent.click(abilityButtons()[2]!);
-  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("Heal: Skipped");
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("Save: Skipped");
   // Taken back and healed: the summary names the healed person.
   fireEvent.click(screen.getAllByRole("button", { name: "Undo" })[0]!);
   fireEvent.click(abilityButtons()[0]!);

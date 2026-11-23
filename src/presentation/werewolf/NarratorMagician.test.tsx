@@ -62,7 +62,7 @@ async function open() {
   fireEvent.click(document.querySelector(".ww-script__check:not(.ww-script__wake)")!);
 }
 
-it("asks the magician two questions: heal or kill first, then a second death spell; the 2 goes once a spell is cast", async () => {
+it("asks the magician two questions: heal or kill first, then a second death spell; the 2 goes once a spell is cast, and no other number takes its place", async () => {
   await open();
   // Both spells are there: a 2 on both buttons.
   expect(counts()).toBe(2);
@@ -71,6 +71,7 @@ it("asks the magician two questions: heal or kill first, then a second death spe
   fireEvent.click(persons()[0]!);
   expect(counts()).toBe(2);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  // One spell is cast: no number on either button (not even a 1), the healing spell waits.
   expect(counts()).toBe(0);
   // Second question: only the death spell (and skip) can be pressed, the healing spell waits.
   expect(screen.getByRole("button", { name: /^Heal/ })).toBeDisabled();
@@ -82,7 +83,9 @@ it("asks the magician two questions: heal or kill first, then a second death spe
   expect(document.querySelectorAll(".ww-person[aria-pressed='true']")).toHaveLength(2);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   // Both questions are answered: the step is finished.
-  expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(/Killed: P\d+, P\d+/);
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
+    /Killed: P\d+Killed: P\d+/,
+  );
 });
 
 it("lets the magician heal in the first question and kill in the second", async () => {
@@ -104,7 +107,7 @@ it("lets the magician skip both questions: nothing is cast", async () => {
   fireEvent.click(screen.getByRole("button", { name: /^Skip/ }));
   // The blue summary names both decisions: the healing and the death spell are both skipped.
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(
-    "Heal: SkippedKill: Skipped",
+    "Save or kill: SkippedSecond spell: Skipped",
   );
 });
 

@@ -757,50 +757,87 @@ function Summary({ view }: { readonly view: GuideView }) {
       </Chosen>
     );
   const parts: ReactNode[] = [];
-  if (selection.heal)
-    parts.push(
-      part(
-        symbolOf("heal"),
-        t("werewolfNarrator.guide.abilityDone.heal"),
-        view.state.wolfTarget?.name ?? t("werewolfNarrator.guide.nobody"),
-      ),
-    );
-  // The witch and the magician: the first question was answered with "skip" (the second one is open or answered): the
-  // summary says so for the healing, too, not only when somebody was healed.
-  const caster = view.state.status === "witch" || view.state.status === "magician";
   const skipped = t("werewolfNarrator.guide.answeredNo");
-  if (caster && !selection.heal && (view.question === "poison" || view.phase === "outro"))
-    parts.push(part(symbolOf("heal"), t("werewolfNarrator.ability.heal"), skipped));
-  // The witch and the magician close the list of people with the check mark: the people stay chosen for their spell.
-  const chosenAbility =
-    selection.ability !== null && selection.ability !== "heal"
-      ? selection.ability
-      : selection.ability === null && selection.picks.length > 0
-        ? step.compound === "castSpells"
-          ? "kill"
-          : step.compound === "potions"
-            ? "poison"
-            : step.compound === "bond"
-              ? "bond"
-              : null
-        : null;
-  if (chosenAbility) {
-    const people =
-      selection.none || selection.picks.length === 0
-        ? t("werewolfNarrator.guide.nobody")
-        : selection.picks.join(", ");
-    parts.push(
-      part(
-        symbolOf(chosenAbility),
-        t(`werewolfNarrator.guide.abilityDone.${chosenAbility}`),
-        people,
-      ),
-    );
-  }
-  // The second question was answered with "skip": a decision as well (the poison or the death spell is left out).
-  if (caster && !chosenAbility && view.phase === "outro") {
-    const second = view.state.status === "witch" ? "poison" : "kill";
-    parts.push(part(symbolOf(second), t(`werewolfNarrator.ability.${second}`), skipped));
+  const magician = view.state.status === "magician";
+  if (view.state.status === "witch" || magician) {
+    // The witch and the magician: one row for every question that was answered, in the words of the script ("Save the
+    // victim", "Poison somebody", ...), with what was decided or "skipped". The first question of the magician is
+    // answered with a healing or with a death spell; the people of the first question stand before the later ones.
+    const firstAnswered = view.question === "poison" || view.phase === "outro";
+    const firstKills = magician ? selection.picks.slice(0, selection.spellPicks ?? 0) : [];
+    const laterPicks = selection.picks.slice(firstKills.length);
+    const second = magician ? "kill" : "poison";
+    if (firstAnswered) {
+      if (selection.heal)
+        parts.push(
+          part(
+            symbolOf("heal"),
+            t("werewolfNarrator.guide.abilityDone.heal"),
+            view.state.wolfTarget?.name ?? t("werewolfNarrator.guide.nobody"),
+          ),
+        );
+      else if (firstKills.length > 0)
+        parts.push(
+          part(
+            symbolOf("kill"),
+            t("werewolfNarrator.guide.abilityDone.kill"),
+            firstKills.join(", "),
+          ),
+        );
+      else
+        parts.push(
+          part(
+            symbolOf("heal"),
+            t(
+              magician
+                ? "werewolfNarrator.guide.summaryAsk.magicianFirst"
+                : "werewolfNarrator.guide.summaryAsk.heal",
+            ),
+            skipped,
+          ),
+        );
+    }
+    if (laterPicks.length > 0)
+      parts.push(
+        part(
+          symbolOf(second),
+          t(`werewolfNarrator.guide.abilityDone.${second}`),
+          laterPicks.join(", "),
+        ),
+      );
+    else if (view.phase === "outro")
+      parts.push(
+        part(
+          symbolOf(second),
+          t(
+            magician
+              ? "werewolfNarrator.guide.summaryAsk.magicianSecond"
+              : "werewolfNarrator.guide.summaryAsk.poison",
+          ),
+          skipped,
+        ),
+      );
+  } else {
+    // Cupid (and every other role with a list of people): what was chosen.
+    const chosenAbility =
+      selection.ability !== null && selection.ability !== "heal"
+        ? selection.ability
+        : selection.ability === null && selection.picks.length > 0 && step.compound === "bond"
+          ? "bond"
+          : null;
+    if (chosenAbility) {
+      const people =
+        selection.none || selection.picks.length === 0
+          ? t("werewolfNarrator.guide.nobody")
+          : selection.picks.join(", ");
+      parts.push(
+        part(
+          symbolOf(chosenAbility),
+          t(`werewolfNarrator.guide.abilityDone.${chosenAbility}`),
+          people,
+        ),
+      );
+    }
   }
   const answeredNo = view.phase === "act" && view.question === "poison";
   return (

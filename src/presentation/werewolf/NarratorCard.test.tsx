@@ -102,6 +102,7 @@ describe("NarratorCard", () => {
       role: "magician",
     };
     const { container } = await inLanguage("en", <NarratorCard card={one} />);
+    // One spell left: no number on either button.
     expect(container.querySelector(".ww-ability__count")).toBeNull();
   });
 
@@ -225,13 +226,16 @@ describe("NarratorCard", () => {
     const { container, rerender } = await inLanguage("en", <NarratorCard card={two} />);
     expect(container.querySelectorAll(".ww-ability__count")).toHaveLength(2);
     rerender(<NarratorCard card={two} pressed={["heal"]} spellsUsed={1} />);
+    // One spell is used: no number on either button (the 2 only stands while both spells are there).
     expect(container.querySelector(".ww-ability__count")).toBeNull();
-    // The other spell can still be used; with both gone the unchosen one looks used up.
+    // The other spell can still be used; with both gone the unchosen one is not possible any more (this step).
     const kill = [...container.querySelectorAll(".ww-ability")][1]!;
     expect(kill.getAttribute("data-state")).toBe("ready");
     rerender(<NarratorCard card={two} pressed={["kill"]} spellsUsed={2} />);
     const heal = [...container.querySelectorAll(".ww-ability")][0]!;
-    expect(heal.getAttribute("data-state")).toBe("used");
+    // Both spells are used in this step: the unchosen one is not possible any more (amber, dashed), not "used up for good".
+    expect(heal.getAttribute("data-state")).toBe("blocked");
     expect(heal).toBeDisabled();
+    expect(container.querySelector(".ww-ability__count")).toBeNull();
   });
 });

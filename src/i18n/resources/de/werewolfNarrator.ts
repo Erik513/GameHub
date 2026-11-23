@@ -209,6 +209,12 @@ export const werewolfNarratorTexts = {
         stayWith: "Übernachtet bei",
       },
       answeredNo: "Verzichtet",
+      summaryAsk: {
+        heal: "Retten",
+        poison: "Vergiften",
+        magicianFirst: "Retten oder töten",
+        magicianSecond: "Zweiter Zauber",
+      },
       noChoice: "Nichts gewählt – die Rolle verzichtet",
       silenced: "Heute stumm: {{name}}\n(kein Reden, Nominieren oder Abstimmen)",
       wounded: "Verwundet, stirbt in der nächsten Nacht: {{names}}",

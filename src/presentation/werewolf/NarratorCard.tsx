@@ -237,13 +237,16 @@ export function NarratorCard({
         <div className="ww-role-card__abilities">
           {card.abilities.map((ability) => {
             const name = t(`werewolfNarrator.ability.${ability.id}`);
+            // The spells that are left in this step (the magician): the ones used in this step are gone, but only for now.
+            const remaining = ability.count === undefined ? undefined : ability.count - spellsUsed;
+            const exhausted =
+              remaining !== undefined && remaining <= 0 && !pressed.includes(ability.id);
+            // Used up for good (the logic says so) is grey and struck through; no spell left in this step (or not possible
+            // because of the situation) is amber and dashed; "dim" is not the turn of the ability.
             const abilityState =
-              ability.unavailable === "used" ||
-              (ability.count !== undefined &&
-                ability.count - spellsUsed <= 0 &&
-                !pressed.includes(ability.id))
+              ability.unavailable === "used"
                 ? "used"
-                : ability.unavailable === "blocked"
+                : ability.unavailable === "blocked" || exhausted
                   ? "blocked"
                   : locked || waiting || (asked !== null && !asked.includes(ability.id))
                     ? "dim"
@@ -270,7 +273,7 @@ export function NarratorCard({
                   // The frame says what the role could decide in theory now, the look of the button what is possible in
                   // practice: an ability that is used up (dark) but asked now keeps the thin frame.
                   (asked === null ? next : asked.includes(ability.id)) && !settled && !waiting
-                    ? ability.available
+                    ? ability.available && !exhausted
                       ? "full"
                       : "thin"
                     : undefined
@@ -281,9 +284,7 @@ export function NarratorCard({
                   locked ||
                   waiting ||
                   (asked !== null && !asked.includes(ability.id)) ||
-                  (ability.count !== undefined &&
-                    ability.count - spellsUsed <= 0 &&
-                    !pressed.includes(ability.id))
+                  exhausted
                 }
                 key={ability.id}
                 onClick={() => onAbility?.(ability.id)}
@@ -293,7 +294,7 @@ export function NarratorCard({
                   <WerewolfSymbol id={ability.symbol} ring size={24} />
                 </span>
                 <span className="ww-ability__name">{name}</span>
-                {/* Both spells are still there: a 2 on both buttons. With one left the 2 is gone on both. */}
+                {/* The 2 stands on both buttons only while both spells are there; with one left there is no number at all. */}
                 {ability.count === 2 && spellsUsed === 0 && (
                   <span className="ww-ability__count">2</span>
                 )}
