@@ -11,6 +11,7 @@ import { Icon } from "../components";
 import { DealCard } from "./DealCard";
 import { ThumbIcon, Verdict } from "./RoleStepContent";
 import { variantOfRole } from "./roleAbilities";
+import { lineGlyphs } from "./symbols/glyphs";
 import { factOf, scriptOf, stepExtras, stepTitle, type ScriptBox } from "./stepText";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
@@ -294,7 +295,11 @@ function PlainBox({ view }: { readonly view: GuideView }) {
                     }
                     type="button"
                   >
-                    <span>{name}</span>
+                    <span className="ww-guide__dead-name">
+                      {/* A closed eye while the reason is covered, an open one while it is shown. */}
+                      <EyeIcon open={shown.includes(name)} />
+                      {name}
+                    </span>
                     {hunter && (
                       <span className="ww-guide__dead-role">
                         <WerewolfSymbol id="hunter" size={22} />
@@ -594,6 +599,29 @@ function RoleScript({
         </div>
       ))}
     </div>
+  );
+}
+
+/** An eye: closed while something is covered, open while it is shown (the drawings are those of the symbols). */
+function EyeIcon({ open }: { readonly open: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="ww-guide__eye"
+      data-eye={open ? "open" : "closed"}
+      fill="none"
+      height="20"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="20"
+    >
+      {lineGlyphs[open ? "eye" : "eyeClosed"].map((d) => (
+        <path d={d} key={d} />
+      ))}
+    </svg>
   );
 }
 

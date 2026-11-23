@@ -58,11 +58,14 @@ it("hides the reason of death in the morning until the person is tapped, and cov
   const person = document.querySelector<HTMLButtonElement>(".ww-guide__dead li > button")!;
   // Closed: only the name stands there, no reason.
   expect(person).toHaveAttribute("aria-expanded", "false");
+  // The eye before the name is closed while the reason is covered.
+  expect(person.querySelector("[data-eye]")?.getAttribute("data-eye")).toBe("closed");
   expect(document.querySelector(".ww-guide__dead-causes")).toBeNull();
   expect(screen.queryByText(/for you only/)).toBeNull();
   // A tap shows it, the next tap covers it.
   fireEvent.click(person);
   expect(person).toHaveAttribute("aria-expanded", "true");
+  expect(person.querySelector("[data-eye]")?.getAttribute("data-eye")).toBe("open");
   expect(document.querySelector(".ww-guide__dead-causes")?.textContent).toMatch(/for you only/);
   fireEvent.click(person);
   expect(document.querySelector(".ww-guide__dead-causes")).toBeNull();
