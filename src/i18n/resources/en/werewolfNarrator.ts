@@ -86,7 +86,7 @@ export const werewolfNarratorTexts = {
         spellcaster: "The old hag goes back to sleep",
         mayor: "The mayor goes back to sleep",
         paranormalInvestigator: "The paranormal investigator goes back to sleep",
-        hunter: "The hunter has shot",
+        hunter: "The hunter dies",
         lovers: "The lovers go back to sleep",
         drunk: "The drunk goes back to sleep",
         amuletPass: "The amulet holder goes back to sleep",
@@ -105,7 +105,7 @@ export const werewolfNarratorTexts = {
         bond: "Choose two people to fall in love (point)",
         hammer: "Choose a person (point)",
         silence: "Choose a person to silence (point)",
-        shot: "Choose a person to shoot (point)",
+        shot: "Choose a person to shoot",
         passAmulet: "Pass on the amulet (point)?",
       },
       magician: {

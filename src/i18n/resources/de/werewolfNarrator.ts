@@ -86,7 +86,7 @@ export const werewolfNarratorTexts = {
         spellcaster: "Die Alte Vettel schläft wieder ein",
         mayor: "Der Bürgermeister schläft wieder ein",
         paranormalInvestigator: "Der Paranormale Ermittler schläft wieder ein",
-        hunter: "Der Jäger hat geschossen",
+        hunter: "Der Jäger stirbt",
         lovers: "Die Verliebten schlafen wieder ein",
         drunk: "Der Trunkenbold schläft wieder ein",
         amuletPass: "Der Amulett-Träger schläft wieder ein",
@@ -105,7 +105,7 @@ export const werewolfNarratorTexts = {
         bond: "Zwei Personen zum Verlieben wählen (zeigen)",
         hammer: "Person wählen (zeigen)",
         silence: "Person zum Stummschalten wählen (zeigen)",
-        shot: "Person zum Erschießen wählen (zeigen)",
+        shot: "Person zum Erschießen wählen",
         passAmulet: "Amulett weitergeben (zeigen)?",
       },
       magician: {

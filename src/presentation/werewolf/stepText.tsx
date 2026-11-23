@@ -170,8 +170,9 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
       card.abilities[0]?.symbol
     );
   };
+  // The hunter acts in public: nobody is woken up, so there is no box for that.
   return [
-    wake,
+    ...(card.role === "hunter" ? [] : [wake]),
     ...boxes.map((box) => {
       // The wolves who only look at each other (no attack in the first night) have no ability to show.
       const showsVictim =

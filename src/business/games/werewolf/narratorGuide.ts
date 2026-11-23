@@ -89,8 +89,9 @@ const abilityAction: Partial<Record<CardAbilityId, WerewolfTargetAction>> = {
 };
 function phaseOf(state: WerewolfState): GuidePhase {
   const card = describeNarratorCard(state);
-  // Nobody wakes up during the day: its card is open at once.
-  return !card ? "plain" : card.role === "day" ? "act" : "intro";
+  // Nobody wakes up during the day: its card is open at once. The hunter acts in public (everybody is awake and sees
+  // it): his card is open at once as well.
+  return !card ? "plain" : card.role === "day" || card.role === "hunter" ? "act" : "intro";
 }
 
 /** The vote opens at once; nobody has chosen yet. */
