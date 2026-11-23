@@ -25,6 +25,8 @@ interface NarratorCardProps {
    * upper box (an exception; in the other views they stand in the lower box).
    */
   readonly notes?: readonly string[];
+  /** The heading of the upper box at the day ("Nomination"); the upper box has a heading in every view of the day. */
+  readonly heading?: string;
   /** The script has not reached the decision yet (the witch: the victim is not shown yet): nothing can be pressed. */
   readonly waiting?: boolean;
   /**
@@ -114,6 +116,7 @@ export function NarratorCard({
   settled = false,
   locked = false,
   notes = [],
+  heading,
   votes,
   waiting = false,
   asked = null,
@@ -185,13 +188,19 @@ export function NarratorCard({
           )}
         </header>
       )}
-      {!votes && isDay && notes.length > 0 && (
-        <div className="ww-role-card__notes">
-          {notes.map((note) => (
-            <span className="ww-guide__victim" key={note}>
-              {note}
-            </span>
-          ))}
+      {/* The day: heading on top, below it the notes (new ones are added below the old ones), then the buttons. */}
+      {!votes && isDay && (
+        <div className="ww-role-card__top">
+          {heading && <strong className="ww-vote__heading">{heading}</strong>}
+          {notes.length > 0 && (
+            <div className="ww-role-card__notes">
+              {notes.map((note) => (
+                <span className="ww-guide__victim" key={note}>
+                  {note}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       )}
       {card.abilities.length > 0 && (

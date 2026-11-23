@@ -49,6 +49,10 @@ it.each(["en", "de"] as const)(
     // The note stands in the upper box (the card), once, and not in the lower box (the script).
     expect(note.closest(".ww-role-card")).not.toBeNull();
     expect(document.querySelectorAll(".ww-role-card__notes .ww-guide__victim")).toHaveLength(1);
+    // The upper box always has a heading above the notes.
+    expect(document.querySelector(".ww-role-card__top .ww-vote__heading")?.textContent).toBe(
+      language === "en" ? "Nomination" : "Nominierung",
+    );
     expect(document.querySelector(".ww-guide--sheet")?.textContent).not.toContain(name);
   },
 );

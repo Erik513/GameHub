@@ -59,8 +59,10 @@ it("shows the script of the day and lets the day end only after an option was ch
   // The question has the symbol of the vote; the card of the day has no slots for effects.
   expect(document.querySelector(".ww-script__step [data-symbol='vote']")).not.toBeNull();
   expect(document.querySelector(".ww-role-card__slots")).toBeNull();
-  // The upper box has no heading at the day; "no vote" has the blue frame as an option to choose.
-  expect(document.querySelector(".ww-role-card__who")).toBeNull();
+  // The upper box has a heading at the day (like at the vote); "no vote" has the blue frame as an option to choose.
+  expect(document.querySelector(".ww-role-card__top .ww-vote__heading")?.textContent).toBe(
+    "Nomination",
+  );
   expect(screen.getByRole("button", { name: "No nomination" })).toHaveAttribute("data-next");
   // Nothing chosen: the options above can be used at once, but the day cannot end and the reset is switched off.
   expect(screen.getByRole("button", { name: /^Nomination/ })).toBeEnabled();

@@ -3312,3 +3312,10 @@ button.ww-guide__strip[data-next] {
   line-height: 1.25;
   white-space: pre-line;
 }
+
+/* The upper box at the day: the heading on top, the notes right below it; the buttons stay at the bottom. */
+.ww-role-card__top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}

@@ -130,16 +130,18 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
     view.state.status !== "vote" &&
     !(view.state.status === "day" && view.selection.ability !== null);
   // The yellow notes of the vote (also shown at the result): what the narrator has to keep in mind.
+  // The notes that are always there come first (they never move); what only matters at the vote (the village idiot, the
+  // mayor) is added below them.
   const voteHints: string[] = [
-    ...Object.entries(view.voterNotes).map(([name, note]) =>
-      t(`werewolfNarrator.guide.vote.hint.${note}`, { name }),
-    ),
     ...(view.notes.silenced
       ? [t("werewolfNarrator.guide.silenced", { name: view.notes.silenced })]
       : []),
     ...(view.notes.wounded.length > 0
       ? [t("werewolfNarrator.guide.wounded", { names: view.notes.wounded.join(", ") })]
       : []),
+    ...Object.entries(view.voterNotes).map(([name, note]) =>
+      t(`werewolfNarrator.guide.vote.hint.${note}`, { name }),
+    ),
   ];
   // The vote: the upper box shows the votes, the lower box is where they are entered.
   const votes: VoteProps | undefined =
@@ -262,7 +264,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
               {...(votes ? { votes } : {})}
-              {...(view.state.status === "day" ? { notes: voteHints } : {})}
+              {...(view.state.status === "day"
+                ? { heading: t("werewolfNarrator.guide.day.heading"), notes: voteHints }
+                : {})}
               locked={
                 view.phase === "outro" ||
                 (view.state.status === "cupid" && view.progress >= 1) ||
