@@ -61,6 +61,14 @@ function voteLeaderText(view: GuideView, t: TFunction): string {
   );
 }
 
+/** The heading of the upper box at the day: it says what the narrator is doing now (and changes with the step). */
+function dayHeading(view: GuideView, t: TFunction): string {
+  if (view.selection.ability !== null) return t("werewolfNarrator.guide.day.headingNominate");
+  if (view.sleeping || view.progress >= 1) return t("werewolfNarrator.guide.day.headingEnd");
+  if (view.votedToday) return t("werewolfNarrator.guide.day.headingVoted");
+  return t("werewolfNarrator.guide.day.headingStart");
+}
+
 /** The vote ends in a tie that is held once more (the first time): the check turns into the sign for "vote again". */
 function voteTies(view: GuideView): boolean {
   const { state } = view;
@@ -265,7 +273,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
               {...(votes ? { votes } : {})}
               {...(view.state.status === "day"
-                ? { heading: t("werewolfNarrator.guide.day.heading"), notes: voteHints }
+                ? { heading: dayHeading(view, t), notes: voteHints }
                 : {})}
               locked={
                 view.phase === "outro" ||

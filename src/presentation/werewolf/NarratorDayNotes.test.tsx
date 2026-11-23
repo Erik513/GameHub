@@ -51,7 +51,7 @@ it.each(["en", "de"] as const)(
     expect(document.querySelectorAll(".ww-role-card__notes .ww-guide__victim")).toHaveLength(1);
     // The upper box always has a heading above the notes.
     expect(document.querySelector(".ww-role-card__top .ww-vote__heading")?.textContent).toBe(
-      language === "en" ? "Nomination" : "Nominierung",
+      language === "en" ? "The day begins" : "Der Tag beginnt",
     );
     expect(document.querySelector(".ww-guide--sheet")?.textContent).not.toContain(name);
   },

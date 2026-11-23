@@ -153,7 +153,10 @@ export const werewolfNarratorTexts = {
         lastShot: "Letzter Schuss",
       },
       day: {
-        heading: "Nominierung",
+        headingStart: "Der Tag beginnt",
+        headingNominate: "Nominierung",
+        headingVoted: "Abstimmung beendet",
+        headingEnd: "Der Tag endet",
         villageSleeps: "Alle Spieler schließen die Augen, das Dorf schläft ein",
         summaryEnd: "Zusammenfassung verkünden und Tag beenden",
         nominee: "Wer wird nominiert? (bis zu 3)",

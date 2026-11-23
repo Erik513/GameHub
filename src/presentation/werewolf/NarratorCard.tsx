@@ -188,7 +188,7 @@ export function NarratorCard({
           )}
         </header>
       )}
-      {/* The day: heading on top, below it the notes (new ones are added below the old ones), then the buttons. */}
+      {/* The day: the heading on top, below it the notes (new ones are added below the old ones), then the buttons. */}
       {!votes && isDay && (
         <div className="ww-role-card__top">
           {heading && <strong className="ww-vote__heading">{heading}</strong>}
