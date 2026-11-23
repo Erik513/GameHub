@@ -3,7 +3,6 @@ import type { TFunction } from "i18next";
 import type { GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep, type RoleStepSpec } from "../../business/games/werewolf/roleStep";
 import { werewolfDrunkReveal } from "../../business/games/werewolf/stateMachine";
-import { DayNotes } from "./RoleStepContent";
 
 /*
  * What a role says in the box: the heading and the lines under the choice, chosen by the description of the step
@@ -455,9 +454,6 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
         {t("werewolfNarrator.guide.restricted", { name: view.notes.restricted })}
       </small>
     ),
-    // The notes of the day stand while nobody is chosen; they do not disturb the choice of people.
-    (state.status === "day" || state.status === "vote") && selection.ability === null && (
-      <DayNotes key="notes" view={view} />
-    ),
+    // (The notes of the day stand in the upper box, see NarratorCard.)
   ].filter(Boolean);
 }

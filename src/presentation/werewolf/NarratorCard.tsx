@@ -20,6 +20,11 @@ interface NarratorCardProps {
   readonly settled?: boolean;
   /** The narrator has decided: no ability can be tapped any more (the way back opens the decision again). */
   readonly locked?: boolean;
+  /**
+   * The notes for the narrator at the day (who is silenced, who is wounded): at the nomination all of them stand in this
+   * upper box (an exception; in the other views they stand in the lower box).
+   */
+  readonly notes?: readonly string[];
   /** The script has not reached the decision yet (the witch: the victim is not shown yet): nothing can be pressed. */
   readonly waiting?: boolean;
   /**
@@ -108,6 +113,7 @@ export function NarratorCard({
   pressed = [],
   settled = false,
   locked = false,
+  notes = [],
   votes,
   waiting = false,
   asked = null,
@@ -178,6 +184,15 @@ export function NarratorCard({
             </ul>
           )}
         </header>
+      )}
+      {!votes && isDay && notes.length > 0 && (
+        <div className="ww-role-card__notes">
+          {notes.map((note) => (
+            <span className="ww-guide__victim" key={note}>
+              {note}
+            </span>
+          ))}
+        </div>
       )}
       {card.abilities.length > 0 && (
         <div className="ww-role-card__abilities">

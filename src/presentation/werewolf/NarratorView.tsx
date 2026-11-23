@@ -262,6 +262,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
               {...(votes ? { votes } : {})}
+              {...(view.state.status === "day" ? { notes: voteHints } : {})}
               locked={
                 view.phase === "outro" ||
                 (view.state.status === "cupid" && view.progress >= 1) ||

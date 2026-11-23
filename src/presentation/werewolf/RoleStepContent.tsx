@@ -1,6 +1,3 @@
-import { useTranslation } from "react-i18next";
-import type { GuideView } from "../../business/games/werewolf/narratorGuide";
-
 /*
  * The content of a step in the lower box. The box itself (header, body, strip) is one building block for every role; what
  * a role says in it comes from here, chosen by the description of the step (`describeRoleStep`).
@@ -48,20 +45,5 @@ export function Verdict({ found, text }: { readonly found: boolean; readonly tex
       </svg>
       {text}
     </span>
-  );
-}
-
-/** What the narrator has to keep in mind during the day: who is silenced, who is wounded. */
-export function DayNotes({ view }: { readonly view: GuideView }) {
-  const { t } = useTranslation();
-  const { silenced, wounded } = view.notes;
-  if (!silenced && wounded.length === 0) return null;
-  return (
-    <ul className="ww-guide__notes">
-      {silenced && <li>{t("werewolfNarrator.guide.silenced", { name: silenced })}</li>}
-      {wounded.length > 0 && (
-        <li>{t("werewolfNarrator.guide.wounded", { names: wounded.join(", ") })}</li>
-      )}
-    </ul>
   );
 }
