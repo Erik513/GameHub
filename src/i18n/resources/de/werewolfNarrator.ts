@@ -160,7 +160,6 @@ export const werewolfNarratorTexts = {
         votersSingle: "Wer stimmt dafür, dass {{name}} ausscheidet?",
         voters: "Jeder stimmt für eine nominierte Person",
         votersAgain: "Gleichstand: neue Abstimmung unter den Gleichauf liegenden",
-        discuss: "Das Dorf diskutiert",
         nominateAsk: "Jemanden nominieren?[br](bis zu 3 Personen)",
       },
       witch: {
@@ -176,8 +175,6 @@ export const werewolfNarratorTexts = {
         begin: "Beginnen",
         finish: "Zur Aufstellung",
         endDay: "Tag beenden",
-        startVote: "Abstimmung starten",
-        endVote: "Abstimmung beenden",
       },
       victim: "Die Werwölfe haben {{name}} angegriffen",
       noVictim: "Die Werwölfe haben niemanden angegriffen",
@@ -244,6 +241,7 @@ export const werewolfNarratorTexts = {
       taskDone: "Aufgabe erledigt",
       showRole: "Rolle zeigen",
       left: "Ausgeschieden: {{names}}",
+      nobodyLeft: "Niemand scheidet aus",
       exile: "{{name}} scheidet aus",
       finished: {
         title: "Spielende – die Gewinner",

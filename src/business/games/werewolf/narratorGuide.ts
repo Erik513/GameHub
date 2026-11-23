@@ -206,7 +206,7 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       // Nobody named and no vote open: the day ends, but only once the narrator has chosen "no vote" (the option above).
       // One to three named people: the vote.
       if (selection.picks.length === 0)
-        return selection.ability === null && (selection.progress ?? 0) >= 1
+        return selection.ability === null && ((selection.progress ?? 0) >= 1 || votedToday(state))
           ? { night, type: "endDay" }
           : null;
       return { night, nominees: selection.picks, type: "nominate" };
@@ -239,6 +239,19 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
 }
 
 /** The event only counts when the game accepts it. */
+/** True in the day after a vote (whoever left the game or not): the nomination is over, only the end of the day is left. */
+function votedToday(state: WerewolfState): boolean {
+  return (
+    state.status === "day" &&
+    state.history.some(
+      (entry) =>
+        entry.kind === "action" &&
+        entry.night === state.night &&
+        (entry.event.type === "vote" || entry.event.type === "voteCount"),
+    )
+  );
+}
+
 function acceptedEvent(state: WerewolfState, selection: GuideSelection): WerewolfEvent | null {
   const event = eventOf(state, selection);
   return event && transitionWerewolf(state, event) !== state ? event : null;
@@ -291,7 +304,7 @@ export interface BallotRow {
 
 export interface GuideView {
   /** What the "next" button says: the day ends, the vote starts or ends, the game is left, or simply "next". */
-  readonly nextKind: "begin" | "endDay" | "endVote" | "finish" | "next" | "startVote";
+  readonly nextKind: "begin" | "endDay" | "finish" | "next";
   /** Who leaves the game through the step that is about to be confirmed, and why (private to the narrator). */
   readonly deaths: readonly DeathNote[];
   /** Facts the narrator has to keep in mind during the day (silenced, wounded) and who a choice may not name. */
@@ -299,6 +312,8 @@ export interface GuideView {
   /** The votes that do not count once: the mayor twice, the village idiot has to vote yes. */
   /** The day after a vote: who left the game in this day (the summary of the day says so). */
   readonly exiledToday: readonly string[];
+  /** The day after a vote (whoever left or not): the nomination is over, only the end of the day is left. */
+  readonly votedToday: boolean;
   readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
   /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
   readonly ballotRows: readonly BallotRow[];
@@ -465,19 +480,17 @@ export function describeGuide(guide: Guide): GuideView {
             )
             .map((entry) => (entry.kind === "death" ? entry.player : ""))
         : [],
+    votedToday: votedToday(state),
     voterNotes: voterNotesOf(state),
     nextKind:
       frame.phase === "ready"
         ? "begin"
         : state.status === "finished"
           ? "finish"
-          : state.status === "vote"
-            ? "endVote"
-            : state.status === "day"
-              ? selection.picks.length >= 1
-                ? "startVote"
-                : "endDay"
-              : "next",
+          : // During the day (nomination and vote included) the button is always the one that ends the day.
+            state.status === "vote" || state.status === "day"
+            ? "endDay"
+            : "next",
     phase: frame.phase,
     selection,
     state,

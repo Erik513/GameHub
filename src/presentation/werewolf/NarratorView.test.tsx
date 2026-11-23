@@ -319,12 +319,16 @@ describe("NarratorView choices", () => {
     await user.click(more);
     expect(document.querySelector(".ww-vote__sum")!.textContent).toContain("Yes votes: 1 ");
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
-    // The vote is confirmed with the check mark only: the button "next" waits.
-    expect(screen.getByRole("button", { name: /^End the vote|Next/ })).toBeDisabled();
+    // The vote is confirmed with the check mark only: the button that ends the day waits.
+    expect(screen.getByRole("button", { name: "End the day" })).toBeDisabled();
     await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
     // After the vote the narrator is back at the script of the day (one yes vote is not enough: nobody leaves).
     expect(screen.getByRole("button", { name: /^Nomination/ })).toBeInTheDocument();
     expect(document.body.textContent).toContain("Nominate somebody?");
+    // The vote is done: nominating again or "no nomination" cannot be tapped any more, the day can end.
+    expect(screen.getByRole("button", { name: /^Nomination/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "No nomination" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "End the day" })).toBeEnabled();
     expect(document.querySelector(".ww-guide__causes")).toBeNull();
   });
 });

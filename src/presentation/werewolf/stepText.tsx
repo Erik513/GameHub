@@ -213,7 +213,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
     if (state.status !== "day" || view.phase !== "act") return null;
     const progress = view.progress;
     // After a vote somebody may have left the game: the narrator lands at the second box (announce, end the day).
-    const settled = progress >= 1 || view.exiledToday.length > 0;
+    const settled = progress >= 1 || view.votedToday;
     return [
       {
         // One box: the village discusses, then somebody is nominated or not. The options above are free at once; its

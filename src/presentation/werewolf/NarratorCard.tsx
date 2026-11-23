@@ -20,8 +20,6 @@ interface NarratorCardProps {
   readonly settled?: boolean;
   /** The narrator has decided: no ability can be tapped any more (the way back opens the decision again). */
   readonly locked?: boolean;
-  /** A heading for the card of the day while nobody is nominated ("The village discusses"). */
-  readonly heading?: string;
   /** The script has not reached the decision yet (the witch: the victim is not shown yet): nothing can be pressed. */
   readonly waiting?: boolean;
   /**
@@ -99,7 +97,6 @@ export function NarratorCard({
   pressed = [],
   settled = false,
   locked = false,
-  heading,
   votes,
   waiting = false,
   asked = null,
@@ -139,7 +136,7 @@ export function NarratorCard({
         </>
       )}
       {/* The day is no role: without a person (the vote has the nominated one) there is no head at all. */}
-      {!votes && (!isDay || card.actors.length > 0 || heading) && (
+      {!votes && (!isDay || card.actors.length > 0) && (
         <header className="ww-role-card__head">
           {!isDay && (
             <span className="ww-role-card__role">
@@ -147,11 +144,7 @@ export function NarratorCard({
             </span>
           )}
           <span className="ww-role-card__who">
-            {isDay ? (
-              <strong>{card.actors.length > 0 ? card.actors.join(", ") : heading}</strong>
-            ) : (
-              <strong>{roleName}</strong>
-            )}
+            {isDay ? <strong>{card.actors.join(", ")}</strong> : <strong>{roleName}</strong>}
             {!isDay && card.actors.length > 0 && <small>{card.actors.join(", ")}</small>}
           </span>
           {/* The day without a nominated person has no effects from outside, so no slots for them. */}

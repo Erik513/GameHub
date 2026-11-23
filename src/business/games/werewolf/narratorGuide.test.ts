@@ -318,7 +318,7 @@ describe("narrator guide", () => {
       expect(first.canContinue).toBe(false);
       guide = choosePlayer(guide, first.targets[0]!);
       expect(describeGuide(guide).canContinue).toBe(true);
-      expect(describeGuide(guide).nextKind).toBe("startVote");
+      expect(describeGuide(guide).nextKind).toBe("endDay");
       guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
       guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
       // At most three people.
@@ -332,7 +332,7 @@ describe("narrator guide", () => {
       const vote = describeGuide(guide);
       expect(vote.state.status).toBe("vote");
       expect(vote.card?.actors).toEqual([nominees[0], nominees[2]]);
-      expect(vote.nextKind).toBe("endVote");
+      expect(vote.nextKind).toBe("endDay");
       // Every voter has a row; the village idiot is marked as set by the narrator.
       expect(vote.ballotRows.length).toBe(vote.state.alive.length);
       const idiot = vote.state.alive.find((p) => p.role === "idiot")?.name;

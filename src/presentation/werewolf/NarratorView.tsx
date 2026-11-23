@@ -61,8 +61,12 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
   const witchWaiting =
     view.phase === "act" && view.question === "heal" && view.progress < 1 && !view.card?.cover;
   // The day: once "no vote" is chosen the day can end (and the options are used).
-  const dayDecided = view.state.status === "day" && view.progress >= 1;
-  const nextFree = view.canNext && view.state.status !== "vote";
+  const dayDecided = view.state.status === "day" && (view.progress >= 1 || view.votedToday);
+  // The button ends the day: it stays off during the nomination (a list is open) and the vote.
+  const nextFree =
+    view.canNext &&
+    view.state.status !== "vote" &&
+    !(view.state.status === "day" && view.selection.ability !== null);
   // The yellow notes of the vote (also shown at the result): what the narrator has to keep in mind.
   const voteHints: string[] = [
     ...Object.entries(view.voterNotes).map(([name, note]) =>
@@ -193,11 +197,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               }
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
-              // The day while nobody is nominated: the heading of the box is what the village does.
               {...(votes ? { votes } : {})}
-              {...(view.state.status === "day"
-                ? { heading: t("werewolfNarrator.guide.day.discuss") }
-                : {})}
               locked={
                 view.phase === "outro" ||
                 (view.state.status === "cupid" && view.progress >= 1) ||
@@ -269,10 +269,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           </Button>
           <Button
             // The vote is confirmed with the check mark (like every list of people): the button "next" waits.
-            data-next={
-              (nextFree && (view.phase !== "act" || dayDecided || view.exiledToday.length > 0)) ||
-              undefined
-            }
+            data-next={(nextFree && (view.phase !== "act" || dayDecided)) || undefined}
             disabled={!nextFree}
             onClick={view.nextKind === "finish" ? onEnd : guide.continueGuide}
             variant="success"

@@ -160,7 +160,6 @@ export const werewolfNarratorTexts = {
         votersSingle: "Who votes for {{name}} to leave the game?",
         voters: "Everyone votes for a nominated person",
         votersAgain: "Tie: a new vote among the tied people",
-        discuss: "The village discusses",
         nominateAsk: "Nominate somebody?[br](up to 3 people)",
       },
       witch: {
@@ -176,8 +175,6 @@ export const werewolfNarratorTexts = {
         begin: "Begin",
         finish: "To the line-up",
         endDay: "End the day",
-        startVote: "Start the vote",
-        endVote: "End the vote",
       },
       victim: "The werewolves attacked {{name}}",
       noVictim: "The werewolves attacked nobody",
@@ -244,6 +241,7 @@ export const werewolfNarratorTexts = {
       taskDone: "Task done",
       showRole: "Show the role",
       left: "Left the game: {{names}}",
+      nobodyLeft: "Nobody leaves the game",
       exile: "{{name}} leaves the game",
       finished: {
         title: "Game over – the winners",
