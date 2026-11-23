@@ -306,6 +306,13 @@ describe("NarratorView choices", () => {
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
     // The number is the yes votes: a label in the row says so.
     expect(document.querySelector(".ww-nominee__yes")?.textContent).toBe("Yes");
+    // The vote can be broken off with the button in the upper box (back to the nomination); then it is made once more.
+    expect(screen.getByRole("button", { name: "Cancel the vote" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "Cancel the vote" }));
+    expect(document.querySelectorAll(".ww-nominee")).toHaveLength(0);
+    expect(document.querySelectorAll(".ww-person").length).toBeGreaterThan(5);
+    await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
+    expect(document.querySelectorAll(".ww-nominee")).toHaveLength(1);
     const more = document.querySelector<HTMLButtonElement>(".ww-nominee__count button:last-child")!;
     await user.click(more);
     expect(document.querySelector(".ww-guide__votesum")!.textContent).toContain("Yes votes: 1 ");

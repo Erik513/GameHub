@@ -376,7 +376,9 @@ export function describeGuide(guide: Guide): GuideView {
     canCloseAbility: frame.phase === "act" && state.status !== "vote" && selection.ability !== null,
     canContinue,
     canNext,
-    canGoBack: (guide.trail.length > 1 || guide.session.past.length > 0) && !backIsBlocked(guide),
+    canGoBack:
+      (guide.trail.length > 1 || guide.session.past.length > 0) &&
+      (state.status === "vote" || !backIsBlocked(guide)),
     canUndo:
       selection.question === "poison" ||
       (state.status === "day" && selection.ability === null && (selection.progress ?? 0) >= 1) ||
@@ -880,7 +882,9 @@ function backIsBlocked(guide: Guide): boolean {
 
 /** "Back": to the previous role (a step that the game already took is undone in the game), but only one role back. */
 export function backGuide(guide: Guide, confirmed = false): GuideBack {
-  if (backIsBlocked(guide)) return { ok: false, reason: "limit" };
+  // The vote can always be broken off: back to the nomination, however often the narrator has come back to it.
+  if (guide.session.present.status !== "vote" && backIsBlocked(guide))
+    return { ok: false, reason: "limit" };
   if (guide.trail.length > 1) {
     // Back leaves the whole step of the current role (announcement, choice, falling asleep) at once: it only moves
     // between the roles. A decision is taken back with the button in the summary (see `reopenDecision`).

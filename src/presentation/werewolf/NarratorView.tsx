@@ -109,7 +109,10 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               {...(view.state.status === "vote"
                 ? {
                     votes: {
+                      canConfirm: view.canContinue,
                       counts: view.voteCounts,
+                      onCancel: guide.goBack,
+                      onConfirm: guide.continueGuide,
                       names: view.state.candidates,
                       onCount: guide.count,
                       ...(view.state.candidates.length === 1

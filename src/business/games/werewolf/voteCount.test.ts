@@ -1,7 +1,15 @@
 import { expect, it } from "vitest";
 import { eventChoices } from "./eventChoices";
-import { continueGuide, createGuide, describeGuide, setVoteCount } from "./narratorGuide";
-import { createWerewolfSession } from "./session";
+import {
+  backGuide,
+  chooseAbility,
+  choosePlayer,
+  continueGuide,
+  createGuide,
+  describeGuide,
+  setVoteCount,
+} from "./narratorGuide";
+import { advanceWerewolfSession, createWerewolfSession } from "./session";
 import {
   createWerewolf,
   transitionWerewolf,
@@ -175,4 +183,42 @@ it("does not attribute a counted runoff to the voters of an earlier named ballot
   const ended = transitionWerewolf(exile, { type: "announceExile", night: exile.night });
   const death = ended.history.find((entry) => entry.kind === "death" && entry.player === one);
   expect(death).toMatchObject({ kind: "death", sources: [{ cause: "vote", actors: [] }] });
+});
+
+it("breaks the vote off with back: to the nomination, however often it was done before", () => {
+  // A game that was played through (the history is there), up to the vote about two nominated people.
+  let session = createWerewolfSession(
+    createWerewolf(names.join(","), "Max", () => 0.3, [], {
+      attackOnFirstNight: true,
+      wolfCount: 2,
+    })!,
+  );
+  for (let guard = 0; guard < 100 && session.present.status !== "day"; guard += 1) {
+    const events = eventChoices(session.present).filter(
+      (event) => !(event.type === "attack" && event.target === null),
+    );
+    session = advanceWerewolfSession(session, events[0]!);
+  }
+  const chosen = session.present.alive.slice(0, 2).map((player) => player.name);
+  session = advanceWerewolfSession(session, {
+    night: session.present.night,
+    nominees: chosen,
+    type: "nominate",
+  });
+  let guide = createGuide(createWerewolfSession(session.present));
+  guide = { ...guide, session };
+  for (let round = 0; round < 3; round += 1) {
+    expect(describeGuide(guide).state.status).toBe("vote");
+    expect(describeGuide(guide).canGoBack).toBe(true);
+    const back = backGuide(guide, true);
+    expect(back.ok).toBe(true);
+    if (!back.ok) return;
+    guide = back.guide;
+    expect(describeGuide(guide).state.status).toBe("day");
+    // The nomination is made once more.
+    guide = chooseAbility(guide, "vote");
+    for (const name of chosen) guide = choosePlayer(guide, name);
+    guide = continueGuide(guide);
+  }
+  expect(describeGuide(guide).state.status).toBe("vote");
 });

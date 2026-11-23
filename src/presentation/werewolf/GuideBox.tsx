@@ -261,7 +261,7 @@ export function GuideBox({
           {/* Cupid: once the choice is confirmed in the first box, the summary stands here. */}
           {!showPeople && showSummary && <Summary view={view} />}
           {/* The choice of people (also at the day) is confirmed with the check below the list. */}
-          {selection.ability !== null && (
+          {selection.ability !== null && view.state.status !== "vote" && (
             <button
               aria-label={t("werewolfNarrator.guide.confirm")}
               className="ww-guide__confirm"

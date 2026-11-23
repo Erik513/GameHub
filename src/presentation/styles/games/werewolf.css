@@ -2779,3 +2779,46 @@ button.ww-guide__strip[data-next] {
   color: var(--color-ink-muted);
   font-size: 0.85rem;
 }
+
+/* The vote: the rows of the nominated people on top (compact), cancel (left) and confirm (right) at the bottom of the box.
+   The buttons are as big as the other buttons (3rem) and as far from the edge as the buttons of the list of people. */
+.ww-role-card[data-vote] {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ww-nominees {
+  gap: var(--space-1);
+}
+
+.ww-nominees__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ww-nominees__actions .ww-guide__close,
+.ww-nominees__actions .ww-guide__confirm {
+  box-sizing: border-box;
+  width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+  margin: 0;
+  padding: 0;
+}
+
+/* The rows of the nominated people are compact: three of them and the buttons fit in the box. */
+.ww-nominee {
+  padding: var(--space-1) var(--space-3);
+}
+
+.ww-nominee__count button {
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
+}
+
+.ww-nominee__count output {
+  font-size: 1.1rem;
+}

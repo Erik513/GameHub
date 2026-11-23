@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Icon } from "../components";
 import type {
   CardAbilityId,
   NarratorCard as Card,
@@ -38,6 +39,10 @@ interface NarratorCardProps {
     readonly total: number;
     /** One nominated person: the number is the yes votes, a small label says so. */
     readonly yesLabel?: string;
+    /** Break the vote off (back to the nomination) and confirm the votes: both buttons stand below the rows. */
+    readonly onCancel: () => void;
+    readonly onConfirm: () => void;
+    readonly canConfirm: boolean;
   };
   /** The abilities are the next thing to tap: the ones that can be used get a blue frame. */
   readonly next?: boolean;
@@ -83,41 +88,70 @@ export function NarratorCard({
   const isDay = card.role === "day";
   const slots = Array.from({ length: slotCount }, (_, index) => card.effects[index] ?? null);
   return (
-    <section aria-label={roleName} className="ww-role-card" data-cover={card.cover}>
+    <section
+      aria-label={roleName}
+      className="ww-role-card"
+      data-cover={card.cover}
+      data-vote={votes ? true : undefined}
+    >
       {/* The vote: every nominated person in a row of their own, the votes entered on the right. */}
       {votes && (
-        <ul aria-label={t("werewolfNarrator.guide.vote.nominees")} className="ww-nominees">
-          {votes.names.map((name) => {
-            const count = votes.counts[name] ?? 0;
-            return (
-              <li className="ww-nominee" key={name}>
-                <strong className="ww-nominee__name">{name}</strong>
-                <span className="ww-nominee__count">
-                  {votes.yesLabel && <small className="ww-nominee__yes">{votes.yesLabel}</small>}
-                  <button
-                    aria-label={t("werewolfNarrator.guide.vote.fewer", { name })}
-                    disabled={count <= 0}
-                    onClick={() => votes.onCount(name, count - 1)}
-                    type="button"
-                  >
-                    −
-                  </button>
-                  <output aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}>
-                    {count}
-                  </output>
-                  <button
-                    aria-label={t("werewolfNarrator.guide.vote.more", { name })}
-                    disabled={votes.sum >= votes.total}
-                    onClick={() => votes.onCount(name, count + 1)}
-                    type="button"
-                  >
-                    +
-                  </button>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          <ul aria-label={t("werewolfNarrator.guide.vote.nominees")} className="ww-nominees">
+            {votes.names.map((name) => {
+              const count = votes.counts[name] ?? 0;
+              return (
+                <li className="ww-nominee" key={name}>
+                  <strong className="ww-nominee__name">{name}</strong>
+                  <span className="ww-nominee__count">
+                    {votes.yesLabel && <small className="ww-nominee__yes">{votes.yesLabel}</small>}
+                    <button
+                      aria-label={t("werewolfNarrator.guide.vote.fewer", { name })}
+                      disabled={count <= 0}
+                      onClick={() => votes.onCount(name, count - 1)}
+                      type="button"
+                    >
+                      −
+                    </button>
+                    <output aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}>
+                      {count}
+                    </output>
+                    <button
+                      aria-label={t("werewolfNarrator.guide.vote.more", { name })}
+                      disabled={votes.sum >= votes.total}
+                      onClick={() => votes.onCount(name, count + 1)}
+                      type="button"
+                    >
+                      +
+                    </button>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="ww-nominees__actions">
+            <button
+              aria-label={t("werewolfNarrator.guide.vote.cancel")}
+              className="ww-guide__close"
+              onClick={votes.onCancel}
+              title={t("werewolfNarrator.guide.vote.cancel")}
+              type="button"
+            >
+              <Icon name="close" />
+            </button>
+            <button
+              aria-label={t("werewolfNarrator.guide.confirm")}
+              className="ww-guide__confirm"
+              data-next={votes.canConfirm || undefined}
+              disabled={!votes.canConfirm}
+              onClick={votes.onConfirm}
+              title={t("werewolfNarrator.guide.confirm")}
+              type="button"
+            >
+              <Icon name="check" />
+            </button>
+          </div>
+        </>
       )}
       {/* The day is no role: without a person (the vote has the nominated one) there is no head at all. */}
       {!votes && (!isDay || card.actors.length > 0 || heading) && (
