@@ -295,7 +295,8 @@ describe("NarratorView choices", () => {
     await user.click(document.querySelector(".ww-person")!);
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
     await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
-    expect(screen.getByText("Everyone votes for a nominated person")).toBeInTheDocument();
+    // One nominated person: the question is yes or no about him (not "everybody votes for a nominated person").
+    expect(screen.getByText(/^Who votes for .* to leave the game\?$/)).toBeInTheDocument();
     // The nominated person stands in the upper box with the yes votes on the right; he needs more than half of all votes.
     expect(document.querySelectorAll(".ww-nominee")).toHaveLength(1);
     expect(document.querySelector(".ww-guide__votesum")!.textContent).toContain(

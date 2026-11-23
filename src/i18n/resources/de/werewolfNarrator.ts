@@ -157,6 +157,7 @@ export const werewolfNarratorTexts = {
         nominee: "Wer wird nominiert? (bis zu 3)",
         more: "Nominiert: {{names}}. Weitere Person nominieren oder bestätigen",
         chosen: "Nominiert: {{names}}",
+        votersSingle: "Wer stimmt dafür, dass {{name}} ausscheidet?",
         voters: "Jeder stimmt für eine nominierte Person",
         votersAgain: "Gleichstand: neue Abstimmung unter den Gleichauf liegenden",
         discuss: "Das Dorf diskutiert",

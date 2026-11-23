@@ -63,6 +63,9 @@ export function factOf(view: GuideView, t: TFunction): { text: string; wolf?: bo
 /** What the narrator reads or does during the day: nominate (three choices), vote, or end the day. */
 export function dayPrompt(view: GuideView, t: TFunction): string | null {
   const { selection, state } = view;
+  // One nominated person: yes or no, so the question is about him, not "everybody votes for one".
+  if (state.status === "vote" && state.candidates.length === 1)
+    return t("werewolfNarrator.guide.day.votersSingle", { name: state.candidates[0] });
   if (state.status === "vote")
     return t(
       state.round === 2
