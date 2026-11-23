@@ -280,3 +280,8 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ### Änderung (2026-11-23): Zählweise bei einer nominierten Person – nur abgegebene Stimmen
 
 - Auf Wunsch des Auftraggebers zählen bei einer nominierten Person nur die **abgegebenen** Stimmen (alle Abstimmenden ohne die nominierte Person; stumme Person nicht, Bürgermeister mit Doppelstimme zweifach). `voteTotal(state)` ist diese Zahl und zugleich das Maximum der Ja-Stimmen (`maxYes`). Mehr Ja als Nein (Schwelle `voteNeeded(state)` = ⌊abgegeben/2⌋ + 1): die Person scheidet aus; genau gleich viele (`voteTieAt(state)` = abgegeben/2, nur bei gerader Zahl): die Abstimmung wird einmal wiederholt, bei erneutem Gleichstand bleibt die Person; sonst bleibt sie. Das ersetzt „mehr als die Hälfte aller Spieler einschließlich der nominierten Person“ und die Gleichstandsregel mit „Gesamt/2“ weiter oben. Simulation/Forschungsmodelle müssen die Schwelle aus `voteNeeded` lesen.
+
+## Tag, Zurücknehmen und Skript-Schritte (2026-11-23, Claude)
+
+- Im Guide gibt es zwei neue Felder: `sleeping` (Tag: die Zusammenfassung wurde angesagt, die letzte Box „alle schließen die Augen“ ist offen) und `votedToday` (Tag nach einer Abstimmung). Das Ereignis `endDay` wird im Guide erst nach dem Haken (`checkScript` am Tag) angenommen; die Spiellogik selbst ist unverändert.
+- `undoSelection` am Tag nimmt nach einer Abstimmung die Spiel-Schritte Nominierung, Abstimmung und Ausscheiden zurück (`undoWerewolfSession` mit Bestätigung), damit der Erzähler bei „Jemanden nominieren?“ landet.
