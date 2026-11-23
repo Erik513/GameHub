@@ -110,7 +110,36 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                 ? {
                     votes: {
                       canConfirm: view.canContinue,
+                      complete:
+                        view.voteNeeded > 0
+                          ? view.voteSum >= view.voteNeeded
+                          : view.voteSum === view.voteTotal,
                       counts: view.voteCounts,
+                      summary:
+                        view.voteNeeded > 0
+                          ? t("werewolfNarrator.guide.vote.yes", {
+                              needed: view.voteNeeded,
+                              sum: view.voteSum,
+                            })
+                          : t("werewolfNarrator.guide.vote.sum", {
+                              sum: view.voteSum,
+                              total: view.voteTotal,
+                            }),
+                      ...(view.voteBonus
+                        ? {
+                            bonus: {
+                              chosen: view.voteBonus.chosen,
+                              choices: view.voteBonus.choices,
+                              label: t("werewolfNarrator.guide.vote.bonus", {
+                                name: view.voteBonus.mayor,
+                              }),
+                              noLabel: t("werewolfNarrator.guide.vote.no"),
+                              onChoose: guide.bonus,
+                              yesLabel: t("werewolfNarrator.guide.vote.yesLabel"),
+                              yesNo: view.state.candidates.length === 1,
+                            },
+                          }
+                        : {}),
                       onCancel: guide.goBack,
                       onConfirm: guide.continueGuide,
                       names: view.state.candidates,

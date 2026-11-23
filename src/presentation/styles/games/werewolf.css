@@ -2822,3 +2822,79 @@ button.ww-guide__strip[data-next] {
 .ww-nominee__count output {
   font-size: 1.1rem;
 }
+
+/* The second vote of the mayor: a small row of buttons under the rows; the line with the sum of the votes under it. */
+.ww-nominees__bonus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+}
+
+.ww-nominees__bonus-label {
+  margin-right: var(--space-1);
+  color: var(--color-ink-muted);
+}
+
+.ww-nominees__bonus button {
+  min-height: 32px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ww-nominees__bonus button[aria-pressed="true"] {
+  border: 2px solid var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.ww-nominees__sum {
+  font-size: 0.9rem;
+  font-weight: var(--weight-medium);
+}
+
+.ww-nominees__sum[data-complete="true"] {
+  color: var(--color-success);
+}
+
+/* The sum of the votes stands between cancel and confirm; the rows are compact so that three nominated people, the second
+   vote of the mayor and the buttons all fit in the box. */
+.ww-nominees__actions {
+  gap: var(--space-2);
+}
+
+.ww-nominees__sum {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.ww-nominee {
+  padding: 2px var(--space-3);
+}
+
+.ww-nominee__count button {
+  width: 32px;
+  height: 32px;
+}
+
+/* The global minimum height of a button would make the small buttons of the rows as big as the touch targets of the bar. */
+.ww-nominee__count button {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+}
+
+.ww-nominee__plus {
+  color: var(--color-accent);
+  font-weight: var(--weight-bold);
+}

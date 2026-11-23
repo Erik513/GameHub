@@ -56,6 +56,8 @@ export interface GuideSelection {
   readonly ballots?: Readonly<Record<string, string>>;
   /** At the vote: the votes the narrator entered for each nominated person (candidate to number). */
   readonly counts?: Readonly<Record<string, number>>;
+  /** At the vote: the nominated person who gets the second vote of the mayor with the double vote. */
+  readonly bonus?: string;
 }
 
 export const emptySelection: GuideSelection = {
@@ -214,7 +216,10 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
         return { ballots: ballotsOf(selection), night, nomination: state.nomination, type: "vote" };
       return {
         counts: Object.fromEntries(
-          state.candidates.map((name) => [name, selection.counts?.[name] ?? 0]),
+          state.candidates.map((name) => [
+            name,
+            (selection.counts?.[name] ?? 0) + (selection.bonus === name ? 1 : 0),
+          ]),
         ),
         night,
         nomination: state.nomination,
@@ -300,6 +305,16 @@ export interface GuideView {
   readonly voteSum: number;
   /** One nominated person (yes or no): the yes votes he needs to leave the game; 0 when several are nominated. */
   readonly voteNeeded: number;
+  /**
+   * The mayor with the double vote at the vote: his second vote goes to one nominated person (or, with one nominated person,
+   * is a yes vote or not). `required` is true when the vote cannot be confirmed before it is assigned. null without.
+   */
+  readonly voteBonus: {
+    readonly chosen: string | null;
+    readonly choices: readonly string[];
+    readonly mayor: string;
+    readonly required: boolean;
+  } | null;
   /** The question the witch or the magician is asked now (first or second), or null. */
   readonly question: "heal" | "poison" | null;
   /** How many boxes of the script of Cupid are confirmed (0, 1). */
@@ -386,7 +401,8 @@ export function describeGuide(guide: Guide): GuideView {
       selection.heal ||
       selection.none ||
       Object.keys(ballotsOf(selection)).length > 0 ||
-      Object.values(selection.counts ?? {}).some((count) => count > 0),
+      Object.values(selection.counts ?? {}).some((count) => count > 0) ||
+      selection.bonus !== undefined,
     card: frame.phase === "ready" ? null : describeNarratorCard(state),
     deaths:
       state.status === "morning" || state.status === "exile"
@@ -414,7 +430,10 @@ export function describeGuide(guide: Guide): GuideView {
       state.status === "vote"
         ? Object.fromEntries(state.candidates.map((name) => [name, selection.counts?.[name] ?? 0]))
         : {},
-    voteSum: Object.values(selection.counts ?? {}).reduce((sum, count) => sum + count, 0),
+    voteBonus: voteBonusOf(state, selection),
+    voteSum:
+      Object.values(selection.counts ?? {}).reduce((sum, count) => sum + count, 0) +
+      (selection.bonus === undefined ? 0 : 1),
     voteNeeded: voteNeeded(state),
     voteTotal: voteTotal(state),
     progress: selection.progress ?? 0,
@@ -722,6 +741,39 @@ export function setVoteCount(guide: Guide, name: string, count: number): Guide {
     return guide;
   const counts = { ...(frame.selection.counts ?? {}), [name]: count };
   return withSelection(guide, { ...frame.selection, counts });
+}
+
+/** The nominated people who can get the second vote of the mayor with the double vote; null where there is no such vote. */
+function voteBonusOf(state: WerewolfState, selection: GuideSelection): GuideView["voteBonus"] {
+  if (state.status !== "vote") return null;
+  const mayor = votingPlayers(state).find(
+    (player) => player.weight === 2 && player.choices.length > 0,
+  );
+  if (!mayor) return null;
+  return {
+    chosen: selection.bonus ?? null,
+    choices: mayor.choices,
+    mayor: mayor.name,
+    // With several nominated people the second vote has to go to one of them; with one it is a yes vote or not.
+    required: state.candidates.length > 1,
+  };
+}
+
+/**
+ * The second vote of the mayor with the double vote: the narrator taps the nominated person who gets it (tapping the
+ * same person again takes it back; with one nominated person it is an additional yes vote or not).
+ */
+export function setVoteBonus(guide: Guide, candidate: string | null): Guide {
+  const frame = current(guide);
+  const state = guide.session.present;
+  const bonus = voteBonusOf(state, frame.selection);
+  if (frame.phase !== "act" || !bonus) return guide;
+  if (candidate !== null && !bonus.choices.includes(candidate)) return guide;
+  const { bonus: previous, ...rest } = frame.selection;
+  void previous;
+  const next =
+    candidate === null || candidate === bonus.chosen ? rest : { ...rest, bonus: candidate };
+  return withSelection(guide, next);
 }
 
 export function chooseNobody(guide: Guide): Guide {

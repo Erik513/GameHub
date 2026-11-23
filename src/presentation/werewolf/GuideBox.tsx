@@ -193,20 +193,6 @@ export function GuideBox({
             ))}
           </ul>
         )}
-        {state.status === "vote" && (
-          <div
-            className="ww-guide__votesum"
-            data-complete={
-              view.voteNeeded > 0
-                ? view.voteSum >= view.voteNeeded
-                : view.voteSum === view.voteTotal
-            }
-          >
-            {view.voteNeeded > 0
-              ? t("werewolfNarrator.guide.vote.yes", { needed: view.voteNeeded, sum: view.voteSum })
-              : t("werewolfNarrator.guide.vote.sum", { sum: view.voteSum, total: view.voteTotal })}
-          </div>
-        )}
         {showPeople && (
           <div className="ww-guide__people">
             {/* Every player is always there, in the same order (alphabetical): the dead are grey, those whom the role

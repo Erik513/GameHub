@@ -7,6 +7,7 @@ import {
   continueGuide,
   createGuide,
   describeGuide,
+  setVoteBonus,
   setVoteCount,
 } from "./narratorGuide";
 import { advanceWerewolfSession, createWerewolfSession } from "./session";
@@ -221,4 +222,48 @@ it("breaks the vote off with back: to the nomination, however often it was done 
     guide = continueGuide(guide);
   }
   expect(describeGuide(guide).state.status).toBe("vote");
+});
+
+it("assigns the second vote of the mayor with the double vote: the vote can only be confirmed when it is assigned", () => {
+  const state = toVote(2, ["mayor"], { mayor: "doubleVote" });
+  let guide = createGuide(createWerewolfSession(state));
+  const view = describeGuide(guide);
+  // The mayor has two votes: one vote more to enter, and he is offered the second vote to give.
+  expect(view.voteBonus).toMatchObject({ chosen: null, required: true });
+  const mayor = view.voteBonus!.mayor;
+  const [one, two] = state.candidates as [string, string];
+  // The mayor does not vote for himself: if he is nominated, he cannot give the second vote to himself.
+  expect(view.voteBonus!.choices).not.toContain(mayor);
+  const total = view.voteTotal;
+  const bonusFor = view.voteBonus!.choices[0]!;
+  const other = bonusFor === one ? two : one;
+  // All votes but the second vote of the mayor are entered: the sum is one short until he assigns it.
+  guide = setVoteCount(guide, bonusFor, total - 1 - 3);
+  guide = setVoteCount(guide, other, 3);
+  expect(describeGuide(guide)).toMatchObject({ canContinue: false, voteSum: total - 1 });
+  // The second vote is assigned: it counts for the person (shown in the sum), and the vote can be confirmed.
+  guide = setVoteBonus(guide, bonusFor);
+  expect(describeGuide(guide)).toMatchObject({ canContinue: true, voteSum: total });
+  expect(describeGuide(guide).voteBonus?.chosen).toBe(bonusFor);
+  // Tapping the same person again takes it back; a person who is not nominated cannot get it.
+  expect(describeGuide(setVoteBonus(guide, bonusFor)).voteBonus?.chosen).toBeNull();
+  expect(setVoteBonus(guide, "Nobody")).toBe(guide);
+  expect(continueGuide(guide).session.present.status).toBe("exile");
+});
+
+it("gives the second vote of the mayor in the vote about one person as an additional yes vote", () => {
+  const state = toVote(1, ["mayor"], { mayor: "doubleVote" });
+  let guide = createGuide(createWerewolfSession(state));
+  const view = describeGuide(guide);
+  const nominee = state.candidates[0]!;
+  const mayor = view.voteBonus?.mayor;
+  if (mayor === undefined || mayor === nominee) return;
+  expect(view.voteBonus).toMatchObject({ chosen: null, required: false });
+  const needed = view.voteNeeded;
+  // One yes vote short of the majority; the second vote of the mayor makes the difference.
+  guide = setVoteCount(guide, nominee, needed - 1);
+  expect(continueGuide(guide).session.present.status).toBe("day");
+  guide = setVoteBonus(guide, nominee);
+  expect(describeGuide(guide).voteSum).toBe(needed);
+  expect(continueGuide(guide).session.present.status).toBe("exile");
 });

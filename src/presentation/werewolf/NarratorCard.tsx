@@ -39,6 +39,20 @@ interface NarratorCardProps {
     readonly total: number;
     /** One nominated person: the number is the yes votes, a small label says so. */
     readonly yesLabel?: string;
+    /** The line under the rows: how many votes were entered; `complete` when all are there (green). */
+    readonly summary: string;
+    readonly complete: boolean;
+    /** The second vote of the mayor with the double vote: whom it goes to. */
+    readonly bonus?: {
+      readonly chosen: string | null;
+      readonly choices: readonly string[];
+      readonly label: string;
+      readonly noLabel: string;
+      readonly onChoose: (candidate: string | null) => void;
+      readonly yesLabel: string;
+      /** One nominated person: the choice is yes or no (the person is the yes). */
+      readonly yesNo: boolean;
+    };
     /** Break the vote off (back to the nomination) and confirm the votes: both buttons stand below the rows. */
     readonly onCancel: () => void;
     readonly onConfirm: () => void;
@@ -113,6 +127,8 @@ export function NarratorCard({
                     >
                       −
                     </button>
+                    {/* The second vote of the mayor that was given to this person: shown next to the number. */}
+                    {votes.bonus?.chosen === name && <small className="ww-nominee__plus">+1</small>}
                     <output aria-label={t("werewolfNarrator.guide.vote.votesOf", { name })}>
                       {count}
                     </output>
@@ -129,6 +145,40 @@ export function NarratorCard({
               );
             })}
           </ul>
+          {votes.bonus && (
+            <div className="ww-nominees__bonus" role="group" aria-label={votes.bonus.label}>
+              <span className="ww-nominees__bonus-label">{votes.bonus.label}</span>
+              {votes.bonus.yesNo ? (
+                <>
+                  <button
+                    aria-pressed={votes.bonus.chosen === null}
+                    onClick={() => votes.bonus?.onChoose(null)}
+                    type="button"
+                  >
+                    {votes.bonus.noLabel}
+                  </button>
+                  <button
+                    aria-pressed={votes.bonus.chosen !== null}
+                    onClick={() => votes.bonus?.onChoose(votes.bonus?.choices[0] ?? null)}
+                    type="button"
+                  >
+                    {votes.bonus.yesLabel}
+                  </button>
+                </>
+              ) : (
+                votes.bonus.choices.map((name) => (
+                  <button
+                    aria-pressed={votes.bonus?.chosen === name}
+                    key={name}
+                    onClick={() => votes.bonus?.onChoose(name)}
+                    type="button"
+                  >
+                    {name}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
           <div className="ww-nominees__actions">
             <button
               aria-label={t("werewolfNarrator.guide.vote.cancel")}
@@ -139,6 +189,9 @@ export function NarratorCard({
             >
               <Icon name="close" />
             </button>
+            <div className="ww-nominees__sum" data-complete={votes.complete}>
+              {votes.summary}
+            </div>
             <button
               aria-label={t("werewolfNarrator.guide.confirm")}
               className="ww-guide__confirm"
