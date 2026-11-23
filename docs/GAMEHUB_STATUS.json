@@ -1908,7 +1908,7 @@
           "id": "We-01-146",
           "title": "Abstimmung: Eingabe unten, Anzeige oben, Legende, Gleichstand und feste Maße",
           "status": "done",
-          "validation": "Untere Box: Frage links oben, Abbrechen rechts oben, Zeilen mit − und + für bis zu drei Nominierte (feste Größe, Platz für drei Zeilen), zweite Stimme des Bürgermeisters als Chips (Person bekommt blaue Zahlenbox; mit Doppelstimme sind die Zahlen nur bis „alle Stimmen minus 1“ möglich, Obergrenze je Person), Bestätigen rechts unten mit Box „Person mit Mehrheit / Gleichstand / scheidet aus“ daneben. Eine nominierte Person: Tabelle „Ja-Stimmen | Ergebnis“ (bleibt / Gleichstand / scheidet aus, aus dem Spielstand berechnet), nur abgegebene Stimmen zählen, bei Gleichstand eine zweite Abstimmung mit Wiederholen-Symbol am Bestätigen-Knopf (der Gleichstand bleibt im Spielverlauf). Obere Box nur Anzeige: Überschrift, gelbe Hinweise, blaue Summenbox bei mehreren Nominierten. Spiellogik: voteMaximum, voteTieAt, tie-Zweig in countVotes. Tests voteCount.test.ts, NarratorView.test.tsx, simulationVoting.test.ts. Tests, Typprüfung und ESLint zuletzt grün (1693 Tests); nicht im Browser angesehen (Wunsch des Auftraggebers)."
+          "validation": "Untere Box: Frage links oben, Abbrechen rechts oben, Zeilen mit − und + für bis zu drei Nominierte (feste Größe, Platz für drei Zeilen), zweite Stimme des Bürgermeisters als Chips (Person bekommt blaue Zahlenbox; mit Doppelstimme sind die Zahlen nur bis „alle Stimmen minus 1“ möglich, Obergrenze je Person), Bestätigen rechts unten mit Box „Person mit Mehrheit / Gleichstand / scheidet aus“ daneben. Eine nominierte Person: Tabelle „Ja-Stimmen | Ergebnis“ (bleibt / Gleichstand / scheidet aus, aus dem Spielstand berechnet), nur abgegebene Stimmen zählen, bei Gleichstand eine zweite Abstimmung mit Wiederholen-Symbol am Bestätigen-Knopf (der Gleichstand bleibt im Spielverlauf). Obere Box nur Anzeige: Überschrift, gelbe Hinweise, blaue Summenbox bei mehreren Nominierten. Spiellogik: voteMaximum, voteTieAt, tie-Zweig in countVotes. Tests voteCount.test.ts, NarratorView.test.tsx, simulationVoting.test.ts. Tests, Typprüfung und ESLint zuletzt grün (1693 Tests); nicht im Browser angesehen (Wunsch des Auftraggebers). Später: Hinweise kürzer (Dorftrottel muss für Ja stimmen, Bürgermeister hat zwei Stimmen), Plus/Minus zählen beim Gedrückthalten (HoldButton); Fangnetz NarratorErrorBoundary gegen schwarze Bildschirme (1700 Tests)."
         },
         {
           "id": "We-01-147",
@@ -3556,5 +3556,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-23T22:26:29.878Z"
+  "updatedAt": "2026-11-23T22:40:20.331Z"
 }
