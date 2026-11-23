@@ -10,6 +10,7 @@ import {
   createGuide,
   describeGuide,
   setBallot,
+  setVoteCount,
   type Guide,
 } from "./narratorGuide";
 import { createWerewolfSession } from "./session";
@@ -101,6 +102,15 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
     case "nominate":
       if (!open("vote")) failure = "vote not available";
       for (const name of event.nominees) failure = failure ?? pick(name);
+      break;
+    case "voteCount":
+      // The narrator enters the votes of every nominated person.
+      for (const [name, count] of Object.entries(event.counts)) {
+        const next = setVoteCount(guide, name, count);
+        if (next === guide && (describeGuide(guide).voteCounts[name] ?? 0) !== count)
+          failure = failure ?? "no count";
+        guide = next;
+      }
       break;
     case "vote":
       for (const [voter, choice] of Object.entries(event.ballots)) {
