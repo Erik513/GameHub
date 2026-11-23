@@ -59,6 +59,11 @@ it("shows the true role of the drunk in a window, then the check goes on, and th
   // The drunk wakes up (the check of the first box), then the button for the true role appears in the upper box.
   fireEvent.click(document.querySelector(".ww-script__wake")!);
   const show = screen.getByRole("button", { name: /Show the true role/ });
+  // The box "show the true role" in the script has the symbol of the drunk (in a circle) in front of its text.
+  const box = [...document.querySelectorAll(".ww-script__step")].find((step) =>
+    step.textContent?.includes("Show the true role"),
+  )!;
+  expect(box.querySelector("[data-symbol='drunk']")).not.toBeNull();
   const check = () => screen.getByRole("button", { name: "Task done" });
   expect(show).toBeEnabled();
   // The check right of the box "show the true role" is switched off until the window was opened and closed.

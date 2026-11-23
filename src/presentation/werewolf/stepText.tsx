@@ -190,10 +190,13 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
       const symbol =
         box.id === "asleep" || step.statement === "noAttack"
           ? undefined
-          : showsVictim
-            ? // Showing the victim is about the attack of the wolves: their symbol, not an ability of the role.
-              "attacked"
-            : symbolOf(box.id);
+          : // The drunk has no ability of his own: the box "show the true role" has his symbol (like the button above).
+            view.state.status === "drunkReveal" && box.id === "decide"
+            ? "drunk"
+            : showsVictim
+              ? // Showing the victim is about the attack of the wolves: their symbol, not an ability of the role.
+                "attacked"
+              : symbolOf(box.id);
       // The first question of the magician is about both spells: the healing and the death spell.
       const both =
         box.id === "heal" && view.state.status === "magician"
@@ -445,20 +448,7 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
         {t("werewolfNarrator.guide.wolvesNoAttack")}
       </span>
     ),
-    // A potion of the witch that is used up: the reason why the button cannot be used.
-    ...(!card.cover && state.status === "witch"
-      ? card.abilities
-          .filter((ability) => ability.unavailable === "used")
-          .map((ability) => (
-            <span className="ww-guide__victim" key={"used-" + ability.id}>
-              {t(
-                ability.id === "heal"
-                  ? "werewolfNarrator.guide.witch.healUsed"
-                  : "werewolfNarrator.guide.witch.poisonUsed",
-              )}
-            </span>
-          ))
-      : []),
+    // (A potion that is used up has no note: the button of the ability shows it, struck through.)
     !card.cover && selection.heal && state.wolfTarget && (
       <span className="ww-guide__victim" key="heal">
         {t("werewolfNarrator.guide.healChosen", { name: state.wolfTarget.name })}

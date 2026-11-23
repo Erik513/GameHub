@@ -174,8 +174,6 @@ export const werewolfNarratorTexts = {
         noVictimWord: "no victim",
         showNoVictim: "Show the victim: no victim",
         healAsk: "Save the victim?",
-        healUsed: "The healing potion is used up",
-        poisonUsed: "The poison is used up",
         poisonAsk: "Poison somebody (point)?",
       },
       nextKind: {
