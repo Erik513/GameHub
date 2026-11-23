@@ -211,6 +211,7 @@ export const werewolfNarratorTexts = {
         yes: "Yes votes: {{sum}} (more than half of all votes needed: {{needed}})",
         cancel: "Cancel the vote",
         bonus: "Second vote of {{name}}",
+        bonusPrefix: "Second vote of",
         no: "No",
         yesLabel: "Yes",
         nominees: "Nominated people",

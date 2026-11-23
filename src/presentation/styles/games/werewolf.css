@@ -2898,3 +2898,116 @@ button.ww-guide__strip[data-next] {
   color: var(--color-accent);
   font-weight: var(--weight-bold);
 }
+
+/* Long names: the rows and the buttons never grow. A name is cut with "…" (the full name stands in the title of the lists),
+   the rows scroll if there are too many, and the line for the second vote, the sum and the buttons always stay in sight. */
+.ww-role-card[data-vote] {
+  gap: 6px;
+  min-height: 0;
+}
+
+.ww-nominees {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.ww-nominee {
+  flex: none;
+  min-width: 0;
+}
+
+.ww-nominee__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ww-nominee__count {
+  flex: none;
+}
+
+.ww-nominees__bonus {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.ww-nominees__choices {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-1);
+}
+
+.ww-nominees__bonus-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ww-nominees__bonus button {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ww-nominees__mayor {
+  color: var(--color-ink);
+  font-weight: var(--weight-bold);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.ww-nominees__actions {
+  flex: none;
+}
+
+/* The mayor's name is never cut before the text in front of it; the rows and chips are small enough for three nominated
+   people, the line for the second vote, the sum and the buttons in the box. */
+.ww-nominees__bonus-label {
+  display: flex;
+  gap: 4px;
+  line-height: 16px;
+}
+
+.ww-nominees__bonus-label > b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ww-nominee__count button {
+  width: 32px;
+  height: 32px;
+}
+
+.ww-nominees__bonus button {
+  min-height: 28px;
+}
+
+.ww-nominees__prefix {
+  flex: none;
+}
+
+.ww-nominees__bonus {
+  align-items: stretch;
+}
+
+.ww-nominees__choices {
+  width: 100%;
+  min-width: 0;
+}
+
+/* The mayor's name stands out: bold, in the accent color and underlined (the line height leaves room for the underline). */
+.ww-nominees__bonus-label {
+  line-height: 20px;
+}
+
+.ww-nominees__mayor {
+  color: var(--color-accent);
+}

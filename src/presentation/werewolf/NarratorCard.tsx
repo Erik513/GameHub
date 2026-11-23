@@ -47,6 +47,9 @@ interface NarratorCardProps {
       readonly chosen: string | null;
       readonly choices: readonly string[];
       readonly label: string;
+      /** The mayor who has the second vote, and the text before his name ("Second vote of"). */
+      readonly mayor: string;
+      readonly prefix: string;
       readonly noLabel: string;
       readonly onChoose: (candidate: string | null) => void;
       readonly yesLabel: string;
@@ -147,36 +150,41 @@ export function NarratorCard({
           </ul>
           {votes.bonus && (
             <div className="ww-nominees__bonus" role="group" aria-label={votes.bonus.label}>
-              <span className="ww-nominees__bonus-label">{votes.bonus.label}</span>
-              {votes.bonus.yesNo ? (
-                <>
-                  <button
-                    aria-pressed={votes.bonus.chosen === null}
-                    onClick={() => votes.bonus?.onChoose(null)}
-                    type="button"
-                  >
-                    {votes.bonus.noLabel}
-                  </button>
-                  <button
-                    aria-pressed={votes.bonus.chosen !== null}
-                    onClick={() => votes.bonus?.onChoose(votes.bonus?.choices[0] ?? null)}
-                    type="button"
-                  >
-                    {votes.bonus.yesLabel}
-                  </button>
-                </>
-              ) : (
-                votes.bonus.choices.map((name) => (
-                  <button
-                    aria-pressed={votes.bonus?.chosen === name}
-                    key={name}
-                    onClick={() => votes.bonus?.onChoose(name)}
-                    type="button"
-                  >
-                    {name}
-                  </button>
-                ))
-              )}
+              <span className="ww-nominees__bonus-label">
+                <span className="ww-nominees__prefix">{votes.bonus.prefix}</span>
+                <b className="ww-name ww-nominees__mayor">{votes.bonus.mayor}</b>
+              </span>
+              <div className="ww-nominees__choices">
+                {votes.bonus.yesNo ? (
+                  <>
+                    <button
+                      aria-pressed={votes.bonus.chosen === null}
+                      onClick={() => votes.bonus?.onChoose(null)}
+                      type="button"
+                    >
+                      {votes.bonus.noLabel}
+                    </button>
+                    <button
+                      aria-pressed={votes.bonus.chosen !== null}
+                      onClick={() => votes.bonus?.onChoose(votes.bonus?.choices[0] ?? null)}
+                      type="button"
+                    >
+                      {votes.bonus.yesLabel}
+                    </button>
+                  </>
+                ) : (
+                  votes.bonus.choices.map((name) => (
+                    <button
+                      aria-pressed={votes.bonus?.chosen === name}
+                      key={name}
+                      onClick={() => votes.bonus?.onChoose(name)}
+                      type="button"
+                    >
+                      {name}
+                    </button>
+                  ))
+                )}
+              </div>
             </div>
           )}
           <div className="ww-nominees__actions">

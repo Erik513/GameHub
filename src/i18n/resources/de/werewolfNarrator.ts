@@ -211,6 +211,7 @@ export const werewolfNarratorTexts = {
         yes: "Ja-Stimmen: {{sum}} (mehr als die Hälfte aller Stimmen nötig: {{needed}})",
         cancel: "Abstimmung abbrechen",
         bonus: "Zweite Stimme von {{name}}",
+        bonusPrefix: "Zweite Stimme von",
         no: "Nein",
         yesLabel: "Ja",
         nominees: "Nominierte Personen",

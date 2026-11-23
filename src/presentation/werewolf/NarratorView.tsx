@@ -133,7 +133,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                               label: t("werewolfNarrator.guide.vote.bonus", {
                                 name: view.voteBonus.mayor,
                               }),
+                              mayor: view.voteBonus.mayor,
                               noLabel: t("werewolfNarrator.guide.vote.no"),
+                              prefix: t("werewolfNarrator.guide.vote.bonusPrefix"),
                               onChoose: guide.bonus,
                               yesLabel: t("werewolfNarrator.guide.vote.yesLabel"),
                               yesNo: view.state.candidates.length === 1,
