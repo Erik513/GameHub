@@ -237,7 +237,7 @@ describe("NarratorView choices", () => {
       screen.getByText("Look at each other").closest(".ww-script__step")?.querySelector("svg"),
     ).toBeNull();
     expect(document.querySelector(".ww-guide__victim")?.textContent).toBe(
-      "The werewolves attack only from night 2",
+      "Werewolves (night 1): attack only from night 2",
     );
     await user.click(screen.getByRole("button", { name: "Task done" }));
     expect(screen.getByText("No attack in this night")).toBeInTheDocument();

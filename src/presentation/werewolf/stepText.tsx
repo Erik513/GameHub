@@ -440,6 +440,7 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
       <span className="ww-guide__victim" key="hunter">
         {t(
           step.skippable ? "werewolfNarrator.guide.hunterMay" : "werewolfNarrator.guide.hunterMust",
+          { name: state.hunter.name },
         )}
       </span>
     ),

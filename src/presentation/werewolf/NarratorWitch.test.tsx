@@ -137,7 +137,7 @@ it("asks about the healing potion although nobody was attacked: the hint says wh
   expect(skip).toBeEnabled();
   expect(skip).toHaveAttribute("data-next");
   // The reason stands below as a hint with its own (yellow) border.
-  expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/attacked nobody/);
+  expect(document.querySelector(".ww-guide__victim")?.textContent).toMatch(/Nobody [(]attacked[)]/);
   expect(steps()[0]!.textContent).toBe("Show the victim: no victim");
   // "No victim" is shown in red.
   expect(steps()[0]!.querySelector(".ww-red")?.textContent).toBe("no victim");
