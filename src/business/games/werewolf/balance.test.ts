@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { drawSimulationNominees, drawSimulationBallots } from "./simulationVoting";
+import { drawSimulationNominees, drawSimulationVoteCounts } from "./simulationVoting";
 import assert from "node:assert/strict";
 import { it } from "vitest";
 import { availableWerewolfRoles } from "./configuration";
@@ -350,10 +350,10 @@ function decision(
     }
     case "vote":
       return {
-        type: "vote",
+        type: "voteCount",
         night,
         nomination: state.nomination,
-        ballots: drawSimulationBallots(
+        counts: drawSimulationVoteCounts(
           state,
           random,
           model === "random" ? new Map() : clues.publicSuspicion,

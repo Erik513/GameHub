@@ -1,7 +1,17 @@
 import { expect, it } from "vitest";
-import { drawSimulationNominees, drawSimulationBallots } from "./simulationVoting";
+import {
+  drawSimulationNominees,
+  drawSimulationBallots,
+  drawSimulationVoteCounts,
+} from "./simulationVoting";
 import { votingPlayers } from "./selectors";
-import { createWerewolf, transitionWerewolf, type WerewolfState } from "./stateMachine";
+import {
+  createWerewolf,
+  transitionWerewolf,
+  voteTotal,
+  voteNeeded,
+  type WerewolfState,
+} from "./stateMachine";
 const names = Array.from({ length: 10 }, (_, i) => `P${i}`);
 function vote(roles: Parameters<typeof createWerewolf>[3] = []) {
   const setup = createWerewolf(names.join(","), "Narrator", () => 0.99, roles)!;
@@ -84,4 +94,65 @@ it.each([NaN, -1, 1, Infinity])("rejects invalid model randomness %s", (value) =
 });
 it("rejects invalid public suspicion weights", () => {
   expect(() => drawSimulationBallots(vote(), () => 0, new Map([["P0", NaN]]))).toThrow(RangeError);
+});
+
+it("models counted yes and no votes rather than forcing a sole candidate out", () => {
+  const state = { ...vote(), candidates: ["P0"] };
+  if (state.status !== "vote") throw Error("Missing vote");
+  const no = drawSimulationVoteCounts(state, () => 0.99);
+  const yes = drawSimulationVoteCounts(state, () => 0);
+  expect(no).toEqual({ P0: 0 });
+  expect(yes).toEqual({ P0: voteTotal(state) });
+  expect(voteNeeded(state)).toBe(6);
+  for (const [counts, status] of [
+    [no, "day"],
+    [yes, "exile"],
+  ] as const)
+    expect(
+      transitionWerewolf(state, {
+        type: "voteCount",
+        night: 1,
+        nomination: state.nomination,
+        counts,
+      }).status,
+    ).toBe(status);
+  expect(drawSimulationVoteCounts(state, () => 0.6, new Map([["P0", 10]]))).toEqual(yes);
+});
+it("aggregates named choices with the mayor weight before submitting counts", () => {
+  const state = { ...vote(["mayor"]), silencedPlayer: "P9" };
+  if (state.status !== "vote") throw Error("Missing vote");
+  const ballots = drawSimulationBallots(state, () => 0.25);
+  const expected: Record<string, number> = { P0: 0, P1: 0 };
+  for (const voter of votingPlayers(state))
+    if (ballots[voter.name]) expected[ballots[voter.name]!]! += voter.weight;
+  const counts = drawSimulationVoteCounts(state, () => 0.25);
+  expect(counts).toEqual(expected);
+  expect(Object.values(counts).reduce((sum, count) => sum + count, 0)).toBe(voteTotal(state));
+  expect(
+    transitionWerewolf(state, {
+      type: "voteCount",
+      night: 1,
+      nomination: state.nomination,
+      counts,
+    }),
+  ).not.toBe(state);
+  expect(drawSimulationVoteCounts({ ...state, status: "day" }, () => 0)).toEqual({});
+});
+it("counts a nominated mayor's votes only in the denominator and ignores a silenced mayor", () => {
+  const initial = vote(["mayor"]);
+  const mayor = initial.players.find((p) => p.role === "mayor")!.name;
+  const state = { ...initial, candidates: [mayor] };
+  expect(voteTotal(state)).toBe(9);
+  expect(voteNeeded(state)).toBe(6);
+  expect(drawSimulationVoteCounts(state, () => 0)).toEqual({ [mayor]: 9 });
+  const muted = { ...state, silencedPlayer: mayor };
+  expect(voteNeeded(muted)).toBe(5);
+  expect(drawSimulationVoteCounts(muted, () => 0)).toEqual({ [mayor]: 9 });
+});
+it("rejects invalid counted-vote randomness and weights", () => {
+  const state = { ...vote(), candidates: ["P0"] };
+  expect(() => drawSimulationVoteCounts(state, () => NaN)).toThrow(RangeError);
+  expect(() => drawSimulationVoteCounts(state, () => 0, new Map([["P0", Infinity]]))).toThrow(
+    RangeError,
+  );
 });

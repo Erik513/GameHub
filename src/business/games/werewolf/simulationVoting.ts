@@ -45,6 +45,35 @@ export function drawSimulationBallots(
       }),
   );
 }
+/** Counted votes match the narrator UI: one candidate gets weighted yes/no votes, several get full tallies. */
+export function drawSimulationVoteCounts(
+  state: WerewolfState,
+  random: () => number,
+  suspicion: ReadonlyMap<string, number> = new Map(),
+): Readonly<Record<string, number>> {
+  if (state.status !== "vote") return {};
+  const counts: Record<string, number> = Object.fromEntries(
+    state.candidates.map((name) => [name, 0]),
+  );
+  const voters = votingPlayers(state);
+  if (state.candidates.length === 1) {
+    const only = state.candidates[0]!;
+    const weight = 1 + Math.max(0, suspicion.get(only) ?? 0);
+    if (!Number.isFinite(weight)) throw new RangeError("Invalid suspicion");
+    for (const voter of voters) {
+      if (voter.choices.length && unit(random) < weight / (weight + 1))
+        counts[only]! += voter.weight;
+    }
+  } else {
+    const ballots = drawSimulationBallots(state, random, suspicion);
+    for (const voter of voters) {
+      const choice = ballots[voter.name];
+      if (choice !== undefined) counts[choice]! += voter.weight;
+    }
+  }
+  return counts;
+}
+
 function unit(random: () => number): number {
   const value = random();
   if (!Number.isFinite(value) || value < 0 || value >= 1)

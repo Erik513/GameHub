@@ -139,7 +139,9 @@ export function recordWerewolfTransition(
   if (before.status === "exile") {
     const vote = [...before.history]
       .reverse()
-      .find((e) => e.kind === "action" && e.event.type === "vote");
+      .find(
+        (e) => e.kind === "action" && (e.event.type === "vote" || e.event.type === "voteCount"),
+      );
     // Those who voted for the person who leaves the game.
     const voters =
       vote?.kind === "action" && vote.event.type === "vote"

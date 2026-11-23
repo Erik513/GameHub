@@ -60,3 +60,23 @@ it("shows the dead of the morning as dead in the overview while the announcement
     lastShot: true,
   });
 });
+
+it("retains lastShot through the masked hunter reveal without resurrecting the hunter", () => {
+  const { hunter, state } = toMorningWithDeadHunter();
+  const masked = { ...state, drunk: { player: hunter, revealed: false } };
+  const revealing = transitionWerewolf(masked, { type: "announceMorning", night: state.night });
+  expect(revealing.status).toBe("drunkHunter");
+  expect(revealing.alive.some((p) => p.name === hunter)).toBe(false);
+  expect(describePlayers(revealing).find((p) => p.name === hunter)).toMatchObject({
+    alive: false,
+    lastShot: true,
+  });
+  const shooting = transitionWerewolf(revealing, { type: "drunkReady", night: revealing.night });
+  expect(shooting.status).toBe("hunter");
+  expect(describePlayers(shooting).find((p) => p.name === hunter)?.lastShot).toBe(true);
+  const ended = transitionWerewolf(shooting, { type: "shot", night: shooting.night, target: null });
+  expect(describePlayers(ended).find((p) => p.name === hunter)).toMatchObject({
+    alive: false,
+    lastShot: false,
+  });
+});

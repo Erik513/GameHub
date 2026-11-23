@@ -996,3 +996,13 @@ Nachtrag zu We-03-69: Entscheidende Ergebnisunterschiede, Aussagegrenzen des abg
 We-03-70 abgeschlossen: Alte Vettel muss bei vorhandenem Ziel stummschalten; null nur noch als Notausgang ohne gültiges Ziel. Forschungsmodell auf 1–3 Nominierte, einzelne gewichtete Stimmzettel und Stichwahlen angepasst; Heilungsmodelle verwenden wolfTarget. 104 gezielte Tests und 24 kurze Modellpartien erfolgreich. Keine langen Balance-Läufe, keine UI- oder Kalibrierungsänderungen.
 
 104 gezielte Tests und zwei gezielte Simulations-Kurzprüfungen mit zusammen 24 vollständigen Modellpartien bestanden. Kein Kombinations- oder Balance-Gesamtlauf. Neues Abstimmungsmodell: 100 % Zeilen, Zweige, Funktionen und Anweisungen abgedeckt. Typprüfung, ESLint, Format- und Schichtprüfung erfolgreich. Bestehende Magierführung, Tagesabstimmung und Todesreihenfolge erhalten und mitgeprüft. Keine neue Kalibrierung oder Änderung von Rollenpunkten/Wolfsgrenzen.
+
+
+Nachprüfung advancedRoles.test.ts: 14 weitere Tests zu We-03-70 bestanden. Veraltete Verzichtserwartung an die Pflichtregel der Alten Vettel angepasst; keine Produktionslogik geändert.
+
+
+### We-03-71 – Stimmenzahlen und Jägerstatus
+
+We-03-71 abgeschlossen: Forschungssimulation verwendet voteCount statt erzwungener Verurteilung bei einem Nominierten. Stimmengewichte und Ja/Nein-Mehrheit stimmen mit der Erzähleransicht überein; alte benannte Stimmen werden nach einer Stimmenzahl-Abstimmung nicht als aktuelle Abstimmende protokolliert. lastShot für den betrunkenen Jäger abgesichert. 84 gezielte Tests und 24 kurze Modellpartien bestanden; keine langen Balance-Läufe.
+
+84 gezielte Tests in sechs Dateien bestanden; zwei gezielte Modell-Kurzprüfungen mit 24 vollständigen Partien bestanden. Keine langen Simulationsläufe. simulationVoting.ts: 100 % Zeilen / 96,55 % Zweige. Typprüfung, ESLint, Format und Schichtprüfung erfolgreich. Geprüft: Einzelkandidaten-Zustimmung/Ablehnung, gewichtete Stimmen, stummer oder nominierter Bürgermeister, unbekannte Abstimmende nach früherem benanntem Voting und lastShot beim betrunkenen Jäger.

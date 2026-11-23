@@ -180,7 +180,8 @@ it("applies silence to the vote: the silenced person can be named but does not v
   expect(vote(mutedTarget, others).status).toBe("exile");
   state = see(attack(dusk(state), "Flo"));
   expect(silence(state, "Dan")).toBe(state);
-  expect(day(silence(state, null)).silencedPlayer).toBeNull();
+  expect(silence(state, null)).toBe(state);
+  expect(day(silence(state, "Eva")).silencedPlayer).toBe("Eva");
   const self = see(wolves(deal(["spellcaster"], { allowSelfSilence: true })));
   expect(day(silence(self, "Cam")).silencedPlayer).toBe("Cam");
 });

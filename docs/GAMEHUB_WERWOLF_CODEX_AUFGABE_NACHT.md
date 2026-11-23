@@ -1,5 +1,28 @@
 # Aufgabe für Codex: Nachtskript und Dokumentation des variablen Modus
 
+## Angleichung an Stimmenzahlen und letzten Jägerschuss (We-03-71, 23.11.2026)
+
+We-03-71 abgeschlossen: Forschungssimulation verwendet voteCount statt erzwungener Verurteilung bei einem Nominierten. Stimmengewichte und Ja/Nein-Mehrheit stimmen mit der Erzähleransicht überein; alte benannte Stimmen werden nach einer Stimmenzahl-Abstimmung nicht als aktuelle Abstimmende protokolliert. lastShot für den betrunkenen Jäger abgesichert. 84 gezielte Tests und 24 kurze Modellpartien bestanden; keine langen Balance-Läufe.
+
+### Was sich geändert hat
+
+- Die bereits von Claude umgesetzte Stimmenzahl-Logik in stateMachine.ts bleibt erhalten. Ein Nominierter: voteCount zählt Ja-Stimmen, Ausscheiden ab voteNeeded, Ablehnung führt zurück zu day. voteTotal ist dabei die maximal mögliche Ja-Stimmenzahl ohne Eigenstimme; der Nenner für voteNeeded umfasst alle berechtigten gewichteten Stimmen, einschließlich des Nominierten. Stummgeschaltete zählen nicht, ein aktiver Bürgermeister mit doppelter Stimme zählt zweifach. Bei zwei oder drei Nominierten gelten vollständige Stimmenzahlen, relative Mehrheit und die vorhandene Stichwahl.
+- Neu in simulationVoting.ts: drawSimulationVoteCounts. Bei einem Nominierten werden Ja/Nein-Entscheidungen der übrigen Wähler simuliert und gewichtet aufsummiert. Bei mehreren Nominierten werden gültige Einzelentscheidungen samt Gewicht zu Stimmenzahlen zusammengefasst. balance.test.ts sendet jetzt voteCount. Die kurze Ablaufprüfung in simulation.test.ts prüft den Einzelkandidaten-Fall zusätzlich mit einer unabhängigen Mehrheits-/Grenzwertberechnung.
+- eventChoices.ts bietet für einen Nominierten sowohl Ablehnung als auch Zustimmung per voteCount an. Unmögliche Schwellen über der maximalen Ja-Stimmenzahl werden nicht angeboten. Der bisherige vote-Pfad bleibt ausdrücklich als kompatibler benannter Prüfpfad unverändert; bei nur einem Nominierten unterscheidet er sich weiterhin von der neuen Ja/Nein-Regel. Er darf nicht mehr als Ersatz für die aktuelle Einzelkandidaten-Simulation benutzt werden.
+- eventLog.ts sucht den letzten tatsächlichen Abstimmungsvorgang, unabhängig davon, ob er vote oder voteCount war. Bei voteCount bleiben die Namen der Abstimmenden unbekannt (actors: []). Zuvor konnte die Suche eine ältere vote-Abstimmung finden und deren Namen fälschlich übernehmen; die Regression mit benannter erster Runde und gezählter Stichwahl ist behoben.
+- lastShot war bereits korrekt implementiert; der Selektor wurde nicht verändert. Ein zusätzlicher Test prüft den betrunkenen Jäger durch drunkHunter, Enthüllung, hunter und Abschluss des Schusses. Er bleibt aus alive entfernt, lastShot bleibt bis zur Entscheidung true und wird danach false. Keine Wiederbelebung und keine Änderung der Siegprüfung.
+
+### Modellannahmen und Grenzen
+
+Für einen einzelnen Nominierten verwendet das Zufallsmodell pro zulässigem Wähler eine faire Ja/Nein-Münze. In Hinweismodellen ist die Ja-Wahrscheinlichkeit Gewicht / (Gewicht + 1), mit Gewicht = 1 + nichtnegativem öffentlichem Verdacht. Die Eigenstimme wird nie zu Ja, die verbleibenden Stimmen werden mit dem vorhandenen Wählergewicht aufsummiert. Das ist eine offengelegte Forschungsheuristik, keine neue Spielregel oder gemessene menschliche Wahrscheinlichkeit. Bei mehreren Kandidaten bleiben die öffentlichen Gewichte aus We-03-70 erhalten. Alte Ergebnisarchive und Punktwerte wurden nicht neu kalibriert oder überschrieben.
+
+### Gezielte Abnahme
+
+84 gezielte Tests in sechs Dateien bestanden; zwei gezielte Modell-Kurzprüfungen mit 24 vollständigen Partien bestanden. Keine langen Simulationsläufe. simulationVoting.ts: 100 % Zeilen / 96,55 % Zweige. Typprüfung, ESLint, Format und Schichtprüfung erfolgreich. Geprüft: Einzelkandidaten-Zustimmung/Ablehnung, gewichtete Stimmen, stummer oder nominierter Bürgermeister, unbekannte Abstimmende nach früherem benanntem Voting und lastShot beim betrunkenen Jäger.
+
+Betroffene Tests: voteCount.test.ts, lastShot.test.ts, simulationVoting.test.ts, advancedRoles.test.ts, narrator.test.ts und narratorGuide.test.ts. Die beiden Tests mit dem Namensanfang smoke-checks in balance.test.ts und simulation.test.ts wurden einzeln ausgewählt; die übrigen langen Tests blieben übersprungen. Vorherige separate Tabu-Formatierung und lokale Visual-Studio-Dateien bleiben unberührt. Umsetzung direkt im aktuellen Branch game/werewolf-ui unter C:/Users/Kosta/source/repos/GameHub.
+
+
 ## Nachprüfung des roten Rollentests (We-03-70, 23.11.2026)
 
 advancedRoles.test.ts enthielt noch die alte Erwartung, dass die Alte Vettel mit silence:null freiwillig verzichten darf. Der gezielte ursprüngliche Prüflauf hatte diese Datei nicht erfasst. Die Erwartung wurde korrigiert: null wird bei vorhandenem Ziel abgewiesen, anschließend wird eine andere erlaubte Person stummgeschaltet. Alle 14 Tests dieser Datei bestehen wieder; Format und ESLint ebenfalls. Keine Produktionslogik geändert. Ergänzend zu den zuvor geprüften 104 Tests sind damit 14 weitere Tests nachgeprüft; die frühere Fehlermeldung ist behoben.

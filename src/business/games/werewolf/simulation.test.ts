@@ -111,6 +111,34 @@ function ballots(state: VoteState, exhaustive: boolean): Decision[] {
   return decisions;
 }
 
+/** Independent yes/no oracle; the nominated person's weight is in the majority denominator but never in yes votes. */
+function countedSingleVote(state: VoteState): Decision[] {
+  const only = state.candidates[0]!;
+  const voters = state.alive.filter((p) => p.name !== state.silencedPlayer);
+  const weight = (name: string) =>
+    state.settings.mayor === "doubleVote" &&
+    voters.some((p) => p.name === name && p.role === "mayor" && !masked(state, name))
+      ? 2
+      : 1;
+  const total = voters.reduce((sum, p) => sum + weight(p.name), 0);
+  const max = voters.filter((p) => p.name !== only).reduce((sum, p) => sum + weight(p.name), 0);
+  const needed = Math.floor(total / 2) + 1;
+  const values = [...new Set([0, needed - 1, needed, max, max + 1, -1, 0.5, NaN])];
+  return values.map((value) => [
+    {
+      type: "voteCount",
+      night: state.night,
+      nomination: state.nomination,
+      counts: { [only]: value },
+    },
+    Number.isInteger(value) && value >= 0 && value <= max
+      ? value >= needed
+        ? "exile"
+        : "day"
+      : null,
+  ]);
+}
+
 function decisions(state: WerewolfState): Decision[] {
   const { night, alive } = state;
   const names = [...state.players.map((player) => player.name), missing];
@@ -277,7 +305,7 @@ function decisions(state: WerewolfState): Decision[] {
         [{ type: "nominate", night, nominees: [] }, null],
       ];
     case "vote":
-      return ballots(state, false);
+      return state.candidates.length === 1 ? countedSingleVote(state) : ballots(state, false);
     case "exile":
       return [[{ type: "announceExile", night }, state.status]];
     case "hunter":

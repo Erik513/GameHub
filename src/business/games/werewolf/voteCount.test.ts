@@ -150,3 +150,29 @@ it("enters the votes of several nominated people through the guide: all votes ha
   expect(describeGuide(guide)).toMatchObject({ canContinue: true, voteSum: view.voteTotal });
   expect(continueGuide(guide).session.present.status).toBe("exile");
 });
+
+it("does not attribute a counted runoff to the voters of an earlier named ballot", () => {
+  const base = toVote(2);
+  const [one, two] = base.candidates as [string, string];
+  const muted = base.alive.find((p) => p.name !== one && p.name !== two)!.name;
+  const state = { ...base, silencedPlayer: muted };
+  let at = 0;
+  const ballots = Object.fromEntries(
+    state.alive
+      .filter((p) => p.name !== muted)
+      .map(({ name }) => [name, name === one ? two : name === two ? one : at++ < 4 ? one : two]),
+  );
+  const runoff = transitionWerewolf(state, {
+    type: "vote",
+    night: state.night,
+    nomination: state.nomination,
+    ballots,
+  });
+  expect(runoff).toMatchObject({ status: "vote", round: 2 });
+  if (runoff.status !== "vote") throw Error("Missing runoff");
+  const exile = transitionWerewolf(runoff, countsEvent(runoff, { [one]: 6, [two]: 4 }));
+  expect(exile.status).toBe("exile");
+  const ended = transitionWerewolf(exile, { type: "announceExile", night: exile.night });
+  const death = ended.history.find((entry) => entry.kind === "death" && entry.player === one);
+  expect(death).toMatchObject({ kind: "death", sources: [{ cause: "vote", actors: [] }] });
+});

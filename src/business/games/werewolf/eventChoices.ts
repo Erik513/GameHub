@@ -1,5 +1,11 @@
 import { validTargets, votingPlayers } from "./selectors";
-import { transitionWerewolf, type WerewolfEvent, type WerewolfState } from "./stateMachine";
+import {
+  transitionWerewolf,
+  voteNeeded,
+  voteTotal,
+  type WerewolfEvent,
+  type WerewolfState,
+} from "./stateMachine";
 
 /**
  * Test helper (not part of the game logic): the events the game accepts in a state, enumerated through the selectors and
@@ -86,6 +92,17 @@ export function eventChoices(s: WerewolfState): WerewolfEvent[] {
         { type: "endDay", night },
       ];
     case "vote":
+      if (s.candidates.length === 1) {
+        const only = s.candidates[0]!;
+        return [...new Set([0, voteNeeded(s), voteTotal(s)])]
+          .filter((count) => count <= voteTotal(s))
+          .map((count) => ({
+            type: "voteCount",
+            night,
+            nomination: s.nomination,
+            counts: { [only]: count },
+          }));
+      }
       // Every voter chooses the first candidate who is not himself.
       return [
         {
