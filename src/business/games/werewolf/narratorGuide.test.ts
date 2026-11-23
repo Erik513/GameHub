@@ -3,6 +3,7 @@ import {
   backGuide,
   answerQuestion,
   checkScript,
+  chooseNoVote,
   chooseAbility,
   closeAbility,
   chooseNobody,
@@ -285,8 +286,22 @@ describe("narrator guide", () => {
       expect(view.phase).toBe("act");
       expect(view.card?.role).toBe("day");
       expect(view.nextKind).toBe("endDay");
-      expect(view.canContinue).toBe(true);
-      const night = continueGuide(guide);
+      // The day cannot be ended before an option is chosen: "no vote" (the reset takes it back).
+      expect(view.canContinue).toBe(false);
+      expect(continueGuide(guide)).toBe(guide);
+      const decided = chooseNoVote(guide);
+      expect(describeGuide(decided)).toMatchObject({
+        canContinue: true,
+        canUndo: true,
+        progress: 1,
+      });
+      const undone = undoSelection(decided);
+      expect(describeGuide(undone)).toMatchObject({
+        canContinue: false,
+        canUndo: false,
+        progress: 0,
+      });
+      const night = continueGuide(decided);
       expect(night.session.present.status).not.toBe("day");
       // The first role of the night is announced, not shown: its intro comes first.
       expect(describeGuide(night).phase).toBe("intro");

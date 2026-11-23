@@ -122,6 +122,16 @@ export function GuideBox({
   const script = scriptOf(view, step, t);
   // A step with a result (what the seer sees, who the drunk is): the summary box shows it at once.
   const showFact = factOf(view, t) !== null;
+  // The summary stands while the step is open only where something is already decided: a result, Cupid's lovers once
+  // they are confirmed, or "no vote" at the day. (The witch and the magician have nothing to sum up before their step is
+  // done.)
+  const showSummary =
+    showFact ||
+    ((state.status === "cupid" || state.status === "day") && view.progress >= 1) ||
+    // The witch and the magician: after the answer to the first question the summary already says what was decided.
+    ((state.status === "witch" || state.status === "magician") && view.question === "poison") ||
+    // The vote: the nominated people were decided before it started.
+    state.status === "vote";
   return (
     <section className="ww-guide ww-guide--sheet">
       <header className="ww-guide__head">
@@ -224,11 +234,11 @@ export function GuideBox({
           </div>
         )}
       </div>
-      {(extras.length > 0 || selection.ability !== null || view.progress >= 1 || showFact) && (
+      {(extras.length > 0 || selection.ability !== null || showSummary) && (
         <footer className="ww-guide__extra">
           {!showPeople && extras}
           {/* Cupid: once the choice is confirmed in the first box, the summary stands here. */}
-          {!showPeople && (view.progress >= 1 || showFact) && <Summary view={view} />}
+          {!showPeople && showSummary && <Summary view={view} />}
           {/* The choice of people (also at the day) is confirmed with the check below the list. */}
           {selection.ability !== null && (
             <button
@@ -531,6 +541,7 @@ function RoleScript({
           : box.id === "heal" ||
               box.id === "poison" ||
               box.id === "show" ||
+              box.id === "discuss" ||
               (box.id === "decide" && !outro)
             ? "werewolfNarrator.guide.undo"
             : "werewolfNarrator.guide.reopen",
@@ -538,7 +549,9 @@ function RoleScript({
   const press = (box: ScriptBox) => {
     if (box.id === "heal" || box.id === "poison") onUndoQuestion(box.id);
     else if (box.button === "check")
-      (box.id === "asleep" || box.id === "touch" || box.id === "show" ? onCheck : onContinue)();
+      (box.id === "asleep" || box.id === "touch" || box.id === "show" || box.id === "discuss"
+        ? onCheck
+        : onContinue)();
     else if (box.id === "show" && question !== null) (outro ? onReopen : onUndo)();
     else if (box.id === "show") (outro ? onReopen : onUndo)();
     else (outro ? onReopen : onUndo)();
@@ -648,6 +661,31 @@ function Summary({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { card, selection } = view;
   if (!card || card.cover) return null;
+  // The vote: who was nominated.
+  if (view.state.status === "vote")
+    return (
+      <Chosen>
+        <span className="ww-guide__chosen-part">
+          <WerewolfSymbol id="vote" ring size={20} />
+          <span>
+            {t("werewolfNarrator.guide.day.chosen", { names: view.state.candidates.join(", ") })}
+          </span>
+        </span>
+      </Chosen>
+    );
+  // The day: the only thing to sum up is "no vote" (the vote itself has its own steps).
+  if (view.state.status === "day")
+    return view.progress >= 1 ? (
+      <Chosen>
+        <span className="ww-guide__chosen-part">
+          <WerewolfSymbol id="vote" ring size={20} />
+          <strong>{t("werewolfNarrator.guide.noVote")}</strong>
+        </span>
+      </Chosen>
+    ) : null;
+  // The wolves who skipped: no attack.
+  if (view.state.status === "wolves" && selection.picks.length === 0 && view.phase === "outro")
+    return <Chosen>{t("werewolfNarrator.guide.wolvesNoAttackDone")}</Chosen>;
   const step = describeRoleStep(view.state);
   const fact = factOf(view, t);
   // The drunk has no ability: the summary only says who he really is.
@@ -742,7 +780,15 @@ function Summary({ view }: { readonly view: GuideView }) {
       ),
     );
   }
-  return <Chosen>{parts.length > 0 ? parts : t("werewolfNarrator.guide.noChoice")}</Chosen>;
+  // The first question is answered with "skip": that is a decision as well, the second question is still open.
+  const answeredNo = view.phase === "act" && view.question === "poison";
+  return (
+    <Chosen>
+      {parts.length > 0
+        ? parts
+        : t(answeredNo ? "werewolfNarrator.guide.answeredNo" : "werewolfNarrator.guide.noChoice")}
+    </Chosen>
+  );
 }
 
 /** Why somebody leaves the game: for the narrator only, not to be read out. */

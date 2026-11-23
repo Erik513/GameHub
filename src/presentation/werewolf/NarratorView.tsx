@@ -34,6 +34,8 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
   // The witch is asked only when the script has got there: first the victim is shown (the check of her first box).
   const witchWaiting =
     view.phase === "act" && view.question === "heal" && view.progress < 1 && !view.card?.cover;
+  // The day: once "no vote" is chosen the day can end (and the options are used).
+  const dayDecided = view.state.status === "day" && view.progress >= 1;
   return (
     <section
       aria-label={t("werewolfNarrator.view")}
@@ -75,7 +77,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                 view.state.status !== "vision" &&
                 view.selection.ability === null &&
                 view.selection.picks.length === 0 &&
-                !view.selection.heal
+                !view.selection.heal &&
+                // The day: nothing to frame once "no vote" is chosen (the next button is the next step).
+                !dayDecided
               }
               // The witch is asked one question at a time: all options stay in the box, only the ones of the question
               // are framed and can be used.
@@ -100,8 +104,15 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               }
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
+              // The day while nobody is nominated: the heading of the box is what the village does.
+              {...(view.state.status === "day"
+                ? { heading: t("werewolfNarrator.guide.day.discuss") }
+                : {})}
               locked={
-                view.phase === "outro" || (view.state.status === "cupid" && view.progress >= 1)
+                view.phase === "outro" ||
+                (view.state.status === "cupid" && view.progress >= 1) ||
+                // The day: "no vote" is chosen, the vote cannot be used until the reset takes it back.
+                dayDecided
               }
               // The witch: the abilities wait until the narrator has shown the victim (the check of the first box).
               waiting={witchWaiting}
@@ -113,16 +124,20 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                       // does not apply: after the step was left, or while a choice is made.
                       disabled:
                         witchWaiting ||
+                        dayDecided ||
                         view.phase === "outro" ||
                         view.selection.ability !== null ||
                         (view.question === null &&
                           (view.selection.picks.length > 0 || view.selection.heal)),
                       framed:
-                        !witchWaiting &&
-                        view.phase === "act" &&
-                        (view.question !== null
-                          ? view.selection.ability === null
-                          : view.canContinue),
+                        view.state.status === "day"
+                          ? // "No vote" is an option to choose: framed until it is chosen (or a list is open).
+                            view.phase === "act" && !dayDecided && view.selection.ability === null
+                          : !witchWaiting &&
+                            view.phase === "act" &&
+                            (view.question !== null
+                              ? view.selection.ability === null
+                              : view.canContinue),
                       ...(describeRoleStep(view.state).skip.label === "skip"
                         ? {}
                         : {
@@ -133,7 +148,11 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                             ),
                           }),
                       onSkip:
-                        view.question !== null ? () => guide.answer("skip") : guide.continueGuide,
+                        view.question !== null
+                          ? () => guide.answer("skip")
+                          : view.state.status === "day"
+                            ? guide.noVote
+                            : guide.continueGuide,
                     }
                   : undefined
               }
@@ -159,7 +178,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
             {t("werewolfNarrator.guide.back")}
           </Button>
           <Button
-            data-next={(view.canNext && view.phase !== "act") || undefined}
+            data-next={(view.canNext && (view.phase !== "act" || dayDecided)) || undefined}
             disabled={!view.canNext}
             onClick={view.nextKind === "finish" ? onEnd : guide.continueGuide}
             variant="success"

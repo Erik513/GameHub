@@ -218,3 +218,15 @@ it("never confirms a list of people without a choice, and the list holds only th
   fireEvent.click(screen.getByRole("button", { name: "Close the selection" }));
   expect(abilityButtons()[2]).toBeEnabled();
 });
+
+it("sums up every answer at once: after the first question the blue summary says what was decided", async () => {
+  await open(true);
+  showVictim();
+  // Skipped: the summary says so (the second question is still open).
+  fireEvent.click(abilityButtons()[2]!);
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("Skipped");
+  // Taken back and healed: the summary names the healed person.
+  fireEvent.click(screen.getAllByRole("button", { name: "Undo" })[1]!);
+  fireEvent.click(abilityButtons()[0]!);
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(/^Healed: P[0-9]+$/);
+});

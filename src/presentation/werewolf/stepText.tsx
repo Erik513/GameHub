@@ -70,7 +70,7 @@ export function dayPrompt(view: GuideView, t: TFunction): string | null {
         : "werewolfNarrator.guide.day.voters",
     );
   if (state.status !== "day") return null;
-  if (selection.ability !== "vote") return t("werewolfNarrator.guide.day.idle");
+  if (selection.ability !== "vote") return null;
   const names = selection.picks.join(", ");
   if (selection.picks.length === 0) return t("werewolfNarrator.guide.day.nominee");
   if (selection.picks.length < 3) return t("werewolfNarrator.guide.day.more", { names });
@@ -121,7 +121,8 @@ export function askText(view: GuideView, t: TFunction): string | null {
 
 /** One box of the script of a role: the tasks of the narrator, the button right of it and where the script stands. */
 export interface ScriptBox {
-  readonly id: "asleep" | "wake" | "confirm" | "decide" | "heal" | "poison" | "show" | "touch";
+  readonly id:
+    "asleep" | "wake" | "confirm" | "decide" | "discuss" | "heal" | "poison" | "show" | "touch";
   readonly items: readonly ReactNode[];
   /** The button right of the box: take the decision back, or confirm that the task is done; none for the last box. */
   readonly button: "check" | "undo" | null;
@@ -146,6 +147,8 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
   const boxes = roleBoxes(view, step, t);
   const { card } = view;
   if (!boxes || !card) return boxes;
+  // The day has no wake box either: nobody is woken up.
+  if (card.role === "day") return boxes;
   const intro = view.phase === "intro";
   // The box "the role wakes up" stays the first box of the script: its check shows the role, afterwards it is done.
   const wake: ScriptBox = {
@@ -201,7 +204,33 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
 
 function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox[] | null {
   const { card, selection, state } = view;
-  if (!card || card.role === "day") return null;
+  if (!card) return null;
+  // The day: the village discusses (the check opens the options above), somebody is nominated or not, the day ends.
+  if (card.role === "day") {
+    if (state.status !== "day" || view.phase !== "act") return null;
+    const progress = view.progress;
+    return [
+      {
+        // One box: the village discusses, then somebody is nominated or not. The options above are free at once; its
+        // reset button takes "no vote" back.
+        button: "undo",
+        enabled: progress >= 1,
+        id: "discuss",
+        items: [t("werewolfNarrator.guide.day.nominateAsk")],
+        // The vote: the symbol of the ability.
+        symbol: "vote",
+        state: progress >= 1 ? "done" : "active",
+      },
+      {
+        button: null,
+        enabled: false,
+        id: "asleep",
+        items: [t("werewolfNarrator.guide.sleep.day")],
+        // Once "no vote" is chosen the day can end: this box is what comes next (blue frame).
+        state: progress >= 1 ? "active" : "pending",
+      },
+    ];
+  }
   const outro = view.phase === "outro";
   const asleep: ScriptBox = {
     button: null,

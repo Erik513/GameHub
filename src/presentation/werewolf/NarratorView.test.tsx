@@ -284,13 +284,7 @@ describe("NarratorView choices", () => {
       else if (next && !(next as HTMLButtonElement).disabled) await user.click(next);
       else throw new Error("the walk to the day is stuck");
     }
-    console.log(
-      "DOMBTN",
-      [...document.querySelectorAll("button")]
-        .map((b) => b.getAttribute("aria-label") ?? b.textContent)
-        .join(" | "),
-    );
-    // The day: the vote button and "no vote" stand in the upper box; no check mark while nothing is open.
+    // The day: the options (vote, no vote) can be used at once; no check mark while nothing is open.
     expect(screen.getByRole("button", { name: "No vote" })).toBeEnabled();
     expect(screen.queryByRole("button", { name: "Confirm the choice" })).toBeNull();
     await user.click(screen.getByRole("button", { name: /^Vote/ }));

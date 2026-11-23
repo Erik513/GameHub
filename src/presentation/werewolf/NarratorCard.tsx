@@ -17,6 +17,8 @@ interface NarratorCardProps {
   readonly settled?: boolean;
   /** The narrator has decided: no ability can be tapped any more (the way back opens the decision again). */
   readonly locked?: boolean;
+  /** A heading for the card of the day while nobody is nominated ("The village discusses"). */
+  readonly heading?: string;
   /** The script has not reached the decision yet (the witch: the victim is not shown yet): nothing can be pressed. */
   readonly waiting?: boolean;
   /**
@@ -52,6 +54,7 @@ export function NarratorCard({
   pressed = [],
   settled = false,
   locked = false,
+  heading,
   waiting = false,
   asked = null,
   spellsUsed = 0,
@@ -68,7 +71,7 @@ export function NarratorCard({
   return (
     <section aria-label={roleName} className="ww-role-card" data-cover={card.cover}>
       {/* The day is no role: without a person (the vote has the nominated one) there is no head at all. */}
-      {(!isDay || card.actors.length > 0) && (
+      {(!isDay || card.actors.length > 0 || heading) && (
         <header className="ww-role-card__head">
           {!isDay && (
             <span className="ww-role-card__role">
@@ -76,22 +79,29 @@ export function NarratorCard({
             </span>
           )}
           <span className="ww-role-card__who">
-            {isDay ? <strong>{card.actors.join(", ")}</strong> : <strong>{roleName}</strong>}
+            {isDay ? (
+              <strong>{card.actors.length > 0 ? card.actors.join(", ") : heading}</strong>
+            ) : (
+              <strong>{roleName}</strong>
+            )}
             {!isDay && card.actors.length > 0 && <small>{card.actors.join(", ")}</small>}
           </span>
-          <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
-            {slots.map((effect, index) => (
-              <li className="ww-role-card__slot" data-empty={effect === null} key={index}>
-                {effect && (
-                  <WerewolfSymbol
-                    id={effect}
-                    label={t(`werewolfSymbols.items.${effect}.name`)}
-                    size={22}
-                  />
-                )}
-              </li>
-            ))}
-          </ul>
+          {/* The day without a nominated person has no effects from outside, so no slots for them. */}
+          {!(isDay && card.actors.length === 0) && (
+            <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
+              {slots.map((effect, index) => (
+                <li className="ww-role-card__slot" data-empty={effect === null} key={index}>
+                  {effect && (
+                    <WerewolfSymbol
+                      id={effect}
+                      label={t(`werewolfSymbols.items.${effect}.name`)}
+                      size={22}
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </header>
       )}
       {card.abilities.length > 0 && (

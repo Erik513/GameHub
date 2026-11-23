@@ -2711,3 +2711,8 @@ button.ww-guide__strip[data-next] {
   flex: none;
   color: var(--color-ink-muted);
 }
+
+/* A note may contain a line break (the silenced person of the day: the name, then what is not allowed). */
+.ww-guide__notes li {
+  white-space: pre-line;
+}

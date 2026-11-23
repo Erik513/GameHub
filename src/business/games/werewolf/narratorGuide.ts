@@ -192,9 +192,12 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       return one && two ? { night, players: [one, two], type: "bond" } : null;
     }
     case "nominate":
-      // Nobody named and no vote open: the day ends. One to three named people: the vote.
+      // Nobody named and no vote open: the day ends, but only once the narrator has chosen "no vote" (the option above).
+      // One to three named people: the vote.
       if (selection.picks.length === 0)
-        return selection.ability === null ? { night, type: "endDay" } : null;
+        return selection.ability === null && (selection.progress ?? 0) >= 1
+          ? { night, type: "endDay" }
+          : null;
       return { night, nominees: selection.picks, type: "nominate" };
     case "vote":
       if (state.status !== "vote") return null;
@@ -352,6 +355,7 @@ export function describeGuide(guide: Guide): GuideView {
     canGoBack: (guide.trail.length > 1 || guide.session.past.length > 0) && !backIsBlocked(guide),
     canUndo:
       selection.question === "poison" ||
+      (state.status === "day" && selection.ability === null && (selection.progress ?? 0) >= 1) ||
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
       selection.none ||
@@ -531,6 +535,23 @@ export function checkScript(guide: Guide): Guide {
   // 0 -> 1: the choice of the two is confirmed; 1 -> 2: Cupid sleeps; the last check (the lovers are touched) finishes the step.
   if (progress < 2) return withSelection(guide, { ...selection, progress: progress + 1 });
   return continueGuide(withSelection(guide, { ...selection, progress: 3 }));
+}
+
+/**
+ * "No vote" at the day: nobody is nominated, the day can be ended with "next". It is the choice of the box of the
+ * script and can be taken back with its undo button (the reset).
+ */
+export function chooseNoVote(guide: Guide): Guide {
+  const frame = current(guide);
+  const { selection } = frame;
+  if (
+    frame.phase !== "act" ||
+    guide.session.present.status !== "day" ||
+    selection.ability !== null ||
+    selection.picks.length > 0
+  )
+    return guide;
+  return withSelection(guide, { ...selection, progress: 1 });
 }
 
 /**
