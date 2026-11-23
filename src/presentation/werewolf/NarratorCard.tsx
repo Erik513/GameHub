@@ -1,4 +1,3 @@
-import { Icon } from "../components";
 import { useTranslation } from "react-i18next";
 import type {
   CardAbilityId,
@@ -29,18 +28,16 @@ interface NarratorCardProps {
   /** The heading of the upper box at the day ("Nomination"); the upper box has a heading in every view of the day. */
   readonly heading?: string;
   /**
-   * The drunk: a button where the other roles have their abilities opens the window with the true role; right of it a
-   * check that can be used once the window was closed.
+   * The drunk: a button where the other roles have their abilities opens the window with the true role. The check (and
+   * the undo) stand at the script box "show the true role" in the lower box, like at every other role.
    */
   readonly reveal?: {
     readonly label: string;
-    readonly checkLabel: string;
-    /** The window was closed: the check can be used. */
-    readonly checkEnabled: boolean;
-    /** The step is done (the next box is open): both buttons are switched off. */
+    /** The window was closed: the next step is the check of the script box (the button is no longer the next step). */
+    readonly shown: boolean;
+    /** The step is done (the next box is open): the button is switched off. */
     readonly settled: boolean;
     readonly onOpen: () => void;
-    readonly onCheck: () => void;
   };
   /** The script has not reached the decision yet (the witch: the victim is not shown yet): nothing can be pressed. */
   readonly waiting?: boolean;
@@ -223,7 +220,7 @@ export function NarratorCard({
         <div className="ww-role-card__abilities ww-role-card__reveal">
           <button
             className="ww-ability"
-            data-next={(!reveal.settled && !reveal.checkEnabled) || undefined}
+            data-next={(!reveal.settled && !reveal.shown) || undefined}
             data-state={reveal.settled ? "dim" : "ready"}
             disabled={reveal.settled}
             onClick={reveal.onOpen}
@@ -233,19 +230,6 @@ export function NarratorCard({
               <WerewolfSymbol id="drunk" ring size={24} />
             </span>
             <span className="ww-ability__name">{reveal.label}</span>
-          </button>
-          <button
-            aria-label={reveal.checkLabel}
-            // The same form as the ability button next to it (box, border, height), in green like a button that can be used.
-            className="ww-ability ww-ability--check ww-reveal__check"
-            data-next={(!reveal.settled && reveal.checkEnabled) || undefined}
-            data-state={reveal.settled || !reveal.checkEnabled ? "dim" : "ready"}
-            disabled={reveal.settled || !reveal.checkEnabled}
-            onClick={reveal.onCheck}
-            title={reveal.checkLabel}
-            type="button"
-          >
-            <Icon name="check" />
           </button>
         </div>
       )}

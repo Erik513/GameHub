@@ -61,9 +61,10 @@ it("shows the true role of the drunk in a window, then the check goes on, and th
   const show = screen.getByRole("button", { name: /Show the true role/ });
   const check = () => screen.getByRole("button", { name: "Task done" });
   expect(show).toBeEnabled();
-  // The check right of it is switched off until the window was opened and closed.
-  expect(document.querySelector(".ww-reveal__check")).toBeDisabled();
-  expect(screen.getByRole("button", { name: "Undo" })).toBeDisabled();
+  // The check right of the box "show the true role" is switched off until the window was opened and closed.
+  expect(check()).toBeDisabled();
+  // (The upper box only has the button for the role; the check stands at the box in the script.)
+  expect(document.querySelectorAll(".ww-role-card__reveal button")).toHaveLength(1);
   fireEvent.click(show);
   const dialog = screen.getByRole("dialog");
   expect(dialog).toBeInTheDocument();
@@ -73,13 +74,14 @@ it("shows the true role of the drunk in a window, then the check goes on, and th
   fireEvent.click(screen.getByRole("button", { name: "Close the card" }));
   expect(screen.queryByRole("dialog")).toBeNull();
   expect(check()).toBeEnabled();
-  // The check goes on: the box "tell the true role" is done and has an undo button, both buttons above are off.
+  // The check goes on: the same button right of the box is the undo now (the symbol toggles), the button for the role is off.
   fireEvent.click(check());
-  expect(screen.getByRole("button", { name: "Take the decision back" })).toBeEnabled();
-  expect(check()).toBeDisabled();
+  expect(screen.queryByRole("button", { name: "Task done" })).toBeNull();
+  const undo = screen.getByRole("button", { name: "Take the decision back" });
+  expect(undo).toBeEnabled();
   expect(show).toBeDisabled();
   // Undo: back at the button, the true role can be shown once more (the check is switched off again).
-  fireEvent.click(screen.getByRole("button", { name: "Take the decision back" }));
+  fireEvent.click(undo);
   expect(screen.getByRole("button", { name: /Show the true role/ })).toBeEnabled();
   expect(check()).toBeDisabled();
 });

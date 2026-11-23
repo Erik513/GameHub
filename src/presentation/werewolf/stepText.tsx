@@ -374,8 +374,9 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
   if (state.status === "drunkReveal")
     return [
       {
-        button: "undo",
-        enabled: outro,
+        // One button right of the box that toggles: the check (once the window was closed), then the undo.
+        button: outro ? "undo" : "check",
+        enabled: outro || view.progress >= 1,
         id: "decide",
         items: [t("werewolfNarrator.guide.drunkScript")],
         state: outro ? "done" : "active",

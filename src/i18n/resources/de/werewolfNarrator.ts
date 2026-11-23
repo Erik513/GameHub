@@ -127,7 +127,7 @@ export const werewolfNarratorTexts = {
       next: "Weiter",
       resultScript: "Ergebnis mit dem Daumen zeigen",
       trueRole: { show: "Wahre Rolle zeigen", close: "Karte schließen" },
-      drunkScript: "Wahre Rolle sagen",
+      drunkScript: "Wahre Rolle zeigen",
       verdict: {
         wolf: "Werwolf",
         village: "Kein Werwolf",

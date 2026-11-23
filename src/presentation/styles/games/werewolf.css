@@ -3326,12 +3326,6 @@ button.ww-guide__strip[data-next] {
   white-space: pre-line;
 }
 
-/* The drunk: the button that shows the true role stands where the other roles have their abilities, the check right of it. */
-.ww-role-card__reveal .ww-ability--check {
-  flex: none;
-  width: 4.5rem;
-}
-
 /* The full-screen window with the card of the true role: the cross at the top right closes it. */
 .ww-truerole {
   position: fixed;
@@ -3385,12 +3379,6 @@ button.ww-guide__strip[data-next] {
   top: var(--space-4);
   right: var(--space-4);
   z-index: 1;
-}
-
-/* The check next to the button of the drunk has the form of the ability button (same height and frame), only narrower. */
-.ww-role-card__reveal .ww-ability--check {
-  flex: none;
-  width: 4.5rem;
 }
 
 /* The window has the format of the phone (the width of the app column), centered on a wide screen; the rest of the screen

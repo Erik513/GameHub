@@ -282,12 +282,10 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               {...(drunk
                 ? {
                     reveal: {
-                      checkEnabled: view.phase === "act" && view.progress >= 1,
-                      checkLabel: t("werewolfNarrator.guide.taskDone"),
                       label: t("werewolfNarrator.guide.trueRole.show"),
-                      onCheck: guide.continueGuide,
                       onOpen: () => setRevealOpen(true),
                       settled: view.phase === "outro",
+                      shown: view.progress >= 1,
                     },
                   }
                 : {})}
