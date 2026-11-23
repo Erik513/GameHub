@@ -394,11 +394,6 @@ function PlainBox({ view }: { readonly view: GuideView }) {
             </span>
           )}
         </div>
-        {view.deaths.length > 0 && (
-          <footer className="ww-guide__extra">
-            <DeathDetails deaths={view.deaths} />
-          </footer>
-        )}
       </section>
     );
   }
@@ -769,26 +764,6 @@ function Summary({ view }: { readonly view: GuideView }) {
         ? parts
         : t(answeredNo ? "werewolfNarrator.guide.answeredNo" : "werewolfNarrator.guide.noChoice")}
     </Chosen>
-  );
-}
-
-/** Why somebody leaves the game: for the narrator only, not to be read out. */
-function DeathDetails({ deaths }: { readonly deaths: GuideView["deaths"] }) {
-  const { t } = useTranslation();
-  if (deaths.length === 0) return null;
-  return (
-    <div className="ww-guide__causes">
-      <small>{t("werewolfNarrator.guide.causesTitle")}</small>
-      <ul>
-        {deaths.map((death) => (
-          <li key={death.name}>
-            <strong>{death.name}</strong>
-            {": "}
-            {death.causes.map((cause) => t(`werewolfNarrator.cause.${cause}`)).join(", ")}
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 

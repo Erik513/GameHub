@@ -36,6 +36,8 @@ interface NarratorCardProps {
     readonly onCount: (name: string, count: number) => void;
     readonly sum: number;
     readonly total: number;
+    /** One nominated person: the number is the yes votes, a small label says so. */
+    readonly yesLabel?: string;
   };
   /** The abilities are the next thing to tap: the ones that can be used get a blue frame. */
   readonly next?: boolean;
@@ -91,6 +93,7 @@ export function NarratorCard({
               <li className="ww-nominee" key={name}>
                 <strong className="ww-nominee__name">{name}</strong>
                 <span className="ww-nominee__count">
+                  {votes.yesLabel && <small className="ww-nominee__yes">{votes.yesLabel}</small>}
                   <button
                     aria-label={t("werewolfNarrator.guide.vote.fewer", { name })}
                     disabled={count <= 0}

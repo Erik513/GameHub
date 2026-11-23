@@ -304,9 +304,16 @@ describe("NarratorView choices", () => {
     );
     // Any number of yes votes can be confirmed (no yes vote at all is a valid result).
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
+    // The number is the yes votes: a label in the row says so.
+    expect(document.querySelector(".ww-nominee__yes")?.textContent).toBe("Yes");
     const more = document.querySelector<HTMLButtonElement>(".ww-nominee__count button:last-child")!;
     await user.click(more);
     expect(document.querySelector(".ww-guide__votesum")!.textContent).toContain("Yes votes: 1 ");
     expect(screen.getByRole("button", { name: "Confirm the choice" })).toBeEnabled();
+    // The vote is confirmed with the check mark only: the button "next" waits.
+    expect(screen.getByRole("button", { name: /^End the vote|Next/ })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Confirm the choice" }));
+    // The exile view does not repeat the reason (it is the vote).
+    expect(document.querySelector(".ww-guide__causes")).toBeNull();
   });
 });

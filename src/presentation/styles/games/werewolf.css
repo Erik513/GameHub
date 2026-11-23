@@ -2774,3 +2774,8 @@ button.ww-guide__strip[data-next] {
 .ww-guide__votesum[data-complete="true"] {
   color: var(--color-success);
 }
+
+.ww-nominee__yes {
+  color: var(--color-ink-muted);
+  font-size: 0.85rem;
+}

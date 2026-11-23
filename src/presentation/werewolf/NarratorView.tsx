@@ -36,6 +36,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
     view.phase === "act" && view.question === "heal" && view.progress < 1 && !view.card?.cover;
   // The day: once "no vote" is chosen the day can end (and the options are used).
   const dayDecided = view.state.status === "day" && view.progress >= 1;
+  const nextFree = view.canNext && view.state.status !== "vote";
   return (
     <section
       aria-label={t("werewolfNarrator.view")}
@@ -111,6 +112,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                       counts: view.voteCounts,
                       names: view.state.candidates,
                       onCount: guide.count,
+                      ...(view.state.candidates.length === 1
+                        ? { yesLabel: t("werewolfNarrator.guide.vote.yesLabel") }
+                        : {}),
                       sum: view.voteSum,
                       total: view.voteTotal,
                     },
@@ -188,8 +192,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
             {t("werewolfNarrator.guide.back")}
           </Button>
           <Button
-            data-next={(view.canNext && (view.phase !== "act" || dayDecided)) || undefined}
-            disabled={!view.canNext}
+            // The vote is confirmed with the check mark (like every list of people): the button "next" waits.
+            data-next={(nextFree && (view.phase !== "act" || dayDecided)) || undefined}
+            disabled={!nextFree}
             onClick={view.nextKind === "finish" ? onEnd : guide.continueGuide}
             variant="success"
           >
