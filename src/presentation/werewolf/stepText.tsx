@@ -130,16 +130,7 @@ export function askText(view: GuideView, t: TFunction): string | null {
 /** One box of the script of a role: the tasks of the narrator, the button right of it and where the script stands. */
 export interface ScriptBox {
   readonly id:
-    | "asleep"
-    | "wake"
-    | "confirm"
-    | "decide"
-    | "discuss"
-    | "heal"
-    | "poison"
-    | "show"
-    | "touch"
-    | "villageSleeps";
+    "asleep" | "wake" | "confirm" | "decide" | "discuss" | "heal" | "poison" | "show" | "touch";
   readonly items: readonly ReactNode[];
   /** The button right of the box: take the decision back, or confirm that the task is done; none for the last box. */
   readonly button: "check" | "undo" | null;
@@ -233,7 +224,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         // One box: the village discusses, then somebody is nominated or not. The options above are free at once; its
         // reset button takes "no vote" back.
         button: "undo",
-        enabled: progress >= 1,
+        enabled: progress >= 1 || view.sleeping,
         id: "discuss",
         items: [t("werewolfNarrator.guide.day.nominateAsk")],
         // The vote: the symbol of the ability.
@@ -241,21 +232,25 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         state: settled ? "done" : "active",
       },
       {
-        button: null,
-        enabled: false,
-        id: "asleep",
+        // The check says that the summary was announced: the last box (everybody goes to sleep) opens.
+        // A task of the narrator: the check stays a check and can only be tapped while this box is the open one. It is
+        // taken back with the undo button of the first box (one step per tap).
+        button: "check",
+        enabled: settled && !view.sleeping,
+        id: "show",
         // Always the same words: the narrator announces the summary of the day (who left, who is silenced) and ends it.
         items: [t("werewolfNarrator.guide.day.summaryEnd")],
         // Once "no vote" is chosen (or the vote is done) the day can end: this box is what comes next (blue frame).
-        state: settled ? "active" : "pending",
+        state: view.sleeping ? "done" : settled ? "active" : "pending",
       },
       {
         // The last words of the day: the narrator asks everybody to go to sleep (the night begins with the next step).
         button: null,
         enabled: false,
-        id: "villageSleeps",
+        id: "asleep",
         items: [t("werewolfNarrator.guide.day.villageSleeps")],
-        state: "pending",
+        // The narrator reaches it with the step after the summary; the next step starts the night.
+        state: view.sleeping ? "active" : "pending",
       },
     ];
   }

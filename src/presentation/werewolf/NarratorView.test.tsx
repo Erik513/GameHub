@@ -329,7 +329,9 @@ describe("NarratorView choices", () => {
     // The vote is done: nominating again or "no nomination" cannot be tapped any more, the day can end.
     expect(screen.getByRole("button", { name: /^Nomination/ })).toBeDisabled();
     expect(screen.getByRole("button", { name: "No nomination" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "End the day" })).toBeEnabled();
+    // The day ends only after the script: the summary box has to be checked first.
+    expect(screen.getByRole("button", { name: "End the day" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Task done" })).toBeEnabled();
     expect(document.querySelector(".ww-guide__causes")).toBeNull();
   });
 });

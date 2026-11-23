@@ -291,7 +291,7 @@ describe("narrator guide", () => {
       expect(continueGuide(guide)).toBe(guide);
       const decided = chooseNoVote(guide);
       expect(describeGuide(decided)).toMatchObject({
-        canContinue: true,
+        canContinue: false,
         canUndo: true,
         progress: 1,
       });
@@ -301,7 +301,22 @@ describe("narrator guide", () => {
         canUndo: false,
         progress: 0,
       });
-      const night = continueGuide(decided);
+      // The day cannot end yet: first the summary is announced (the check of the second box), then the last box
+      // (everybody goes to sleep) is the open one and the next button starts the night.
+      expect(continueGuide(decided)).toBe(decided);
+      const sleeping = checkScript(decided);
+      expect(sleeping.session.present.status).toBe("day");
+      expect(describeGuide(sleeping)).toMatchObject({
+        sleeping: true,
+        nextKind: "endDay",
+        canUndo: true,
+      });
+      // One step back per undo: first the last box, then the decision.
+      expect(describeGuide(undoSelection(sleeping))).toMatchObject({
+        sleeping: false,
+        progress: 1,
+      });
+      const night = continueGuide(sleeping);
       expect(night.session.present.status).not.toBe("day");
       // The first role of the night is announced, not shown: its intro comes first.
       expect(describeGuide(night).phase).toBe("intro");

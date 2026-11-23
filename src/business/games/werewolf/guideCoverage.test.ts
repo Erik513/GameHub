@@ -3,6 +3,7 @@ import { eventChoices } from "./eventChoices";
 import {
   answerQuestion,
   chooseAbility,
+  checkScript,
   chooseNoVote,
   chooseNobody,
   choosePlayer,
@@ -94,7 +95,7 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
     }
     case "endDay":
       // "No vote" is the choice that lets the day end.
-      guide = chooseNoVote(guide);
+      guide = checkScript(chooseNoVote(guide));
       break;
     case "bond":
       if (!open("bond")) failure = "bond not available";

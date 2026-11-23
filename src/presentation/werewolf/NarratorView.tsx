@@ -333,7 +333,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           </Button>
           <Button
             // The vote is confirmed with the check mark (like every list of people): the button "next" waits.
-            data-next={(nextFree && (view.phase !== "act" || dayDecided)) || undefined}
+            data-next={(nextFree && (view.phase !== "act" || view.sleeping)) || undefined}
             disabled={!nextFree}
             onClick={view.nextKind === "finish" ? onEnd : guide.continueGuide}
             variant="success"

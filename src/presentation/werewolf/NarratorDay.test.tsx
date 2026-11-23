@@ -67,9 +67,11 @@ it("shows the script of the day and lets the day end only after an option was ch
   expect(screen.getByRole("button", { name: "No nomination" })).toBeEnabled();
   expect(next()).toBeDisabled();
   expect(screen.getByRole("button", { name: "Undo" })).toBeDisabled();
-  // "No nomination" is an option: now the day can end; the reset of the box takes it back.
+  // "No nomination" is an option: the summary can be announced now (the check of its box); the day ends only after
+  // that, with the last box (everybody goes to sleep). The reset of the first box takes it back.
   fireEvent.click(screen.getByRole("button", { name: "No nomination" }));
-  expect(next()).toBeEnabled();
+  expect(next()).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Task done" })).toBeEnabled();
   expect(screen.getByRole("button", { name: "No nomination" })).toBeDisabled();
   // The blue summary says what was chosen: the symbol of the vote and "No nomination" (not "nothing chosen").
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("No nomination");
@@ -87,6 +89,20 @@ it("shows the script of the day and lets the day end only after an option was ch
     "pending",
   );
   expect(screen.getByRole("button", { name: "No nomination" })).not.toHaveAttribute("data-next");
+  // The check of the summary box: it is announced, now the narrator asks everybody to go to sleep (the last box is open).
+  fireEvent.click(screen.getByRole("button", { name: "Task done" }));
+  expect([...document.querySelectorAll(".ww-script__step")].at(-1)).toHaveAttribute(
+    "data-state",
+    "active",
+  );
+  expect(screen.getByRole("button", { name: "End the day" })).toBeEnabled();
+  // A task of the narrator keeps its check (it cannot be tapped any more); the undo button of the first box (the
+  // decision) goes back one step per tap: first the check of the summary, then the decision.
+  expect(screen.getByRole("button", { name: "Task done" })).toBeDisabled();
+  expect(screen.getAllByRole("button", { name: "Undo" })).toHaveLength(1);
+  fireEvent.click(screen.getByRole("button", { name: "Undo" }));
+  expect(next()).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Task done" })).toBeEnabled();
   fireEvent.click(screen.getByRole("button", { name: "Undo" }));
   expect(next()).toBeDisabled();
   expect(screen.getByRole("button", { name: "No nomination" })).toBeEnabled();

@@ -2,6 +2,7 @@ import { expect, it } from "vitest";
 import { eventChoices } from "./eventChoices";
 import {
   backGuide,
+  checkScript,
   chooseAbility,
   choosePlayer,
   continueGuide,
@@ -299,6 +300,31 @@ it("holds the vote about one person once more when the yes votes are as many as 
   // A second tie leaves him in the game: the day goes on.
   guide = setVoteCount(continueGuide(guide), nominee, view.voteTieAt!);
   expect(continueGuide(guide).session.present.status).toBe("day");
+});
+
+it("leads back to the script of the day after a vote: summary, everybody goes to sleep, then the night", () => {
+  let guide = createGuide(createWerewolfSession(toVote(2)));
+  const view = describeGuide(guide);
+  const [one, two] = (view.state as VoteState).candidates as [string, string];
+  guide = setVoteCount(guide, one, view.voteTotal - 3);
+  guide = setVoteCount(guide, two, 3);
+  guide = continueGuide(guide);
+  // Back at the day: nobody can be nominated again, the day cannot end yet, the summary says who left.
+  const day = describeGuide(guide);
+  expect(day.state.status).toBe("day");
+  expect(day).toMatchObject({
+    votedToday: true,
+    exiledToday: [one],
+    canContinue: false,
+    sleeping: false,
+  });
+  expect(continueGuide(guide)).toBe(guide);
+  // The check of the second box announces the summary; the last box (everybody goes to sleep) is open now.
+  guide = checkScript(guide);
+  expect(describeGuide(guide)).toMatchObject({ sleeping: true, canContinue: true });
+  // Checking again changes nothing; the next step starts the night.
+  expect(checkScript(guide)).toBe(guide);
+  expect(continueGuide(guide).session.present.status).not.toBe("day");
 });
 
 it("limits every nominated person to all votes minus his own, the second vote of the mayor included", () => {

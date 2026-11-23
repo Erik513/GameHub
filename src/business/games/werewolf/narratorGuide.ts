@@ -54,6 +54,8 @@ export interface GuideSelection {
   readonly spellPicks?: number;
   /** The boxes of the script that the narrator has confirmed with a check (Cupid: the sleeping, then the touching). */
   readonly progress?: number;
+  /** The day: the summary is announced, the narrator asks everybody to go to sleep (the last box of the script is open). */
+  readonly sleeping?: boolean;
   /** At the vote: what each voter chose (voter to candidate). */
   readonly ballots?: Readonly<Record<string, string>>;
   /** At the vote: the votes the narrator entered for each nominated person (candidate to number). */
@@ -207,7 +209,10 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       // Nobody named and no vote open: the day ends, but only once the narrator has chosen "no vote" (the option above).
       // One to three named people: the vote.
       if (selection.picks.length === 0)
-        return selection.ability === null && ((selection.progress ?? 0) >= 1 || votedToday(state))
+        // The day ends only after the script: the summary is announced and everybody was asked to go to sleep (the check).
+        return selection.ability === null &&
+          selection.sleeping === true &&
+          ((selection.progress ?? 0) >= 1 || votedToday(state))
           ? { night, type: "endDay" }
           : null;
       return { night, nominees: selection.picks, type: "nominate" };
@@ -315,6 +320,8 @@ export interface GuideView {
   readonly exiledToday: readonly string[];
   /** The day after a vote (whoever left or not): the nomination is over, only the end of the day is left. */
   readonly votedToday: boolean;
+  /** The day: the last box of the script (everybody goes to sleep) is the open one; the next step starts the night. */
+  readonly sleeping: boolean;
   readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
   /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
   readonly ballotRows: readonly BallotRow[];
@@ -427,7 +434,9 @@ export function describeGuide(guide: Guide): GuideView {
       (state.status === "vote" || !backIsBlocked(guide)),
     canUndo:
       selection.question === "poison" ||
-      (state.status === "day" && selection.ability === null && (selection.progress ?? 0) >= 1) ||
+      (state.status === "day" &&
+        selection.ability === null &&
+        ((selection.progress ?? 0) >= 1 || selection.sleeping === true)) ||
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
       selection.none ||
@@ -485,6 +494,7 @@ export function describeGuide(guide: Guide): GuideView {
             .map((entry) => (entry.kind === "death" ? entry.player : ""))
         : [],
     votedToday: votedToday(state),
+    sleeping: state.status === "day" && selection.sleeping === true,
     voterNotes: voterNotesOf(state),
     nextKind:
       frame.phase === "ready"
@@ -624,6 +634,16 @@ export function checkScript(guide: Guide): Guide {
     return (selection.progress ?? 0) >= 1 || selection.question !== "heal"
       ? guide
       : withSelection(guide, { ...selection, progress: 1 });
+  }
+  // The day: the summary is announced (the check of the second box), now the narrator asks everybody to go to sleep.
+  if (frame.phase === "act" && state.status === "day") {
+    const settled = (selection.progress ?? 0) >= 1 || votedToday(state);
+    return selection.ability === null &&
+      selection.picks.length === 0 &&
+      settled &&
+      !selection.sleeping
+      ? withSelection(guide, { ...selection, sleeping: true })
+      : guide;
   }
   if (frame.phase !== "act" || state.status !== "cupid" || selection.ability !== null) return guide;
   if (selection.picks.length < 2) return guide;
@@ -847,6 +867,12 @@ export function chooseNobody(guide: Guide): Guide {
 export function undoSelection(guide: Guide): Guide {
   const { selection } = current(guide);
   const initial = initialSelection(guide.session.present);
+  // The day: one step back per tap, first the last box (everybody goes to sleep), then the decision of the first box.
+  if (guide.session.present.status === "day" && selection.sleeping === true) {
+    const { sleeping: previous, ...rest } = selection;
+    void previous;
+    return withSelection(guide, rest);
+  }
   // The witch is asked question by question: one decision back per tap (the people of the poison, then the open list,
   // then the second question back to the first one).
   if (selection.question !== undefined) {
