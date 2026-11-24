@@ -321,3 +321,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Zustand der Person für die Übersicht (2026-11-24, Claude)
 
 - `describePlayers` liefert `tone` (`dead`, `wounded`, `attacked`, `saved`, `wolf`, `alive`; Vorrang in dieser Reihenfolge). `attacked`: lebt und ist für den Morgen zum Tod vorgesehen (`victim`, `poisoned`, `spellVictims`, `hammerVictim`) oder ist der Jäger mit dem letzten Schuss. `saved`: der Wolfsangriff der Nacht galt der Person, sie steht aber nicht mehr auf der Liste (Heilung, Schutz, Amulett), nur in einem Nachtschritt. `wounded`: der Harte Bursche mit `toughGuyDiesOn`. Der Livetiker (Sitzkreis) soll dieselbe Ableitung nutzen. Keine Regeländerung.
+
+## Endstand mit jeder Person einmal (2026-11-24, Claude)
+
+- `describeStandings(state)` (`guideWinners.ts`) liefert die Gruppen des Endes (`village` oder `wolves`, `lovers`, `tanner`, `losers`); jede Person steht in genau einer Gruppe (Verliebte und Gerber nicht noch einmal in der Seite). Reihenfolge je Gruppe: Lebende nach Namen, Tote nach `death.id` absteigend (wer zuletzt starb, zuerst). `describeWinners` ist unverändert. Keine Regeländerung.

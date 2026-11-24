@@ -724,4 +724,6 @@ Vorrang bei mehreren Zuständen (beschlossen): schwarz, dunkelrot, rot, grün, g
 
 **Beschlossen am 24.11.2026:** Grün die ganze Nacht; der verwundete Harte Bursche bleibt auch bei einem Sieg am Tag dunkelrot (er lebt noch und steht bei den Lebenden); Ordnung innerhalb der Lebenden und der Toten alphabetisch; Schutz durch Leibwächter oder Amulett zeigt ebenfalls grün; Farbwerte als Token `--seat-*` in `tokens.css`.
 
+**Spielende, Änderung vom 24.11.2026 (We-01-158):** Die Übersicht „Alle Spieler und Rollen“ bleibt alphabetisch. Am Spielende steht **jede Person nur einmal**: oben die Gewinner nach Gruppe (Seite, Verliebte, Gerber; wer in einer besonderen Gruppe steht, steht nicht noch einmal in der Seite), unten die Verlierer. In jeder Gruppe stehen die Lebenden zuerst (nach Namen), danach die Toten nach Todeszeitpunkt: wer zuletzt starb, steht oben, wer **zuerst** starb, ganz unten. Alle Personen sind farbige Zeilen wie in der Übersicht; die Legende steht unten.
+
 **Umsetzung (We-01-157):** `describePlayers` liefert `tone` (dead, wounded, attacked, saved, wolf, alive); die Komponente `PlayerRows` zeichnet die Zeilen für die Übersicht und das Spielende und eine kleine Legende darunter (statt eines eigenen Fensters). Nicht abgedeckt: ein abgewehrter Gift- oder Zauberangriff (der Zustand merkt sich nur den Wolfsangriff).

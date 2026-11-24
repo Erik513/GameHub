@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 362,
-      "totalTasks": 418,
+      "completedTasks": 363,
+      "totalTasks": 419,
       "percent": 86.6
     }
   },
@@ -1975,6 +1975,12 @@
           "title": "Übersicht und Spielende: Farben der Spielerzustände (Livetiker-Grundlage)",
           "status": "done",
           "validation": "Umgesetzt: tone in describePlayers, Komponente PlayerRows (Übersicht und Spielende, Legende), Token --seat-* in tokens.css; Beschlüsse des Auftraggebers vom 24.11.2026 in GAMEHUB_WERWOLF_UI.md. 1727 Tests, tsc, ESLint, Prettier und Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus. Nicht abgedeckt: abgewehrter Gift- oder Zauberangriff."
+        },
+        {
+          "id": "We-01-158",
+          "title": "Endbildschirm: jede Person einmal, Gewinner nach Gruppe, Verlierer, nach Todeszeitpunkt sortiert",
+          "status": "done",
+          "validation": "describeStandings (Gruppen, Lebende zuerst, Tote nach Todeszeitpunkt absteigend, Verliebte und Gerber nicht doppelt), Oberfläche mit farbigen Zeilen und Legende; Tests in standings.test.ts; 1730 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3604,5 +3610,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T17:07:07.468Z"
+  "updatedAt": "2026-11-24T17:21:54.143Z"
 }
