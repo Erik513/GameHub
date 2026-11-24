@@ -88,7 +88,7 @@ export function dayPrompt(view: GuideView, t: TFunction): string | null {
 export function stepTitle(view: GuideView, step: RoleStepSpec, t: TFunction) {
   const { card, selection, state } = view;
   if (!card) return null;
-  if (card.cover) return t("werewolfNarrator.guide.coverTitle");
+  if (card.cover) return coverItems(view, t).join(" ");
   // The witch is asked two questions, always both: the script of the narrator. Hints (the victim, a used potion) stand
   // below the choice with a yellow border.
   if (view.question !== null && selection.ability === null)
@@ -124,6 +124,18 @@ export function askText(view: GuideView, t: TFunction): string | null {
   return t(
     `werewolfNarrator.guide.ask.${id === "inspect" && card.role === "apprenticeSeer" ? "inspectApprentice" : id}`,
   );
+}
+
+/**
+ * What the narrator reads out for a call that is only a cover (the role is the drunk who does not know it yet): the same
+ * words as for the awake role, so the script never changes.
+ */
+function coverItems(view: GuideView, t: TFunction): string[] {
+  const { card } = view;
+  if (!card) return [];
+  if (card.role === "witch")
+    return [t("werewolfNarrator.guide.witch.healAsk"), t("werewolfNarrator.guide.witch.poisonAsk")];
+  return [askText(view, t) ?? t("werewolfNarrator.guide.confirmDone")];
 }
 
 /** One box of the script of a role: the tasks of the narrator, the button right of it and where the script stands. */
@@ -404,7 +416,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
       button: "check",
       enabled: !outro && view.canContinue,
       id: "confirm",
-      items: [stepTitle(view, step, t)],
+      items: card?.cover ? coverItems(view, t) : [stepTitle(view, step, t)],
       state: outro ? "done" : "active",
     },
     asleep,
@@ -416,6 +428,11 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
   const { card, state } = view;
   if (!card) return [];
   return [
+    ...(card.cover ? (card.covered ?? []) : []).map((name) => (
+      <span className="ww-guide__victim" key={`covered-${name}`}>
+        {t("werewolfNarrator.guide.coverNote", { name })}
+      </span>
+    )),
     !card.cover && step.showsVictim && (
       <span className="ww-guide__victim" key="victim">
         {state.wolfTarget

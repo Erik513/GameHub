@@ -83,6 +83,29 @@ describe("describeNarratorCard", () => {
     expect(none.abilities.every((a) => !a.available)).toBe(true);
   });
 
+  it("names the drunk behind a cover call and shows his effects", () => {
+    const base = at(start(["witch"]), { status: "witch", victim: null });
+    const witch = base.players.find((p) => p.role === "witch")!;
+    const covered = describeNarratorCard(
+      at(base, {
+        amulet: { holder: witch.name, mustPass: false },
+        call: "witch",
+        drunk: { player: witch.name, revealed: false },
+        resume: base,
+        status: "nightCall",
+      }),
+    )!;
+    expect(covered.cover).toBe(true);
+    expect(covered.actors).toEqual([]);
+    expect(covered.covered).toEqual([witch.name]);
+    expect(covered.effects).toEqual(expect.arrayContaining(["amulet", "drunk"]));
+    // A call without a drunk behind it names nobody.
+    const plain = describeNarratorCard(
+      at(base, { call: "witch", resume: base, status: "nightCall" }),
+    )!;
+    expect(plain).not.toHaveProperty("covered");
+  });
+
   it("marks a cover call: nobody acts and every ability is red", () => {
     const base = at(start(["witch"]), { status: "witch", victim: null });
     const card = describeNarratorCard(

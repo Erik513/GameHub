@@ -196,20 +196,6 @@ export function GuideBox({
       </header>
       <div className="ww-guide__body">
         {isVote && votes && <VoteInput votes={votes} />}
-        {card.cover && (
-          <ul className="ww-guide__rows">
-            {card.abilities.map((ability) => (
-              <li key={ability.id}>
-                <WerewolfSymbol id={ability.symbol} ring size={20} />
-                <span>
-                  {t("werewolfNarrator.guide.coverRow", {
-                    ability: t(`werewolfNarrator.ability.${ability.id}`),
-                  })}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
         {showPeople && (
           <div className="ww-guide__people">
             {/* Every player is always there, in the same order (alphabetical): the dead are grey, those whom the role

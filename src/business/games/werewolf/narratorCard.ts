@@ -83,6 +83,11 @@ export interface NarratorCard {
    * so its holder is shown with the role he has (the amulet is one of his effects).
    */
   readonly holderRole?: string | undefined;
+  /**
+   * A cover call is only for the people who are the drunk and do not know the role yet: the narrator calls the role as
+   * usual, but nobody acts. Their names stand here (private to the narrator); absent for any other card.
+   */
+  readonly covered?: readonly string[] | undefined;
   /** How the role is played in this game (the hunter with or without the duty to shoot, ...); absent without options. */
   readonly variant?: RoleVariantId | undefined;
 }
@@ -316,6 +321,11 @@ export function describeNarratorCard(state: WerewolfState): NarratorCard | null 
       ? [...state.candidates]
       : wakingPlayers(state);
   const variant = roleVariantOf(role, state.settings);
+  const covered = cover
+    ? state.alive
+        .filter((p) => p.role === role && state.drunk?.player === p.name && !state.drunk.revealed)
+        .map((p) => p.name)
+    : [];
   return {
     abilities: abilitiesOf(state, role).map((ability) =>
       cover
@@ -324,11 +334,12 @@ export function describeNarratorCard(state: WerewolfState): NarratorCard | null 
     ),
     actors,
     cover,
-    effects: effectsOf(state, actors),
+    effects: effectsOf(state, cover ? covered : actors),
     ...(state.status === "amuletPass"
       ? { holderRole: state.players.find((player) => player.name === state.amulet.holder)?.role }
       : {}),
     role,
     ...(variant ? { variant } : {}),
+    ...(covered.length > 0 ? { covered } : {}),
   };
 }

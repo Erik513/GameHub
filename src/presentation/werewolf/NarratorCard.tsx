@@ -143,6 +143,8 @@ export function NarratorCard({
   const shownRole = (card.holderRole ?? card.role) as SymbolId;
   const roleName = t(`werewolfSymbols.items.${shownRole}.name`);
   const isDay = card.role === "day";
+  // A cover call is for the drunk who does not know the role: his name stands there (the narrator only).
+  const people = card.actors.length > 0 ? card.actors : (card.covered ?? []);
   return (
     <section
       aria-label={roleName}
@@ -174,7 +176,11 @@ export function NarratorCard({
       {!votes && (!isDay || card.actors.length > 0) && (
         <header className="ww-role-card__head">
           {!isDay && (
-            <span className="ww-role-card__role">
+            <span
+              className="ww-role-card__role"
+              data-amulet={card.effects.includes("amulet") || undefined}
+              data-drunk={card.effects.includes("drunk") || undefined}
+            >
               <WerewolfSymbol id={shownRole} size={40} />
             </span>
           )}
@@ -186,7 +192,7 @@ export function NarratorCard({
                 {t(`werewolfNarrator.variant.${card.variant}`)}
               </small>
             )}
-            {!isDay && card.actors.length > 0 && <small>{card.actors.join(", ")}</small>}
+            {!isDay && people.length > 0 && <small>{people.join(", ")}</small>}
           </span>
           {/* Only the effects there are get a slot: from the right to the left, three in a row, then the next row. */}
           {card.effects.length > 0 && !(isDay && card.actors.length === 0) && (
