@@ -290,7 +290,7 @@
   position: sticky;
   bottom: calc(-1 * var(--space-3));
   margin: 0;
-  padding: var(--space-2) 0;
+  padding: var(--space-2) 4px;
   background: var(--color-surface);
 }
 
@@ -301,7 +301,8 @@
   gap: var(--space-1) var(--space-3);
   flex: none;
   margin: var(--space-3) 0 0;
-  padding: 0;
+  /* Room for the outside frame of the drunk in the legend, so the edge of the window does not cut it off. */
+  padding: 4px;
   color: var(--color-ink-muted);
   font-size: var(--text-xs);
   list-style: none;
@@ -435,6 +436,19 @@
 }
 
 /* The winner view: a group of winners per heading, the names below each other. */
+/* The groups of winners inside the box of the winners are divided by a line. */
+.ww-winners__divider {
+  width: 100%;
+  margin: var(--space-2) 0;
+  border: 0;
+  border-top: 1px solid var(--color-line);
+}
+
+/* The groups of the winners have the accent color as border; the losers keep the plain one. */
+.ww-winners__group:not([data-kind="losers"]) {
+  border-color: var(--color-accent);
+}
+
 .ww-winners__group h4 {
   margin: var(--space-3) 0 var(--space-1);
 }

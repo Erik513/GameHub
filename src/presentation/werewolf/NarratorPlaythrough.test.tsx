@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { describe, expect, it } from "vitest";
@@ -120,7 +120,7 @@ describe("NarratorView playthrough", () => {
       };
       let finished = false;
       for (let step = 0; step < 7000; step++) {
-        if (screen.queryByText("Game over – the winners")) {
+        if (document.querySelector(".ww-winners")) {
           finished = true;
           break;
         }

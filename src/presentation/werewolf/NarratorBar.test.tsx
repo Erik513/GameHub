@@ -39,6 +39,30 @@ describe("NarratorBar", () => {
     expect(screen.getByRole("img", { name: label })).toBeInTheDocument();
   });
 
+  it.each([
+    { language: "en", label: "Game over" },
+    { language: "de", label: "Spielende" },
+  ] as const)(
+    "says $label instead of the day at the end of the game ($language)",
+    async ({ label, language }) => {
+      const i18n = await createGameHubI18n(language);
+      const over = { ...state, status: "finished", winner: "village" } as unknown as WerewolfState;
+      render(
+        <I18nextProvider i18n={i18n}>
+          <NarratorBar
+            day={true}
+            onClose={() => undefined}
+            onRules={() => undefined}
+            state={over}
+          />
+        </I18nextProvider>,
+      );
+      // Its own display, not the one of the day and the night.
+      expect(screen.getByText(label)).toBeInTheDocument();
+      expect(screen.queryByRole("img", { name: /Day|Tag|Night|Nacht/ })).toBeNull();
+    },
+  );
+
   it("opens the overview of all players with their roles and closes it again", async () => {
     const user = await renderBar("en", false);
     await user.click(screen.getByRole("button", { name: "All players and roles" }));

@@ -32,6 +32,7 @@ export function NarratorBar({
   // While the players look at their roles nobody may see all the roles or open the rules: the buttons only appear when
   // the real game begins.
   const dealing = forceDealing || state.status === "roles";
+  const finished = state.status === "finished";
   const label = t(day ? "werewolfNarrator.bar.day" : "werewolfNarrator.bar.night", {
     count: state.night,
   });
@@ -42,6 +43,12 @@ export function NarratorBar({
         <span className="ww-bar__phase">
           <Icon name="cards" />
           <strong>{t("werewolfNarrator.bar.dealing")}</strong>
+        </span>
+      ) : finished ? (
+        // The end of the game is its own state, not part of the display of the day and the night.
+        <span className="ww-bar__phase">
+          <Icon name="crown" />
+          <strong>{t("werewolfNarrator.bar.finished")}</strong>
         </span>
       ) : (
         <span

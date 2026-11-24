@@ -1,8 +1,11 @@
 import { render } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
+import { createGuide, describeGuide } from "../../business/games/werewolf/narratorGuide";
+import { createWerewolfSession } from "../../business/games/werewolf/session";
 import { createWerewolf, type WerewolfState } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
+import { PlainBox } from "./GuidePlainBox";
 import { PlayerRows } from "./PlayerRows";
 
 /** The rows of all players: the color says the state, a frame says the amulet or the drunk. */
@@ -33,6 +36,49 @@ it("gives the drunk who does not know his role the green frame and shows his tru
   expect(row.querySelector("small")?.textContent?.length).toBeGreaterThan(0);
   expect(role).not.toBe("drunk");
   expect(rows.filter((entry) => entry.hasAttribute("data-drunk"))).toHaveLength(1);
+});
+
+it("names the winners in the headings of the end screen, in both languages", async () => {
+  for (const [language, winners, losers] of [
+    ["en", "Winners", "Losers"],
+    ["de", "Gewinner", "Verlierer"],
+  ] as const) {
+    document.body.innerHTML = "";
+    const i18n = await createGameHubI18n(language);
+    const state = { ...game(), status: "finished", winner: "wolves" } as unknown as WerewolfState;
+    const view = describeGuide(createGuide(createWerewolfSession(state)));
+    render(
+      <I18nextProvider i18n={i18n}>
+        <PlainBox view={view} />
+      </I18nextProvider>,
+    );
+    const headings = [...document.querySelectorAll(".ww-winners__group h4")].map((heading) =>
+      heading.textContent?.trim(),
+    );
+    expect(headings).toEqual([winners, losers]);
+  }
+});
+
+it("puts several groups of winners one below the other in the one box of the winners, divided by a line", async () => {
+  const i18n = await createGameHubI18n("en");
+  const base = game();
+  const pair = base.players.filter((player) => player.role !== "wolf").slice(0, 2);
+  const state = {
+    ...base,
+    lovers: [pair[0]!.name, pair[1]!.name],
+    status: "finished",
+    winner: "wolves",
+  } as unknown as WerewolfState;
+  render(
+    <I18nextProvider i18n={i18n}>
+      <PlainBox view={describeGuide(createGuide(createWerewolfSession(state)))} />
+    </I18nextProvider>,
+  );
+  const box = document.querySelector('.ww-winners__group[data-kind="winners"]')!;
+  // The wolves and the lovers: two lists in the same box, one line between them, one heading above.
+  expect(box.querySelectorAll("ul.ww-overview")).toHaveLength(2);
+  expect(box.querySelectorAll(".ww-winners__divider")).toHaveLength(1);
+  expect(box.querySelectorAll("h4")).toHaveLength(1);
 });
 
 it("explains the colors and frames in both languages", async () => {

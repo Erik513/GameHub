@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   describeStandings,
@@ -200,34 +200,28 @@ export function PlainBox({ view }: { readonly view: GuideView }) {
  */
 function WinnerList({ state }: { readonly state: WerewolfState }) {
   const { t } = useTranslation();
+  const groups = describeStandings(state);
+  const winners = groups.filter((group) => group.kind !== "losers");
+  const losers = groups.find((group) => group.kind === "losers");
   return (
     <section className="ww-guide ww-winners">
-      <strong className="ww-guide__text">{t("werewolfNarrator.guide.finished.title")}</strong>
       <div className="ww-winners__groups">
-        {describeStandings(state).map((group) => (
-          <div className="ww-winners__group" key={group.kind}>
-            <h4>
-              {group.kind !== "losers" && (
-                <>
-                  <WerewolfSymbol
-                    id={
-                      group.kind === "village"
-                        ? "villager"
-                        : group.kind === "wolves"
-                          ? "wolf"
-                          : group.kind === "tanner"
-                            ? "tanner"
-                            : "lovers"
-                    }
-                    size={22}
-                  />{" "}
-                </>
-              )}
-              {t(`werewolfNarrator.guide.finished.${group.kind}`)}
-            </h4>
-            <PlayerList players={group.players} />
+        {/* One box for all winners: the groups (the side, the lovers, the tanner) stand one below the other, divided by a line. */}
+        <div className="ww-winners__group" data-kind="winners">
+          <h4>{t("werewolfNarrator.guide.finished.winners")}</h4>
+          {winners.map((group, index) => (
+            <Fragment key={group.kind}>
+              {index > 0 && <hr className="ww-winners__divider" />}
+              <PlayerList players={group.players} />
+            </Fragment>
+          ))}
+        </div>
+        {losers && (
+          <div className="ww-winners__group" data-kind="losers">
+            <h4>{t("werewolfNarrator.guide.finished.losers")}</h4>
+            <PlayerList players={losers.players} />
           </div>
-        ))}
+        )}
       </div>
       <PlayerLegend />
     </section>
