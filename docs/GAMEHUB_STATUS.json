@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 365,
-      "totalTasks": 421,
+      "completedTasks": 366,
+      "totalTasks": 422,
       "percent": 86.7
     }
   },
@@ -1993,6 +1993,12 @@
           "title": "Endbildschirm: Kasten „Gewinner“ mit getrennten Gruppen, Kasten „Verlierer“",
           "status": "done",
           "validation": "Ein Kasten „Gewinner“ mit einer Überschrift, die Gruppen darin durch Trennlinien getrennt, darunter „Verlierer“ (de/en), Akzentrahmen für die Gewinner; Legende ohne abgeschnittenen Trunkenbold-Rahmen; Tests in PlayerRows.test.tsx; 1734 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-161",
+          "title": "Endbildschirm: engere Abstände, größere Spielerzeilen",
+          "status": "done",
+          "validation": "Nur CSS im Spielende (Abstand zum Rand und zwischen den Spielern kleiner, Zeilen etwas größer); Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3622,5 +3628,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T17:39:43.591Z"
+  "updatedAt": "2026-11-24T17:40:50.993Z"
 }
