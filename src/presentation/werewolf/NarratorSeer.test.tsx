@@ -71,6 +71,10 @@ it("shows the box of the result for the investigator only when he uses the abili
   );
   // Waking up and the decision (skip) are done, going to sleep is next: there is no box for a result that is not shown.
   expect(states).toEqual(["done", "done", "active"]);
+  // The summary of a skip says the same as for the drunk who is only a cover (see NarratorCover.test.tsx).
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(
+    "Nothing chosen – the role passes",
+  );
 });
 
 it("shows the box of the result for the investigator once he has used the ability", async () => {

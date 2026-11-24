@@ -75,7 +75,10 @@ it("makes the narrator enter something even for a cover call: skip, and the deci
   expect(document.querySelector(".ww-script__undo:not(.ww-script__check)")).toBeDisabled();
   fireEvent.click(skip());
   // Skipped: the summary says so, the button is switched off and the undo button of the box takes it back.
-  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("Skipped");
+  // The same words as for every other role that skips.
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(
+    "Nothing chosen – the role passes",
+  );
   expect(skip()).toBeDisabled();
   const undo = document.querySelector<HTMLButtonElement>(
     ".ww-script__undo:not(.ww-script__check)",

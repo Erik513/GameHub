@@ -33,11 +33,10 @@ export function Summary({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { card, selection } = view;
   if (!card) return null;
-  // A cover call: the narrator skipped it (the drunk cannot act); the decision stands in the summary and can be undone.
+  // A cover call: the narrator skipped it (the drunk cannot act); the summary says it like for every other skipped step,
+  // and the decision can be undone.
   if (card.cover)
-    return view.phase === "outro" ? (
-      <Chosen>{t("werewolfNarrator.guide.answeredNo")}</Chosen>
-    ) : null;
+    return view.phase === "outro" ? <Chosen>{t("werewolfNarrator.guide.noChoice")}</Chosen> : null;
   // The vote: who was nominated.
   if (view.state.status === "vote")
     return (
