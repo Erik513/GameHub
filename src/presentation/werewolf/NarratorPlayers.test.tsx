@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
 import { eventChoices } from "../../business/games/werewolf/eventChoices";
@@ -10,7 +9,7 @@ import {
 } from "../../business/games/werewolf/session";
 import { createWerewolf } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
-import { NarratorView } from "./NarratorView";
+import { NarratorHarness } from "./narratorTestKit";
 
 /** The list of people: every player is always there; the ones that cannot be chosen are disabled, not missing. */
 
@@ -38,15 +37,7 @@ function toBodyguard(): WerewolfSession {
 }
 
 function Harness() {
-  const [session, setSession] = useState<WerewolfSession>(toBodyguard);
-  return (
-    <NarratorView
-      onEnd={() => undefined}
-      onRules={() => undefined}
-      onSession={setSession}
-      session={session}
-    />
-  );
+  return <NarratorHarness start={toBodyguard} />;
 }
 
 it("lists all players in the same order, with the ones the role may not choose disabled and framed", async () => {

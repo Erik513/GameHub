@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
 import { eventChoices } from "../../business/games/werewolf/eventChoices";
@@ -10,7 +9,7 @@ import {
 } from "../../business/games/werewolf/session";
 import { createWerewolf } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
-import { NarratorView } from "./NarratorView";
+import { NarratorHarness } from "./narratorTestKit";
 
 /** The script of Cupid and of the lovers: the tasks of the narrator as a list, the choice of the two people, the summary. */
 
@@ -33,15 +32,7 @@ function toCupid(): WerewolfSession {
 }
 
 function Harness() {
-  const [session, setSession] = useState<WerewolfSession>(toCupid);
-  return (
-    <NarratorView
-      onEnd={() => undefined}
-      onRules={() => undefined}
-      onSession={setSession}
-      session={session}
-    />
-  );
+  return <NarratorHarness start={toCupid} />;
 }
 
 const boxes = () =>

@@ -3,6 +3,7 @@ import type {
   CardAbilityId,
   NarratorCard as Card,
 } from "../../business/games/werewolf/narratorCard";
+import { abilityLookOf } from "./abilityLook";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
@@ -243,16 +244,11 @@ export function NarratorCard({
               remaining !== undefined && remaining <= 0 && !pressed.includes(ability.id);
             // Used up for good (the logic says so) is grey and struck through; no spell left in this step (or not possible
             // because of the situation) is amber and dashed; "dim" is not the turn of the ability.
-            const abilityState =
-              ability.unavailable === "used"
-                ? "used"
-                : ability.unavailable === "blocked" || exhausted
-                  ? "blocked"
-                  : locked || waiting || (asked !== null && !asked.includes(ability.id))
-                    ? "dim"
-                    : ability.available
-                      ? "ready"
-                      : "blocked";
+            const abilityState = abilityLookOf(
+              ability,
+              exhausted,
+              locked || waiting || (asked !== null && !asked.includes(ability.id)),
+            );
             return (
               <button
                 aria-label={`${name}: ${t(

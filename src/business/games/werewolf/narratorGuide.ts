@@ -317,6 +317,7 @@ export function describeGuide(guide: Guide): GuideView {
       state.status === "vote"
         ? Object.fromEntries(state.candidates.map((name) => [name, voteMaximum(state, name)]))
         : {},
+    bondDone: state.status === "cupid" && (selection.progress ?? 0) >= 1,
     progress: selection.progress ?? 0,
     shooter: state.status === "hunter" || state.status === "drunkHunter" ? state.hunter.name : null,
     potionRole,

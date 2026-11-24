@@ -131,6 +131,8 @@ export interface GuideView {
   readonly question: "heal" | "poison" | null;
   /** How many boxes of the script of Cupid are confirmed (0, 1). */
   readonly progress: number;
+  /** Cupid: the lovers are chosen and the narrator has checked the script, so the choice cannot be changed any more. */
+  readonly bondDone: boolean;
   readonly phase: GuidePhase;
   readonly state: WerewolfState;
   /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */

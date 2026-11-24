@@ -125,7 +125,8 @@ export function GuideBox({
   // done.)
   const showSummary =
     showFact ||
-    ((state.status === "cupid" || state.status === "day") && view.progress >= 1) ||
+    view.bondDone ||
+    (state.status === "day" && view.progress >= 1) ||
     // The day after a vote: who left the game.
     (state.status === "day" && view.votedToday) ||
     // The witch and the magician: after the answer to the first question the summary already says what was decided.

@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
 import { eventChoices } from "../../business/games/werewolf/eventChoices";
@@ -10,7 +9,7 @@ import {
 } from "../../business/games/werewolf/session";
 import { createWerewolf, type WerewolfState } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
-import { NarratorView } from "./NarratorView";
+import { NarratorHarness } from "./narratorTestKit";
 
 /**
  * A living role whose ability is used up is called with the same script as before: the same boxes, the ability shown as
@@ -61,15 +60,7 @@ function toSpent(role: Role, spent: boolean): WerewolfSession {
 }
 
 function Harness({ role, spent }: { readonly role: Role; readonly spent: boolean }) {
-  const [session, setSession] = useState<WerewolfSession>(() => toSpent(role, spent));
-  return (
-    <NarratorView
-      onEnd={() => undefined}
-      onRules={() => undefined}
-      onSession={setSession}
-      session={session}
-    />
-  );
+  return <NarratorHarness start={() => toSpent(role, spent)} />;
 }
 
 const boxes = () =>

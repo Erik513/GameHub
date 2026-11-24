@@ -300,7 +300,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                 : {})}
               locked={
                 view.phase === "outro" ||
-                (view.state.status === "cupid" && view.progress >= 1) ||
+                view.bondDone ||
                 // The day: "no vote" is chosen, the vote cannot be used until the reset takes it back.
                 dayDecided
               }

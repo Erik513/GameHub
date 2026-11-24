@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
 import { eventChoices } from "../../business/games/werewolf/eventChoices";
@@ -11,6 +10,7 @@ import {
 import { createWerewolf, werewolfAnnouncement } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
 import { NarratorView } from "./NarratorView";
+import { NarratorHarness } from "./narratorTestKit";
 
 /** The morning: every dead person in a box of their own; the reason of death shows on a tap and is covered by the next. */
 
@@ -37,15 +37,7 @@ function toMorning(hunterDies = false): WerewolfSession {
 }
 
 function Harness({ hunterDies = false }: { readonly hunterDies?: boolean }) {
-  const [session, setSession] = useState<WerewolfSession>(() => toMorning(hunterDies));
-  return (
-    <NarratorView
-      onEnd={() => undefined}
-      onRules={() => undefined}
-      onSession={setSession}
-      session={session}
-    />
-  );
+  return <NarratorHarness start={() => toMorning(hunterDies)} />;
 }
 
 it("hides the reason of death in the morning until the person is tapped, and covers it again with the next tap", async () => {

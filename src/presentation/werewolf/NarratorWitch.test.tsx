@@ -1,5 +1,4 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
 import { eventChoices } from "../../business/games/werewolf/eventChoices";
@@ -10,7 +9,7 @@ import {
 } from "../../business/games/werewolf/session";
 import { createWerewolf } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
-import { NarratorView } from "./NarratorView";
+import { NarratorHarness } from "./narratorTestKit";
 
 /**
  * The screen of the witch: the narrator asks two questions, always both (save the victim, poison somebody). The question
@@ -39,15 +38,7 @@ function toWitch(attackOnFirstNight: boolean): WerewolfSession {
 }
 
 function Harness({ attack }: { readonly attack: boolean }) {
-  const [session, setSession] = useState<WerewolfSession>(() => toWitch(attack));
-  return (
-    <NarratorView
-      onEnd={() => undefined}
-      onRules={() => undefined}
-      onSession={setSession}
-      session={session}
-    />
-  );
+  return <NarratorHarness start={() => toWitch(attack)} />;
 }
 
 const abilityButtons = () => [...document.querySelectorAll<HTMLButtonElement>(".ww-ability")];
