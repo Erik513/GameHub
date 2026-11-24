@@ -112,3 +112,5 @@ Sechster Teil (2026-11-24): E1 und E3 erledigt (Kommentare waren schon englisch;
 Siebter Teil (2026-11-24): E2 (`abilityLookOf`), E4 (`NarratorHarness`) und das Feld `bondDone` (C2/F6) erledigt. Aufgabe We-01-151 ist abgeschlossen; bewusst aufgeschoben bleiben B1 bis B3 (CSS), C3 (Zusammenfassungszeilen) und C4 (Skriptkästen als Tabelle), weil sie das Aussehen berühren und eine Sichtprüfung des Auftraggebers brauchen.
 
 Achter Teil (2026-11-24, We-01-152): B2 erledigt (`werewolf.css` in fünf Dateien, Reihenfolge unverändert). Von B1/B3 bleibt das Zusammenführen der Abstimmungs-Überschreibungen (`werewolf-vote.css`, 472 Zeilen); nur mit Sichtprüfung des Auftraggebers.
+
+Neunter Teil (2026-11-24, We-01-153): B1 für die Abstimmung erledigt (14 Gruppen zusammengeführt, 3 bewusst nicht). Die übrigen Dateien (werewolf-narrator.css, werewolf-config.css) haben ebenfalls Doppelungen, die mit derselben Methode geprüft werden können; Sichtprüfung der Abstimmung steht aus.
