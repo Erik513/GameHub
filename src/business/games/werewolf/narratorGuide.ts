@@ -248,6 +248,18 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
 }
 
 /** The event only counts when the game accepts it. */
+/** The people the investigator looked at: the chosen one and the neighbours left and right among the living. */
+function investigatedOf(state: WerewolfState): readonly { name: string; wolf: boolean }[] {
+  if (state.status !== "investigation") return [];
+  const { alive } = state;
+  const seat = alive.findIndex((player) => player.name === state.target);
+  if (seat === -1) return [];
+  return [-1, 0, 1].map((offset) => {
+    const player = alive[(seat + offset + alive.length) % alive.length]!;
+    return { name: player.name, wolf: player.role === "wolf" };
+  });
+}
+
 /** True in the day after a vote (whoever left the game or not): the nomination is over, only the end of the day is left. */
 function votedToday(state: WerewolfState): boolean {
   return (
@@ -336,6 +348,11 @@ export interface GuideView {
   readonly votedToday: boolean;
   /** The day: the last box of the script (everybody goes to sleep) is the open one; the next step starts the night. */
   readonly sleeping: boolean;
+  /**
+   * The investigator after the check: the three people he looked at (the chosen one and his two neighbours among the
+   * living) and whether each is a werewolf: extra information for the narrator. Empty at every other step.
+   */
+  readonly investigated: readonly { readonly name: string; readonly wolf: boolean }[];
   readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
   /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
   readonly ballotRows: readonly BallotRow[];
@@ -519,6 +536,7 @@ export function describeGuide(guide: Guide): GuideView {
         : [],
     votedToday: votedToday(state),
     sleeping: state.status === "day" && selection.sleeping === true,
+    investigated: investigatedOf(state),
     voterNotes: voterNotesOf(state),
     nextKind:
       frame.phase === "ready"

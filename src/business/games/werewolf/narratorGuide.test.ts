@@ -273,6 +273,30 @@ describe("narrator guide", () => {
     expect(describeGuide(answerQuestion(guide, "skip")).question).toBe("poison");
   });
 
+  it("names the three people the investigator looked at, with a mark for the werewolves, as extra information", () => {
+    const start = game(["paranormalInvestigator"], { attackOnFirstNight: true }).session.present;
+    // The investigator looked at a person: the person and his two neighbours among the living are the result.
+    const seat = 4;
+    const target = start.alive[seat]!.name;
+    const state = {
+      ...start,
+      isWolfNearby: true,
+      status: "investigation",
+      target,
+      victim: null,
+    } as WerewolfState;
+    const view = describeGuide(createGuide(createWerewolfSession(state)));
+    expect(view.investigated.map((person) => person.name)).toEqual([
+      start.alive[seat - 1]!.name,
+      target,
+      start.alive[seat + 1]!.name,
+    ]);
+    for (const person of view.investigated)
+      expect(person.wolf).toBe(start.players.find((p) => p.name === person.name)!.role === "wolf");
+    // At every other step there is nothing to show.
+    expect(describeGuide(game()).investigated).toEqual([]);
+  });
+
   describe("the day", () => {
     function toDay(roles: Parameters<typeof game>[0] = ["idiot"]): Guide {
       let guide = game(roles, { attackOnFirstNight: true });

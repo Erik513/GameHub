@@ -672,6 +672,23 @@ function Chosen({ children }: { readonly children: ReactNode }) {
   return <span className="ww-guide__chosen">{children}</span>;
 }
 
+/** The small "i" in a circle (the drawing of the info buttons): the line behind it is extra information, not a decision. */
+function InfoMark() {
+  return (
+    <svg aria-hidden="true" focusable="false" height="20" viewBox="0 0 24 24" width="20">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M12 11v5"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="2.2"
+      />
+      <circle cx="12" cy="7.8" r="1.3" fill="currentColor" />
+    </svg>
+  );
+}
+
 /** What the narrator chose in this step, so it can be checked before the role falls asleep. */
 function Summary({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
@@ -770,6 +787,24 @@ function Summary({ view }: { readonly view: GuideView }) {
             )}
           </span>
         </span>
+        {/* The investigator: in a second line all three people he looked at, green for a werewolf, red for not (extra information). */}
+        {ability === "investigate" && view.investigated.length > 0 && (
+          <span className="ww-guide__chosen-part">
+            <InfoMark />
+            <span>
+              {"("}
+              {view.investigated.map((person, index) => (
+                <Fragment key={person.name}>
+                  {index > 0 && " · "}
+                  <span className="ww-verdict" data-wolf={person.wolf}>
+                    {person.name}
+                  </span>
+                </Fragment>
+              ))}
+              {")"}
+            </span>
+          </span>
+        )}
       </Chosen>
     );
   }
