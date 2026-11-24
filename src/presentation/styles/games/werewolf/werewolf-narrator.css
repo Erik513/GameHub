@@ -436,6 +436,30 @@
 }
 
 /* The winner view: a group of winners per heading, the names below each other. */
+/* The end of the game is tight: less space to the outer edge and between the players leaves room for long names, and
+   every player is a little bigger. */
+.ww-guide.ww-winners {
+  padding: var(--space-2);
+}
+
+.ww-winners .ww-winners__groups {
+  gap: var(--space-1);
+}
+
+.ww-winners .ww-winners__group {
+  gap: var(--space-1);
+  padding: var(--space-2);
+}
+
+.ww-winners .ww-overview {
+  gap: 3px;
+  padding: 3px;
+}
+
+.ww-winners .ww-overview__row {
+  padding: 8px 6px;
+}
+
 /* The groups of winners inside the box of the winners are divided by a line. */
 .ww-winners__divider {
   width: 100%;
