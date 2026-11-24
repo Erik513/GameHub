@@ -784,3 +784,5 @@ Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in K
 - **Nach der Wahl ist die Fähigkeit entschieden:** Der Knopf ist markiert, abgedunkelt und nicht mehr klickbar, solange das Ergebnis steht. Zurück geht es nur über den Rückgängig-Knopf der ersten Skriptbox (nimmt die Wahl zurück). Vorher konnte man die Fähigkeit nach der Entscheidung noch einmal drücken.
 
 **Korrektur vom 24.11.2026 (Auftraggeber):** Die Box „Ergebnis mit dem Daumen zeigen“ steht nur beim **Seher** (und Seher-Lehrling) von Anfang an im Skript, weil sie immer wählen müssen und das Ergebnis immer folgt. Beim **Ermittler** kommt sie erst, wenn er die Fähigkeit nutzt: Verzichtet er (oder ist die Fähigkeit verbraucht), gibt es kein Ergebnis und deshalb keine Box dafür.
+
+**Texte der Zusammenfassung beim Verzichten (24.11.2026, Auftraggeber):** Der Tarnaufruf (Trunkenbold) sagt dasselbe wie jede andere Rolle, die verzichtet: „Nichts gewählt – die Rolle verzichtet“. Nur bei Hexe und Magier steht je Frage eine Zeile „Frage: Verzichtet“. Die Texte bleiben einheitlich.
