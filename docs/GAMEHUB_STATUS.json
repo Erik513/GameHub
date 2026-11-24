@@ -2040,7 +2040,7 @@
           "id": "We-01-168",
           "title": "Seher, Lehrling, Ermittler: ganzes Skript von Anfang an, Fähigkeit nach der Wahl entschieden",
           "status": "done",
-          "validation": "Box „Ergebnis zeigen“ von Beginn an im Skript (Seher, Lehrling, Ermittler, auch bei verbrauchter Fähigkeit); die Fähigkeit ist nach der Wahl markiert, abgedunkelt und gesperrt, Rückgängig der ersten Skriptbox nimmt sie zurück; Tests in NarratorSeer.test.tsx; Tests, tsc, ESLint, Prettier, Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus. Korrektur: Verzichtet der Ermittler, bleibt die Box „Ergebnis zeigen“ wartend (kein Haken); Test in NarratorSeer.test.tsx."
+          "validation": "Box „Ergebnis zeigen“ von Beginn an im Skript (Seher, Lehrling, Ermittler, auch bei verbrauchter Fähigkeit); die Fähigkeit ist nach der Wahl markiert, abgedunkelt und gesperrt, Rückgängig der ersten Skriptbox nimmt sie zurück; Tests in NarratorSeer.test.tsx; Tests, tsc, ESLint, Prettier, Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus. Korrektur: Verzichtet der Ermittler, bleibt die Box „Ergebnis zeigen“ wartend (kein Haken); Test in NarratorSeer.test.tsx. Korrektur: Die Ergebnisbox steht nur beim Seher/Lehrling von Anfang an; beim Ermittler erst bei Nutzung der Fähigkeit."
         }
       ]
     },
@@ -3670,5 +3670,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T20:05:59.655Z"
+  "updatedAt": "2026-11-24T20:23:43.664Z"
 }

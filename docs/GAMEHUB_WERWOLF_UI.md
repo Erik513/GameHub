@@ -782,3 +782,5 @@ Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in K
 
 - **Das ganze Skript ist von Anfang an sichtbar:** aufwachen, Person wählen, Ergebnis mit dem Daumen zeigen, einschlafen. Die Box „Ergebnis zeigen“ steht von Beginn an da (wartend) und wird nach der Wahl aktiv; es erscheint keine neue Box mehr. Das gilt auch für den Ermittler, auch wenn seine Fähigkeit verbraucht ist (gleiches Skript).
 - **Nach der Wahl ist die Fähigkeit entschieden:** Der Knopf ist markiert, abgedunkelt und nicht mehr klickbar, solange das Ergebnis steht. Zurück geht es nur über den Rückgängig-Knopf der ersten Skriptbox (nimmt die Wahl zurück). Vorher konnte man die Fähigkeit nach der Entscheidung noch einmal drücken.
+
+**Korrektur vom 24.11.2026 (Auftraggeber):** Die Box „Ergebnis mit dem Daumen zeigen“ steht nur beim **Seher** (und Seher-Lehrling) von Anfang an im Skript, weil sie immer wählen müssen und das Ergebnis immer folgt. Beim **Ermittler** kommt sie erst, wenn er die Fähigkeit nutzt: Verzichtet er (oder ist die Fähigkeit verbraucht), gibt es kein Ergebnis und deshalb keine Box dafür.
