@@ -4,6 +4,7 @@ import { werewolfRoleMinimums } from "../../../business/games/werewolf/configura
 import { createGameHubI18n } from "../../../i18n";
 import { symbolGroups, symbols, symbolOf } from "./catalog";
 import { lineGlyphs } from "./glyphs";
+import { variantGlyphs } from "./variantGlyphs";
 import { WerewolfSymbol } from "./WerewolfSymbol";
 
 const ids = symbols.map((entry) => entry.id);
@@ -29,7 +30,11 @@ it("keeps the groups complete and uses every drawing at least once", () => {
   for (const group of symbolGroups) {
     expect(symbols.some((entry) => entry.group === group)).toBe(true);
   }
-  const used = new Set(symbols.map((entry) => entry.glyph));
+  // The drawings of the variants of the roles count as used, too.
+  const used = new Set<string>([
+    ...symbols.map((entry) => entry.glyph),
+    ...Object.values(variantGlyphs),
+  ]);
   for (const glyph of Object.keys(lineGlyphs)) expect(used.has(glyph as never)).toBe(true);
   expect(used.has("wolfHead")).toBe(true);
 });

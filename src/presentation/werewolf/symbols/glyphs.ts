@@ -10,6 +10,7 @@
 /** Outline glyphs: the strokes of one drawing, each one the `d` of a path in a 24 x 24 box. */
 export const lineGlyphs = {
   arrowsExchange: ["M7 10h14l-4 -4", "M17 14h-14l4 4"],
+  ban: ["M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0", "M5.7 5.7l12.6 12.6"],
   bandage: [
     "M14 12l0 .01",
     "M10 12l0 .01",

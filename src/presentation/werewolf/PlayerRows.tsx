@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next";
 import {
   describePlayers,
+  variantsOf,
   type PlayerTone,
   type PlayerView,
 } from "../../business/games/werewolf/selectors";
+import type { RoleVariantId } from "../../business/games/werewolf/roleVariant";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
+import { VariantMark } from "./VariantMark";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 const tones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
@@ -30,7 +33,10 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
           <WerewolfSymbol id={player.role} size={20} />
           <span className="ww-overview__who">
             <strong>{player.name}</strong>
-            <small>{t(`werewolfSymbols.items.${player.role}.name`)}</small>
+            <small>
+              {t(`werewolfSymbols.items.${player.role}.name`)}
+              {player.variant && <VariantMark variant={player.variant} />}
+            </small>
           </span>
           <span className="ww-overview__marks">
             {player.lastShot && (
@@ -78,7 +84,7 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
 }
 
 /** The legend: what the colors and the frames of the rows say. */
-export function PlayerLegend() {
+export function PlayerLegend({ variants = [] }: { readonly variants?: readonly RoleVariantId[] }) {
   const { t } = useTranslation();
   return (
     <ul aria-label={t("werewolfNarrator.bar.legend.title")} className="ww-overview__legend">
@@ -94,6 +100,13 @@ export function PlayerLegend() {
           {t(`werewolfNarrator.bar.legend.${frame}`)}
         </li>
       ))}
+      {/* The variants of the roles that are in this game, each with its sign. */}
+      {variants.map((variant) => (
+        <li key={variant}>
+          <VariantMark decorative variant={variant} />
+          {t(`werewolfNarrator.variant.${variant}`)}
+        </li>
+      ))}
     </ul>
   );
 }
@@ -106,7 +119,7 @@ export function PlayerRows({ state }: { readonly state: WerewolfState }) {
   return (
     <div className="ww-players">
       <PlayerList players={players} />
-      <PlayerLegend />
+      <PlayerLegend variants={variantsOf(players)} />
     </div>
   );
 }

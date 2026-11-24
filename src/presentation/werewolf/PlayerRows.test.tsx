@@ -38,6 +38,20 @@ it("gives the drunk who does not know his role the green frame and shows his tru
   expect(rows.filter((entry) => entry.hasAttribute("data-drunk"))).toHaveLength(1);
 });
 
+it("shows the variant of a role as a small sign next to the role, with its short text in the legend", async () => {
+  const rows = await show(game());
+  const withVariant = rows.filter((row) => row.querySelector(".ww-variant"));
+  // Only the tough guy has an option in this game.
+  expect(withVariant).toHaveLength(1);
+  const mark = withVariant[0]!.querySelector(".ww-variant")!;
+  expect(mark).toHaveAttribute("aria-label", "Wolf only");
+  // The legend names the variant too, once, without a second label.
+  const legend = document.querySelector(".ww-overview__legend")!;
+  expect(legend.textContent).toContain("Wolf only");
+  expect(legend.querySelectorAll(".ww-variant")).toHaveLength(1);
+  expect(legend.querySelector(".ww-variant")).not.toHaveAttribute("aria-label");
+});
+
 it("names the winners in the headings of the end screen, in both languages", async () => {
   for (const [language, winners, losers] of [
     ["en", "Winners", "Losers"],

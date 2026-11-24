@@ -23,6 +23,23 @@ async function inLanguage(language: "en" | "de", element: ReactElement) {
 }
 
 describe("NarratorCard", () => {
+  it("shows the variant of the role as a sign with its short text below the name, in both languages", async () => {
+    const hunter: Card = { ...witch, effects: [], role: "hunter", variant: "required" };
+    await inLanguage("en", <NarratorCard card={hunter} />);
+    const line = document.querySelector(".ww-role-card__variant")!;
+    expect(line.textContent).toContain("Must shoot");
+    expect(line.querySelector(".ww-variant")).not.toBeNull();
+    document.body.innerHTML = "";
+    await inLanguage("de", <NarratorCard card={hunter} />);
+    expect(document.querySelector(".ww-role-card__variant")?.textContent).toContain(
+      "Schusspflicht",
+    );
+    // A role without options has no such line.
+    document.body.innerHTML = "";
+    await inLanguage("en", <NarratorCard card={witch} />);
+    expect(document.querySelector(".ww-role-card__variant")).toBeNull();
+  });
+
   it("gives every effect its own slot with its own color, with no limit and no empty slots", async () => {
     const effects = [
       "lovers",

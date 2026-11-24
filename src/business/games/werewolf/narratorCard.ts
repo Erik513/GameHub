@@ -1,3 +1,4 @@
+import { roleVariantOf, type RoleVariantId } from "./roleVariant";
 import { describePlayers } from "./selectors";
 import { wakingPlayers, type WerewolfState } from "./stateMachine";
 
@@ -82,6 +83,8 @@ export interface NarratorCard {
    * so its holder is shown with the role he has (the amulet is one of his effects).
    */
   readonly holderRole?: string | undefined;
+  /** How the role is played in this game (the hunter with or without the duty to shoot, ...); absent without options. */
+  readonly variant?: RoleVariantId | undefined;
 }
 
 /** The steps of the day: the effects of the night are not shown there. */
@@ -312,6 +315,7 @@ export function describeNarratorCard(state: WerewolfState): NarratorCard | null 
     : state.status === "vote"
       ? [...state.candidates]
       : wakingPlayers(state);
+  const variant = roleVariantOf(role, state.settings);
   return {
     abilities: abilitiesOf(state, role).map((ability) =>
       cover
@@ -325,5 +329,6 @@ export function describeNarratorCard(state: WerewolfState): NarratorCard | null 
       ? { holderRole: state.players.find((player) => player.name === state.amulet.holder)?.role }
       : {}),
     role,
+    ...(variant ? { variant } : {}),
   };
 }

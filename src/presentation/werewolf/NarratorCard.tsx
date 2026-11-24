@@ -4,6 +4,7 @@ import type {
   NarratorCard as Card,
 } from "../../business/games/werewolf/narratorCard";
 import { abilityLookOf } from "./abilityLook";
+import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
@@ -179,6 +180,12 @@ export function NarratorCard({
           )}
           <span className="ww-role-card__who">
             {isDay ? <strong>{card.actors.join(", ")}</strong> : <strong>{roleName}</strong>}
+            {!isDay && card.variant && (
+              <small className="ww-role-card__variant">
+                <VariantMark decorative variant={card.variant} />
+                {t(`werewolfNarrator.variant.${card.variant}`)}
+              </small>
+            )}
             {!isDay && card.actors.length > 0 && <small>{card.actors.join(", ")}</small>}
           </span>
           {/* Only the effects there are get a slot: from the right to the left, three in a row, then the next row. */}

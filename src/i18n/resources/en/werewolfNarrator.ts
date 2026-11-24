@@ -50,6 +50,18 @@ export const werewolfNarratorTexts = {
       heartbreak: "Heartbreak",
       toughGuy: "Wound (tough guy)",
     },
+    variant: {
+      wolfOnly: "Wolf only",
+      anyAttack: "Any attack",
+      optional: "Optional",
+      required: "Must shoot",
+      anyDeath: "Any exit",
+      voteOnly: "Vote only",
+      doubleVote: "Double vote",
+      hammer: "Hammer",
+      allowed: "Self-pick yes",
+      forbidden: "Self-pick no",
+    },
     card: {
       effects: "Effects on the awake",
       ready: "ready",

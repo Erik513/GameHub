@@ -36,6 +36,7 @@ const allowedIdenticalValues = [
   "werewolfConfig.variants.hammer",
   "werewolfNarrator.ability.hammer",
   "werewolfNarrator.guide.abilityDone.hammer",
+  "werewolfNarrator.variant.hammer",
   "werewolfSymbols.items.hammer.name",
 ];
 

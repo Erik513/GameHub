@@ -1,3 +1,4 @@
+import { roleVariantOf, type RoleVariantId } from "./roleVariant";
 import {
   transitionWerewolf,
   werewolfAnnouncement,
@@ -104,8 +105,14 @@ function markedToDie(state: WerewolfState): ReadonlySet<string> {
 /** One person as the overview shows him (see `describePlayers`). */
 export type PlayerView = ReturnType<typeof describePlayers>[number];
 
+/** The variants of the roles the given people have, each once (for the legend of the overview). */
+export function variantsOf(players: readonly PlayerView[]): RoleVariantId[] {
+  return [...new Set(players.flatMap((player) => (player.variant ? [player.variant] : [])))];
+}
+
 /** Private, unlocalized facts. The colors and frames are decided by the presentation (see GAMEHUB_WERWOLF_UI.md). */
 export function describePlayers(state: WerewolfState) {
+  const variantOf = (role: string) => roleVariantOf(role, state.settings);
   // Whoever is announced as dead in the morning or when leaving the village is shown as dead at once, in the view of the
   // announcement already (the game itself removes them from the living only when the announcement is confirmed).
   const announced = new Set(
@@ -148,6 +155,7 @@ export function describePlayers(state: WerewolfState) {
       seat,
       role: player.role,
       visibleRole: isDrunk ? ("drunk" as const) : player.role,
+      variant: variantOf(player.role),
       alive,
       // The hunter who has died but has not decided about his last shot yet: out of the game, but not finished.
       lastShot,

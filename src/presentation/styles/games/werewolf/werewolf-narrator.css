@@ -325,6 +325,32 @@
   background: var(--color-surface);
 }
 
+/* The variant of a role: a small sign in a dashed frame (an option of the role, not a state of the person). */
+.ww-variant {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  border: 1px dashed currentColor;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.ww-overview__legend .ww-variant {
+  margin-left: 0;
+}
+
+/* On the card of the awake role: the sign and its short text below the name of the role. */
+.ww-role-card__variant {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.ww-role-card__variant .ww-variant {
+  margin-left: 0;
+}
+
 /* The legend: a small square in the color or frame, then the words. */
 .ww-overview__legend {
   display: flex;

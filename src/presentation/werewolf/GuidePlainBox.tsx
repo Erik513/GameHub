@@ -12,6 +12,7 @@ import {
   type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
 import { DealCard } from "./DealCard";
+import { variantsOf } from "../../business/games/werewolf/selectors";
 import { PlayerLegend, PlayerList } from "./PlayerRows";
 import { variantOfRole } from "./roleAbilities";
 import { lineGlyphs } from "./symbols/glyphs";
@@ -223,7 +224,7 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
           </div>
         )}
       </div>
-      <PlayerLegend />
+      <PlayerLegend variants={variantsOf(groups.flatMap((group) => group.players))} />
     </section>
   );
 }
