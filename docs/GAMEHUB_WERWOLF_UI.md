@@ -771,3 +771,8 @@ Der Harte Bursche und der Gerber wachen nie auf; ihre Variante steht deshalb nur
 - **Pflichtangabe:** Bei jeder Rolle mit einer Entscheidung muss der Erzähler immer etwas angeben, auch wenn situationsbedingt nichts zu wählen ist: dann steht der Knopf „Verzichten“ da. Das gilt jetzt auch für den **Tarnaufruf** (die Rolle ist der Trunkenbold, der seine Rolle noch nicht kennt): Verzichten ist der Weg weiter, der Haken im Skript entfällt.
 - **Rückgängig:** Jede Entscheidung lässt sich zurücknehmen, auch wenn nur eine Möglichkeit übrig war (hier das Verzichten): der Rückgängig-Knopf der Skriptbox führt zurück, die blaue Zusammenfassung sagt „Verzichtet“.
 - **Rahmen:** Eine Fähigkeit, die theoretisch gefragt, aber situationsbedingt nicht möglich ist, hat den dünnen blauen Rahmen (2 Pixel); der Knopf, der als Nächstes zu drücken ist (hier Verzichten), den vollen (3 Pixel). Beim Tarnaufruf fehlte der dünne Rahmen bisher, weil er nicht als Entscheidung galt.
+
+
+## Rolle der gewählten Person in der Zusammenfassung (Beschluss vom 24.11.2026, We-01-167)
+
+Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in Klammern („Geschützt: Ben (Jäger)“), weil die Folgen von der Rolle abhängen (Harter Bursche, Jäger, Amulett, Verliebte). Das gilt für die Nachtentscheidungen (Angriff, Schutz, Gast, Heilen, Gift, Todeszauber, Hammer, Stummschalten, Verliebte, Amulett weitergeben); nicht für Nominierung und Abstimmung und nicht für das Ergebnis von Seherin und Ermittler. Der Trunkenbold, der seine Rolle noch nicht kennt, steht mit beiden: „Ben (Trunkenbold, wahre Rolle: Jäger)“. **Zeilen brechen auf eine zweite Zeile um, wenn eine nicht reicht; nichts wird abgeschnitten** (vorher: eine Zeile mit Auslassungspunkten).
