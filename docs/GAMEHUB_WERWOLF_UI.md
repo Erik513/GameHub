@@ -757,3 +757,10 @@ Die Variante einer Rolle (Harter Bursche: nur Wolfsangriff oder jeder Angriff, J
 - **Zeichen:** Pfote, Totenkopf, Zielscheibe, Zielpfeil, Grab, Stimmzettel, Zahl 2, Hammer, Daumen hoch und das Verbotszeichen (neu). Mehrere davon bedeuten an anderer Stelle schon etwas (Pfote = angegriffen, Grab = tot); der gestrichelte Rahmen soll sie als Variante erkennbar machen.
 
 Der Harte Bursche und der Gerber wachen nie auf; ihre Variante steht deshalb nur in der Übersicht, am Spielende und bei der Rollenverteilung.
+
+
+## Tarnaufruf (Trunkenbold) und Rahmen um das Rollensymbol (Beschluss vom 24.11.2026, We-01-165)
+
+- **Das Skript bleibt immer gleich:** Ruft der Erzähler eine Rolle auf, die der Trunkenbold ist und seine Rolle noch nicht kennt (Tarnaufruf), liest er dieselben Sätze wie bei jeder wachen Rolle (aufwachen, Frage der Rolle, einschlafen). Der frühere Text „Trotzdem fragen“ und die Liste „Fähigkeit: fragen, dann nicht möglich zeigen“ sind entfernt; ein Anfänger wusste damit nicht, was er fragen soll.
+- **Hinweisbox:** Eine gelbe Notiz nach dem Muster „Name (Zustand): Bedeutung“ nennt die Person hinter dem Aufruf: „Ben (Trunkenbold): kennt die Rolle noch nicht, nichts wählen“. Die Karte oben nennt ebenfalls den Namen, und die Slots zeigen die Zustände der Person.
+- **Rahmen um das Rollensymbol der wachen Rolle** (wie in der Übersicht): grün und außen für den Trunkenbold, der seine Rolle noch nicht kennt, gold und innen für den Amulettbesitzer; beides zusammen sind beide Rahmen. Bei mehreren Wachen (Werwölfe) nur, wenn alle den Zustand haben.

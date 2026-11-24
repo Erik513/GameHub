@@ -337,3 +337,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Variante der Rolle (2026-11-24, Claude)
 
 - `roleVariantOf(role, settings)` (`roleVariant.ts`) liefert die Variante einer Rolle (`wolfOnly`/`anyAttack`, `optional`/`required`, `anyDeath`/`voteOnly`, `doubleVote`/`hammer`, `allowed`/`forbidden`) oder null. `describePlayers` hat das Feld `variant` je Person, `NarratorCard` das optionale Feld `variant`. Keine Regeländerung.
+
+## Tarnaufruf mit Namen (2026-11-24, Claude)
+
+- `NarratorCard.covered`: Namen der lebenden Spieler, die hinter einem Tarnaufruf (`nightCall`) stehen (verdeckter Trunkenbold mit dieser Rolle); `actors` bleibt dabei leer, `effects` zeigt ihre Zustände. Keine Regeländerung.
