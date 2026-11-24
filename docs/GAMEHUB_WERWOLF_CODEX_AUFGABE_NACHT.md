@@ -325,3 +325,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Endstand mit jeder Person einmal (2026-11-24, Claude)
 
 - `describeStandings(state)` (`guideWinners.ts`) liefert die Gruppen des Endes (`village` oder `wolves`, `lovers`, `tanner`, `losers`); jede Person steht in genau einer Gruppe (Verliebte und Gerber nicht noch einmal in der Seite). Reihenfolge je Gruppe: Lebende nach Namen, Tote nach `death.id` absteigend (wer zuletzt starb, zuerst). `describeWinners` ist unverändert. Keine Regeländerung.
+
+## Zustände der Erzählerkarte ohne Obergrenze (2026-11-24, Claude)
+
+- `NarratorCard.effects` (`effectsOf` in `narratorCard.ts`) liefert alle gemeinsamen Zustände der Wachen (bis zu acht: `lovers`, `amulet`, `attacked`, `protected`, `guest`, `poisoned`, `silenced`, `drunk`), nicht mehr höchstens drei. Keine Regeländerung.

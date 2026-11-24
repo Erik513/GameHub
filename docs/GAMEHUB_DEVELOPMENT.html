@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 366,
-      "totalTasks": 422,
-      "percent": 86.7
+      "completedTasks": 367,
+      "totalTasks": 423,
+      "percent": 86.8
     }
   },
   "environment": {
@@ -2232,6 +2232,12 @@
           "title": "Endbildschirm: engere Abstände, größere Spielerzeilen",
           "status": "done",
           "validation": "Nur CSS im Spielende (Abstand zum Rand und zwischen den Spielern kleiner, Zeilen etwas größer); Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-162",
+          "title": "Erzählerkarte: Zustands-Slots nur wenn belegt, von rechts nach links, mit Farben je Zustand",
+          "status": "done",
+          "validation": "Keine leeren Slots, keine Obergrenze; Anordnung rechts nach links, drei pro Reihe; Hintergrundfarben je Zustand als Token --slot-*; Tests in narratorCard.test.ts und NarratorCard.test.tsx; 1735 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3861,7 +3867,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T17:40:50.993Z"
+  "updatedAt": "2026-11-24T17:56:38.615Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

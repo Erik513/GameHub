@@ -727,3 +727,21 @@ Vorrang bei mehreren Zuständen (beschlossen): schwarz, dunkelrot, rot, grün, g
 **Spielende, Änderung vom 24.11.2026 (We-01-158):** Die Übersicht „Alle Spieler und Rollen“ bleibt alphabetisch. Am Spielende steht **jede Person nur einmal**: oben die Gewinner nach Gruppe (Seite, Verliebte, Gerber; wer in einer besonderen Gruppe steht, steht nicht noch einmal in der Seite), unten die Verlierer. In jeder Gruppe stehen die Lebenden zuerst (nach Namen), danach die Toten nach Todeszeitpunkt: wer zuletzt starb, steht oben, wer **zuerst** starb, ganz unten. Alle Personen sind farbige Zeilen wie in der Übersicht; die Legende steht unten.
 
 **Umsetzung (We-01-157):** `describePlayers` liefert `tone` (dead, wounded, attacked, saved, wolf, alive); die Komponente `PlayerRows` zeichnet die Zeilen für die Übersicht und das Spielende und eine kleine Legende darunter (statt eines eigenen Fensters). Nicht abgedeckt: ein abgewehrter Gift- oder Zauberangriff (der Zustand merkt sich nur den Wolfsangriff).
+
+
+## Slots der Zustandszeichen auf der Erzählerkarte (Beschluss vom 24.11.2026, We-01-162)
+
+Die Zustandszeichen oben an der Karte der aufgewachten Rolle gibt es nur noch, wenn die Person sie hat (keine leeren Slots mehr). Sie werden **von rechts nach links** eingefügt, drei in einer Reihe, danach in der **nächsten Reihe darunter** (wieder von rechts nach links). Es gibt keine Obergrenze mehr (acht Zustände sind möglich). Jeder Slot hat einen **Hintergrund je Zustand**:
+
+| Zustand | Farbe |
+| --- | --- |
+| Verliebt | rosa |
+| Schutzamulett | gold |
+| Angegriffen | rot |
+| Geschützt | blau |
+| Übernachtungsgast | blau |
+| Vergiftet | rot |
+| Stumm | neutral |
+| Trunkenbold | grün |
+
+Die Farbwerte stehen als Token `--slot-*` in `tokens.css`; das Zeichen bleibt, die Farbe ersetzt es nicht. Annahme: drei Slots pro Reihe (Breite der heutigen Anzeige).
