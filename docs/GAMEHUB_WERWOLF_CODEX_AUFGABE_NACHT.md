@@ -309,3 +309,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Zustandsmaschine geteilt (2026-11-24, Claude)
 
 - `stateMachine.ts` ist aufgeteilt: Typen in `stateTypes.ts`, Stimmenzählung in `stateVoting.ts`, Spielerabfragen in `stateQueries.ts`. `stateMachine.ts` exportiert `WerewolfState`, `WerewolfEvent`, `voteTotal`, `voteMaximum`, `voteTieAt`, `voteNeeded` weiter; Importe aus `./stateMachine` ändern sich nicht. `applyEvent` ruft `applyNightEvent` oder `applyDayEvent` auf. Keine Regeländerung.
+
+## Fähigkeiten nach dem Gebrauch (2026-11-24, Claude)
+
+- `GuideView.spellsUsed`: gewirkte Zauber des Magiers in diesem Schritt (Heilzauber plus bestätigte Todeszauber). `CardAbility.consumable`: die Fähigkeit wird durch den Gebrauch verbraucht (Hexe: Heil- und Gifttrank, Magier: Heil- und Todeszauber, Bürgermeister: Hammer, Ermittler: der eine Blick). Keine Regeländerung in der Zustandsmaschine.

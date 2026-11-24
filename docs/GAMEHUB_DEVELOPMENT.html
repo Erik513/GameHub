@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 359,
-      "totalTasks": 415,
+      "completedTasks": 360,
+      "totalTasks": 416,
       "percent": 86.5
     }
   },
@@ -2190,6 +2190,12 @@
           "title": "CSS der Erzähler-, Konfigurations-, Morgen- und Tagesdatei bereinigen",
           "status": "done",
           "validation": "Doppelte Selektoren zusammengeführt, wenn keine gleich starke, überschneidende Regel mit gleicher Eigenschaftsfamilie dazwischen liegt (narrator 19 von 25 Gruppen, config 4 von 5, morning 1, day 3); letzte Werte je Selektor und Eigenschaft identisch, Prettier und Build grün; Sichtprüfung durch den Auftraggeber am 2026-11-24: sieht gut aus."
+        },
+        {
+          "id": "We-01-155",
+          "title": "Fähigkeiten nach dem Gebrauch: Magier-Zahl, verbraucht gegen abgedunkelt, Verzichten-Knopf",
+          "status": "done",
+          "validation": "Feld spellsUsed im Guide, Feld consumable an den Verbrauchsfähigkeiten (Hexe, Magier, Hammer, Ermittler); Verbrauchsfähigkeiten sehen sofort nach dem Gebrauch verbraucht aus, Dauerfähigkeiten werden nur abgedunkelt; der Verzichten-Knopf bleibt rot und wird abgedunkelt. Tests in NarratorMagician, NarratorDay und abilityLook; 1719 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3819,7 +3825,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T16:17:47.456Z"
+  "updatedAt": "2026-11-24T16:28:07.313Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
