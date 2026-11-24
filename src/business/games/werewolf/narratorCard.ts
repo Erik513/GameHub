@@ -64,7 +64,11 @@ export interface CardAbility {
   readonly unavailable?: "blocked" | "used";
   /** What is left of a limited ability, like the spells of the magician. */
   readonly count?: number;
-  /** Used up by using it (a potion, a spell, the hammer, the one look of the investigator), not there again every night. */
+  /**
+   * Used up by using it (a potion, a spell, the hammer, the one look of the investigator, the lovers of Cupid, the shot of the
+   * hunter, passing the amulet): it looks used up as soon as it was decided. The nomination, the attack and the like are
+   * there every night or day and are only dimmed.
+   */
   readonly consumable?: true;
 }
 
@@ -245,7 +249,7 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
     case "nightGuest":
       return [ability("stayWith", "guest")];
     case "cupid":
-      return [ability("bond", "lovers")];
+      return [consumable(ability("bond", "lovers"))];
     case "mayor":
       return [
         consumable(
@@ -263,9 +267,9 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
     case "spellcaster":
       return [ability("silence", "silenced")];
     case "hunter":
-      return [ability("shot", "shotDuty")];
+      return [consumable(ability("shot", "shotDuty"))];
     case "amuletPass":
-      return [ability("passAmulet", "amuletPass")];
+      return [consumable(ability("passAmulet", "amuletPass"))];
     case "day":
       // The vote itself needs no button: the narrator only names who votes yes.
       return state.status === "day" ? [ability("vote", "vote")] : [];

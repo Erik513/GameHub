@@ -255,7 +255,7 @@ export function NarratorCard({
             // Used in this step, and the question about it is answered (or the step is done).
             const spent =
               pressed.includes(ability.id) &&
-              (settled || (asked !== null && !asked.includes(ability.id)));
+              (settled || locked || (asked !== null && !asked.includes(ability.id)));
             const abilityState = abilityLookOf(
               ability,
               exhausted,

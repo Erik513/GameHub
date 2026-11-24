@@ -63,6 +63,36 @@ describe("NarratorBar", () => {
     },
   );
 
+  it("shows the victims of a decision as marked to die, not as dead, until the morning is announced", async () => {
+    const i18n = await createGameHubI18n("en");
+    const user = userEvent.setup();
+    const victim = state.players.find((player) => player.role === "villager")!;
+    // The game with the last decision of the night: the overview shows it, but the announcement has not been made.
+    const decided = {
+      ...running,
+      poisoned: null,
+      status: "morning",
+      victim,
+    } as unknown as WerewolfState;
+    render(
+      <I18nextProvider i18n={i18n}>
+        <NarratorBar
+          day={false}
+          onClose={() => undefined}
+          onRules={() => undefined}
+          overviewState={decided}
+          state={running}
+        />
+      </I18nextProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: "All players and roles" }));
+    const dialog = await screen.findByRole("dialog");
+    const row = [...dialog.querySelectorAll<HTMLElement>(".ww-overview__row")].find(
+      (entry) => entry.querySelector("strong")?.textContent === victim.name,
+    )!;
+    expect(row).toHaveAttribute("data-tone", "attacked");
+  });
+
   it("opens the overview of all players with their roles and closes it again", async () => {
     const user = await renderBar("en", false);
     await user.click(screen.getByRole("button", { name: "All players and roles" }));

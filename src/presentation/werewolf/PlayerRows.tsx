@@ -112,8 +112,15 @@ export function PlayerLegend({ variants = [] }: { readonly variants?: readonly R
 }
 
 /** All players by name with the legend below (the overview of the narrator). */
-export function PlayerRows({ state }: { readonly state: WerewolfState }) {
-  const players = [...describePlayers(state)].sort((one, other) =>
+export function PlayerRows({
+  state,
+  announce = true,
+}: {
+  readonly state: WerewolfState;
+  /** False for the overview with a decision that was just made: the victims of the night are not announced yet. */
+  readonly announce?: boolean;
+}) {
+  const players = [...describePlayers(state, announce)].sort((one, other) =>
     one.name.localeCompare(other.name, undefined, { sensitivity: "base" }),
   );
   return (

@@ -234,6 +234,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
         dealing={view.phase === "ready"}
         onClose={onEnd}
         onRules={onRules}
+        overviewState={view.overviewState}
         state={view.state}
       />
       <div
@@ -250,6 +251,8 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               card={view.card}
               pressed={[
                 ...(view.selection.ability ? [view.selection.ability] : []),
+                // Cupid: the ability stays marked once the lovers are confirmed.
+                ...(view.bondDone ? (["bond"] as const) : []),
                 // The ability that led to the result stays marked.
                 ...(describeRoleStep(view.state).result
                   ? [describeRoleStep(view.state).result!.ability]

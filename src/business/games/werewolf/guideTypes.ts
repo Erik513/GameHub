@@ -139,6 +139,11 @@ export interface GuideView {
   readonly bondDone: boolean;
   readonly phase: GuidePhase;
   readonly state: WerewolfState;
+  /**
+   * The state for the overview of all players: the game with the decision of the role that is asleep again (the game
+   * only moves on with "next"), so what was just decided already shows there (the amulet, the attack, the potions).
+   */
+  readonly overviewState: WerewolfState;
   /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */
   readonly card: NarratorCard | null;
   readonly selection: GuideSelection;

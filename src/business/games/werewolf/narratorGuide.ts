@@ -31,6 +31,7 @@ import {
   emptySelection,
   type DeathNote,
   type Guide,
+  type GuidePhase,
   type GuideSelection,
   type GuideView,
 } from "./guideTypes";
@@ -199,6 +200,27 @@ function previewDeaths(state: WerewolfState, event: WerewolfEvent | null): reado
   );
 }
 
+/**
+ * The game for the overview of all players, with the decision that was just made, so the overview is up to date after
+ * EVERY decision and not only when the next role is called. A decision is made when the role is asleep again (the event
+ * waits for "next"), or when a choice is confirmed inside the step (the list of people is closed, a potion or a spell
+ * answered, the lovers chosen). While a list is open nothing is decided yet; the day and the vote have their own views.
+ */
+function previewState(
+  state: WerewolfState,
+  phase: GuidePhase,
+  event: WerewolfEvent | null,
+  selection: GuideSelection,
+): WerewolfState {
+  const confirmed =
+    selection.ability === null &&
+    (selection.picks.length > 0 || selection.heal) &&
+    state.status !== "day" &&
+    state.status !== "vote";
+  const pending = phase === "outro" ? event : confirmed ? eventOf(state, selection) : null;
+  return pending ? transitionWerewolf(state, pending) : state;
+}
+
 export function describeGuide(guide: Guide): GuideView {
   const frame = current(guide);
   const state = guide.session.present;
@@ -364,6 +386,7 @@ export function describeGuide(guide: Guide): GuideView {
             state.status === "vote" || state.status === "day"
             ? "endDay"
             : "next",
+    overviewState: previewState(state, frame.phase, frame.event, selection),
     phase: frame.phase,
     selection,
     state,

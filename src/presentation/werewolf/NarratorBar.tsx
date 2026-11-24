@@ -6,6 +6,8 @@ import { PlayerRows } from "./PlayerRows";
 
 interface NarratorBarProps {
   readonly state: WerewolfState;
+  /** The game for the overview of all players (with the decision that was just made); the state itself when absent. */
+  readonly overviewState?: WerewolfState;
   /** The game is dealt but not begun (the last player has looked): nothing of the game may show yet. */
   readonly dealing?: boolean;
   /** Day (sun) or night (moon). */
@@ -22,6 +24,7 @@ interface NarratorBarProps {
  */
 export function NarratorBar({
   state,
+  overviewState,
   day,
   dealing: forceDealing = false,
   onClose,
@@ -104,7 +107,10 @@ export function NarratorBar({
         subtitle={t("werewolfNarrator.bar.overviewHint")}
         title={t("werewolfNarrator.bar.overview")}
       >
-        <PlayerRows state={state} />
+        <PlayerRows
+          announce={overviewState === undefined || overviewState === state}
+          state={overviewState ?? state}
+        />
       </Dialog>
     </header>
   );

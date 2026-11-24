@@ -111,17 +111,18 @@ export function variantsOf(players: readonly PlayerView[]): RoleVariantId[] {
 }
 
 /** Private, unlocalized facts. The colors and frames are decided by the presentation (see GAMEHUB_WERWOLF_UI.md). */
-export function describePlayers(state: WerewolfState) {
+export function describePlayers(state: WerewolfState, announce = true) {
   const variantOf = (role: string) => roleVariantOf(role, state.settings);
   // Whoever is announced as dead in the morning or when leaving the village is shown as dead at once, in the view of the
   // announcement already (the game itself removes them from the living only when the announcement is confirmed).
+  // (Not for the preview of a decision: the night is not over yet, the victims are only marked, not announced.)
   const announced = new Set(
-    state.status === "morning" || state.status === "exile"
+    announce && (state.status === "morning" || state.status === "exile")
       ? werewolfAnnouncement(state).map((entry) => entry.name)
       : [],
   );
   const marked = markedToDie(state);
-  const night = !notNight.includes(state.status);
+  const night = !notNight.includes(state.status) || (!announce && state.status === "morning");
   return state.players.map((player, seat) => {
     const death = [...state.history]
       .reverse()
