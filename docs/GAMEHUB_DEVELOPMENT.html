@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 375,
-      "totalTasks": 431,
+      "completedTasks": 376,
+      "totalTasks": 432,
       "percent": 87
     }
   },
@@ -2286,6 +2286,12 @@
           "title": "Verzichten-Knopf: gesperrt heißt ohne Rahmen",
           "status": "done",
           "validation": "Gemeinsame Bedingung skipDisabled für Sperre und Rahmen; Durchspieltest prüft bei jedem Schritt (gesperrter Verzichten-Knopf ohne Rahmen, grüner Fähigkeitsknopf klickbar), ohne die Korrektur Fehler in drei Spielen; Test in NarratorSeer.test.tsx; 1754 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-171",
+          "title": "Verzichten-Knopf bleibt nach dem Nutzen der Fähigkeit",
+          "status": "done",
+          "validation": "Ermittler: der Knopf bleibt im Ergebnisschritt (abgedunkelt, gesperrt, ohne Rahmen); Durchspieltest prüft bei jedem Schritt, dass der Knopf innerhalb einer Rolle nicht verschwindet (ohne Korrektur Fehler beim Ermittler); Test in NarratorSeer.test.tsx; 1754 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3915,7 +3921,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T20:46:14.750Z"
+  "updatedAt": "2026-11-24T20:57:10.401Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

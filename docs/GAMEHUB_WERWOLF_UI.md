@@ -788,3 +788,5 @@ Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in K
 **Texte der Zusammenfassung beim Verzichten (24.11.2026, Auftraggeber):** Der Tarnaufruf (Trunkenbold) sagt dasselbe wie jede andere Rolle, die verzichtet: „Nichts gewählt – die Rolle verzichtet“. Nur bei Hexe und Magier steht je Frage eine Zeile „Frage: Verzichtet“. Die Texte bleiben einheitlich.
 
 **Regel zum Rahmen (24.11.2026, Auftraggeber):** Ein Knopf, der abgedunkelt und nicht klickbar ist, hat nie den blauen Rahmen „als Nächstes drücken“. Das gilt für den Verzichten-Knopf in jedem Schritt (zum Beispiel beim Ermittler, sobald eine Person gewählt wird). Der Durchspieltest prüft das bei jedem Schritt.
+
+**Regel zum Verzichten-Knopf (24.11.2026, Auftraggeber):** Der Knopf bleibt für den ganzen Schritt einer Rolle an seinem Platz (die Bedienung springt nicht). Nach dem Nutzen einer einmaligen Fähigkeit ist er abgedunkelt und gesperrt, verschwindet aber nicht. Beim Ermittler verschwand er im Ergebnisschritt; das ist behoben. Der Durchspieltest prüft bei jedem Schritt, dass der Knopf innerhalb einer Rolle nicht verschwindet.
