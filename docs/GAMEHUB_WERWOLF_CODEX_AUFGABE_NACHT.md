@@ -341,3 +341,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Tarnaufruf mit Namen (2026-11-24, Claude)
 
 - `NarratorCard.covered`: Namen der lebenden Spieler, die hinter einem Tarnaufruf (`nightCall`) stehen (verdeckter Trunkenbold mit dieser Rolle); `actors` bleibt dabei leer, `effects` zeigt ihre Zustände. Keine Regeländerung.
+
+## Tarnaufruf als Entscheidung (2026-11-24, Claude)
+
+- `describeRoleStep` für `nightCall`: `kind: "choose"`, `skippable: true` (vorher `info`). Der Tarnaufruf wird mit dem Ereignis `acknowledgeCall` verlassen, das der Guide über „Verzichten“ sendet; die Zustandsmaschine ist unverändert.

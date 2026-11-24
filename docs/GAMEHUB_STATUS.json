@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 370,
-      "totalTasks": 426,
+      "completedTasks": 371,
+      "totalTasks": 427,
       "percent": 86.9
     }
   },
@@ -2023,6 +2023,12 @@
           "title": "Tarnaufruf: gleiches Skript, Hinweisbox, Rahmen um das Rollensymbol",
           "status": "done",
           "validation": "Tarnaufruf liest die Sätze der wachen Rolle (kein „Trotzdem fragen“), gelbe Notiz „Name (Trunkenbold): …“, Name und Zustände auf der Karte (Feld covered), Rahmen grün/gold um das Rollensymbol; Tests in NarratorCover.test.tsx und narratorCard.test.ts; 1745 Tests, tsc, ESLint, Prettier, Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-166",
+          "title": "Tarnaufruf: Verzichten als Pflichtangabe, rückgängig, dünner Rahmen",
+          "status": "done",
+          "validation": "cover ist eine Entscheidung (choose, skippable): Verzichten, Zusammenfassung „Verzichtet“, Rückgängig der Skriptbox, dünner blauer Rahmen für die nicht mögliche Fähigkeit, voller für Verzichten; Tests in NarratorCover.test.tsx; Tests, tsc, ESLint, Prettier, Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3652,5 +3658,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T19:25:57.083Z"
+  "updatedAt": "2026-11-24T19:42:08.282Z"
 }

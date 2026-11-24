@@ -764,3 +764,10 @@ Der Harte Bursche und der Gerber wachen nie auf; ihre Variante steht deshalb nur
 - **Das Skript bleibt immer gleich:** Ruft der Erzähler eine Rolle auf, die der Trunkenbold ist und seine Rolle noch nicht kennt (Tarnaufruf), liest er dieselben Sätze wie bei jeder wachen Rolle (aufwachen, Frage der Rolle, einschlafen). Der frühere Text „Trotzdem fragen“ und die Liste „Fähigkeit: fragen, dann nicht möglich zeigen“ sind entfernt; ein Anfänger wusste damit nicht, was er fragen soll.
 - **Hinweisbox:** Eine gelbe Notiz nach dem Muster „Name (Zustand): Bedeutung“ nennt die Person hinter dem Aufruf: „Ben (Trunkenbold): kennt die Rolle noch nicht, nichts wählen“. Die Karte oben nennt ebenfalls den Namen, und die Slots zeigen die Zustände der Person.
 - **Rahmen um das Rollensymbol der wachen Rolle** (wie in der Übersicht): grün und außen für den Trunkenbold, der seine Rolle noch nicht kennt, gold und innen für den Amulettbesitzer; beides zusammen sind beide Rahmen. Bei mehreren Wachen (Werwölfe) nur, wenn alle den Zustand haben.
+
+
+## Jede Entscheidung muss angegeben und kann zurückgenommen werden (Beschluss vom 24.11.2026, We-01-166)
+
+- **Pflichtangabe:** Bei jeder Rolle mit einer Entscheidung muss der Erzähler immer etwas angeben, auch wenn situationsbedingt nichts zu wählen ist: dann steht der Knopf „Verzichten“ da. Das gilt jetzt auch für den **Tarnaufruf** (die Rolle ist der Trunkenbold, der seine Rolle noch nicht kennt): Verzichten ist der Weg weiter, der Haken im Skript entfällt.
+- **Rückgängig:** Jede Entscheidung lässt sich zurücknehmen, auch wenn nur eine Möglichkeit übrig war (hier das Verzichten): der Rückgängig-Knopf der Skriptbox führt zurück, die blaue Zusammenfassung sagt „Verzichtet“.
+- **Rahmen:** Eine Fähigkeit, die theoretisch gefragt, aber situationsbedingt nicht möglich ist, hat den dünnen blauen Rahmen (2 Pixel); der Knopf, der als Nächstes zu drücken ist (hier Verzichten), den vollen (3 Pixel). Beim Tarnaufruf fehlte der dünne Rahmen bisher, weil er nicht als Entscheidung galt.
