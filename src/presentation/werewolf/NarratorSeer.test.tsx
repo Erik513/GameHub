@@ -57,7 +57,7 @@ it("shows the whole script of the seer from the start, the box of the result inc
   expect(boxes()).toEqual(before);
 });
 
-it("does not show the box of the result as done when the investigator skips: no result was shown", async () => {
+it("shows the box of the result for the investigator only when he uses the ability, not when he skips", async () => {
   const i18n = await createGameHubI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
@@ -69,8 +69,25 @@ it("does not show the box of the result as done when the investigator skips: no 
   const states = [...document.querySelectorAll(".ww-script__step")].map((box) =>
     box.getAttribute("data-state"),
   );
-  // Waking up and the decision (skip) are done, the result was never shown, going to sleep is next.
-  expect(states).toEqual(["done", "done", "pending", "active"]);
+  // Waking up and the decision (skip) are done, going to sleep is next: there is no box for a result that is not shown.
+  expect(states).toEqual(["done", "done", "active"]);
+});
+
+it("shows the box of the result for the investigator once he has used the ability", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <NarratorHarness start={() => toSeer("investigator", ["paranormalInvestigator"])} />
+    </I18nextProvider>,
+  );
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
+  expect(boxes()).toHaveLength(3);
+  fireEvent.click(screen.getByRole("button", { name: /^Check/ }));
+  fireEvent.click(document.querySelector<HTMLElement>(".ww-person:not(:disabled)")!);
+  fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  // The ability was used: now the result is shown with the thumb, so its box is there.
+  expect(boxes()).toHaveLength(4);
+  expect(boxes()[2]).toMatch(/thumb/i);
 });
 
 it("decides the ability with the choice: it cannot be pressed again until the choice is taken back", async () => {

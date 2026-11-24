@@ -382,18 +382,16 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         items: [text],
         state: outro ? "done" : "active",
       },
-      // The seer and the investigator are shown a result after the choice: its box is part of the script from the start
-      // (the whole script is visible at once), waiting until the person is chosen.
-      ...(step.variant === "seerChoose" ||
-      step.variant === "investigatorChoose" ||
-      step.variant === "investigatorUsed"
+      // The seer always has to choose, so the result always follows: its box is part of the script from the start (the
+      // whole script is visible at once), waiting until the person is chosen. The investigator may skip: his box for the
+      // result only comes when the ability is used (it makes no sense to show it for a skip).
+      ...(step.variant === "seerChoose"
         ? [
             {
               button: "check" as const,
               enabled: false,
               id: "confirm" as const,
               items: [t("werewolfNarrator.guide.resultScript")],
-              // Skipped (the investigator with nothing to check): no result is shown, so the box stays waiting.
               state: "pending" as const,
             },
           ]
