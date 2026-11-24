@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 376,
-      "totalTasks": 432,
-      "percent": 87
+      "completedTasks": 377,
+      "totalTasks": 433,
+      "percent": 87.1
     }
   },
   "environment": {
@@ -2059,6 +2059,12 @@
           "title": "Verzichten-Knopf bleibt nach dem Nutzen der Fähigkeit",
           "status": "done",
           "validation": "Ermittler: der Knopf bleibt im Ergebnisschritt (abgedunkelt, gesperrt, ohne Rahmen); Durchspieltest prüft bei jedem Schritt, dass der Knopf innerhalb einer Rolle nicht verschwindet (ohne Korrektur Fehler beim Ermittler); Test in NarratorSeer.test.tsx; 1754 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-172",
+          "title": "Übersicht nach jeder Entscheidung aktuell; einmalige Fähigkeiten sofort verbraucht",
+          "status": "done",
+          "validation": "overviewState (Vorschau) nach Bestätigen der Liste, nach Antworten der Hexe/des Magiers und im Ausklang; Opfer rot statt tot bis zur Morgenansage (announce = false); Amor, Jäger, Amulett zeigen die Fähigkeit sofort als verbraucht; Tests in overviewUpdate.test.ts, NarratorBar.test.tsx, NarratorAmulet.test.tsx, NarratorCupid.test.tsx; 1761 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3688,5 +3694,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T20:57:10.401Z"
+  "updatedAt": "2026-11-24T21:15:11.200Z"
 }

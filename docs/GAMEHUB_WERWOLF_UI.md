@@ -790,3 +790,10 @@ Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in K
 **Regel zum Rahmen (24.11.2026, Auftraggeber):** Ein Knopf, der abgedunkelt und nicht klickbar ist, hat nie den blauen Rahmen „als Nächstes drücken“. Das gilt für den Verzichten-Knopf in jedem Schritt (zum Beispiel beim Ermittler, sobald eine Person gewählt wird). Der Durchspieltest prüft das bei jedem Schritt.
 
 **Regel zum Verzichten-Knopf (24.11.2026, Auftraggeber):** Der Knopf bleibt für den ganzen Schritt einer Rolle an seinem Platz (die Bedienung springt nicht). Nach dem Nutzen einer einmaligen Fähigkeit ist er abgedunkelt und gesperrt, verschwindet aber nicht. Beim Ermittler verschwand er im Ergebnisschritt; das ist behoben. Der Durchspieltest prüft bei jedem Schritt, dass der Knopf innerhalb einer Rolle nicht verschwindet.
+
+
+## Die Übersicht ist nach jeder Entscheidung aktuell (Beschluss vom 24.11.2026, We-01-172)
+
+- **Regel:** Nach **jeder** Entscheidung einer Rolle zeigt „Alle Spieler und Rollen“ sie sofort, nicht erst, wenn die nächste Rolle aufgerufen wird: nach dem Bestätigen der Liste (Amulett weitergeben, Angriff, Schutz, Gast, Gift, Todeszauber, Hammer, Stummschalten, Verliebte), nach einer Antwort der Hexe oder des Magiers (zum Beispiel „gerettet“ grün nach dem Heilen) und wenn die Rolle wieder schläft. Solange eine Liste offen ist, ist noch nichts entschieden.
+- **Vorschau ohne Todesansage:** Die Vorschau wendet die Entscheidung auf eine Kopie des Spiels an (das Spiel selbst geht erst mit „Weiter“ weiter). Die Opfer der Nacht bleiben dabei **rot (markiert)** und sind **nicht tot**, bis die Morgenansage kommt; die letzte Rolle der Nacht führt sonst in den Morgen, und die Opfer wären zu früh schwarz.
+- **Umsetzung:** `GuideView.overviewState` (nur die Vorschau), `describePlayers(state, announce)` mit `announce = false` für die Vorschau.

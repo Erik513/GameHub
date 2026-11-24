@@ -345,3 +345,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Tarnaufruf als Entscheidung (2026-11-24, Claude)
 
 - `describeRoleStep` für `nightCall`: `kind: "choose"`, `skippable: true` (vorher `info`). Der Tarnaufruf wird mit dem Ereignis `acknowledgeCall` verlassen, das der Guide über „Verzichten“ sendet; die Zustandsmaschine ist unverändert.
+
+## Vorschau für die Übersicht (2026-11-24, Claude)
+
+- `GuideView.overviewState`: das Spiel mit der gerade getroffenen Entscheidung (`transitionWerewolf` auf eine Kopie; `state` bleibt unverändert). `describePlayers(state, announce)`: `announce = false` blendet die Morgenansage aus (Opfer bleiben markiert, nicht tot) und behandelt `morning` als Nachtschritt. `CardAbility.consumable` gilt jetzt auch für `bond`, `shot` und `passAmulet`. Keine Regeländerung.
