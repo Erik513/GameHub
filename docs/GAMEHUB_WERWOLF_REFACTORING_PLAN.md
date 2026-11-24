@@ -108,3 +108,5 @@ Vierter Teil (2026-11-24): D5 erledigt (`recordWerewolfTransition` in vier klein
 Fünfter Teil (2026-11-24): F4 erledigt (Hexe/Magier über `potionRoleOf` und `view.potionRole`; Unterschiede bleiben als Daten an den Stellen, an denen sie gelten).
 
 Sechster Teil (2026-11-24): E1 und E3 erledigt (Kommentare waren schon englisch; Namensschema im Kopf von `narratorGuide.ts` festgehalten, keine Umbenennung der öffentlichen Funktionen, weil das Schema schon einheitlich ist). E2 und E4 (gemeinsamer Fähigkeits-Zustandstyp, gemeinsame Testhelfer) bleiben offen.
+
+Siebter Teil (2026-11-24): E2 (`abilityLookOf`), E4 (`NarratorHarness`) und das Feld `bondDone` (C2/F6) erledigt. Aufgabe We-01-151 ist abgeschlossen; bewusst aufgeschoben bleiben B1 bis B3 (CSS), C3 (Zusammenfassungszeilen) und C4 (Skriptkästen als Tabelle), weil sie das Aussehen berühren und eine Sichtprüfung des Auftraggebers brauchen.
