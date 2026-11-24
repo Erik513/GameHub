@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 361,
-      "totalTasks": 417,
+      "completedTasks": 362,
+      "totalTasks": 418,
       "percent": 86.6
     }
   },
@@ -1969,6 +1969,12 @@
           "title": "Zusammenfassung nach der Abstimmung: Verliebtensymbol für den Mitgehenden",
           "status": "done",
           "validation": "Feld exiledByLove im Guide; GuideSummary zeigt für die Person, die ihrem Partner folgt, das Verliebtensymbol statt des Abstimmungssymbols; Test in voteCount.test.ts; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-157",
+          "title": "Übersicht und Spielende: Farben der Spielerzustände (Livetiker-Grundlage)",
+          "status": "done",
+          "validation": "Umgesetzt: tone in describePlayers, Komponente PlayerRows (Übersicht und Spielende, Legende), Token --seat-* in tokens.css; Beschlüsse des Auftraggebers vom 24.11.2026 in GAMEHUB_WERWOLF_UI.md. 1727 Tests, tsc, ESLint, Prettier und Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus. Nicht abgedeckt: abgewehrter Gift- oder Zauberangriff."
         }
       ]
     },
@@ -3598,5 +3604,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T16:32:27.701Z"
+  "updatedAt": "2026-11-24T17:07:07.468Z"
 }

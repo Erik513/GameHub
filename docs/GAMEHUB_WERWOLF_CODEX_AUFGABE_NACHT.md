@@ -317,3 +317,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Mitgehender Verliebter in der Zusammenfassung (2026-11-24, Claude)
 
 - `GuideView.exiledByLove`: Namen aus `exiledToday`, deren Todesgründe nur `heartbreak` sind. Keine Regeländerung.
+
+## Zustand der Person für die Übersicht (2026-11-24, Claude)
+
+- `describePlayers` liefert `tone` (`dead`, `wounded`, `attacked`, `saved`, `wolf`, `alive`; Vorrang in dieser Reihenfolge). `attacked`: lebt und ist für den Morgen zum Tod vorgesehen (`victim`, `poisoned`, `spellVictims`, `hammerVictim`) oder ist der Jäger mit dem letzten Schuss. `saved`: der Wolfsangriff der Nacht galt der Person, sie steht aber nicht mehr auf der Liste (Heilung, Schutz, Amulett), nur in einem Nachtschritt. `wounded`: der Harte Bursche mit `toughGuyDiesOn`. Der Livetiker (Sitzkreis) soll dieselbe Ableitung nutzen. Keine Regeländerung.

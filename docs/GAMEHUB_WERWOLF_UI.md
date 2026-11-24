@@ -695,3 +695,33 @@ Diese Angaben ersetzen abweichende Einzelheiten der früheren Entwürfe.
 ### Symbolsatz der Erzählersicht (We-01-59, 21.11.2026)
 
 Festgelegt und gebaut ist der Satz der Symbole (`src/presentation/werewolf/symbols`, Legende als Reiter „Symbole“ der Spielanleitung): 16 Rollen, 6 eigene Mittel, 2 Zusätze, 10 Zustände; Rolle, Mittel und Zustand mit derselben Bedeutung teilen das Zeichen. Der Erzähler zeigt beim Aufwecken einer Rolle ihr Symbol und ihre Mittel (verbrauchte durchgestrichen), bei der gewählten Person das Symbol der Wirkung. Die Rahmen und Hintergrundfarben des früheren Entwurfs (golden für das Amulett, grün für den Trunkenbold, Schwarz für Tote, Rot für Angegriffene) bleiben maßgeblich und kommen mit der Erzählersicht dazu. Quellen und Lizenzen: THIRD_PARTY_NOTICES.md.
+
+
+## Farben der Übersicht „Alle Spieler und Rollen“ und des Spielendes (Beschluss vom 24.11.2026, We-01-157)
+
+Festgehalten nach der Besprechung mit dem Auftraggeber. Grundlage sind die Hintergründe und Rahmen des ersten Entwurfs (siehe oben); die Übersicht bleibt eine Liste (der Sitzkreis des Livetickers kommt später).
+
+**Hintergründe (Zustand der Person):**
+
+| Farbe | Bedeutung |
+| --- | --- |
+| Schwarz | tot (auch tote Werwölfe) |
+| Dunkelrot | Harter Bursche, verwundet: lebt noch, stirbt aber bestimmt (verzögerter Tod) |
+| Rot | angegriffen (Wolfsangriff, Gift, Todeszauber, Hammer): **bis zum Tod**, danach schwarz |
+| Grün | **gerettet** (Heilung, Schutz des Leibwächters, Amulett): die **ganze Nacht** der Rettung, mit dem Tagesbeginn wieder blau (Beschluss 24.11.2026) |
+| Werwolfgrau | lebender Werwolf |
+| Blau | lebende Person ohne besonderen Zustand |
+
+Vorrang bei mehreren Zuständen (beschlossen): schwarz, dunkelrot, rot, grün, grau, blau. Ein neuer Angriff auf eine grün angezeigte Person macht sie wieder rot.
+
+**Rahmen:** Gold = Schutzamulett, Grün = Trunkenbold, der seine Rolle noch nicht kennt; beide zusammen: Trunkenbold außen, Amulett innen. Der grüne Rahmen verschwindet mit der Aufdeckung; stirbt die Person vorher, bleibt er bis zum Spielende.
+
+**Trunkenbold:** Es steht immer die **wahre Rolle** da; der grüne Rahmen zeigt, dass die Person Trunkenbold ist und ihre Rolle noch nicht kennt.
+
+**Nicht nur Farbe:** Jeder Zustand behält sein Zeichen (tot, verwundet, Amulett, verliebt, letzter Schuss); die Farbe ersetzt das Zeichen nicht.
+
+**Spielende:** Die Ansicht bleibt wie heute (Gruppen der Gewinner mit Namen). Dazu kommt die Liste aller Spieler mit denselben Farben, **Lebende zuerst, danach die Toten**. Der Spielverlauf bleibt letzte Priorität und ist nicht Teil davon.
+
+**Beschlossen am 24.11.2026:** Grün die ganze Nacht; der verwundete Harte Bursche bleibt auch bei einem Sieg am Tag dunkelrot (er lebt noch und steht bei den Lebenden); Ordnung innerhalb der Lebenden und der Toten alphabetisch; Schutz durch Leibwächter oder Amulett zeigt ebenfalls grün; Farbwerte als Token `--seat-*` in `tokens.css`.
+
+**Umsetzung (We-01-157):** `describePlayers` liefert `tone` (dead, wounded, attacked, saved, wolf, alive); die Komponente `PlayerRows` zeichnet die Zeilen für die Übersicht und das Spielende und eine kleine Legende darunter (statt eines eigenen Fensters). Nicht abgedeckt: ein abgewehrter Gift- oder Zauberangriff (der Zustand merkt sich nur den Wolfsangriff).
