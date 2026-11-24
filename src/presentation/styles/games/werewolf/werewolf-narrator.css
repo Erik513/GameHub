@@ -980,13 +980,10 @@
   opacity: 1;
 }
 
-/* A skip button that does not apply stays in place, but is switched off. */
+/* A skip button that is switched off (chosen, or not its turn) stays red and is only darkened, like the other buttons. */
 .ww-ability--skip:disabled {
-  border-color: var(--color-line);
-  background: transparent;
-  color: var(--color-ink-muted);
-  opacity: 0.6;
   cursor: default;
+  opacity: 1;
 }
 
 /* The summary: the text and, at the right, a small neutral reset button that takes the decision back. */

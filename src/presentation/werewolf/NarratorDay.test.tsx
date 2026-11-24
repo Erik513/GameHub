@@ -32,6 +32,22 @@ function Harness() {
   return <NarratorHarness start={toDay} />;
 }
 
+it('darkens the buttons of the day once "no nomination" is chosen, none of them turns black', async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <Harness />
+    </I18nextProvider>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "No nomination" }));
+  // The nomination is there every day: it is only darkened (never marked as used up).
+  expect(screen.getByRole("button", { name: /^Nomination/ })).toHaveAttribute("data-state", "dim");
+  expect(screen.getByRole("button", { name: "No nomination" })).toHaveAttribute(
+    "data-state",
+    "dim",
+  );
+});
+
 it("shows the script of the day and lets the day end only after an option was chosen", async () => {
   const i18n = await createGameHubI18n("en");
   render(

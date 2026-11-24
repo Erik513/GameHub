@@ -86,6 +86,8 @@ export interface GuideNotes {
 export interface GuideView {
   /** What the "next" button says: the day ends, the vote starts or ends, the game is left, or simply "next". */
   /** The role of the step that works with two questions (potions or spells); null at every other step. */
+  /** The spells the magician has cast in this step (the healing spell and the confirmed death spells); 0 otherwise. */
+  readonly spellsUsed: number;
   readonly potionRole: "witch" | "magician" | null;
   /** The name of the hunter (also the drunk who is the hunter) who shoots at this step; null at every other step. */
   readonly shooter: string | null;

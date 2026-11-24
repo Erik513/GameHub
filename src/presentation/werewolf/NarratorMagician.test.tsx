@@ -79,6 +79,22 @@ it("asks the magician two questions: heal or kill first, then a second death spe
   );
 });
 
+it("takes the 2 away and shows the spent spell as used after the magician skipped the first question and killed in the second", async () => {
+  await open();
+  fireEvent.click(screen.getByRole("button", { name: /^Skip/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Kill/ }));
+  // The list of the second spell is open: the first spell was skipped, nothing is cast yet, both spells are there.
+  expect(counts()).toBe(2);
+  fireEvent.click(persons()[0]!);
+  fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  // The death spell is cast: no number any more, it looks used up at once (not only the next night), the other waits.
+  expect(counts()).toBe(0);
+  expect(screen.getByRole("button", { name: /^Kill/ })).toHaveAttribute("data-state", "used");
+  expect(screen.getByRole("button", { name: /^Heal/ })).toHaveAttribute("data-state", "dim");
+  // The button that was used to skip is darkened, it does not turn black.
+  expect(document.querySelector(".ww-ability--skip")).toHaveAttribute("data-state", "dim");
+});
+
 it("lets the magician heal in the first question and kill in the second", async () => {
   await open();
   fireEvent.click(screen.getByRole("button", { name: /^Heal/ }));

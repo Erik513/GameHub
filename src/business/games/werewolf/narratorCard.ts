@@ -63,6 +63,8 @@ export interface CardAbility {
   readonly unavailable?: "blocked" | "used";
   /** What is left of a limited ability, like the spells of the magician. */
   readonly count?: number;
+  /** Used up by using it (a potion, a spell, the hammer, the one look of the investigator), not there again every night. */
+  readonly consumable?: true;
 }
 
 /** What the upper box of the narrator view shows for the role that is awake now. */
@@ -176,6 +178,11 @@ function ability(
   };
 }
 
+/** Marks an ability that is used up by using it. */
+function consumable(entry: CardAbility): CardAbility {
+  return { ...entry, consumable: true };
+}
+
 function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardAbility[] {
   switch (role) {
     case "wolf":
@@ -198,27 +205,33 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
       ];
     case "paranormalInvestigator":
       return [
-        ability("investigate", "investigation", state.investigationUsed ? "used" : undefined),
+        consumable(
+          ability("investigate", "investigation", state.investigationUsed ? "used" : undefined),
+        ),
       ];
     case "witch":
       return [
-        ability(
-          "heal",
-          "heal",
-          !state.potions.heal ? "used" : state.wolfTarget ? undefined : "blocked",
+        consumable(
+          ability(
+            "heal",
+            "heal",
+            !state.potions.heal ? "used" : state.wolfTarget ? undefined : "blocked",
+          ),
         ),
-        ability("poison", "kill", state.potions.poison ? undefined : "used"),
+        consumable(ability("poison", "kill", state.potions.poison ? undefined : "used")),
       ];
     case "magician": {
       const left = state.spellsRemaining;
       return [
-        ability(
-          "heal",
-          "heal",
-          left <= 0 ? "used" : state.wolfTarget ? undefined : "blocked",
-          left,
+        consumable(
+          ability(
+            "heal",
+            "heal",
+            left <= 0 ? "used" : state.wolfTarget ? undefined : "blocked",
+            left,
+          ),
         ),
-        ability("kill", "kill", left <= 0 ? "used" : undefined, left),
+        consumable(ability("kill", "kill", left <= 0 ? "used" : undefined, left)),
       ];
     }
     case "bodyguard":
@@ -229,14 +242,16 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
       return [ability("bond", "lovers")];
     case "mayor":
       return [
-        ability(
-          "hammer",
-          "hammer",
-          state.hammerUsed
-            ? "used"
-            : state.settings.mayor === "hammer" && state.night >= 2
-              ? undefined
-              : "blocked",
+        consumable(
+          ability(
+            "hammer",
+            "hammer",
+            state.hammerUsed
+              ? "used"
+              : state.settings.mayor === "hammer" && state.night >= 2
+                ? undefined
+                : "blocked",
+          ),
         ),
       ];
     case "spellcaster":

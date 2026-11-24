@@ -275,13 +275,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               }
               settled={view.phase === "outro"}
               // The spells of the magician chosen in this step (the healing spell and every person to kill).
-              spellsUsed={
-                view.potionRole === "magician"
-                  ? // The healing spell counts when it is switched on; the death spells only when their list is closed (confirmed).
-                    Number(view.selection.heal) +
-                    (view.selection.ability === null ? view.selection.picks.length : 0)
-                  : 0
-              }
+              spellsUsed={view.spellsUsed}
               // Once the narrator has decided (an ability or skip), everything is switched off; "back" opens it again.
               // Cupid: once the lovers are chosen (confirmed) the ability is done; "undo" frees it again.
               {...(votes ? { votes } : {})}

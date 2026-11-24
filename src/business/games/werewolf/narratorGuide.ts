@@ -321,6 +321,14 @@ export function describeGuide(guide: Guide): GuideView {
     progress: selection.progress ?? 0,
     shooter: state.status === "hunter" || state.status === "drunkHunter" ? state.hunter.name : null,
     potionRole,
+    spellsUsed:
+      potionRole === "magician"
+        ? Number(selection.heal) +
+          // Confirmed death spells: all picks once the list is closed or the step is done, otherwise those of the first round.
+          (selection.ability === null || frame.phase === "outro"
+            ? selection.picks.length
+            : (selection.spellPicks ?? 0))
+        : 0,
     question: potionRole ? (selection.question ?? null) : null,
     exiledToday:
       state.status === "day"

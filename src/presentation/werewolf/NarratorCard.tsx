@@ -244,10 +244,15 @@ export function NarratorCard({
               remaining !== undefined && remaining <= 0 && !pressed.includes(ability.id);
             // Used up for good (the logic says so) is grey and struck through; no spell left in this step (or not possible
             // because of the situation) is amber and dashed; "dim" is not the turn of the ability.
+            // Used in this step, and the question about it is answered (or the step is done).
+            const spent =
+              pressed.includes(ability.id) &&
+              (settled || (asked !== null && !asked.includes(ability.id)));
             const abilityState = abilityLookOf(
               ability,
               exhausted,
               locked || waiting || (asked !== null && !asked.includes(ability.id)),
+              spent,
             );
             return (
               <button
@@ -301,6 +306,7 @@ export function NarratorCard({
             <button
               className="ww-ability ww-ability--skip"
               data-next={skip.framed || undefined}
+              data-state={skip.disabled ? "dim" : undefined}
               disabled={skip.disabled}
               onClick={skip.onSkip}
               type="button"
