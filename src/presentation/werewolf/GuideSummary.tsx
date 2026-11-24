@@ -169,6 +169,21 @@ export function Summary({ view }: { readonly view: GuideView }) {
         </span>
       </Chosen>
     );
+  // A chosen person with his true role in brackets (the narrator only): the consequences depend on the role. The drunk who
+  // does not know his role yet stands with both.
+  const withRole = (name: string): string => {
+    const player = view.state.players.find((entry) => entry.name === name);
+    if (!player) return name;
+    const role = t(`werewolfSymbols.items.${player.role}.name`);
+    const masked = view.state.drunk?.player === name && !view.state.drunk.revealed;
+    const text = masked
+      ? t("werewolfNarrator.guide.deadMasked", {
+          drunk: t("werewolfSymbols.items.drunk.name"),
+          role,
+        })
+      : role;
+    return `${name} (${text})`;
+  };
   const parts: ReactNode[] = [];
   const skipped = t("werewolfNarrator.guide.answeredNo");
   const magician = view.potionRole === "magician";
@@ -186,7 +201,9 @@ export function Summary({ view }: { readonly view: GuideView }) {
           part(
             symbolOf("heal"),
             t("werewolfNarrator.guide.abilityDone.heal"),
-            view.state.wolfTarget?.name ?? t("werewolfNarrator.guide.nobody"),
+            view.state.wolfTarget
+              ? withRole(view.state.wolfTarget.name)
+              : t("werewolfNarrator.guide.nobody"),
           ),
         );
       else if (firstKills.length > 0)
@@ -194,7 +211,7 @@ export function Summary({ view }: { readonly view: GuideView }) {
           part(
             symbolOf("kill"),
             t("werewolfNarrator.guide.abilityDone.kill"),
-            firstKills.join(", "),
+            firstKills.map(withRole).join(", "),
           ),
         );
       else
@@ -215,7 +232,7 @@ export function Summary({ view }: { readonly view: GuideView }) {
         part(
           symbolOf(second),
           t(`werewolfNarrator.guide.abilityDone.${second}`),
-          laterPicks.join(", "),
+          laterPicks.map(withRole).join(", "),
         ),
       );
     else if (view.phase === "outro")
@@ -242,7 +259,7 @@ export function Summary({ view }: { readonly view: GuideView }) {
       const people =
         selection.none || selection.picks.length === 0
           ? t("werewolfNarrator.guide.nobody")
-          : selection.picks.join(", ");
+          : selection.picks.map(withRole).join(", ");
       parts.push(
         part(
           symbolOf(chosenAbility),

@@ -75,7 +75,7 @@ it("asks the magician two questions: heal or kill first, then a second death spe
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   // Both questions are answered: the step is finished.
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
-    /Killed: P\d+Killed: P\d+/,
+    /Killed: P\d+ \([^)]+\)Killed: P\d+ \([^)]+\)/,
   );
 });
 
@@ -104,7 +104,7 @@ it("lets the magician heal in the first question and kill in the second", async 
   fireEvent.click(persons()[0]!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
-    /Healed: P\d+Killed: P\d+/,
+    /Healed: P\d+ \([^)]+\)Killed: P\d+ \([^)]+\)/,
   );
 });
 

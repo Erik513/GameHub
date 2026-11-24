@@ -1361,12 +1361,10 @@
   max-width: 100%;
 }
 
-/* A row of the summary stays one line: a long name is cut with "…" instead of making the box two or three lines high. */
+/* A row of the summary takes a second line when one is not enough: cut-off content is never good. */
 .ww-guide__chosen-part > span:last-child {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .ww-name {

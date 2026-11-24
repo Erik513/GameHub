@@ -73,7 +73,7 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   const checks = () =>
     document.querySelectorAll<HTMLElement>(".ww-script__check:not(.ww-script__wake)");
   const summary = document.querySelector(".ww-guide__chosen");
-  expect(summary?.textContent).toMatch(/^In love: P\d+, P\d+$/);
+  expect(summary?.textContent).toMatch(/^In love: P\d+ \([^)]+\), P\d+ \([^)]+\)$/);
   expect(summary?.querySelector("svg")).not.toBeNull();
   expect(boxes().map((box) => box.button)).toEqual(["Undo", "Task done", "Task done"]);
   expect(boxes().map((box) => box.disabled)).toEqual([false, false, true]);
