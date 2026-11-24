@@ -18,10 +18,14 @@ export function phaseOf(state: WerewolfState): GuidePhase {
   return !card ? "plain" : card.role === "day" || card.role === "hunter" ? "act" : "intro";
 }
 
+/** The witch and the magician work with two questions (potions or spells); the other roles with none. */
+export function potionRoleOf(state: WerewolfState): "witch" | "magician" | null {
+  return state.status === "witch" || state.status === "magician" ? state.status : null;
+}
+
 /** The vote opens at once; nobody has chosen yet. */
 export function initialSelection(state: WerewolfState): GuideSelection {
-  if (state.status === "witch" || state.status === "magician")
-    return { ...emptySelection, question: "heal" };
+  if (potionRoleOf(state) !== null) return { ...emptySelection, question: "heal" };
   return state.status === "vote" ? { ...emptySelection, ability: "vote" } : emptySelection;
 }
 

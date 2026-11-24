@@ -292,7 +292,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         id: "heal",
         items: [
           t(
-            state.status === "magician"
+            view.potionRole === "magician"
               ? "werewolfNarrator.guide.magician.firstAsk"
               : "werewolfNarrator.guide.witch.healAsk",
           ),
@@ -305,7 +305,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         id: "poison",
         items: [
           t(
-            state.status === "magician"
+            view.potionRole === "magician"
               ? "werewolfNarrator.guide.magician.secondAsk"
               : "werewolfNarrator.guide.witch.poisonAsk",
           ),

@@ -7,7 +7,14 @@ import {
 } from "./guideTypes";
 import { backIsBlocked } from "./guideBack";
 import { parseSavedTrail } from "./guideTrail";
-import { current, frameOf, initialSelection, justDealt, withSelection } from "./guideFrames";
+import {
+  current,
+  frameOf,
+  initialSelection,
+  potionRoleOf,
+  justDealt,
+  withSelection,
+} from "./guideFrames";
 import { voteBonusOf, voterNotesOf } from "./guideVote";
 import { describeNarratorCard, type CardAbilityId } from "./narratorCard";
 import { describePlayers, validTargets, type WerewolfTargetAction } from "./selectors";
@@ -191,7 +198,7 @@ export function describeGuide(guide: Guide): GuideView {
   const frame = current(guide);
   const state = guide.session.present;
   const { selection } = frame;
-  const potionRole = state.status === "witch" || state.status === "magician" ? state.status : null;
+  const potionRole = potionRoleOf(state);
   const action = selection.ability ? abilityAction[selection.ability] : undefined;
   let targets: readonly string[] = [];
   if (frame.phase === "act" && selection.ability === "vote") {
@@ -447,7 +454,7 @@ export function reopenDecision(guide: Guide): Guide {
   if (isResultStep(guide.session.present)) return takeBackResult(guide);
   const initial = initialSelection(guide.session.present);
   // One decision back per tap: the witch is asked the last question again, her earlier answer stays.
-  const magician = guide.session.present.status === "magician";
+  const magician = potionRoleOf(guide.session.present) === "magician";
   const selection =
     frame.selection.question === undefined
       ? initial
@@ -468,11 +475,7 @@ export function checkScript(guide: Guide): Guide {
   const state = guide.session.present;
   const { selection } = frame;
   // The witch: the narrator has shown the victim (the check of the first box of her script).
-  if (
-    frame.phase === "act" &&
-    (state.status === "witch" || state.status === "magician") &&
-    selection.ability === null
-  ) {
+  if (frame.phase === "act" && potionRoleOf(state) !== null && selection.ability === null) {
     return (selection.progress ?? 0) >= 1 || selection.question !== "heal"
       ? guide
       : withSelection(guide, { ...selection, progress: 1 });
@@ -532,11 +535,7 @@ export function chooseNoVote(guide: Guide): Guide {
 export function undoQuestion(guide: Guide, question: "heal" | "poison"): Guide {
   const frame = current(guide);
   const state = guide.session.present;
-  if (
-    (state.status !== "witch" && state.status !== "magician") ||
-    frame.selection.question === undefined
-  )
-    return guide;
+  if (potionRoleOf(state) === null || frame.selection.question === undefined) return guide;
   const initial = initialSelection(state);
   const selection =
     // The victim was shown already: a question that is asked again does not take the first box back.
@@ -570,9 +569,9 @@ export function answerQuestion(guide: Guide, answer: "skip" | "use"): Guide {
   const frame = current(guide);
   const state = guide.session.present;
   const question = frame.selection.question;
-  const magician = state.status === "magician";
-  if (frame.phase !== "act" || (state.status !== "witch" && !magician) || question === undefined)
-    return guide;
+  const potion = potionRoleOf(state);
+  const magician = potion === "magician";
+  if (frame.phase !== "act" || potion === null || question === undefined) return guide;
   if (question === "heal") {
     if (answer === "use") return chooseAbility(guide, "heal");
     return withSelection(guide, {
@@ -604,7 +603,7 @@ export function choosePlayer(guide: Guide, name: string): Guide {
   const { selection } = view;
   // The magician names one person per spell: the first question takes one, the second one more.
   const limit =
-    view.state.status === "magician" && selection.question !== undefined
+    view.potionRole === "magician" && selection.question !== undefined
       ? (selection.spellPicks ?? 0) + 1
       : pickLimitOf(view.state, selection.ability, selection.heal);
   const picks = limit === 1 ? [name] : [...selection.picks, name].slice(0, limit);
