@@ -1890,7 +1890,7 @@
           "id": "We-01-143",
           "title": "Erzähleransicht: Morgen mit Kategorien, Todesursache auf Antippen, Todesreihenfolge nach Todeszeit",
           "status": "done",
-          "validation": "Jede gestorbene Person in einer eigenen Box, Kategorien „Gestorben“ und „Letzter Schuss“ (nur der Jäger), Ursache erst auf Antippen mit Auge, keine Ursache nach dem Jägerschuss, Zurück ohne Nachfrage; Reihenfolge der Toten nach Todeszeit (deathOrder.ts: Harter Bursche zuerst, dann Werwolfopfer, Gift, Zauber, Hammer; Liebespartner direkt nach dem zuerst Gestorbenen; erstes Todesurteil zählt) in Anzeige und Protokoll; Übersicht „Alle Spieler und Rollen“ zeigt die Toten schon in der Ansage, der Jäger mit lastShot erst nach der Entscheidung. Tests deathOrder.test.ts, deathOrderGame.test.ts, lastShot.test.ts, NarratorMorning.test.tsx. Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen."
+          "validation": "Jede gestorbene Person in einer eigenen Box, Kategorien „Gestorben“ und „Letzter Schuss“ (nur der Jäger), Ursache erst auf Antippen mit Auge, keine Ursache nach dem Jägerschuss, Zurück ohne Nachfrage; Reihenfolge der Toten nach Todeszeit (deathOrder.ts: Harter Bursche zuerst, dann Werwolfopfer, Gift, Zauber, Hammer; Liebespartner direkt nach dem zuerst Gestorbenen; erstes Todesurteil zählt) in Anzeige und Protokoll; Übersicht „Alle Spieler und Rollen“ zeigt die Toten schon in der Ansage, der Jäger mit lastShot erst nach der Entscheidung. Tests deathOrder.test.ts, deathOrderGame.test.ts, lastShot.test.ts, NarratorMorning.test.tsx. Tests, Typprüfung und ESLint waren zum Zeitpunkt grün (zuletzt 1684 Tests); nicht im Browser angesehen. Später: Rolle in Klammern hinter dem Namen nach dem Antippen, Platz rechts unten für den Amulett-Verlust (1710 Tests)."
         },
         {
           "id": "We-01-144",
@@ -3556,5 +3556,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-23T23:45:06.181Z"
+  "updatedAt": "2026-11-24T00:07:38.897Z"
 }
