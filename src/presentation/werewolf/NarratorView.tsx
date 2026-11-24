@@ -240,6 +240,10 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               card={view.card}
               pressed={[
                 ...(view.selection.ability ? [view.selection.ability] : []),
+                // The ability that led to the result stays marked.
+                ...(describeRoleStep(view.state).result
+                  ? [describeRoleStep(view.state).result!.ability]
+                  : []),
                 ...(view.selection.heal ? (["heal"] as const) : []),
                 // A potion or spell whose people were chosen stays marked after its list was closed.
                 ...(view.selection.ability === null && view.selection.picks.length > 0
@@ -294,6 +298,9 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               locked={
                 view.phase === "outro" ||
                 view.bondDone ||
+                // The seer and the investigator have chosen: the result is shown, the ability is decided (the undo button of
+                // the first box of the script takes the choice back).
+                describeRoleStep(view.state).kind === "result" ||
                 // The day: "no vote" is chosen, the vote cannot be used until the reset takes it back.
                 dayDecided
               }

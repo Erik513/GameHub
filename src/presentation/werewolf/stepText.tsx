@@ -382,6 +382,21 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         items: [text],
         state: outro ? "done" : "active",
       },
+      // The seer and the investigator are shown a result after the choice: its box is part of the script from the start
+      // (the whole script is visible at once), waiting until the person is chosen.
+      ...(step.variant === "seerChoose" ||
+      step.variant === "investigatorChoose" ||
+      step.variant === "investigatorUsed"
+        ? [
+            {
+              button: "check" as const,
+              enabled: false,
+              id: "confirm" as const,
+              items: [t("werewolfNarrator.guide.resultScript")],
+              state: outro ? ("done" as const) : ("pending" as const),
+            },
+          ]
+        : []),
       asleep,
     ];
   }
