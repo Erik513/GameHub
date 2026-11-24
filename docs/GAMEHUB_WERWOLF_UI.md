@@ -745,3 +745,15 @@ Die Zustandszeichen oben an der Karte der aufgewachten Rolle gibt es nur noch, w
 | Trunkenbold | grün |
 
 Die Farbwerte stehen als Token `--slot-*` in `tokens.css`; das Zeichen bleibt, die Farbe ersetzt es nicht. Annahme: drei Slots pro Reihe (Breite der heutigen Anzeige).
+
+
+## Varianten der Rollen sichtbar machen (Beschluss vom 24.11.2026, We-01-164)
+
+Die Variante einer Rolle (Harter Bursche: nur Wolfsangriff oder jeder Angriff, Jäger: Schusspflicht oder freiwillig, Gerber: jedes Ausscheiden oder nur Abstimmung, Bürgermeister: doppelte Stimme oder Hammer, Zauberer: Selbstwahl ja oder nein) wird einheitlich gezeigt:
+
+- **Beim Aufwachen der Rolle** (Karte oben): Symbol und Kurztext in einer Zeile unter dem Rollennamen.
+- **In „Alle Spieler und Rollen“ und am Spielende:** nur das Zusatzsymbol neben dem Rollennamen in der Zeile (eigenes kleines Zeichen im gestrichelten Rahmen, nicht in das Rollensymbol gezeichnet). Der Text steht im Label für Screenreader und als Tooltip; die Legende nennt die Varianten, die im Spiel vorkommen, mit Zeichen und Kurztext.
+- **Kurztexte:** Nur Wolf, Jeder Angriff, Freiwillig, Schusspflicht, Jedes Ausscheiden, Nur Abstimmung, Doppelte Stimme, Hammer, Selbstwahl ja, Selbstwahl nein (englisch: Wolf only, Any attack, Optional, Must shoot, Any exit, Vote only, Double vote, Hammer, Self-pick yes, Self-pick no).
+- **Zeichen:** Pfote, Totenkopf, Zielscheibe, Zielpfeil, Grab, Stimmzettel, Zahl 2, Hammer, Daumen hoch und das Verbotszeichen (neu). Mehrere davon bedeuten an anderer Stelle schon etwas (Pfote = angegriffen, Grab = tot); der gestrichelte Rahmen soll sie als Variante erkennbar machen.
+
+Der Harte Bursche und der Gerber wachen nie auf; ihre Variante steht deshalb nur in der Übersicht, am Spielende und bei der Rollenverteilung.

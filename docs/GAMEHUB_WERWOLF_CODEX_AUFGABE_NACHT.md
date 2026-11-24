@@ -333,3 +333,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Endstand nach Rolle gruppiert (2026-11-24, Claude)
 
 - `describeStandings`: Die Gruppe `lovers` enthält nur noch den Verliebten, der mit seinem Partner gewinnt, aber durch seine Rolle nicht zur Gewinnerseite gehört (beim Wolfssieg mit gemischtem Paar der Nicht-Wolf). Ein verliebter Wolf steht bei den Wölfen. `describeWinners` ist unverändert und liefert weiter beide Verliebte in `lovers`. Keine Regeländerung.
+
+## Variante der Rolle (2026-11-24, Claude)
+
+- `roleVariantOf(role, settings)` (`roleVariant.ts`) liefert die Variante einer Rolle (`wolfOnly`/`anyAttack`, `optional`/`required`, `anyDeath`/`voteOnly`, `doubleVote`/`hammer`, `allowed`/`forbidden`) oder null. `describePlayers` hat das Feld `variant` je Person, `NarratorCard` das optionale Feld `variant`. Keine Regeländerung.
