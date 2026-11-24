@@ -305,3 +305,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 - `narratorGuide.ts` ist aufgeteilt: Typen in `guideTypes.ts`, gespeicherter Verlauf in `guideTrail.ts`, Gewinner in `guideWinners.ts`; `narratorGuide.ts` exportiert sie weiter. Verhalten unverändert.
 - Entfernt: das Einzelstimmen-Verfahren des Guides (`setBallot`, `GuideView.ballotRows`, `GuideSelection.ballots`). Die Zustandsmaschine kennt das Ereignis `vote` (Einzelstimmen) weiterhin, nur der Guide erzeugt es nicht mehr; er sendet `voteCount`.
 - Neue Felder in `GuideView`: `potionRole` (`witch` | `magician` | null) und `shooter` (Name des schießenden Jägers oder null). `DeathNote.masked`: die gestorbene Person war noch der verdeckte Trunkenbold.
+
+## Zustandsmaschine geteilt (2026-11-24, Claude)
+
+- `stateMachine.ts` ist aufgeteilt: Typen in `stateTypes.ts`, Stimmenzählung in `stateVoting.ts`, Spielerabfragen in `stateQueries.ts`. `stateMachine.ts` exportiert `WerewolfState`, `WerewolfEvent`, `voteTotal`, `voteMaximum`, `voteTieAt`, `voteNeeded` weiter; Importe aus `./stateMachine` ändern sich nicht. `applyEvent` ruft `applyNightEvent` oder `applyDayEvent` auf. Keine Regeländerung.

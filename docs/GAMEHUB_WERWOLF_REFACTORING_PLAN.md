@@ -100,3 +100,5 @@ Bewusst nicht gemacht: A3 (nur von Tests genutzte Exporte: sie sind Testwerkzeug
 Offen: C2–C5 (weitere Felder im Guide, Zusammenfassungszeilen, Skriptkästen als Tabelle), D1 Rest (Auswahl-/Abstimmungs-/Rückgängig-Funktionen), D2, D4, D5, F4 (gemeinsames Konzept Hexe/Magier), F6, F8, F11, E1–E4, A4.
 
 Zweiter Teil (2026-11-24): D1 weitgehend erledigt (guideFrames, guideVote, guideBack ausgelagert; `narratorGuide.ts` 800 Zeilen). Rest von D1: Auswahl- und Rückgängig-Funktionen (chooseAbility, undoSelection, takeBackResult), die eng mit `describeGuide` verflochten sind.
+
+Dritter Teil (2026-11-24): D2 erledigt (`stateMachine.ts` 722 Zeilen; `stateTypes`, `stateVoting`, `stateQueries` ausgelagert, `applyEvent` in Nacht und Tag geteilt). Die Hilfsfunktionen der Nacht und des Tages bleiben in `stateMachine.ts`, weil sie sich gegenseitig aufrufen (eine weitere Aufteilung brächte Importzyklen).

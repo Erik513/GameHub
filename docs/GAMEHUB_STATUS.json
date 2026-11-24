@@ -1938,7 +1938,7 @@
           "id": "We-01-151",
           "title": "Refactoring Durchlauf 2: Plan umsetzen (Erzähleransicht)",
           "status": "in_progress",
-          "validation": "Erster Teil fertig: Stimmzettel-Altcode und ungenutztes CSS entfernt, narratorGuide.ts und GuideBox.tsx aufgeteilt, Felder potionRole/shooter, Trunkenbold bei den Toten mit beiden Rollen. Alle 1714 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen. Offen: CSS-Doppelungen/-Aufteilung, Zustandsmaschine und Eventlog, weitere Guide-Felder (Amor, Zusammenfassungszeilen), Namen und Kommentare. Zweiter Teil: narratorGuide.ts in guideFrames, guideVote und guideBack aufgeteilt (800 Zeilen)."
+          "validation": "Erster Teil fertig: Stimmzettel-Altcode und ungenutztes CSS entfernt, narratorGuide.ts und GuideBox.tsx aufgeteilt, Felder potionRole/shooter, Trunkenbold bei den Toten mit beiden Rollen. Alle 1714 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen. Offen: CSS-Doppelungen/-Aufteilung, Zustandsmaschine und Eventlog, weitere Guide-Felder (Amor, Zusammenfassungszeilen), Namen und Kommentare. Zweiter Teil: narratorGuide.ts in guideFrames, guideVote und guideBack aufgeteilt (800 Zeilen). Dritter Teil: stateMachine.ts in stateTypes, stateVoting, stateQueries geteilt, applyEvent in Nacht- und Tagesteil (722 Zeilen)."
         }
       ]
     },
@@ -3568,5 +3568,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T01:53:12.132Z"
+  "updatedAt": "2026-11-24T01:59:55.583Z"
 }
