@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 358,
-      "totalTasks": 414,
+      "completedTasks": 359,
+      "totalTasks": 415,
       "percent": 86.5
     }
   },
@@ -1951,6 +1951,12 @@
           "title": "Abstimmungs-CSS bereinigen (Doppelungen zusammenführen)",
           "status": "done",
           "validation": "14 Selektoren zusammengeführt (471 auf 398 Zeilen), 3 Gruppen wegen möglicher Überschneidung unberührt; letzter Wert je Selektor und Eigenschaft identisch (190 von 190), Prettier und Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-154",
+          "title": "CSS der Erzähler-, Konfigurations-, Morgen- und Tagesdatei bereinigen",
+          "status": "done",
+          "validation": "Doppelte Selektoren zusammengeführt, wenn keine gleich starke, überschneidende Regel mit gleicher Eigenschaftsfamilie dazwischen liegt (narrator 19 von 25 Gruppen, config 4 von 5, morning 1, day 3); letzte Werte je Selektor und Eigenschaft identisch, Prettier und Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3580,5 +3586,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T16:04:36.385Z"
+  "updatedAt": "2026-11-24T16:06:49.416Z"
 }

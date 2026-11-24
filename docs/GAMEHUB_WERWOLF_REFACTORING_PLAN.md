@@ -114,3 +114,5 @@ Siebter Teil (2026-11-24): E2 (`abilityLookOf`), E4 (`NarratorHarness`) und das 
 Achter Teil (2026-11-24, We-01-152): B2 erledigt (`werewolf.css` in fünf Dateien, Reihenfolge unverändert). Von B1/B3 bleibt das Zusammenführen der Abstimmungs-Überschreibungen (`werewolf-vote.css`, 472 Zeilen); nur mit Sichtprüfung des Auftraggebers.
 
 Neunter Teil (2026-11-24, We-01-153): B1 für die Abstimmung erledigt (14 Gruppen zusammengeführt, 3 bewusst nicht). Die übrigen Dateien (werewolf-narrator.css, werewolf-config.css) haben ebenfalls Doppelungen, die mit derselben Methode geprüft werden können; Sichtprüfung der Abstimmung steht aus.
+
+Zehnter Teil (2026-11-24, We-01-154): B1 für alle fünf CSS-Dateien erledigt (Abstimmung vom Auftraggeber gesehen und freigegeben; die anderen vier Dateien warten auf die Sichtprüfung). Es bleiben 7 Gruppen mit möglicher Überschneidung (u. a. `.ww-nominee__count button`), die nur mit Sichtprüfung angefasst werden sollten.
