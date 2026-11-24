@@ -104,3 +104,5 @@ Zweiter Teil (2026-11-24): D1 weitgehend erledigt (guideFrames, guideVote, guide
 Dritter Teil (2026-11-24): D2 erledigt (`stateMachine.ts` 722 Zeilen; `stateTypes`, `stateVoting`, `stateQueries` ausgelagert, `applyEvent` in Nacht und Tag geteilt). Die Hilfsfunktionen der Nacht und des Tages bleiben in `stateMachine.ts`, weil sie sich gegenseitig aufrufen (eine weitere Aufteilung brächte Importzyklen).
 
 Vierter Teil (2026-11-24): D5 erledigt (`recordWerewolfTransition` in vier kleine Funktionen geteilt, gleiche Datei, kein Verhaltenswechsel).
+
+Fünfter Teil (2026-11-24): F4 erledigt (Hexe/Magier über `potionRoleOf` und `view.potionRole`; Unterschiede bleiben als Daten an den Stellen, an denen sie gelten).
