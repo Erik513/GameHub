@@ -106,3 +106,5 @@ Dritter Teil (2026-11-24): D2 erledigt (`stateMachine.ts` 722 Zeilen; `stateType
 Vierter Teil (2026-11-24): D5 erledigt (`recordWerewolfTransition` in vier kleine Funktionen geteilt, gleiche Datei, kein Verhaltenswechsel).
 
 Fünfter Teil (2026-11-24): F4 erledigt (Hexe/Magier über `potionRoleOf` und `view.potionRole`; Unterschiede bleiben als Daten an den Stellen, an denen sie gelten).
+
+Sechster Teil (2026-11-24): E1 und E3 erledigt (Kommentare waren schon englisch; Namensschema im Kopf von `narratorGuide.ts` festgehalten, keine Umbenennung der öffentlichen Funktionen, weil das Schema schon einheitlich ist). E2 und E4 (gemeinsamer Fähigkeits-Zustandstyp, gemeinsame Testhelfer) bleiben offen.
