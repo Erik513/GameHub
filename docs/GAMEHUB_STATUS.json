@@ -1926,7 +1926,7 @@
           "id": "We-01-149",
           "title": "Trunkenbold: wahre Rolle in einem Vollbildfenster zeigen",
           "status": "done",
-          "validation": "Knopf „Wahre Rolle zeigen“ in der oberen Box (an der Stelle der Fähigkeiten) mit gesperrtem Haken rechts daneben; das Vollbildfenster zeigt die Karte der echten Rolle, das Kreuz oben rechts schließt es und macht den Haken klickbar; „Wahre Rolle sagen“ hat einen Zurück-Knopf, damit die Rolle erneut gezeigt werden kann; ohne Zeigen kein Bestätigen (Guide: markRoleShown). Test NarratorDrunk.test.tsx, Durchspiel-Test angepasst. Tests, Typprüfung und ESLint grün (1695 Tests); nicht im Browser angesehen. Offen: der Trunkenbold-Jäger (eigener Schritt). Das Fenster hat das Handyformat (Breite der App-Spalte, am PC zentriert, Rest abgedunkelt); der Haken hat die Form des Fähigkeiten-Knopfs in Grün. Geprüft: Das Amulett hat Vorrang vor dem Harten Burschen, auch als Trunkenbold (amulet.test.ts, 1698 Tests). Korrektur: Box „Wahre Rolle zeigen“ mit einem umschaltenden Haken/Zurück-Knopf im Skript (nicht in der oberen Box); Fenster im Handyformat. Box „Wahre Rolle zeigen“ mit Trunkenbold-Symbol; Hinweise zu verbrauchten Tränken entfernt (Platz in der unteren Box bei Hexe und Magier)."
+          "validation": "Knopf „Wahre Rolle zeigen“ in der oberen Box (an der Stelle der Fähigkeiten) mit gesperrtem Haken rechts daneben; das Vollbildfenster zeigt die Karte der echten Rolle, das Kreuz oben rechts schließt es und macht den Haken klickbar; „Wahre Rolle sagen“ hat einen Zurück-Knopf, damit die Rolle erneut gezeigt werden kann; ohne Zeigen kein Bestätigen (Guide: markRoleShown). Test NarratorDrunk.test.tsx, Durchspiel-Test angepasst. Tests, Typprüfung und ESLint grün (1695 Tests); nicht im Browser angesehen. Offen: der Trunkenbold-Jäger (eigener Schritt). Das Fenster hat das Handyformat (Breite der App-Spalte, am PC zentriert, Rest abgedunkelt); der Haken hat die Form des Fähigkeiten-Knopfs in Grün. Geprüft: Das Amulett hat Vorrang vor dem Harten Burschen, auch als Trunkenbold (amulet.test.ts, 1698 Tests). Korrektur: Box „Wahre Rolle zeigen“ mit einem umschaltenden Haken/Zurück-Knopf im Skript (nicht in der oberen Box); Fenster im Handyformat. Box „Wahre Rolle zeigen“ mit Trunkenbold-Symbol; Hinweise zu verbrauchten Tränken entfernt (Platz in der unteren Box bei Hexe und Magier). Trunkenbold als Werwolf: die Wölfe dürfen ihn bis zur Aufdeckung angreifen; gelber Hinweis bei den Werwölfen (drunk.test.ts, 1711 Tests)."
         }
       ]
     },
@@ -3556,5 +3556,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T00:07:38.897Z"
+  "updatedAt": "2026-11-24T00:32:56.442Z"
 }

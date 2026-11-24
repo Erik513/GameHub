@@ -295,3 +295,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 
 - `nightScript`: Eine lebende Rolle mit Akteuren ist immer `active`, auch wenn die Fähigkeit verbraucht ist (Hexe ohne Tränke, Magier ohne Zauber, Ermittler nach dem Prüfen, Bürgermeister nach dem Hammer). `cover` bleibt nur für einen Trunkenbold, der seine Rolle noch nicht kennt (und die mögliche Seher-Lehrling-Tarnung).
 - Die verbrauchten Schritte laufen über die vorhandenen Ereignisse mit „niemand“: `potions` ohne Auswahl, `castSpells` ohne Zauber, `investigate` mit `target: null`, `hammer` mit `target: null`. `investigate` mit Ziel wird nach dem Verbrauch abgelehnt (`investigationUsed`). `describeRoleStep`: `investigatorUsed` und `mayorUnavailable` sind jetzt `choose` mit `skippable`. Simulation und Forschungsmodelle, die bei verbrauchten Rollen `acknowledgeCall` erwarten, müssen stattdessen die Verzichts-Ereignisse senden.
+
+## Angriff auf den verdeckten Trunkenbold-Werwolf (2026-11-24, Claude, Entscheidung des Auftraggebers)
+
+- Zustand `wolves`: Ein `attack` auf einen Spieler mit Rolle `wolf` wird angenommen, wenn dieser Spieler noch der verdeckte Trunkenbold ist (`isMasked`); die anderen Wölfe kennen ihn nicht. Der Angriff läuft wie jeder andere (Schutz, Amulett, Heilung, Tod). Ist er aufgedeckt, bleibt ein Wolf kein erlaubtes Ziel. `GuideNotes.hiddenWolf` nennt ihn für den Hinweis in der Wolfsnacht. Simulation und Forschungsmodelle, die Wolfsziele als „nie ein Wolf“ annehmen, müssen den verdeckten Trunkenbold-Wolf als mögliches Ziel kennen.
