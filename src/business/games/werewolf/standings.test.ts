@@ -73,7 +73,7 @@ it("puts the living first by name and the dead after them, the one who died last
   expect(namesOf(losers)).toEqual([wolves[1]!.name, wolves[0]!.name]);
 });
 
-it("shows the lovers in their own group and not again in the winning side", () => {
+it("keeps lovers of the winning side in that side: there is no group of the lovers", () => {
   const [one, two] = others;
   const state = finished(
     "village",
@@ -82,17 +82,31 @@ it("shows the lovers in their own group and not again in the winning side", () =
     { lovers: [one!.name, two!.name] },
   );
   const groups = describeStandings(state);
-  expect(groups.map((group) => group.kind)).toEqual(["village", "lovers", "losers"]);
-  expect(namesOf(groups[1])!.sort()).toEqual([one!.name, two!.name].sort());
-  expect(namesOf(groups[0])).not.toContain(one!.name);
-  expect(namesOf(groups[0])).not.toContain(two!.name);
+  expect(groups.map((group) => group.kind)).toEqual(["village", "losers"]);
+  // Both stand with the village, with the heart as the sign of the lovers.
+  const lover = groups[0]!.players.find((person) => person.name === one!.name)!;
+  expect(lover.partner).toBe(two!.name);
+});
+
+it("shows the tanner in a group of his own and not again in the winning side", () => {
+  const tanner = others[0]!;
+  const state = finished(
+    "village",
+    others.map((p) => p.name),
+    wolves.map((p) => p.name),
+    { tannerWinner: tanner.name },
+  );
+  const groups = describeStandings(state);
+  expect(groups.map((group) => group.kind)).toEqual(["village", "tanner", "losers"]);
+  expect(namesOf(groups[1])).toEqual([tanner.name]);
+  expect(namesOf(groups[0])).not.toContain(tanner.name);
 });
 
 it("gives nothing before the game is finished", () => {
   expect(describeStandings(base)).toEqual([]);
 });
 
-it("shows a werewolf who is one of the surviving lovers once, in the group of the lovers, with his own role", () => {
+it("groups a mixed couple by role: the werewolf with the werewolves, the villager in the group of the lovers", () => {
   const wolf = wolves[0]!;
   const villager = others[0]!;
   // The wolves win with a mixed couple as the last two: the lovers are alive, everybody else is dead.
@@ -104,10 +118,15 @@ it("shows a werewolf who is one of the surviving lovers once, in the group of th
   });
   const groups = describeStandings(state);
   expect(groups.map((group) => group.kind)).toEqual(["wolves", "lovers", "losers"]);
-  // He stands in the group of the lovers only, not again with the wolves.
-  expect(namesOf(groups[0])).not.toContain(wolf.name);
-  const lover = groups[1]!.players.find((person) => person.name === wolf.name)!;
+  // The werewolf stands with the werewolves (with his own role and the heart). The villager wins with his partner
+  // without being on the winning side by his role: he stands alone in the group of the lovers.
+  const lover = groups[0]!.players.find((person) => person.name === wolf.name)!;
   expect(lover.role).toBe("wolf");
   expect(lover.partner).toBe(villager.name);
   expect(lover.tone).toBe("wolf");
+  expect(namesOf(groups[1])).toEqual([villager.name]);
+  expect(namesOf(groups[2])).not.toContain(villager.name);
+  // Everybody stands once.
+  const all = groups.flatMap((group) => namesOf(group)!);
+  expect(new Set(all).size).toBe(all.length);
 });

@@ -62,10 +62,11 @@ it("names the winners in the headings of the end screen, in both languages", asy
 it("puts several groups of winners one below the other in the one box of the winners, divided by a line", async () => {
   const i18n = await createGameHubI18n("en");
   const base = game();
-  const pair = base.players.filter((player) => player.role !== "wolf").slice(0, 2);
+  const pair = base.players.filter((player) => player.role !== "wolf");
   const state = {
     ...base,
-    lovers: [pair[0]!.name, pair[1]!.name],
+    // The tanner has won on his own: a second group of winners next to the werewolves.
+    tannerWinner: pair[0]!.name,
     status: "finished",
     winner: "wolves",
   } as unknown as WerewolfState;
@@ -75,7 +76,7 @@ it("puts several groups of winners one below the other in the one box of the win
     </I18nextProvider>,
   );
   const box = document.querySelector('.ww-winners__group[data-kind="winners"]')!;
-  // The wolves and the lovers: two lists in the same box, one line between them, one heading above.
+  // The wolves and the tanner: two lists in the same box, one line between them, one heading above.
   expect(box.querySelectorAll("ul.ww-overview")).toHaveLength(2);
   expect(box.querySelectorAll(".ww-winners__divider")).toHaveLength(1);
   expect(box.querySelectorAll("h4")).toHaveLength(1);

@@ -14,24 +14,32 @@ export interface StandingsGroup {
 }
 
 /**
- * The end of the game with every person once: the groups of the winners first (the winning side, the lovers, the tanner),
- * then the losers. A person who belongs to a special group (the lovers, the tanner) stands there and not again in the
- * winning side. Inside every group the living come first (by name), then the dead, the one who died last first and the
- * one who died first at the very end.
+ * The end of the game with every person once, grouped by role: the groups of the winners first (the winning side, the
+ * lovers, the tanner), then the losers. A lover stands with his role in the winning side (a werewolf who is in love
+ * stands with the werewolves when they win). The group of the lovers only holds the lover who wins with his partner
+ * without being on the winning side by his role (the villager of a mixed couple when the werewolves win). The tanner
+ * stands in his own group and not again in the winning side. Inside every group the living come first (by name), then
+ * the dead, the one who died last first and the one who died first at the very end.
  */
 export function describeStandings(state: WerewolfState): readonly StandingsGroup[] {
   if (state.status !== "finished") return [];
   const people = new Map(describePlayers(state).map((person) => [person.name, person]));
   const winners = describeWinners(state);
-  // The special groups take their people first, so nobody stands twice.
-  const special = new Set(
-    winners.filter((group) => group.kind !== state.winner).flatMap((group) => group.players),
+  const sideNames = new Set(winners.find((group) => group.kind === state.winner)?.players ?? []);
+  // The tanner takes his place first, so he does not stand twice.
+  const tanner = new Set(
+    winners.filter((group) => group.kind === "tanner").flatMap((group) => group.players),
   );
   const taken = new Set<string>();
   const groups: StandingsGroup[] = [];
   for (const group of winners) {
+    // The lovers: only the one who is not on the winning side by his role (the others stand in the side).
     const names =
-      group.kind === state.winner ? group.players.filter((n) => !special.has(n)) : group.players;
+      group.kind === "lovers"
+        ? group.players.filter((n) => !sideNames.has(n) && !tanner.has(n))
+        : group.kind === state.winner
+          ? group.players.filter((n) => !tanner.has(n))
+          : group.players;
     const players = names.flatMap((name) =>
       people.get(name) && !taken.has(name) ? [people.get(name)!] : [],
     );
