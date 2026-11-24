@@ -47,35 +47,24 @@ export type WerewolfLogEntry = LogBase &
       }
   );
 
-/** Records facts for private narrator projections, without translated text or wall-clock time. */
-export function recordWerewolfTransition(
-  before: WerewolfState,
-  event: WerewolfEvent,
-  after: WerewolfState,
-  actors: readonly string[],
-): WerewolfState {
-  const history: WerewolfLogEntry[] = [...before.history];
-  const append = (
-    entry:
-      | Omit<Extract<WerewolfLogEntry, { kind: "action" }>, "id" | "night" | "phase" | "period">
-      | Omit<Extract<WerewolfLogEntry, { kind: "death" }>, "id" | "night" | "phase" | "period">
-      | Omit<Extract<WerewolfLogEntry, { kind: "injury" }>, "id" | "night" | "phase" | "period">,
-  ) => {
-    history.push({
-      ...entry,
-      id: history.length + 1,
-      night: before.night,
-      phase: before.status,
-      period:
-        before.status === "roles"
-          ? "setup"
-          : ["day", "vote", "exile"].includes(before.status) ||
-              ((before.status === "hunter" || before.status === "drunkHunter") &&
-                before.inDay === true)
-            ? "day"
-            : "night",
-    });
-  };
+type Player = WerewolfState["players"][number];
+
+type NewEntry =
+  | Omit<Extract<WerewolfLogEntry, { kind: "action" }>, keyof LogBase>
+  | Omit<Extract<WerewolfLogEntry, { kind: "death" }>, keyof LogBase>
+  | Omit<Extract<WerewolfLogEntry, { kind: "injury" }>, keyof LogBase>;
+
+/** The part of the game a step belongs to: the role reveal, the night or the day (also a shot of the hunter at the day). */
+function periodOf(before: WerewolfState): LogBase["period"] {
+  if (before.status === "roles") return "setup";
+  const inDay =
+    ["day", "vote", "exile"].includes(before.status) ||
+    ((before.status === "hunter" || before.status === "drunkHunter") && before.inDay === true);
+  return inDay ? "day" : "night";
+}
+
+/** The people an event is about: the chosen person, the pair, the candidates of a vote, the victim of a potion or spell. */
+function targetsOf(before: WerewolfState, event: WerewolfEvent): string[] {
   const targets: string[] = [];
   if ("target" in event && event.target !== null) targets.push(event.target);
   if (event.type === "bond") targets.push(...event.players);
@@ -92,12 +81,15 @@ export function recordWerewolfTransition(
     if (event.heal && before.status === "magician" && before.wolfTarget)
       targets.push(before.wolfTarget.name);
   }
-  append({
-    kind: "action",
-    event: structuredClone(event),
-    actors: [...actors],
-    targets: [...new Set(targets)],
-  });
+  return [...new Set(targets)];
+}
+
+/** Why each person who died in this step died (the morning, the exile, the shot of the hunter, a broken heart). */
+function deathSources(
+  before: WerewolfState,
+  event: WerewolfEvent,
+  diedNow: readonly Player[],
+): Map<string, DeathSource[]> {
   const sources = new Map<string, DeathSource[]>();
   const add = (
     name: string | undefined,
@@ -153,14 +145,21 @@ export function recordWerewolfTransition(
   }
   if (before.status === "hunter" && event.type === "shot")
     add(event.target ?? undefined, "hunter", [before.hunter.name]);
-  const diedNow = before.alive.filter((p) => !after.alive.some((a) => a.name === p.name));
   for (const player of diedNow) {
     if (!sources.has(player.name) && before.lovers?.includes(player.name)) {
       const partner = before.lovers.find((n) => n !== player.name)!;
       add(player.name, "heartbreak", [partner]);
     }
   }
-  // By the time of death (see `deathOrder.ts`); the seat order decides between equal times.
+  return sources;
+}
+
+/** The people who died in this step by the time of death (see deathOrder.ts); the seat order decides between equal times. */
+function inOrderOfDeath(
+  before: WerewolfState,
+  diedNow: readonly Player[],
+  sources: ReadonlyMap<string, readonly DeathSource[]>,
+): Player[] {
   const own = new Map<string, number>();
   for (const player of diedNow) {
     const times = (sources.get(player.name) ?? [])
@@ -168,12 +167,39 @@ export function recordWerewolfTransition(
       .map((source) => deathTimeOfCause[source.cause]);
     if (times.length > 0) own.set(player.name, Math.min(...times));
   }
-  const dead = orderByDeath(
+  return orderByDeath(
     diedNow.map((player) => player.name),
     own,
     before.lovers,
   ).map((name) => diedNow.find((player) => player.name === name)!);
-  for (const player of dead) {
+}
+
+/** Records facts for private narrator projections, without translated text or wall-clock time. */
+export function recordWerewolfTransition(
+  before: WerewolfState,
+  event: WerewolfEvent,
+  after: WerewolfState,
+  actors: readonly string[],
+): WerewolfState {
+  const history: WerewolfLogEntry[] = [...before.history];
+  const append = (entry: NewEntry) => {
+    history.push({
+      ...entry,
+      id: history.length + 1,
+      night: before.night,
+      phase: before.status,
+      period: periodOf(before),
+    });
+  };
+  append({
+    kind: "action",
+    event: structuredClone(event),
+    actors: [...actors],
+    targets: targetsOf(before, event),
+  });
+  const diedNow = before.alive.filter((p) => !after.alive.some((a) => a.name === p.name));
+  const sources = deathSources(before, event, diedNow);
+  for (const player of inOrderOfDeath(before, diedNow, sources)) {
     append({
       kind: "death",
       player: player.name,
