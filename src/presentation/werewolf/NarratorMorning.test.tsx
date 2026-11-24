@@ -8,7 +8,7 @@ import {
   createWerewolfSession,
   type WerewolfSession,
 } from "../../business/games/werewolf/session";
-import { createWerewolf } from "../../business/games/werewolf/stateMachine";
+import { createWerewolf, werewolfAnnouncement } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
 import { NarratorView } from "./NarratorView";
 
@@ -69,6 +69,53 @@ it("hides the reason of death in the morning until the person is tapped, and cov
   expect(document.querySelector(".ww-guide__dead-causes")?.textContent).toMatch(/for you only/);
   fireEvent.click(person);
   expect(document.querySelector(".ww-guide__dead-causes")).toBeNull();
+});
+
+it("shows the role in brackets behind the name once the person is tapped, and keeps a place for the amulet that is lost", async () => {
+  const i18n = await createGameHubI18n("en");
+  const morning = toMorning();
+  const victim =
+    morning.present.alive.length > 0 ? werewolfAnnouncement(morning.present)[0]!.name : "";
+  // The victim holds the amulet: it is lost with his death.
+  const holding = {
+    ...morning,
+    present: { ...morning.present, amulet: { holder: victim, mustPass: false } },
+  } as WerewolfSession;
+  render(
+    <I18nextProvider i18n={i18n}>
+      <NarratorView
+        onEnd={() => undefined}
+        onRules={() => undefined}
+        onSession={() => undefined}
+        session={holding}
+      />
+    </I18nextProvider>,
+  );
+  const person = document.querySelector<HTMLButtonElement>(".ww-guide__dead li > button")!;
+  // Covered: only the name, no role.
+  expect(person.textContent).not.toContain("(");
+  fireEvent.click(person);
+  const role = morning.present.players.find((player) => player.name === victim)!.role;
+  const roleName = role === "villager" ? "Villager" : undefined;
+  expect(person.textContent).toMatch(/\([A-Za-z ]+\)/);
+  if (roleName) expect(person.textContent).toContain("(" + roleName + ")");
+  // The place at the bottom right: always there, with the amulet in it when it is lost.
+  const slot = document.querySelector(".ww-guide__dead-slot")!;
+  expect(slot).not.toBeNull();
+  expect(slot.querySelector("[data-symbol='amulet']")).not.toBeNull();
+});
+
+it("keeps the place for the amulet empty when the amulet is not lost", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <Harness />
+    </I18nextProvider>,
+  );
+  fireEvent.click(document.querySelector(".ww-guide__dead li > button")!);
+  const slot = document.querySelector(".ww-guide__dead-slot")!;
+  expect(slot).not.toBeNull();
+  expect(slot.querySelector("[data-symbol='amulet']")).toBeNull();
 });
 
 it("shows the category last shot only when the hunter dies, and then only him in it", async () => {

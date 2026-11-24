@@ -189,6 +189,7 @@ export const werewolfNarratorTexts = {
       victim: "{{name}} (attacked): by the werewolves",
       noVictim: "Nobody (attacked): no victim of the werewolves",
       causesHint: "Tap a name to show or hide the reason",
+      amuletLost: "The amulet is lost",
       causesTitle: "Reason – for you only, do not read out",
       abilityDone: {
         vote: "Nomination",

@@ -339,6 +339,7 @@ function PlainBox({ view }: { readonly view: GuideView }) {
                 state.players.some((player) => player.name === name && player.role === "hunter");
               const dead = names.filter((name) => !isHunter(name));
               const shooters = names.filter(isHunter);
+              const deathOf = (name: string) => view.deaths.find((death) => death.name === name);
               const box = (name: string, hunter: boolean) => (
                 <li data-role={hunter ? "hunter" : undefined} key={name}>
                   <button
@@ -354,6 +355,10 @@ function PlainBox({ view }: { readonly view: GuideView }) {
                       {/* A closed eye while the reason is covered, an open one while it is shown. */}
                       <EyeIcon open={shown.includes(name)} />
                       {name}
+                      {/* The role stands in brackets behind the name once the person is tapped (the hunter shows it always). */}
+                      {shown.includes(name) && !hunter && deathOf(name) && (
+                        <> ({t(`werewolfSymbols.items.${deathOf(name)!.role as SymbolId}.name`)})</>
+                      )}
                     </span>
                     {hunter && (
                       <span className="ww-guide__dead-role">
@@ -364,11 +369,26 @@ function PlainBox({ view }: { readonly view: GuideView }) {
                   </button>
                   {shown.includes(name) && (
                     <div className="ww-guide__dead-causes">
-                      <small>{t("werewolfNarrator.guide.causesTitle")}</small>
-                      <span>
-                        {(view.deaths.find((death) => death.name === name)?.causes ?? [])
-                          .map((cause) => t(`werewolfNarrator.cause.${cause}`))
-                          .join(", ")}
+                      <span className="ww-guide__dead-reason">
+                        <small>{t("werewolfNarrator.guide.causesTitle")}</small>
+                        <span>
+                          {(deathOf(name)?.causes ?? [])
+                            .map((cause) => t(`werewolfNarrator.cause.${cause}`))
+                            .join(", ")}
+                        </span>
+                      </span>
+                      {/* A place at the bottom right is always kept for the amulet that is lost with this death. */}
+                      <span
+                        className="ww-guide__dead-slot"
+                        data-filled={deathOf(name)?.amuletLost === true ? true : undefined}
+                      >
+                        {deathOf(name)?.amuletLost && (
+                          <WerewolfSymbol
+                            id="amulet"
+                            label={t("werewolfNarrator.guide.amuletLost")}
+                            size={22}
+                          />
+                        )}
                       </span>
                     </div>
                   )}

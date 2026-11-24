@@ -190,6 +190,7 @@ export const werewolfNarratorTexts = {
       victim: "{{name}} (angegriffen): von den Werwölfen",
       noVictim: "Niemand (angegriffen): kein Opfer der Werwölfe",
       causesHint: "Name antippen zeigt oder verdeckt die Ursache",
+      amuletLost: "Das Amulett geht verloren",
       causesTitle: "Ursache – nur für dich, nicht vorlesen",
       abilityDone: {
         vote: "Nominierung",

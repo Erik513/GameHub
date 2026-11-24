@@ -273,6 +273,10 @@ function roleOf(state: WerewolfState) {
 /** A person who leaves the game and the reasons, for the narrator only. */
 export interface DeathNote {
   readonly name: string;
+  /** The role of the person (the narrator sees it when he taps the person). */
+  readonly role: string;
+  /** The person holds the amulet and loses it with the death. */
+  readonly amuletLost: boolean;
   readonly causes: readonly DeathCause[];
 }
 
@@ -294,8 +298,11 @@ function previewDeaths(state: WerewolfState, event: WerewolfEvent | null): reado
     entry.kind === "death"
       ? [
           {
+            amuletLost:
+              state.amulet?.holder === entry.player && next.amulet?.holder !== entry.player,
             causes: [...new Set(entry.sources.map((source) => source.cause))],
             name: entry.player,
+            role: entry.role,
           },
         ]
       : [],
