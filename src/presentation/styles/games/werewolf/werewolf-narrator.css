@@ -78,13 +78,6 @@
   cursor: pointer;
 }
 
-.ww-ability[data-available="false"] {
-  border-color: var(--color-danger);
-  background: var(--color-danger);
-  color: var(--color-accent-contrast);
-  cursor: default;
-}
-
 .ww-ability[aria-pressed="true"] {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
@@ -96,14 +89,6 @@
 }
 
 /* The narrator view: the card on top, the guide below it, back and next at the bottom edge. */
-.ww-night__stage {
-  display: grid;
-  flex: 1;
-  align-content: start;
-  gap: var(--space-3);
-  min-height: 0;
-  overflow-y: auto;
-}
 
 /* Back and next: two equally wide buttons at the bottom edge. */
 .ww-nav {
@@ -117,24 +102,6 @@
   min-height: 4rem;
   margin: 0;
   font-size: var(--text-lg);
-}
-
-.ww-role-card--hidden {
-  min-height: 108px;
-  border-style: dashed;
-  background: var(--color-surface-muted);
-}
-
-.ww-guide {
-  display: grid;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font: inherit;
-  text-align: left;
 }
 
 .ww-guide__text {
@@ -159,23 +126,6 @@
   gap: var(--space-2);
 }
 
-.ww-guide__people {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.ww-person {
-  min-height: 44px;
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  color: var(--color-ink);
-  font: inherit;
-  cursor: pointer;
-}
-
 .ww-person[aria-pressed="true"] {
   border: 2px solid var(--color-accent);
   background: var(--color-accent);
@@ -197,23 +147,6 @@
   position: relative;
 }
 
-.ww-deal__face {
-  display: grid;
-  width: 100%;
-  min-height: 280px;
-  align-content: center;
-  justify-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border: 2px solid var(--color-accent);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font: inherit;
-  text-align: center;
-  cursor: pointer;
-}
-
 .ww-deal__face small {
   color: var(--color-ink-muted);
 }
@@ -221,23 +154,6 @@
 .ww-deal__name {
   font-size: var(--text-xl, 1.5rem);
   overflow-wrap: anywhere;
-}
-
-.ww-deal__role {
-  display: grid;
-  place-items: center;
-  width: 96px;
-  height: 96px;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-}
-
-.ww-deal__abilities {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-3);
 }
 
 .ww-deal__ability {
@@ -301,22 +217,6 @@
 }
 
 /* The overview of all players and their roles. */
-.ww-overview {
-  display: grid;
-  gap: var(--space-1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ww-overview__row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-}
 
 .ww-overview__row[data-dead="true"] .ww-overview__who {
   text-decoration: line-through;
@@ -331,11 +231,6 @@
 
 .ww-overview__who small {
   color: var(--color-ink-muted);
-}
-
-.ww-overview__marks {
-  display: flex;
-  gap: var(--space-1);
 }
 
 /* The bar of the narrator view takes the place of the header of the app. */
@@ -355,15 +250,16 @@
   min-height: 0;
 }
 
-.ww-deal__face {
-  gap: var(--space-4);
-}
-
 .ww-deal__face .ww-deal__name {
   font-size: clamp(2rem, 9vw, 3rem);
 }
 
 .ww-deal__role {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
   width: 128px;
   height: 128px;
 }
@@ -377,12 +273,21 @@
   font-size: var(--text-md);
 }
 
-.ww-deal__abilities {
-  gap: var(--space-5);
-}
-
 /* The content of the card is centered; the hint to tap stands at the bottom edge of the card. */
 .ww-deal__face {
+  display: grid;
+  width: 100%;
+  min-height: 280px;
+  justify-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
   grid-template-rows: minmax(0, 1fr) auto;
   align-content: stretch;
 }
@@ -422,6 +327,11 @@
 /* No empty space: the boxes share the whole area between the top bar and the buttons at the bottom. Only the
    role reveal has its own rules (see ww-deal). */
 .ww-night__stage {
+  display: grid;
+  flex: 1;
+  gap: var(--space-3);
+  min-height: 0;
+  overflow-y: auto;
   grid-template-rows: minmax(0, 1fr);
   align-content: stretch;
 }
@@ -441,6 +351,15 @@
 }
 
 .ww-guide {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+  text-align: left;
   align-content: start;
   min-height: 0;
   overflow-y: auto;
@@ -457,18 +376,9 @@
   font-size: clamp(1.5rem, 7vw, 2.25rem);
 }
 
-.ww-winners {
-  align-content: start;
-}
-
 /* The role card grows with the area: its ability buttons are large controls that fill the card. */
 .ww-night__stage[data-layout="act"] {
   grid-template-rows: minmax(min-content, 2fr) minmax(0, 3fr);
-}
-
-.ww-night__stage[data-layout="act"] .ww-role-card {
-  grid-template-rows: auto minmax(0, 1fr);
-  min-height: 0;
 }
 
 .ww-night__stage[data-layout="act"] .ww-role-card__abilities {
@@ -483,10 +393,6 @@
 /* A guide without a list of people (waiting for a tap on an ability, a result, a cover call) stands at the bottom of its box. */
 
 /* The people fill their rows evenly, three to a row. */
-.ww-person {
-  flex: 1 1 calc(33% - var(--space-2));
-  min-height: 52px;
-}
 
 /* The names of the people who left the game stand large in the middle of the box. */
 .ww-night__stage[data-layout="plain"] .ww-guide:not(.ww-winners):not(.ww-deal) > span {
@@ -495,6 +401,7 @@
 
 /* The groups of winners share the whole area; the names stand side by side. */
 .ww-winners {
+  align-content: start;
   grid-template-rows: auto minmax(0, 1fr);
 }
 
@@ -560,18 +467,6 @@
   opacity: 1;
 }
 
-.ww-guide__chosen {
-  padding: var(--space-2);
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-sm);
-  font-weight: var(--weight-medium);
-}
-
-.ww-person__mark {
-  margin-left: var(--space-1);
-  opacity: 0.8;
-}
-
 /* ---- The two boxes are always the same size. ---- */
 .ww-night__stage[data-layout="act"],
 .ww-night__stage[data-layout="intro"] {
@@ -579,6 +474,8 @@
 }
 
 .ww-night__stage[data-layout="act"] .ww-role-card {
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -646,6 +543,7 @@
 
 /* ---- The people: every button is equally big, four in a row, so that most of them are in view. ---- */
 .ww-guide__people {
+  flex-wrap: wrap;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: 44px;
@@ -653,6 +551,12 @@
 }
 
 .ww-person {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+  font: inherit;
+  cursor: pointer;
   display: grid;
   flex: none;
   align-content: center;
@@ -678,6 +582,8 @@
 }
 
 .ww-person__mark {
+  margin-left: var(--space-1);
+  opacity: 0.8;
   margin: 0;
   line-height: 1;
 }
@@ -691,11 +597,19 @@
 
 /* The overview of all players fits on one page: two columns of compact rows. */
 .ww-overview {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 
 .ww-overview__row {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
   position: relative;
   gap: var(--space-2);
   padding: 6px var(--space-2);
@@ -718,6 +632,7 @@
 
 /* The marks (out, in love, amulet ...) sit in the corner of the row. */
 .ww-overview__marks {
+  display: flex;
   position: absolute;
   top: 3px;
   right: 4px;
@@ -732,6 +647,10 @@
 
 /* The role reveal: a line and room between the name of the role and its abilities. */
 .ww-deal__abilities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-5);
   width: 70%;
   margin-top: var(--space-4);
   padding-top: var(--space-5);
@@ -740,12 +659,6 @@
 
 /* The role reveal: the role stands in the middle, the line below it, and the abilities (with the amulet) are
    centered between the line and the bottom of the card. */
-.ww-deal__body:has(.ww-deal__zone) {
-  grid-template-rows: minmax(0, 0.4fr) auto minmax(0, 1fr);
-  align-content: stretch;
-  gap: 0;
-  height: 100%;
-}
 
 .ww-deal__who {
   grid-row: 2;
@@ -753,17 +666,6 @@
   justify-items: center;
   gap: var(--space-4);
   padding-bottom: var(--space-5);
-}
-
-.ww-deal__zone {
-  grid-row: 3;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: var(--space-3);
-  width: 70%;
-  justify-self: center;
-  border-top: 1px solid var(--color-line);
 }
 
 .ww-deal__zone .ww-deal__abilities {
@@ -774,14 +676,6 @@
 }
 
 /* The "i" of the role card is large enough to find and hit easily. */
-.ww-deal .ww-deal__info {
-  top: var(--space-3);
-  right: var(--space-3);
-  width: 3rem;
-  min-width: 3rem;
-  height: 3rem;
-  min-height: 3rem;
-}
 
 .ww-deal .ww-deal__info svg {
   width: 2rem;
@@ -789,6 +683,12 @@
 }
 
 .ww-deal .ww-deal__info {
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 3rem;
+  min-width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
   color: var(--color-ink);
 }
 
@@ -831,10 +731,21 @@
 /* The line under the role is the same length on every card: the column of the card has a fixed width, whatever the
    role or its texts need. */
 .ww-deal__body:has(.ww-deal__zone) {
+  grid-template-rows: minmax(0, 0.4fr) auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: 0;
+  height: 100%;
   grid-template-columns: minmax(0, 1fr);
 }
 
 .ww-deal__zone {
+  grid-row: 3;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  justify-self: center;
+  border-top: 1px solid var(--color-line);
   width: 70%;
   box-sizing: border-box;
 }
@@ -904,6 +815,7 @@
 /* The announcement: both boxes look alike (thin solid border, the same surface); the box to tap has a quiet accent. The
    covered card shows the closed eye, muted. */
 .ww-role-card--hidden {
+  border-style: dashed;
   display: grid;
   place-items: center;
   min-height: 0;
@@ -1078,12 +990,6 @@
 }
 
 /* The summary: the text and, at the right, a small neutral reset button that takes the decision back. */
-.ww-guide__chosen {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
 
 /* The buttons always stand at the bottom of the upper box, also when the box has no head (the day). */
 .ww-night__stage[data-layout="act"] .ww-role-card__abilities {
@@ -1231,6 +1137,11 @@
 
 /* The summary: for every ability that was used the symbol, its name and the person; two used abilities stand in two lines. */
 .ww-guide__chosen {
+  padding: var(--space-2);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  font-weight: var(--weight-medium);
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;

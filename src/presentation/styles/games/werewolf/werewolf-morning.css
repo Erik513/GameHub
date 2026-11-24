@@ -12,14 +12,6 @@
   list-style: none;
 }
 
-.ww-guide__dead li {
-  cursor: pointer;
-  padding: var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  font-size: clamp(1.1rem, 5vw, 1.5rem);
-}
-
 /* The hunter is the only one whose role is told: symbol and name of the role stand in his box. */
 /* The box of the hunter has a frame of its own; the content (name, role, reason below) is laid out like every other box. */
 .ww-guide__dead li[data-role="hunter"] {
@@ -36,6 +28,10 @@
 
 /* A person of the morning is a button: a tap shows the reason of death in the box, another tap covers it again. */
 .ww-guide__dead li {
+  cursor: pointer;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  font-size: clamp(1.1rem, 5vw, 1.5rem);
   padding: 0;
 }
 

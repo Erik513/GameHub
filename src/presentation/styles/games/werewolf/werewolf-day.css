@@ -29,15 +29,12 @@
 }
 
 /* The upper box at the day: the heading on top, the notes right below it; the buttons stay at the bottom. */
-.ww-role-card__top {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
 
 /* The heading and the notes stand at exactly the same place at the day and at the vote: the same gap below the heading
    (the card of the vote has 6px between its parts), the same gap between the notes and the same size of the notes. */
 .ww-role-card__top {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
 }
 
@@ -56,40 +53,9 @@
 }
 
 /* The full-screen window with the card of the true role: the cross at the top right closes it. */
-.ww-truerole {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  align-content: center;
-  padding: var(--space-4);
-  overflow-y: auto;
-  background: var(--color-bg, var(--color-surface));
-}
-
-.ww-truerole__close {
-  position: absolute;
-  top: var(--space-3);
-  right: var(--space-3);
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  min-height: 3rem;
-  padding: 0;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  color: var(--color-ink);
-}
 
 /* The window with the true role fills the whole screen of the phone, only a small gap stays; the card inside fills the
    window, and the cross at the top right sits on it (the info button of the card is not shown here). */
-.ww-truerole {
-  display: block;
-  padding: var(--space-2);
-  overflow: hidden;
-}
 
 .ww-truerole .ww-deal {
   height: 100%;
@@ -105,6 +71,17 @@
 }
 
 .ww-truerole__close {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
   top: var(--space-4);
   right: var(--space-4);
   z-index: 1;
@@ -113,6 +90,15 @@
 /* The window has the format of the phone (the width of the app column), centered on a wide screen; the rest of the screen
    behind it is dimmed. On a phone it fills the whole screen. */
 .ww-truerole {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: block;
+  align-content: center;
+  padding: var(--space-2);
+  overflow-y: auto;
+  background: var(--color-bg, var(--color-surface));
+  overflow: hidden;
   width: min(100%, var(--phone-width));
   margin-inline: auto;
   box-shadow: 0 0 0 100vmax rgb(0 0 0 / 0.65);
