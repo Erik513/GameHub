@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 354,
-      "totalTasks": 410,
-      "percent": 86.3
+      "completedTasks": 355,
+      "totalTasks": 412,
+      "percent": 86.2
     }
   },
   "environment": {
@@ -2160,6 +2160,18 @@
           "title": "Trunkenbold: wahre Rolle in einem Vollbildfenster zeigen",
           "status": "done",
           "validation": "Knopf „Wahre Rolle zeigen“ in der oberen Box (an der Stelle der Fähigkeiten) mit gesperrtem Haken rechts daneben; das Vollbildfenster zeigt die Karte der echten Rolle, das Kreuz oben rechts schließt es und macht den Haken klickbar; „Wahre Rolle sagen“ hat einen Zurück-Knopf, damit die Rolle erneut gezeigt werden kann; ohne Zeigen kein Bestätigen (Guide: markRoleShown). Test NarratorDrunk.test.tsx, Durchspiel-Test angepasst. Tests, Typprüfung und ESLint grün (1695 Tests); nicht im Browser angesehen. Offen: der Trunkenbold-Jäger (eigener Schritt). Das Fenster hat das Handyformat (Breite der App-Spalte, am PC zentriert, Rest abgedunkelt); der Haken hat die Form des Fähigkeiten-Knopfs in Grün. Geprüft: Das Amulett hat Vorrang vor dem Harten Burschen, auch als Trunkenbold (amulet.test.ts, 1698 Tests). Korrektur: Box „Wahre Rolle zeigen“ mit einem umschaltenden Haken/Zurück-Knopf im Skript (nicht in der oberen Box); Fenster im Handyformat. Box „Wahre Rolle zeigen“ mit Trunkenbold-Symbol; Hinweise zu verbrauchten Tränken entfernt (Platz in der unteren Box bei Hexe und Magier). Trunkenbold als Werwolf: die Wölfe dürfen ihn bis zur Aufdeckung angreifen; gelber Hinweis bei den Werwölfen (drunk.test.ts, 1711 Tests)."
+        },
+        {
+          "id": "We-01-150",
+          "title": "Refactoring Durchlauf 1: Code und UI durchsehen, Optimierungen notieren",
+          "status": "done",
+          "validation": "Nur Beobachtungen, kein Code geändert. Ergebnis in docs/GAMEHUB_WERWOLF_REFACTORING_PLAN.md (Kategorien A–H, Rollen einzeln in F). Durchlauf 2 (Umsetzung) wartet auf Freigabe. Abgeschlossen am 2026-11-24."
+        },
+        {
+          "id": "We-01-151",
+          "title": "Refactoring Durchlauf 2: Plan umsetzen (Erzähleransicht)",
+          "status": "in_progress",
+          "validation": "Erster Teil fertig: Stimmzettel-Altcode und ungenutztes CSS entfernt, narratorGuide.ts und GuideBox.tsx aufgeteilt, Felder potionRole/shooter, Trunkenbold bei den Toten mit beiden Rollen. Alle 1714 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen. Offen: CSS-Doppelungen/-Aufteilung, Zustandsmaschine und Eventlog, weitere Guide-Felder (Amor, Zusammenfassungszeilen), Namen und Kommentare."
         }
       ]
     },
@@ -3789,7 +3801,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T01:19:42.588Z"
+  "updatedAt": "2026-11-24T01:48:11.232Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

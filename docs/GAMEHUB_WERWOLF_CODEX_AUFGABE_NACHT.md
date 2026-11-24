@@ -299,3 +299,9 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Angriff auf den verdeckten Trunkenbold-Werwolf (2026-11-24, Claude, Entscheidung des Auftraggebers)
 
 - Zustand `wolves`: Ein `attack` auf einen Spieler mit Rolle `wolf` wird angenommen, wenn dieser Spieler noch der verdeckte Trunkenbold ist (`isMasked`); die anderen Wölfe kennen ihn nicht. Der Angriff läuft wie jeder andere (Schutz, Amulett, Heilung, Tod). Ist er aufgedeckt, bleibt ein Wolf kein erlaubtes Ziel. `GuideNotes.hiddenWolf` nennt ihn für den Hinweis in der Wolfsnacht. Simulation und Forschungsmodelle, die Wolfsziele als „nie ein Wolf“ annehmen, müssen den verdeckten Trunkenbold-Wolf als mögliches Ziel kennen.
+
+## Refactoring der Erzählerlogik (2026-11-24, Claude)
+
+- `narratorGuide.ts` ist aufgeteilt: Typen in `guideTypes.ts`, gespeicherter Verlauf in `guideTrail.ts`, Gewinner in `guideWinners.ts`; `narratorGuide.ts` exportiert sie weiter. Verhalten unverändert.
+- Entfernt: das Einzelstimmen-Verfahren des Guides (`setBallot`, `GuideView.ballotRows`, `GuideSelection.ballots`). Die Zustandsmaschine kennt das Ereignis `vote` (Einzelstimmen) weiterhin, nur der Guide erzeugt es nicht mehr; er sendet `voteCount`.
+- Neue Felder in `GuideView`: `potionRole` (`witch` | `magician` | null) und `shooter` (Name des schießenden Jägers oder null). `DeathNote.masked`: die gestorbene Person war noch der verdeckte Trunkenbold.
