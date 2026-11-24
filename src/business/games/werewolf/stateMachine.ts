@@ -870,7 +870,11 @@ function applyEvent(state: WerewolfState, event: WerewolfEvent): WerewolfState {
       // The werewolves have to attack somebody: there is no way to skip (the game ends before no victim is left; the first
       // night without an attack has its own event, wolvesReady).
       if (event.target === null) return state;
-      const victim = state.alive.find((p) => p.name === event.target && p.role !== "wolf");
+      // A werewolf who is still the drunk (he does not know his role yet) can be attacked like anybody else: the others
+      // do not know him. Only a werewolf that everybody knows is out of the question.
+      const victim = state.alive.find(
+        (p) => p.name === event.target && (p.role !== "wolf" || isMasked(state, p)),
+      );
       if (!victim) return state;
       if (state.hostPlayer && victim.role === "nightGuest") return afterWolves(state, null);
       const saved = absorbNightAttackWithAmulet(state, victim);

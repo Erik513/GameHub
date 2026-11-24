@@ -219,6 +219,7 @@ export const werewolfNarratorTexts = {
       silenced: "{{name}} (silenced):\nno speech, nomination or vote",
       wounded: "{{names}} (wounded): dies in the next night",
       tannerVote: "{{name}} (tanner): wins only by the vote",
+      hiddenWolf: "{{name}} (drunk): werewolf, wakes up only in night 3",
       tannerWon: "{{name}} (tanner): has won, keep the role secret",
       restricted: "{{name}} (not allowed): chosen last night already",
       vote: {

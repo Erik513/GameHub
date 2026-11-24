@@ -191,7 +191,7 @@ export const werewolfConfigTexts = {
         tasks:
           "Zu Beginn der dritten Nacht nüchtert er aus und erinnert sich an seine wahre Rolle.\nBis dahin ruht seine Fähigkeit.",
         notes:
-          "Seherin und Ermittler erfahren die wahre Rolle schon vorher.\nIst er in Wahrheit ein Werwolf, wacht er erst nach der Enthüllung mit den Wölfen auf.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf oder muss noch schießen, je nach Option des Jägers.\nIst er in Wahrheit der Gerber, gilt dessen Siegbedingung schon vor der Enthüllung: Stirbt er vorher, gewinnt er für sich.",
+          "Seherin und Ermittler erfahren die wahre Rolle schon vorher.\nIst er in Wahrheit ein Werwolf, wacht er erst nach der Enthüllung mit den Wölfen auf; bis dahin dürfen die anderen Wölfe ihn versehentlich angreifen.\nIst er in Wahrheit der Jäger und kurz vor dem Tod, nüchtert er vor Adrenalin aus und darf oder muss noch schießen, je nach Option des Jägers.\nIst er in Wahrheit der Gerber, gilt dessen Siegbedingung schon vor der Enthüllung: Stirbt er vorher, gewinnt er für sich.",
       },
       guard: {
         general:

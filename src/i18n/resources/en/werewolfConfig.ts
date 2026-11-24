@@ -189,7 +189,7 @@ export const werewolfConfigTexts = {
         tasks:
           "At the start of the third night he sobers up and remembers his real role.\nUntil then his ability rests.",
         notes:
-          "The seer and the investigator learn the real role before.\nIf he is really a wolf, he wakes up with the wolves only after the reveal.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.\nIf he is really the tanner, the winning condition of the tanner holds before the reveal: if he dies before, he wins for himself.",
+          "The seer and the investigator learn the real role before.\nIf he is really a wolf, he wakes up with the wolves only after the reveal; until then the other wolves may attack him by mistake.\nIf he is really the hunter and about to die, the adrenaline sobers him up and he may or must still shoot, depending on the option of the hunter.\nIf he is really the tanner, the winning condition of the tanner holds before the reveal: if he dies before, he wins for himself.",
       },
       guard: {
         general:

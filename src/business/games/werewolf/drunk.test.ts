@@ -44,6 +44,26 @@ const dusk = (state: WerewolfState) => play(state, { type: "endDay", night: stat
 const firstDay = (state: WerewolfState) =>
   dawn(vision(play(openNight(state), { type: "wolvesReady", night: 1 })));
 
+it("lets the wolves attack the drunk who is a wolf as long as he is the drunk, and he dies like anybody else", () => {
+  // Ada is the drunk and really a wolf: the other wolf does not know him, so the wolves may point at him by mistake.
+  const night = dusk(firstDay(deal(0)));
+  expect(night.status).toBe("wolves");
+  expect(wakingPlayers(night)).toEqual(["Bea"]);
+  const attacked = play(night, { type: "attack", night: night.night, target: "Ada" });
+  expect(attacked).not.toBe(night);
+  expect(attacked).toMatchObject({ wolfTarget: { name: "Ada" } });
+  // Without protection he dies in the morning, although he is a wolf.
+  const morning = vision(attacked, "Dan");
+  expect(werewolfAnnouncement(morning).map((entry) => entry.name)).toContain("Ada");
+  expect(dawn(morning).alive.map((player) => player.name)).not.toContain("Ada");
+  // A wolf who is known (not the drunk any more) is still not a possible target.
+  const revealed = {
+    ...night,
+    drunk: night.drunk && { ...night.drunk, revealed: true },
+  } as WerewolfState;
+  expect(play(revealed, { type: "attack", night: revealed.night, target: "Ada" })).toBe(revealed);
+});
+
 it("requires two wolves and draws the mask only from eligible existing roles", () => {
   expect(
     createWerewolf(names.slice(0, 8).join(","), "Narrator", () => 0, [], { drunk: true }),

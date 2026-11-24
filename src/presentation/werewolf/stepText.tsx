@@ -444,6 +444,12 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
         )}
       </span>
     ),
+    // The drunk who is a werewolf: not woken with the others yet, so the narrator knows why one name is missing.
+    state.status === "wolves" && view.notes.hiddenWolf && (
+      <span className="ww-guide__victim" key="hiddenWolf">
+        {t("werewolfNarrator.guide.hiddenWolf", { name: view.notes.hiddenWolf })}
+      </span>
+    ),
     step.statement === "noAttack" && (
       <span className="ww-guide__victim" key="noAttack">
         {t("werewolfNarrator.guide.wolvesNoAttack")}

@@ -22,18 +22,17 @@ Für einen einzelnen Nominierten verwendet das Zufallsmodell pro zulässigem Wä
 
 Betroffene Tests: voteCount.test.ts, lastShot.test.ts, simulationVoting.test.ts, advancedRoles.test.ts, narrator.test.ts und narratorGuide.test.ts. Die beiden Tests mit dem Namensanfang smoke-checks in balance.test.ts und simulation.test.ts wurden einzeln ausgewählt; die übrigen langen Tests blieben übersprungen. Vorherige separate Tabu-Formatierung und lokale Visual-Studio-Dateien bleiben unberührt. Umsetzung direkt im aktuellen Branch game/werewolf-ui unter C:/Users/Kosta/source/repos/GameHub.
 
-
 ## Umgesetzte Ergänzungen für Codex und Claude (We-03-70, 23.11.2026)
 
 We-03-70 abgeschlossen: Alte Vettel muss bei vorhandenem Ziel stummschalten; null nur noch als Notausgang ohne gültiges Ziel. Forschungsmodell auf 1–3 Nominierte, einzelne gewichtete Stimmzettel und Stichwahlen angepasst; Heilungsmodelle verwenden wolfTarget. 104 gezielte Tests und 24 kurze Modellpartien erfolgreich. Keine langen Balance-Läufe, keine UI- oder Kalibrierungsänderungen.
 
-| Bereich | Aktueller Anschluss |
-| --- | --- |
-| Alte Vettel | stateMachine.ts weist silence mit target:null zurück, sobald ein gültiges lebendes Ziel existiert. Selbstwahl und Sperre der Vornacht bleiben unverändert. Nur ohne gültiges Ziel bleibt null als technischer Notausgang erlaubt; describeRoleStep kann diesen Fall weiterhin darstellen. Kein neues Einstellungsfeld. |
-| Ereignisauswahl | eventChoices.ts bietet silence:null ausschließlich ohne wählbare Person an. Die Erzähleransicht bleibt unverändert. |
-| Forschungs-Abstimmung | Neue Datei simulationVoting.ts: drawSimulationNominees und drawSimulationBallots. balance.test.ts nutzt diese Funktionen statt der früheren automatischen Verurteilung eines einzigen Kandidaten. |
-| Veraltete Heilungsmodelle | simulation.test.ts und die simulierten Hexen-/Magierentscheidungen in balance.test.ts verwenden wolfTarget. Die im Nachtrag vom 22.11.2026 beschriebenen victim-Prüferwartungen sind damit korrigiert. |
-| Schon von Claude umgesetzt | Neue echte Tagesabstimmung, Fragenmodell des Magiers, Rollen-Varianten, Verlauf und Todesreihenfolge wurden erhalten. An diesen produktiven Schnittstellen wurde nichts erneut implementiert. |
+| Bereich                    | Aktueller Anschluss                                                                                                                                                                                                                                                                                                    |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Alte Vettel                | stateMachine.ts weist silence mit target:null zurück, sobald ein gültiges lebendes Ziel existiert. Selbstwahl und Sperre der Vornacht bleiben unverändert. Nur ohne gültiges Ziel bleibt null als technischer Notausgang erlaubt; describeRoleStep kann diesen Fall weiterhin darstellen. Kein neues Einstellungsfeld. |
+| Ereignisauswahl            | eventChoices.ts bietet silence:null ausschließlich ohne wählbare Person an. Die Erzähleransicht bleibt unverändert.                                                                                                                                                                                                    |
+| Forschungs-Abstimmung      | Neue Datei simulationVoting.ts: drawSimulationNominees und drawSimulationBallots. balance.test.ts nutzt diese Funktionen statt der früheren automatischen Verurteilung eines einzigen Kandidaten.                                                                                                                      |
+| Veraltete Heilungsmodelle  | simulation.test.ts und die simulierten Hexen-/Magierentscheidungen in balance.test.ts verwenden wolfTarget. Die im Nachtrag vom 22.11.2026 beschriebenen victim-Prüferwartungen sind damit korrigiert.                                                                                                                 |
+| Schon von Claude umgesetzt | Neue echte Tagesabstimmung, Fragenmodell des Magiers, Rollen-Varianten, Verlauf und Todesreihenfolge wurden erhalten. An diesen produktiven Schnittstellen wurde nichts erneut implementiert.                                                                                                                          |
 
 ### Annahmen des Forschungsmodells
 
@@ -50,7 +49,6 @@ Neue Tests: requiredSilence.test.ts und simulationVoting.test.ts. Mitgeprüft: n
 Für spätere schnelle Modellprüfungen nur die beiden Tests mit dem Namensanfang smoke-checks aus balance.test.ts und simulation.test.ts auswählen und WEREWOLF_SIMULATION=1 setzen. Jede dieser Kurzprüfungen spielt zwölf reproduzierbare Partien. Keine vollständigen Forschungsdateien starten, solange der Auftraggeber keinen breiten Lauf verlangt.
 
 Historische Ja/Nein-Balancewerte und das neue Modell sind nicht direkt vergleichbar. Es wurden keine neuen Gewinnwahrscheinlichkeiten abgeleitet, keine Simulationsarchive überschrieben und keine Wolfsempfehlungen oder Rollenwerte neu kalibriert. Vorleseskript und weitere UI-Arbeiten bleiben wie vereinbart separat. Quelländerungen liegen direkt im aktuellen Branch game/werewolf-ui unter C:/Users/Kosta/source/repos/GameHub; der ältere isolierte Logik-Arbeitsordner wurde nicht über diesen neueren Code kopiert.
-
 
 Aktueller Nachtablauf (We-03-68, 21.11.2026): Nicht gezogene Pool-Rollen und Zusätze werden übersprungen. Tarnaufrufe gelten nur für tatsächlich vorhandene verdeckte Rollen beziehungsweise verbrauchte Fähigkeiten. nightRolePool, nightItemPool und nightMayUseHammer sind entfernt. Änderungen sind im Logik-Arbeitsordner und gezielt im Werwolf-UI-Arbeitsstand übernommen. Die gewichtete variable Ziehung und Zahlenbeispiele stehen in [GAMEHUB_WERWOLF_VARIABLE_API.md](GAMEHUB_WERWOLF_VARIABLE_API.md); ältere widersprechende Tarn-/Gewichtungsaussagen sind ersetzt.
 
@@ -93,12 +91,12 @@ Der Einstieg ist `createWerewolf` mit Sitzreihenfolge, separatem Erzähler und Z
 
 Der Erzähler kann vor dem Austeilen Leibwächter, Dorfmatratze, Hexe und Jäger hinzunehmen. Leibwächter und Dorfmatratze stehen als Alternativen zur Wahl. Jede ausgewählte Rolle ersetzt einen gewöhnlichen Dorfbewohner und gehört zur Dorfseite. Ohne Auswahl gilt die Grundbesetzung. Leibwächter, Hexe und Jäger orientieren sich an den Abschnitten Bodyguard, Witch und Hunter des oben verlinkten Regelhefts. Die Dorfmatratze folgt der vereinbarten Hausregel.
 
-| Rolle | Ablauf |
-| --- | --- |
-| **Leibwächter** | Schützt jede Nacht eine andere lebende Person. Dieselbe Person ist in zwei aufeinanderfolgenden Nächten gesperrt. Der Schutz wehrt Wolfsangriff, Gift und Todeszauber auf das gewählte Ziel ab. Ein direkter Wolfsangriff auf den Leibwächter trifft ihn. |
-| **Dorfmatratze** | Übernachtet jede Nacht bei einer anderen lebenden Person. Derselbe Gastgeber ist in zwei aufeinanderfolgenden Nächten gesperrt. Ein Wolfsangriff auf den Gastgeber trifft stattdessen die Dorfmatratze. Ein Wolfsangriff direkt auf sie geht während des Besuchs ins Leere. Gift und Todeszauber treffen weiterhin ihr gewähltes Ziel. Die Hexe und der Magier können die Dorfmatratze nach einem umgeleiteten Angriff heilen. |
-| **Hexe** | Wird nach den Werwölfen und der Seherin aufgerufen, auch in der ersten Nacht. Der Heiltrank rettet einmal pro Partie das erst noch ausscheidende Wolfsopfer. Der Gifttrank trifft einmal pro Partie eine lebende Person. Beide Tränke sind in derselben Nacht möglich. Trifft das Gift auf den Leibwächter-Schutz, verbraucht es sich trotzdem. Die Hexe kann in ihrer letzten Nacht handeln, solange das Ausscheiden erst am Morgen verkündet wird. |
-| **Jäger** | Wenn er am Morgen oder nach einer Abstimmung ausscheidet, darf er einmal auf eine noch lebende Person schießen oder den Schuss auslassen. Die Siegprüfung folgt erst danach. |
+| Rolle            | Ablauf                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Leibwächter**  | Schützt jede Nacht eine andere lebende Person. Dieselbe Person ist in zwei aufeinanderfolgenden Nächten gesperrt. Der Schutz wehrt Wolfsangriff, Gift und Todeszauber auf das gewählte Ziel ab. Ein direkter Wolfsangriff auf den Leibwächter trifft ihn.                                                                                                                                                                                            |
+| **Dorfmatratze** | Übernachtet jede Nacht bei einer anderen lebenden Person. Derselbe Gastgeber ist in zwei aufeinanderfolgenden Nächten gesperrt. Ein Wolfsangriff auf den Gastgeber trifft stattdessen die Dorfmatratze. Ein Wolfsangriff direkt auf sie geht während des Besuchs ins Leere. Gift und Todeszauber treffen weiterhin ihr gewähltes Ziel. Die Hexe und der Magier können die Dorfmatratze nach einem umgeleiteten Angriff heilen.                       |
+| **Hexe**         | Wird nach den Werwölfen und der Seherin aufgerufen, auch in der ersten Nacht. Der Heiltrank rettet einmal pro Partie das erst noch ausscheidende Wolfsopfer. Der Gifttrank trifft einmal pro Partie eine lebende Person. Beide Tränke sind in derselben Nacht möglich. Trifft das Gift auf den Leibwächter-Schutz, verbraucht es sich trotzdem. Die Hexe kann in ihrer letzten Nacht handeln, solange das Ausscheiden erst am Morgen verkündet wird. |
+| **Jäger**        | Wenn er am Morgen oder nach einer Abstimmung ausscheidet, darf er einmal auf eine noch lebende Person schießen oder den Schuss auslassen. Die Siegprüfung folgt erst danach.                                                                                                                                                                                                                                                                         |
 
 GameHub löst die Nacht in dieser Reihenfolge auf: **Leibwächter oder Dorfmatratze → Werwölfe → Seherin → Hexe → Morgen → gegebenenfalls Jäger**. Nicht besetzte oder bereits ausgeschiedene Nachtrollen werden übersprungen. In der ersten Nacht bleibt der Wolfsaufruf beim gegenseitigen Erkennen. Legt die Hexe bereits Gift fest, kann es am Morgen trotzdem ein Opfer geben. Findet derselbe Spieler durch Angriff und Gift den Tod, scheidet er einmal aus.
 
@@ -115,12 +113,12 @@ Die Grundregeln und Sonderrollen sind durch gezielte Tests abgesichert. Die Prü
 
 ## Zweite Gruppe der Sonderrollen
 
-| Rolle | Regel |
-| --- | --- |
-| **Amor** | Wählt in der ersten Nacht zwei Liebende. Sie erkennen einander, behalten ihre Rollen und scheiden gemeinsam aus, wenn einer von ihnen stirbt. Für den Spielausgang zählen ihre ursprünglichen Seiten. Auch ein gemischtes Paar aus den letzten zwei Überlebenden führt bei 1:1 zum Wolfssieg. |
-| **Dorftrottel (Idiot)** | Sobald über eine angeklagte Person abgestimmt wird, muss der Dorftrottel mit **Ja** stimmen. Gemeint ist die Ja/Nein-Abstimmung nach der Nominierung. |
-| **Bürgermeister** | Geheime Rolle. Vor Spielbeginn wird für die Partie genau eine Variante gewählt, **Doppelte Stimme** oder **Hammer**. Bei der doppelten Stimme zählt der Erzähler seinen Stimmzettel verdeckt zweifach. Beim Hammer zählt nur ein Werwolf als Treffer und scheidet aus. Bei jedem anderen Ziel scheidet der Bürgermeister selbst aus; die angegriffene Person wird durch diesen Fehlhammer nicht getötet. Bestehende Liebespaar-Folgen bleiben wirksam. |
-| **Alte Vettel (Spellcaster)** | Wählt nachts eine Person, die am folgenden Tag weder sprechen noch abstimmen darf. Dieselbe Person ist in zwei aufeinanderfolgenden Nächten gesperrt. Die Spielleitung kann **Selbstwahl erlauben**. Standardmäßig ist sie ausgeschaltet. |
+| Rolle                         | Regel                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Amor**                      | Wählt in der ersten Nacht zwei Liebende. Sie erkennen einander, behalten ihre Rollen und scheiden gemeinsam aus, wenn einer von ihnen stirbt. Für den Spielausgang zählen ihre ursprünglichen Seiten. Auch ein gemischtes Paar aus den letzten zwei Überlebenden führt bei 1:1 zum Wolfssieg.                                                                                                                                                          |
+| **Dorftrottel (Idiot)**       | Sobald über eine angeklagte Person abgestimmt wird, muss der Dorftrottel mit **Ja** stimmen. Gemeint ist die Ja/Nein-Abstimmung nach der Nominierung.                                                                                                                                                                                                                                                                                                  |
+| **Bürgermeister**             | Geheime Rolle. Vor Spielbeginn wird für die Partie genau eine Variante gewählt, **Doppelte Stimme** oder **Hammer**. Bei der doppelten Stimme zählt der Erzähler seinen Stimmzettel verdeckt zweifach. Beim Hammer zählt nur ein Werwolf als Treffer und scheidet aus. Bei jedem anderen Ziel scheidet der Bürgermeister selbst aus; die angegriffene Person wird durch diesen Fehlhammer nicht getötet. Bestehende Liebespaar-Folgen bleiben wirksam. |
+| **Alte Vettel (Spellcaster)** | Wählt nachts eine Person, die am folgenden Tag weder sprechen noch abstimmen darf. Dieselbe Person ist in zwei aufeinanderfolgenden Nächten gesperrt. Die Spielleitung kann **Selbstwahl erlauben**. Standardmäßig ist sie ausgeschaltet.                                                                                                                                                                                                              |
 
 In der Variante **Hammer** wird der Bürgermeister nachts verdeckt aufgerufen, auch wenn es tagsüber keine Abstimmung oder kein Ausscheiden gab. Solange er lebt und seinen Hammer besitzt, kann er ihn einsetzen oder für später aufheben. Nur der Erzähler erfährt, ob der Hammer eingesetzt wurde und wen der Bürgermeister gewählt hat. Am Morgen werden alle Ausgeschiedenen gemeinsam angekündigt. Die Todesursache und der Hammereinsatz bleiben bei beiden Einstellungen zur Rollenaufdeckung geheim. Rollen werden nach den allgemeinen Einstellungen aufgedeckt. Bei der Auflösung der Partie kann der Erzähler den Hammereinsatz bekannt geben.
 
@@ -147,15 +145,15 @@ Die Spielleitung wählt vor dem Start zwischen **Rollen aufdecken** und **Rollen
 
 Mit den aktuellen Rollen sind höchstens **acht verschiedene Personen** in einer Nacht samt morgendlicher Auflösung einschließlich Jägerschuss möglich:
 
-| Ursache | Höchstens weitere Tote |
-| --- | ---: |
-| Aktueller Wolfsangriff, etwa auf den Jäger | 1 |
-| Letzter Schuss dieses Jägers | 1 |
-| Gifttrank der Hexe | 1 |
-| Beide Todeszauber des Magiers | 2 |
-| Fehlhammer: Bürgermeister und sein Liebespartner | 2 |
-| Harter Bursche aus dem Wolfsangriff der vorherigen Nacht | 1 |
-| **Gesamt** | **8** |
+| Ursache                                                  | Höchstens weitere Tote |
+| -------------------------------------------------------- | ---------------------: |
+| Aktueller Wolfsangriff, etwa auf den Jäger               |                      1 |
+| Letzter Schuss dieses Jägers                             |                      1 |
+| Gifttrank der Hexe                                       |                      1 |
+| Beide Todeszauber des Magiers                            |                      2 |
+| Fehlhammer: Bürgermeister und sein Liebespartner         |                      2 |
+| Harter Bursche aus dem Wolfsangriff der vorherigen Nacht |                      1 |
+| **Gesamt**                                               |                  **8** |
 
 Voraussetzungen sind unterschiedliche Opfer, noch verfügbare Tränke/Zauber und keine wirksame Heilung oder Abwehr. Bürgermeister und Partner dürfen nicht zugleich als andere Opfer doppelt gezählt werden. Es gibt nur ein Liebespaar; dessen zusätzlicher Tod kann deshalb nicht bei jeder Todesquelle erneut hinzukommen. Der Hammer wird nach den übrigen Angriffen eingesetzt; die gemeinsame Nachtauflösung erhält alle bereits ausgeführten Aktionen und zählt jedes Opfer nur einmal.
 
@@ -167,11 +165,11 @@ Die acht enthalten den Jägerschuss nach der Morgenansage. Eine spätere Tagesab
 
 ## Weitere optionale Rollen
 
-| Rolle | Regel |
-| --- | --- |
-| **Harter Bursche** | Standard wolfOnly: Nur Wolfsangriffe verzögern den Tod bis zum Ende der Folgenacht; Heilung nur in der Angriffsnacht. Option anyAttack: Auch Hexengift, Todeszauber und Jägerschuss verzögern den Tod, mit normalem folgenden Tag. Bereits bestehende Verwundungen sind nicht heilbar und werden durch weitere Angriffe nicht verschoben. Hammer, Abstimmung und Liebeskummer bleiben sofort tödlich. |
-| **Seher-Lehrling** | Solange die Seherin lebt, führt sie die Vision aus. Nach ihrem Ausscheiden übernimmt der lebende Lehrling beim nächsten Seheraufruf. Bei einem gewöhnlichen nächtlichen Angriff scheidet die Seherin erst morgens aus und bekommt vorher noch ihre Vision. Nach dem Tod der Seherin wird in den folgenden Nächten ausdrücklich Seher-Lehrling aufgerufen; ihr Tod darf daran erkennbar werden. |
-| **Paranormaler Ermittler** | Kann einmal pro Partie nachts eine lebende Person wählen. Der Erzähler antwortet mit Ja oder Nein, ob die Person selbst oder einer ihrer zwei nächsten lebenden Sitznachbarn ein Wolf ist. Die App benutzt die Sitzreihenfolge als Kreis und überspringt ausgeschiedene Spieler. Aufschieben verbraucht die Fähigkeit nicht. |
+| Rolle                      | Regel                                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Harter Bursche**         | Standard wolfOnly: Nur Wolfsangriffe verzögern den Tod bis zum Ende der Folgenacht; Heilung nur in der Angriffsnacht. Option anyAttack: Auch Hexengift, Todeszauber und Jägerschuss verzögern den Tod, mit normalem folgenden Tag. Bereits bestehende Verwundungen sind nicht heilbar und werden durch weitere Angriffe nicht verschoben. Hammer, Abstimmung und Liebeskummer bleiben sofort tödlich. |
+| **Seher-Lehrling**         | Solange die Seherin lebt, führt sie die Vision aus. Nach ihrem Ausscheiden übernimmt der lebende Lehrling beim nächsten Seheraufruf. Bei einem gewöhnlichen nächtlichen Angriff scheidet die Seherin erst morgens aus und bekommt vorher noch ihre Vision. Nach dem Tod der Seherin wird in den folgenden Nächten ausdrücklich Seher-Lehrling aufgerufen; ihr Tod darf daran erkennbar werden.        |
+| **Paranormaler Ermittler** | Kann einmal pro Partie nachts eine lebende Person wählen. Der Erzähler antwortet mit Ja oder Nein, ob die Person selbst oder einer ihrer zwei nächsten lebenden Sitznachbarn ein Wolf ist. Die App benutzt die Sitzreihenfolge als Kreis und überspringt ausgeschiedene Spieler. Aufschieben verbraucht die Fähigkeit nicht.                                                                          |
 
 ### Anbindung für Claude Code
 
@@ -198,10 +196,10 @@ Die acht enthalten den Jägerschuss nach der Morgenansage. Eine spätere Tagesab
 
 Der Gerber hat keine Nachtaktion. Sein persönlicher Sieg wird zusätzlich zum Ergebnis der Partie erfasst. Die Spielleitung wählt vor dem Austeilen eine von zwei Siegbedingungen.
 
-| Einstellung | Persönliche Siegbedingung |
-| --- | --- |
-| **Jedes Ausscheiden zählt** (Standard) | Der Gerber gewinnt, sobald er ausscheidet. Dazu zählen auch ein Wolfsangriff, ein Jägerschuss und der Tod aus Liebeskummer. |
-| **Nur rausgewählt** | Der Gerber gewinnt, wenn er selbst durch die Tagesabstimmung ausscheidet. Wird sein Liebespartner rausgewählt und scheidet der Gerber deshalb ebenfalls aus, gewinnt er persönlich nicht. |
+| Einstellung                            | Persönliche Siegbedingung                                                                                                                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Jedes Ausscheiden zählt** (Standard) | Der Gerber gewinnt, sobald er ausscheidet. Dazu zählen auch ein Wolfsangriff, ein Jägerschuss und der Tod aus Liebeskummer.                                                               |
+| **Nur rausgewählt**                    | Der Gerber gewinnt, wenn er selbst durch die Tagesabstimmung ausscheidet. Wird sein Liebespartner rausgewählt und scheidet der Gerber deshalb ebenfalls aus, gewinnt er persönlich nicht. |
 
 Nach dem persönlichen Sieg läuft die Partie bis zum Sieg des Dorfs oder der Werwölfe weiter. Startet der Gerber als Trunkenbold, beeinflusst das seine sichtbare Rollenansage. Die persönliche Siegbedingung gilt bereits vor der Enthüllung.
 
@@ -214,7 +212,7 @@ Nach dem persönlichen Sieg läuft die Partie bis zum Sieg des Dorfs oder der We
 
 - Die Spielleitung kann **Trunkenbold** ab zwei Werwölfen aktivieren, also ab neun Spielern. Nach dem Austeilen lost die App aus, wer als Trunkenbold startet. Alle besetzten Rollen außer Amor kommen dafür infrage. Die Anzahl der Rollenplätze und Werwölfe bleibt gleich.
 - Beim Austeilen sieht die Person **Trunkenbold**. Zu Beginn der dritten Nacht zeigt der Erzähler ihr heimlich die wahre Rolle, bevor die Nachtaktionen beginnen. Rollenfähigkeiten ruhen bis dahin. Für die Siegprüfung und die Ergebnisse von Seherin und Ermittler gilt von Anfang an die wahre Rolle.
-- Ein verdeckter Wolf wacht erst ab der Enthüllung mit den übrigen Wölfen auf. Kann vor der Enthüllung kein lebender Wolf aufwachen, fällt der Wolfsangriff aus. Die übrigen Nachtschritte laufen weiter.
+- Ein verdeckter Wolf wacht erst ab der Enthüllung mit den übrigen Wölfen auf. Bis dahin dürfen die anderen Wölfe ihn versehentlich angreifen (Entscheidung des Auftraggebers): Der Angriff gilt wie jeder andere (Schutz, Heilung und Tod wirken normal). Kann vor der Enthüllung kein lebender Wolf aufwachen, fällt der Wolfsangriff aus. Die übrigen Nachtschritte laufen weiter.
 - Scheidet die Person vor der Enthüllung aus, lautet die öffentliche Ansage bei offener Rollenaufdeckung **Trunkenbold**. Bei verdeckter Rollenaufdeckung wird der Name genannt. Ein verdeckter Jäger erfährt vor seinem letzten Schuss heimlich seine wahre Rolle und darf wie gewohnt schießen oder darauf verzichten. Das Ziel eines Schusses wird sofort angesagt. Die Siegprüfung folgt danach.
 
 ### Anbindung für Claude Code
@@ -243,23 +241,23 @@ Die folgenden Grenzen gelten für die geplante frei wählbare Startaufstellung. 
 
 ### Feste Rollen und Füllrolle
 
-| Spieler | Werwölfe | Prüfung der Startaufstellung |
-| --- | ---: | --- |
-| 6 | 1 | Festgelegt |
-| 7 | 1 oder 2, Standard 1 | Zusatzoption bestätigt |
-| 8 | 2, mindestens 1, höchstens 2 | Nachprüfung übernommen |
-| 9 | Alte Vettel (Spellcaster), Bürgermeister: doppelte Stimme, Trunkenbold | Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Trunkenbold kommt als Zusatz ohne weiteren Rollenplatz hinzu. | 2 | **2** |
-| 10 | Paranormaler Ermittler, Schutzamulett | Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Bürgermeister mit doppelter Stimme oder Hammer, niemals beides. | 2 | **2** |
-| 11 | 2 oder 3, Standard 2 | Zusatzoption bestätigt; Hexe und Magier bleiben Alternativen |
-| 12 | 3 | Gezielte Vergleiche abgeschlossen |
-| 13 | 3 | Festgelegt |
-| 14 | 3, optional 4 | Festgelegt |
-| 15 | 3, optional 4 | Festgelegt |
-| 16 | 4, optional 3 | Festgelegt |
-| 17 | 4, optional 3 oder 5 | Festgelegt |
-| 18 | 4, mindestens 3, höchstens 5 | Festgelegt |
-| 19 | 4, mindestens 3, höchstens 5 | Stichproben geprüft |
-| 20 | 4, mindestens 3, höchstens 5 | Stichproben geprüft |
+| Spieler |                                                               Werwölfe | Prüfung der Startaufstellung                                                                                                                                            |
+| ------- | ---------------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6       |                                                                      1 | Festgelegt                                                                                                                                                              |
+| 7       |                                                   1 oder 2, Standard 1 | Zusatzoption bestätigt                                                                                                                                                  |
+| 8       |                                           2, mindestens 1, höchstens 2 | Nachprüfung übernommen                                                                                                                                                  |
+| 9       | Alte Vettel (Spellcaster), Bürgermeister: doppelte Stimme, Trunkenbold | Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Trunkenbold kommt als Zusatz ohne weiteren Rollenplatz hinzu.   | 2   | **2** |
+| 10      |                                  Paranormaler Ermittler, Schutzamulett | Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Bürgermeister mit doppelter Stimme oder Hammer, niemals beides. | 2   | **2** |
+| 11      |                                                   2 oder 3, Standard 2 | Zusatzoption bestätigt; Hexe und Magier bleiben Alternativen                                                                                                            |
+| 12      |                                                                      3 | Gezielte Vergleiche abgeschlossen                                                                                                                                       |
+| 13      |                                                                      3 | Festgelegt                                                                                                                                                              |
+| 14      |                                                          3, optional 4 | Festgelegt                                                                                                                                                              |
+| 15      |                                                          3, optional 4 | Festgelegt                                                                                                                                                              |
+| 16      |                                                          4, optional 3 | Festgelegt                                                                                                                                                              |
+| 17      |                                                   4, optional 3 oder 5 | Festgelegt                                                                                                                                                              |
+| 18      |                                           4, mindestens 3, höchstens 5 | Festgelegt                                                                                                                                                              |
+| 19      |                                           4, mindestens 3, höchstens 5 | Stichproben geprüft                                                                                                                                                     |
+| 20      |                                           4, mindestens 3, höchstens 5 | Stichproben geprüft                                                                                                                                                     |
 
 - **Werwölfe** sind Pflicht. Die App legt ihre Zahl anhand der Gruppengröße fest.
 - **Seherin** ist Pflicht. Jede Partie enthält genau eine Seherin.
@@ -271,23 +269,23 @@ Die Anzahl der Füllrollen lautet Spielerzahl minus Wolfszahl minus eins für di
 
 Eine Seherin ist immer Pflicht. Die Zeilen bauen aufeinander auf: Bereits freigegebene Rollen und Zusätze bleiben verfügbar. Alle weiteren Rollen sind optional; gewöhnliche Dorfbewohner füllen freie Plätze. Nachprüfungen übernommen: 7 Spieler mit 1–2 Wölfen (Standard 1), 8 mit 1–2 (Standard 2), 9 und 10 immer mit genau 2, 11 mit 2–3 (Standard 2).
 
-| Spieler | Neue Rollen / Zusätze | Umstellung gegenüber der vorherigen Zeile | Erlaubte Wölfe | Allgemeine Empfehlung |
-| ---: | --- | --- | --- | ---: |
-| 6 | Hexe, Jäger, Dorftrottel, Leibwächter, Dorfmatratze | Grundauswahl. Leibwächter oder Dorfmatratze; eine Seherin und ein Wolf sind fest. | 1 | **1** |
-| 7 | Amor, Harter Bursche | Ein oder zwei Wölfe erlaubt; allgemeiner Standard bleibt einer. Zwei sind für starke Dorfbesetzungen vorgesehen. Höchstens fünf optionale Rollen mit einem Wolf, vier mit zwei Wölfen. Trunkenbold weiterhin erst ab neun Spielern. | 1 / 2 | **1** |
-| 8 | Gerber, Seher-Lehrling | Ein oder zwei Wölfe bleiben erlaubt. Zwei werden allgemeiner Standard; einer bleibt für schwächere Dorfbesetzungen. Höchstens fünf optionale Rollen mit zwei Wölfen. Trunkenbold bleibt erst ab neun Spielern verfügbar. | 1 / 2 | **2** |
-| 9 | Alte Vettel (Spellcaster), Bürgermeister: doppelte Stimme, Trunkenbold | Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Trunkenbold kommt als Zusatz ohne weiteren Rollenplatz hinzu. | 2 | **2** |
-| 10 | Paranormaler Ermittler, Schutzamulett | Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Bürgermeister mit doppelter Stimme oder Hammer, niemals beides. | 2 | **2** |
-| 11 | Magier | Zwei oder drei Wölfe erlaubt; allgemeiner Standard bleibt zwei. Drei sind für starke Dorfbesetzungen, insbesondere mit Magier, vorgesehen. Hexe und Magier bleiben Alternativen. Höchstens acht optionale Rollen mit zwei Wölfen, sieben mit drei. | 2 / 3 | **2** |
-| 12 | — | Zwei oder drei Wölfe bleiben erlaubt; drei werden allgemeiner Standard. Hexe und Magier bleiben Alternativen. | 2 / 3 | **3** |
-| 13 | — | Nur drei Wölfe erlaubt; zwei entfallen. Hexe und Magier bleiben Alternativen. | 3 | **3** |
-| 14 | — | Vier Wölfe kommen hinzu. Bei vier Wölfen dürfen Hexe und Magier gemeinsam spielen; bei drei bleiben sie Alternativen. | 3 / 4 | **3** |
-| 15 | — | Keine Umstellung: gemeinsame Heiler nur bei vier Wölfen. | 3 / 4 | **3** |
-| 16 | — | Vier Wölfe werden allgemeiner Standard. Gemeinsame Heiler weiterhin nur bei vier Wölfen. | 3 / 4 | **4** |
-| 17 | — | Fünf Wölfe kommen hinzu. Hexe und Magier gemeinsam bei vier oder fünf; bei drei bleiben sie Alternativen. | 3 / 4 / 5 | **4** |
-| 18 | — | Keine Umstellung. Gemeinsame Heiler bei vier oder fünf Wölfen; sechs Wölfe ausgeschlossen. | 3 / 4 / 5 | **4** |
-| 19 | — | Keine Umstellung; durch Stichproben bestätigt. | 3 / 4 / 5 | **4** |
-| 20 | — | Keine Umstellung; durch Stichproben bestätigt. Obergrenze: 20 Spieler plus Erzähler. | 3 / 4 / 5 | **4** |
+| Spieler | Neue Rollen / Zusätze                                                  | Umstellung gegenüber der vorherigen Zeile                                                                                                                                                                                                          | Erlaubte Wölfe | Allgemeine Empfehlung |
+| ------: | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------------------: |
+|       6 | Hexe, Jäger, Dorftrottel, Leibwächter, Dorfmatratze                    | Grundauswahl. Leibwächter oder Dorfmatratze; eine Seherin und ein Wolf sind fest.                                                                                                                                                                  | 1              |                 **1** |
+|       7 | Amor, Harter Bursche                                                   | Ein oder zwei Wölfe erlaubt; allgemeiner Standard bleibt einer. Zwei sind für starke Dorfbesetzungen vorgesehen. Höchstens fünf optionale Rollen mit einem Wolf, vier mit zwei Wölfen. Trunkenbold weiterhin erst ab neun Spielern.                | 1 / 2          |                 **1** |
+|       8 | Gerber, Seher-Lehrling                                                 | Ein oder zwei Wölfe bleiben erlaubt. Zwei werden allgemeiner Standard; einer bleibt für schwächere Dorfbesetzungen. Höchstens fünf optionale Rollen mit zwei Wölfen. Trunkenbold bleibt erst ab neun Spielern verfügbar.                           | 1 / 2          |                 **2** |
+|       9 | Alte Vettel (Spellcaster), Bürgermeister: doppelte Stimme, Trunkenbold | Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Trunkenbold kommt als Zusatz ohne weiteren Rollenplatz hinzu.                                                                              | 2              |                 **2** |
+|      10 | Paranormaler Ermittler, Schutzamulett                                  | Verbindlich genau zwei Wölfe, unabhängig von Sonderrollen und Zusätzen. Keine rollenabhängige Änderung. Bürgermeister mit doppelter Stimme oder Hammer, niemals beides.                                                                            | 2              |                 **2** |
+|      11 | Magier                                                                 | Zwei oder drei Wölfe erlaubt; allgemeiner Standard bleibt zwei. Drei sind für starke Dorfbesetzungen, insbesondere mit Magier, vorgesehen. Hexe und Magier bleiben Alternativen. Höchstens acht optionale Rollen mit zwei Wölfen, sieben mit drei. | 2 / 3          |                 **2** |
+|      12 | —                                                                      | Zwei oder drei Wölfe bleiben erlaubt; drei werden allgemeiner Standard. Hexe und Magier bleiben Alternativen.                                                                                                                                      | 2 / 3          |                 **3** |
+|      13 | —                                                                      | Nur drei Wölfe erlaubt; zwei entfallen. Hexe und Magier bleiben Alternativen.                                                                                                                                                                      | 3              |                 **3** |
+|      14 | —                                                                      | Vier Wölfe kommen hinzu. Bei vier Wölfen dürfen Hexe und Magier gemeinsam spielen; bei drei bleiben sie Alternativen.                                                                                                                              | 3 / 4          |                 **3** |
+|      15 | —                                                                      | Keine Umstellung: gemeinsame Heiler nur bei vier Wölfen.                                                                                                                                                                                           | 3 / 4          |                 **3** |
+|      16 | —                                                                      | Vier Wölfe werden allgemeiner Standard. Gemeinsame Heiler weiterhin nur bei vier Wölfen.                                                                                                                                                           | 3 / 4          |                 **4** |
+|      17 | —                                                                      | Fünf Wölfe kommen hinzu. Hexe und Magier gemeinsam bei vier oder fünf; bei drei bleiben sie Alternativen.                                                                                                                                          | 3 / 4 / 5      |                 **4** |
+|      18 | —                                                                      | Keine Umstellung. Gemeinsame Heiler bei vier oder fünf Wölfen; sechs Wölfe ausgeschlossen.                                                                                                                                                         | 3 / 4 / 5      |                 **4** |
+|      19 | —                                                                      | Keine Umstellung; durch Stichproben bestätigt.                                                                                                                                                                                                     | 3 / 4 / 5      |                 **4** |
+|      20 | —                                                                      | Keine Umstellung; durch Stichproben bestätigt. Obergrenze: 20 Spieler plus Erzähler.                                                                                                                                                               | 3 / 4 / 5      |                 **4** |
 
 Leibwächter und Dorfmatratze sind immer Alternativen. Beim Bürgermeister gilt entweder doppelte Stimme oder Hammer. Trunkenbold und Schutzamulett belegen keinen zusätzlichen Rollenplatz; beide sind standardmäßig aus. Alle Auswahlen müssen in die freien Spielerplätze passen.
 
@@ -389,30 +387,30 @@ Die vollständige Kombinationsprüfung für zehn Spieler ist abgeschlossen. Die 
 
 Jede dieser Karten kann einmal gewählt werden und belegt genau einen Platz. In der Grundbesetzung sind sie ausgeschaltet.
 
-| Rollenkarte | Ab Spielern | Weitere Bedingung oder Einstellung |
-| --- | ---: | --- |
-| **Dorftrottel** | 6 | Pflichtstimme bei einer Tagesabstimmung. |
-| **Hexe** | 6 | Alternative zum Magier. Gemeinsam bei 14 bis 16 Spielern und 4 Wölfen sowie bei 17 bis 20 Spielern mit 4 oder 5 Wölfen. |
-| **Jäger** | 6 | Letzter Schuss nach dem eigenen Ausscheiden. |
-| **Leibwächter** | 6 | Nächtliche Abwehr. Besetzt denselben Platz wie die Dorfmatratze. |
-| **Dorfmatratze** | 6 | Nächtlicher Besuch. Besetzt denselben Platz wie der Leibwächter. |
-| **Gerber** | 8 | Jedes Ausscheiden zählt oder nur rausgewählt. Jedes Ausscheiden ist Standard. |
-| **Amor** | 7 | Eine Paarung in der ersten Nacht. |
-| **Harter Bursche** | 7 | Eine frische Wunde durch Wölfe löst den verzögerten Tod aus. |
-| **Alte Vettel** | 9 | Selbstwahl einstellbar. Standardmäßig ausgeschaltet. |
-| **Bürgermeister** | 9 | Doppelte Stimme ab 9 Spielern. Hammer ab 10 Spielern. Pro Partie gilt genau eine Variante. Doppelte Stimme ist Standard. |
-| **Paranormaler Ermittler** | 10 | Einmalige Untersuchung anhand der Sitzreihenfolge. Die Seherin gehört weiterhin zur Pflichtbesetzung. |
-| **Seher-Lehrling** | 8 | Setzt die Seherin voraus, die bereits zur Pflichtbesetzung gehört. |
-| **Magier** | 11 | Alternative zur Hexe. Gemeinsam bei 14 bis 16 Spielern und 4 Wölfen sowie bei 17 bis 20 Spielern mit 4 oder 5 Wölfen. |
+| Rollenkarte                | Ab Spielern | Weitere Bedingung oder Einstellung                                                                                       |
+| -------------------------- | ----------: | ------------------------------------------------------------------------------------------------------------------------ |
+| **Dorftrottel**            |           6 | Pflichtstimme bei einer Tagesabstimmung.                                                                                 |
+| **Hexe**                   |           6 | Alternative zum Magier. Gemeinsam bei 14 bis 16 Spielern und 4 Wölfen sowie bei 17 bis 20 Spielern mit 4 oder 5 Wölfen.  |
+| **Jäger**                  |           6 | Letzter Schuss nach dem eigenen Ausscheiden.                                                                             |
+| **Leibwächter**            |           6 | Nächtliche Abwehr. Besetzt denselben Platz wie die Dorfmatratze.                                                         |
+| **Dorfmatratze**           |           6 | Nächtlicher Besuch. Besetzt denselben Platz wie der Leibwächter.                                                         |
+| **Gerber**                 |           8 | Jedes Ausscheiden zählt oder nur rausgewählt. Jedes Ausscheiden ist Standard.                                            |
+| **Amor**                   |           7 | Eine Paarung in der ersten Nacht.                                                                                        |
+| **Harter Bursche**         |           7 | Eine frische Wunde durch Wölfe löst den verzögerten Tod aus.                                                             |
+| **Alte Vettel**            |           9 | Selbstwahl einstellbar. Standardmäßig ausgeschaltet.                                                                     |
+| **Bürgermeister**          |           9 | Doppelte Stimme ab 9 Spielern. Hammer ab 10 Spielern. Pro Partie gilt genau eine Variante. Doppelte Stimme ist Standard. |
+| **Paranormaler Ermittler** |          10 | Einmalige Untersuchung anhand der Sitzreihenfolge. Die Seherin gehört weiterhin zur Pflichtbesetzung.                    |
+| **Seher-Lehrling**         |           8 | Setzt die Seherin voraus, die bereits zur Pflichtbesetzung gehört.                                                       |
+| **Magier**                 |          11 | Alternative zur Hexe. Gemeinsam bei 14 bis 16 Spielern und 4 Wölfen sowie bei 17 bis 20 Spielern mit 4 oder 5 Wölfen.    |
 
 Zwei Werwölfe, eine Seherin, eine Hexe, Amor, ein Jäger und vier gewöhnliche Dorfbewohner bilden beispielsweise eine vollständige Aufstellung für zehn Spieler. Die übrigen freigegebenen Karten können ebenfalls kombiniert werden, solange genügend Rollenplätze frei sind.
 
 ### Trunkenbold und Schutzamulett
 
-| Auswahl | Verfügbar wenn | Vergabe |
-| --- | --- | --- |
-| **Trunkenbold** | Mindestens neun Spieler teilnehmen und mindestens zwei Werwölfe mitspielen. | Genau eine Person wird Trunkenbold. Alle tatsächlich besetzten Rollen außer Amor sind für die Auslosung zugelassen. |
-| **Schutzamulett** | Mindestens zehn Spieler teilnehmen. | Genau ein Amulett. Die Startvergabe schließt tatsächliche Werwölfe aus. Bei der späteren Weitergabe darf jede lebende Person gewählt werden. |
+| Auswahl           | Verfügbar wenn                                                              | Vergabe                                                                                                                                      |
+| ----------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trunkenbold**   | Mindestens neun Spieler teilnehmen und mindestens zwei Werwölfe mitspielen. | Genau eine Person wird Trunkenbold. Alle tatsächlich besetzten Rollen außer Amor sind für die Auslosung zugelassen.                          |
+| **Schutzamulett** | Mindestens zehn Spieler teilnehmen.                                         | Genau ein Amulett. Die Startvergabe schließt tatsächliche Werwölfe aus. Bei der späteren Weitergabe darf jede lebende Person gewählt werden. |
 
 Trunkenbold und Schutzamulett sind standardmäßig ausgeschaltet und belegen keine Rollenplätze. Wer als Trunkenbold startet, kann zugleich das Schutzamulett erhalten, sofern es seine tatsächliche Rolle zulässt. **Rollen aufdecken** bleibt die Standardoption und gilt unabhängig von der Besetzung.
 
@@ -465,18 +463,18 @@ Das Amulett startet bei einer erlaubten Nichtwolf-Person; Trunkenbold und Amulet
 
 Die Zahl in der Tabelle zählt nur Personen mit Spielrolle. Der Erzähler kommt dazu. Die Grundbesetzung folgt Ultimate Werewolf und enthält immer eine Seherin. Für die erste Partie einer Gruppe ist sie die Empfehlung. Die letzte Spalte enthält Vorschläge für Folgepartien. Jede dort genannte Sonderrolle ersetzt genau einen gewöhnlichen Dorfbewohner.
 
-| Spieler | Werwölfe | Seherin | Dorfbewohner in der Grundbesetzung | Vorschlag für eine Folgepartie |
-| --- | --- | --- | --- | --- |
-| 6 | 1 | 1 | 4 | Hexe und Dorftrottel. Für eine zusätzliche Nachtaktion kann ein Leibwächter oder eine Dorfmatratze dazukommen. |
-| 7 | 1 | 1 | 5 | Dorftrottel |
-| 8 | 1 | 1 | 6 | Leibwächter |
-| 9 | 2 | 1 | 6 | Leibwächter |
-| 10 | 2 | 1 | 7 | Jäger |
-| 11 | 2 | 1 | 8 | Bürgermeister mit doppelter Stimme |
-| 12 | 3 | 1 | 8 | Leibwächter und Jäger |
-| 13 | 3 | 1 | 9 | Hexe |
-| 14 | 3 | 1 | 10 | Amor und Jäger |
-| 15 | 3 | 1 | 11 | Leibwächter und Alte Vettel. Für eine separate Partie Bürgermeister mit Hammer und Dorftrottel. |
+| Spieler | Werwölfe | Seherin | Dorfbewohner in der Grundbesetzung | Vorschlag für eine Folgepartie                                                                                 |
+| ------- | -------- | ------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 6       | 1        | 1       | 4                                  | Hexe und Dorftrottel. Für eine zusätzliche Nachtaktion kann ein Leibwächter oder eine Dorfmatratze dazukommen. |
+| 7       | 1        | 1       | 5                                  | Dorftrottel                                                                                                    |
+| 8       | 1        | 1       | 6                                  | Leibwächter                                                                                                    |
+| 9       | 2        | 1       | 6                                  | Leibwächter                                                                                                    |
+| 10      | 2        | 1       | 7                                  | Jäger                                                                                                          |
+| 11      | 2        | 1       | 8                                  | Bürgermeister mit doppelter Stimme                                                                             |
+| 12      | 3        | 1       | 8                                  | Leibwächter und Jäger                                                                                          |
+| 13      | 3        | 1       | 9                                  | Hexe                                                                                                           |
+| 14      | 3        | 1       | 10                                 | Amor und Jäger                                                                                                 |
+| 15      | 3        | 1       | 11                                 | Leibwächter und Alte Vettel. Für eine separate Partie Bürgermeister mit Hammer und Dorftrottel.                |
 
 **6 bis 8 Spieler.** Bei sechs Spielern können zwei falsche Tagesabstimmungen und zwei erfolgreiche Wolfsangriffe genügen, damit der letzte Wolf bei 1:1 gewinnt. In der ersten Nacht fällt der Wolfsangriff regulär aus. Der Dorftrottel bringt eine zusätzliche Stimmregel ins Spiel. Die Abwehr des Leibwächters und ein verfehlter Angriff auf die Dorfmatratze können Zeit für einen weiteren Tag gewinnen. Beim Angriff auf einen Gastgeber entscheidet die Übernachtung, wen die Wölfe treffen. Für sechs Spieler wurden die Sonderrollen sowohl einzeln als auch in den Kombinationen mit Hexe, Dorftrottel und Leibwächter geprüft.
 
@@ -496,17 +494,17 @@ Die Simulation prüft die Regeln. Für die Balance bleiben Spieltests mit echten
 
 ## Bisherige Simulationen wiederverwenden
 
-| Spieler | Dokumentierte Ergebnisse |
-| --- | --- |
-| 6 | [Rollenvergleiche](#simulierte-wolfssiege-bei-sechs-spielern) und [aktueller Vergleich mit Dorfmatratze](#leibwächter-und-dorfmatratze-bei-sechs-spielern) |
-| 7 | [Einzelvergleiche](#prüfung-der-aufstellungen-für-sieben-spieler) und [Kombinationsprüfung](#vollständiger-vergleich-der-sechs-vorgeschlagenen-sonderrollen). Die dokumentierten Quoten zur früheren Selbstopfer-Regel gehören zur damaligen Spiellogik. |
-| 8 | [Gerber und Seher-Lehrling](#gerber-und-seher-lehrling-bei-acht-spielern) und [Kombinationsprüfung mit 544 Varianten](#vollständige-kombinationsprüfung-für-acht-spieler). Für den vollständigen Lauf sind die Bandbreiten je Anzahl gewählter Sonderrollen dokumentiert. |
-| 9 | [Vergleich der möglichen Zusatzrollen](#prüfung-der-aufstellungen-für-neun-spieler) mit [Einzelwerten](simulations/werewolf-nine-player.jsonl) sowie [Hammer-Vergleich](#bürgermeister-mit-hammer-bei-neun-spielern) und [Magier-Vergleich](#magier-als-alternative-zur-hexe-bei-neun-spielern) sowie die [vollständige Kombinationsprüfung](#vollständige-kombinationsprüfung-für-neun-spieler) |
-| 10 | [Aktueller Vergleich von Hammer, Ermittler und Schutzamulett](#prüfung-der-aufstellungen-für-zehn-spieler) und [früherer Vergleich zweier Aufstellungen mit Amor](#simulierte-wolfssiege-in-zwei-zehnerbesetzungen). Die Quoten verwenden die damalige Siegprüfung. |
-| 11 | [Magier mit und ohne Hexe](#magier-mit-und-ohne-hexe-bei-elf-spielern) mit [Einzelwerten](simulations/werewolf-eleven-player-magician.jsonl.gz) |
-| 12 | [Vergleich von Hexe, Magier und weiteren Optionen](#prüfung-der-aufstellungen-für-zwölf-spieler) mit [Einzelwerten](simulations/werewolf-twelve-player.jsonl) |
-| 13 | [Vergleich von Hexe und Magier](#prüfung-der-aufstellungen-für-dreizehn-spieler) mit [Einzelwerten](simulations/werewolf-thirteen-player-healers.jsonl.gz) |
-| 14 | [Drei oder vier Wölfe und beide Heilrollen](#prüfung-der-aufstellungen-für-vierzehn-spieler) mit [Einzelwerten](simulations/werewolf-fourteen-player-options.jsonl.gz) |
+| Spieler | Dokumentierte Ergebnisse                                                                                                                                                                                                                                                                                                                                                                         |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 6       | [Rollenvergleiche](#simulierte-wolfssiege-bei-sechs-spielern) und [aktueller Vergleich mit Dorfmatratze](#leibwächter-und-dorfmatratze-bei-sechs-spielern)                                                                                                                                                                                                                                       |
+| 7       | [Einzelvergleiche](#prüfung-der-aufstellungen-für-sieben-spieler) und [Kombinationsprüfung](#vollständiger-vergleich-der-sechs-vorgeschlagenen-sonderrollen). Die dokumentierten Quoten zur früheren Selbstopfer-Regel gehören zur damaligen Spiellogik.                                                                                                                                         |
+| 8       | [Gerber und Seher-Lehrling](#gerber-und-seher-lehrling-bei-acht-spielern) und [Kombinationsprüfung mit 544 Varianten](#vollständige-kombinationsprüfung-für-acht-spieler). Für den vollständigen Lauf sind die Bandbreiten je Anzahl gewählter Sonderrollen dokumentiert.                                                                                                                        |
+| 9       | [Vergleich der möglichen Zusatzrollen](#prüfung-der-aufstellungen-für-neun-spieler) mit [Einzelwerten](simulations/werewolf-nine-player.jsonl) sowie [Hammer-Vergleich](#bürgermeister-mit-hammer-bei-neun-spielern) und [Magier-Vergleich](#magier-als-alternative-zur-hexe-bei-neun-spielern) sowie die [vollständige Kombinationsprüfung](#vollständige-kombinationsprüfung-für-neun-spieler) |
+| 10      | [Aktueller Vergleich von Hammer, Ermittler und Schutzamulett](#prüfung-der-aufstellungen-für-zehn-spieler) und [früherer Vergleich zweier Aufstellungen mit Amor](#simulierte-wolfssiege-in-zwei-zehnerbesetzungen). Die Quoten verwenden die damalige Siegprüfung.                                                                                                                              |
+| 11      | [Magier mit und ohne Hexe](#magier-mit-und-ohne-hexe-bei-elf-spielern) mit [Einzelwerten](simulations/werewolf-eleven-player-magician.jsonl.gz)                                                                                                                                                                                                                                                  |
+| 12      | [Vergleich von Hexe, Magier und weiteren Optionen](#prüfung-der-aufstellungen-für-zwölf-spieler) mit [Einzelwerten](simulations/werewolf-twelve-player.jsonl)                                                                                                                                                                                                                                    |
+| 13      | [Vergleich von Hexe und Magier](#prüfung-der-aufstellungen-für-dreizehn-spieler) mit [Einzelwerten](simulations/werewolf-thirteen-player-healers.jsonl.gz)                                                                                                                                                                                                                                       |
+| 14      | [Drei oder vier Wölfe und beide Heilrollen](#prüfung-der-aufstellungen-für-vierzehn-spieler) mit [Einzelwerten](simulations/werewolf-fourteen-player-options.jsonl.gz)                                                                                                                                                                                                                           |
 
 Bei gleicher Besetzung, Spiellogik und gleichen Modellannahmen gelten die dokumentierten Ergebnisse weiter. Frühere Quoten mit Amor und eigenem Paarsieg sind historische Vergleiche. Das vollständige Neuner-Archiv verwendet die aktuelle Siegprüfung. Für neue Spielerzahlen, geänderte Regeln oder fehlende Einzelwerte genügt ein Lauf für die betroffenen Fälle. Bei künftigen Läufen die JSON-Ausgabe je Aufstellung zusammen mit Regelstand, Modellen und Stichprobengröße sichern, damit sich auch Einzelfragen später auswerten lassen.
 
@@ -516,10 +514,10 @@ Dieser Vergleich mit Amor lief vor der Änderung der Siegprüfung bei echter Wer
 
 `pnpm test src/business/games/werewolf/balance.test.ts` spielt 10.000 Partien je Besetzung und Entscheidungsmodell, insgesamt 40.000 Partien. Die Besetzung enthält zwei Werwölfe, Seherin, Hexe, Amor, Jäger, Leibwächter, Dorftrottel und Gerber. Der letzte Platz geht entweder an einen gewöhnlichen Dorfbewohner oder an den Paranormalen Ermittler. Für jede Paarung bleiben die Plätze aller übrigen Rollen und die Zufallsstarts gleich.
 
-| Modell | Wolfssiege mit Dorfbewohner | Wolfssiege mit Ermittler | Veränderung |
-| --- | ---: | ---: | ---: |
-| Zufällige Abstimmung | 5.623 von 10.000 | 5.623 von 10.000 | 0 Prozentpunkte |
-| Abstimmung mit Hinweisen | 6.170 von 10.000 | 6.054 von 10.000 | −1,16 Prozentpunkte |
+| Modell                   | Wolfssiege mit Dorfbewohner | Wolfssiege mit Ermittler |         Veränderung |
+| ------------------------ | --------------------------: | -----------------------: | ------------------: |
+| Zufällige Abstimmung     |            5.623 von 10.000 |         5.623 von 10.000 |     0 Prozentpunkte |
+| Abstimmung mit Hinweisen |            6.170 von 10.000 |         6.054 von 10.000 | −1,16 Prozentpunkte |
 
 Beide Modelle simulieren höchstens eine Nominierung pro Tag. Im Zufallsmodell beeinflussen Hinweise die Wahl nicht. Jede abgegebene Stimme hat vor der Pflichtstimme des Dorftrottels eine Ja-Wahrscheinlichkeit von 65 Prozent. Im zweiten Modell bringen lebende Seherin und Ermittler ihre Hinweise jeweils mit 45 Prozent Wahrscheinlichkeit in die Nominierung ein. Die Seherin und der Ermittler berücksichtigen eigenes Wissen bei der Abstimmung. Wölfe stimmen seltener für den Ausschluss anderer Wölfe und Liebende schonen einander häufiger. Die übrigen Nachtaktionen verwenden in beiden Modellen dieselben einfachen Entscheidungsregeln.
 
@@ -531,24 +529,24 @@ Die folgenden früheren Vergleiche mit „Leibwächter mit Selbstopfer“ verwen
 
 Dieselbe Simulation vergleicht 16 Aufstellungen mit jeweils einem Werwolf und einer Seherin. Jede Variante fügt dem Grundspiel genau eine Sonderrolle oder das Schutzamulett hinzu. Eine Sonderrolle ersetzt einen gewöhnlichen Dorfbewohner. Pro Aufstellung und Modell laufen 10.000 Partien mit identischen Zufallsstarts, insgesamt 320.000 Partien. Die Besetzung von Werwolf und Seherin bleibt in jedem Vergleich an denselben Sitzplätzen.
 
-| Aufstellung | Wolfssiege bei zufälligen Abstimmungen | Wolfssiege mit Hinweisen | Mittlere erreichte Nacht im Modell mit Hinweisen |
-| --- | ---: | ---: | ---: |
-| Vier gewöhnliche Dorfbewohner | 63,59 % | 65,62 % | 3,22 |
-| Dorftrottel und drei gewöhnliche Dorfbewohner | 62,33 % | 63,30 % | 2,95 |
-| Leibwächter mit Abwehr und drei gewöhnliche Dorfbewohner | 61,61 % | 62,75 % | 3,39 |
-| Leibwächter mit Selbstopfer und drei gewöhnliche Dorfbewohner | 63,35 % | 65,09 % | 3,22 |
-| Hexe | 50,85 % | 53,01 % | 3,17 |
-| Jäger | 50,17 % | 53,02 % | 2,85 |
-| Amor | 45,56 % | 48,29 % | 2,93 |
-| Alte Vettel | 64,59 % | 65,35 % | 3,11 |
-| Bürgermeister mit doppelter Stimme | 64,30 % | 64,17 % | 3,10 |
-| Bürgermeister mit Hammer | 57,50 % | 58,56 % | 2,91 |
-| Harter Bursche | 61,87 % | 64,41 % | 3,36 |
-| Seher-Lehrling | 63,59 % | 64,77 % | 3,22 |
-| Paranormaler Ermittler | 63,59 % | 63,73 % | 3,22 |
-| Gerber mit beliebigem Ausscheiden | 63,59 % | 66,59 % | 3,14 |
-| Gerber mit Tagesabstimmung | 63,59 % | 66,59 % | 3,14 |
-| Schutzamulett | 64,08 % | 66,27 % | 3,94 |
+| Aufstellung                                                   | Wolfssiege bei zufälligen Abstimmungen | Wolfssiege mit Hinweisen | Mittlere erreichte Nacht im Modell mit Hinweisen |
+| ------------------------------------------------------------- | -------------------------------------: | -----------------------: | -----------------------------------------------: |
+| Vier gewöhnliche Dorfbewohner                                 |                                63,59 % |                  65,62 % |                                             3,22 |
+| Dorftrottel und drei gewöhnliche Dorfbewohner                 |                                62,33 % |                  63,30 % |                                             2,95 |
+| Leibwächter mit Abwehr und drei gewöhnliche Dorfbewohner      |                                61,61 % |                  62,75 % |                                             3,39 |
+| Leibwächter mit Selbstopfer und drei gewöhnliche Dorfbewohner |                                63,35 % |                  65,09 % |                                             3,22 |
+| Hexe                                                          |                                50,85 % |                  53,01 % |                                             3,17 |
+| Jäger                                                         |                                50,17 % |                  53,02 % |                                             2,85 |
+| Amor                                                          |                                45,56 % |                  48,29 % |                                             2,93 |
+| Alte Vettel                                                   |                                64,59 % |                  65,35 % |                                             3,11 |
+| Bürgermeister mit doppelter Stimme                            |                                64,30 % |                  64,17 % |                                             3,10 |
+| Bürgermeister mit Hammer                                      |                                57,50 % |                  58,56 % |                                             2,91 |
+| Harter Bursche                                                |                                61,87 % |                  64,41 % |                                             3,36 |
+| Seher-Lehrling                                                |                                63,59 % |                  64,77 % |                                             3,22 |
+| Paranormaler Ermittler                                        |                                63,59 % |                  63,73 % |                                             3,22 |
+| Gerber mit beliebigem Ausscheiden                             |                                63,59 % |                  66,59 % |                                             3,14 |
+| Gerber mit Tagesabstimmung                                    |                                63,59 % |                  66,59 % |                                             3,14 |
+| Schutzamulett                                                 |                                64,08 % |                  66,27 % |                                             3,94 |
 
 Der Dorftrottel senkt die Wolfsquote in beiden Modellen leicht und die Partien erreichen im Schnitt eine frühere letzte Nacht. Der Leibwächter mit Abwehr senkt die Wolfsquote etwas stärker und verlängert die Partien im Schnitt. Das Selbstopfer ändert die Wolfsquote gegenüber der Grundbesetzung um weniger als einen Prozentpunkt. Es ändert, wer durch den Angriff ausscheidet. Die Vergleiche verwenden die Entscheidungen und die Begrenzung auf eine Nominierung pro Tag aus dem Zehnervergleich. Die Zahlen beschreiben dieses Modell. Die Sonderbesetzungen für sechs Spieler sind Vorschläge für Spieltests.
 
@@ -560,14 +558,14 @@ Für den Hammer wählt die Simulation pro möglicher Nacht mit 40 Prozent Wahrsc
 
 Der Paarvergleich verwendet die gleichen 10.000 Zufallsstarts pro Besetzung und Entscheidungsmodell. Insgesamt wurden 120.000 Partien gespielt. In allen Varianten ist die Hexe dabei. Freie Plätze werden mit gewöhnlichen Dorfbewohnern gefüllt.
 
-| Zusätzliche Rollen neben der Hexe | Wolfssiege bei zufälligen Abstimmungen | Wolfssiege mit Hinweisen | Mittlere erreichte Nacht mit Hinweisen |
-| --- | ---: | ---: | ---: |
-| Keine | 50,85 % | 53,01 % | 3,17 |
-| Dorftrottel | 49,25 % | 50,94 % | 2,91 |
-| Leibwächter mit Abwehr | 50,66 % | 52,23 % | 3,39 |
-| Leibwächter mit Selbstopfer | 51,71 % | 53,67 % | 3,25 |
-| Dorftrottel und Leibwächter mit Abwehr | 49,42 % | 50,64 % | 3,08 |
-| Dorftrottel und Leibwächter mit Selbstopfer | 50,47 % | 51,92 % | 2,96 |
+| Zusätzliche Rollen neben der Hexe           | Wolfssiege bei zufälligen Abstimmungen | Wolfssiege mit Hinweisen | Mittlere erreichte Nacht mit Hinweisen |
+| ------------------------------------------- | -------------------------------------: | -----------------------: | -------------------------------------: |
+| Keine                                       |                                50,85 % |                  53,01 % |                                   3,17 |
+| Dorftrottel                                 |                                49,25 % |                  50,94 % |                                   2,91 |
+| Leibwächter mit Abwehr                      |                                50,66 % |                  52,23 % |                                   3,39 |
+| Leibwächter mit Selbstopfer                 |                                51,71 % |                  53,67 % |                                   3,25 |
+| Dorftrottel und Leibwächter mit Abwehr      |                                49,42 % |                  50,64 % |                                   3,08 |
+| Dorftrottel und Leibwächter mit Selbstopfer |                                50,47 % |                  51,92 % |                                   2,96 |
 
 Die Wolfsquote liegt mit Hexe in allen sechs Besetzungen nahe an der Hälfte. Als erste Besetzung für echte Spieltests bietet sich Hexe mit Dorftrottel an. Mit zusätzlicher Abwehr sinkt die Wolfsquote im Modell mit Hinweisen um weitere 0,30 Prozentpunkte. Bei zufälligen Abstimmungen steigt sie im selben Vergleich um 0,17 Prozentpunkte. Der Leibwächter ist damit vor allem eine zusätzliche Spielentscheidung. Die Empfehlung gilt für den Vergleich mit jeweils höchstens einer Nominierung pro Tag. In beiden Modellen heilt die Hexe ein vorhandenes Wolfsopfer mit 70 Prozent Wahrscheinlichkeit, solange sie Heilung hat. Ab Nacht zwei vergiftet sie mit 40 Prozent Wahrscheinlichkeit eine zufällig gewählte lebende Person, die weder sie selbst noch das aktuelle Wolfsopfer ist, sofern der Trank verfügbar ist.
 
@@ -575,14 +573,14 @@ Die Wolfsquote liegt mit Hexe in allen sechs Besetzungen nahe an der Hälfte. Al
 
 Im dritten Modell kann das Dorf einen Tag ohne Abstimmung beenden. Es zählt die öffentlich bekannten Werwölfe und prüft, ob ein falscher Ausschluss sofort oder nach einem erfolgreichen Wolfsangriff zum Wolfssieg führen würde. In dieser Lage stimmt es nur über einen von der Seherin öffentlich benannten Wolf ab, sofern es durch Abwarten noch Zeit gewinnen könnte. Bei einem Wolf unter vier Lebenden schafft Aussetzen einen weiteren Tag, auch wenn der nächste Wolfsangriff erfolgreich ist. Bei einem Wolf unter drei Lebenden setzt das Dorf nur noch aus, wenn es einen Schutz für möglich hält. Ein lebender Leibwächter mit Abwehr oder eine lebende Hexe gilt dafür als möglicher Schutz. Das Modell lässt den geheimen Vorrat an Heiltränken bei der öffentlichen Entscheidung außen vor.
 
-| Sonderrollen neben der Hexe | Wolfssiege mit Hinweisen | Wolfssiege mit vorsichtiger Abstimmung | Ausgelassene Nominierungen pro 10.000 Partien |
-| --- | ---: | ---: | ---: |
-| Keine | 53,01 % | 54,74 % | 6.946 |
-| Dorftrottel | 50,94 % | 51,52 % | 6.705 |
-| Leibwächter mit Abwehr | 52,23 % | 55,42 % | 9.379 |
-| Leibwächter mit Selbstopfer | 53,67 % | 55,21 % | 7.222 |
-| Dorftrottel und Leibwächter mit Abwehr | 50,64 % | 53,30 % | 9.157 |
-| Dorftrottel und Leibwächter mit Selbstopfer | 51,92 % | 52,66 % | 7.058 |
+| Sonderrollen neben der Hexe                 | Wolfssiege mit Hinweisen | Wolfssiege mit vorsichtiger Abstimmung | Ausgelassene Nominierungen pro 10.000 Partien |
+| ------------------------------------------- | -----------------------: | -------------------------------------: | --------------------------------------------: |
+| Keine                                       |                  53,01 % |                                54,74 % |                                         6.946 |
+| Dorftrottel                                 |                  50,94 % |                                51,52 % |                                         6.705 |
+| Leibwächter mit Abwehr                      |                  52,23 % |                                55,42 % |                                         9.379 |
+| Leibwächter mit Selbstopfer                 |                  53,67 % |                                55,21 % |                                         7.222 |
+| Dorftrottel und Leibwächter mit Abwehr      |                  50,64 % |                                53,30 % |                                         9.157 |
+| Dorftrottel und Leibwächter mit Selbstopfer |                  51,92 % |                                52,66 % |                                         7.058 |
 
 Die sechs Besetzungen liefen mit weiteren 60.000 vollständigen Partien und denselben Zufallsstarts. Die niedrigste Wolfsquote im vorsichtigen Modell ergibt sich mit Hexe und Dorftrottel. Bei einer vorsichtigen Gruppe hängt der Wert eines ausgelassenen Tages davon ab, ob der Schutz in der folgenden Nacht tatsächlich greift oder ein besserer Hinweis verfügbar wird. Die beiden früheren Modelle bleiben zum Vergleich verfügbar.
 
@@ -590,14 +588,14 @@ Die sechs Besetzungen liefen mit weiteren 60.000 vollständigen Partien und dens
 
 Das vierte Modell lässt das Dorf am ersten Tag mit 80 Prozent Wahrscheinlichkeit auf die Nominierung verzichten, wenn die öffentliche Morgenansage kein Opfer nennt. Die Wahrscheinlichkeit ist eine Testannahme. In den sechs Hexenaufstellungen fällt der Wolfsangriff in Nacht eins aus und die simulierte Hexe hebt ihr Gift mindestens bis Nacht zwei auf. Deshalb beginnt der erste Tag in allen 60.000 Vergleichspartien ohne Opfer. Mit denselben Zufallsstarts wurde in 8.069 von 10.000 Partien je Aufstellung am ersten Tag ausgesetzt. Ab Tag zwei gelten die bisherigen vorsichtigen Entscheidungsregeln.
 
-| Sonderrollen neben der Hexe | Wolfssiege im vorsichtigen Modell | Wolfssiege mit häufigem Aussetzen an Tag eins |
-| --- | ---: | ---: |
-| Keine | 54,74 % | 56,25 % |
-| Dorftrottel | 51,52 % | 53,66 % |
-| Leibwächter mit Abwehr | 55,42 % | 56,98 % |
-| Leibwächter mit Selbstopfer | 55,21 % | 56,65 % |
-| Dorftrottel und Leibwächter mit Abwehr | 53,30 % | 54,32 % |
-| Dorftrottel und Leibwächter mit Selbstopfer | 52,66 % | 53,97 % |
+| Sonderrollen neben der Hexe                 | Wolfssiege im vorsichtigen Modell | Wolfssiege mit häufigem Aussetzen an Tag eins |
+| ------------------------------------------- | --------------------------------: | --------------------------------------------: |
+| Keine                                       |                           54,74 % |                                       56,25 % |
+| Dorftrottel                                 |                           51,52 % |                                       53,66 % |
+| Leibwächter mit Abwehr                      |                           55,42 % |                                       56,98 % |
+| Leibwächter mit Selbstopfer                 |                           55,21 % |                                       56,65 % |
+| Dorftrottel und Leibwächter mit Abwehr      |                           53,30 % |                                       54,32 % |
+| Dorftrottel und Leibwächter mit Selbstopfer |                           52,66 % |                                       53,97 % |
 
 In diesem Modell steigt die Wolfsquote in allen sechs Aufstellungen. Hexe mit Dorftrottel erreicht weiterhin die niedrigste Wolfsquote. Die Simulation bildet hier das Aussetzen an Tag eins ab. Spätere Morgen ohne Opfer, etwa nach einer erfolgreichen Rettung, lösen diese Entscheidung nicht automatisch aus.
 
@@ -605,14 +603,14 @@ In diesem Modell steigt die Wolfsquote in allen sechs Aufstellungen. Hexe mit Do
 
 Ein fünftes Modell behält die vorsichtigen Abstimmungen und das häufige Aussetzen an Tag eins bei. Die Hexe heilt sich selbst, wenn sie Wolfsopfer wird und noch einen Heiltrank hat. Andere Wolfsopfer heilt sie in dieser Situation mit 90 Prozent Wahrscheinlichkeit. Sie vergiftet ab Nacht zwei nur jemanden, den die Seherin öffentlich als Wolf benannt hat oder der bereits zweimal nominiert wurde. Hat sie ein solches Ziel, setzt sie den Gifttrank mit 20 Prozent Wahrscheinlichkeit ein. Beide Tränke können ungenutzt bleiben. Die Prozentsätze sind Annahmen für den Vergleich.
 
-| Sonderrollen neben der Hexe | Wolfssiege mit bisherigem Trankeinsatz | Wolfssiege mit zurückhaltender Hexe | Heiltrank eingesetzt | Gifttrank eingesetzt |
-| --- | ---: | ---: | ---: | ---: |
-| Keine | 56,25 % | 59,32 % | 95,22 % | 7,70 % |
-| Dorftrottel | 53,66 % | 56,67 % | 93,93 % | 6,61 % |
-| Leibwächter mit Abwehr | 56,98 % | 57,31 % | 92,10 % | 9,64 % |
-| Leibwächter mit Selbstopfer | 56,65 % | 58,39 % | 95,07 % | 8,42 % |
-| Dorftrottel und Leibwächter mit Abwehr | 54,32 % | 55,02 % | 90,02 % | 7,99 % |
-| Dorftrottel und Leibwächter mit Selbstopfer | 53,97 % | 55,73 % | 93,70 % | 7,18 % |
+| Sonderrollen neben der Hexe                 | Wolfssiege mit bisherigem Trankeinsatz | Wolfssiege mit zurückhaltender Hexe | Heiltrank eingesetzt | Gifttrank eingesetzt |
+| ------------------------------------------- | -------------------------------------: | ----------------------------------: | -------------------: | -------------------: |
+| Keine                                       |                                56,25 % |                             59,32 % |              95,22 % |               7,70 % |
+| Dorftrottel                                 |                                53,66 % |                             56,67 % |              93,93 % |               6,61 % |
+| Leibwächter mit Abwehr                      |                                56,98 % |                             57,31 % |              92,10 % |               9,64 % |
+| Leibwächter mit Selbstopfer                 |                                56,65 % |                             58,39 % |              95,07 % |               8,42 % |
+| Dorftrottel und Leibwächter mit Abwehr      |                                54,32 % |                             55,02 % |              90,02 % |               7,99 % |
+| Dorftrottel und Leibwächter mit Selbstopfer |                                53,97 % |                             55,73 % |              93,70 % |               7,18 % |
 
 In den 60.000 zusätzlichen Partien mit zurückhaltender Hexe verbraucht sie ihren Gifttrank je nach Aufstellung in 6,61 bis 9,64 Prozent der Partien. Im vorherigen Modell lag der Verbrauch bei 64,09 bis 68,76 Prozent. In diesem Vergleich erreicht Hexe mit Dorftrottel und Leibwächter mit Abwehr die niedrigste Wolfsquote. Da Heil- und Giftverhalten gleichzeitig verändert wurden, misst dieser Lauf ihre gemeinsame Auswirkung.
 
@@ -622,14 +620,14 @@ Drei weitere Modelle mit je 60.000 Partien untersuchen öffentliches Wissen. Die
 
 Im zweiten Modell berücksichtigt auch die Hexe, wen sie vor den Werwölfen gerettet hat. Sie kann diese Information an einem Tag mit 50 Prozent Wahrscheinlichkeit öffentlich machen. Im dritten Modell grenzt das Dorf zusätzlich die möglichen Dorftrottel anhand der offenen Abstimmungen ein. Wer Nein stimmt, kommt als Dorftrottel nur dann nicht mehr infrage, wenn er stimmberechtigt war. Bleibt genau ein lebender Kandidat übrig, behandelt ihn das Dorf als Nicht-Werwolf. Die Ja-Pflicht wird bei der beobachteten Stimme berücksichtigt.
 
-| Sonderrollen neben der Hexe | Wolfssiege mit zurückhaltender Hexe | Seherin mit glaubwürdigen Hinweisen | Zusätzlich Wissen der Hexe | Zusätzlich Dorftrottel per Ausschlussverfahren |
-| --- | ---: | ---: | ---: | ---: |
-| Keine | 59,32 % | 26,56 % | 25,12 % | 25,12 % |
-| Dorftrottel | 56,67 % | 25,08 % | 23,72 % | 23,54 % |
-| Leibwächter mit Abwehr | 57,31 % | 24,57 % | 23,32 % | 23,32 % |
-| Leibwächter mit Selbstopfer | 58,39 % | 25,85 % | 24,57 % | 24,57 % |
-| Dorftrottel und Leibwächter mit Abwehr | 55,02 % | 24,20 % | 22,92 % | 22,81 % |
-| Dorftrottel und Leibwächter mit Selbstopfer | 55,73 % | 24,76 % | 23,51 % | 23,31 % |
+| Sonderrollen neben der Hexe                 | Wolfssiege mit zurückhaltender Hexe | Seherin mit glaubwürdigen Hinweisen | Zusätzlich Wissen der Hexe | Zusätzlich Dorftrottel per Ausschlussverfahren |
+| ------------------------------------------- | ----------------------------------: | ----------------------------------: | -------------------------: | ---------------------------------------------: |
+| Keine                                       |                             59,32 % |                             26,56 % |                    25,12 % |                                        25,12 % |
+| Dorftrottel                                 |                             56,67 % |                             25,08 % |                    23,72 % |                                        23,54 % |
+| Leibwächter mit Abwehr                      |                             57,31 % |                             24,57 % |                    23,32 % |                                        23,32 % |
+| Leibwächter mit Selbstopfer                 |                             58,39 % |                             25,85 % |                    24,57 % |                                        24,57 % |
+| Dorftrottel und Leibwächter mit Abwehr      |                             55,02 % |                             24,20 % |                    22,92 % |                                        22,81 % |
+| Dorftrottel und Leibwächter mit Selbstopfer |                             55,73 % |                             24,76 % |                    23,51 % |                                        23,31 % |
 
 Das Dorf identifiziert den lebenden Dorftrottel in 5,29 bis 6,21 Prozent der Partien, in denen er mitspielt. Der zusätzliche Effekt beträgt je nach Besetzung 0,11 bis 0,20 Prozentpunkte weniger Wolfssiege. Der starke Effekt der Seherin hängt an den Annahmen über die Häufigkeit und Glaubwürdigkeit ihrer Hinweise. Falsche Seher-Behauptungen und Gegenbehauptungen der Wölfe sind in diesen Modellen ausgeklammert.
 
@@ -639,14 +637,14 @@ Für den Vergleich kann `createWerewolf` mit `attackOnFirstNight: true` starten.
 
 Beide Versuchsläufe übernehmen die Regeln für vorsichtige Abstimmungen, zurückhaltenden Trankeinsatz, glaubwürdige Seherhinweise, Informationen der Hexe und die Erkennung des Dorftrottels. Im zweiten Lauf verzichtet das Dorf an Tag zwei mit 80 Prozent Wahrscheinlichkeit auf eine Nominierung, wenn die Morgenansage kein Opfer nennt. Ein öffentlich als Wolf benannter Spieler kann trotzdem nominiert werden. Die 80 Prozent sind eine Modellannahme.
 
-| Sonderrollen neben der Hexe | Wolfssiege mit Jagd ab Nacht zwei | Jagd ab Nacht eins | Zusätzlich seltene Wahl nach Nacht zwei ohne Opfer |
-| --- | ---: | ---: | ---: |
-| Keine | 25,12 % | 36,96 % | 37,01 % |
-| Dorftrottel | 23,54 % | 34,00 % | 34,07 % |
-| Leibwächter mit Abwehr | 23,32 % | 33,33 % | 32,92 % |
-| Leibwächter mit Selbstopfer | 24,57 % | 35,44 % | 35,48 % |
-| Dorftrottel und Leibwächter mit Abwehr | 22,81 % | 32,39 % | 31,71 % |
-| Dorftrottel und Leibwächter mit Selbstopfer | 23,31 % | 33,34 % | 33,36 % |
+| Sonderrollen neben der Hexe                 | Wolfssiege mit Jagd ab Nacht zwei | Jagd ab Nacht eins | Zusätzlich seltene Wahl nach Nacht zwei ohne Opfer |
+| ------------------------------------------- | --------------------------------: | -----------------: | -------------------------------------------------: |
+| Keine                                       |                           25,12 % |            36,96 % |                                            37,01 % |
+| Dorftrottel                                 |                           23,54 % |            34,00 % |                                            34,07 % |
+| Leibwächter mit Abwehr                      |                           23,32 % |            33,33 % |                                            32,92 % |
+| Leibwächter mit Selbstopfer                 |                           24,57 % |            35,44 % |                                            35,48 % |
+| Dorftrottel und Leibwächter mit Abwehr      |                           22,81 % |            32,39 % |                                            31,71 % |
+| Dorftrottel und Leibwächter mit Selbstopfer |                           23,31 % |            33,34 % |                                            33,36 % |
 
 Die zwei zusätzlichen Modelle umfassen 120.000 Partien mit denselben Zufallsstarts. In jedem Modell gab es unter den 60.000 Partien 7.248 zweite Tage ohne Nachtopfer. Der Anteil dieser Tage mit einem tatsächlichen Rauswurf sank von 55,50 auf 26,67 Prozent. Die Wolfsquote ändert sich durch die frühere Jagd um 9,58 bis 11,84 Prozentpunkte. Die zweite Änderung hat je nach Aufstellung einen Effekt von höchstens 0,68 Prozentpunkten.
 
@@ -654,20 +652,20 @@ Die zwei zusätzlichen Modelle umfassen 120.000 Partien mit denselben Zufallssta
 
 Der Jäger spielt in allen zwölf Aufstellungen mit. Hexe und Dorftrottel können jeweils hinzukommen. Beim Leibwächter gibt es Abwehr, Selbstopfer und die Aufstellung ohne ihn. Pro Aufstellung und Modell wurden 10.000 Partien mit denselben Zufallsstarts gespielt, insgesamt 480.000. Die folgenden Quoten zählen Wolfssiege.
 
-| Zusätzlich zum Jäger | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
-| --- | ---: | ---: | ---: | ---: |
-| Keine Sonderrolle | 50,17 % | 55,14 % | 33,59 % | 45,78 % |
-| Dorftrottel | 48,38 % | 52,61 % | 31,86 % | 44,18 % |
-| Leibwächter mit Abwehr | 49,35 % | 55,46 % | 32,10 % | 43,93 % |
-| Leibwächter mit Selbstopfer | 50,26 % | 54,76 % | 32,24 % | 44,77 % |
-| Dorftrottel und Leibwächter mit Abwehr | 48,08 % | 53,34 % | 30,78 % | 42,22 % |
-| Dorftrottel und Leibwächter mit Selbstopfer | 49,17 % | 52,21 % | 30,58 % | 42,72 % |
-| Hexe | 41,11 % | 48,77 % | 23,97 % | 34,43 % |
-| Hexe und Dorftrottel | 40,31 % | 47,37 % | 22,76 % | 33,11 % |
-| Hexe und Leibwächter mit Abwehr | 40,93 % | 47,89 % | 21,18 % | 30,59 % |
-| Hexe und Leibwächter mit Selbstopfer | 41,89 % | 49,03 % | 22,94 % | 33,34 % |
-| Hexe, Dorftrottel und Leibwächter mit Abwehr | 40,11 % | 46,44 % | 20,65 % | 29,40 % |
-| Hexe, Dorftrottel und Leibwächter mit Selbstopfer | 40,94 % | 47,40 % | 21,80 % | 31,86 % |
+| Zusätzlich zum Jäger                              | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
+| ------------------------------------------------- | -------------------: | ----------------: | --------------------: | ------------------------------: |
+| Keine Sonderrolle                                 |              50,17 % |           55,14 % |               33,59 % |                         45,78 % |
+| Dorftrottel                                       |              48,38 % |           52,61 % |               31,86 % |                         44,18 % |
+| Leibwächter mit Abwehr                            |              49,35 % |           55,46 % |               32,10 % |                         43,93 % |
+| Leibwächter mit Selbstopfer                       |              50,26 % |           54,76 % |               32,24 % |                         44,77 % |
+| Dorftrottel und Leibwächter mit Abwehr            |              48,08 % |           53,34 % |               30,78 % |                         42,22 % |
+| Dorftrottel und Leibwächter mit Selbstopfer       |              49,17 % |           52,21 % |               30,58 % |                         42,72 % |
+| Hexe                                              |              41,11 % |           48,77 % |               23,97 % |                         34,43 % |
+| Hexe und Dorftrottel                              |              40,31 % |           47,37 % |               22,76 % |                         33,11 % |
+| Hexe und Leibwächter mit Abwehr                   |              40,93 % |           47,89 % |               21,18 % |                         30,59 % |
+| Hexe und Leibwächter mit Selbstopfer              |              41,89 % |           49,03 % |               22,94 % |                         33,34 % |
+| Hexe, Dorftrottel und Leibwächter mit Abwehr      |              40,11 % |           46,44 % |               20,65 % |                         29,40 % |
+| Hexe, Dorftrottel und Leibwächter mit Selbstopfer |              40,94 % |           47,40 % |               21,80 % |                         31,86 % |
 
 Die vorsichtige Runde verwendet das Modell mit zurückhaltender Hexe, vorsichtigen Abstimmungen und häufigem Aussetzen an Tag eins. Bei glaubwürdigen Hinweisen nutzt die Gruppe zusätzlich das Wissen von Seherin und Hexe sowie das Ausschlussverfahren für den Dorftrottel. Das letzte Modell erlaubt Wolfsangriffe ab Nacht eins und stimmt an einem zweiten Tag ohne Nachtopfer seltener ab. Der simulierte Jäger schießt bei seinem Ausscheiden auf eine zufällig ausgewählte lebende Person, solange ein Ziel verfügbar ist. Ein Spieler kann beim Ausscheiden auf den Schuss verzichten oder das Ziel anhand von Hinweisen wählen. Falsche Rollenbehauptungen sind ausgeklammert.
 
@@ -679,42 +677,42 @@ Der Vergleich umfasst 1.080.000 Partien. Für jede Aufstellung und jedes der vie
 
 ### Grundbesetzung und einzelne Sonderrollen
 
-| Einzelwahl | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
-| --- | ---: | ---: | ---: | ---: |
-| Grundbesetzung | 57,38 % | 63,93 % | 32,68 % | 45,10 % |
-| Dorftrottel | 55,15 % | 60,63 % | 30,55 % | 42,63 % |
-| Leibwächter mit Abwehr | 56,24 % | 63,80 % | 31,81 % | 42,93 % |
-| Leibwächter mit Selbstopfer | 57,47 % | 63,27 % | 31,27 % | 43,11 % |
-| Hexe | 48,46 % | 56,12 % | 24,05 % | 34,67 % |
-| Jäger | 49,23 % | 53,53 % | 31,04 % | 41,65 % |
-| Amor | 47,53 % | 50,26 % | 30,01 % | 39,75 % |
-| Alte Vettel | 60,12 % | 62,88 % | 35,44 % | 46,82 % |
-| Bürgermeister mit doppelter Stimme | 59,24 % | 63,15 % | 32,51 % | 45,06 % |
-| Bürgermeister mit Hammer | 53,76 % | 56,99 % | 30,97 % | 42,50 % |
-| Harter Bursche | 56,54 % | 63,99 % | 31,85 % | 43,95 % |
-| Seher-Lehrling | 57,38 % | 62,30 % | 27,58 % | 38,63 % |
-| Paranormaler Ermittler | 57,38 % | 61,72 % | 31,11 % | 43,81 % |
-| Gerber bei jedem Ausscheiden | 57,38 % | 64,40 % | 32,73 % | 45,51 % |
-| Gerber nur bei Rauswahl | 57,38 % | 64,40 % | 32,73 % | 45,51 % |
-| Schutzamulett | 59,46 % | 65,49 % | 30,94 % | 41,19 % |
+| Einzelwahl                         | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
+| ---------------------------------- | -------------------: | ----------------: | --------------------: | ------------------------------: |
+| Grundbesetzung                     |              57,38 % |           63,93 % |               32,68 % |                         45,10 % |
+| Dorftrottel                        |              55,15 % |           60,63 % |               30,55 % |                         42,63 % |
+| Leibwächter mit Abwehr             |              56,24 % |           63,80 % |               31,81 % |                         42,93 % |
+| Leibwächter mit Selbstopfer        |              57,47 % |           63,27 % |               31,27 % |                         43,11 % |
+| Hexe                               |              48,46 % |           56,12 % |               24,05 % |                         34,67 % |
+| Jäger                              |              49,23 % |           53,53 % |               31,04 % |                         41,65 % |
+| Amor                               |              47,53 % |           50,26 % |               30,01 % |                         39,75 % |
+| Alte Vettel                        |              60,12 % |           62,88 % |               35,44 % |                         46,82 % |
+| Bürgermeister mit doppelter Stimme |              59,24 % |           63,15 % |               32,51 % |                         45,06 % |
+| Bürgermeister mit Hammer           |              53,76 % |           56,99 % |               30,97 % |                         42,50 % |
+| Harter Bursche                     |              56,54 % |           63,99 % |               31,85 % |                         43,95 % |
+| Seher-Lehrling                     |              57,38 % |           62,30 % |               27,58 % |                         38,63 % |
+| Paranormaler Ermittler             |              57,38 % |           61,72 % |               31,11 % |                         43,81 % |
+| Gerber bei jedem Ausscheiden       |              57,38 % |           64,40 % |               32,73 % |                         45,51 % |
+| Gerber nur bei Rauswahl            |              57,38 % |           64,40 % |               32,73 % |                         45,51 % |
+| Schutzamulett                      |              59,46 % |           65,49 % |               30,94 % |                         41,19 % |
 
 ### Fünfte Sonderrolle oder Amulett mit der vollen Sechser-Aufstellung
 
 Hexe, Jäger, Dorftrottel und Leibwächter mit Abwehr belegen vier Plätze. Der letzte Platz geht bei einer zusätzlichen Sonderrolle an die gewählte Rolle. Das Schutzamulett belegt keinen Platz. Der Leibwächter mit Selbstopfer wurde im Einzelvergleich geprüft. In diesem Paketvergleich bleibt seine Variante auf Abwehr.
 
-| Zusätzlich auf dem siebten Platz | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
-| --- | ---: | ---: | ---: | ---: |
-| Keine zusätzliche Rolle | 39,29 % | 45,50 % | 20,39 % | 27,22 % |
-| Amor | 30,54 % | 35,04 % | 19,47 % | 24,67 % |
-| Alte Vettel | 39,84 % | 44,65 % | 21,48 % | 28,58 % |
-| Bürgermeister mit doppelter Stimme | 39,76 % | 45,25 % | 20,16 % | 27,40 % |
-| Bürgermeister mit Hammer | 35,81 % | 40,88 % | 19,36 % | 26,73 % |
-| Harter Bursche | 38,48 % | 44,28 % | 19,45 % | 25,84 % |
-| Seher-Lehrling | 39,29 % | 43,63 % | 16,53 % | 23,38 % |
-| Paranormaler Ermittler | 39,29 % | 43,46 % | 18,92 % | 26,13 % |
-| Gerber bei jedem Ausscheiden | 39,29 % | 45,91 % | 20,59 % | 27,39 % |
-| Gerber nur bei Rauswahl | 39,29 % | 45,91 % | 20,59 % | 27,39 % |
-| Schutzamulett | 43,54 % | 48,39 % | 20,52 % | 25,29 % |
+| Zusätzlich auf dem siebten Platz   | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
+| ---------------------------------- | -------------------: | ----------------: | --------------------: | ------------------------------: |
+| Keine zusätzliche Rolle            |              39,29 % |           45,50 % |               20,39 % |                         27,22 % |
+| Amor                               |              30,54 % |           35,04 % |               19,47 % |                         24,67 % |
+| Alte Vettel                        |              39,84 % |           44,65 % |               21,48 % |                         28,58 % |
+| Bürgermeister mit doppelter Stimme |              39,76 % |           45,25 % |               20,16 % |                         27,40 % |
+| Bürgermeister mit Hammer           |              35,81 % |           40,88 % |               19,36 % |                         26,73 % |
+| Harter Bursche                     |              38,48 % |           44,28 % |               19,45 % |                         25,84 % |
+| Seher-Lehrling                     |              39,29 % |           43,63 % |               16,53 % |                         23,38 % |
+| Paranormaler Ermittler             |              39,29 % |           43,46 % |               18,92 % |                         26,13 % |
+| Gerber bei jedem Ausscheiden       |              39,29 % |           45,91 % |               20,59 % |                         27,39 % |
+| Gerber nur bei Rauswahl            |              39,29 % |           45,91 % |               20,59 % |                         27,39 % |
+| Schutzamulett                      |              43,54 % |           48,39 % |               20,52 % |                         25,29 % |
 
 ### Empfehlung für die Freigabe
 
@@ -731,14 +729,14 @@ Die beiden Einzeltabellen beziehen sich auf jeweils eine Ergänzung. Falsche Rol
 
 Die Auswahl umfasst **Hexe, Jäger, Dorftrottel, Leibwächter, Amor und Harter Bursche**. Alle 63 zulässigen Teilmengen mit null bis fünf Sonderrollen wurden geprüft. In 31 dieser Teilmengen ist der Leibwächter dabei. Mit Abwehr und Selbstopfer getrennt ergibt das 94 Fälle. Jede Variante lief mit denselben 10.000 Zufallsstarts in jedem der vier Modelle, insgesamt **3.760.000 Partien**. Alle Partien sind vollständig durchgelaufen. Der Test prüft außerdem, dass die gleichzeitige Auswahl aller sechs Sonderrollen wegen des fehlenden Platzes abgewiesen wird.
 
-| Optionale Rollen in der Partie | Fälle | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| 0 | 1 | 57,38 % | 63,93 % | 32,68 % | 45,10 % |
-| 1 | 7 | 47,53 % bis 57,47 % | 50,26 % bis 63,99 % | 24,05 % bis 31,85 % | 34,67 % bis 43,95 % |
-| 2 | 20 | 36,37 % bis 56,58 % | 40,16 % bis 62,93 % | 22,42 % bis 31,10 % | 30,94 % bis 42,19 % |
-| 3 | 30 | 31,27 % bis 54,91 % | 36,22 % bis 59,66 % | 20,71 % bis 29,42 % | 27,63 % bis 40,36 % |
-| 4 | 25 | 30,52 % bis 46,44 % | 35,23 % bis 52,75 % | 19,34 % bis 28,15 % | 25,42 % bis 37,17 % |
-| 5 | 11 | 29,85 % bis 39,05 % | 34,34 % bis 44,70 % | 18,14 % bis 24,45 % | 24,19 % bis 31,32 % |
+| Optionale Rollen in der Partie | Fälle | Zufällige Abstimmung |   Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
+| ------------------------------ | ----: | -------------------: | ------------------: | --------------------: | ------------------------------: |
+| 0                              |     1 |              57,38 % |             63,93 % |               32,68 % |                         45,10 % |
+| 1                              |     7 |  47,53 % bis 57,47 % | 50,26 % bis 63,99 % |   24,05 % bis 31,85 % |             34,67 % bis 43,95 % |
+| 2                              |    20 |  36,37 % bis 56,58 % | 40,16 % bis 62,93 % |   22,42 % bis 31,10 % |             30,94 % bis 42,19 % |
+| 3                              |    30 |  31,27 % bis 54,91 % | 36,22 % bis 59,66 % |   20,71 % bis 29,42 % |             27,63 % bis 40,36 % |
+| 4                              |    25 |  30,52 % bis 46,44 % | 35,23 % bis 52,75 % |   19,34 % bis 28,15 % |             25,42 % bis 37,17 % |
+| 5                              |    11 |  29,85 % bis 39,05 % | 34,34 % bis 44,70 % |   18,14 % bis 24,45 % |             24,19 % bis 31,32 % |
 
 Die Bandbreiten zeigen den niedrigsten und höchsten Anteil an Wolfssiegen pro Modell und Anzahl gewählter Sonderrollen. Die elf Fälle ohne gewöhnliche Dorfbewohner umfassen sechs mögliche Kartenauswahlen und die beiden Leibwächter-Varianten, wo die Rolle dabei ist. In der vorsichtigen Runde liegen die Wolfsquoten für diese Fälle bei 34,34 bis 44,70 Prozent. Die geprüfte Auswahl ist im Konfigurationsplan für sieben Spieler festgelegt.
 
@@ -748,43 +746,43 @@ Der ursprüngliche Vergleich umfasste **57 Aufstellungen und 2.280.000 simuliert
 
 ### Grundbesetzung und einzelne Sonderrollen
 
-| Auswahl | Vorsichtige Runde, 1 Wolf | Vorsichtige Runde, 2 Wölfe | Glaubwürdige Hinweise, 1 Wolf | Glaubwürdige Hinweise, 2 Wölfe |
-| --- | ---: | ---: | ---: | ---: |
-| Grundbesetzung | 60,72 % | 90,52 % | 29,87 % | 62,15 % |
-| Dorftrottel | 57,48 % | 87,66 % | 27,47 % | 57,98 % |
-| Leibwächter mit Abwehr | 60,34 % | 90,30 % | 29,05 % | 59,92 % |
-| Leibwächter mit Selbstopfer | 59,97 % | 90,14 % | 28,42 % | 60,10 % |
-| Hexe | 53,27 % | 85,62 % | 22,30 % | 50,45 % |
-| Jäger | 52,18 % | 84,56 % | 29,04 % | 60,40 % |
-| Amor | 50,17 % | 83,35 % | 29,34 % | 60,09 % |
-| Alte Vettel | 60,50 % | 91,61 % | 30,99 % | 66,29 % |
-| Bürgermeister mit doppelter Stimme | 60,75 % | 90,98 % | 29,74 % | 62,26 % |
-| Bürgermeister mit Hammer | 55,89 % | 86,92 % | 28,47 % | 60,35 % |
-| Harter Bursche | 60,20 % | 90,32 % | 29,40 % | 61,03 % |
-| Seher-Lehrling | 58,63 % | 89,81 % | 23,74 % | 57,22 % |
-| Paranormaler Ermittler | 58,42 % | 89,61 % | 28,67 % | 61,39 % |
-| Gerber bei jedem Ausscheiden | 61,01 % | 90,63 % | 29,94 % | 62,30 % |
-| Gerber nur bei Rauswahl | 61,01 % | 90,63 % | 29,94 % | 62,30 % |
-| Schutzamulett | 62,35 % | 91,29 % | 28,80 % | 60,00 % |
-| Trunkenbold | – | 90,28 % | – | 64,07 % |
+| Auswahl                            | Vorsichtige Runde, 1 Wolf | Vorsichtige Runde, 2 Wölfe | Glaubwürdige Hinweise, 1 Wolf | Glaubwürdige Hinweise, 2 Wölfe |
+| ---------------------------------- | ------------------------: | -------------------------: | ----------------------------: | -----------------------------: |
+| Grundbesetzung                     |                   60,72 % |                    90,52 % |                       29,87 % |                        62,15 % |
+| Dorftrottel                        |                   57,48 % |                    87,66 % |                       27,47 % |                        57,98 % |
+| Leibwächter mit Abwehr             |                   60,34 % |                    90,30 % |                       29,05 % |                        59,92 % |
+| Leibwächter mit Selbstopfer        |                   59,97 % |                    90,14 % |                       28,42 % |                        60,10 % |
+| Hexe                               |                   53,27 % |                    85,62 % |                       22,30 % |                        50,45 % |
+| Jäger                              |                   52,18 % |                    84,56 % |                       29,04 % |                        60,40 % |
+| Amor                               |                   50,17 % |                    83,35 % |                       29,34 % |                        60,09 % |
+| Alte Vettel                        |                   60,50 % |                    91,61 % |                       30,99 % |                        66,29 % |
+| Bürgermeister mit doppelter Stimme |                   60,75 % |                    90,98 % |                       29,74 % |                        62,26 % |
+| Bürgermeister mit Hammer           |                   55,89 % |                    86,92 % |                       28,47 % |                        60,35 % |
+| Harter Bursche                     |                   60,20 % |                    90,32 % |                       29,40 % |                        61,03 % |
+| Seher-Lehrling                     |                   58,63 % |                    89,81 % |                       23,74 % |                        57,22 % |
+| Paranormaler Ermittler             |                   58,42 % |                    89,61 % |                       28,67 % |                        61,39 % |
+| Gerber bei jedem Ausscheiden       |                   61,01 % |                    90,63 % |                       29,94 % |                        62,30 % |
+| Gerber nur bei Rauswahl            |                   61,01 % |                    90,63 % |                       29,94 % |                        62,30 % |
+| Schutzamulett                      |                   62,35 % |                    91,29 % |                       28,80 % |                        60,00 % |
+| Trunkenbold                        |                         – |                    90,28 % |                             – |                        64,07 % |
 
 ### Ergänzungen zu Hexe, Jäger, Dorftrottel und Leibwächter mit Abwehr
 
-| Auswahl | Vorsichtige Runde, 1 Wolf | Vorsichtige Runde, 2 Wölfe | Glaubwürdige Hinweise, 1 Wolf | Glaubwürdige Hinweise, 2 Wölfe |
-| --- | ---: | ---: | ---: | ---: |
-| Keine Ergänzung | 43,96 % | 77,11 % | 19,44 % | 44,81 % |
-| Amor | 35,32 % | 66,71 % | 19,14 % | 42,18 % |
-| Alte Vettel | 43,63 % | 77,00 % | 20,75 % | 46,64 % |
-| Bürgermeister mit doppelter Stimme | 43,54 % | 76,18 % | 20,01 % | 44,01 % |
-| Bürgermeister mit Hammer | 39,79 % | 70,97 % | 18,87 % | 42,48 % |
-| Harter Bursche | 42,90 % | 75,95 % | 18,75 % | 43,71 % |
-| Seher-Lehrling | 42,11 % | 74,97 % | 15,24 % | 39,85 % |
-| Paranormaler Ermittler | 42,38 % | 75,72 % | 18,08 % | 43,86 % |
-| Gerber bei jedem Ausscheiden | 44,28 % | 77,34 % | 19,50 % | 45,04 % |
-| Gerber nur bei Rauswahl | 44,28 % | 77,34 % | 19,50 % | 45,04 % |
-| Schutzamulett | 47,41 % | 78,36 % | 19,73 % | 42,47 % |
-| Amor und Harter Bursche | 34,82 % | – | 17,93 % | – |
-| Trunkenbold | – | 77,74 % | – | 48,34 % |
+| Auswahl                            | Vorsichtige Runde, 1 Wolf | Vorsichtige Runde, 2 Wölfe | Glaubwürdige Hinweise, 1 Wolf | Glaubwürdige Hinweise, 2 Wölfe |
+| ---------------------------------- | ------------------------: | -------------------------: | ----------------------------: | -----------------------------: |
+| Keine Ergänzung                    |                   43,96 % |                    77,11 % |                       19,44 % |                        44,81 % |
+| Amor                               |                   35,32 % |                    66,71 % |                       19,14 % |                        42,18 % |
+| Alte Vettel                        |                   43,63 % |                    77,00 % |                       20,75 % |                        46,64 % |
+| Bürgermeister mit doppelter Stimme |                   43,54 % |                    76,18 % |                       20,01 % |                        44,01 % |
+| Bürgermeister mit Hammer           |                   39,79 % |                    70,97 % |                       18,87 % |                        42,48 % |
+| Harter Bursche                     |                   42,90 % |                    75,95 % |                       18,75 % |                        43,71 % |
+| Seher-Lehrling                     |                   42,11 % |                    74,97 % |                       15,24 % |                        39,85 % |
+| Paranormaler Ermittler             |                   42,38 % |                    75,72 % |                       18,08 % |                        43,86 % |
+| Gerber bei jedem Ausscheiden       |                   44,28 % |                    77,34 % |                       19,50 % |                        45,04 % |
+| Gerber nur bei Rauswahl            |                   44,28 % |                    77,34 % |                       19,50 % |                        45,04 % |
+| Schutzamulett                      |                   47,41 % |                    78,36 % |                       19,73 % |                        42,47 % |
+| Amor und Harter Bursche            |                   34,82 % |                          – |                       17,93 % |                              – |
+| Trunkenbold                        |                         – |                    77,74 % |                             – |                        48,34 % |
 
 ### Empfehlung für acht Spieler
 
@@ -802,12 +800,12 @@ Vier Besetzungen mit je einem Werwolf und einer Seherin liefen jeweils ohne die 
 
 Die Tabelle zeigt die Wolfssiegquote im Modell mit glaubwürdigen Hinweisen.
 
-| Weitere Sonderrollen | Ohne beide | Seher-Lehrling | Gerber | Beide |
-| --- | ---: | ---: | ---: | ---: |
-| Keine | 29,87 % | 23,74 % | 29,94 % | 23,94 % |
-| Hexe, Jäger, Dorftrottel und Leibwächter | 19,44 % | 15,24 % | 19,50 % | 15,62 % |
-| Hexe, Jäger, Dorftrottel und Dorfmatratze | 19,14 % | 15,32 % | 19,11 % | 15,46 % |
-| Hexe, Jäger, Amor und Harter Bursche | 18,61 % | 16,59 % | 18,75 % | 16,74 % |
+| Weitere Sonderrollen                      | Ohne beide | Seher-Lehrling |  Gerber |   Beide |
+| ----------------------------------------- | ---------: | -------------: | ------: | ------: |
+| Keine                                     |    29,87 % |        23,74 % | 29,94 % | 23,94 % |
+| Hexe, Jäger, Dorftrottel und Leibwächter  |    19,44 % |        15,24 % | 19,50 % | 15,62 % |
+| Hexe, Jäger, Dorftrottel und Dorfmatratze |    19,14 % |        15,32 % | 19,11 % | 15,46 % |
+| Hexe, Jäger, Amor und Harter Bursche      |    18,61 % |        16,59 % | 18,75 % | 16,74 % |
 
 Der Seher-Lehrling senkt die Wolfsquote in diesem Modell um 2,02 bis 6,13 Prozentpunkte. Bei zufälliger Abstimmung waren die Ergebnisse mit und ohne Lehrling in allen vier Besetzungen gleich. Der Gerber beeinflusst die Wolfsquote in allen Modellen um höchstens 0,45 Prozentpunkte. Je nach Besetzung und Modell gewinnt er persönlich in 36,56 bis 72,09 Prozent der Partien bei jedem Ausscheiden und in 9,80 bis 27,64 Prozent bei Rauswahl. Beide Gerber-Varianten verwenden dieselben simulierten Entscheidungen.
 
@@ -818,14 +816,14 @@ Beide Rollen können als Optionen angeboten werden, auch gemeinsam, wenn zwei Ro
 Von den acht Sonderrollen-Optionen lassen sich 247 Teilmengen mit null bis sechs Optionen auswählen. Mit Leibwächter und Dorfmatratze getrennt und beiden Gerber-Siegbedingungen ergibt das 544 Aufstellungen. Pro Aufstellung liefen 2.000 Zufallsstarts in vier Modellen, insgesamt **4.352.000 vollständige Partien**. Weitere 145 Rollenauswahlen wurden abgewiesen, weil sie mehr als sechs Sonderrollen oder gleichzeitig Leibwächter und Dorfmatratze enthielten.
 
 | Sonderrollen | Aufstellungen | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
-| ---: | ---: | ---: | ---: | ---: | ---: |
-| 0 | 1 | 56,35 % | 59,20 % | 31,25 % | 40,60 % |
-| 1 | 10 | 45,50–56,35 % | 49,25–59,05 % | 23,35–31,10 % | 32,20–41,20 % |
-| 2 | 43 | 37,40–56,35 % | 40,60–59,20 % | 17,95–31,15 % | 25,15–39,75 % |
-| 3 | 104 | 33,00–55,20 % | 36,25–58,35 % | 15,30–30,55 % | 20,75–38,65 % |
-| 4 | 155 | 31,80–53,50 % | 34,10–56,20 % | 14,75–29,20 % | 20,00–37,30 % |
-| 5 | 146 | 30,75–50,65 % | 32,75–53,40 % | 14,25–29,40 % | 19,70–35,65 % |
-| 6 | 85 | 30,25–42,80 % | 32,90–48,15 % | 14,75–25,15 % | 18,80–31,10 % |
+| -----------: | ------------: | -------------------: | ----------------: | --------------------: | ------------------------------: |
+|            0 |             1 |              56,35 % |           59,20 % |               31,25 % |                         40,60 % |
+|            1 |            10 |        45,50–56,35 % |     49,25–59,05 % |         23,35–31,10 % |                   32,20–41,20 % |
+|            2 |            43 |        37,40–56,35 % |     40,60–59,20 % |         17,95–31,15 % |                   25,15–39,75 % |
+|            3 |           104 |        33,00–55,20 % |     36,25–58,35 % |         15,30–30,55 % |                   20,75–38,65 % |
+|            4 |           155 |        31,80–53,50 % |     34,10–56,20 % |         14,75–29,20 % |                   20,00–37,30 % |
+|            5 |           146 |        30,75–50,65 % |     32,75–53,40 % |         14,25–29,40 % |                   19,70–35,65 % |
+|            6 |            85 |        30,25–42,80 % |     32,90–48,15 % |         14,75–25,15 % |                   18,80–31,10 % |
 
 Die Bandbreiten zeigen die niedrigste und höchste Wolfssiegquote je Anzahl gewählter Sonderrollen im jeweiligen Modell. Alle 85 Aufstellungen mit sechs Sonderrollen kamen ohne gewöhnliche Dorfbewohner aus. In allen vier Modellen lag ihre Wolfssiegquote unter der Grundaufstellung mit sechs gewöhnlichen Dorfbewohnern. Die Quoten gelten für die simulierten Entscheidungen.
 
@@ -862,12 +860,12 @@ Für neun Spieler bleibt die doppelte Stimme die Empfehlung. Der Hammer kann bei
 
 In einer separaten Testkopie wurde die Mindestgröße für den Magier auf neun gesenkt. Zwei Werwölfe und eine Seherin blieben gesetzt. Die gemeinsame Auswahl von Hexe und Magier wurde auch in der Testkopie abgewiesen. Die 168.000 zusätzlichen Partien vergleichen den Magier mit den archivierten Hexenwerten aus denselben Besetzungen und Zufallsstarts. [Einzelwerte zum Magier](simulations/werewolf-nine-player-magician.jsonl)
 
-| Weitere Sonderrollen | Hexe | Magier mit flexiblen Zaubern | Magier mit Heilung als Strategie |
-| --- | ---: | ---: | ---: |
-| Keine | 45,77 % | 41,03 % | 40,90 % |
-| Jäger und Dorftrottel | 43,23 % | 38,40 % | 38,37 % |
-| Leibwächter und Seher-Lehrling | 36,03 % | 30,20 % | 30,10 % |
-| Dorfmatratze und Seher-Lehrling | 34,60 % | 28,43 % | 28,37 % |
+| Weitere Sonderrollen            |    Hexe | Magier mit flexiblen Zaubern | Magier mit Heilung als Strategie |
+| ------------------------------- | ------: | ---------------------------: | -------------------------------: |
+| Keine                           | 45,77 % |                      41,03 % |                          40,90 % |
+| Jäger und Dorftrottel           | 43,23 % |                      38,40 % |                          38,37 % |
+| Leibwächter und Seher-Lehrling  | 36,03 % |                      30,20 % |                          30,10 % |
+| Dorfmatratze und Seher-Lehrling | 34,60 % |                      28,43 % |                          28,37 % |
 
 Die Tabelle zeigt Wolfssiege im Modell mit glaubwürdigen Hinweisen ohne Trunkenbold. Mit Trunkenbold wurden die drei Besetzungen mit weiteren Sonderrollen ebenfalls geprüft. Über alle vier Modelle veränderte der flexible Magier die Wolfsquote um −9,33 bis +1,83 Prozentpunkte. Der ausschließlich heilende Magier veränderte sie um −9,37 bis +4,87 Prozentpunkte. Der flexible Magier darf in der Simulation höchstens einen Todeszauber in einer Nacht einsetzen. Die reguläre Spiellogik erlaubt auch zwei Todeszauber mit verschiedenen Zielen.
 
@@ -878,14 +876,14 @@ Die Ergebnisse sprechen dafür, den Magier ab neun als Alternative zur Hexe anzu
 Aus den zehn bestätigten Sonderrollen-Optionen wurden alle Besetzungen mit null bis sechs Sonderrollen geprüft. Leibwächter und Dorfmatratze, beide Gerber-Siegbedingungen, beide Einstellungen zur Selbstwahl der Alten Vettel sowie Partien mit und ohne Trunkenbold wurden getrennt erfasst. Das ergibt **5.094 Varianten**. Mit 250 Zufallsstarts in vier Modellen liefen **5.094.000 vollständige Partien**. 818 überfüllte oder widersprüchliche Auswahlen wurden abgewiesen. [Archiv mit Einzelwerten](simulations/werewolf-nine-player-combinations.jsonl.gz)
 
 | Sonderrollen | Varianten | Zufällige Abstimmung | Vorsichtige Runde | Glaubwürdige Hinweise | Hinweise und Jagd ab Nacht eins |
-| ---: | ---: | ---: | ---: | ---: | ---: |
-| 0 | 2 | 83,6–84,8 % | 90,0–90,8 % | 61,6–63,6 % | 74,8–76,4 % |
-| 1 | 26 | 72,4–88,0 % | 82,0–91,2 % | 50,4–68,0 % | 61,6–76,0 % |
-| 2 | 150 | 66,0–87,6 % | 77,6–92,0 % | 43,2–68,4 % | 54,4–78,8 % |
-| 3 | 506 | 61,2–90,8 % | 73,2–92,8 % | 38,8–68,0 % | 48,4–77,6 % |
-| 4 | 1.106 | 57,6–88,0 % | 70,4–92,0 % | 34,8–67,2 % | 44,0–76,4 % |
-| 5 | 1.638 | 57,6–86,0 % | 67,6–90,8 % | 34,8–67,6 % | 40,8–76,0 % |
-| 6 | 1.666 | 55,6–84,0 % | 66,0–90,8 % | 30,8–65,2 % | 40,4–72,4 % |
+| -----------: | --------: | -------------------: | ----------------: | --------------------: | ------------------------------: |
+|            0 |         2 |          83,6–84,8 % |       90,0–90,8 % |           61,6–63,6 % |                     74,8–76,4 % |
+|            1 |        26 |          72,4–88,0 % |       82,0–91,2 % |           50,4–68,0 % |                     61,6–76,0 % |
+|            2 |       150 |          66,0–87,6 % |       77,6–92,0 % |           43,2–68,4 % |                     54,4–78,8 % |
+|            3 |       506 |          61,2–90,8 % |       73,2–92,8 % |           38,8–68,0 % |                     48,4–77,6 % |
+|            4 |     1.106 |          57,6–88,0 % |       70,4–92,0 % |           34,8–67,2 % |                     44,0–76,4 % |
+|            5 |     1.638 |          57,6–86,0 % |       67,6–90,8 % |           34,8–67,6 % |                     40,8–76,0 % |
+|            6 |     1.666 |          55,6–84,0 % |       66,0–90,8 % |           30,8–65,2 % |                     40,4–72,4 % |
 
 Die Bandbreiten zeigen die niedrigste und höchste Wolfssiegquote je Anzahl an Sonderrollen im jeweiligen Modell. Für kleine Unterschiede zwischen zwei Aufstellungen sind die gezielten Vergleiche mit 3.000 Zufallsstarts je Modell aussagekräftiger.
 
@@ -897,12 +895,12 @@ Zwei Werwölfe und eine Seherin sind fest. Es bleiben sieben Plätze für Sonder
 
 Die Tabelle zeigt Wolfssiege im Modell, das Ermittler- und Seherhinweise kombiniert. Jede Zusatzspalte ändert gegenüber der Ausgangsbesetzung nur die genannte Option.
 
-| Weitere Sonderrollen | Ohne Zusatz | Doppelte Stimme | Hammer | Ermittler | Schutzamulett |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Keine | 54,40 % | 55,07 % | 52,20 % | 49,27 % | 52,67 % |
-| Hexe, Jäger und Dorftrottel | 41,13 % | 41,13 % | 39,80 % | 36,30 % | 40,57 % |
-| Hexe, Leibwächter und Seher-Lehrling | 34,23 % | 34,17 % | 32,37 % | 28,67 % | 30,10 % |
-| Hexe, Dorfmatratze, Seher-Lehrling, Amor und Harter Bursche | 34,20 % | 34,07 % | 34,87 % | 30,60 % | 30,90 % |
+| Weitere Sonderrollen                                        | Ohne Zusatz | Doppelte Stimme |  Hammer | Ermittler | Schutzamulett |
+| ----------------------------------------------------------- | ----------: | --------------: | ------: | --------: | ------------: |
+| Keine                                                       |     54,40 % |         55,07 % | 52,20 % |   49,27 % |       52,67 % |
+| Hexe, Jäger und Dorftrottel                                 |     41,13 % |         41,13 % | 39,80 % |   36,30 % |       40,57 % |
+| Hexe, Leibwächter und Seher-Lehrling                        |     34,23 % |         34,17 % | 32,37 % |   28,67 % |       30,10 % |
+| Hexe, Dorfmatratze, Seher-Lehrling, Amor und Harter Bursche |     34,20 % |         34,07 % | 34,87 % |   30,60 % |       30,90 % |
 
 - **Bürgermeister mit Hammer** ist ab zehn Spielern als Option bestätigt. Über alle gepaarten Vergleiche ändert sich die Wolfsquote gegenüber der doppelten Stimme um −5,30 bis +1,50 Prozentpunkte. Die durchschnittlich erreichte Nacht sinkt um 0,27 bis 0,63. Pro Partie bleibt genau eine Bürgermeister-Variante wählbar.
 - **Paranormaler Ermittler** ist ab zehn Spielern als optionale Rolle bestätigt. Im Modell mit kombinierten Hinweisen sinkt die Wolfsquote je nach Aufstellung um 2,73 bis 5,73 Prozentpunkte. Mit Seher-Lehrling liegt der Rückgang bei 3,03 bis 5,57 Punkten. Das Modell wertet einen positiven Hinweis bei zwei bereits entlasteten Personen als Bestätigung der dritten Person, sofern alle drei noch leben. Der lebende Ermittler teilt seinen Hinweis mit 45 Prozent Wahrscheinlichkeit pro Tag. Der Bürgermeister bevorzugt in diesem Modell beim Hammereinsatz einen öffentlich bestätigten Wolf, wenn einer als Ziel verfügbar ist.
@@ -917,15 +915,15 @@ Zwei Werwölfe und eine Seherin sind gesetzt. Von den elf Sonderrollen-Optionen 
 Es gibt 2.664 zulässige Rollenauswahlen. Zusammen mit den Einstellungen ergeben sich **32.864 Varianten**. Alle Varianten liefen mit 40 gleichen Zufallsstarts in fünf Entscheidungsmodellen bis zum Spielende. Das sind **6.572.800 Partien**. Weitere 1.432 Auswahlen wies die Spiellogik wegen Überbelegung oder gleichzeitiger Auswahl von Leibwächter und Dorfmatratze ab. [Komprimiertes Archiv mit Einzelwerten](simulations/werewolf-ten-player-combinations.jsonl.gz)
 
 | Gewählte Sonderrollen | Varianten einschließlich Einstellungen |
-| ---: | ---: |
-| 0 | 4 |
-| 1 | 60 |
-| 2 | 404 |
-| 3 | 1.612 |
-| 4 | 4.236 |
-| 5 | 7.700 |
-| 6 | 9.884 |
-| 7 | 8.964 |
+| --------------------: | -------------------------------------: |
+|                     0 |                                      4 |
+|                     1 |                                     60 |
+|                     2 |                                    404 |
+|                     3 |                                  1.612 |
+|                     4 |                                  4.236 |
+|                     5 |                                  7.700 |
+|                     6 |                                  9.884 |
+|                     7 |                                  8.964 |
 
 Der Volltest deckt jede erlaubte Aufstellung ab. Die gezielten Zehner-Vergleiche mit 3.000 Zufallsstarts je Aufstellung und Modell liefern genauere Anhaltspunkte für kleine Unterschiede in den Siegquoten.
 
@@ -937,13 +935,13 @@ Der Volltest deckt **18.336 Varianten mit Magier ohne Hexe** und **14.528 Varian
 
 Die Tabelle zeigt die mittlere Änderung der Wolfssiegquote in Prozentpunkten gegenüber den passenden Aufstellungen mit Hexe allein. Jede getestete Variante zählt gleich viel.
 
-| Entscheidungsmodell | Magier statt Hexe | Magier zusätzlich zur Hexe |
-| --- | ---: | ---: |
-| Zufällige Abstimmung | +1,38 | −12,58 |
-| Vorsichtige Runde | +0,83 | −8,43 |
-| Glaubwürdige Hinweise | −9,16 | −13,74 |
-| Hinweise und Jagd ab Nacht eins | −9,21 | −18,13 |
-| Kombinierte Seher- und Ermittlerhinweise | −9,18 | −15,61 |
+| Entscheidungsmodell                      | Magier statt Hexe | Magier zusätzlich zur Hexe |
+| ---------------------------------------- | ----------------: | -------------------------: |
+| Zufällige Abstimmung                     |             +1,38 |                     −12,58 |
+| Vorsichtige Runde                        |             +0,83 |                      −8,43 |
+| Glaubwürdige Hinweise                    |             −9,16 |                     −13,74 |
+| Hinweise und Jagd ab Nacht eins          |             −9,21 |                     −18,13 |
+| Kombinierte Seher- und Ermittlerhinweise |             −9,18 |                     −15,61 |
 
 In den 20 gezielten Paarvergleichen war die Wolfssiegquote mit beiden Rollen **3,43 bis 20,50 Prozentpunkte** niedriger als mit der Hexe allein. Mit ausschließlich heilendem Magier lag der Rückgang bei 2,20 bis 20,57 Punkten. In der flexiblen Strategie heilt der Magier nach demselben Entscheidungsmuster wie die Hexe und nutzt bei ausreichendem Vorrat höchstens einen Todeszauber pro Nacht. Gleichzeitige zwei Todeszauber wurden im Entscheidungsmodell nicht simuliert.
 
@@ -955,12 +953,12 @@ Drei Werwölfe und eine Seherin sind gesetzt. Damit bleiben acht Rollenplätze. 
 
 Die Tabelle zeigt die Wolfssiegquote im Modell mit kombinierten Seher- und Ermittlerhinweisen, sofern die jeweiligen Rollen besetzt sind. Bürgermeister, Schutzamulett und Trunkenbold sind in diesen Vergleichsspalten ausgeschaltet.
 
-| Weitere Sonderrollen | Ohne Hexe und Magier | Hexe | Magier |
-| --- | ---: | ---: | ---: |
-| Keine | 69,05 % | 62,20 % | 50,95 % |
-| Jäger, Leibwächter, Seher-Lehrling und Ermittler | 57,20 % | 48,25 % | 36,55 % |
-| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler | 66,95 % | 58,60 % | 47,20 % |
-| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel | 66,90 % | 56,75 % | 48,90 % |
+| Weitere Sonderrollen                                                   | Ohne Hexe und Magier |    Hexe |  Magier |
+| ---------------------------------------------------------------------- | -------------------: | ------: | ------: |
+| Keine                                                                  |              69,05 % | 62,20 % | 50,95 % |
+| Jäger, Leibwächter, Seher-Lehrling und Ermittler                       |              57,20 % | 48,25 % | 36,55 % |
+| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler                  |              66,95 % | 58,60 % | 47,20 % |
+| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel |              66,90 % | 56,75 % | 48,90 % |
 
 - **Magier statt Hexe** verändert die Wolfssiegquote im Mittel um +0,28 Punkte bei zufälliger Abstimmung und +0,37 Punkte im vorsichtigen Modell. In den drei Modellen mit geteilten Hinweisen sinkt sie im Mittel um 9,88 bis 10,49 Punkte. Der simulierte Magier nutzt höchstens einen Todeszauber pro Nacht.
 - **Hammer statt doppelter Stimme** verändert die Wolfssiegquote je nach Aufstellung und Modell um −5,90 bis +3,20 Prozentpunkte. Mit dem Hammer ist die durchschnittlich erreichte Nacht um 0,25 bis 0,74 niedriger.
@@ -974,12 +972,12 @@ Dieselben 144 Aufstellungen liefen in einer separaten Testkopie mit zwei Wölfen
 
 Die Tabelle zeigt Wolfssiege im Modell mit kombinierten Seher- und Ermittlerhinweisen.
 
-| Weitere Sonderrollen | Keine Heilrolle, 2 / 3 Wölfe | Hexe, 2 / 3 Wölfe | Magier, 2 / 3 Wölfe |
-| --- | ---: | ---: | ---: |
-| Keine | 46,70 / 69,05 % | 39,70 / 62,20 % | 33,25 / 50,95 % |
-| Jäger, Leibwächter, Seher-Lehrling und Ermittler | 34,10 / 57,20 % | 25,15 / 48,25 % | 19,15 / 36,55 % |
-| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler | 43,90 / 66,95 % | 36,45 / 58,60 % | 27,25 / 47,20 % |
-| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel | 43,65 / 66,90 % | 37,60 / 56,75 % | 29,35 / 48,90 % |
+| Weitere Sonderrollen                                                   | Keine Heilrolle, 2 / 3 Wölfe | Hexe, 2 / 3 Wölfe | Magier, 2 / 3 Wölfe |
+| ---------------------------------------------------------------------- | ---------------------------: | ----------------: | ------------------: |
+| Keine                                                                  |              46,70 / 69,05 % |   39,70 / 62,20 % |     33,25 / 50,95 % |
+| Jäger, Leibwächter, Seher-Lehrling und Ermittler                       |              34,10 / 57,20 % |   25,15 / 48,25 % |     19,15 / 36,55 % |
+| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler                  |              43,90 / 66,95 % |   36,45 / 58,60 % |     27,25 / 47,20 % |
+| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel |              43,65 / 66,90 % |   37,60 / 56,75 % |     29,35 / 48,90 % |
 
 In allen 720 Modell- und Aufstellungsvergleichen sinkt die Wolfssiegquote mit zwei Wölfen um 10,55 bis 26,90 Prozentpunkte. Die Ergebnisse hängen stark vom Abstimmungsverhalten ab. Im vorsichtigen Modell gewinnt die Grundbesetzung mit zwei Wölfen weiterhin 83,45 Prozent gegenüber 95,60 Prozent mit drei.
 
@@ -993,16 +991,16 @@ Jede Besetzung läuft mit und ohne Schutzamulett und Trunkenbold sowie mit beide
 
 Die Tabelle zeigt Wolfssiege im Modell mit kombinierten Seher- und Ermittlerhinweisen. Bürgermeister, Amulett und Trunkenbold sind in diesen Tabellenwerten ausgeschaltet.
 
-| Weitere Sonderrollen | Wölfe | Hexe | Magier | Beide |
-| --- | ---: | ---: | ---: | ---: |
-| Keine | 2 | 39,70 % | 33,25 % | 24,65 % |
-| Keine | 3 | 62,20 % | 50,95 % | 43,10 % |
-| Jäger, Leibwächter, Seher-Lehrling und Ermittler | 2 | 25,15 % | 19,15 % | 12,55 % |
-| Jäger, Leibwächter, Seher-Lehrling und Ermittler | 3 | 48,25 % | 36,55 % | 27,50 % |
-| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler | 2 | 36,45 % | 27,25 % | 21,15 % |
-| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler | 3 | 58,60 % | 47,20 % | 35,85 % |
-| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel | 2 | 37,60 % | 29,35 % | 24,45 % |
-| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel | 3 | 56,75 % | 48,90 % | 41,40 % |
+| Weitere Sonderrollen                                                   | Wölfe |    Hexe |  Magier |   Beide |
+| ---------------------------------------------------------------------- | ----: | ------: | ------: | ------: |
+| Keine                                                                  |     2 | 39,70 % | 33,25 % | 24,65 % |
+| Keine                                                                  |     3 | 62,20 % | 50,95 % | 43,10 % |
+| Jäger, Leibwächter, Seher-Lehrling und Ermittler                       |     2 | 25,15 % | 19,15 % | 12,55 % |
+| Jäger, Leibwächter, Seher-Lehrling und Ermittler                       |     3 | 48,25 % | 36,55 % | 27,50 % |
+| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler                  |     2 | 36,45 % | 27,25 % | 21,15 % |
+| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler                  |     3 | 58,60 % | 47,20 % | 35,85 % |
+| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel |     2 | 37,60 % | 29,35 % | 24,45 % |
+| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel |     3 | 56,75 % | 48,90 % | 41,40 % |
 
 **Bestätigte Regel für zwölf Spieler.** Pro Partie ist höchstens eine der beiden Rollen Hexe und Magier wählbar. Bei drei Wölfen und kombinierten Hinweisen senkt ihr gemeinsamer Einsatz die Wolfssiegquote über die geprüften Besetzungen im Mittel um etwa 20 Prozentpunkte gegenüber der Hexe allein. Bei zwei Wölfen sind es etwa 14 Punkte. Die Strategie mit ausschließlich heilendem Magier führt in den Tabellenbesetzungen zu ähnlichen Ergebnissen.
 
@@ -1016,11 +1014,11 @@ Der gemeinsame Einsatz wurde in einer separaten Testkopie erprobt. Dort handelt 
 
 Die Tabelle zeigt Wolfssiege im Modell mit kombinierten Seher- und Ermittlerhinweisen. Bürgermeister, Schutzamulett und Trunkenbold sind in den Tabellenwerten ausgeschaltet.
 
-| Weitere Sonderrollen | Hexe | Magier | Beide |
-| --- | ---: | ---: | ---: |
-| Keine | 57,85 % | 50,05 % | 39,05 % |
-| Jäger, Leibwächter, Seher-Lehrling und Ermittler | 44,35 % | 34,55 % | 25,50 % |
-| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler | 54,45 % | 44,70 % | 33,55 % |
+| Weitere Sonderrollen                                                   |    Hexe |  Magier |   Beide |
+| ---------------------------------------------------------------------- | ------: | ------: | ------: |
+| Keine                                                                  | 57,85 % | 50,05 % | 39,05 % |
+| Jäger, Leibwächter, Seher-Lehrling und Ermittler                       | 44,35 % | 34,55 % | 25,50 % |
+| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler                  | 54,45 % | 44,70 % | 33,55 % |
 | Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel | 54,70 % | 44,30 % | 36,90 % |
 
 Gegenüber Hexe allein senkt der gemeinsame Einsatz die Wolfssiegquote über die getesteten Besetzungen und Magierstrategien im Mittel um 3,39 Prozentpunkte bei zufälliger Abstimmung, 5,62 Punkte in der vorsichtigen Runde und 17,58 bis 19,86 Punkte in den Modellen mit geteilten Hinweisen.
@@ -1034,17 +1032,17 @@ Die Prüfung umfasst alle 4.564 zulässigen Rollenauswahlen mit null bis neun So
 Jede Variante lief mit 24 gemeinsamen Zufallsstarts in fünf Modellen bis zum Spielende. Insgesamt wurden **7.319.040 Partien** simuliert. Die Spiellogik wies zusätzlich alle 3.628 überfüllten oder widersprüchlichen Auswahlen zurück. [Komprimiertes Archiv mit allen Einzelwerten](simulations/werewolf-thirteen-player-combinations.jsonl.gz)
 
 | Gewählte Sonderrollen | Varianten einschließlich Einstellungen |
-| ---: | ---: |
-| 0 | 4 |
-| 1 | 64 |
-| 2 | 460 |
-| 3 | 1.960 |
-| 4 | 5.500 |
-| 5 | 10.672 |
-| 6 | 14.612 |
-| 7 | 14.120 |
-| 8 | 9.440 |
-| 9 | 4.160 |
+| --------------------: | -------------------------------------: |
+|                     0 |                                      4 |
+|                     1 |                                     64 |
+|                     2 |                                    460 |
+|                     3 |                                  1.960 |
+|                     4 |                                  5.500 |
+|                     5 |                                 10.672 |
+|                     6 |                                 14.612 |
+|                     7 |                                 14.120 |
+|                     8 |                                  9.440 |
+|                     9 |                                  4.160 |
 
 Auch die 4.160 Varianten ohne gewöhnliche Dorfbewohner wurden vollständig durchgespielt. Die Archivprüfung bestätigt identische Varianten über alle Modelle und vollständige Ergebnissummen. Die 24 Starts je Variante dienen zur breiten Prüfung der Spielabläufe. Für feinere Balancevergleiche werden die gezielten Vergleichsläufe mit 2.000 Starts je Variante verwendet.
 
@@ -1056,18 +1054,18 @@ Die Vergleiche umfassen **5.940.000 vollständige Partien** mit 2.000 Zufallssta
 
 Die Tabelle zeigt Wolfssiege im Modell mit kombinierten Seher- und Ermittlerhinweisen. Bürgermeister, Schutzamulett und Trunkenbold sind in diesen Tabellenwerten ausgeschaltet.
 
-| Weitere Sonderrollen | Wölfe | Hexe | Magier | Beide |
-| --- | ---: | ---: | ---: | ---: |
-| Keine | 3 | 56,80 % | 48,45 % | 38,45 % |
-| Keine | 4 | 72,90 % | 64,15 % | 55,40 % |
-| Jäger, Leibwächter, Seher-Lehrling und Ermittler | 3 | 39,50 % | 31,75 % | 22,35 % |
-| Jäger, Leibwächter, Seher-Lehrling und Ermittler | 4 | 60,65 % | 51,75 % | 39,90 % |
-| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler | 3 | 51,25 % | 41,25 % | 33,60 % |
-| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler | 4 | 68,05 % | 60,50 % | 48,45 % |
-| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel | 3 | 52,00 % | 42,45 % | 36,15 % |
-| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel | 4 | 69,00 % | 61,60 % | 51,45 % |
-| Jäger, Dorftrottel, Leibwächter, Amor, Harter Bursche, Seher-Lehrling und Ermittler | 3 | 39,10 % | 31,75 % | 25,45 % |
-| Jäger, Dorftrottel, Leibwächter, Amor, Harter Bursche, Seher-Lehrling und Ermittler | 4 | 57,35 % | 49,60 % | 39,20 % |
+| Weitere Sonderrollen                                                                | Wölfe |    Hexe |  Magier |   Beide |
+| ----------------------------------------------------------------------------------- | ----: | ------: | ------: | ------: |
+| Keine                                                                               |     3 | 56,80 % | 48,45 % | 38,45 % |
+| Keine                                                                               |     4 | 72,90 % | 64,15 % | 55,40 % |
+| Jäger, Leibwächter, Seher-Lehrling und Ermittler                                    |     3 | 39,50 % | 31,75 % | 22,35 % |
+| Jäger, Leibwächter, Seher-Lehrling und Ermittler                                    |     4 | 60,65 % | 51,75 % | 39,90 % |
+| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler                               |     3 | 51,25 % | 41,25 % | 33,60 % |
+| Jäger, Leibwächter, Gerber, Alte Vettel und Ermittler                               |     4 | 68,05 % | 60,50 % | 48,45 % |
+| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel              |     3 | 52,00 % | 42,45 % | 36,15 % |
+| Jäger, Dorftrottel, Dorfmatratze, Amor, Harter Bursche und Alte Vettel              |     4 | 69,00 % | 61,60 % | 51,45 % |
+| Jäger, Dorftrottel, Leibwächter, Amor, Harter Bursche, Seher-Lehrling und Ermittler |     3 | 39,10 % | 31,75 % | 25,45 % |
+| Jäger, Dorftrottel, Leibwächter, Amor, Harter Bursche, Seher-Lehrling und Ermittler |     4 | 57,35 % | 49,60 % | 39,20 % |
 
 Bei vier Wölfen und der letzten Besetzung passen beide Heilrollen zusammen mit einem zusätzlichen Bürgermeister nicht in die neun freien Rollenplätze. Diese überfüllten Varianten wurden beim Aufbau des Vergleichs ausgelassen.
 
@@ -1078,9 +1076,9 @@ Bei vier Wölfen und der letzten Besetzung passen beide Heilrollen zusammen mit 
 Die reguläre Spiellogik wurde mit **141.408 Konfigurationen** geprüft. Jede Konfiguration lief mit acht gemeinsamen Zufallsstarts in fünf Entscheidungsmodellen durch: zufällige Entscheidungen, vorsichtiger Trankeinsatz, geteilte Hinweise mit Dorftrottel-Erkennung, frühe Wolfsangriffe mit zurückhaltender Abstimmung nach einer ruhigen zweiten Nacht sowie kombinierte Ermittlungen. Insgesamt wurden **5.656.320 Partien** vollständig beendet. [Archiv mit Einzelwerten und Prüfsummen der verwendeten Quelldateien](simulations/werewolf-fourteen-player-combinations.jsonl.gz)
 
 | Wolfszahl | Gültige Rollenauswahlen | Konfigurationen einschließlich Einstellungen | Davon Hexe und Magier gemeinsam |
-| --- | ---: | ---: | ---: |
-| 3 | 4.604 | 62.080 | 0 |
-| 4 | 5.998 | 79.328 | 18.336 |
+| --------- | ----------------------: | -------------------------------------------: | ------------------------------: |
+| 3         |                   4.604 |                                       62.080 |                               0 |
+| 4         |                   5.998 |                                       79.328 |                          18.336 |
 
 Alle zulässigen Teilmengen der dreizehn optionalen Rollenkarten wurden berücksichtigt. Dazu kommen beide Gerber-Ziele, beide Bürgermeister-Varianten, Selbstwahl der Alten Vettel ein/aus sowie alle Kombinationen aus Schutzamulett und Trunkenbold. Freie Plätze werden mit gewöhnlichen Dorfbewohnern gefüllt. Die Ablehnung ungültiger Rollenauswahlen wurde für **3.588 Auswahlen bei drei Wölfen** und **2.194 bei vier Wölfen** geprüft.
 
@@ -1096,23 +1094,23 @@ Die 899 Vergleichsvarianten einschließlich der Kontrollbesetzungen liefen mit j
 
 Die folgende Tabelle zeigt Wolfssiege im Modell mit geteilten Hinweisen und Dorftrottel-Erkennung, ohne Bürgermeister, Amulett und Trunkenbold und mit flexibler Magierstrategie. Die übrigen Varianten stehen im Archiv.
 
-| Weitere Sonderrollen | Wölfe | Hexe | Magier | Beide |
-| --- | ---: | ---: | ---: | ---: |
-| Keine weiteren | 3 | 52,55 % | 45,20 % | 35,05 % |
-| Schutz und Ermittlungen | 3 | 41,50 % | 32,45 % | 24,30 % |
-| Gerber und Ermittlungen | 3 | 51,15 % | 44,00 % | 34,95 % |
-| Dorfmatratze und Amor | 3 | 50,70 % | 41,70 % | 34,40 % |
-| Viele Sonderrollen | 3 | 40,40 % | 31,90 % | 24,65 % |
-| Keine weiteren | 4 | 69,70 % | 61,25 % | 53,00 % |
-| Schutz und Ermittlungen | 4 | 59,40 % | 50,40 % | 41,10 % |
-| Gerber und Ermittlungen | 4 | 68,75 % | 61,05 % | 50,90 % |
-| Dorfmatratze und Amor | 4 | 66,75 % | 58,30 % | 48,90 % |
-| Viele Sonderrollen | 4 | 57,65 % | 48,50 % | 40,75 % |
-| Keine weiteren | 5 | 84,05 % | 76,30 % | 68,50 % |
-| Schutz und Ermittlungen | 5 | 78,25 % | 67,45 % | 57,10 % |
-| Gerber und Ermittlungen | 5 | 83,60 % | 75,50 % | 67,10 % |
-| Dorfmatratze und Amor | 5 | 79,50 % | 73,50 % | 64,00 % |
-| Viele Sonderrollen | 5 | 73,50 % | 64,45 % | 56,50 % |
+| Weitere Sonderrollen    | Wölfe |    Hexe |  Magier |   Beide |
+| ----------------------- | ----: | ------: | ------: | ------: |
+| Keine weiteren          |     3 | 52,55 % | 45,20 % | 35,05 % |
+| Schutz und Ermittlungen |     3 | 41,50 % | 32,45 % | 24,30 % |
+| Gerber und Ermittlungen |     3 | 51,15 % | 44,00 % | 34,95 % |
+| Dorfmatratze und Amor   |     3 | 50,70 % | 41,70 % | 34,40 % |
+| Viele Sonderrollen      |     3 | 40,40 % | 31,90 % | 24,65 % |
+| Keine weiteren          |     4 | 69,70 % | 61,25 % | 53,00 % |
+| Schutz und Ermittlungen |     4 | 59,40 % | 50,40 % | 41,10 % |
+| Gerber und Ermittlungen |     4 | 68,75 % | 61,05 % | 50,90 % |
+| Dorfmatratze und Amor   |     4 | 66,75 % | 58,30 % | 48,90 % |
+| Viele Sonderrollen      |     4 | 57,65 % | 48,50 % | 40,75 % |
+| Keine weiteren          |     5 | 84,05 % | 76,30 % | 68,50 % |
+| Schutz und Ermittlungen |     5 | 78,25 % | 67,45 % | 57,10 % |
+| Gerber und Ermittlungen |     5 | 83,60 % | 75,50 % | 67,10 % |
+| Dorfmatratze und Amor   |     5 | 79,50 % | 73,50 % | 64,00 % |
+| Viele Sonderrollen      |     5 | 73,50 % | 64,45 % | 56,50 % |
 
 Die Ausgangsbesetzungen enthalten zusätzlich zur Seherin und den tabellierten Heilrollen:
 
@@ -1130,10 +1128,10 @@ Die Quoten gelten für die jeweiligen Entscheidungsmodelle. Menschen können and
 Die reguläre Spiellogik wurde mit **223.776 Konfigurationen** geprüft. Acht gemeinsame Zufallsstarts je Konfiguration in fünf Entscheidungsmodellen ergeben **8.951.040 vollständig beendete Partien**. Verwendet wurden dieselben fünf Modelle wie bei vierzehn Spielern. [Archiv mit Einzelwerten und Quellenprüfsummen](simulations/werewolf-fifteen-player-combinations.jsonl.gz)
 
 | Wölfe | Gültige Rollenauswahlen | Konfigurationen einschließlich Einstellungen | Davon beide Heilrollen | Abgewiesene Rollenauswahlen |
-| ---: | ---: | ---: | ---: | ---: |
-| 3 | 4.608 | 62.208 | 0 | 3.584 |
-| 4 | 6.119 | 82.240 | 20.160 | 2.073 |
-| 5 | 5.998 | 79.328 | 18.336 | 2.194 |
+| ----: | ----------------------: | -------------------------------------------: | ---------------------: | --------------------------: |
+|     3 |                   4.608 |                                       62.208 |                      0 |                       3.584 |
+|     4 |                   6.119 |                                       82.240 |                 20.160 |                       2.073 |
+|     5 |                   5.998 |                                       79.328 |                 18.336 |                       2.194 |
 
 Berücksichtigt sind alle zulässigen Teilmengen der dreizehn optionalen Rollen, beide Gerber-Ziele, beide Bürgermeister-Varianten, die Selbstwahl der Alten Vettel ein/aus sowie alle Kombinationen aus Schutzamulett und Trunkenbold. Gewöhnliche Dorfbewohner füllen freie Plätze. Im damaligen Prüfstand waren die Heilrollen bei drei Wölfen Alternativen und bei vier und fünf gemeinsam zulässig. Aktuell ist die gemeinsame Besetzung nur noch mit vier Wölfen erlaubt. Leibwächter und Dorfmatratze bleiben Alternativen.
 
@@ -1149,14 +1147,14 @@ Die 366 Vergleichsvarianten einschließlich Kontrollbesetzungen liefen mit je 2.
 
 Die Tabelle zeigt Wolfssiege im Modell mit geteilten Hinweisen und Dorftrottel-Erkennung, ohne Bürgermeister, Amulett und Trunkenbold und mit flexibler Magierstrategie.
 
-| Weitere Sonderrollen | Wölfe | Hexe | Magier | Beide, bei 3 Wölfen nur Versuch |
-| --- | ---: | ---: | ---: | ---: |
-| Keine weiteren | 3 | 49,80 % | 42,45 % | 35,45 % |
-| Schutz und Ermittlungen | 3 | 38,05 % | 28,05 % | 25,05 % |
-| Viele Sonderrollen | 3 | 37,65 % | 29,70 % | 25,30 % |
-| Keine weiteren | 4 | 66,50 % | 58,45 % | 49,95 % |
-| Schutz und Ermittlungen | 4 | 54,75 % | 46,45 % | 36,30 % |
-| Viele Sonderrollen | 4 | 54,05 % | 45,20 % | 35,90 % |
+| Weitere Sonderrollen    | Wölfe |    Hexe |  Magier | Beide, bei 3 Wölfen nur Versuch |
+| ----------------------- | ----: | ------: | ------: | ------------------------------: |
+| Keine weiteren          |     3 | 49,80 % | 42,45 % |                         35,45 % |
+| Schutz und Ermittlungen |     3 | 38,05 % | 28,05 % |                         25,05 % |
+| Viele Sonderrollen      |     3 | 37,65 % | 29,70 % |                         25,30 % |
+| Keine weiteren          |     4 | 66,50 % | 58,45 % |                         49,95 % |
+| Schutz und Ermittlungen |     4 | 54,75 % | 46,45 % |                         36,30 % |
+| Viele Sonderrollen      |     4 | 54,05 % | 45,20 % |                         35,90 % |
 
 Die Seherin ist immer gesetzt. „Schutz und Ermittlungen“ umfasst Jäger, Leibwächter, Seher-Lehrling und Paranormalen Ermittler. „Viele Sonderrollen“ ergänzt Dorftrottel, Amor und Harten Burschen. Die übrigen Plätze werden mit gewöhnlichen Dorfbewohnern gefüllt.
 
@@ -1168,11 +1166,11 @@ Die Quoten gelten unter den jeweiligen Modellannahmen und sind keine verlässlic
 
 Die gespeicherten Vergleiche wurden nach demselben Maßstab wie für 17 Spieler ausgewertet: die drei Modelle mit geteilten Hinweisen, ruhiger zweiter Nacht nach frühem Angriff sowie kombinierten Ermittlungen. Vier Wölfe werden als allgemeiner Standard festgelegt; drei bleiben optional. Die neue Bedienvorgabe ersetzt den zusätzlichen Hinweis durch eine verbindliche automatische Festlegung.
 
-| Referenzmodell | Detailvergleich: 3 Wölfe | Detailvergleich: 4 Wölfe, gleiche Rollen | Breite Prüfung: 3 Wölfe | Breite Prüfung: 4 Wölfe, gleiche Rollen |
-| --- | ---: | ---: | ---: | ---: |
-| Geteilte Hinweise und Dorftrottel-Erkennung | 37,28 % | 53,02 % | 45,14 % | 47,56 % |
-| Frühe Angriffe und ruhige zweite Nacht | 42,30 % | 58,94 % | 50,72 % | 50,48 % |
-| Kombinierte Ermittlungen | 35,08 % | 51,22 % | 40,63 % | 48,57 % |
+| Referenzmodell                              | Detailvergleich: 3 Wölfe | Detailvergleich: 4 Wölfe, gleiche Rollen | Breite Prüfung: 3 Wölfe | Breite Prüfung: 4 Wölfe, gleiche Rollen |
+| ------------------------------------------- | -----------------------: | ---------------------------------------: | ----------------------: | --------------------------------------: |
+| Geteilte Hinweise und Dorftrottel-Erkennung |                  37,28 % |                                  53,02 % |                 45,14 % |                                 47,56 % |
+| Frühe Angriffe und ruhige zweite Nacht      |                  42,30 % |                                  58,94 % |                 50,72 % |                                 50,48 % |
+| Kombinierte Ermittlungen                    |                  35,08 % |                                  51,22 % |                 40,63 % |                                 48,57 % |
 
 Für die gleichen Rollenbesetzungen werden beide Heilrollen gemeinsam auf beiden Seiten ausgelassen. Der Detailvergleich umfasst je 72 Varianten und 2.000 Starts je Modell und Variante. Die breite Prüfung umfasst je 62.208 Konfigurationen mit acht gemeinsamen Starts. Bei gleicher Modellgewichtung liegen die mittleren Wolfsquoten im Detailvergleich bei 38,22 % mit drei und 54,39 % mit vier; in der breiten Prüfung bei 45,50 % und 48,87 %. Vier liegen in beiden Auswertungen insgesamt näher an einer ausgeglichenen Verteilung.
 
@@ -1185,9 +1183,9 @@ Die [vollständige Auswertung mit Gewichtung](simulations/werewolf-sixteen-playe
 Die Business-Schicht wurde auf 16 Mitspielende ohne Erzähler erweitert. Die Prüfung umfasst **145.088 Konfigurationen** mit drei oder vier Wölfen. Acht gemeinsame Zufallsstarts in fünf Entscheidungsmodellen ergeben **5.803.520 vollständig beendete Partien**. [Archiv mit Einzelwerten und Quellenprüfsummen](simulations/werewolf-sixteen-player-combinations.jsonl.gz)
 
 | Wölfe | Gültige Rollenauswahlen | Konfigurationen einschließlich Einstellungen | Davon beide Heilrollen | Abgewiesene Rollenauswahlen |
-| ---: | ---: | ---: | ---: | ---: |
-| 3 | 4.608 | 62.208 | 0 | 3.584 |
-| 4 | 6.142 | 82.880 | 20.672 | 2.050 |
+| ----: | ----------------------: | -------------------------------------------: | ---------------------: | --------------------------: |
+|     3 |                   4.608 |                                       62.208 |                      0 |                       3.584 |
+|     4 |                   6.142 |                                       82.880 |                 20.672 |                       2.050 |
 
 Alle zulässigen Teilmengen der dreizehn optionalen Rollen sowie beide Gerber-Ziele, beide Bürgermeister-Varianten, Selbstwahl der Alten Vettel ein/aus und sämtliche Kombinationen aus Schutzamulett und Trunkenbold sind enthalten. Leibwächter und Dorfmatratze bleiben Alternativen. Gemeinsame Heilrollen setzen vier Wölfe voraus. Fünf oder mehr Wölfe sind auch über Punkteempfehlung und Zufallsauswahl ausgeschlossen.
 
@@ -1208,15 +1206,15 @@ Für 17 wurden eins bis acht Wölfe mit drei Ausgangsbesetzungen, ohne Heilrolle
 Die Tabelle zeigt Wolfssiege im Modell mit geteilten Hinweisen und Dorftrottel-Erkennung, jeweils ohne Amulett. Beide Heilrollen bei ein bis drei und sechs bis acht Wölfen waren ausschließlich in der Testkopie zugelassen und werden regulär nicht angeboten.
 
 | Wölfe | Seherin und Hexe, sonst Füllrollen | Viele Sonderrollen und beide Heilrollen, nur Versuch außerhalb 4/5 |
-| ---: | ---: | ---: |
-| 1 | 16,70 % | 5,20 % |
-| 2 | 31,90 % | 12,30 % |
-| 3 | 47,30 % | 23,10 % |
-| 4 | 62,50 % | 33,50 % |
-| 5 | 78,00 % | 49,20 % |
-| 6 | 90,10 % | 63,40 % |
-| 7 | 97,90 % | 80,30 % |
-| 8 | 99,90 % | Kein Platz für diese Besetzung |
+| ----: | ---------------------------------: | -----------------------------------------------------------------: |
+|     1 |                            16,70 % |                                                             5,20 % |
+|     2 |                            31,90 % |                                                            12,30 % |
+|     3 |                            47,30 % |                                                            23,10 % |
+|     4 |                            62,50 % |                                                            33,50 % |
+|     5 |                            78,00 % |                                                            49,20 % |
+|     6 |                            90,10 % |                                                            63,40 % |
+|     7 |                            97,90 % |                                                            80,30 % |
+|     8 |                            99,90 % |                                     Kein Platz für diese Besetzung |
 
 Ein und zwei Wölfe liegen in diesen geprüften Besetzungen deutlich unter den Erfolgsquoten von drei Wölfen. Sechs bis acht haben gegenüber fünf einen zunehmenden Vorteil, auch mit starken Dorfrollen. Deshalb wurden drei, vier und fünf ausführlicher untersucht. Das ist eine modellbasierte Auswahl; die Sichtung ersetzt keine vollständige Kombinationsprüfung der übrigen Wolfszahlen.
 
@@ -1236,17 +1234,17 @@ Drei Ausgangsbesetzungen wurden mit Hexe, Magier und beiden gemeinsam, Bürgerme
 
 Die folgende Tabelle zeigt Wolfssiege im Modell mit geteilten Hinweisen und Dorftrottel-Erkennung, ohne Bürgermeister, Amulett und Trunkenbold und mit flexibler Magierstrategie.
 
-| Weitere Sonderrollen | Wölfe | Hexe | Magier | Beide, bei 3 nur Versuch |
-| --- | ---: | ---: | ---: | ---: |
-| Keine weiteren | 3 | 48,30 % | 41,95 % | 34,85 % |
-| Schutz und Ermittlungen | 3 | 36,55 % | 29,50 % | 22,40 % |
-| Viele Sonderrollen | 3 | 33,35 % | 28,55 % | 22,55 % |
-| Keine weiteren | 4 | 63,35 % | 55,30 % | 47,15 % |
-| Schutz und Ermittlungen | 4 | 51,95 % | 43,90 % | 34,55 % |
-| Viele Sonderrollen | 4 | 52,05 % | 42,65 % | 33,20 % |
-| Keine weiteren | 5 | 78,50 % | 71,40 % | 62,65 % |
-| Schutz und Ermittlungen | 5 | 68,45 % | 61,85 % | 51,00 % |
-| Viele Sonderrollen | 5 | 66,40 % | 58,80 % | 50,60 % |
+| Weitere Sonderrollen    | Wölfe |    Hexe |  Magier | Beide, bei 3 nur Versuch |
+| ----------------------- | ----: | ------: | ------: | -----------------------: |
+| Keine weiteren          |     3 | 48,30 % | 41,95 % |                  34,85 % |
+| Schutz und Ermittlungen |     3 | 36,55 % | 29,50 % |                  22,40 % |
+| Viele Sonderrollen      |     3 | 33,35 % | 28,55 % |                  22,55 % |
+| Keine weiteren          |     4 | 63,35 % | 55,30 % |                  47,15 % |
+| Schutz und Ermittlungen |     4 | 51,95 % | 43,90 % |                  34,55 % |
+| Viele Sonderrollen      |     4 | 52,05 % | 42,65 % |                  33,20 % |
+| Keine weiteren          |     5 | 78,50 % | 71,40 % |                  62,65 % |
+| Schutz und Ermittlungen |     5 | 68,45 % | 61,85 % |                  51,00 % |
+| Viele Sonderrollen      |     5 | 66,40 % | 58,80 % |                  50,60 % |
 
 Die Seherin ist immer gesetzt. „Schutz und Ermittlungen“ enthält Jäger, Leibwächter, Seher-Lehrling und Paranormalen Ermittler. „Viele Sonderrollen“ ergänzt Dorftrottel, Amor und Harten Burschen. Die übrigen Plätze werden mit gewöhnlichen Dorfbewohnern gefüllt.
 
@@ -1259,10 +1257,10 @@ Die Quoten gelten unter den jeweiligen Modellannahmen und sagen keine tatsächli
 Die Business-Schicht unterstützt 17 Mitspielende ohne Erzähler. Für drei, vier und fünf Wölfe wurden **228.032 Konfigurationen** geprüft. Acht gemeinsame Zufallsstarts je Konfiguration in fünf Entscheidungsmodellen ergeben **9.121.280 vollständig beendete Partien**. [Archiv mit Einzelwerten und Quellenprüfsummen](simulations/werewolf-seventeen-player-combinations.jsonl.gz)
 
 | Wölfe | Gültige Rollenauswahlen | Konfigurationen einschließlich Einstellungen | Davon beide Heilrollen | Abgewiesene Rollenauswahlen |
-| ---: | ---: | ---: | ---: | ---: |
-| 3 | 4.608 | 62.208 | 0 | 3.584 |
-| 4 | 6.144 | 82.944 | 20.736 | 2.048 |
-| 5 | 6.142 | 82.880 | 20.672 | 2.050 |
+| ----: | ----------------------: | -------------------------------------------: | ---------------------: | --------------------------: |
+|     3 |                   4.608 |                                       62.208 |                      0 |                       3.584 |
+|     4 |                   6.144 |                                       82.944 |                 20.736 |                       2.048 |
+|     5 |                   6.142 |                                       82.880 |                 20.672 |                       2.050 |
 
 Die Prüfung enthält alle zulässigen Teilmengen der dreizehn optionalen Rollen, beide Gerber-Ziele, beide Bürgermeister-Varianten, die Selbstwahl der Alten Vettel ein/aus und sämtliche Kombinationen aus Amulett und Trunkenbold. Bei drei Wölfen bleiben Hexe und Magier Alternativen; bei vier und fünf dürfen beide gemeinsam spielen. Leibwächter und Dorfmatratze bleiben Alternativen. Freie Plätze werden mit gewöhnlichen Dorfbewohnern gefüllt.
 
@@ -1293,15 +1291,15 @@ Die erlaubte Mindestzahl bleibt drei; sie wird nicht stillschweigend auf vier er
 Drei Ausgangsbesetzungen wurden ohne Heilrolle, mit Hexe, mit Magier oder mit beiden sowie mit/ohne Amulett untersucht. 1.000 gemeinsame Zufallsstarts je Variante in fünf Modellen ergeben **960.000 vollständig beendete Partien**. Alle acht Sichtungstests bestanden. Das [Sichtungsarchiv](simulations/werewolf-eighteen-player-wolf-counts.jsonl.gz) enthält auch die niedrigen und hohen Wolfszahlen, die außerhalb der später freigegebenen Grenzen liegen. Beide Heilrollen mit weniger als vier oder mehr als fünf Wölfen waren ausschließlich in der Testkopie erlaubt.
 
 | Wölfe | Seherin und Hexe, sonst Füllrollen | Viele Sonderrollen und beide Heilrollen, nur Versuch außerhalb 4/5 |
-| ---: | ---: | ---: |
-| 1 | 14,50 % | 4,50 % |
-| 2 | 28,60 % | 12,10 % |
-| 3 | 48,90 % | 20,20 % |
-| 4 | 61,80 % | 34,60 % |
-| 5 | 77,70 % | 44,40 % |
-| 6 | 86,20 % | 60,80 % |
-| 7 | 96,20 % | 76,10 % |
-| 8 | 99,60 % | 90,00 % |
+| ----: | ---------------------------------: | -----------------------------------------------------------------: |
+|     1 |                            14,50 % |                                                             4,50 % |
+|     2 |                            28,60 % |                                                            12,10 % |
+|     3 |                            48,90 % |                                                            20,20 % |
+|     4 |                            61,80 % |                                                            34,60 % |
+|     5 |                            77,70 % |                                                            44,40 % |
+|     6 |                            86,20 % |                                                            60,80 % |
+|     7 |                            96,20 % |                                                            76,10 % |
+|     8 |                            99,60 % |                                                            90,00 % |
 
 Die Tabelle zeigt Wolfssiege im Modell mit geteilten Hinweisen und Dorftrottel-Erkennung, jeweils ohne Amulett. Ein und zwei Wölfe waren schon in der einfachen Besetzung deutlich im Nachteil; drei bieten dafür eine sinnvolle untere Option. Sechs bis acht lagen auch gegen starke Dorfrollen häufig im Vorteil. Deshalb wurden drei bis sechs ausführlicher verglichen und anschließend drei bis fünf freigegeben. Die Sichtung ist keine vollständige Kombinationsprüfung aller acht Wolfszahlen.
 
@@ -1315,20 +1313,20 @@ Die 732 Vergleichsvarianten einschließlich Kontrollbesetzungen liefen mit je 2.
 
 Die folgende Tabelle zeigt Wolfssiege im Hinweismodell, ohne Bürgermeister, Amulett und Trunkenbold und mit flexibler Magierstrategie. Beide Heilrollen mit drei oder sechs Wölfen sind hier Versuchsvarianten, keine reguläre Auswahl.
 
-| Weitere Sonderrollen | Wölfe | Hexe | Magier | Beide |
-| --- | ---: | ---: | ---: | ---: |
-| Keine weiteren | 3 | 48,00 % | 42,00 % | 33,20 % |
-| Schutz und Ermittlungen | 3 | 32,75 % | 27,30 % | 20,80 % |
-| Viele Sonderrollen | 3 | 31,20 % | 24,60 % | 19,20 % |
-| Keine weiteren | 4 | 61,75 % | 54,20 % | 45,20 % |
-| Schutz und Ermittlungen | 4 | 49,45 % | 40,50 % | 31,25 % |
-| Viele Sonderrollen | 4 | 48,60 % | 40,65 % | 32,30 % |
-| Keine weiteren | 5 | 76,85 % | 67,35 % | 61,10 % |
-| Schutz und Ermittlungen | 5 | 65,30 % | 55,90 % | 47,05 % |
-| Viele Sonderrollen | 5 | 63,25 % | 53,60 % | 45,40 % |
-| Keine weiteren | 6 | 86,90 % | 80,35 % | 74,65 % |
-| Schutz und Ermittlungen | 6 | 79,05 % | 73,50 % | 62,85 % |
-| Viele Sonderrollen | 6 | 76,55 % | 70,55 % | 61,35 % |
+| Weitere Sonderrollen    | Wölfe |    Hexe |  Magier |   Beide |
+| ----------------------- | ----: | ------: | ------: | ------: |
+| Keine weiteren          |     3 | 48,00 % | 42,00 % | 33,20 % |
+| Schutz und Ermittlungen |     3 | 32,75 % | 27,30 % | 20,80 % |
+| Viele Sonderrollen      |     3 | 31,20 % | 24,60 % | 19,20 % |
+| Keine weiteren          |     4 | 61,75 % | 54,20 % | 45,20 % |
+| Schutz und Ermittlungen |     4 | 49,45 % | 40,50 % | 31,25 % |
+| Viele Sonderrollen      |     4 | 48,60 % | 40,65 % | 32,30 % |
+| Keine weiteren          |     5 | 76,85 % | 67,35 % | 61,10 % |
+| Schutz und Ermittlungen |     5 | 65,30 % | 55,90 % | 47,05 % |
+| Viele Sonderrollen      |     5 | 63,25 % | 53,60 % | 45,40 % |
+| Keine weiteren          |     6 | 86,90 % | 80,35 % | 74,65 % |
+| Schutz und Ermittlungen |     6 | 79,05 % | 73,50 % | 62,85 % |
+| Viele Sonderrollen      |     6 | 76,55 % | 70,55 % | 61,35 % |
 
 Die Seherin ist immer gesetzt. „Schutz und Ermittlungen“ enthält Jäger, Leibwächter, Seher-Lehrling und Paranormalen Ermittler; „Viele Sonderrollen“ ergänzt Dorftrottel, Amor und Harten Burschen. Gewöhnliche Dorfbewohner füllen die übrigen Plätze. Auch Bürgermeister, Amulett, Trunkenbold und die heilende Magierstrategie sind im Archiv enthalten.
 
@@ -1337,11 +1335,11 @@ Die Seherin ist immer gesetzt. „Schutz und Ermittlungen“ enthält Jäger, Le
 Vier werden nach demselben Maßstab wie bei 16 und 17 als allgemeiner Standard verwendet: gleiche Gewichtung der untersuchten Varianten je Modell, Orientierung an den drei informationsbasierten Referenzmodellen und Betrachtung verschiedener Dorfbesetzungen. Kontrollen und doppelte Magierstrategien werden in dieser Zusammenfassung nicht mehrfach gewichtet; gemeinsame Heilrollen mit drei Wölfen bleiben ausgeschlossen.
 
 | Wölfe | Detailvergleich: Spanne der drei Referenzmodelle | Breite Kombinationsprüfung: Spanne der drei Referenzmodelle |
-| ---: | ---: | ---: |
-| 3 | 31,80 % bis 38,19 % | 33,57 % bis 34,48 % |
-| 4 | 41,81 % bis 48,91 % | 47,50 % bis 50,15 % |
-| 5 | 56,69 % bis 63,94 % | 58,84 % bis 66,38 % |
-| 6 | 71,06 % bis 77,74 % | Nicht freigegeben und nicht vollständig kombiniert |
+| ----: | -----------------------------------------------: | ----------------------------------------------------------: |
+|     3 |                              31,80 % bis 38,19 % |                                         33,57 % bis 34,48 % |
+|     4 |                              41,81 % bis 48,91 % |                                         47,50 % bis 50,15 % |
+|     5 |                              56,69 % bis 63,94 % |                                         58,84 % bis 66,38 % |
+|     6 |                              71,06 % bis 77,74 % |          Nicht freigegeben und nicht vollständig kombiniert |
 
 Vier liegen insgesamt am nächsten an einem ausgewogenen Ergebnis. Drei sind für einfache Dorfbesetzungen sinnvoll; fünf bleiben eine Zusatzoption bei starken Schutz- und Informationsrollen. Sechs sind keine notwendige Erweiterung: Selbst in der starken Tabellenbesetzung mit beiden Heilrollen erreichen sie 61,35 % Wolfssiege, während fünf dort 45,40 % erreichen. Sie werden deshalb für 18 ausgeschlossen; das ist eine konservative Konfigurationsentscheidung, kein Beweis gegen jede denkbare menschliche Sechser-Aufstellung.
 
@@ -1354,10 +1352,10 @@ Die festgelegten Grenzen werden in jeder technischen Einrichtung für 18 eingeha
 **228.096 Konfigurationen** mit drei, vier und fünf Wölfen liefen mit acht gemeinsamen Starts in fünf Modellen durch: **9.123.840 beendete Partien**. Alle fünfzehn Simulationsläufe und drei Prüfungen ungültiger Rollenauswahlen bestanden. Das [Kombinationsarchiv](simulations/werewolf-eighteen-player-combinations.jsonl.gz) enthält Einzelwerte, Quellenprüfsummen und den verwendeten Testläufer als Quelltext.
 
 | Wölfe | Zulässige Rollenauswahlen | Konfigurationen einschließlich Einstellungen | Davon beide Heilrollen | Abgewiesene Rollenauswahlen |
-| ---: | ---: | ---: | ---: | ---: |
-| 3 | 4.608 | 62.208 | 0 | 3.584 |
-| 4 | 6.144 | 82.944 | 20.736 | 2.048 |
-| 5 | 6.144 | 82.944 | 20.736 | 2.048 |
+| ----: | ------------------------: | -------------------------------------------: | ---------------------: | --------------------------: |
+|     3 |                     4.608 |                                       62.208 |                      0 |                       3.584 |
+|     4 |                     6.144 |                                       82.944 |                 20.736 |                       2.048 |
+|     5 |                     6.144 |                                       82.944 |                 20.736 |                       2.048 |
 
 Enthalten sind sämtliche zulässigen Teilmengen der dreizehn optionalen Rollen, beide Gerber-Ziele, beide Bürgermeister-Varianten, Selbstwahl der Alten Vettel ein/aus sowie alle Kombinationen aus Amulett und Trunkenbold. Die voneinander unabhängigen Archive wurden auf 18 Spieler, vollständige Ergebnissummen, eindeutige Konfigurationen und gleiche Varianten über die Modelle hinweg geprüft. Alle gültigen Durchläufe aus Sichtung, Detailvergleich und Kombinationsprüfung ergeben **17.403.840 Partien** mit teilweise denselben Zufallsstarts.
 
@@ -1371,19 +1369,18 @@ Neben einem Werwolf und einer Seherin wurden alle acht Kombinationen aus Hexe, J
 
 Die Tabelle zeigt den Anteil der Wolfssiege im Modell mit glaubwürdigen Hinweisen. Die Wölfe greifen dort ab Nacht zwei an. Die simulierte Dorfmatratze wählt zufällig unter den zulässigen Gastgebern.
 
-| Weitere Sonderrollen | Mit gewöhnlichem Dorfbewohner | Mit Leibwächter | Mit Dorfmatratze |
-| --- | ---: | ---: | ---: |
-| Keine | 34,37 % | 32,85 % | 32,61 % |
-| Hexe | 25,12 % | 23,32 % | 22,70 % |
-| Jäger | 33,59 % | 32,10 % | 30,94 % |
-| Dorftrottel | 31,27 % | 31,20 % | 31,10 % |
-| Hexe und Jäger | 24,26 % | 21,99 % | 20,46 % |
-| Hexe und Dorftrottel | 23,54 % | 22,73 % | 22,05 % |
-| Jäger und Dorftrottel | 31,86 % | 30,31 % | 29,50 % |
-| Hexe, Jäger und Dorftrottel | 23,38 % | 21,33 % | 20,50 % |
+| Weitere Sonderrollen        | Mit gewöhnlichem Dorfbewohner | Mit Leibwächter | Mit Dorfmatratze |
+| --------------------------- | ----------------------------: | --------------: | ---------------: |
+| Keine                       |                       34,37 % |         32,85 % |          32,61 % |
+| Hexe                        |                       25,12 % |         23,32 % |          22,70 % |
+| Jäger                       |                       33,59 % |         32,10 % |          30,94 % |
+| Dorftrottel                 |                       31,27 % |         31,20 % |          31,10 % |
+| Hexe und Jäger              |                       24,26 % |         21,99 % |          20,46 % |
+| Hexe und Dorftrottel        |                       23,54 % |         22,73 % |          22,05 % |
+| Jäger und Dorftrottel       |                       31,86 % |         30,31 % |          29,50 % |
+| Hexe, Jäger und Dorftrottel |                       23,38 % |         21,33 % |          20,50 % |
 
 Beide Rollen bleiben für sechs Spieler wählbar. In diesem Modell liegen sie bei jeder Aufstellung höchstens 1,53 Prozentpunkte auseinander. Die Zahlen gelten für die simulierten Entscheidungen.
-
 
 ## Jägerschuss: freiwillig oder verpflichtend
 
@@ -1397,7 +1394,6 @@ Dies gilt sowohl nach einer Tagesabstimmung als auch bei der Morgenauflösung un
 Eine verpflichtende Zielwahl garantiert keinen Tod: Das Schutzamulett schützt auch vor diesem Schuss. Die Aktion ist damit verbraucht; es gibt keinen zweiten Versuch. Leibwächter und Dorfmatratze schützen nicht vor dem Jägerschuss. Die maximale Todesfolge von acht Personen steigt dadurch nicht.
 
 Die Einstellung gilt für feste und variable Rollenauswahl gleichermaßen. Die spätere Oberfläche muss beide Optionen anbieten; dieser Schritt ergänzt ausschließlich die Logik. Bestehende Simulationsarchive verwenden den freiwilligen Standard. Für Besetzungen mit verpflichtendem Jägerschuss gelten Balanceaussagen bis zur eigenen Kalibrierung als vorläufig; Punktwerte werden nicht erfunden.
-
 
 ## Stichprobenprüfung für neunzehn Spieler
 
@@ -1421,11 +1417,11 @@ Insgesamt **379.040 vollständig abgeschlossene Modellpartien**. Die Daten entha
 Nur die 64 gezogenen Konfigurationen, ohne zusätzliche Grundkontrolle und ohne gemeinsam eingesetzte Heiler. Jede Konfiguration zählt gleich viel. Die drei Modelle mit Informationsaustausch werden einzeln dargestellt:
 
 | Wölfe | Geteilte Hinweise | Wolfsjagd ab erster Nacht | Zusätzliche Ermittlerhinweise |
-| ---: | ---: | ---: | ---: |
-| 3 | 36,35 % | 39,55 % | 35,42 % |
-| 4 | 48,25 % | 53,15 % | 48,46 % |
-| 5 | 65,54 % | 72,27 % | 64,79 % |
-| 6 | 76,93 % | 80,20 % | 76,34 % |
+| ----: | ----------------: | ------------------------: | ----------------------------: |
+|     3 |           36,35 % |                   39,55 % |                       35,42 % |
+|     4 |           48,25 % |                   53,15 % |                       48,46 % |
+|     5 |           65,54 % |                   72,27 % |                       64,79 % |
+|     6 |           76,93 % |                   80,20 % |                       76,34 % |
 
 **Vier sind der beste allgemeine Standard dieser Stichprobe:** In allen drei Referenzmodellen am nächsten an einer ausgeglichenen Verteilung. Drei bleiben für schwache Dorfbesetzungen sinnvoll. Mit nur Seherin und gewöhnlichen Dorfbewohnern gewinnen drei Wölfe in den Informationsmodellen etwa 52–58 %, zwei nur 34–39 %. Sechs Wölfe dominieren die gemeinsame Stichprobe mit rund 76–80 % und werden nicht freigegeben. Fünf sind für stärkere Dorfbesetzungen vorgesehen, keine pauschale Empfehlung für wenige Sonderrollen.
 
@@ -1442,7 +1438,6 @@ Zwei und sechs Wölfe waren nur für die Forschungsdurchläufe vorübergehend zu
 Das bisherige Punktmodell wird nicht auf diese Stichprobe neu angepasst. Für 19 wird nur das vorläufige Spielerziel −17,5 aus den Vorgängern fortgeschrieben; die API markiert Empfehlungen ausdrücklich als vorläufig. Die verbindliche automatische Wolfszuteilung bleibt die separat geplante Validierungsaufgabe We-03-50.
 
 149 gezielte Werwolf-Tests bestanden. Zusätzlich laufen für jede der drei freigegebenen Wolfszahlen 32 vollständige zufällige Entscheidungsszenarien (zusammen 96) mit Prüfungen erlaubter und unerlaubter Aktionen, veralteter Ereignisse, offener/verdeckter Rollen, Pflicht-/Wahlschuss, Amulett, Trunkenbold und Nachtangriff ab erster Nacht. Zustandsmaschine: 99,18 % Zeilen- und 95,84 % Zweigabdeckung.
-
 
 ## Stichprobenprüfung für zwanzig Spieler
 
@@ -1461,11 +1456,11 @@ Wie für 19 ausdrücklich **Stichproben statt vollständiger Kombinationsprüfun
 Die gemeinsame Stichprobe ohne gleichzeitige Heiler und ohne Grundkontrolle ergibt:
 
 | Wölfe | Geteilte Hinweise | Wolfsjagd ab erster Nacht | Zusätzliche Ermittlerhinweise |
-| ---: | ---: | ---: | ---: |
-| 3 | 36,49 % | 41,82 % | 34,50 % |
-| 4 | 50,40 % | 54,69 % | 48,65 % |
-| 5 | 61,96 % | 64,84 % | 59,86 % |
-| 6 | 73,68 % | 78,45 % | 73,33 % |
+| ----: | ----------------: | ------------------------: | ----------------------------: |
+|     3 |           36,49 % |                   41,82 % |                       34,50 % |
+|     4 |           50,40 % |                   54,69 % |                       48,65 % |
+|     5 |           61,96 % |                   64,84 % |                       59,86 % |
+|     6 |           73,68 % |                   78,45 % |                       73,33 % |
 
 Vier liegen in jedem der drei Informationsmodelle am nächsten an 50 % und bleiben damit der allgemeine Standard. In der Grundbesetzung ohne optionale Rollen erreichen drei Wölfe rund 50–55 %, zwei nur 35–37 %. Drei bleiben die Untergrenze für ein schwächeres Dorf; bei starken Dorfrollen sind sie keine pauschale Empfehlung. Sechs dominieren die gemeinsame Stichprobe mit rund 73–78 % und werden nicht freigegeben.
 
@@ -1481,7 +1476,6 @@ Die Jägerstrategie schießt immer auf ein lebendes Ziel und untersucht daher ni
 
 Damit ist die **Prüfung der Spielerzahlen 6–20 abgeschlossen**. Die Obergrenze der Spiellogik ist nun fest 20 Mitspielende plus Erzähler; 21 und mehr werden abgewiesen. Keine UI ergänzt. Die Werteempfehlung bleibt für 20 ausdrücklich vorläufig: Spielerziel −19 aus den beiden Vorgängern fortgeschrieben, keine neue Kalibrierung anhand der Stichprobe. Die Validierung der verbindlichen automatischen Wolfszuteilung (We-03-50) und der variablen Rollen-/Itembereiche (We-03-52) bleiben eigenständige offene Aufgaben.
 
-
 ## Erneuter Vergleich: ein oder zwei Wölfe bei acht Spielern
 
 **Prüfergebnis vom 18.11.2026:** Die bisherige pauschale Ablehnung von zwei Wölfen ist für starke Dorfbesetzungen zu streng. Vorschlag: **ein bis zwei erlauben, zwei als allgemeine Empfehlung für Runden mit Sonderrollen und Informationsaustausch**, einen für schwache Dorfbesetzungen. Die Empfehlung wurde anschließend bestätigt und übernommen: Normale und bewertete Spieleinstiege erlauben einen oder zwei Wölfe; allgemeiner Standard ist zwei. Mit zwei Wölfen bleiben höchstens fünf optionale Rollenplätze. Trunkenbold bleibt unabhängig davon erst ab neun Spielern verfügbar.
@@ -1494,30 +1488,29 @@ Verglichen wurden alle **318** Rollen-Teilmengen der freigegebenen Achter-Auswah
 
 In jeder Zeile ist eine Seherin zusätzlich fest enthalten. Beide Referenzmodelle haben Informationsweitergabe; das zweite erlaubt Wolfsangriffe ab Nacht eins und seltene Abstimmungen nach einer ruhigen zweiten Nacht.
 
-| Optionale Rollen | 1 Wolf, geteilte Hinweise | 2 Wölfe, geteilte Hinweise | 1 Wolf, Angriff ab Nacht 1 | 2 Wölfe, Angriff ab Nacht 1 |
-| --- | ---: | ---: | ---: | ---: |
-| Keine | 30,18 % | 63,00 % | 39,70 % | 74,65 % |
-| Hexe | 22,23 % | 50,55 % | 30,83 % | 64,68 % |
-| Hexe und Jäger | 20,95 % | 49,63 % | 29,63 % | 62,72 % |
-| Hexe, Jäger, Dorftrottel und Leibwächter | 19,45 % | 46,60 % | 26,38 % | 56,57 % |
-| Hexe, Jäger, Dorftrottel und Dorfmatratze | 19,23 % | 44,10 % | 25,55 % | 53,57 % |
-| Hexe, Jäger, Dorftrottel, Leibwächter und Seher-Lehrling | 15,28 % | 41,35 % | 21,18 % | 51,50 % |
+| Optionale Rollen                                         | 1 Wolf, geteilte Hinweise | 2 Wölfe, geteilte Hinweise | 1 Wolf, Angriff ab Nacht 1 | 2 Wölfe, Angriff ab Nacht 1 |
+| -------------------------------------------------------- | ------------------------: | -------------------------: | -------------------------: | --------------------------: |
+| Keine                                                    |                   30,18 % |                    63,00 % |                    39,70 % |                     74,65 % |
+| Hexe                                                     |                   22,23 % |                    50,55 % |                    30,83 % |                     64,68 % |
+| Hexe und Jäger                                           |                   20,95 % |                    49,63 % |                    29,63 % |                     62,72 % |
+| Hexe, Jäger, Dorftrottel und Leibwächter                 |                   19,45 % |                    46,60 % |                    26,38 % |                     56,57 % |
+| Hexe, Jäger, Dorftrottel und Dorfmatratze                |                   19,23 % |                    44,10 % |                    25,55 % |                     53,57 % |
+| Hexe, Jäger, Dorftrottel, Leibwächter und Seher-Lehrling |                   15,28 % |                    41,35 % |                    21,18 % |                     51,50 % |
 
 Über die 459 gemeinsamen Konfigurationen erreichen ein Wolf in den beiden Informationsmodellen rund 26–31 %, zwei rund 52,29 % / 64,51 %. Das spricht im Vergleich für zwei als allgemeinen Ausgangswert in sonderrollenreichen Runden. Ohne optionale Rollen sind zwei jedoch mit rund 63–75 % deutlich im Vorteil. Die Zufalls- und vorsichtige-Hexe-Kontrollmodelle werden separat ausgewiesen; ohne wirksamen Informationsaustausch liegt ein Wolf näher an einer ausgeglichenen Quote. Deshalb lässt sich keine universelle menschliche Gewinnwahrscheinlichkeit daraus ableiten.
 
 [Gespeicherte Rohdaten](simulations/werewolf-eight-player-wolf-recheck.jsonl.gz), [Zusammenfassung mit Prüfsumme und Aussagegrenzen](simulations/werewolf-eight-player-wolf-recheck-summary.json). Sämtliche Ergebnissummen, Spielerzahl acht, eindeutige Konfigurationen und gleiche Besetzungen über beide Wolfszahlen geprüft. Der nominelle maximale binomiale 95%-Fehler einer einzelnen 4.000-Partien-Zeile beträgt etwa ±1,6 Prozentpunkte; bei 128 Partien ±8,7. Abhängige Spielstarts und Modellannahmen begrenzen die Aussage stärker als diese Stichprobenfehler.
 
-
 ## Nachprüfung der festen Wolfszahlen für 7, 9, 10 und 11 Spieler
 
 ### Ergebnis und Freigabestatus
 
-| Spieler | Bisher regulär | Ergebnis der Nachprüfung | Vorschlag |
-| ---: | --- | --- | --- |
-| 7 | Früher genau ein Wolf | Stark von Sonderrollen und Verhalten abhängig; Referenzmodelle sind bei der allgemeinen Empfehlung uneinig. | Einen als konservativen Standard behalten; zwei für starke Dorfbesetzungen erwägen. |
-| 9 | Genau zwei Wölfe | Zwei deutlich passender als eins oder drei. | Zwei beibehalten. |
-| 10 | Genau zwei Wölfe | Zwei bleiben der klare allgemeine Ausgangswert. | Zwei beibehalten; drei nicht pauschal freigeben. |
-| 11 | Früher genau zwei Wölfe | Zwei insgesamt passender; drei können bei starken Magier-Aufstellungen besser sein. | Zwei als Standard behalten, drei für gezielte starke Dorfbesetzungen erwägen. |
+| Spieler | Bisher regulär          | Ergebnis der Nachprüfung                                                                                    | Vorschlag                                                                           |
+| ------: | ----------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+|       7 | Früher genau ein Wolf   | Stark von Sonderrollen und Verhalten abhängig; Referenzmodelle sind bei der allgemeinen Empfehlung uneinig. | Einen als konservativen Standard behalten; zwei für starke Dorfbesetzungen erwägen. |
+|       9 | Genau zwei Wölfe        | Zwei deutlich passender als eins oder drei.                                                                 | Zwei beibehalten.                                                                   |
+|      10 | Genau zwei Wölfe        | Zwei bleiben der klare allgemeine Ausgangswert.                                                             | Zwei beibehalten; drei nicht pauschal freigeben.                                    |
+|      11 | Früher genau zwei Wölfe | Zwei insgesamt passender; drei können bei starken Magier-Aufstellungen besser sein.                         | Zwei als Standard behalten, drei für gezielte starke Dorfbesetzungen erwägen.       |
 
 Die Vorschläge für 7 und 11 wurden anschließend bestätigt und sind nun als normale Auswahl freigegeben: 7 mit einem oder zwei Wölfen (Standard eins), 11 mit zwei oder drei (Standard zwei). Dagegen ist die gesondert bestätigte Achter-Regel **bereits übernommen**: ein bis zwei Wölfe, zwei als allgemeiner Standard, höchstens fünf optionale Rollenkarten bei zwei Wölfen. Eine größere Anzahl gewählter Sonderrollen verlangt gegebenenfalls einen Wolf. Trunkenbold bleibt erst ab neun Spielern möglich.
 
@@ -1536,12 +1529,12 @@ Insgesamt **3.949.248 vollständig beendete Modellpartien**, 124 Ergebnisdatens�
 
 Je Feld werden geteilte Hinweise und Angriff ab erster Nacht getrennt durch einen Schrägstrich angegeben. Jede gewählte Konfiguration zählt gleich viel.
 
-| Spieler | Ein Wolf | Zwei Wölfe | Drei Wölfe |
-| ---: | ---: | ---: | ---: |
-| 7 | 27,92 % / 36,56 % | 58,74 % / 70,71 % | Nicht geprüft |
-| 9 | 23,14 % / 31,22 % | 52,79 % / 62,72 % | 74,19 % / 84,99 % |
-| 10 | 21,33 % / 26,56 % | 46,26 % / 55,50 % | 70,04 % / 79,20 % |
-| 11 | 17,07 % / 20,21 % | 37,89 % / 45,37 % | 64,36 % / 71,45 % |
+| Spieler |          Ein Wolf |        Zwei Wölfe |        Drei Wölfe |
+| ------: | ----------------: | ----------------: | ----------------: |
+|       7 | 27,92 % / 36,56 % | 58,74 % / 70,71 % |     Nicht geprüft |
+|       9 | 23,14 % / 31,22 % | 52,79 % / 62,72 % | 74,19 % / 84,99 % |
+|      10 | 21,33 % / 26,56 % | 46,26 % / 55,50 % | 70,04 % / 79,20 % |
+|      11 | 17,07 % / 20,21 % | 37,89 % / 45,37 % | 64,36 % / 71,45 % |
 
 ### Wichtige konkrete Fälle
 
@@ -1555,18 +1548,16 @@ Es handelt sich um **Modellwerte**, keine gemessenen Gewinnwahrscheinlichkeiten 
 
 Die neue Achter-Freigabe ist in Konfiguration und normalen/bewerteten Spieleinstiegen sowie Zufallsaufstellung berücksichtigt. Standard zwei; ein Wolf bleibt erlaubt; drei werden abgewiesen. Sechs optionale Rollen passen nur mit einem Wolf. Der Trunkenbold bleibt unabhängig von den zwei Wölfen bis neun gesperrt. Historische Achter-Testaufstellungen verwenden ihren bisherigen einen Wolf ausdrücklich, damit alte Archive reproduzierbar bleiben. Die Punkte wurden nicht neu kalibriert. 155 gezielte Tests bestanden, Zustandsmaschine 99,18 % Zeilen- und 95,85 % Zweigabdeckung; zusätzliche Achter-Szenarien prüfen beide Wolfszahlen und unerlaubte/veraltete Aktionen.
 
-
 ### Bestätigte Zusatzoptionen für 7 und 11 Spieler
 
 Die Zusatzoptionen sind verbindlich bestätigt und in der Logik sowie den tatsächlich verwendeten HTML-Tabellen übernommen:
 
-| Spieler | Erlaubte Wölfe | Allgemeiner Standard | Freie optionale Rollenplätze |
-| ---: | --- | ---: | --- |
-| 7 | 1 oder 2 | 1 | 5 bei einem Wolf, 4 bei zwei |
-| 11 | 2 oder 3 | 2 | 8 bei zwei Wölfen, 7 bei drei |
+| Spieler | Erlaubte Wölfe | Allgemeiner Standard | Freie optionale Rollenplätze  |
+| ------: | -------------- | -------------------: | ----------------------------- |
+|       7 | 1 oder 2       |                    1 | 5 bei einem Wolf, 4 bei zwei  |
+|      11 | 2 oder 3       |                    2 | 8 bei zwei Wölfen, 7 bei drei |
 
 Die normalen und bewerteten Spieleinstiege sowie der Zufallsmodus halten diese Grenzen ein. Es entstehen keine zusätzlichen Rollen- oder Itemfreigaben: Trunkenbold bleibt erst ab neun verfügbar; bei elf bleiben Hexe und Magier immer Alternativen. Leibwächter und Dorfmatratze bleiben gegenseitig ausgeschlossen. Bei neun und zehn gilt weiter immer genau zwei. Keine erneuten Simulationen erforderlich; zugrunde liegen die gespeicherten gepaarten Nachprüfungen. Die Punktwerte werden nicht neu kalibriert, die vollständige Validierung der späteren verpflichtenden Automatik bleibt eine eigene Aufgabe.
-
 
 ## Abgeschlossener automatischer Spieleinstieg (We-03-50)
 
@@ -1575,7 +1566,6 @@ Die normalen und bewerteten Spieleinstiege sowie der Zufallsmodus halten diese G
 Die ursprünglichen Rollenpunktwerte werden nicht als neue Kalibrierung ausgegeben. Für die normale Auswahl wurden die Spieler-Grundwerte für 7/8 auf −4 und für 11 auf −7 korrigiert: Eine einfache Dorfbesetzung soll weniger Wölfe erhalten als die gespeicherten starken Hexen-/Magierfälle. Die Zielwerte der Kandidaten lauten Grundwert plus sieben je Wolf. Für übrige Spielerzahlen gelten die bisherigen Zielwerte, begrenzt auf freigegebene Kandidaten. Die automatische Bewertung bleibt ausdrücklich vorläufig und garantiert keine ausgeglichenen menschlichen Gewinnchancen.
 
 [Offline-Prüfbericht](simulations/werewolf-automatic-policy-audit.json): 3.146 archivierte Konfigurations-/Modellgruppen aus den Achter-, kleinen Spielerzahl-, Neunzehner- und Zwanziger-Vergleichen geprüft, 3.142 mit einem beobachteten Ergebnis für den gewählten Kandidaten. Beschreibende mittlere Zusatzabweichung vom besten im jeweiligen Modell beobachteten erlaubten Kandidaten liegt je Archiv bei rund 0,4–2,6 Prozentpunkten. Gemeinsame Zufallsstarts, Modellauswahl und Stichproben begrenzen die Aussage; dies ist weder eine unabhängige Validierung menschlichen Spielverhaltens noch eine neue Gewinnprognose. Keine Simulationen erneut gestartet. Gezielte Tests prüfen zusätzliche schwache/starke Besetzungen und Grenzen von 6–20.
-
 
 ## Historischer variabler Rollen- und Itemmodus (We-03-52; ersetzt durch We-03-67)
 
@@ -1611,7 +1601,6 @@ Die Umsetzung begrenzt die Suche auf höchstens 8.192 Rollen-Teilmengen und vier
 
 Damit sind die beiden Einrichtungsschritte abgeschlossen. Die UI-Planung ist als nächster eigener Arbeitsschritt möglich; Oberfläche, Übersetzungen der Fehlercodes und mobile Bedienung werden erst dort umgesetzt.
 
-
 ## Historische Reihenfolge: Ziehung vor Wolfsberechnung (ersetzt durch We-03-67)
 
 Im variablen Modus gilt: **konkrete Sonderrollen und Items auslosen → Wolfszahl für diese Ziehung berechnen → mit Dorfbewohnern auffüllen → Rollen an Spieler verteilen**. Vor der Ziehung prüft eine reine Machbarkeitsfunktion ausschließlich Freigaben, Kombinationen und freie Plätze. Sie wählt keine Wolfszahl und verwendet keine Punktebewertung. Auch die öffentliche Machbarkeitsanalyse berechnet keine Rollenwerte.
@@ -1620,18 +1609,15 @@ Der exakte Zufallsmodus verwendet dieselbe Reihenfolge: erst die konkrete Teilme
 
 Die bestehenden Ziehungswahrscheinlichkeiten und Freigaben ändern sich nicht. Zusätzliche Tests überwachen den Bewertungsaufruf: kein Aufruf bei Machbarkeitsanalyse oder vor den Zufallsentscheidungen, danach ausschließlich mit den gezogenen Karten und Itemflags. 249 Tests sowie Typprüfung, Lint, Format und Architekturprüfung bestanden; neue Einrichtungslogik mit 100 % Zeilen-/Zweigabdeckung.
 
-
 ## Fortlaufende UI-Planung und Übergabe
 
 Die bestätigte UI-Struktur und sämtliche weiteren Bedienentscheidungen werden in [GAMEHUB_WERWOLF_UI.md](GAMEHUB_WERWOLF_UI.md) festgehalten. Zuerst wird die Hauptansicht geplant, danach die Rollenkonfiguration und anschließend der Spielablauf. Bestätigte Anforderungen, Vorschläge und offene Punkte werden getrennt; die aktuelle Dokumentanlage ist noch keine abgeschlossene Hauptansicht-Spezifikation. Die tatsächlichen Entwicklungs-HTML-Dateien zeigen den Planungsstand und verlinken das Dokument.
-
 
 ## Hammer-Änderung vom 20.11.2026 – implementiert
 
 Der Bürgermeister mit Hammer erwacht nach dem Magier und vor dem Spellcaster. Er kennt keine laufenden Nachtopfer und darf jede Person wählen, die zu Beginn der Nacht lebte, außer sich selbst. Auch ein bereits als Nachtopfer bestimmter Bürgermeister darf handeln. Ein Werwolf wird vom Hammer getroffen, selbst wenn bereits andere tödliche Angriffe gegen ihn vorliegen; jede Person stirbt nur einmal. Das Amulett schützt nicht vor dem Hammer, auch keinen getroffenen Werwolf. Bei Wahl eines Nichtwerwolfs stirbt der Bürgermeister durch die Fehlentscheidung, die Zielperson bleibt vom Hammer unberührt. Die Fehlentscheidungsstrafe wird nicht vom Amulett abgewehrt; ein verbundener Liebespartner stirbt mit. Todesfälle durch Hammer, Fehlentscheidung und dadurch ausgelöste Partnertode sind nicht heilbar. Bereits ausgeführte Nachtaktionen bleiben wirksam; gemeinsame Auflösung und Bekanntgabe am Morgen.
 
 We-03-63 ist seit 20.11.2026 implementiert: Hammer nach Magier, Zielmenge vom Nachtbeginn, gemeinsame Todesauflösung und Überschneidungen geprüft. Magierheilung wurde nicht erweitert. Ziele, Tarnskript, Protokoll und Rücknahme siehe GAMEHUB_WERWOLF_NARRATOR_API.md.
-
 
 ### Bestätigter Zeitpunkt des Amulettschutzes
 
