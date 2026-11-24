@@ -776,3 +776,9 @@ Der Harte Bursche und der Gerber wachen nie auf; ihre Variante steht deshalb nur
 ## Rolle der gewählten Person in der Zusammenfassung (Beschluss vom 24.11.2026, We-01-167)
 
 Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in Klammern („Geschützt: Ben (Jäger)“), weil die Folgen von der Rolle abhängen (Harter Bursche, Jäger, Amulett, Verliebte). Das gilt für die Nachtentscheidungen (Angriff, Schutz, Gast, Heilen, Gift, Todeszauber, Hammer, Stummschalten, Verliebte, Amulett weitergeben); nicht für Nominierung und Abstimmung und nicht für das Ergebnis von Seherin und Ermittler. Der Trunkenbold, der seine Rolle noch nicht kennt, steht mit beiden: „Ben (Trunkenbold, wahre Rolle: Jäger)“. **Zeilen brechen auf eine zweite Zeile um, wenn eine nicht reicht; nichts wird abgeschnitten** (vorher: eine Zeile mit Auslassungspunkten).
+
+
+## Seher, Seher-Lehrling und Ermittler: ganzes Skript und entschiedene Fähigkeit (Beschluss vom 24.11.2026, We-01-168)
+
+- **Das ganze Skript ist von Anfang an sichtbar:** aufwachen, Person wählen, Ergebnis mit dem Daumen zeigen, einschlafen. Die Box „Ergebnis zeigen“ steht von Beginn an da (wartend) und wird nach der Wahl aktiv; es erscheint keine neue Box mehr. Das gilt auch für den Ermittler, auch wenn seine Fähigkeit verbraucht ist (gleiches Skript).
+- **Nach der Wahl ist die Fähigkeit entschieden:** Der Knopf ist markiert, abgedunkelt und nicht mehr klickbar, solange das Ergebnis steht. Zurück geht es nur über den Rückgängig-Knopf der ersten Skriptbox (nimmt die Wahl zurück). Vorher konnte man die Fähigkeit nach der Entscheidung noch einmal drücken.

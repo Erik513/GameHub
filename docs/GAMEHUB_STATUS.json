@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 372,
-      "totalTasks": 428,
+      "completedTasks": 373,
+      "totalTasks": 429,
       "percent": 86.9
     }
   },
@@ -2035,6 +2035,12 @@
           "title": "Zusammenfassung: Rolle der gewählten Person, zweizeilig statt abgeschnitten",
           "status": "done",
           "validation": "Wahre Rolle in Klammern bei den Nachtentscheidungen, Trunkenbold mit beiden Rollen, Zeilen mit Umbruch statt Auslassungspunkten; Tests in SummaryRole.test.tsx und angepasste Zusammenfassungs-Tests; Tests, tsc, ESLint, Prettier, Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-168",
+          "title": "Seher, Lehrling, Ermittler: ganzes Skript von Anfang an, Fähigkeit nach der Wahl entschieden",
+          "status": "done",
+          "validation": "Box „Ergebnis zeigen“ von Beginn an im Skript (Seher, Lehrling, Ermittler, auch bei verbrauchter Fähigkeit); die Fähigkeit ist nach der Wahl markiert, abgedunkelt und gesperrt, Rückgängig der ersten Skriptbox nimmt sie zurück; Tests in NarratorSeer.test.tsx; Tests, tsc, ESLint, Prettier, Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3664,5 +3670,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T19:51:12.192Z"
+  "updatedAt": "2026-11-24T19:55:58.313Z"
 }
