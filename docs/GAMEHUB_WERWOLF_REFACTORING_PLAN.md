@@ -102,3 +102,5 @@ Offen: C2–C5 (weitere Felder im Guide, Zusammenfassungszeilen, Skriptkästen a
 Zweiter Teil (2026-11-24): D1 weitgehend erledigt (guideFrames, guideVote, guideBack ausgelagert; `narratorGuide.ts` 800 Zeilen). Rest von D1: Auswahl- und Rückgängig-Funktionen (chooseAbility, undoSelection, takeBackResult), die eng mit `describeGuide` verflochten sind.
 
 Dritter Teil (2026-11-24): D2 erledigt (`stateMachine.ts` 722 Zeilen; `stateTypes`, `stateVoting`, `stateQueries` ausgelagert, `applyEvent` in Nacht und Tag geteilt). Die Hilfsfunktionen der Nacht und des Tages bleiben in `stateMachine.ts`, weil sie sich gegenseitig aufrufen (eine weitere Aufteilung brächte Importzyklen).
+
+Vierter Teil (2026-11-24): D5 erledigt (`recordWerewolfTransition` in vier kleine Funktionen geteilt, gleiche Datei, kein Verhaltenswechsel).
