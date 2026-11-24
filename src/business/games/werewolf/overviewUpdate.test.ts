@@ -113,3 +113,43 @@ it("keeps the victims of the night marked, not dead, in the overview until the m
   // Only the announcement of the morning shows them as dead.
   expect(tones(true)).toEqual(["dead", "dead"]);
 });
+
+it("names the ability that hit each victim: the attack of the wolves, the poison, the vote", () => {
+  const start = createWerewolf(names, "Max", () => 0.3, ["witch"], {
+    attackOnFirstNight: true,
+    wolfCount: 2,
+  })!;
+  const [victim, poisoned, voted] = villagers(start);
+  const night = {
+    ...start,
+    poisoned,
+    status: "magician",
+    victim,
+    wolfTarget: victim,
+  } as unknown as WerewolfState;
+  const causes = (state: WerewolfState, name: string) =>
+    describePlayers(state).find((person) => person.name === name)?.causes;
+  expect(causes(night, victim!.name)).toEqual(["wolves"]);
+  expect(causes(night, poisoned!.name)).toEqual(["witchPoison"]);
+  expect(causes(night, voted!.name)).toEqual([]);
+  // Somebody who died: the causes come from the history of the game.
+  const afterVote = {
+    ...start,
+    alive: start.alive.filter((person) => person.name !== voted!.name),
+    history: [
+      {
+        diedMasked: false,
+        id: 1,
+        kind: "death",
+        night: 1,
+        period: "day",
+        phase: "exile",
+        player: voted!.name,
+        role: voted!.role,
+        sources: [{ actors: [], cause: "vote", originNight: 1 }],
+      },
+    ],
+    status: "day",
+  } as unknown as WerewolfState;
+  expect(causes(afterVote, voted!.name)).toEqual(["vote"]);
+});

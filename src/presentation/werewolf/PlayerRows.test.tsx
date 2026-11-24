@@ -12,11 +12,11 @@ import { PlayerRows } from "./PlayerRows";
 
 const names = Array.from({ length: 12 }, (_, index) => "P" + index).join(",");
 
-async function show(state: WerewolfState, language: "en" | "de" = "en") {
+async function show(state: WerewolfState, language: "en" | "de" = "en", announce = true) {
   const i18n = await createGameHubI18n(language);
   const { container } = render(
     <I18nextProvider i18n={i18n}>
-      <PlayerRows state={state} />
+      <PlayerRows announce={announce} state={state} />
     </I18nextProvider>,
   );
   return [...container.querySelectorAll<HTMLElement>(".ww-overview__row")];
@@ -50,6 +50,23 @@ it("shows the variant of a role as a small sign next to the role, with its short
   expect(legend.textContent).toContain("Wolf only");
   expect(legend.querySelectorAll(".ww-variant")).toHaveLength(1);
   expect(legend.querySelector(".ww-variant")).not.toHaveAttribute("aria-label");
+});
+
+it("shows the ability that hit a victim as a sign in the row, and names it in the legend", async () => {
+  const base = game();
+  const victim = base.players.find((player) => player.role === "villager")!;
+  const state = {
+    ...base,
+    poisoned: null,
+    status: "morning",
+    victim,
+    wolfTarget: victim,
+  } as unknown as WerewolfState;
+  // The preview of a decision: the victim is marked, not announced.
+  const rows = await show(state, "en", false);
+  const row = rows.find((entry) => entry.querySelector("strong")?.textContent === victim.name)!;
+  expect(row.querySelector('[aria-label="Werewolf attack"]')).not.toBeNull();
+  expect(document.querySelector(".ww-overview__legend")?.textContent).toContain("Werewolf attack");
 });
 
 it("names the winners in the headings of the end screen, in both languages", async () => {

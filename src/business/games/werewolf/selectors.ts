@@ -1,3 +1,4 @@
+import type { DeathCause } from "./eventLog";
 import { roleVariantOf, type RoleVariantId } from "./roleVariant";
 import {
   transitionWerewolf,
@@ -110,6 +111,11 @@ export function variantsOf(players: readonly PlayerView[]): RoleVariantId[] {
   return [...new Set(players.flatMap((player) => (player.variant ? [player.variant] : [])))];
 }
 
+/** The ways people became victims that the given people show, each once (for the legend of the overview). */
+export function causesOf(players: readonly PlayerView[]): DeathCause[] {
+  return [...new Set(players.flatMap((player) => player.causes))];
+}
+
 /** Private, unlocalized facts. The colors and frames are decided by the presentation (see GAMEHUB_WERWOLF_UI.md). */
 export function describePlayers(state: WerewolfState, announce = true) {
   const variantOf = (role: string) => roleVariantOf(role, state.settings);
@@ -122,6 +128,16 @@ export function describePlayers(state: WerewolfState, announce = true) {
       : [],
   );
   const marked = markedToDie(state);
+  // How a person who is marked (not dead yet) or announced came to be a victim: the ability that hit him.
+  const causesNow = (name: string): DeathCause[] => {
+    const causes: DeathCause[] = [];
+    if ("victim" in state && state.victim?.name === name)
+      causes.push(state.status === "exile" ? "vote" : "wolves");
+    if ("poisoned" in state && state.poisoned?.name === name) causes.push("witchPoison");
+    if (state.spellVictims.some((victim) => victim.name === name)) causes.push("magicianKill");
+    if (state.hammerVictim === name) causes.push("hammer");
+    return causes;
+  };
   const night = !notNight.includes(state.status) || (!announce && state.status === "morning");
   return state.players.map((player, seat) => {
     const death = [...state.history]
@@ -134,6 +150,17 @@ export function describePlayers(state: WerewolfState, announce = true) {
         state.hunter.name === player.name) ||
       (announced.has(player.name) && player.role === "hunter");
     const delayedDeathNight = alive && player.role === "toughGuy" ? state.toughGuyDiesOn : null;
+    // Why he is out or marked: the causes of his death in the history, or the ability that hit him now (the wound of the
+    // tough guy who will die names the ability, too).
+    const causes: DeathCause[] =
+      death?.kind === "death"
+        ? [...new Set(death.sources.map((source) => source.cause))]
+        : [
+            ...causesNow(player.name),
+            ...(delayedDeathNight !== null && state.toughGuyWound
+              ? [state.toughGuyWound.cause]
+              : []),
+          ];
     const attacked = alive && marked.has(player.name);
     // The wolves attacked him tonight and he is not marked any more: healed, protected or kept by the amulet.
     const saved =
@@ -152,6 +179,7 @@ export function describePlayers(state: WerewolfState, announce = true) {
                 : "alive";
     return {
       tone,
+      causes,
       name: player.name,
       seat,
       role: player.role,

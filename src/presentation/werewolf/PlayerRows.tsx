@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import {
+  causesOf,
   describePlayers,
   variantsOf,
   type PlayerTone,
@@ -7,11 +8,26 @@ import {
 } from "../../business/games/werewolf/selectors";
 import type { RoleVariantId } from "../../business/games/werewolf/roleVariant";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
+import type { DeathCause } from "../../business/games/werewolf/eventLog";
 import { VariantMark } from "./VariantMark";
+import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 const tones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
 const frames = ["amulet", "drunk"] as const;
+
+/** The symbol of the ability that hit a person (the legend of the symbols has them all). */
+const causeSymbol: Record<DeathCause, SymbolId> = {
+  heartbreak: "lovers",
+  hammer: "hammer",
+  hammerBackfire: "hammer",
+  hunter: "shotDuty",
+  magicianKill: "kill",
+  toughGuy: "wounded",
+  vote: "vote",
+  witchPoison: "poisoned",
+  wolves: "attacked",
+};
 
 /**
  * Players with their true role (private to the narrator), in the order they are given. The background says the state of
@@ -66,6 +82,23 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
                 size={14}
               />
             )}
+            {/* How he became a victim: the ability that hit him (the signs of the lovers, the wound and the last shot
+                already stand here and are not repeated). */}
+            {player.causes
+              .filter(
+                (cause) =>
+                  !(cause === "heartbreak" && player.partner !== null) &&
+                  !(cause === "toughGuy" && player.delayedDeathNight !== null) &&
+                  !(cause === "hunter" && player.lastShot),
+              )
+              .map((cause) => (
+                <WerewolfSymbol
+                  id={causeSymbol[cause]}
+                  key={cause}
+                  label={t(`werewolfNarrator.cause.${cause}`)}
+                  size={14}
+                />
+              ))}
             {player.silenced && (
               <WerewolfSymbol
                 id="silenced"
@@ -84,7 +117,13 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
 }
 
 /** The legend: what the colors and the frames of the rows say. */
-export function PlayerLegend({ variants = [] }: { readonly variants?: readonly RoleVariantId[] }) {
+export function PlayerLegend({
+  variants = [],
+  causes = [],
+}: {
+  readonly variants?: readonly RoleVariantId[];
+  readonly causes?: readonly DeathCause[];
+}) {
   const { t } = useTranslation();
   return (
     <ul aria-label={t("werewolfNarrator.bar.legend.title")} className="ww-overview__legend">
@@ -98,6 +137,13 @@ export function PlayerLegend({ variants = [] }: { readonly variants?: readonly R
         <li key={frame}>
           <span className="ww-overview__swatch" data-frame={frame} />
           {t(`werewolfNarrator.bar.legend.${frame}`)}
+        </li>
+      ))}
+      {/* How people became victims in this game, each ability with its sign. */}
+      {causes.map((cause) => (
+        <li key={cause}>
+          <WerewolfSymbol id={causeSymbol[cause]} size={14} />
+          {t(`werewolfNarrator.cause.${cause}`)}
         </li>
       ))}
       {/* The variants of the roles that are in this game, each with its sign. */}
@@ -126,7 +172,7 @@ export function PlayerRows({
   return (
     <div className="ww-players">
       <PlayerList players={players} />
-      <PlayerLegend variants={variantsOf(players)} />
+      <PlayerLegend causes={causesOf(players)} variants={variantsOf(players)} />
     </div>
   );
 }
