@@ -12,6 +12,7 @@ import {
   type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
 import { DealCard } from "./DealCard";
+import { PlayerRows } from "./PlayerRows";
 import { variantOfRole } from "./roleAbilities";
 import { lineGlyphs } from "./symbols/glyphs";
 import type { SymbolId } from "./symbols/catalog";
@@ -225,13 +226,8 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
           </div>
         ))}
       </div>
+      {/* All players with their colors: the living first, then the dead. */}
+      <PlayerRows order="aliveFirst" state={state} />
     </section>
   );
 }
-
-/**
- * The vote: one row for every voter with a button for each candidate. Nobody votes for himself. The row of the mayor with
- * the double vote says that the vote counts twice; the village idiot does not decide, the narrator sets his vote (as in
- * the original rules). A voter without a choice is marked.
- */
-/** A text with the player names in bold, so they stand out when the narrator reads. */

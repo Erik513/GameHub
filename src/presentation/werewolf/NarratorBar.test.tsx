@@ -43,11 +43,12 @@ describe("NarratorBar", () => {
     const user = await renderBar("en", false);
     await user.click(screen.getByRole("button", { name: "All players and roles" }));
     const dialog = await screen.findByRole("dialog");
-    expect(within(dialog).getAllByRole("listitem")).toHaveLength(12);
+    const rows = [...dialog.querySelectorAll(".ww-overview__row")];
+    expect(rows).toHaveLength(12);
     expect(within(dialog).getByText("Anna")).toBeInTheDocument();
-    const order = within(dialog)
-      .getAllByRole("listitem")
-      .map((row) => row.querySelector("strong")?.textContent ?? "");
+    // The legend explains the colors and the frames.
+    expect(within(dialog).getByRole("list", { name: "Colors and frames" })).toBeInTheDocument();
+    const order = rows.map((row) => row.querySelector("strong")?.textContent ?? "");
     expect(order).toEqual([...order].sort((one, other) => one.localeCompare(other)));
     expect(within(dialog).getByText("For the narrator only")).toBeInTheDocument();
     await user.click(within(dialog).getByRole("button", { name: /Close|close/ }));

@@ -218,9 +218,136 @@
 
 /* The overview of all players and their roles. */
 
-.ww-overview__row[data-dead="true"] .ww-overview__who {
-  text-decoration: line-through;
+/* The state of a person is the background (see the tokens --seat-*); the sign next to the name keeps it readable without color. */
+.ww-overview__row {
+  background: var(--seat-alive);
+  color: var(--seat-ink);
+}
+
+.ww-overview__row[data-tone="wolf"] {
+  background: var(--seat-wolf);
+}
+
+.ww-overview__row[data-tone="attacked"] {
+  background: var(--seat-attacked);
+}
+
+.ww-overview__row[data-tone="saved"] {
+  background: var(--seat-saved);
+}
+
+.ww-overview__row[data-tone="wounded"] {
+  background: var(--seat-wounded);
+}
+
+.ww-overview__row[data-tone="dead"] {
+  background: var(--seat-dead);
+}
+
+/* Everything in the row of a dead person is darkened (symbol, name, role, signs), not struck through (hard to read). */
+.ww-overview__row[data-tone="dead"] > * {
   opacity: 0.6;
+}
+
+.ww-overview__row small {
+  color: inherit;
+  opacity: 0.85;
+}
+
+/* Frames: the amulet is gold and inside, the drunk who does not know his role is green and outside. */
+.ww-overview__row[data-amulet],
+.ww-overview__swatch[data-frame="amulet"] {
+  box-shadow: inset 0 0 0 2px var(--seat-amulet);
+}
+
+.ww-overview__row[data-drunk],
+.ww-overview__swatch[data-frame="drunk"] {
+  outline: 2px solid var(--seat-drunk);
+  outline-offset: 1px;
+}
+
+/* The list scrolls, the legend stays at the bottom: in the window of the overview the list takes the free height. */
+.ww-players {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ww-players > .ww-overview {
+  flex: 1 1 auto;
+  align-content: start;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* At the end of the game the whole box scrolls (winners, then the players); the legend sticks to the bottom edge. */
+.ww-winners .ww-players {
+  display: contents;
+}
+
+.ww-winners .ww-players > .ww-overview {
+  overflow: visible;
+}
+
+.ww-winners .ww-overview__legend {
+  position: sticky;
+  bottom: calc(-1 * var(--space-3));
+  margin: 0;
+  padding: var(--space-2) 0;
+  background: var(--color-surface);
+}
+
+/* The legend: a small square in the color or frame, then the words. */
+.ww-overview__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  flex: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--text-xs);
+  list-style: none;
+}
+
+.ww-overview__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.ww-overview__swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--color-line);
+  border-radius: 3px;
+  background: var(--seat-alive);
+}
+
+.ww-overview__swatch[data-tone="wolf"] {
+  background: var(--seat-wolf);
+}
+
+.ww-overview__swatch[data-tone="attacked"] {
+  background: var(--seat-attacked);
+}
+
+.ww-overview__swatch[data-tone="saved"] {
+  background: var(--seat-saved);
+}
+
+.ww-overview__swatch[data-tone="wounded"] {
+  background: var(--seat-wounded);
+}
+
+.ww-overview__swatch[data-tone="dead"] {
+  background: var(--seat-dead);
+}
+
+.ww-overview__swatch[data-frame] {
+  background: transparent;
 }
 
 .ww-overview__who {
@@ -400,9 +527,12 @@
 }
 
 /* The groups of winners share the whole area; the names stand side by side. */
+/* At the end of the game the whole box scrolls: the winners on top, all players below them. */
 .ww-winners {
   align-content: start;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: none;
+  grid-auto-rows: auto;
+  overflow-y: auto;
 }
 
 .ww-winners__groups {
@@ -599,7 +729,8 @@
 .ww-overview {
   display: grid;
   margin: 0;
-  padding: 0;
+  /* Room for the frame of the drunk (outside the row), so the edge of the list does not cut it off. */
+  padding: 4px;
   list-style: none;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;

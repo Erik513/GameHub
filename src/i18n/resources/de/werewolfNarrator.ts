@@ -25,6 +25,17 @@ export const werewolfNarratorTexts = {
       overview: "Alle Spieler und Rollen",
       lastShot: "Letzter Schuss steht noch aus",
       overviewHint: "Nur für den Erzähler",
+      legend: {
+        title: "Farben und Rahmen",
+        alive: "Lebt",
+        wolf: "Werwolf",
+        attacked: "Angegriffen, soll sterben",
+        saved: "In dieser Nacht gerettet",
+        wounded: "Verwundet, stirbt noch",
+        dead: "Tot",
+        amulet: "Amulett",
+        drunk: "Trunkenbold, kennt seine Rolle noch nicht",
+      },
       close: "Spiel beenden",
     },
     cause: {

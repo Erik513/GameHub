@@ -73,7 +73,35 @@ export function validTargets(
     .map((p) => p.name);
 }
 
-/** Private, unlocalized facts. Color/slot priorities belong to the agreed presentation design. */
+/**
+ * The state of a person as the overview shows it, strongest first: dead, wounded (the tough guy who will die), attacked
+ * (marked to die until he dies), saved (the attack was stopped, only during that night), werewolf, alive.
+ */
+export type PlayerTone = "dead" | "wounded" | "attacked" | "saved" | "wolf" | "alive";
+
+/** The steps that belong to the day (or to the deal): an attack of the night that was stopped is not shown any more. */
+const notNight: readonly WerewolfState["status"][] = [
+  "roles",
+  "morning",
+  "day",
+  "vote",
+  "exile",
+  "hunter",
+  "drunkHunter",
+  "finished",
+];
+
+/** The people who are marked to die at the next morning: the victim of the wolves, of the witch, of the magician and the hammer. */
+function markedToDie(state: WerewolfState): ReadonlySet<string> {
+  const names = new Set<string>();
+  if ("victim" in state && state.victim) names.add(state.victim.name);
+  if ("poisoned" in state && state.poisoned) names.add(state.poisoned.name);
+  for (const player of state.spellVictims) names.add(player.name);
+  if (state.hammerVictim) names.add(state.hammerVictim);
+  return names;
+}
+
+/** Private, unlocalized facts. The colors and frames are decided by the presentation (see GAMEHUB_WERWOLF_UI.md). */
 export function describePlayers(state: WerewolfState) {
   // Whoever is announced as dead in the morning or when leaving the village is shown as dead at once, in the view of the
   // announcement already (the game itself removes them from the living only when the announcement is confirmed).
@@ -82,23 +110,44 @@ export function describePlayers(state: WerewolfState) {
       ? werewolfAnnouncement(state).map((entry) => entry.name)
       : [],
   );
+  const marked = markedToDie(state);
+  const night = !notNight.includes(state.status);
   return state.players.map((player, seat) => {
     const death = [...state.history]
       .reverse()
       .find((e) => e.kind === "death" && e.player === player.name);
     const isDrunk = state.drunk?.player === player.name && !state.drunk.revealed;
     const alive = state.alive.some((p) => p.name === player.name) && !announced.has(player.name);
+    const lastShot =
+      ((state.status === "hunter" || state.status === "drunkHunter") &&
+        state.hunter.name === player.name) ||
+      (announced.has(player.name) && player.role === "hunter");
+    const delayedDeathNight = alive && player.role === "toughGuy" ? state.toughGuyDiesOn : null;
+    const attacked = alive && marked.has(player.name);
+    // The wolves attacked him tonight and he is not marked any more: healed, protected or kept by the amulet.
+    const saved =
+      alive && night && state.wolfTarget?.name === player.name && !marked.has(player.name);
+    const tone: PlayerTone =
+      !alive && !lastShot
+        ? "dead"
+        : delayedDeathNight !== null
+          ? "wounded"
+          : attacked || lastShot
+            ? "attacked"
+            : saved
+              ? "saved"
+              : player.role === "wolf"
+                ? "wolf"
+                : "alive";
     return {
+      tone,
       name: player.name,
       seat,
       role: player.role,
       visibleRole: isDrunk ? ("drunk" as const) : player.role,
       alive,
       // The hunter who has died but has not decided about his last shot yet: out of the game, but not finished.
-      lastShot:
-        ((state.status === "hunter" || state.status === "drunkHunter") &&
-          state.hunter.name === player.name) ||
-        (announced.has(player.name) && player.role === "hunter"),
+      lastShot,
       death: death?.kind === "death" ? death : null,
       amulet: state.amulet?.holder === player.name,
       drunk: isDrunk || (death?.kind === "death" && death.diedMasked),
@@ -108,7 +157,7 @@ export function describePlayers(state: WerewolfState) {
       silenced: alive && state.silencedPlayer === player.name,
       lastProtectionTarget: state.protectedPlayer === player.name,
       lastHostTarget: state.hostPlayer === player.name,
-      delayedDeathNight: alive && player.role === "toughGuy" ? state.toughGuyDiesOn : null,
+      delayedDeathNight,
       wound: player.role === "toughGuy" ? state.toughGuyWound : null,
       resources:
         player.role === "witch"

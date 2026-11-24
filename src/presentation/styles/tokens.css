@@ -17,6 +17,16 @@
   --color-danger-fill: #ff6f61;
   --color-danger-fill-hover: #ff8a7e;
   --color-focus: #9bb1ff;
+  /* The state of a person in the overview of the werewolf game (and its legend). */
+  --seat-alive: #2c4a8f;
+  --seat-wolf: #5a5d66;
+  --seat-attacked: #b3261e;
+  --seat-saved: #1f7a45;
+  --seat-wounded: #5c1a1a;
+  --seat-dead: #050506;
+  --seat-ink: #f2efe7;
+  --seat-amulet: #e0b43a;
+  --seat-drunk: #4ccf7a;
   --font-sans: "Aptos", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-display: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif;
   --text-xs: 0.75rem;

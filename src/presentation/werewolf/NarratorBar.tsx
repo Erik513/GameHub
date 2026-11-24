@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { describePlayers } from "../../business/games/werewolf/selectors";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
 import { Button, ConfirmButton, Dialog, Icon } from "../components";
-import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
+import { PlayerRows } from "./PlayerRows";
 
 interface NarratorBarProps {
   readonly state: WerewolfState;
@@ -98,76 +97,7 @@ export function NarratorBar({
         subtitle={t("werewolfNarrator.bar.overviewHint")}
         title={t("werewolfNarrator.bar.overview")}
       >
-        <ul className="ww-overview">
-          {[...describePlayers(state)]
-            .sort((one, other) =>
-              one.name.localeCompare(other.name, undefined, { sensitivity: "base" }),
-            )
-            .map((player) => (
-              <li
-                className="ww-overview__row"
-                data-dead={(!player.alive && !player.lastShot) || undefined}
-                key={player.name}
-              >
-                <WerewolfSymbol id={player.role} size={20} />
-                <span className="ww-overview__who">
-                  <strong>{player.name}</strong>
-                  <small>{t(`werewolfSymbols.items.${player.role}.name`)}</small>
-                </span>
-                <span className="ww-overview__marks">
-                  {player.lastShot && (
-                    <WerewolfSymbol
-                      id="shotDuty"
-                      label={t("werewolfNarrator.bar.lastShot")}
-                      size={14}
-                    />
-                  )}
-                  {!player.alive && !player.lastShot && (
-                    <WerewolfSymbol
-                      id="dead"
-                      label={t("werewolfSymbols.items.dead.name")}
-                      size={14}
-                    />
-                  )}
-                  {player.partner !== null && (
-                    <WerewolfSymbol
-                      id="lovers"
-                      label={t("werewolfSymbols.items.lovers.name")}
-                      size={14}
-                    />
-                  )}
-                  {player.amulet && (
-                    <WerewolfSymbol
-                      id="amulet"
-                      label={t("werewolfSymbols.items.amulet.name")}
-                      size={14}
-                    />
-                  )}
-                  {player.alive && player.delayedDeathNight !== null && (
-                    <WerewolfSymbol
-                      id="wounded"
-                      label={t("werewolfSymbols.items.wounded.name")}
-                      size={14}
-                    />
-                  )}
-                  {player.silenced && (
-                    <WerewolfSymbol
-                      id="silenced"
-                      label={t("werewolfSymbols.items.silenced.name")}
-                      size={14}
-                    />
-                  )}
-                  {player.drunk && player.alive && (
-                    <WerewolfSymbol
-                      id="drunk"
-                      label={t("werewolfSymbols.items.drunk.name")}
-                      size={14}
-                    />
-                  )}
-                </span>
-              </li>
-            ))}
-        </ul>
+        <PlayerRows state={state} />
       </Dialog>
     </header>
   );
