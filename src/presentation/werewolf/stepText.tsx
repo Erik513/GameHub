@@ -393,7 +393,8 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
               enabled: false,
               id: "confirm" as const,
               items: [t("werewolfNarrator.guide.resultScript")],
-              state: outro ? ("done" as const) : ("pending" as const),
+              // Skipped (the investigator with nothing to check): no result is shown, so the box stays waiting.
+              state: "pending" as const,
             },
           ]
         : []),

@@ -15,11 +15,14 @@ import { NarratorHarness } from "./narratorTestKit";
 
 const names = Array.from({ length: 12 }, (_, index) => "P" + index).join(",");
 
-function toSeer(): WerewolfSession {
+function toSeer(
+  status: "seer" | "investigator" = "seer",
+  roles: readonly "paranormalInvestigator"[] = [],
+): WerewolfSession {
   let session = createWerewolfSession(
-    createWerewolf(names, "Max", () => 0.3, [], { attackOnFirstNight: true, wolfCount: 2 })!,
+    createWerewolf(names, "Max", () => 0.3, roles, { attackOnFirstNight: true, wolfCount: 2 })!,
   );
-  for (let step = 0; step < 100 && session.present.status !== "seer"; step++) {
+  for (let step = 0; step < 100 && session.present.status !== status; step++) {
     const events = eventChoices(session.present).filter(
       (event) => !(event.type === "attack" && event.target === null),
     );
@@ -52,6 +55,22 @@ it("shows the whole script of the seer from the start, the box of the result inc
   fireEvent.click(document.querySelector<HTMLElement>(".ww-person:not(:disabled)")!);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   expect(boxes()).toEqual(before);
+});
+
+it("does not show the box of the result as done when the investigator skips: no result was shown", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <NarratorHarness start={() => toSeer("investigator", ["paranormalInvestigator"])} />
+    </I18nextProvider>,
+  );
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
+  fireEvent.click(document.querySelector(".ww-ability--skip")!);
+  const states = [...document.querySelectorAll(".ww-script__step")].map((box) =>
+    box.getAttribute("data-state"),
+  );
+  // Waking up and the decision (skip) are done, the result was never shown, going to sleep is next.
+  expect(states).toEqual(["done", "done", "pending", "active"]);
 });
 
 it("decides the ability with the choice: it cannot be pressed again until the choice is taken back", async () => {
