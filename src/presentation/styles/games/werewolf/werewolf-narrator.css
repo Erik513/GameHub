@@ -35,14 +35,18 @@
   overflow-wrap: anywhere;
 }
 
+/* The slots: three columns, filled from the right to the left (right to left), the next row below when a row is full. */
 .ww-role-card__slots {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 36px);
+  direction: rtl;
   gap: var(--space-2);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* The color of a slot says what the effect is (see the tokens --slot-*); the sign stays the same. */
 .ww-role-card__slot {
   display: grid;
   place-items: center;
@@ -50,10 +54,37 @@
   height: 36px;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-sm);
+  background: var(--slot-silenced);
+  color: var(--seat-ink);
+  direction: ltr;
 }
 
-.ww-role-card__slot[data-empty="true"] {
-  border-style: dashed;
+.ww-role-card__slot[data-effect="lovers"] {
+  background: var(--slot-lovers);
+}
+
+.ww-role-card__slot[data-effect="amulet"] {
+  background: var(--slot-amulet);
+}
+
+.ww-role-card__slot[data-effect="attacked"] {
+  background: var(--slot-attacked);
+}
+
+.ww-role-card__slot[data-effect="protected"] {
+  background: var(--slot-protected);
+}
+
+.ww-role-card__slot[data-effect="guest"] {
+  background: var(--slot-guest);
+}
+
+.ww-role-card__slot[data-effect="poisoned"] {
+  background: var(--slot-poisoned);
+}
+
+.ww-role-card__slot[data-effect="drunk"] {
+  background: var(--slot-drunk);
 }
 
 .ww-role-card__abilities {

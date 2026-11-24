@@ -23,12 +23,30 @@ async function inLanguage(language: "en" | "de", element: ReactElement) {
 }
 
 describe("NarratorCard", () => {
-  it("shows the role, the awake person, three slots and the abilities", async () => {
+  it("gives every effect its own slot with its own color, with no limit and no empty slots", async () => {
+    const effects = [
+      "lovers",
+      "amulet",
+      "attacked",
+      "protected",
+      "guest",
+      "poisoned",
+      "silenced",
+      "drunk",
+    ] as const;
+    const { container } = await inLanguage("en", <NarratorCard card={{ ...witch, effects }} />);
+    const slots = [...container.querySelectorAll<HTMLElement>(".ww-role-card__slot")];
+    // All eight effects there are, in their order; the style puts them from the right to the left, three in a row.
+    expect(slots.map((slot) => slot.dataset.effect)).toEqual([...effects]);
+    expect(container.querySelector(".ww-role-card__slots")?.className).toBe("ww-role-card__slots");
+  });
+
+  it("shows the role, the awake person, a slot for every effect and the abilities", async () => {
     const { container } = await inLanguage("en", <NarratorCard card={witch} />);
     expect(screen.getByText("Witch")).toBeTruthy();
     expect(screen.getByText("Anna")).toBeTruthy();
-    expect(container.querySelectorAll(".ww-role-card__slot")).toHaveLength(3);
-    expect(container.querySelectorAll('.ww-role-card__slot[data-empty="true"]')).toHaveLength(1);
+    // Two effects, two slots: there are no empty slots.
+    expect(container.querySelectorAll(".ww-role-card__slot")).toHaveLength(2);
     expect(screen.getByLabelText("Protective amulet")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Heal: ready" })).toHaveProperty("disabled", false);
     expect(screen.getByRole("button", { name: "Poison: not possible" })).toHaveProperty(
@@ -179,7 +197,7 @@ describe("NarratorCard", () => {
     const { container } = await inLanguage("en", <NarratorCard card={vote} />);
     expect(screen.getByText("Anna")).toBeTruthy();
     expect(container.querySelector(".ww-role-card__role")).toBeNull();
-    expect(container.querySelectorAll(".ww-role-card__slot")).toHaveLength(3);
+    expect(container.querySelectorAll(".ww-role-card__slot")).toHaveLength(1);
   });
 
   it('shows the vote button together with a button "no vote" at the bottom of the day box', async () => {

@@ -27,6 +27,16 @@
   --seat-ink: #f2efe7;
   --seat-amulet: #e0b43a;
   --seat-drunk: #4ccf7a;
+  /* The slots of the effects on the awake people (narrator card): lovers pink, amulet gold, attacked and poisoned red,
+     protected and guest blue, drunk green, silenced neutral. */
+  --slot-lovers: #b8467f;
+  --slot-amulet: #8c6a10;
+  --slot-attacked: #b3261e;
+  --slot-poisoned: #b3261e;
+  --slot-protected: #2c4a8f;
+  --slot-guest: #2c4a8f;
+  --slot-drunk: #1f7a45;
+  --slot-silenced: #3a3d46;
   --font-sans: "Aptos", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-display: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif;
   --text-xs: 0.75rem;

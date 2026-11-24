@@ -84,8 +84,6 @@ export interface NarratorCard {
   readonly holderRole?: string | undefined;
 }
 
-const maximumEffects = 3;
-
 /** The steps of the day: the effects of the night are not shown there. */
 const dayStatuses: readonly WerewolfState["status"][] = [
   "morning",
@@ -269,7 +267,7 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
 }
 
 /**
- * The effects from outside on the awake people, most important first, at most three, each one once. When several people
+ * The effects from outside on the awake people, most important first, each one once. When several people
  * are awake (the wolves, the lovers) only an effect that all of them have is shown, so it is never taken for a property
  * of one person.
  */
@@ -300,7 +298,7 @@ function effectsOf(state: WerewolfState, actors: readonly string[]): readonly Ca
   const [first, ...others] = people.map(effectsOfPerson);
   if (!first) return [];
   const shared = first.filter((effect) => others.every((rest) => rest.includes(effect)));
-  return shared.slice(0, maximumEffects);
+  return shared;
 }
 
 /** The card of the role that is awake, or null when no role is awake (the day, the morning, the end). */

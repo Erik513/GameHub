@@ -116,8 +116,6 @@ interface NarratorCardProps {
   readonly onAbility?: (id: CardAbilityId) => void;
 }
 
-const slotCount = 3;
-
 /**
  * The upper box of the narrator view: who is awake (role symbol, name), the effects from outside on them (three
  * slots) and, at the bottom, the abilities of the role as large buttons: green when the narrator can use one now,
@@ -144,7 +142,6 @@ export function NarratorCard({
   const shownRole = (card.holderRole ?? card.role) as SymbolId;
   const roleName = t(`werewolfSymbols.items.${shownRole}.name`);
   const isDay = card.role === "day";
-  const slots = Array.from({ length: slotCount }, (_, index) => card.effects[index] ?? null);
   return (
     <section
       aria-label={roleName}
@@ -184,18 +181,16 @@ export function NarratorCard({
             {isDay ? <strong>{card.actors.join(", ")}</strong> : <strong>{roleName}</strong>}
             {!isDay && card.actors.length > 0 && <small>{card.actors.join(", ")}</small>}
           </span>
-          {/* The day without a nominated person has no effects from outside, so no slots for them. */}
-          {!(isDay && card.actors.length === 0) && (
+          {/* Only the effects there are get a slot: from the right to the left, three in a row, then the next row. */}
+          {card.effects.length > 0 && !(isDay && card.actors.length === 0) && (
             <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
-              {slots.map((effect, index) => (
-                <li className="ww-role-card__slot" data-empty={effect === null} key={index}>
-                  {effect && (
-                    <WerewolfSymbol
-                      id={effect}
-                      label={t(`werewolfSymbols.items.${effect}.name`)}
-                      size={22}
-                    />
-                  )}
+              {card.effects.map((effect) => (
+                <li className="ww-role-card__slot" data-effect={effect} key={effect}>
+                  <WerewolfSymbol
+                    id={effect}
+                    label={t(`werewolfSymbols.items.${effect}.name`)}
+                    size={22}
+                  />
                 </li>
               ))}
             </ul>

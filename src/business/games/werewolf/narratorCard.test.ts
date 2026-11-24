@@ -173,7 +173,7 @@ describe("describeNarratorCard", () => {
     expect(ids("lovers")).toEqual([]);
   });
 
-  it("shows the effects from outside on the awake people, at most three", () => {
+  it("shows all the effects from outside on the awake people", () => {
     const state = at(start(["witch"], { amulet: true }), { status: "witch", victim: null });
     const witch = state.players.find((p) => p.role === "witch")!;
     const other = state.players.find((p) => p.name !== witch.name)!;
@@ -184,7 +184,12 @@ describe("describeNarratorCard", () => {
       protectedPlayer: witch.name,
       silencedPlayer: witch.name,
     } as WerewolfState;
-    expect(describeNarratorCard(marked)!.effects).toEqual(["lovers", "amulet", "protected"]);
+    expect(describeNarratorCard(marked)!.effects).toEqual([
+      "lovers",
+      "amulet",
+      "protected",
+      "silenced",
+    ]);
     const attacked = {
       ...state,
       amulet: null,
