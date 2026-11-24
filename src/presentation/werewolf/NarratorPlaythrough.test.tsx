@@ -124,6 +124,15 @@ describe("NarratorView playthrough", () => {
           finished = true;
           break;
         }
+        // A button that is switched off never carries the frame of "press this next".
+        for (const skip of document.querySelectorAll<HTMLButtonElement>(
+          ".ww-ability--skip:disabled",
+        ))
+          expect(skip.hasAttribute("data-next"), "framed skip button at step " + step).toBe(false);
+        // A button that looks ready (green) can be pressed, and one that cannot be pressed never looks ready.
+        for (const ability of document.querySelectorAll<HTMLButtonElement>(".ww-ability"))
+          if (ability.dataset.state === "ready")
+            expect(ability.disabled, "ready but switched off at step " + step).toBe(false);
         const options = candidates();
         if (options.length === 0) {
           const buttons = [...document.querySelectorAll("button")]

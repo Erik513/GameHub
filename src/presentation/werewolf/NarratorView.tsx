@@ -139,6 +139,14 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
     view.phase === "act" && view.question === "heal" && view.progress < 1 && !view.card?.cover;
   // The day: once "no vote" is chosen the day can end (and the options are used).
   const dayDecided = view.state.status === "day" && (view.progress >= 1 || view.votedToday);
+  // The button "skip" stays where it is (the controls do not jump); it is switched off when it does not apply: after the
+  // step was left, or while a choice is made. A button that is switched off never has the blue frame.
+  const skipDisabled =
+    witchWaiting ||
+    dayDecided ||
+    view.phase === "outro" ||
+    view.selection.ability !== null ||
+    (view.question === null && (view.selection.picks.length > 0 || view.selection.heal));
   // The button ends the day: it stays off during the nomination (a list is open) and the vote.
   const nextFree =
     view.canNext &&
@@ -310,24 +318,17 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                 (view.phase === "act" || view.phase === "outro") &&
                 describeRoleStep(view.state).skippable
                   ? {
-                      // The button stays where it is (the controls do not jump); it is only switched off when it
-                      // does not apply: after the step was left, or while a choice is made.
-                      disabled:
-                        witchWaiting ||
-                        dayDecided ||
-                        view.phase === "outro" ||
-                        view.selection.ability !== null ||
-                        (view.question === null &&
-                          (view.selection.picks.length > 0 || view.selection.heal)),
+                      disabled: skipDisabled,
                       framed:
-                        view.state.status === "day"
+                        !skipDisabled &&
+                        (view.state.status === "day"
                           ? // "No vote" is an option to choose: framed until it is chosen (or a list is open).
-                            view.phase === "act" && !dayDecided && view.selection.ability === null
+                            view.phase === "act"
                           : !witchWaiting &&
                             view.phase === "act" &&
                             (view.question !== null
                               ? view.selection.ability === null
-                              : view.canContinue),
+                              : view.canContinue)),
                       ...(describeRoleStep(view.state).skip.label === "skip"
                         ? {}
                         : {

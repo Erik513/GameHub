@@ -94,6 +94,26 @@ it("shows the box of the result for the investigator once he has used the abilit
   expect(boxes()[2]).toMatch(/thumb/i);
 });
 
+it("darkens the skip button of the investigator while he chooses a person, and gives it no frame", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <NarratorHarness start={() => toSeer("investigator", ["paranormalInvestigator"])} />
+    </I18nextProvider>,
+  );
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
+  const skip = () => document.querySelector<HTMLButtonElement>(".ww-ability--skip")!;
+  // Nothing chosen yet: "skip" is an option to press, with the frame.
+  expect(skip()).toBeEnabled();
+  expect(skip()).toHaveAttribute("data-next");
+  fireEvent.click(screen.getByRole("button", { name: /^Check/ }));
+  fireEvent.click(document.querySelector<HTMLElement>(".ww-person:not(:disabled)")!);
+  // A person is chosen: "skip" does not apply any more, it is darkened and has no frame.
+  expect(skip()).toBeDisabled();
+  expect(skip()).toHaveAttribute("data-state", "dim");
+  expect(skip()).not.toHaveAttribute("data-next");
+});
+
 it("decides the ability with the choice: it cannot be pressed again until the choice is taken back", async () => {
   await open();
   const look = () => screen.getByRole("button", { name: /^Look/ });
