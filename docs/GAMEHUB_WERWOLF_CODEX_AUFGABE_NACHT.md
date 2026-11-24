@@ -313,3 +313,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Fähigkeiten nach dem Gebrauch (2026-11-24, Claude)
 
 - `GuideView.spellsUsed`: gewirkte Zauber des Magiers in diesem Schritt (Heilzauber plus bestätigte Todeszauber). `CardAbility.consumable`: die Fähigkeit wird durch den Gebrauch verbraucht (Hexe: Heil- und Gifttrank, Magier: Heil- und Todeszauber, Bürgermeister: Hammer, Ermittler: der eine Blick). Keine Regeländerung in der Zustandsmaschine.
+
+## Mitgehender Verliebter in der Zusammenfassung (2026-11-24, Claude)
+
+- `GuideView.exiledByLove`: Namen aus `exiledToday`, deren Todesgründe nur `heartbreak` sind. Keine Regeländerung.

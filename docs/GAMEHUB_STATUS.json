@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 360,
-      "totalTasks": 416,
-      "percent": 86.5
+      "completedTasks": 361,
+      "totalTasks": 417,
+      "percent": 86.6
     }
   },
   "environment": {
@@ -1963,6 +1963,12 @@
           "title": "Fähigkeiten nach dem Gebrauch: Magier-Zahl, verbraucht gegen abgedunkelt, Verzichten-Knopf",
           "status": "done",
           "validation": "Feld spellsUsed im Guide, Feld consumable an den Verbrauchsfähigkeiten (Hexe, Magier, Hammer, Ermittler); Verbrauchsfähigkeiten sehen sofort nach dem Gebrauch verbraucht aus, Dauerfähigkeiten werden nur abgedunkelt; der Verzichten-Knopf bleibt rot und wird abgedunkelt. Tests in NarratorMagician, NarratorDay und abilityLook; 1719 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-156",
+          "title": "Zusammenfassung nach der Abstimmung: Verliebtensymbol für den Mitgehenden",
+          "status": "done",
+          "validation": "Feld exiledByLove im Guide; GuideSummary zeigt für die Person, die ihrem Partner folgt, das Verliebtensymbol statt des Abstimmungssymbols; Test in voteCount.test.ts; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3592,5 +3598,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T16:28:07.313Z"
+  "updatedAt": "2026-11-24T16:32:27.701Z"
 }
