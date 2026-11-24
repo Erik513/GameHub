@@ -329,3 +329,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Zustände der Erzählerkarte ohne Obergrenze (2026-11-24, Claude)
 
 - `NarratorCard.effects` (`effectsOf` in `narratorCard.ts`) liefert alle gemeinsamen Zustände der Wachen (bis zu acht: `lovers`, `amulet`, `attacked`, `protected`, `guest`, `poisoned`, `silenced`, `drunk`), nicht mehr höchstens drei. Keine Regeländerung.
+
+## Endstand nach Rolle gruppiert (2026-11-24, Claude)
+
+- `describeStandings`: Die Gruppe `lovers` enthält nur noch den Verliebten, der mit seinem Partner gewinnt, aber durch seine Rolle nicht zur Gewinnerseite gehört (beim Wolfssieg mit gemischtem Paar der Nicht-Wolf). Ein verliebter Wolf steht bei den Wölfen. `describeWinners` ist unverändert und liefert weiter beide Verliebte in `lovers`. Keine Regeländerung.

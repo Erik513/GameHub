@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 367,
-      "totalTasks": 423,
+      "completedTasks": 368,
+      "totalTasks": 424,
       "percent": 86.8
     }
   },
@@ -2005,6 +2005,12 @@
           "title": "Erzählerkarte: Zustands-Slots nur wenn belegt, von rechts nach links, mit Farben je Zustand",
           "status": "done",
           "validation": "Keine leeren Slots, keine Obergrenze; Anordnung rechts nach links, drei pro Reihe; Hintergrundfarben je Zustand als Token --slot-*; Tests in narratorCard.test.ts und NarratorCard.test.tsx; 1735 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-163",
+          "title": "Endbildschirm: nach Rolle gruppieren, Gruppe der Verliebten nur für den Mitgewinner",
+          "status": "done",
+          "validation": "describeStandings: Verliebte stehen mit ihrer Rolle in ihrer Seite; die Gruppe der Verliebten enthält nur den Verliebten, der ohne Gewinnerseite mitgewinnt; Tests in standings.test.ts; 1737 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3634,5 +3640,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T17:56:38.615Z"
+  "updatedAt": "2026-11-24T18:13:02.301Z"
 }
