@@ -1,35 +1,3 @@
-import {
-  emptySelection,
-  type DeathNote,
-  type Guide,
-  type GuideSelection,
-  type GuideView,
-} from "./guideTypes";
-import { backIsBlocked } from "./guideBack";
-import { parseSavedTrail } from "./guideTrail";
-import {
-  current,
-  frameOf,
-  initialSelection,
-  potionRoleOf,
-  justDealt,
-  withSelection,
-} from "./guideFrames";
-import { voteBonusOf, voterNotesOf } from "./guideVote";
-import { describeNarratorCard, type CardAbilityId } from "./narratorCard";
-import { describePlayers, validTargets, type WerewolfTargetAction } from "./selectors";
-import { describeRoleStep, pickLimitOf } from "./roleStep";
-import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
-import {
-  transitionWerewolf,
-  voteMaximum,
-  voteNeeded,
-  voteTieAt,
-  voteTotal,
-  type WerewolfEvent,
-  type WerewolfState,
-} from "./stateMachine";
-
 /**
  * The guide of the narrator: which instruction the lower box shows and what the narrator can do.
  *
@@ -43,7 +11,44 @@ import {
  *
  * Every phase is one step of the trail, so "back" is exactly one step: inside a role, back to the previous role, or
  * back into the day. The game itself only moves on a confirmed event, so going back never replays randomness.
+ *
+ * The files of the guide: guideTypes.ts (the types), guideFrames.ts (the current step), guideTrail.ts (the saved
+ * trail), guideVote.ts (the count of a vote), guideBack.ts ("back") and guideWinners.ts (the winners); this file holds
+ * the view and the operations. Names of the operations: choose* and set* put a choice in, undo*, unchoose* and reopen*
+ * take one back, continueGuide and backGuide move between the steps, describe* only read.
  */
+import { backIsBlocked } from "./guideBack";
+import {
+  current,
+  frameOf,
+  initialSelection,
+  justDealt,
+  potionRoleOf,
+  withSelection,
+} from "./guideFrames";
+import { parseSavedTrail } from "./guideTrail";
+import {
+  emptySelection,
+  type DeathNote,
+  type Guide,
+  type GuideSelection,
+  type GuideView,
+} from "./guideTypes";
+import { voteBonusOf, voterNotesOf } from "./guideVote";
+import { describeNarratorCard, type CardAbilityId } from "./narratorCard";
+import { describeRoleStep, pickLimitOf } from "./roleStep";
+import { describePlayers, validTargets, type WerewolfTargetAction } from "./selectors";
+import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
+import {
+  transitionWerewolf,
+  voteMaximum,
+  voteNeeded,
+  voteTieAt,
+  voteTotal,
+  type WerewolfEvent,
+  type WerewolfState,
+} from "./stateMachine";
+
 const abilityAction: Partial<Record<CardAbilityId, WerewolfTargetAction>> = {
   attack: "attack",
   bond: "bond",

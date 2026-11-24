@@ -1,17 +1,20 @@
-import { recordWerewolfTransition } from "./eventLog";
-import { deathTimeOfCause, inOrderOfDeath as orderByDeath } from "./deathOrder";
-import { delaysToughGuyAttack, type WoundCause } from "./wounds";
-import { nightScript, type NightRole } from "./nightScript";
+/**
+ * The state machine of the werewolf game: a state and an event give the next state (or the same state when the event
+ * does not fit). The files around it: stateTypes.ts (the state and the events), stateVoting.ts (the count of a vote),
+ * stateQueries.ts (who has which role) and eventLog.ts (the history that is written at every step).
+ */
 import { parsePlayers } from "../../shared/players";
 import { shuffle } from "../../shared/shuffle";
-
 import {
   standardWerewolfCount,
   validWerewolfRoles,
   type WerewolfSettings,
   type WerewolfSpecialRole,
 } from "./configuration";
-export type { WerewolfSettings, WerewolfSpecialRole } from "./configuration";
+import { deathTimeOfCause, inOrderOfDeath as orderByDeath } from "./deathOrder";
+import { recordWerewolfTransition } from "./eventLog";
+import { nightScript, type NightRole } from "./nightScript";
+import { actingSeer, findActiveRole, isMasked, playersWithRole, visibleRole } from "./stateQueries";
 import type {
   Match,
   Player,
@@ -21,10 +24,13 @@ import type {
   WerewolfEvent,
   WerewolfState,
 } from "./stateTypes";
-import { actingSeer, findActiveRole, isMasked, playersWithRole, visibleRole } from "./stateQueries";
 import { countBallots, countVotes } from "./stateVoting";
+import { delaysToughGuyAttack, type WoundCause } from "./wounds";
+
+export type { WerewolfSettings, WerewolfSpecialRole } from "./configuration";
 export type { WerewolfEvent, WerewolfState } from "./stateTypes";
 export { voteMaximum, voteNeeded, voteTieAt, voteTotal } from "./stateVoting";
+
 export function createWerewolf(
   text: string,
   narrator: string,
