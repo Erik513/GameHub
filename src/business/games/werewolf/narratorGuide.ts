@@ -2,20 +2,15 @@ import {
   emptySelection,
   type DeathNote,
   type Guide,
-  type GuideBack,
-  type GuideFrame,
-  type GuidePhase,
   type GuideSelection,
   type GuideView,
 } from "./guideTypes";
+import { backIsBlocked } from "./guideBack";
 import { parseSavedTrail } from "./guideTrail";
+import { current, frameOf, initialSelection, justDealt, withSelection } from "./guideFrames";
+import { voteBonusOf, voterNotesOf } from "./guideVote";
 import { describeNarratorCard, type CardAbilityId } from "./narratorCard";
-import {
-  describePlayers,
-  validTargets,
-  votingPlayers,
-  type WerewolfTargetAction,
-} from "./selectors";
+import { describePlayers, validTargets, type WerewolfTargetAction } from "./selectors";
 import { describeRoleStep, pickLimitOf } from "./roleStep";
 import { advanceWerewolfSession, undoWerewolfSession, type WerewolfSession } from "./session";
 import {
@@ -56,30 +51,6 @@ const abilityAction: Partial<Record<CardAbilityId, WerewolfTargetAction>> = {
   silence: "silence",
   stayWith: "stayWith",
 };
-function phaseOf(state: WerewolfState): GuidePhase {
-  const card = describeNarratorCard(state);
-  // Nobody wakes up during the day: its card is open at once. The hunter acts in public (everybody is awake and sees
-  // it): his card is open at once as well.
-  return !card ? "plain" : card.role === "day" || card.role === "hunter" ? "act" : "intro";
-}
-
-/** The vote opens at once; nobody has chosen yet. */
-function initialSelection(state: WerewolfState): GuideSelection {
-  if (state.status === "witch" || state.status === "magician")
-    return { ...emptySelection, question: "heal" };
-  return state.status === "vote" ? { ...emptySelection, ability: "vote" } : emptySelection;
-}
-
-function frameOf(state: WerewolfState, pastLength: number): GuideFrame {
-  return { event: null, pastLength, phase: phaseOf(state), selection: initialSelection(state) };
-}
-
-/** True right after the last player has looked at the role: the game is dealt but not begun. */
-function justDealt(session: WerewolfSession): boolean {
-  const last = session.past[session.past.length - 1];
-  return last?.status === "roles" && session.present.status !== "roles";
-}
-
 /** Starts the guide; a saved trail brings back the steps and the choices made before a reload. */
 export function createGuide(session: WerewolfSession, savedTrail?: unknown): Guide {
   const trail = parseSavedTrail(savedTrail, session);
@@ -89,10 +60,6 @@ export function createGuide(session: WerewolfSession, savedTrail?: unknown): Gui
     session,
     trail: [justDealt(session) ? { ...frame, phase: "ready", selection: emptySelection } : frame],
   };
-}
-
-function current(guide: Guide): GuideFrame {
-  return guide.trail[guide.trail.length - 1]!;
 }
 
 /** The event that the choice of the narrator stands for, or null while something is missing. */
@@ -369,14 +336,6 @@ export function describeGuide(guide: Guide): GuideView {
     state,
     targets,
   };
-}
-
-function replaceCurrent(guide: Guide, frame: GuideFrame): Guide {
-  return { ...guide, trail: [...guide.trail.slice(0, -1), frame] };
-}
-
-function withSelection(guide: Guide, selection: GuideSelection): Guide {
-  return replaceCurrent(guide, { ...current(guide), selection });
 }
 
 /** The narrator taps an ability. Healing is a switch; the others open their targets. */
@@ -667,78 +626,6 @@ export function unchoosePlayer(guide: Guide, name: string): Guide {
   });
 }
 
-/**
- * At the vote: the narrator enters how many votes a nominated person got. The number is a whole number between 0 and the
- * votes there are; whether all votes were added up is shown in the view (the vote can only be confirmed then).
- */
-export function setVoteCount(guide: Guide, name: string, count: number): Guide {
-  const frame = current(guide);
-  const state = guide.session.present;
-  if (
-    frame.phase !== "act" ||
-    state.status !== "vote" ||
-    !state.candidates.includes(name) ||
-    !Number.isInteger(count) ||
-    count < 0 ||
-    count > voteTotal(state)
-  )
-    return guide;
-  const counts = { ...(frame.selection.counts ?? {}), [name]: count };
-  // With the double vote of the mayor the numbers can only add up to all votes minus one: the second vote is assigned
-  // separately (and counts as one vote as soon as it is). Without it the numbers add up to all votes.
-  const bonus = voteBonusOf(state, frame.selection);
-  const reserved = bonus?.required || (bonus && bonus.chosen !== null) ? 1 : 0;
-  const entered = Object.values(counts).reduce((sum, value) => sum + value, 0);
-  if (entered + reserved > voteTotal(state)) return guide;
-  // Nobody can get more votes than all votes minus his own (the second vote of the mayor counts for the person too).
-  if (count + (frame.selection.bonus === name ? 1 : 0) > voteMaximum(state, name)) return guide;
-  return withSelection(guide, { ...frame.selection, counts });
-}
-
-/** The nominated people who can get the second vote of the mayor with the double vote; null where there is no such vote. */
-function voteBonusOf(state: WerewolfState, selection: GuideSelection): GuideView["voteBonus"] {
-  if (state.status !== "vote") return null;
-  const mayor = votingPlayers(state).find(
-    (player) => player.weight === 2 && player.choices.length > 0,
-  );
-  if (!mayor) return null;
-  return {
-    chosen: selection.bonus ?? null,
-    choices: mayor.choices,
-    mayor: mayor.name,
-    // With several nominated people the second vote has to go to one of them; with one it is a yes vote or not.
-    required: state.candidates.length > 1,
-  };
-}
-
-/**
- * The second vote of the mayor with the double vote: the narrator taps the nominated person who gets it (tapping the
- * same person again takes it back; with one nominated person it is an additional yes vote or not).
- */
-export function setVoteBonus(guide: Guide, candidate: string | null): Guide {
-  const frame = current(guide);
-  const state = guide.session.present;
-  const bonus = voteBonusOf(state, frame.selection);
-  if (frame.phase !== "act" || !bonus) return guide;
-  if (candidate !== null && !bonus.choices.includes(candidate)) return guide;
-  // The second vote counts as one more vote: it is only possible while the numbers leave room for it.
-  const entered = Object.values(frame.selection.counts ?? {}).reduce(
-    (sum, value) => sum + value,
-    0,
-  );
-  if (candidate !== null && bonus.chosen === null && entered + 1 > voteTotal(state)) return guide;
-  if (
-    candidate !== null &&
-    (frame.selection.counts?.[candidate] ?? 0) + 1 > voteMaximum(state, candidate)
-  )
-    return guide;
-  const { bonus: previous, ...rest } = frame.selection;
-  void previous;
-  const next =
-    candidate === null || candidate === bonus.chosen ? rest : { ...rest, bonus: candidate };
-  return withSelection(guide, next);
-}
-
 export function chooseNobody(guide: Guide): Guide {
   if (!describeGuide(guide).canChooseNobody) return guide;
   return withSelection(guide, { ...current(guide).selection, none: true, picks: [] });
@@ -890,90 +777,6 @@ export function continueGuide(guide: Guide): Guide {
   }
 }
 
-/** Where the step of the current role starts in the trail: announcement, choice and falling asleep belong together. */
-function roleStart(guide: Guide): number {
-  const length = guide.session.past.length;
-  let start = guide.trail.length - 1;
-  while (
-    start > 1 &&
-    guide.trail[start]!.phase !== "ready" &&
-    guide.trail[start - 1]!.pastLength === length &&
-    guide.trail[start - 1]!.phase !== "ready"
-  )
-    start -= 1;
-  return start;
-}
-
-/**
- * Back may leave the step of a role (go to the previous role) only once: after coming back to a role the narrator
- * decides again (or goes forward); further back is not possible until the game has moved on and the narrator comes
- * back from the next role. Inside one role (announcement, choice, falling asleep) back is always possible.
- */
-function backIsBlocked(guide: Guide): boolean {
-  // The role reveal has nothing to do with the game: back and forward are free until the narrator begins the game.
-  if (guide.session.present.status === "roles" || current(guide).phase === "ready") return false;
-  const length = guide.session.past.length;
-  const previous = guide.trail[roleStart(guide) - 1];
-  const leavesRole = previous ? previous.pastLength < length : length > 0;
-  return (
-    leavesRole &&
-    guide.trail.some((frame) => frame.returned === true && frame.pastLength === length)
-  );
-}
-
-/** "Back": to the previous role (a step that the game already took is undone in the game), but only one role back. */
-export function backGuide(guide: Guide, confirmed = false): GuideBack {
-  // The vote can always be broken off: back to the nomination, however often the narrator has come back to it.
-  if (guide.session.present.status !== "vote" && backIsBlocked(guide))
-    return { ok: false, reason: "limit" };
-  if (guide.trail.length > 1) {
-    // Back leaves the whole step of the current role (announcement, choice, falling asleep) at once: it only moves
-    // between the roles. A decision is taken back with the button in the summary (see `reopenDecision`).
-    const start = roleStart(guide);
-    const trail = guide.trail.slice(0, start);
-    const previous = trail[trail.length - 1]!;
-    let session = guide.session;
-    while (previous.pastLength < session.past.length) {
-      const undone = undoWerewolfSession(session, confirmed);
-      if (!undone.ok)
-        return { ok: false, reason: undone.reason === "emptyHistory" ? "atStart" : undone.reason };
-      session = undone.session;
-    }
-    // Coming back into the role reveal is not marked: there the way back has no limit.
-    const crossed = session !== guide.session && session.present.status !== "roles";
-    return {
-      guide: {
-        session,
-        // All steps of the role are marked, so the mark stays while the narrator goes back inside the role.
-        trail: crossed
-          ? trail.map((frame) =>
-              frame.pastLength === previous.pastLength ? { ...frame, returned: true } : frame,
-            )
-          : trail,
-      },
-      ok: true,
-    };
-  }
-  const undone = undoWerewolfSession(guide.session, confirmed);
-  if (!undone.ok)
-    return { ok: false, reason: undone.reason === "emptyHistory" ? "atStart" : undone.reason };
-  const { present } = undone.session;
-  // The steps before the reload are not known any more: the step starts again with its content open.
-  const frame = frameOf(present, undone.session.past.length);
-  return {
-    guide: {
-      session: undone.session,
-      trail: [
-        {
-          ...(frame.phase === "intro" ? { ...frame, phase: "act" as const } : frame),
-          returned: true,
-        },
-      ],
-    },
-    ok: true,
-  };
-}
-
 /** True from the announcement of the morning until the next night begins (sun); false at night (moon). */
 export function isDayStep(state: WerewolfState): boolean {
   switch (state.status) {
@@ -990,15 +793,8 @@ export function isDayStep(state: WerewolfState): boolean {
   }
 }
 
-function voterNotesOf(state: WerewolfState): Record<string, "double" | "setByNarrator"> {
-  const notes: Record<string, "double" | "setByNarrator"> = {};
-  for (const player of votingPlayers(state)) {
-    if (player.setByNarrator) notes[player.name] = "setByNarrator";
-    else if (player.weight === 2) notes[player.name] = "double";
-  }
-  return notes;
-}
-
 export * from "./guideTypes";
 export { parseSavedTrail } from "./guideTrail";
 export { describeWinners, type WinnerGroup } from "./guideWinners";
+export { backGuide } from "./guideBack";
+export { setVoteBonus, setVoteCount } from "./guideVote";
