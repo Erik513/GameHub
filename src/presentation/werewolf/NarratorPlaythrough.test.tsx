@@ -119,6 +119,8 @@ describe("NarratorView playthrough", () => {
         return word / 2 ** 32;
       };
       let finished = false;
+      // The role that is awake, and whether its card had a skip button at the last step.
+      let before: { role: string; skip: boolean } | null = null;
       for (let step = 0; step < 7000; step++) {
         if (document.querySelector(".ww-winners")) {
           finished = true;
@@ -133,6 +135,20 @@ describe("NarratorView playthrough", () => {
         for (const ability of document.querySelectorAll<HTMLButtonElement>(".ww-ability"))
           if (ability.dataset.state === "ready")
             expect(ability.disabled, "ready but switched off at step " + step).toBe(false);
+        // The skip button of a role stays where it is for the whole step of that role (the controls do not jump): it is
+        // switched off after the ability was used, but it does not vanish.
+        const card = [...document.querySelectorAll<HTMLElement>(".ww-role-card")].find((entry) =>
+          entry.querySelector(".ww-role-card__role"),
+        );
+        const now = card
+          ? {
+              role: card.getAttribute("aria-label") ?? "",
+              skip: card.querySelector(".ww-ability--skip") !== null,
+            }
+          : null;
+        if (before?.skip && now?.role === before.role)
+          expect(now.skip, "skip button of " + now.role + " vanished at step " + step).toBe(true);
+        before = now;
         const options = candidates();
         if (options.length === 0) {
           const buttons = [...document.querySelectorAll("button")]

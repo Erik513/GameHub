@@ -92,6 +92,11 @@ it("shows the box of the result for the investigator once he has used the abilit
   // The ability was used: now the result is shown with the thumb, so its box is there.
   expect(boxes()).toHaveLength(4);
   expect(boxes()[2]).toMatch(/thumb/i);
+  // The skip button stays where it was, switched off (the controls do not jump), without the frame.
+  const skip = document.querySelector<HTMLButtonElement>(".ww-ability--skip")!;
+  expect(skip).not.toBeNull();
+  expect(skip).toBeDisabled();
+  expect(skip).not.toHaveAttribute("data-next");
 });
 
 it("darkens the skip button of the investigator while he chooses a person, and gives it no frame", async () => {

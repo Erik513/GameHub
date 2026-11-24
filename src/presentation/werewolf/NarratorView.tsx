@@ -142,6 +142,8 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
   // The button "skip" stays where it is (the controls do not jump); it is switched off when it does not apply: after the
   // step was left, or while a choice is made. A button that is switched off never has the blue frame.
   const skipDisabled =
+    // The ability was used and the result is shown (the investigator): the button stays, but does not apply any more.
+    describeRoleStep(view.state).kind === "result" ||
     witchWaiting ||
     dayDecided ||
     view.phase === "outro" ||
@@ -316,7 +318,8 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               waiting={witchWaiting}
               skip={
                 (view.phase === "act" || view.phase === "outro") &&
-                describeRoleStep(view.state).skippable
+                // The investigator may skip; after he used the ability (the result) the button stays where it was.
+                (describeRoleStep(view.state).skippable || view.state.status === "investigation")
                   ? {
                       disabled: skipDisabled,
                       framed:
