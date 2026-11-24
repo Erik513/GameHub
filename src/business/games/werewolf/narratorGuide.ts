@@ -339,6 +339,18 @@ export function describeGuide(guide: Guide): GuideView {
             )
             .map((entry) => (entry.kind === "death" ? entry.player : ""))
         : [],
+    exiledByLove:
+      state.status === "day"
+        ? state.history.flatMap((entry) =>
+            entry.kind === "death" &&
+            entry.phase === "exile" &&
+            entry.night === state.night &&
+            entry.sources.length > 0 &&
+            entry.sources.every((source) => source.cause === "heartbreak")
+              ? [entry.player]
+              : [],
+          )
+        : [],
     votedToday: votedToday(state),
     sleeping: state.status === "day" && selection.sleeping === true,
     investigated: investigatedOf(state),

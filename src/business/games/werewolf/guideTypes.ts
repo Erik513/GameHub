@@ -99,6 +99,8 @@ export interface GuideView {
   /** The votes that do not count once: the mayor twice, the village idiot has to vote yes. */
   /** The day after a vote: who left the game in this day (the summary of the day says so). */
   readonly exiledToday: readonly string[];
+  /** Of those who left after the vote: the ones who only followed their lover (a broken heart), not the one who was voted out. */
+  readonly exiledByLove: readonly string[];
   /** The day after a vote (whoever left or not): the nomination is over, only the end of the day is left. */
   readonly votedToday: boolean;
   /** The day: the last box of the script (everybody goes to sleep) is the open one; the next step starts the night. */

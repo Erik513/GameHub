@@ -52,7 +52,12 @@ export function Summary({ view }: { readonly view: GuideView }) {
         {view.exiledToday.map((name) => (
           <Fragment key={name}>
             <span className="ww-guide__chosen-part">
-              <WerewolfSymbol id="vote" ring size={20} />
+              {/* The one who follows his lover has the symbol of the lovers, the one voted out the symbol of the vote. */}
+              <WerewolfSymbol
+                id={view.exiledByLove.includes(name) ? "lovers" : "vote"}
+                ring
+                size={20}
+              />
               <span>{t("werewolfNarrator.guide.exile", { name })}</span>
             </span>
             {/* The tanner who was voted out has won: he keeps his role secret until the end of the game. */}

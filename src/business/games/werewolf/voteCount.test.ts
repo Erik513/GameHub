@@ -156,6 +156,18 @@ it("enters the yes votes through the guide: the vote can be confirmed at any num
   expect(describeGuide(continueGuide(guide))).toMatchObject({ exiledToday: [expect.any(String)] });
 });
 
+it("tells the summary who was voted out and who only followed his lover", () => {
+  const vote = toVote(1);
+  const nominee = vote.candidates[0]!;
+  const partner = vote.alive.find((player) => player.name !== nominee)!.name;
+  let guide = createGuide(createWerewolfSession({ ...vote, lovers: [nominee, partner] }));
+  guide = setVoteCount(guide, nominee, describeGuide(guide).voteNeeded);
+  const view = describeGuide(continueGuide(guide));
+  // Both leave the game, only the partner is marked as following his lover.
+  expect(view.exiledToday).toEqual(expect.arrayContaining([nominee, partner]));
+  expect(view.exiledByLove).toEqual([partner]);
+});
+
 it("enters the votes of several nominated people through the guide: all votes have to be added up", () => {
   let guide = createGuide(createWerewolfSession(toVote(2)));
   const view = describeGuide(guide);
