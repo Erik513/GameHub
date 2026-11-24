@@ -623,9 +623,25 @@ export function chooseAbility(original: Guide, id: CardAbilityId): Guide {
   });
 }
 
+function isResultStep(state: WerewolfState): boolean {
+  return state.status === "vision" || state.status === "investigation";
+}
+
 function takeBackVision(guide: Guide, id: CardAbilityId): Guide {
   const frame = current(guide);
   if (id !== "inspect" || guide.session.present.status !== "vision" || frame.phase !== "act")
+    return guide;
+  return takeBackResult(guide);
+}
+
+/**
+ * The result of the seer or the investigator is already in the game: the undo button of the decision box takes that step
+ * back, so the narrator is at the choice again and can show the role another person (the investigator can use the
+ * ability again, because it is not used up any more).
+ */
+function takeBackResult(guide: Guide): Guide {
+  const frame = current(guide);
+  if (guide.session.present.status !== "vision" && guide.session.present.status !== "investigation")
     return guide;
   const undone = undoWerewolfSession(guide.session);
   if (!undone.ok) return guide;
@@ -633,7 +649,13 @@ function takeBackVision(guide: Guide, id: CardAbilityId): Guide {
     session: undone.session,
     trail: [
       ...guide.trail,
-      { ...frame, event: null, pastLength: undone.session.past.length, selection: emptySelection },
+      {
+        ...frame,
+        event: null,
+        pastLength: undone.session.past.length,
+        phase: "act" as const,
+        selection: emptySelection,
+      },
     ],
   };
 }
@@ -645,6 +667,8 @@ function takeBackVision(guide: Guide, id: CardAbilityId): Guide {
 export function reopenDecision(guide: Guide): Guide {
   const frame = current(guide);
   if (frame.phase !== "outro") return guide;
+  // The result of the seer or the investigator: one tap goes back to the choice (the step with the result is taken back).
+  if (isResultStep(guide.session.present)) return takeBackResult(guide);
   const initial = initialSelection(guide.session.present);
   // One decision back per tap: the witch is asked the last question again, her earlier answer stays.
   const magician = guide.session.present.status === "magician";
@@ -938,6 +962,8 @@ function undoDayVote(guide: Guide): Guide {
 
 /** Takes back the choice of this step (not the step itself). */
 export function undoSelection(guide: Guide): Guide {
+  // The result of the seer or the investigator: back to the choice.
+  if (isResultStep(guide.session.present)) return takeBackResult(guide);
   const { selection } = current(guide);
   const initial = initialSelection(guide.session.present);
   // The day after a vote: the undo button of the first box leads back to it (the vote is taken back).

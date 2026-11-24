@@ -273,6 +273,35 @@ describe("narrator guide", () => {
     expect(describeGuide(answerQuestion(guide, "skip")).question).toBe("poison");
   });
 
+  it("takes the result of the investigator back with the undo button, so another person can be checked", () => {
+    let guide = continueGuide(game(["paranormalInvestigator"], { attackOnFirstNight: true }));
+    for (
+      let step = 0;
+      step < 100 && describeGuide(guide).card?.role !== "paranormalInvestigator";
+      step += 1
+    )
+      guide = forward(guide)!;
+    guide = continueGuide(guide);
+    guide = chooseAbility(guide, "investigate");
+    guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
+    guide = continueGuide(guide);
+    expect(guide.session.present.status).toBe("investigation");
+    // The undo button of the decision box: the result is taken back, the choice is open again.
+    const back = undoSelection(guide);
+    expect(back.session.present.status).toBe("investigator");
+    expect(describeGuide(back).card?.abilities.find((a) => a.id === "investigate")?.available).toBe(
+      true,
+    );
+    // Another person can be checked now.
+    const opened = chooseAbility(back, "investigate");
+    const again = choosePlayer(opened, describeGuide(opened).targets[1]!);
+    expect(continueGuide(again).session.present.status).toBe("investigation");
+    // After the check mark (the role falls asleep) one tap on the reopen button goes back to the choice, too.
+    const asleep = continueGuide(guide);
+    expect(describeGuide(asleep).phase).toBe("outro");
+    expect(reopenDecision(asleep).session.present.status).toBe("investigator");
+  });
+
   it("names the three people the investigator looked at, with a mark for the werewolves, as extra information", () => {
     const start = game(["paranormalInvestigator"], { attackOnFirstNight: true }).session.present;
     // The investigator looked at a person: the person and his two neighbours among the living are the result.

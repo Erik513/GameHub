@@ -341,16 +341,18 @@ function PlainBox({ view }: { readonly view: GuideView }) {
               const shooters = names.filter(isHunter);
               const deathOf = (name: string) => view.deaths.find((death) => death.name === name);
               const box = (name: string, hunter: boolean) => (
-                <li data-role={hunter ? "hunter" : undefined} key={name}>
-                  <button
-                    aria-expanded={shown.includes(name)}
-                    onClick={() =>
-                      setShown((now) =>
-                        now.includes(name) ? now.filter((other) => other !== name) : [...now, name],
-                      )
-                    }
-                    type="button"
-                  >
+                // The whole box is the button: a tap anywhere in it (also in the opened part) shows or covers the reason.
+                // (The button inside keeps the keyboard and the screen reader working; its click reaches the box.)
+                <li
+                  data-role={hunter ? "hunter" : undefined}
+                  key={name}
+                  onClick={() =>
+                    setShown((now) =>
+                      now.includes(name) ? now.filter((other) => other !== name) : [...now, name],
+                    )
+                  }
+                >
+                  <button aria-expanded={shown.includes(name)} type="button">
                     <span className="ww-guide__dead-name">
                       {/* A closed eye while the reason is covered, an open one while it is shown. */}
                       <EyeIcon open={shown.includes(name)} />

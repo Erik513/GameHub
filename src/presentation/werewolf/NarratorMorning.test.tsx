@@ -118,6 +118,24 @@ it("keeps the place for the amulet empty when the amulet is not lost", async () 
   expect(slot.querySelector("[data-symbol='amulet']")).toBeNull();
 });
 
+it("opens and covers the reason with a tap anywhere in the box of the dead person", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <Harness />
+    </I18nextProvider>,
+  );
+  const box = document.querySelector<HTMLElement>(".ww-guide__dead li")!;
+  expect(document.querySelector(".ww-guide__dead-causes")).toBeNull();
+  // A tap on the box itself (not only on the name row) opens it.
+  fireEvent.click(box);
+  expect(box.querySelector("button")).toHaveAttribute("aria-expanded", "true");
+  // A tap in the opened part covers it again.
+  fireEvent.click(document.querySelector(".ww-guide__dead-causes")!);
+  expect(document.querySelector(".ww-guide__dead-causes")).toBeNull();
+  expect(box.querySelector("button")).toHaveAttribute("aria-expanded", "false");
+});
+
 it("shows the category last shot only when the hunter dies, and then only him in it", async () => {
   const i18n = await createGameHubI18n("en");
   const first = render(

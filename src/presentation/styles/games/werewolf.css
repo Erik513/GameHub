@@ -2641,6 +2641,7 @@ button.ww-guide__strip[data-next] {
 }
 
 .ww-guide__dead li {
+  cursor: pointer;
   padding: var(--space-3);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
