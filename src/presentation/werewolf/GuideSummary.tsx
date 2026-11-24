@@ -32,7 +32,12 @@ function InfoMark() {
 export function Summary({ view }: { readonly view: GuideView }) {
   const { t } = useTranslation();
   const { card, selection } = view;
-  if (!card || card.cover) return null;
+  if (!card) return null;
+  // A cover call: the narrator skipped it (the drunk cannot act); the decision stands in the summary and can be undone.
+  if (card.cover)
+    return view.phase === "outro" ? (
+      <Chosen>{t("werewolfNarrator.guide.answeredNo")}</Chosen>
+    ) : null;
   // The vote: who was nominated.
   if (view.state.status === "vote")
     return (

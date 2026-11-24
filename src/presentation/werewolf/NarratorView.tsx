@@ -250,7 +250,6 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               ]}
               next={
                 view.phase === "act" &&
-                !view.card.cover &&
                 // Only a step with a decision of the role frames its abilities (not the result of the seer or the
                 // investigator, where the ability is only shown as done).
                 (describeRoleStep(view.state).kind === "choose" ||

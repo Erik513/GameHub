@@ -244,7 +244,8 @@ function baseStep(state: WerewolfState): RoleStepSpec {
     describeNarratorCard(state)?.abilities.some((ability) => ability.available) ?? false;
   switch (state.status) {
     case "nightCall":
-      return spec("cover", "info");
+      // The drunk behind the call cannot act, but the narrator enters something all the same: "skip" (undoable).
+      return spec("cover", "choose", { skippable: true });
     case "wolves":
       return state.night === 1 && !state.settings.attackOnFirstNight
         ? spec("wolvesNoAttack", "info", { statement: "noAttack" })

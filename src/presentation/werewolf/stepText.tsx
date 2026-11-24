@@ -368,7 +368,10 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
 
   // A role that decides: its script, then falling asleep.
   if (step.kind === "choose") {
-    const text = outro ? (askText(view, t) ?? stepTitle(view, step, t)) : stepTitle(view, step, t);
+    const text =
+      outro && !card.cover
+        ? (askText(view, t) ?? stepTitle(view, step, t))
+        : stepTitle(view, step, t);
     return [
       {
         // A decision: the undo button is there from the start (switched off until something is chosen). The choice is
@@ -416,7 +419,7 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
       button: "check",
       enabled: !outro && view.canContinue,
       id: "confirm",
-      items: card?.cover ? coverItems(view, t) : [stepTitle(view, step, t)],
+      items: [stepTitle(view, step, t)],
       state: outro ? "done" : "active",
     },
     asleep,

@@ -25,7 +25,8 @@ function bodyguardIsDrunk() {
     ...base,
     amulet: { holder: guard.name, mustPass: false },
     drunk: { player: guard.name, revealed: false },
-    status: "bodyguard",
+    // The step after the call (the next role): the cover call is left towards it.
+    status: "wolves",
   } as unknown as WerewolfState;
   const call = {
     ...resume,
@@ -57,6 +58,53 @@ it("reads the same script as for the awake role, names the drunk and frames the 
   const symbol = document.querySelector(".ww-role-card__role")!;
   expect(symbol).toHaveAttribute("data-drunk");
   expect(symbol).toHaveAttribute("data-amulet");
+});
+
+it("makes the narrator enter something even for a cover call: skip, and the decision can be undone", async () => {
+  const { session } = bodyguardIsDrunk();
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <NarratorHarness start={() => session} />
+    </I18nextProvider>,
+  );
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
+  // Nothing can be chosen (the ability is not possible), but the narrator has to say so: the button "skip" is there.
+  const skip = () => document.querySelector<HTMLButtonElement>(".ww-ability--skip")!;
+  expect(skip()).toBeEnabled();
+  expect(document.querySelector(".ww-script__undo:not(.ww-script__check)")).toBeDisabled();
+  fireEvent.click(skip());
+  // Skipped: the summary says so, the button is switched off and the undo button of the box takes it back.
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe("Skipped");
+  expect(skip()).toBeDisabled();
+  const undo = document.querySelector<HTMLButtonElement>(
+    ".ww-script__undo:not(.ww-script__check)",
+  )!;
+  expect(undo).toBeEnabled();
+  fireEvent.click(undo);
+  expect(skip()).toBeEnabled();
+  expect(document.querySelector(".ww-guide__chosen")).toBeNull();
+});
+
+it("frames the ability that cannot be used in the thin blue frame and the skip button in the full one", async () => {
+  const { session } = bodyguardIsDrunk();
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <NarratorHarness start={() => session} />
+    </I18nextProvider>,
+  );
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
+  // The role is asked, but the ability is not possible (the drunk cannot act): thin frame; "skip" is what to press next.
+  const ability = document.querySelector(".ww-ability:not(.ww-ability--skip)")!;
+  expect(ability).toHaveAttribute("data-state", "blocked");
+  expect(ability).toHaveAttribute("data-next", "thin");
+  expect(document.querySelector(".ww-ability--skip")).toHaveAttribute("data-next", "true");
+  // Once skipped, no frame is left.
+  fireEvent.click(document.querySelector(".ww-ability--skip")!);
+  expect(document.querySelector(".ww-ability:not(.ww-ability--skip)")).not.toHaveAttribute(
+    "data-next",
+  );
 });
 
 it("explains in a yellow note who is behind the call", async () => {
