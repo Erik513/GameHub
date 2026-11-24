@@ -101,6 +101,9 @@ function markedToDie(state: WerewolfState): ReadonlySet<string> {
   return names;
 }
 
+/** One person as the overview shows him (see `describePlayers`). */
+export type PlayerView = ReturnType<typeof describePlayers>[number];
+
 /** Private, unlocalized facts. The colors and frames are decided by the presentation (see GAMEHUB_WERWOLF_UI.md). */
 export function describePlayers(state: WerewolfState) {
   // Whoever is announced as dead in the morning or when leaving the village is shown as dead at once, in the view of the

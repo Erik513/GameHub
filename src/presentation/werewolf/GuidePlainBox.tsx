@@ -2,7 +2,7 @@ import type { TFunction } from "i18next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  describeWinners,
+  describeStandings,
   type DeathNote,
   type GuideView,
 } from "../../business/games/werewolf/narratorGuide";
@@ -12,7 +12,7 @@ import {
   type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
 import { DealCard } from "./DealCard";
-import { PlayerRows } from "./PlayerRows";
+import { PlayerLegend, PlayerList } from "./PlayerRows";
 import { variantOfRole } from "./roleAbilities";
 import { lineGlyphs } from "./symbols/glyphs";
 import type { SymbolId } from "./symbols/catalog";
@@ -194,40 +194,42 @@ export function PlainBox({ view }: { readonly view: GuideView }) {
   return null;
 }
 
-/** The winner view at the very end: every group of winners with the names of its players. */
+/**
+ * The winner view at the very end: every person once. First the groups of the winners (the winning side, the lovers,
+ * the tanner), then the losers; inside a group the living come first, then the dead, the one who died first last.
+ */
 function WinnerList({ state }: { readonly state: WerewolfState }) {
   const { t } = useTranslation();
   return (
     <section className="ww-guide ww-winners">
       <strong className="ww-guide__text">{t("werewolfNarrator.guide.finished.title")}</strong>
       <div className="ww-winners__groups">
-        {describeWinners(state).map((group) => (
+        {describeStandings(state).map((group) => (
           <div className="ww-winners__group" key={group.kind}>
             <h4>
-              <WerewolfSymbol
-                id={
-                  group.kind === "village"
-                    ? "villager"
-                    : group.kind === "wolves"
-                      ? "wolf"
-                      : group.kind === "tanner"
-                        ? "tanner"
-                        : "lovers"
-                }
-                size={22}
-              />{" "}
+              {group.kind !== "losers" && (
+                <>
+                  <WerewolfSymbol
+                    id={
+                      group.kind === "village"
+                        ? "villager"
+                        : group.kind === "wolves"
+                          ? "wolf"
+                          : group.kind === "tanner"
+                            ? "tanner"
+                            : "lovers"
+                    }
+                    size={22}
+                  />{" "}
+                </>
+              )}
               {t(`werewolfNarrator.guide.finished.${group.kind}`)}
             </h4>
-            <ul>
-              {group.players.map((name) => (
-                <li key={name}>{name}</li>
-              ))}
-            </ul>
+            <PlayerList players={group.players} />
           </div>
         ))}
       </div>
-      {/* All players with their colors: the living first, then the dead. */}
-      <PlayerRows order="aliveFirst" state={state} />
+      <PlayerLegend />
     </section>
   );
 }

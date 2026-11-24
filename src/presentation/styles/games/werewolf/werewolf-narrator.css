@@ -224,6 +224,10 @@
   color: var(--seat-ink);
 }
 
+.ww-overview__row[data-tone="alive"] {
+  background: var(--seat-alive);
+}
+
 .ww-overview__row[data-tone="wolf"] {
   background: var(--seat-wolf);
 }
@@ -282,14 +286,6 @@
 }
 
 /* At the end of the game the whole box scrolls (winners, then the players); the legend sticks to the bottom edge. */
-.ww-winners .ww-players {
-  display: contents;
-}
-
-.ww-winners .ww-players > .ww-overview {
-  overflow: visible;
-}
-
 .ww-winners .ww-overview__legend {
   position: sticky;
   bottom: calc(-1 * var(--space-3));
@@ -443,14 +439,6 @@
   margin: var(--space-3) 0 var(--space-1);
 }
 
-.ww-winners__group ul {
-  display: grid;
-  gap: 2px;
-  margin: 0;
-  padding: 0 0 0 var(--space-4);
-  list-style: none;
-}
-
 /* No empty space: the boxes share the whole area between the top bar and the buttons at the bottom. Only the
    role reveal has its own rules (see ww-deal). */
 .ww-night__stage {
@@ -554,22 +542,6 @@
 
 .ww-winners__group h4 {
   margin: 0;
-}
-
-.ww-winners__group ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  padding: 0;
-}
-
-.ww-winners__group li {
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  font-size: var(--text-md);
-  font-weight: var(--weight-medium);
 }
 
 /* The symbol of a core role stands directly before its number. */

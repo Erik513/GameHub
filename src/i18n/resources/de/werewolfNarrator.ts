@@ -288,6 +288,7 @@ export const werewolfNarratorTexts = {
       nobodyLeft: "Niemand scheidet aus",
       exile: "{{name}} scheidet aus",
       finished: {
+        losers: "Verlierer",
         title: "Spielende – die Gewinner",
         wolves: "Werwölfe",
         village: "Dorf",

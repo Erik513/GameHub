@@ -820,6 +820,11 @@ export function isDayStep(state: WerewolfState): boolean {
 
 export * from "./guideTypes";
 export { parseSavedTrail } from "./guideTrail";
-export { describeWinners, type WinnerGroup } from "./guideWinners";
+export {
+  describeStandings,
+  describeWinners,
+  type StandingsGroup,
+  type WinnerGroup,
+} from "./guideWinners";
 export { backGuide } from "./guideBack";
 export { setVoteBonus, setVoteCount } from "./guideVote";
