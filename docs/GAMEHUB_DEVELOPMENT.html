@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 363,
-      "totalTasks": 419,
-      "percent": 86.6
+      "completedTasks": 365,
+      "totalTasks": 421,
+      "percent": 86.7
     }
   },
   "environment": {
@@ -2214,6 +2214,18 @@
           "title": "Endbildschirm: jede Person einmal, Gewinner nach Gruppe, Verlierer, nach Todeszeitpunkt sortiert",
           "status": "done",
           "validation": "describeStandings (Gruppen, Lebende zuerst, Tote nach Todeszeitpunkt absteigend, Verliebte und Gerber nicht doppelt), Oberfläche mit farbigen Zeilen und Legende; Tests in standings.test.ts; 1730 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-159",
+          "title": "Endbildschirm: Titel entfernen, „Spielende“ in der Kopfleiste",
+          "status": "done",
+          "validation": "Titel im Gewinner-Kasten entfernt; die Kopfleiste zeigt am Ende „Spielende“ als eigene Anzeige (nicht in der Tag-/Nacht-Anzeige); Tests in NarratorBar.test.tsx, Durchspieltest angepasst; 1732 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-160",
+          "title": "Endbildschirm: Kasten „Gewinner“ mit getrennten Gruppen, Kasten „Verlierer“",
+          "status": "done",
+          "validation": "Ein Kasten „Gewinner“ mit einer Überschrift, die Gruppen darin durch Trennlinien getrennt, darunter „Verlierer“ (de/en), Akzentrahmen für die Gewinner; Legende ohne abgeschnittenen Trunkenbold-Rahmen; Tests in PlayerRows.test.tsx; 1734 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3843,7 +3855,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T17:21:54.143Z"
+  "updatedAt": "2026-11-24T17:39:43.591Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
