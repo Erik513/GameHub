@@ -786,3 +786,5 @@ Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in K
 **Korrektur vom 24.11.2026 (Auftraggeber):** Die Box „Ergebnis mit dem Daumen zeigen“ steht nur beim **Seher** (und Seher-Lehrling) von Anfang an im Skript, weil sie immer wählen müssen und das Ergebnis immer folgt. Beim **Ermittler** kommt sie erst, wenn er die Fähigkeit nutzt: Verzichtet er (oder ist die Fähigkeit verbraucht), gibt es kein Ergebnis und deshalb keine Box dafür.
 
 **Texte der Zusammenfassung beim Verzichten (24.11.2026, Auftraggeber):** Der Tarnaufruf (Trunkenbold) sagt dasselbe wie jede andere Rolle, die verzichtet: „Nichts gewählt – die Rolle verzichtet“. Nur bei Hexe und Magier steht je Frage eine Zeile „Frage: Verzichtet“. Die Texte bleiben einheitlich.
+
+**Regel zum Rahmen (24.11.2026, Auftraggeber):** Ein Knopf, der abgedunkelt und nicht klickbar ist, hat nie den blauen Rahmen „als Nächstes drücken“. Das gilt für den Verzichten-Knopf in jedem Schritt (zum Beispiel beim Ermittler, sobald eine Person gewählt wird). Der Durchspieltest prüft das bei jedem Schritt.
