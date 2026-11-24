@@ -116,3 +116,5 @@ Achter Teil (2026-11-24, We-01-152): B2 erledigt (`werewolf.css` in fünf Dateie
 Neunter Teil (2026-11-24, We-01-153): B1 für die Abstimmung erledigt (14 Gruppen zusammengeführt, 3 bewusst nicht). Die übrigen Dateien (werewolf-narrator.css, werewolf-config.css) haben ebenfalls Doppelungen, die mit derselben Methode geprüft werden können; Sichtprüfung der Abstimmung steht aus.
 
 Zehnter Teil (2026-11-24, We-01-154): B1 für alle fünf CSS-Dateien erledigt (Abstimmung vom Auftraggeber gesehen und freigegeben; die anderen vier Dateien warten auf die Sichtprüfung). Es bleiben 7 Gruppen mit möglicher Überschneidung (u. a. `.ww-nominee__count button`), die nur mit Sichtprüfung angefasst werden sollten.
+
+Abschluss (2026-11-24): Sichtprüfung aller bereinigten CSS-Dateien durch den Auftraggeber: sieht gut aus. Offen bleiben nur C3 (Zusammenfassungszeilen aus dem Guide), C4 (Skriptkästen als Tabelle) und sieben CSS-Gruppen mit möglicher Überschneidung; alles optional.
