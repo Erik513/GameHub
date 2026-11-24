@@ -1,0 +1,471 @@
+/* The vote: every nominated person in a row, the votes entered on the right. */
+.ww-nominees {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-nominee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+.ww-nominee__count {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ww-nominee__count button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.ww-nominee__count button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.ww-nominee__count output {
+  min-width: 2ch;
+  font-size: 1.25rem;
+  font-weight: var(--weight-bold);
+  text-align: center;
+}
+
+/* How many of the votes were entered: framed in blue when all are there and the vote can be confirmed. */
+
+.ww-nominee__yes {
+  color: var(--color-ink-muted);
+  font-size: 0.85rem;
+}
+
+/* The vote: the rows of the nominated people on top (compact), cancel (left) and confirm (right) at the bottom of the box.
+   The buttons are as big as the other buttons (3rem) and as far from the edge as the buttons of the list of people. */
+.ww-role-card[data-vote] {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ww-nominees {
+  gap: var(--space-1);
+}
+
+/* The rows of the nominated people are compact: three of them and the buttons fit in the box. */
+.ww-nominee {
+  padding: var(--space-1) var(--space-3);
+}
+
+.ww-nominee__count button {
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
+}
+
+.ww-nominee__count output {
+  font-size: 1.1rem;
+}
+
+/* The second vote of the mayor: a small row of buttons under the rows; the line with the sum of the votes under it. */
+.ww-nominees__bonus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+}
+
+.ww-nominees__bonus-label {
+  margin-right: var(--space-1);
+  color: var(--color-ink-muted);
+}
+
+.ww-nominees__bonus button {
+  min-height: 32px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ww-nominees__bonus button[aria-pressed="true"] {
+  border: 2px solid var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+/* The sum of the votes stands between cancel and confirm; the rows are compact so that three nominated people, the second
+   vote of the mayor and the buttons all fit in the box. */
+
+.ww-nominee {
+  padding: 2px var(--space-3);
+}
+
+.ww-nominee__count button {
+  width: 32px;
+  height: 32px;
+}
+
+/* The global minimum height of a button would make the small buttons of the rows as big as the touch targets of the bar. */
+.ww-nominee__count button {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+}
+
+/* Long names: the rows and the buttons never grow. A name is cut with "…" (the full name stands in the title of the lists),
+   the rows scroll if there are too many, and the line for the second vote, the sum and the buttons always stay in sight. */
+.ww-role-card[data-vote] {
+  gap: 6px;
+  min-height: 0;
+}
+
+.ww-nominees {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.ww-nominee {
+  flex: none;
+  min-width: 0;
+}
+
+.ww-nominee__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ww-nominee__count {
+  flex: none;
+}
+
+.ww-nominees__bonus {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.ww-nominees__choices {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-1);
+}
+
+.ww-nominees__bonus-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ww-nominees__bonus button {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ww-nominees__mayor {
+  color: var(--color-ink);
+  font-weight: var(--weight-bold);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* The mayor's name is never cut before the text in front of it; the rows and chips are small enough for three nominated
+   people, the line for the second vote, the sum and the buttons in the box. */
+.ww-nominees__bonus-label {
+  display: flex;
+  gap: 4px;
+  line-height: 16px;
+}
+
+.ww-nominees__bonus-label > b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ww-nominee__count button {
+  width: 32px;
+  height: 32px;
+}
+
+.ww-nominees__bonus button {
+  min-height: 28px;
+}
+
+.ww-nominees__prefix {
+  flex: none;
+}
+
+.ww-nominees__bonus {
+  align-items: stretch;
+}
+
+.ww-nominees__choices {
+  width: 100%;
+  min-width: 0;
+}
+
+/* The mayor's name stands out: bold, in the accent color and underlined (the line height leaves room for the underline). */
+.ww-nominees__bonus-label {
+  line-height: 20px;
+}
+
+.ww-nominees__mayor {
+  color: var(--color-accent);
+}
+
+/* Row at the bottom: the sum of the votes in a box on the left (left-aligned), cancel and confirm side by side on the right. */
+
+/* The vote, upper box: only a display. The votes so far in small rows, the yellow notes, then sum, cancel and confirm. */
+
+.ww-role-card[data-vote] .ww-guide__victim {
+  flex: none;
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.85rem;
+  line-height: 1.25;
+}
+
+/* The vote, lower box: the entry (rows with the buttons, the second vote of the mayor) gets the whole body. */
+.ww-voteinput {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+}
+
+/* The vote, upper box: the heading on top, the yellow notes below it, the box with the count of the votes at the bottom. */
+.ww-vote__heading {
+  flex: none;
+}
+
+.ww-vote__hints {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* The vote, lower box: the question of the narrator at the top left, cancel at the top right. */
+.ww-vote__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.ww-vote__top .ww-guide__close {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+}
+
+/* The yellow notes keep their line breaks (the silenced person: the name, then the reason in the next line). */
+.ww-vote__hints .ww-guide__victim {
+  white-space: pre-line;
+}
+
+.ww-vote__sum {
+  flex-direction: row;
+  align-items: center;
+}
+
+.ww-nominees__bonus button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* The second vote of the mayor is assigned to this person: the number (it includes that vote) stands in a blue box. */
+.ww-nominee__count output[data-second] {
+  box-sizing: border-box;
+  min-width: 2rem;
+  padding: 0 var(--space-1);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+}
+
+/* Every number stands in a neutral box; the box turns blue for the person who got the second vote of the mayor. */
+.ww-nominee__count output {
+  box-sizing: border-box;
+  min-width: 2rem;
+  padding: 0 var(--space-1);
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+}
+
+/* The vote, lower box: next to the check a box says who has the majority right now (or the tie). */
+.ww-guide__extra:has(.ww-vote__leader) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.ww-vote__leader {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 3rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  font-size: 0.9rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.2;
+}
+
+.ww-vote__leader[data-complete="true"] {
+  border-color: var(--color-accent);
+}
+
+/* One nominated person: the small table in the lower box says what a number of yes votes means. */
+.ww-vote__legend {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ww-vote__legend th,
+.ww-vote__legend td {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-line);
+  text-align: left;
+}
+
+.ww-vote__legend th {
+  color: var(--color-ink-muted);
+  font-weight: var(--weight-medium);
+}
+
+.ww-vote__legend tr[data-kind="leaves"] td {
+  color: var(--color-danger, var(--color-ink));
+  font-weight: var(--weight-bold);
+}
+
+.ww-vote__legend tr[data-kind="tie"] td {
+  color: var(--color-accent);
+  font-weight: var(--weight-bold);
+}
+
+/* The table of the yes votes stands at the bottom of the lower box, right above the check. */
+.ww-guide__body:has(.ww-voteinput) {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ww-voteinput {
+  flex: 1 1 auto;
+}
+
+.ww-vote__legend {
+  margin-top: auto;
+}
+
+/* The vote looks the same in every round and for one, two or three nominated people: nothing moves, nothing changes its
+   size. The list always has the room of three rows (a row is always the same size), the chips keep the width of one
+   third, the question has the room of four lines above, and the table and the check stay at the bottom. */
+.ww-voteinput .ww-nominees {
+  display: grid;
+  flex: none;
+  grid-auto-rows: 2.5rem;
+  align-content: start;
+  height: calc(3 * 2.5rem + 2 * var(--space-1));
+  overflow: hidden;
+}
+
+.ww-voteinput .ww-nominee {
+  box-sizing: border-box;
+  height: 2.5rem;
+  min-height: 0;
+}
+
+.ww-voteinput .ww-nominees__choices {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ww-vote__top {
+  min-height: 5.5rem;
+}
+
+.ww-vote__top .ww-guide__text {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+/* Compact sizes, so that the whole vote (question, three rows, the second vote, the table, the check) fits in the lower
+   box without a scrollbar. */
+.ww-voteinput {
+  gap: var(--space-1);
+  overflow: hidden;
+}
+
+.ww-voteinput .ww-nominees {
+  grid-auto-rows: 2.25rem;
+  height: calc(3 * 2.25rem + 2 * var(--space-1));
+}
+
+.ww-voteinput .ww-nominee {
+  height: 2.25rem;
+}
+
+.ww-voteinput .ww-nominee__count button {
+  width: 28px;
+  height: 28px;
+}
+
+.ww-vote__top {
+  min-height: 4.25rem;
+}
+
+.ww-vote__legend {
+  font-size: 0.8rem;
+  line-height: 1.15;
+}
+
+.ww-vote__legend th,
+.ww-vote__legend td {
+  padding: 1px var(--space-2);
+}
+
+.ww-guide__body:has(.ww-voteinput) {
+  overflow: hidden;
+}

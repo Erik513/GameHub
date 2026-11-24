@@ -1,0 +1,106 @@
+/* The morning: every dead person in a box of their own, one below the other. */
+.ww-guide__dead {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ww-guide__dead ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ww-guide__dead li {
+  cursor: pointer;
+  padding: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  font-size: clamp(1.1rem, 5vw, 1.5rem);
+}
+
+/* The hunter is the only one whose role is told: symbol and name of the role stand in his box. */
+/* The box of the hunter has a frame of its own; the content (name, role, reason below) is laid out like every other box. */
+.ww-guide__dead li[data-role="hunter"] {
+  border-color: var(--color-warning);
+}
+
+.ww-guide__dead-role {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-warning);
+  font-size: 0.9rem;
+}
+
+/* A person of the morning is a button: a tap shows the reason of death in the box, another tap covers it again. */
+.ww-guide__dead li {
+  padding: 0;
+}
+
+.ww-guide__dead li > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ww-guide__dead-causes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: end;
+  padding: 0 var(--space-3) var(--space-3);
+  font-size: 0.95rem;
+}
+
+.ww-guide__dead-reason {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+/* The place for the amulet that is lost with the death: always there (dashed), filled when the amulet is lost. */
+.ww-guide__dead-slot {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+.ww-guide__dead-slot[data-filled] {
+  border-style: solid;
+}
+
+.ww-guide__dead-causes small {
+  color: var(--color-ink-muted);
+}
+
+/* The categories of the morning (dead, last shot) stand one below the other with some space. */
+.ww-guide__body > .ww-guide__dead + .ww-guide__dead {
+  margin-top: var(--space-3);
+}
+
+.ww-guide__dead-name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ww-guide__eye {
+  flex: none;
+  color: var(--color-ink-muted);
+}
+
+/* A note may contain a line break (the silenced person of the day: the name, then what is not allowed). */
