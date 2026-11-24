@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 356,
-      "totalTasks": 412,
+      "completedTasks": 357,
+      "totalTasks": 413,
       "percent": 86.4
     }
   },
@@ -1939,6 +1939,12 @@
           "title": "Refactoring Durchlauf 2: Plan umsetzen (Erzähleransicht)",
           "status": "done",
           "validation": "Erster Teil fertig: Stimmzettel-Altcode und ungenutztes CSS entfernt, narratorGuide.ts und GuideBox.tsx aufgeteilt, Felder potionRole/shooter, Trunkenbold bei den Toten mit beiden Rollen. Alle 1714 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen. Offen: CSS-Doppelungen/-Aufteilung, Zustandsmaschine und Eventlog, weitere Guide-Felder (Amor, Zusammenfassungszeilen), Namen und Kommentare. Zweiter Teil: narratorGuide.ts in guideFrames, guideVote und guideBack aufgeteilt (800 Zeilen). Dritter Teil: stateMachine.ts in stateTypes, stateVoting, stateQueries geteilt, applyEvent in Nacht- und Tagesteil (722 Zeilen). Vierter Teil: recordWerewolfTransition in periodOf, targetsOf, deathSources, inOrderOfDeath geteilt. Fünfter Teil: Hexe/Magier über potionRoleOf gebündelt. Sechster Teil: Kommentare und Namen geprüft, Dateiköpfe und Importreihenfolge in narratorGuide.ts und stateMachine.ts. Siebter Teil: abilityLookOf, bondDone, gemeinsamer Testhelfer NarratorHarness (1716 Tests). Offen und bewusst aufgeschoben: CSS (B1-B3), Skriptkästen als Tabelle (C4), Zusammenfassungszeilen (C3)."
+        },
+        {
+          "id": "We-01-152",
+          "title": "CSS der Erzähleransicht in fünf Dateien aufteilen",
+          "status": "done",
+          "validation": "werewolf.css importiert fünf Dateien in unveränderter Reihenfolge; Inhalt identisch (bis auf eine Leerzeile), Prettier und Produktions-Build grün, Reihenfolge im gebauten CSS geprüft; nicht im Browser angesehen. Offen: Abstimmungs-CSS zusammenführen (nur mit Sichtprüfung)."
         }
       ]
     },
@@ -3568,5 +3574,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T15:49:34.107Z"
+  "updatedAt": "2026-11-24T16:00:56.479Z"
 }
