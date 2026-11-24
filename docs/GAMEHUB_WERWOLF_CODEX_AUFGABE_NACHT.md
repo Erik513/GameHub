@@ -349,3 +349,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Vorschau für die Übersicht (2026-11-24, Claude)
 
 - `GuideView.overviewState`: das Spiel mit der gerade getroffenen Entscheidung (`transitionWerewolf` auf eine Kopie; `state` bleibt unverändert). `describePlayers(state, announce)`: `announce = false` blendet die Morgenansage aus (Opfer bleiben markiert, nicht tot) und behandelt `morning` als Nachtschritt. `CardAbility.consumable` gilt jetzt auch für `bond`, `shot` und `passAmulet`. Keine Regeländerung.
+
+## Ursachen je Person (2026-11-24, Claude)
+
+- `describePlayers`: Feld `causes` (`DeathCause[]`). Bei Toten aus den Quellen des letzten Todeseintrags im Verlauf; bei Markierten und Angesagten ohne Eintrag aus `victim` (Wolfsangriff, im Zustand `exile` Abstimmung), `poisoned`, `spellVictims`, `hammerVictim`; beim verwundeten Harten Burschen zusätzlich `toughGuyWound.cause`. `causesOf(players)` liefert die vorkommenden Ursachen für die Legende. Keine Regeländerung.

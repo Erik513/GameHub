@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 377,
-      "totalTasks": 433,
+      "completedTasks": 378,
+      "totalTasks": 434,
       "percent": 87.1
     }
   },
@@ -2065,6 +2065,12 @@
           "title": "Übersicht nach jeder Entscheidung aktuell; einmalige Fähigkeiten sofort verbraucht",
           "status": "done",
           "validation": "overviewState (Vorschau) nach Bestätigen der Liste, nach Antworten der Hexe/des Magiers und im Ausklang; Opfer rot statt tot bis zur Morgenansage (announce = false); Amor, Jäger, Amulett zeigen die Fähigkeit sofort als verbraucht; Tests in overviewUpdate.test.ts, NarratorBar.test.tsx, NarratorAmulet.test.tsx, NarratorCupid.test.tsx; 1761 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-173",
+          "title": "Übersicht: Fähigkeit, mit der jemand zum Opfer wurde",
+          "status": "done",
+          "validation": "describePlayers liefert causes (Nacht, Verlauf, Wunde); Zeichen mit Label in der Zeile und Legende der vorkommenden Fähigkeiten, in Übersicht und Spielende; Tests in overviewUpdate.test.ts und PlayerRows.test.tsx; 1763 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3694,5 +3700,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T21:15:11.200Z"
+  "updatedAt": "2026-11-24T21:18:50.326Z"
 }
