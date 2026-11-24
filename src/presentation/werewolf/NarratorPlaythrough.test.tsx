@@ -63,8 +63,6 @@ function candidates(): { element: Element; weight: number }[] {
   add(".ww-script__check:not(:disabled)", 3);
   add(".ww-ability", 2);
   add(".ww-person", 2);
-  add(".ww-ballot__choice", 2);
-  add(".ww-guide__reset", 1);
   // A list of people that has nobody to choose is closed again (the ability is then skipped).
   add(".ww-guide__close", 0.5);
   // The window with the true role of the drunk is closed with its cross.

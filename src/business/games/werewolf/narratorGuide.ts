@@ -1,5 +1,15 @@
-import type { DeathCause } from "./eventLog";
-import { describeNarratorCard, type CardAbilityId, type NarratorCard } from "./narratorCard";
+import {
+  emptySelection,
+  type DeathNote,
+  type Guide,
+  type GuideBack,
+  type GuideFrame,
+  type GuidePhase,
+  type GuideSelection,
+  type GuideView,
+} from "./guideTypes";
+import { parseSavedTrail } from "./guideTrail";
+import { describeNarratorCard, type CardAbilityId } from "./narratorCard";
 import {
   describePlayers,
   validTargets,
@@ -32,61 +42,6 @@ import {
  * Every phase is one step of the trail, so "back" is exactly one step: inside a role, back to the previous role, or
  * back into the day. The game itself only moves on a confirmed event, so going back never replays randomness.
  */
-export type GuidePhase = "intro" | "act" | "outro" | "plain" | "ready";
-
-export interface GuideSelection {
-  /** The ability whose targets are shown. */
-  readonly ability: CardAbilityId | null;
-  /** The healing potion or the healing spell is used. */
-  readonly heal: boolean;
-  readonly picks: readonly string[];
-  /** The narrator chose "nobody" where that is allowed. */
-  readonly none: boolean;
-  /**
-   * The witch is asked in two rounds, always both: first whether she saves the victim (heal), then whether she poisons
-   * somebody. This is the question that is open now.
-   */
-  readonly question?: "heal" | "poison";
-  /**
-   * The magician is asked in two rounds as well: first the healing spell or a death spell ("heal"), then a second
-   * death spell ("poison"). The number of people of the first spell, who stay chosen in the second round.
-   */
-  readonly spellPicks?: number;
-  /** The boxes of the script that the narrator has confirmed with a check (Cupid: the sleeping, then the touching). */
-  readonly progress?: number;
-  /** The day: the summary is announced, the narrator asks everybody to go to sleep (the last box of the script is open). */
-  readonly sleeping?: boolean;
-  /** At the vote: what each voter chose (voter to candidate). */
-  readonly ballots?: Readonly<Record<string, string>>;
-  /** At the vote: the votes the narrator entered for each nominated person (candidate to number). */
-  readonly counts?: Readonly<Record<string, number>>;
-  /** At the vote: the nominated person who gets the second vote of the mayor with the double vote. */
-  readonly bonus?: string;
-}
-
-export const emptySelection: GuideSelection = {
-  ability: null,
-  heal: false,
-  none: false,
-  picks: [],
-};
-
-export interface GuideFrame {
-  readonly phase: GuidePhase;
-  /** How many steps the game had behind it when the frame was made: going back past it undoes one game step. */
-  readonly pastLength: number;
-  readonly selection: GuideSelection;
-  /** The event that the outro hands to the game. */
-  readonly event: WerewolfEvent | null;
-  /** The narrator came back to this step from the next role: from here the way back stops (one role at most). */
-  readonly returned?: boolean;
-}
-
-export interface Guide {
-  readonly session: WerewolfSession;
-  readonly trail: readonly GuideFrame[];
-}
-
 const abilityAction: Partial<Record<CardAbilityId, WerewolfTargetAction>> = {
   attack: "attack",
   bond: "bond",
@@ -123,41 +78,6 @@ function frameOf(state: WerewolfState, pastLength: number): GuideFrame {
 function justDealt(session: WerewolfSession): boolean {
   const last = session.past[session.past.length - 1];
   return last?.status === "roles" && session.present.status !== "roles";
-}
-
-const guidePhases: readonly unknown[] = ["intro", "act", "outro", "plain", "ready"];
-const maxSavedTrail = 2000;
-
-function isSavedFrame(value: unknown): value is GuideFrame {
-  if (typeof value !== "object" || value === null) return false;
-  const frame = value as Partial<GuideFrame>;
-  const selection = frame.selection as Partial<GuideSelection> | undefined;
-  return (
-    guidePhases.includes(frame.phase) &&
-    Number.isInteger(frame.pastLength) &&
-    (frame.event === null || (typeof frame.event === "object" && frame.event !== undefined)) &&
-    typeof selection === "object" &&
-    selection !== null &&
-    (selection.ability === null || typeof selection.ability === "string") &&
-    typeof selection.heal === "boolean" &&
-    typeof selection.none === "boolean" &&
-    Array.isArray(selection.picks) &&
-    selection.picks.every((pick) => typeof pick === "string")
-  );
-}
-
-/**
- * Reads the saved trail of the guide (the checkpoints of the narrator: every step with its choice). It is only taken
- * when it belongs to the saved game, that is when its last step is the present of the game; otherwise undefined.
- */
-export function parseSavedTrail(
-  raw: unknown,
-  session: WerewolfSession,
-): readonly GuideFrame[] | undefined {
-  if (!Array.isArray(raw) || raw.length === 0 || raw.length > maxSavedTrail) return undefined;
-  if (!raw.every(isSavedFrame)) return undefined;
-  const last = raw[raw.length - 1]!;
-  return last.pastLength === session.past.length ? raw : undefined;
 }
 
 /** Starts the guide; a saved trail brings back the steps and the choices made before a reload. */
@@ -218,9 +138,7 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
       return { night, nominees: selection.picks, type: "nominate" };
     case "vote":
       if (state.status !== "vote") return null;
-      // One ballot per voter (the old way) or the votes counted per candidate (the narrator enters numbers).
-      if (Object.keys(ballotsOf(selection)).length > 0)
-        return { ballots: ballotsOf(selection), night, nomination: state.nomination, type: "vote" };
+      // The narrator enters the votes counted per candidate.
       return {
         counts: Object.fromEntries(
           state.candidates.map((name) => [
@@ -282,28 +200,6 @@ function roleOf(state: WerewolfState) {
   return describeNarratorCard(state)?.role ?? null;
 }
 
-/** A person who leaves the game and the reasons, for the narrator only. */
-export interface DeathNote {
-  readonly name: string;
-  /** The role of the person (the narrator sees it when he taps the person). */
-  readonly role: string;
-  /** The person holds the amulet and loses it with the death. */
-  readonly amuletLost: boolean;
-  readonly causes: readonly DeathCause[];
-}
-
-export interface GuideNotes {
-  readonly silenced: string | null;
-  /** The tanner who wins only by being voted out (the setting "vote only"): the narrator keeps him in mind during the day. */
-  readonly tanner: string | null;
-  /** The werewolf who is still the drunk: he is not woken with the werewolves yet (the narrator sees why one name is missing). */
-  readonly hiddenWolf: string | null;
-  readonly wounded: readonly string[];
-  /** The person the open choice may not name again (the bodyguard and the night guest need a new one every night). */
-  readonly restricted: string | null;
-}
-
-/** What a confirmed event would let leave the game, read from the log of a trial transition. */
 function previewDeaths(state: WerewolfState, event: WerewolfEvent | null): readonly DeathNote[] {
   if (!event) return [];
   const next = transitionWerewolf(state, event);
@@ -315,6 +211,7 @@ function previewDeaths(state: WerewolfState, event: WerewolfEvent | null): reado
             amuletLost:
               state.amulet?.holder === entry.player && next.amulet?.holder !== entry.player,
             causes: [...new Set(entry.sources.map((source) => source.cause))],
+            masked: state.drunk?.player === entry.player && !state.drunk.revealed,
             name: entry.player,
             role: entry.role,
           },
@@ -323,88 +220,11 @@ function previewDeaths(state: WerewolfState, event: WerewolfEvent | null): reado
   );
 }
 
-export interface BallotRow {
-  readonly name: string;
-  /** The candidates he can vote for (never himself). */
-  readonly choices: readonly string[];
-  /** The mayor with the double vote counts twice. */
-  readonly weight: number;
-  /** The narrator sets this vote himself (the village idiot). */
-  readonly setByNarrator: boolean;
-  readonly choice: string | null;
-}
-
-export interface GuideView {
-  /** What the "next" button says: the day ends, the vote starts or ends, the game is left, or simply "next". */
-  readonly nextKind: "begin" | "endDay" | "finish" | "next";
-  /** Who leaves the game through the step that is about to be confirmed, and why (private to the narrator). */
-  readonly deaths: readonly DeathNote[];
-  /** Facts the narrator has to keep in mind during the day (silenced, wounded) and who a choice may not name. */
-  readonly notes: GuideNotes;
-  /** The votes that do not count once: the mayor twice, the village idiot has to vote yes. */
-  /** The day after a vote: who left the game in this day (the summary of the day says so). */
-  readonly exiledToday: readonly string[];
-  /** The day after a vote (whoever left or not): the nomination is over, only the end of the day is left. */
-  readonly votedToday: boolean;
-  /** The day: the last box of the script (everybody goes to sleep) is the open one; the next step starts the night. */
-  readonly sleeping: boolean;
-  /**
-   * The investigator after the check: the three people he looked at (the chosen one and his two neighbours among the
-   * living) and whether each is a werewolf: extra information for the narrator. Empty at every other step.
-   */
-  readonly investigated: readonly { readonly name: string; readonly wolf: boolean }[];
-  readonly voterNotes: Readonly<Record<string, "double" | "setByNarrator">>;
-  /** At the vote: one row for every voter with the choices, the weight and what was chosen so far. */
-  readonly ballotRows: readonly BallotRow[];
-  /** At the vote: the votes entered for each nominated person, how many votes there are and how many were entered. */
-  readonly voteCounts: Readonly<Record<string, number>>;
-  readonly voteTotal: number;
-  /** At the vote: the most votes each nominated person can get (all votes minus his own). */
-  readonly voteMax: Readonly<Record<string, number>>;
-  readonly voteSum: number;
-  /** One nominated person (yes or no): the yes votes he needs to leave the game; 0 when several are nominated. */
-  readonly voteNeeded: number;
-  /** One nominated person: the yes votes that make a tie (the vote is held once more); null when there is none. */
-  readonly voteTieAt: number | null;
-  /**
-   * The mayor with the double vote at the vote: his second vote goes to one nominated person (or, with one nominated person,
-   * is a yes vote or not). `required` is true when the vote cannot be confirmed before it is assigned. null without.
-   */
-  readonly voteBonus: {
-    readonly chosen: string | null;
-    readonly choices: readonly string[];
-    readonly mayor: string;
-    readonly required: boolean;
-  } | null;
-  /** The question the witch or the magician is asked now (first or second), or null. */
-  readonly question: "heal" | "poison" | null;
-  /** How many boxes of the script of Cupid are confirmed (0, 1). */
-  readonly progress: number;
-  readonly phase: GuidePhase;
-  readonly state: WerewolfState;
-  /** The role that is awake (also in the outro, where it is falling asleep); null in a plain step. */
-  readonly card: NarratorCard | null;
-  readonly selection: GuideSelection;
-  /** The people the narrator can choose now; empty while no ability is open. */
-  readonly targets: readonly string[];
-  readonly canChooseNobody: boolean;
-  /** The list of people can be closed again (an ability that was opened by a tap). */
-  readonly canCloseAbility: boolean;
-  readonly canContinue: boolean;
-  /**
-   * The button "next" at the bottom can be used. It changes from one role to the next (or to the day, the morning, ...),
-   * so it waits until a role is asleep again; inside the step of a role the box of the role is operated.
-   */
-  readonly canNext: boolean;
-  readonly canGoBack: boolean;
-  /** There is a choice that "undo" can take back. */
-  readonly canUndo: boolean;
-}
-
 export function describeGuide(guide: Guide): GuideView {
   const frame = current(guide);
   const state = guide.session.present;
   const { selection } = frame;
+  const potionRole = state.status === "witch" || state.status === "magician" ? state.status : null;
   const action = selection.ability ? abilityAction[selection.ability] : undefined;
   let targets: readonly string[] = [];
   if (frame.phase === "act" && selection.ability === "vote") {
@@ -434,9 +254,7 @@ export function describeGuide(guide: Guide): GuideView {
   const bonusMissing =
     state.status === "vote" &&
     voteBonusOf(state, selection)?.required === true &&
-    selection.bonus === undefined &&
-    // (Named votes of the old kind have no second vote to assign.)
-    Object.keys(selection.ballots ?? {}).length === 0;
+    selection.bonus === undefined;
   const canContinue =
     !choosingNobody &&
     !bonusMissing &&
@@ -471,7 +289,6 @@ export function describeGuide(guide: Guide): GuideView {
       selection.picks.length > initialSelection(state).picks.length ||
       selection.heal ||
       selection.none ||
-      Object.keys(ballotsOf(selection)).length > 0 ||
       Object.values(selection.counts ?? {}).some((count) => count > 0) ||
       selection.bonus !== undefined,
     card: frame.phase === "ready" ? null : describeNarratorCard(state),
@@ -506,7 +323,6 @@ export function describeGuide(guide: Guide): GuideView {
         .filter((player) => player.alive && player.delayedDeathNight !== null)
         .map((player) => player.name),
     },
-    ballotRows: ballotRowsOf(state, selection),
     voteCounts:
       state.status === "vote"
         ? Object.fromEntries(state.candidates.map((name) => [name, selection.counts?.[name] ?? 0]))
@@ -523,8 +339,9 @@ export function describeGuide(guide: Guide): GuideView {
         ? Object.fromEntries(state.candidates.map((name) => [name, voteMaximum(state, name)]))
         : {},
     progress: selection.progress ?? 0,
-    question:
-      state.status === "witch" || state.status === "magician" ? (selection.question ?? null) : null,
+    shooter: state.status === "hunter" || state.status === "drunkHunter" ? state.hunter.name : null,
+    potionRole,
+    question: potionRole ? (selection.question ?? null) : null,
     exiledToday:
       state.status === "day"
         ? state.history
@@ -851,20 +668,6 @@ export function unchoosePlayer(guide: Guide, name: string): Guide {
 }
 
 /**
- * At the vote: the narrator sets what one voter chose. Tapping the same choice again takes it back. A voter can only
- * choose among the candidates and never himself.
- */
-export function setBallot(guide: Guide, voter: string, candidate: string): Guide {
-  const frame = current(guide);
-  const row = describeGuide(guide).ballotRows.find((entry) => entry.name === voter);
-  if (frame.phase !== "act" || !row?.choices.includes(candidate)) return guide;
-  const ballots = { ...ballotsOf(frame.selection) };
-  if (ballots[voter] === candidate) delete ballots[voter];
-  else ballots[voter] = candidate;
-  return withSelection(guide, { ...frame.selection, ballots });
-}
-
-/**
  * At the vote: the narrator enters how many votes a nominated person got. The number is a whole number between 0 and the
  * votes there are; whether all votes were added up is shown in the view (the vote can only be confirmed then).
  */
@@ -1087,10 +890,6 @@ export function continueGuide(guide: Guide): Guide {
   }
 }
 
-export type GuideBack =
-  | { readonly ok: true; readonly guide: Guide }
-  | { readonly ok: false; readonly reason: "atStart" | "confirmationRequired" | "limit" };
-
 /** Where the step of the current role starts in the trail: announcement, choice and falling asleep belong together. */
 function roleStart(guide: Guide): number {
   const length = guide.session.past.length;
@@ -1191,50 +990,6 @@ export function isDayStep(state: WerewolfState): boolean {
   }
 }
 
-/** A group of players that won together. */
-export interface WinnerGroup {
-  readonly kind: "wolves" | "village" | "lovers" | "tanner";
-  readonly players: readonly string[];
-}
-
-/**
- * Who won, for the one and only winner view at the very end of the game: the winning side (all its players, also the
- * ones who left the game), the lovers when both are still in the game, and the tanner when he reached his own goal.
- * The tanner stands in his own group instead of in the village.
- */
-export function describeWinners(state: WerewolfState): readonly WinnerGroup[] {
-  if (state.status !== "finished") return [];
-  const side = state.players.filter((p) =>
-    state.winner === "wolves" ? p.role === "wolf" : p.role !== "wolf",
-  );
-  const groups: WinnerGroup[] = [
-    {
-      kind: state.winner,
-      players: side.filter((p) => p.name !== state.tannerWinner).map((p) => p.name),
-    },
-  ];
-  const { lovers } = state;
-  if (lovers?.every((name) => state.alive.some((p) => p.name === name)))
-    groups.push({ kind: "lovers", players: [...lovers] });
-  if (state.tannerWinner) groups.push({ kind: "tanner", players: [state.tannerWinner] });
-  return groups.filter((group) => group.players.length > 0);
-}
-
-function ballotsOf(selection: GuideSelection): Readonly<Record<string, string>> {
-  return selection.ballots ?? {};
-}
-
-function ballotRowsOf(state: WerewolfState, selection: GuideSelection): readonly BallotRow[] {
-  const ballots = ballotsOf(selection);
-  return votingPlayers(state).map((player) => ({
-    choice: ballots[player.name] ?? null,
-    choices: player.choices,
-    name: player.name,
-    setByNarrator: player.setByNarrator,
-    weight: player.weight,
-  }));
-}
-
 function voterNotesOf(state: WerewolfState): Record<string, "double" | "setByNarrator"> {
   const notes: Record<string, "double" | "setByNarrator"> = {};
   for (const player of votingPlayers(state)) {
@@ -1243,3 +998,7 @@ function voterNotesOf(state: WerewolfState): Record<string, "double" | "setByNar
   }
   return notes;
 }
+
+export * from "./guideTypes";
+export { parseSavedTrail } from "./guideTrail";
+export { describeWinners, type WinnerGroup } from "./guideWinners";

@@ -3,12 +3,13 @@ import { emptyFixedDraft } from "./fixedConfiguration";
 import {
   answerQuestion,
   chooseAbility,
+  setVoteBonus,
+  setVoteCount,
   chooseNobody,
   choosePlayer,
   continueGuide,
   createGuide,
   describeGuide,
-  setBallot,
   type Guide,
 } from "./narratorGuide";
 import { startWerewolfGame } from "./narratorGame";
@@ -250,9 +251,14 @@ it("plays games of the variable mode to the end with the guide alone, without a 
         for (const ability of view.card?.abilities ?? [])
           if (ability.available) add(chooseAbility(guide, ability.id));
         for (const name of view.targets) add(choosePlayer(guide, name));
-        for (const row of view.ballotRows)
-          for (const choice of row.choices)
-            if (row.choice === null) add(setBallot(guide, row.name, choice));
+        if (view.state.status === "vote") {
+          // The counted votes: one more or one less for a nominee, and the second vote of the mayor.
+          for (const name of view.state.candidates) {
+            add(setVoteCount(guide, name, (view.voteCounts[name] ?? 0) + 1));
+            add(setVoteCount(guide, name, (view.voteCounts[name] ?? 0) - 1));
+          }
+          for (const name of view.voteBonus?.choices ?? []) add(setVoteBonus(guide, name));
+        }
         if (view.canChooseNobody) add(chooseNobody(guide));
       }
       if (options.length === 0) {

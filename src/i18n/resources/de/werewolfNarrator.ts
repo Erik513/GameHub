@@ -210,6 +210,7 @@ export const werewolfNarratorTexts = {
         stayWith: "Übernachtet bei",
       },
       answeredNo: "Verzichtet",
+      deadMasked: "{{drunk}}, wahre Rolle: {{role}}",
       summaryAsk: {
         heal: "Retten",
         poison: "Vergiften",

@@ -236,12 +236,6 @@
   font-weight: var(--weight-bold);
 }
 
-.ww-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-1);
-}
-
 /* The tiles of the roles: one line, two to a row. */
 .ww-config .kit-choice span {
   min-height: 2.5rem;
@@ -272,8 +266,7 @@
   opacity: 0.75;
 }
 
-.ww-tile-wrap .kit-choice small,
-.ww-variant__head small {
+.ww-tile-wrap .kit-choice small {
   display: block;
   color: inherit;
   font-weight: var(--weight-regular, 400);
@@ -300,8 +293,7 @@
   gap: 0.1rem;
 }
 
-.ww-tile-wrap .kit-choice small,
-.ww-variant__title small {
+.ww-tile-wrap .kit-choice small {
   display: block;
   color: inherit;
   font-size: 0.65rem;
@@ -315,8 +307,7 @@
   color: var(--color-ink-muted);
 }
 
-.ww-tile-wrap:has(input:checked) .kit-info-button,
-.ww-variant[data-selected] .ww-variant__head .kit-info-button {
+.ww-tile-wrap:has(input:checked) .kit-info-button {
   color: var(--color-accent-contrast);
 }
 
@@ -378,8 +369,7 @@
 }
 
 /* The "i" is dark on a filled (chosen) tile. */
-.ww-tile-wrap:has(input:checked) .kit-info-button,
-.ww-variant[data-selected] .ww-variant__head .kit-info-button {
+.ww-tile-wrap:has(input:checked) .kit-info-button {
   color: var(--color-accent-contrast);
 }
 
@@ -1225,15 +1215,6 @@
   text-align: left;
 }
 
-.ww-guide--tap {
-  min-height: 120px;
-  align-content: center;
-  justify-items: center;
-  border: 2px solid var(--color-accent);
-  text-align: center;
-  cursor: pointer;
-}
-
 .ww-guide__text {
   font-size: var(--text-lg);
 }
@@ -1277,10 +1258,6 @@
   border: 2px solid var(--color-accent);
   background: var(--color-accent);
   color: var(--color-accent-contrast);
-}
-
-.ww-guide__undo {
-  justify-self: start;
 }
 
 /* A symbol stands in front of a name in a tile, in the window of a role and in the rules. */
@@ -1547,15 +1524,6 @@
   overflow-y: auto;
 }
 
-.ww-guide--tap {
-  align-content: end;
-  gap: var(--space-3);
-}
-
-.ww-guide--tap .ww-guide__text {
-  font-size: clamp(1.5rem, 7vw, 2.25rem);
-}
-
 /* A message (morning, exile) stands at the bottom of the box; the winners start at the top. */
 .ww-night__stage[data-layout="plain"] .ww-guide:not(.ww-winners):not(.ww-deal) {
   align-content: end;
@@ -1565,10 +1533,6 @@
 
 .ww-night__stage[data-layout="plain"] .ww-guide__text {
   font-size: clamp(1.5rem, 7vw, 2.25rem);
-}
-
-.ww-guide__undo {
-  align-self: end;
 }
 
 .ww-winners {
@@ -1595,20 +1559,6 @@
 }
 
 /* A guide without a list of people (waiting for a tap on an ability, a result, a cover call) stands at the bottom of its box. */
-.ww-guide--idle {
-  align-content: end;
-  justify-items: center;
-  text-align: center;
-}
-
-.ww-guide--idle .ww-guide__text {
-  font-size: clamp(1.4rem, 6.5vw, 2rem);
-}
-
-.ww-guide--idle .ww-guide__rows {
-  justify-items: start;
-  text-align: left;
-}
 
 /* The people fill their rows evenly, three to a row. */
 .ww-person {
@@ -1695,31 +1645,6 @@
   font-weight: var(--weight-medium);
 }
 
-.ww-guide__causes {
-  display: grid;
-  gap: 2px;
-  width: 100%;
-  padding: var(--space-2);
-  border: 1px dashed var(--color-line);
-  border-radius: var(--radius-sm);
-  text-align: left;
-}
-
-.ww-guide__causes ul,
-.ww-guide__notes {
-  display: grid;
-  gap: 2px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ww-guide__notes {
-  padding: var(--space-2);
-  border: 1px solid var(--color-warning);
-  border-radius: var(--radius-sm);
-}
-
 .ww-person__mark {
   margin-left: var(--space-1);
   opacity: 0.8;
@@ -1736,18 +1661,13 @@
 }
 
 /* ---- The lower box: the instruction at the top, the additional information at the bottom. ---- */
-.ww-guide--sheet,
-.ww-guide--tap {
+.ww-guide--sheet {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   align-content: stretch;
   justify-items: stretch;
   text-align: left;
   overflow: hidden;
-}
-
-.ww-guide--tap {
-  grid-template-rows: minmax(0, 1fr) auto;
 }
 
 .ww-night__stage[data-layout="plain"] .ww-guide.ww-guide--sheet:not(.ww-winners):not(.ww-deal) {
@@ -1767,7 +1687,6 @@
   font-size: var(--text-lg);
 }
 
-.ww-guide--tap .ww-guide__text,
 .ww-night__stage[data-layout="plain"] .ww-guide__head .ww-guide__text {
   font-size: clamp(1.5rem, 7vw, 2.25rem);
 }
@@ -1787,14 +1706,6 @@
   align-content: end;
   justify-items: stretch;
   text-align: left;
-}
-
-.ww-guide--tap .ww-guide__extra {
-  justify-items: start;
-}
-
-.ww-guide__undo {
-  justify-self: start;
 }
 
 /* The X in the corner closes the list of people again. */
@@ -2079,57 +1990,13 @@
   color: var(--color-ink-muted);
 }
 
-.ww-guide--tap {
-  border: 1px solid var(--color-accent);
-}
-
-.ww-guide--tap .ww-guide__heading {
-  display: grid;
-  align-content: start;
-  gap: var(--space-1);
-}
-
-.ww-guide--tap .ww-guide__text,
-.ww-night__stage[data-layout="plain"] .ww-guide--tap .ww-guide__text {
-  font-size: clamp(1.25rem, 6vw, 1.6rem);
-}
-
-.ww-guide__sub {
-  color: var(--color-ink-muted);
-  font-size: var(--text-md);
-}
-
 /* The line at the bottom of the box says what a tap does, like a button. */
-.ww-guide__strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  font-size: var(--text-md);
-  font-weight: var(--weight-medium);
-}
 
 /* The box to tap: the heading takes the free space, the additional information and the strip follow. */
-.ww-guide--tap {
-  grid-template-rows: minmax(0, 1fr);
-  grid-auto-rows: auto;
-}
 
 /* The symbol of the role stands in front of the announcement. */
-.ww-guide--tap .ww-guide__text {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
 
 /* The blue frame leads the narrator: it stands around what is to be operated next. */
-.ww-guide--tap {
-  border: 2px solid var(--color-accent);
-}
 
 .ww-ability[data-next] {
   outline: 3px solid var(--color-accent);
@@ -2183,24 +2050,6 @@
 
 .ww-guide--asleep {
   cursor: default;
-}
-
-button.ww-guide__strip {
-  width: 100%;
-  border: 1px solid var(--color-line);
-  color: var(--color-ink);
-  font: inherit;
-  cursor: pointer;
-}
-
-button.ww-guide__strip:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-button.ww-guide__strip[data-next] {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
 }
 
 /* The heading and its line below stand one above the other in every box (also the box of the sleeping role). */
@@ -2314,19 +2163,6 @@ button.ww-guide__strip[data-next] {
   gap: var(--space-2);
 }
 
-.ww-guide__reset {
-  display: inline-grid;
-  flex: none;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-ink);
-  cursor: pointer;
-}
-
 /* The buttons always stand at the bottom of the upper box, also when the box has no head (the day). */
 .ww-night__stage[data-layout="act"] .ww-role-card__abilities {
   grid-row: 2;
@@ -2334,57 +2170,6 @@ button.ww-guide__strip[data-next] {
 }
 
 /* The vote: one row for every voter with a button for each candidate. */
-.ww-ballots {
-  display: grid;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.ww-ballot {
-  display: grid;
-  gap: var(--space-1);
-  padding: var(--space-2);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-}
-
-.ww-ballot[data-missing] {
-  border-color: var(--color-warning);
-}
-
-.ww-ballot__name {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.ww-ballot__choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.ww-ballot__choice {
-  flex: 1 1 0;
-  min-width: 0;
-  min-height: 40px;
-  padding: 0 var(--space-2);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-ink);
-  font: inherit;
-  cursor: pointer;
-}
-
-.ww-ballot__choice[aria-pressed="true"] {
-  border-color: var(--color-success);
-  background: var(--color-success);
-  color: var(--color-accent-contrast);
-  font-weight: 600;
-}
 
 /* The drunk does not know his abilities yet: a question mark where the symbols of the abilities stand. */
 .ww-deal__unknown {
@@ -2732,9 +2517,6 @@ button.ww-guide__strip[data-next] {
 }
 
 /* A note may contain a line break (the silenced person of the day: the name, then what is not allowed). */
-.ww-guide__notes li {
-  white-space: pre-line;
-}
 
 /* The vote: every nominated person in a row, the votes entered on the right. */
 .ww-nominees {
@@ -2786,13 +2568,6 @@ button.ww-guide__strip[data-next] {
 }
 
 /* How many of the votes were entered: framed in blue when all are there and the vote can be confirmed. */
-.ww-guide__votesum {
-  font-weight: var(--weight-medium);
-}
-
-.ww-guide__votesum[data-complete="true"] {
-  color: var(--color-success);
-}
 
 .ww-nominee__yes {
   color: var(--color-ink-muted);
@@ -2809,22 +2584,6 @@ button.ww-guide__strip[data-next] {
 
 .ww-nominees {
   gap: var(--space-1);
-}
-
-.ww-nominees__actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.ww-nominees__actions .ww-guide__close,
-.ww-nominees__actions .ww-guide__confirm {
-  box-sizing: border-box;
-  width: 3rem;
-  height: 3rem;
-  min-height: 3rem;
-  margin: 0;
-  padding: 0;
 }
 
 /* The rows of the nominated people are compact: three of them and the buttons fit in the box. */
@@ -2873,27 +2632,8 @@ button.ww-guide__strip[data-next] {
   color: var(--color-accent-contrast);
 }
 
-.ww-nominees__sum {
-  font-size: 0.9rem;
-  font-weight: var(--weight-medium);
-}
-
-.ww-nominees__sum[data-complete="true"] {
-  color: var(--color-success);
-}
-
 /* The sum of the votes stands between cancel and confirm; the rows are compact so that three nominated people, the second
    vote of the mayor and the buttons all fit in the box. */
-.ww-nominees__actions {
-  gap: var(--space-2);
-}
-
-.ww-nominees__sum {
-  flex: 1 1 auto;
-  min-width: 0;
-  text-align: center;
-  line-height: 1.2;
-}
 
 .ww-nominee {
   padding: 2px var(--space-3);
@@ -2977,10 +2717,6 @@ button.ww-guide__strip[data-next] {
   text-underline-offset: 3px;
 }
 
-.ww-nominees__actions {
-  flex: none;
-}
-
 /* The mayor's name is never cut before the text in front of it; the rows and chips are small enough for three nominated
    people, the line for the second vote, the sum and the buttons in the box. */
 .ww-nominees__bonus-label {
@@ -3027,51 +2763,8 @@ button.ww-guide__strip[data-next] {
 }
 
 /* Row at the bottom: the sum of the votes in a box on the left (left-aligned), cancel and confirm side by side on the right. */
-.ww-nominees__sum {
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  height: 3rem;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  text-align: left;
-}
 
 /* The vote, upper box: only a display. The votes so far in small rows, the yellow notes, then sum, cancel and confirm. */
-.ww-tally {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-  list-style: none;
-}
-
-.ww-tally__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  min-width: 0;
-}
-
-.ww-tally__name {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ww-tally__count {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: var(--space-1);
-}
 
 .ww-role-card[data-vote] .ww-guide__victim {
   flex: none;
@@ -3100,11 +2793,6 @@ button.ww-guide__strip[data-next] {
   gap: var(--space-1);
   min-height: 0;
   overflow-y: auto;
-}
-
-.ww-role-card[data-vote] .ww-nominees__sum {
-  flex: none;
-  justify-content: flex-start;
 }
 
 /* The vote, lower box: the question of the narrator at the top left, cancel at the top right. */

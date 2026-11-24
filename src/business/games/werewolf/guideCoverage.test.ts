@@ -11,14 +11,13 @@ import {
   continueGuide,
   createGuide,
   describeGuide,
-  setBallot,
   setVoteBonus,
   setVoteCount,
   type Guide,
 } from "./narratorGuide";
 import { createWerewolfSession } from "./session";
 import { wakingPlayers } from "./stateMachine";
-import { validTargets, votingPlayers } from "./selectors";
+import { validTargets } from "./selectors";
 import {
   createWerewolf,
   transitionWerewolf,
@@ -128,14 +127,6 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
       // The true role is shown first (the window is closed), then the check of the step can be used.
       guide = markRoleShown(guide);
       break;
-    case "vote":
-      for (const [voter, choice] of Object.entries(event.ballots)) {
-        const next = setBallot(guide, voter, choice);
-        if (next === guide && describeGuide(guide).selection.ballots?.[voter] !== choice)
-          failure = failure ?? "no ballot";
-        guide = next;
-      }
-      break;
     default: {
       const id = abilityOfEvent[event.type];
       if (id && "target" in event) {
@@ -175,7 +166,7 @@ function viaGuide(state: WerewolfState, event: WerewolfEvent): WerewolfState | s
   return next.session.present;
 }
 
-/** The events of the game plus a few richer ones that the narrator can also make (three nominees, mixed ballots). */
+/** The events of the game plus a few richer ones that the narrator can also make (two or three nominees). */
 function eventsToCheck(state: WerewolfState): WerewolfEvent[] {
   const events = eventChoices(state);
   if (state.status === "day") {
@@ -184,20 +175,6 @@ function eventsToCheck(state: WerewolfState): WerewolfEvent[] {
       events.push({ night: state.night, nominees: names.slice(0, 2), type: "nominate" });
     if (names.length >= 3)
       events.push({ night: state.night, nominees: names.slice(0, 3), type: "nominate" });
-  }
-  if (state.status === "vote") {
-    const ballots = Object.fromEntries(
-      votingPlayers(state)
-        .filter((voter) => voter.choices.length > 0)
-        .map((voter, index) => [voter.name, voter.choices[index % voter.choices.length]!]),
-    );
-    const event: WerewolfEvent = {
-      ballots,
-      night: state.night,
-      nomination: state.nomination,
-      type: "vote",
-    };
-    if (transitionWerewolf(state, event) !== state) events.push(event);
   }
   return events;
 }
@@ -414,9 +391,14 @@ it("lets a narrator play whole games with the guide alone: never stuck, who wake
         for (const ability of view.card?.abilities ?? [])
           if (ability.available) add(chooseAbility(guide, ability.id));
         for (const name of view.targets) add(choosePlayer(guide, name));
-        for (const row of view.ballotRows)
-          for (const choice of row.choices)
-            if (row.choice === null) add(setBallot(guide, row.name, choice));
+        if (view.state.status === "vote") {
+          // The counted votes: one more or one less for a nominee, and the second vote of the mayor.
+          for (const name of view.state.candidates) {
+            add(setVoteCount(guide, name, (view.voteCounts[name] ?? 0) + 1));
+            add(setVoteCount(guide, name, (view.voteCounts[name] ?? 0) - 1));
+          }
+          for (const name of view.voteBonus?.choices ?? []) add(setVoteBonus(guide, name));
+        }
         if (view.canChooseNobody) add(chooseNobody(guide));
       }
       if (options.length === 0) {

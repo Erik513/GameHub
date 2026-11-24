@@ -5,6 +5,7 @@ import {
   checkScript,
   chooseNoVote,
   chooseAbility,
+  setVoteCount,
   closeAbility,
   chooseNobody,
   choosePlayer,
@@ -12,7 +13,6 @@ import {
   createGuide,
   describeGuide,
   describeWinners,
-  setBallot,
   reopenDecision,
   undoSelection,
   unchoosePlayer,
@@ -379,7 +379,7 @@ describe("narrator guide", () => {
       expect(back.ok && back.guide.session.present.status).toBe("day");
     });
 
-    it("names up to three people, confirms with the check mark and takes a vote with one ballot per voter", () => {
+    it("names up to three people, confirms with the check mark and takes a vote with the votes counted per person", () => {
       let guide = toDay();
       guide = chooseAbility(guide, "vote");
       const first = describeGuide(guide);
@@ -403,47 +403,21 @@ describe("narrator guide", () => {
       expect(vote.state.status).toBe("vote");
       expect(vote.card?.actors).toEqual([nominees[0], nominees[2]]);
       expect(vote.nextKind).toBe("endDay");
-      // Every voter has a row; the village idiot is marked as set by the narrator.
-      expect(vote.ballotRows.length).toBe(vote.state.alive.length);
-      const idiot = vote.state.alive.find((p) => p.role === "idiot")?.name;
-      if (idiot) expect(vote.ballotRows.find((r) => r.name === idiot)?.setByNarrator).toBe(true);
-      // The check mark waits until every voter has chosen.
+      // The check mark waits until all votes are added up.
       expect(vote.canContinue).toBe(false);
-      for (const row of vote.ballotRows.slice(0, -1))
-        guide = setBallot(guide, row.name, row.choices[0]!);
+      const [one, two] = vote.card!.actors;
+      guide = setVoteCount(guide, one!, 1);
       expect(describeGuide(guide).canContinue).toBe(false);
       expect(describeGuide(guide).canUndo).toBe(true);
-      const last = describeGuide(guide).ballotRows.at(-1)!;
-      guide = setBallot(guide, last.name, last.choices[0]!);
-      // Tapping the same choice again takes it back; tapping it again sets it.
-      guide = setBallot(guide, last.name, last.choices[0]!);
-      expect(describeGuide(guide).canContinue).toBe(false);
-      guide = setBallot(guide, last.name, last.choices[0]!);
-      expect(describeGuide(guide).canContinue).toBe(true);
-      // Nobody can vote for himself.
-      expect(setBallot(guide, last.name, last.name)).toBe(guide);
+      // The numbers can be taken back and entered again.
+      guide = setVoteCount(guide, one!, 0);
+      expect(describeGuide(guide).canUndo).toBe(false);
+      guide = setVoteCount(guide, one!, describeGuide(guide).voteTotal - 1);
+      expect(describeGuide(guide).voteCounts[one!]).toBeGreaterThan(0);
+      // Nobody can get more votes than all votes minus his own.
+      expect(setVoteCount(guide, two!, describeGuide(guide).voteTotal + 1)).toBe(guide);
       guide = continueGuide(guide);
       expect(["day", "exile", "vote"]).toContain(guide.session.present.status);
-    });
-
-    it("takes a named person back and offers a new vote among the tied people after a tie", () => {
-      let guide = chooseAbility(toDay([]), "vote");
-      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
-      guide = choosePlayer(guide, describeGuide(guide).targets[0]!);
-      const [one, two] = describeGuide(guide).selection.picks;
-      guide = continueGuide(guide);
-      // Half of the voters choose one, the other half the other person: a tie (an even number of voters).
-      let view = describeGuide(guide);
-      const voters = view.ballotRows;
-      voters.forEach((row, index) => {
-        const wanted = index % 2 === 0 ? one! : two!;
-        const choice = row.choices.includes(wanted) ? wanted : row.choices[0]!;
-        guide = setBallot(guide, row.name, choice);
-      });
-      view = describeGuide(guide);
-      expect(view.canContinue).toBe(true);
-      guide = continueGuide(guide);
-      expect(["vote", "day"]).toContain(guide.session.present.status);
     });
   });
 

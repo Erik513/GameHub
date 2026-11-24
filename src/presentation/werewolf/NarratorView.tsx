@@ -243,7 +243,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
                 ...(view.selection.heal ? (["heal"] as const) : []),
                 // A potion or spell whose people were chosen stays marked after its list was closed.
                 ...(view.selection.ability === null && view.selection.picks.length > 0
-                  ? view.state.status === "magician"
+                  ? view.potionRole === "magician"
                     ? (["kill"] as const)
                     : []
                   : []),
@@ -266,7 +266,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               asked={
                 view.question === null || view.phase !== "act"
                   ? null
-                  : view.state.status === "magician"
+                  : view.potionRole === "magician"
                     ? // First question: the healing spell or a death spell; second question: a death spell.
                       view.question === "heal"
                       ? ["heal", "kill"]
@@ -276,7 +276,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
               settled={view.phase === "outro"}
               // The spells of the magician chosen in this step (the healing spell and every person to kill).
               spellsUsed={
-                view.state.status === "magician"
+                view.potionRole === "magician"
                   ? // The healing spell counts when it is switched on; the death spells only when their list is closed (confirmed).
                     Number(view.selection.heal) +
                     (view.selection.ability === null ? view.selection.picks.length : 0)

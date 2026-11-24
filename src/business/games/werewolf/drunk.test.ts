@@ -10,6 +10,8 @@ import {
   type WerewolfSpecialRole,
   type WerewolfState,
 } from "./stateMachine";
+import { createGuide, describeGuide } from "./narratorGuide";
+import { createWerewolfSession } from "./session";
 import { lynchEvents } from "./voteTesting";
 
 const names = ["Ada", "Bea", "Cam", "Dan", "Eva", "Flo", "Gia", "Hugo", "Ira"];
@@ -43,6 +45,16 @@ const dawn = (state: WerewolfState) => play(state, { type: "announceMorning", ni
 const dusk = (state: WerewolfState) => play(state, { type: "endDay", night: state.night });
 const firstDay = (state: WerewolfState) =>
   dawn(vision(play(openNight(state), { type: "wolvesReady", night: 1 })));
+
+it("tells the narrator that a dead person was still the drunk, and shows nothing special after the reveal", () => {
+  const night = dusk(firstDay(deal(0)));
+  const morning = vision(play(night, { type: "attack", night: night.night, target: "Ada" }), "Dan");
+  const deaths = (state: WerewolfState) =>
+    describeGuide(createGuide(createWerewolfSession(state))).deaths;
+  expect(deaths(morning).find((death) => death.name === "Ada")).toMatchObject({ masked: true });
+  const revealed = { ...morning, drunk: { ...morning.drunk!, revealed: true } } as WerewolfState;
+  expect(deaths(revealed).find((death) => death.name === "Ada")).toMatchObject({ masked: false });
+});
 
 it("lets the wolves attack the drunk who is a wolf as long as he is the drunk, and he dies like anybody else", () => {
   // Ada is the drunk and really a wolf: the other wolf does not know him, so the wolves may point at him by mistake.

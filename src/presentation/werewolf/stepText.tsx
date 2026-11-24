@@ -185,8 +185,7 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
     ...(card.role === "hunter" ? [] : [wake]),
     ...boxes.map((box) => {
       // The wolves who only look at each other (no attack in the first night) have no ability to show.
-      const showsVictim =
-        box.id === "show" && (view.state.status === "witch" || view.state.status === "magician");
+      const showsVictim = box.id === "show" && view.potionRole !== null;
       const symbol =
         box.id === "asleep" || step.statement === "noAttack"
           ? undefined
@@ -199,7 +198,7 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
               : symbolOf(box.id);
       // The first question of the magician is about both spells: the healing and the death spell.
       const both =
-        box.id === "heal" && view.state.status === "magician"
+        box.id === "heal" && view.potionRole === "magician"
           ? card.abilities.map((ability) => ability.symbol)
           : undefined;
       return {
@@ -436,11 +435,11 @@ export function stepExtras(view: GuideView, step: RoleStepSpec, t: TFunction) {
       </span>
     ),
     // The option of the hunter: whether he has to shoot or may leave it out (the setting of the game).
-    (state.status === "hunter" || state.status === "drunkHunter") && (
+    view.shooter !== null && (
       <span className="ww-guide__victim" key="hunter">
         {t(
           step.skippable ? "werewolfNarrator.guide.hunterMay" : "werewolfNarrator.guide.hunterMust",
-          { name: state.hunter.name },
+          { name: view.shooter },
         )}
       </span>
     ),
