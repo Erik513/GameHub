@@ -376,7 +376,7 @@ function RoleScript({
             {box.id === "asleep" || box.id === "wake" ? (
               <span className="ww-guide__heading">
                 <strong className="ww-guide__text">
-                  <WerewolfSymbol id={role as SymbolId} size={32} />
+                  <WerewolfSymbol id={role as SymbolId} size={26} />
                   {box.items[0]}
                 </strong>
               </span>
@@ -385,11 +385,11 @@ function RoleScript({
                 {box.symbols ? (
                   <span className="ww-script__symbols">
                     {box.symbols.map((symbol) => (
-                      <WerewolfSymbol id={symbol as SymbolId} key={symbol} ring size={24} />
+                      <WerewolfSymbol id={symbol as SymbolId} key={symbol} ring size={20} />
                     ))}
                   </span>
                 ) : (
-                  box.symbol && <WerewolfSymbol id={box.symbol as SymbolId} ring size={28} />
+                  box.symbol && <WerewolfSymbol id={box.symbol as SymbolId} ring size={22} />
                 )}
                 {box.items.length > 1 ? (
                   <ul className="ww-script__items">

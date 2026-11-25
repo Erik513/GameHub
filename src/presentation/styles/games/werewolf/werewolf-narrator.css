@@ -722,7 +722,17 @@
   align-content: stretch;
   justify-items: stretch;
   text-align: left;
-  overflow: hidden;
+  /* When the script and the summary are higher than the box together (the witch), the box scrolls as a whole, with
+     the scrollbar at its edge, instead of cutting the summary off. While everything fits, nothing scrolls (this is a safety net for every lower box). */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* The middle of the lower box (a list of people, the vote) scrolls by itself, too: its scrollbar sits at the edge of
+   the box like the one of the whole box, not in the middle of the content. */
+.ww-guide--sheet > .ww-guide__body {
+  margin-right: calc(var(--scroll-edge-gap) - var(--space-3));
+  padding-right: calc(var(--space-3) - var(--scroll-edge-gap));
 }
 
 .ww-night__stage[data-layout="plain"] .ww-guide.ww-guide--sheet:not(.ww-winners):not(.ww-deal) {
@@ -1313,7 +1323,7 @@
    blue. Where a box holds several tasks they stand as a list. */
 .ww-script {
   display: grid;
-  gap: var(--space-2);
+  gap: 0.375rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1322,7 +1332,7 @@
 .ww-script__row {
   display: flex;
   align-items: stretch;
-  gap: var(--space-2);
+  gap: 0.375rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1332,9 +1342,14 @@
   flex: 1;
   min-width: 0;
   gap: var(--space-1);
-  padding: var(--space-2) var(--space-3);
+  padding: 0.375rem 0.625rem;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
+}
+
+/* The text of a box of the script: a little smaller than a heading, so the whole script fits into the lower box. */
+.ww-guide .ww-script__step .ww-guide__text {
+  font-size: 1.05rem;
 }
 
 .ww-script__items {
@@ -1342,7 +1357,7 @@
   gap: var(--space-1);
   margin: 0;
   padding-left: var(--space-4);
-  font-size: var(--text-lg);
+  font-size: 1.05rem;
   font-weight: 700;
 }
 
@@ -1363,7 +1378,7 @@
   flex: none;
   place-items: center;
   align-self: stretch;
-  width: 44px;
+  width: 40px;
   height: auto;
   min-height: 44px;
   border: 1px solid var(--color-line);

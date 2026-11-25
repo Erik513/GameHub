@@ -330,14 +330,13 @@
 }
 
 /* Compact sizes, so that the whole vote (question, three rows, the second vote, the table, the check) fits in the lower
-   box without a scrollbar. */
+   box without a scrollbar. Nothing is cut off here: should it still be too high, the lower box shows its scrollbar. */
 .ww-voteinput {
   display: flex;
   flex-direction: column;
   min-height: 0;
   flex: 1 1 auto;
   gap: var(--space-1);
-  overflow: hidden;
 }
 
 .ww-voteinput .ww-nominees {
