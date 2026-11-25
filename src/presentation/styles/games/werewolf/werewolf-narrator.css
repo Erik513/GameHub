@@ -120,6 +120,12 @@
   background: var(--slot-spellKilled);
 }
 
+/* A protection that saved the person from the attack of the wolves: dark green, like a saved row. */
+.ww-slot[data-effect="protectedSaved"],
+.ww-slot[data-effect="guestSaved"] {
+  background: var(--slot-saved);
+}
+
 .ww-slot[data-effect="drunk"] {
   background: var(--slot-drunk);
 }

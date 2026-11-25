@@ -44,6 +44,8 @@ const definitions = [
   { glyph: "paw", group: "state", id: "attacked" },
   { glyph: "shield", group: "state", id: "protected" },
   { glyph: "bedFlat", group: "state", id: "guest" },
+  { glyph: "shield", group: "state", id: "protectedSaved" },
+  { glyph: "bedFlat", group: "state", id: "guestSaved" },
   { glyph: "gavel", group: "state", id: "hammered" },
   { glyph: "number2", group: "state", id: "twoVotes" },
   { glyph: "skull", group: "state", id: "spellKilled" },

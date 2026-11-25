@@ -8,7 +8,11 @@ export const nightGuest = defineRole({
     nightGuest: () => spec("nightGuestStay", "choose", { pick: pick("stayWith") }),
   },
   cardEffects: {
-    guest: ({ state, person, night }) => night && state.hostPlayer === person.name,
+    // Blue while nobody attacks the host; dark green once the wolves attacked him and the night guest saved him.
+    guest: ({ state, person, night }) =>
+      night && state.hostPlayer === person.name && state.wolfTarget?.name !== person.name,
+    guestSaved: ({ state, person, night }) =>
+      night && state.hostPlayer === person.name && state.wolfTarget?.name === person.name,
   },
   cardAbilities: () => {
     return [ability("stayWith", "guest")];

@@ -230,7 +230,8 @@ describe("describeNarratorCard", () => {
       hostPlayer: witch.name,
       wolfTarget: witch,
     } as WerewolfState;
-    expect(describeNarratorCard(attacked)!.effects).toEqual(["attacked", "guest"]);
+    // The wolves attacked the host: the night guest saved him (dark green instead of blue).
+    expect(describeNarratorCard(attacked)!.effects).toEqual(["attacked", "guestSaved"]);
     const poisoned = at(state, { poisoned: witch });
     expect(describeNarratorCard(at(poisoned, { amulet: null }))!.effects).toContain("poisoned");
     const quiet = { ...state, amulet: null, silencedPlayer: witch.name } as WerewolfState;

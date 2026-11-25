@@ -137,6 +137,14 @@ export const werewolfSymbolsTexts = {
         name: "Vergiftet",
         meaning: "Flasche mit Minus: der Gifttrank der Hexe",
       },
+      protectedSaved: {
+        name: "Vom Leibwächter gerettet",
+        meaning: "Schild: angegriffen, der Schutz des Leibwächters hat gerettet",
+      },
+      guestSaved: {
+        name: "Von der Dorfmatratze gerettet",
+        meaning: "Person im Bett: angegriffen, die Dorfmatratze hat gerettet",
+      },
       protected: {
         name: "Geschützt",
         meaning: "Schild: in dieser Nacht beschützt",

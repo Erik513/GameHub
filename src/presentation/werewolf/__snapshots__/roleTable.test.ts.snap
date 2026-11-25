@@ -372,6 +372,16 @@ exports[`keeps the catalog of the symbols, the legend of the abilities and the d
       "bedFlat",
     ],
     [
+      "protectedSaved",
+      "state",
+      "shield",
+    ],
+    [
+      "guestSaved",
+      "state",
+      "bedFlat",
+    ],
+    [
       "hammered",
       "state",
       "gavel",

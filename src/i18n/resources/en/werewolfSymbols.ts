@@ -137,6 +137,14 @@ export const werewolfSymbolsTexts = {
         name: "Poisoned",
         meaning: "Bottle with a minus: the poison potion of the witch",
       },
+      protectedSaved: {
+        name: "Saved by the bodyguard",
+        meaning: "Shield: attacked, the protection of the bodyguard saved this player",
+      },
+      guestSaved: {
+        name: "Saved by the night guest",
+        meaning: "Person in a bed: attacked, the night guest saved this player",
+      },
       protected: {
         name: "Protected",
         meaning: "Shield: protected this night",

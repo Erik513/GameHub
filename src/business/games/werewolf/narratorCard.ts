@@ -69,7 +69,9 @@ export type CardEffect =
   | "spellKilled"
   | "twoVotes"
   | "investigated"
-  | "spellHealed";
+  | "spellHealed"
+  | "protectedSaved"
+  | "guestSaved";
 
 export interface CardAbility {
   readonly id: CardAbilityId;

@@ -8,7 +8,11 @@ export const bodyguard = defineRole({
     bodyguard: () => spec("bodyguardProtect", "choose", { pick: pick("protect") }),
   },
   cardEffects: {
-    protected: ({ state, person, night }) => night && state.protectedPlayer === person.name,
+    // Blue while nobody attacks him; dark green once the wolves attacked him and the protection saved him.
+    protected: ({ state, person, night }) =>
+      night && state.protectedPlayer === person.name && state.wolfTarget?.name !== person.name,
+    protectedSaved: ({ state, person, night }) =>
+      night && state.protectedPlayer === person.name && state.wolfTarget?.name === person.name,
   },
   cardAbilities: () => {
     return [ability("protect", "protected")];
