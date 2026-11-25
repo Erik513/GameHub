@@ -147,8 +147,39 @@ it("puts several groups of winners one below the other in the one box of the win
   expect(box.querySelectorAll("h4")).toHaveLength(1);
 });
 
+it("divides the legend into groups with a heading each, and leaves out an empty group", async () => {
+  await show(game());
+  const titles = [...document.querySelectorAll(".ww-overview__legend-title")].map(
+    (title) => title.textContent,
+  );
+  // At the start nobody died: no group for the causes (the drunk already carries his state).
+  expect(titles).toEqual(["Row background", "Row frame", "States", "Role variants"]);
+});
+
+it("explains only the backgrounds and frames this game can have", async () => {
+  // A game without the tough guy, the amulet and the drunk and without anything that can save.
+  const plain = createWerewolf(names, "Max", () => 0.3, [], { wolfCount: 2 })!;
+  await show(plain);
+  const legend = () => document.querySelector(".ww-overview__legend")!.textContent;
+  expect(legend()).not.toContain("Wounded");
+  expect(legend()).not.toContain("Saved tonight");
+  expect(legend()).not.toContain("Amulet");
+  expect(document.querySelectorAll(".ww-overview__swatch[data-frame]")).toHaveLength(0);
+  expect(legend()).toContain("Alive");
+  expect(legend()).toContain("Dead");
+  // With the tough guy and the drunk: wounded and the frame of the drunk are explained.
+  document.body.innerHTML = "";
+  await show(game());
+  expect(legend()).toContain("Wounded");
+  expect(document.querySelector('.ww-overview__swatch[data-frame="drunk"]')).not.toBeNull();
+});
+
 it("explains the colors and frames in both languages", async () => {
-  const state = game();
+  // The amulet can save: the legend explains the saved row.
+  const state = createWerewolf(names, "Max", () => 0.3, ["toughGuy"], {
+    amulet: true,
+    wolfCount: 2,
+  })!;
   await show(state, "en");
   expect(document.querySelector(".ww-overview__legend")?.textContent).toContain("Saved tonight");
   document.body.innerHTML = "";

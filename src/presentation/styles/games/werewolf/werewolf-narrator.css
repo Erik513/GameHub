@@ -397,15 +397,47 @@
 /* The legend: a small square in the color or frame, then the words. */
 .ww-overview__legend {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-3);
   flex: none;
+  flex-direction: column;
   margin: var(--space-3) 0 0;
   /* Room for the outside frame of the drunk in the legend, so the edge of the window does not cut it off. */
   padding: 4px;
   color: var(--color-ink-muted);
   font-size: var(--text-xs);
+}
+
+/* One group of the legend: its heading on the left, the entries next to it; a thin line between the groups. */
+.ww-overview__legend-group {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.ww-overview__legend-group:first-child {
+  border-top: 0;
+}
+
+.ww-overview__legend-title {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.ww-overview__legend ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  padding: 0;
   list-style: none;
+}
+
+/* On a phone the heading stands above its entries, so nothing is cut off. */
+@media (max-width: 40rem) {
+  .ww-overview__legend-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .ww-overview__legend li {

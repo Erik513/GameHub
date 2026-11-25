@@ -1,8 +1,11 @@
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   causesOf,
   describePlayers,
+  legendOf,
   variantsOf,
+  type PlayerFrame,
   type PlayerTone,
   type PlayerView,
 } from "../../business/games/werewolf/selectors";
@@ -14,8 +17,8 @@ import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
-const tones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
-const frames = ["amulet", "drunk"] as const;
+const allTones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
+const allFrames: readonly PlayerFrame[] = ["amulet", "drunk"];
 
 /** The slot that already shows the ability that hit a person, so the sign of the cause is not repeated. */
 const causeEffect: Partial<Record<DeathCause, CardEffect>> = {
@@ -119,55 +122,92 @@ export function PlayerList({
   );
 }
 
-/** The legend: what the colors and the frames of the rows say. */
+/** The groups of the legend, each with a heading: what the background, the frame, a slot, a sign and a dashed sign say. */
+type LegendGroup = "tones" | "frames" | "effects" | "causes" | "variants";
+
+/**
+ * The legend, divided into groups with a small heading each: the background of a row, its frame, the states (slots),
+ * the causes of death and the variants of the roles. Only the states, causes and variants of this game are listed; a
+ * group without entries is left out.
+ */
 export function PlayerLegend({
   variants = [],
   causes = [],
   effects = [],
+  tones = allTones,
+  frames = allFrames,
 }: {
   readonly variants?: readonly RoleVariantId[];
   readonly causes?: readonly DeathCause[];
   readonly effects?: readonly CardEffect[];
+  /** The backgrounds and frames this game has (see `legendOf`); all of them when not given. */
+  readonly tones?: readonly PlayerTone[];
+  readonly frames?: readonly PlayerFrame[];
 }) {
   const { t } = useTranslation();
+  const group = (id: LegendGroup, items: readonly ReactNode[]) =>
+    items.length === 0 ? null : (
+      <div className="ww-overview__legend-group" key={id}>
+        <span className="ww-overview__legend-title">
+          {t(`werewolfNarrator.bar.legend.groups.${id}`)}
+        </span>
+        <ul>{items}</ul>
+      </div>
+    );
   return (
-    <ul aria-label={t("werewolfNarrator.bar.legend.title")} className="ww-overview__legend">
-      {tones.map((tone) => (
-        <li key={tone}>
-          <span className="ww-overview__swatch" data-tone={tone} />
-          {t(`werewolfNarrator.bar.legend.${tone}`)}
-        </li>
-      ))}
-      {frames.map((frame) => (
-        <li key={frame}>
-          <span className="ww-overview__swatch" data-frame={frame} />
-          {t(`werewolfNarrator.bar.legend.${frame}`)}
-        </li>
-      ))}
-      {/* The states people carry now, each with its slot. */}
-      {effects.map((effect) => (
-        <li key={effect}>
-          <span className="ww-slot ww-overview__slot" data-effect={effect}>
-            <WerewolfSymbol id={effect} size={12} />
-          </span>
-          {t(`werewolfSymbols.items.${effect}.name`)}
-        </li>
-      ))}
-      {/* How people became victims in this game, each ability with its sign. */}
-      {causes.map((cause) => (
-        <li key={cause}>
-          <WerewolfSymbol id={causeSymbol[cause]} size={14} />
-          {t(`werewolfNarrator.cause.${cause}`)}
-        </li>
-      ))}
-      {/* The variants of the roles that are in this game, each with its sign. */}
-      {variants.map((variant) => (
-        <li key={variant}>
-          <VariantMark decorative variant={variant} />
-          {t(`werewolfNarrator.variant.${variant}`)}
-        </li>
-      ))}
-    </ul>
+    <div
+      aria-label={t("werewolfNarrator.bar.legend.title")}
+      className="ww-overview__legend"
+      role="group"
+    >
+      {group(
+        "tones",
+        tones.map((tone) => (
+          <li key={tone}>
+            <span className="ww-overview__swatch" data-tone={tone} />
+            {t(`werewolfNarrator.bar.legend.${tone}`)}
+          </li>
+        )),
+      )}
+      {group(
+        "frames",
+        frames.map((frame) => (
+          <li key={frame}>
+            <span className="ww-overview__swatch" data-frame={frame} />
+            {t(`werewolfNarrator.bar.legend.${frame}`)}
+          </li>
+        )),
+      )}
+      {group(
+        "effects",
+        effects.map((effect) => (
+          <li key={effect}>
+            <span className="ww-slot ww-overview__slot" data-effect={effect}>
+              <WerewolfSymbol id={effect} size={12} />
+            </span>
+            {t(`werewolfSymbols.items.${effect}.name`)}
+          </li>
+        )),
+      )}
+      {group(
+        "causes",
+        causes.map((cause) => (
+          <li key={cause}>
+            <WerewolfSymbol id={causeSymbol[cause]} size={14} />
+            {t(`werewolfNarrator.cause.${cause}`)}
+          </li>
+        )),
+      )}
+      {group(
+        "variants",
+        variants.map((variant) => (
+          <li key={variant}>
+            <VariantMark decorative variant={variant} />
+            {t(`werewolfNarrator.variant.${variant}`)}
+          </li>
+        )),
+      )}
+    </div>
   );
 }
 
@@ -191,6 +231,7 @@ export function PlayerRows({
         causes={causesOf(players)}
         effects={[...new Set([...effects.values()].flat())]}
         variants={variantsOf(players)}
+        {...legendOf(state)}
       />
     </div>
   );

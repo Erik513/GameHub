@@ -106,6 +106,39 @@ function markedToDie(state: WerewolfState): ReadonlySet<string> {
 /** One person as the overview shows him (see `describePlayers`). */
 export type PlayerView = ReturnType<typeof describePlayers>[number];
 
+/** The frames of a row: the amulet (gold) and the drunk who does not know his role yet. */
+export type PlayerFrame = "amulet" | "drunk";
+
+/**
+ * What the legend of the overview explains for this game: the backgrounds and frames a row can have here. Alive,
+ * werewolf, attacked and dead are in every game; saved only with something that can save (bodyguard, night guest,
+ * witch, magician, amulet), wounded only with the tough guy, the frames only with the amulet or the drunk.
+ */
+export function legendOf(state: WerewolfState): {
+  readonly tones: readonly PlayerTone[];
+  readonly frames: readonly PlayerFrame[];
+} {
+  const roles = new Set(state.players.map((player) => player.role));
+  const amulet = state.settings.amulet || state.amulet !== null;
+  const drunk = state.settings.drunk || state.drunk !== null;
+  const canSave =
+    amulet ||
+    ["bodyguard", "nightGuest", "witch", "magician"].some((role) => roles.has(role as never));
+  const tones: PlayerTone[] = [
+    "alive",
+    "wolf",
+    "attacked",
+    ...(canSave ? (["saved"] as const) : []),
+    ...(roles.has("toughGuy") ? (["wounded"] as const) : []),
+    "dead",
+  ];
+  const frames: PlayerFrame[] = [
+    ...(amulet ? (["amulet"] as const) : []),
+    ...(drunk ? (["drunk"] as const) : []),
+  ];
+  return { frames, tones };
+}
+
 /** The variants of the roles the given people have, each once (for the legend of the overview). */
 export function variantsOf(players: readonly PlayerView[]): RoleVariantId[] {
   return [...new Set(players.flatMap((player) => (player.variant ? [player.variant] : [])))];

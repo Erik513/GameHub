@@ -101,7 +101,7 @@ describe("NarratorBar", () => {
     expect(rows).toHaveLength(12);
     expect(within(dialog).getByText("Anna")).toBeInTheDocument();
     // The legend explains the colors and the frames.
-    expect(within(dialog).getByRole("list", { name: "Colors and frames" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("group", { name: "Legend" })).toBeInTheDocument();
     const order = rows.map((row) => row.querySelector("strong")?.textContent ?? "");
     expect(order).toEqual([...order].sort((one, other) => one.localeCompare(other)));
     expect(within(dialog).getByText("For the narrator only")).toBeInTheDocument();

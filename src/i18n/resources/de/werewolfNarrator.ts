@@ -27,7 +27,14 @@ export const werewolfNarratorTexts = {
       lastShot: "Letzter Schuss steht noch aus",
       overviewHint: "Nur für den Erzähler",
       legend: {
-        title: "Farben und Rahmen",
+        title: "Legende",
+        groups: {
+          tones: "Hintergrund der Zeile",
+          frames: "Rahmen der Zeile",
+          effects: "Zustände",
+          causes: "Todesursache",
+          variants: "Varianten der Rollen",
+        },
         alive: "Lebt",
         wolf: "Werwolf",
         attacked: "Angegriffen, soll sterben",
