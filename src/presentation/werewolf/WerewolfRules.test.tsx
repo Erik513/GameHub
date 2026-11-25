@@ -34,6 +34,12 @@ const texts = {
   },
 } as const;
 
+/** The rule that the script of the night is the same every night (We-01-140). */
+const sameScript = {
+  de: "Der Ablauf ist jede Nacht gleich",
+  en: "The script is the same every night",
+} as const;
+
 async function renderApp(language: "en" | "de") {
   window.location.hash = "#/games/werewolf";
   const i18n = await createGameHubI18n(language);
@@ -136,5 +142,16 @@ it.each(["de", "en"] as const)(
     expect(panel.querySelector('[data-symbol="wolf"]')).not.toBeNull();
     expect(panel.querySelectorAll(".ww-legend__item svg[data-ring]")).toHaveLength(14);
     expect(panel.querySelector(".ww-legend__credits")).toHaveTextContent("CC BY 3.0");
+  },
+);
+
+it.each(["de", "en"] as const)(
+  "says that the script of the night is the same every night and wakes only the living, in %s",
+  async (language) => {
+    const text = texts[language];
+    const user = await renderApp(language);
+    await user.click(await screen.findByRole("button", { name: text.rules }));
+    const dialog = screen.getByRole("dialog", { name: text.title });
+    expect(dialog.textContent).toContain(sameScript[language]);
   },
 );
