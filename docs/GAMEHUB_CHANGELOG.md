@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Symbole)
+
+### We-01-210: Tränke der Hexe mit mehr Abstand (Claude)
+
+- Heil- und Gifttrank: Die Flasche steht weiter links, das Plus oder Minus hat mehr Abstand. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Reihenfolge der Zustände)
 
 ### We-01-209: Feste Reihenfolge der Zustands-Slots (Claude)

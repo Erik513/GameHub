@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 418,
-      "totalTasks": 472,
+      "completedTasks": 419,
+      "totalTasks": 473,
       "percent": 88.6
     }
   },
@@ -2516,6 +2516,12 @@
           "title": "Feste Reihenfolge der Zustands-Slots von rechts",
           "status": "done",
           "validation": "roles/stateIds.ts neu geordnet: zuerst die bleibenden Zustände (Trunkenbold ganz rechts, Amulett, Verliebt, Zwei Stimmen, Gesehen, Ermittelt), links daneben die Zustände einer Nacht in der Reihenfolge der Nacht (Geschützt, Gast, Angegriffen, Geheilt, Vergiftet, Heilzauber, Todeszauber, Hammer, Stumm). Die Übersicht füllt jetzt wie die Rollenkarte von rechts (Slots rechts, andere Zeichen links daneben). Drei Testerwartungen und der Absicherungs-Snapshot roleTable nur in der Reihenfolge angepasst; 916 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-210",
+          "title": "Tränke der Hexe mit mehr Abstand zum Plus und Minus",
+          "status": "done",
+          "validation": "In glyphs.ts stehen Flasche und Strich bei flaskPlus und flaskMinus 2 Einheiten (von 24) weiter links, das Zeichen + oder − bleibt an seinem Platz; die Symboltabelle auf dem Desktop ist angepasst; 21 Symbol-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4182,7 +4188,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T20:05:43.462Z"
+  "updatedAt": "2026-11-25T20:10:52.504Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
