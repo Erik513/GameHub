@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
@@ -117,7 +117,7 @@ it("moves a seat with the arrow keys", async () => {
   expect(seatRows()[0]).toHaveTextContent("Cleo");
 });
 
-it("shows the full name of a held tile in a box and the hint again when let go", async () => {
+it("shows the full name of a tapped tile in a box and the hint again after a second tap", async () => {
   const user = await renderGame("en");
   await addPlayers(user, "en");
   await chooseNarrator(user, "Anna", chooseName.en);
@@ -125,14 +125,14 @@ it("shows the full name of a held tile in a box and the hint again when let go",
   await user.click(screen.getByRole("button", { name: "Show seat circle" }));
   const dialog = await screen.findByRole("dialog");
   const box = () => dialog.querySelector(".ww-circle__name");
-  expect(box()).toHaveTextContent("Hold a tile to see the full name.");
+  expect(box()).toHaveTextContent("Tap a tile to see the full name.");
   const tile = dialog.querySelector<HTMLElement>(".ww-circle__ring .ww-tile");
   expect(tile).not.toBeNull();
   if (!tile) return;
-  fireEvent.pointerDown(tile);
-  await waitFor(() => expect(box()).toHaveTextContent("Ben"));
-  fireEvent.pointerUp(tile);
-  expect(box()).toHaveTextContent("Hold a tile");
+  await user.click(tile);
+  expect(box()).toHaveTextContent("Ben");
+  await user.click(tile);
+  expect(box()).toHaveTextContent("Tap a tile");
 });
 
 it("seats the first player right next to the narrator, on the left", async () => {

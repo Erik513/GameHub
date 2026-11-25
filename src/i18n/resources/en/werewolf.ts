@@ -22,7 +22,7 @@ export const werewolfTexts = {
       "Drag the names into the order the players really sit: seat 1 is right next to the narrator on the left, then clockwise.",
     seatsEmpty: "Add players first and choose a narrator.",
     narratorSeat: "Narrator",
-    holdHint: "Hold a tile to see the full name.",
+    tapHint: "Tap a tile to see the full name. Tap it again to clear the choice.",
     exampleCaption: "Example with six players; N is the narrator.",
     seatsInfoLabel: "Info about the seats",
     seatsInfoTitle: "Seat order",

@@ -22,7 +22,7 @@ export function SeatExample() {
         {seats.map((number, index) => (
           <span
             className="ww-tile"
-            data-held={number === 1 || undefined}
+            data-selected={number === 1 || undefined}
             key={number}
             style={seatPosition(index, exampleSeats)}
           >

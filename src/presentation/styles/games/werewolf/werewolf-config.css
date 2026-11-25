@@ -90,13 +90,16 @@
   gap: var(--space-2);
 }
 
-/* The name of the held tile in a box that is easy to see. */
+/* The name of the tapped tile in a box that is easy to see. */
 .ww-circle__name {
   box-sizing: border-box;
   display: grid;
   place-items: center;
   width: 100%;
-  min-height: 3rem;
+  /* Always the same size, with the hint (two small lines) or a name (up to two large lines): nothing jumps. */
+  height: 4rem;
+  overflow: hidden;
+  line-height: 1.2;
   margin: 0;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-line);
@@ -108,7 +111,7 @@
   overflow-wrap: anywhere;
 }
 
-.ww-circle__name[data-held] {
+.ww-circle__name[data-selected] {
   border-color: var(--color-accent);
   color: var(--color-ink);
   background: color-mix(in srgb, var(--color-accent) 18%, var(--color-surface-muted));
@@ -118,8 +121,8 @@
 
 .ww-circle__ring {
   position: relative;
-  /* A finger that stays down slides over the tiles instead of scrolling the page. */
-  touch-action: none;
+  /* A tap answers at once (no wait for a second tap that would zoom). */
+  touch-action: manipulation;
   width: min(100%, 20rem);
   aspect-ratio: 1;
   container-type: inline-size;
@@ -146,7 +149,7 @@
   font-size: min(1.25rem, calc(100cqw * 0.9 / var(--seat-count)));
 }
 
-.ww-tile[data-held] {
+.ww-tile[data-selected] {
   border-color: var(--color-accent);
   background: color-mix(in srgb, var(--color-accent) 30%, var(--color-surface-muted));
 }
