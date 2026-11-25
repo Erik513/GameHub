@@ -4,7 +4,7 @@
 
 ### We-01-212: Todesgrund behält seine Farbe, Verwundet als Zustand (Claude)
 
-- Der Todesgrund steht als farbiger Slot neben dem Grabstein und behält seine Farbe auch nach der Nacht (Angriff, Gift, Todeszauber, Hammer, Liebeskummer, Verwundung); Abstimmung und Jägerschuss bleiben Zeichen. Mehrere Todesgründe stehen in der festen Reihenfolge der Zustände.
+- Der Todesgrund steht als farbiger Slot neben dem Grabstein und behält seine Farbe auch nach der Nacht (Angriff, Gift, Todeszauber, Hammer, Liebeskummer, Verwundung); Abstimmung und Jägerschuss bleiben Zeichen. Mehrere Todesgründe stehen in der festen Reihenfolge der Zustände. In der Legende steht jeder Slot nur einmal: als Todesursache, wenn er neben einem Grabstein steht, sonst als Zustand.
 - Verwundet ist jetzt ein Zustand mit festem Platz und dunkelroter Farbe, auch auf der Rollenkarte. Nicht im Browser angesehen.
 
 ## 2026-11-25 (Übersicht, Ausgeschiedene)

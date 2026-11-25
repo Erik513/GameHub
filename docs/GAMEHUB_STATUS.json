@@ -2300,7 +2300,7 @@
           "id": "We-01-212",
           "title": "Todesgrund behält seine Farbe, Verwundet als Zustand",
           "status": "done",
-          "validation": "Verwundet (Pflaster des Harten Burschen) ist ein Zustand in roles/stateIds.ts (zwischen den bleibenden und den nächtlichen Zuständen, Regel in roles/toughGuy.ts, Farbe dunkelrot --slot-wounded). In der Übersicht steht der Todesgrund als farbiger Slot seines Zustands neben dem Grabstein, auch nach dem Ende der Nacht (Angriff, Gift, Todeszauber, Hammer auch zurückgefallen, Liebeskummer als Verliebt, Harter Bursche als Verwundet); Abstimmung und Jägerschuss bleiben Zeichen. Mehrere Todesgründe stehen in der festen Reihenfolge der Zustände. Zeichen ohne Slot (Grabstein, Abstimmung) stehen senkrecht mittig zu den Slots. Die Legende zeigt diese Gründe ebenfalls als Slot. 917 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
+          "validation": "Verwundet (Pflaster des Harten Burschen) ist ein Zustand in roles/stateIds.ts (zwischen den bleibenden und den nächtlichen Zuständen, Regel in roles/toughGuy.ts, Farbe dunkelrot --slot-wounded). In der Übersicht steht der Todesgrund als farbiger Slot seines Zustands neben dem Grabstein, auch nach dem Ende der Nacht (Angriff, Gift, Todeszauber, Hammer auch zurückgefallen, Liebeskummer als Verliebt, Harter Bursche als Verwundet); Abstimmung und Jägerschuss bleiben Zeichen. Mehrere Todesgründe stehen in der festen Reihenfolge der Zustände. Zeichen ohne Slot (Grabstein, Abstimmung) stehen senkrecht mittig zu den Slots. Die Legende zeigt diese Gründe ebenfalls als Slot, und jeder Slot steht dort nur einmal, wo die Zeilen ihn zeigen (als Todesursache neben dem Grabstein oder als Zustand); neuer Test dafür. 917 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -3967,5 +3967,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T20:24:28.299Z"
+  "updatedAt": "2026-11-25T20:28:53.355Z"
 }
