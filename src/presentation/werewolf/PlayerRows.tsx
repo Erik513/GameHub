@@ -281,7 +281,12 @@ export function PlayerRows({
       <PlayerLegend
         causeSlots
         causes={causesOf(players)}
-        effects={[...new Set([...effects.values()].flat())]}
+        // Each slot once, where the rows show it: a slot that names a cause of death is explained with the causes.
+        effects={stateIds.filter((state) =>
+          players.some((player) =>
+            otherSlotsOf(player, effects.get(player.name) ?? []).includes(state),
+          ),
+        )}
         variants={variantsOf(players)}
         {...legendOf(state)}
       />

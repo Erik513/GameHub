@@ -207,3 +207,19 @@ it("puts the gravestone of a person who is out at the very right, with the cause
   expect(marks[0]).toHaveAttribute("aria-label", "Dead");
   expect(marks[1]).toHaveAttribute("data-effect", "attacked");
 });
+
+it("explains a slot that names a cause of death with the causes only, not a second time with the states", async () => {
+  const base = game();
+  const victim = base.players.find((player) => player.role === "villager")!;
+  const state = {
+    ...base,
+    poisoned: null,
+    status: "morning",
+    victim,
+    wolfTarget: victim,
+  } as unknown as WerewolfState;
+  await show(state);
+  const legend = document.querySelector(".ww-overview__legend")!;
+  // The attack stands next to the gravestone, so the legend names it once, as the cause.
+  expect(legend.querySelectorAll('[data-effect="attacked"]')).toHaveLength(1);
+});
