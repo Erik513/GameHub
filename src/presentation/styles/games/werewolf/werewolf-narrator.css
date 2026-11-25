@@ -310,6 +310,12 @@
   scroll-snap-align: start;
 }
 
+/* The legend is anchored at the bottom of the window: the room the list leaves (less than a row) stays above it. */
+.dialog .ww-players > .ww-overview__legend {
+  margin-top: auto;
+  padding-top: calc(var(--space-3) + 4px);
+}
+
 /* At the end of the game the whole box scrolls (winners, then the players); the legend sticks to the bottom edge. */
 .ww-winners .ww-overview__legend {
   position: sticky;
