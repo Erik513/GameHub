@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 415,
-      "totalTasks": 469,
+      "completedTasks": 416,
+      "totalTasks": 470,
       "percent": 88.5
     }
   },
@@ -2265,6 +2265,12 @@
           "title": "Rollen-Umbau Phase 6d: Bilanzpunkte für jede Rolle",
           "status": "done",
           "validation": "Neuer Test roles/balance.test.ts verlangt für jede Sonderrolle einen Punktwert in balanceCalibration.json und einen eigenen Platz in der Konfiguration; die Punkte bleiben in der Kalibrierung von Codex."
+        },
+        {
+          "id": "We-01-207",
+          "title": "Handy-Engstellen der Erzähleransicht",
+          "status": "done",
+          "validation": "Nur CSS in werewolf-narrator.css: Zeichen und Slots der Übersicht stehen in einer eigenen Zeile unter Name und Rolle statt darüber; auf Handys (bis 40rem) stehen die Slots der Rollenkarte unter dem Namen der Rolle; unter 26rem hat die Personenauswahl drei statt vier Spalten. Die Wolfsanzahl blieb unverändert (höchstens drei Knöpfe). Gefunden durch Nachrechnen im Code für 360 px Breite; 1812 Tests grün; nicht im Browser angesehen, Abnahme am Handy nach dem Push."
         }
       ]
     },
@@ -3931,5 +3937,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T19:32:12.631Z"
+  "updatedAt": "2026-11-25T19:44:48.230Z"
 }

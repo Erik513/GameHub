@@ -1,5 +1,14 @@
 # GameHub Changelog
 
+## 2026-11-25 (Handy)
+
+### We-01-207: Engstellen der Erzähleransicht auf dem Handy (Claude)
+
+- Übersicht „Alle Spieler“: Zeichen und Slots haben eine eigene Zeile unter Name und Rolle und verdecken nichts mehr.
+- Rollenkarte: Auf dem Handy stehen die Slots unter dem Namen der Rolle, lange Namen behalten die Breite.
+- Personenauswahl: Auf schmalen Handys drei statt vier Spalten, Namen werden nicht mehr mitten im Wort getrennt.
+- Nur CSS, nicht im Browser angesehen.
+
 ## 2026-11-25 (Rollen-Umbau Phase 6, Branch game/werewolf-roles)
 
 ### We-01-203 bis We-01-206: Eine neue Rolle mit möglichst wenigen Stellen (Claude)
