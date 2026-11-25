@@ -422,3 +422,11 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 - **5b (nur Präsentation):** Farbe je Zustand in `presentation/werewolf/symbols/stateLook.ts`; die CSS-Regeln `.ww-slot[data-effect=...]` sind entfallen.
 - **5c:** Rollen schreiben `abilityList` (Fähigkeit, Zeichen, `consumable`) und `availability(state)` (je Fähigkeit `why` und `count`) statt `cardAbilities` und `abilities`; `defineRole` (roles/define.ts) leitet beides ab. Sonderfälle: `mayor.abilities` (die 2 beim Austeilen) und `apprenticeSeer` (Karte wie die Seherin, beim Austeilen nichts) überschreiben weiter von Hand. Typen `AbilitySpec` und `AbilityAvailability` in roles/types.ts.
 - Verhalten gleich: Absicherungs-Snapshots aus Phase 0 unverändert, alle Werwolf-Tests grün, tsc und ESLint grün. Regeln und Zustandsmaschine unberührt. Die gesperrten Dateien (narratorCard.ts, roles/, roleAbilities.ts) sind nach dem Commit wieder frei.
+
+## Befunde 1 bis 4 aus We-03-72 behoben (2026-11-25, Claude, We-01-202)
+
+- `roles/witch.ts`: `poisoned` gilt nur in `magician`, `mayor`, `spellcaster`, `amuletPass` und `morning` (die Schritte nach der Hexe in derselben Nacht).
+- Neues Feld `Match.wolfChoice: string | null`: die Person, die die Wölfe in dieser Nacht gewählt haben, gesetzt im Ereignis `attack` vor allen Umleitungen, zurückgesetzt in `startNight`. Nur für die Anzeige (`guest`/`guestSaved` in `roles/nightGuest.ts`), keine Regel liest es. **Bitte in der Ladefunktion aus We-03-73 ergänzen** (fehlend: `null`).
+- `selectors.ts`: Die Ursachen angesagter Personen (Morgen, Ausscheiden) kommen aus einem Probe-Übergang `announceMorning` bzw. `announceExile` (Liebeskummer vor der Bestätigung).
+- `narratorGuide.ts`: `notes.silenced` nur, wenn `silencedNight === night`.
+- `logicAudit.test.ts`: Die vier Tests laufen als normale Tests; Befund 5 (Bürgermeister-Stimmensumme, `stateVoting.ts`) bleibt `it.fails` für Codex.

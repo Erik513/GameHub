@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Befunde der Logikprüfung)
+
+### We-01-202: Befunde 1 bis 4 aus We-03-72 behoben (Claude)
+
+- Gift-Slot verschwindet zu Beginn der nächsten Nacht. Von der Dorfmatratze gerettet erscheint jetzt, wenn die Dorfmatratze den Angriff für ihren Gastgeber übernimmt (neues Feld `wolfChoice`). Liebeskummer steht am Morgen schon vor der Bestätigung als Ursache in der Übersicht. Die Führung nennt die Stummschaltung der Vornacht nicht mehr. Befund 5 (Stimmen des Bürgermeisters) übernimmt Codex. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Rollen-Umbau Phase 5, Branch game/werewolf-roles)
 
 ### We-01-193, We-01-200, We-01-201: Zustände an einer Stelle, eine Fähigkeitsliste pro Rolle (Claude)
