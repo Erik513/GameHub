@@ -215,7 +215,7 @@ export const werewolfNarratorTexts = {
       },
       nextKind: {
         begin: "Beginnen",
-        finish: "Zur Aufstellung",
+        finish: "Neues Spiel",
         endDay: "Tag beenden",
       },
       victim: "{{name}} (angegriffen): von den Werwölfen",
