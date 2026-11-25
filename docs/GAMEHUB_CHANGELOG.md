@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Harter Bursche)
+
+### We-01-221: Verwundeter Harter Bursche schon am Morgen dunkelrot (Claude)
+
+- Überlebt der Harte Bursche einen Angriff, zeigt die Übersicht ihn schon am Morgen als verwundet (dunkelrot, Pflaster), nicht mehr nur als angegriffen. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Anleitung und Symbole)
 
 ### We-01-220: Anleitung und Symbole auf dem Stand der Übersicht (Claude)

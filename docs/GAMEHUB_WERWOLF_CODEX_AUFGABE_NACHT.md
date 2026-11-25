@@ -454,3 +454,7 @@ Neuer Zustand `wounded` in `roles/stateIds.ts` (nach `investigated`, vor den Zus
 ## legendOf entfernt (2026-11-25, Claude, We-01-219)
 
 `legendOf` (selectors.ts) ist entfernt: Die Legende in der Präsentation (`PlayerLegend`) liest Hintergründe und Rahmen jetzt aus den gezeigten Zeilen. Sonst keine Änderung an der Logik.
+
+## Verwundung in der Vorschau der Verkündung (2026-11-25, Claude, We-01-221)
+
+`describePlayers` (selectors.ts) lässt die Probe-Transition der Verkündung jetzt bei jeder Verkündung laufen (Morgen, Verbannung), nicht nur wenn jemand stirbt, und nimmt daraus neben `tannerWinner` auch `toughGuyDiesOn` und `toughGuyWound`. So ist der überlebende Harte Bursche schon vor der Bestätigung verwundet (Ton wounded, Zustand wounded). Die Zustandsmaschine ist unverändert.

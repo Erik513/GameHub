@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 429,
-      "totalTasks": 483,
+      "completedTasks": 430,
+      "totalTasks": 484,
       "percent": 88.8
     }
   },
@@ -2582,6 +2582,12 @@
           "title": "Anleitung und Symbole auf dem Stand der Übersicht",
           "status": "done",
           "validation": "Prüfung: Übersetzungsschlüssel de/en vollständig (check:translations grün), 21 gleich lautende Texte alle beabsichtigt (Hammer, Pause, Teams …), kein fester Text in der UI außer dem Namen GameHub. Ergänzt: Symbol-Reiter zeigt die 18 Zustände in ihren farbigen Feldern; Einleitung der Symbole erklärt die feste Reihenfolge von rechts, Grabstein, farbigen Todesgrund (Abstimmung gelb, Jägerschuss braun) und den goldenen Pokal; „Hilfen in der App“ nennt „Alle Spieler und Rollen“; Gerber-Symbol mit dem Hinweis auf die Option nur Abstimmung. Alles de und en. Test im Symbol-Reiter ergänzt; 311 Werwolf-UI- und i18n-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-221",
+          "title": "Verwundeter Harter Bursche schon am Morgen dunkelrot",
+          "status": "done",
+          "validation": "Fehler: Am Morgen vor der Bestätigung erschien der Harte Bursche, der den Angriff überlebt, nur als angegriffen (rot), weil die Logik die Verwundung erst beim Bestätigen einträgt und die Vorschau nur lief, wenn jemand stirbt. describePlayers nimmt toughGuyDiesOn und toughGuyWound jetzt aus der Probe-Transition der Verkündung, die bei jeder Verkündung (Morgen, Verbannung) läuft. Ergebnis: dunkelrot (verwundet) mit dem Pflaster-Slot schon am Morgen. Neuer Test; 885 Werwolf-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4248,7 +4254,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T21:28:23.150Z"
+  "updatedAt": "2026-11-25T21:53:45.534Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
