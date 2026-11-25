@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 398,
-      "totalTasks": 454,
+      "completedTasks": 399,
+      "totalTasks": 455,
       "percent": 87.7
     }
   },
@@ -2191,6 +2191,12 @@
           "title": "Schutz, der rettet, dunkelgrün; Trunkenbold türkis",
           "status": "done",
           "validation": "Geschützt (Leibwächter) und Übernachtungsgast (Dorfmatratze) bleiben blau, solange die Person nicht angegriffen wird; greifen die Wölfe die geschützte Person an, zeigt der Slot die neuen Zustände Vom Leibwächter gerettet beziehungsweise Von der Dorfmatratze gerettet in Dunkelgrün (wie die Zeile gerettet); Geheilt bleibt gelbgrün; Slot und Rahmen des Trunkenbolds sind türkis statt grün; kein neues Feld im Spiel (wolfTarget); Absicherungs-Snapshots gezielt aktualisiert (nur die neuen Zustände); Tests in narratorCard.test.ts, PlayerRows.test.tsx, WerewolfRules.test.tsx; tsc und 850 Werwolf-Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-196",
+          "title": "Slots der Nacht auch am Morgen bis zur Ansage",
+          "status": "done",
+          "validation": "Fehler behoben: War die Hexe die letzte Rolle der Nacht, zeigte die Übersicht das Gift nur als einfaches Ursachenzeichen statt als Slot, weil der Morgen als Tag galt. Der Morgen zählt für die Slots jetzt zur Nacht, bis die Morgenansage bestätigt ist (Gift, Angriff, Schutz, Übernachtungsgast, gerettet); am Tag verschwinden sie. Es gab kein Limit für die Zahl der Slots. Tests in overviewUpdate.test.ts und PlayerRows.test.tsx (der Angriff am Morgen ist jetzt ein Slot statt eines Ursachenzeichens); tsc, ESLint der berührten Dateien und 851 Werwolf-Tests grün; nicht im Browser angesehen."
         }
       ]
     },

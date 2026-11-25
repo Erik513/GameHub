@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Slots am Morgen)
+
+### We-01-196: Slots der Nacht auch am Morgen (Claude)
+
+- Fehler behoben: Am Morgen fehlten die Slots der Nacht (zum Beispiel das Gift, wenn die Hexe zuletzt dran war), weil der Morgen als Tag galt. Jetzt zählt der Morgen für die Slots zur Nacht, bis die Ansage bestätigt ist. Ein Limit für die Zahl der Slots gab es nicht. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Farben für Rettung und Trunkenbold)
 
 ### We-01-195: Schutz, der rettet, dunkelgrün; Trunkenbold türkis (Claude)

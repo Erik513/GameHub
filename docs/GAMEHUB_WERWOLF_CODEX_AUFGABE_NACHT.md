@@ -402,3 +402,7 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 ## Gerettet durch Schutz (2026-11-25, Claude, We-01-195)
 
 - `CardEffect` kennt `protectedSaved` und `guestSaved` (in `roles/bodyguard.ts` und `roles/nightGuest.ts`, Reihenfolge in `roles/cardEffects.ts`): Schutz beziehungsweise Gastgeber und zugleich `wolfTarget`; `protected` und `guest` gelten nur noch ohne Angriff. Keine Regeländerung, kein neues Feld. Die Absicherungs-Snapshots wurden gezielt für diese beiden Zustände aktualisiert.
+
+## Morgen zählt für die Slots zur Nacht (2026-11-25, Claude, We-01-196)
+
+- `dayStatuses` in `narratorCard.ts` enthält `morning` nicht mehr: Die Effekte der Nacht (`poisoned`, `attacked`, `protected`, `guest`, `protectedSaved`, `guestSaved`) gelten bis zum Ende des Morgens. Keine Regeländerung.

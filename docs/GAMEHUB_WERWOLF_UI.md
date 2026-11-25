@@ -795,3 +795,8 @@ Die Zeilen von „Alle Spieler und Rollen“ zeigen **dieselben Zustände wie di
 ## Grün heißt gerettet (Beschluss vom 25.11.2026, We-01-195)
 
 **Dunkelgrün** heißt „vor dem Angriff gerettet“: die Zeile „gerettet“ und die Slots „Vom Leibwächter gerettet“ und „Von der Dorfmatratze gerettet“. Diese Slots erscheinen nur, wenn die Wölfe die geschützte Person tatsächlich angegriffen haben, sonst bleiben Geschützt und Übernachtungsgast blau. **Gelbgrün** sind Geheilt (Hexe) und Durch Heilzauber gerettet (Magier). Der **Trunkenbold** ist **türkis** (Slot und Rahmen).
+
+
+## Slots am Morgen (Beschluss vom 25.11.2026, We-01-196)
+
+Der Morgen zeigt die Slots der Nacht (Gift, Angriff, Schutz, Übernachtungsgast, gerettet) noch, bis die Morgenansage bestätigt ist; erst am Tag verschwinden sie. Eine Ursache, die ein Slot schon zeigt, steht nicht zusätzlich als Zeichen da.
