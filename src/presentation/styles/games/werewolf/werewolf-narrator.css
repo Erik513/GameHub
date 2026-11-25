@@ -301,6 +301,13 @@
 .dialog .ww-players > .ww-overview {
   margin-right: calc(var(--scroll-edge-gap) - var(--space-4) - var(--safe-right));
   padding-right: calc(var(--space-4) + var(--safe-right) - var(--scroll-edge-gap));
+  /* Scrolling stops at whole rows (the height of the list is cut to whole rows, see useWholeGridRows). */
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 4px;
+}
+
+.dialog .ww-players > .ww-overview > .ww-overview__row {
+  scroll-snap-align: start;
 }
 
 /* At the end of the game the whole box scrolls (winners, then the players); the legend sticks to the bottom edge. */

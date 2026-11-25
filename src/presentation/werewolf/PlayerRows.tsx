@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useRef, type ReactNode, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import {
   causesOf,
@@ -17,6 +17,7 @@ import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
 import { slotStyle } from "./symbols/stateLook";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
+import { useWholeGridRows } from "./useWholeGridRows";
 
 const allTones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
 const allFrames: readonly PlayerFrame[] = ["amulet", "drunk"];
@@ -50,14 +51,24 @@ const causeSymbol: Record<DeathCause, SymbolId> = {
 export function PlayerList({
   players,
   effects,
+  listRef,
+  listHeight,
 }: {
   readonly players: readonly PlayerView[];
+  /** The list element, for a window that shows whole rows only. */
+  readonly listRef?: RefObject<HTMLUListElement | null>;
+  /** The height of the list in whole rows (undefined: its own height). */
+  readonly listHeight?: number | undefined;
   /** The states of each person as slots (by name); without it the rows show no slots (the end of the game). */
   readonly effects?: ReadonlyMap<string, readonly CardEffect[]>;
 }) {
   const { t } = useTranslation();
   return (
-    <ul className="ww-overview">
+    <ul
+      className="ww-overview"
+      ref={listRef}
+      style={listHeight === undefined ? undefined : { flex: "none", height: listHeight }}
+    >
       {players.map((player) => (
         <li
           className="ww-overview__row"
@@ -234,9 +245,12 @@ export function PlayerRows({
     one.name.localeCompare(other.name, undefined, { sensitivity: "base" }),
   );
   const effects = new Map(players.map((player) => [player.name, effectsOfPerson(state, player)]));
+  // The list in the window shows whole rows only and scrolls row by row.
+  const list = useRef<HTMLUListElement>(null);
+  const listHeight = useWholeGridRows(list, players.length);
   return (
     <div className="ww-players">
-      <PlayerList effects={effects} players={players} />
+      <PlayerList effects={effects} listHeight={listHeight} listRef={list} players={players} />
       <PlayerLegend
         causes={causesOf(players)}
         effects={[...new Set([...effects.values()].flat())]}
