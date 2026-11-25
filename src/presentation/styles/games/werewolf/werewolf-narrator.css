@@ -64,70 +64,7 @@
   height: 36px;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-sm);
-  background: var(--slot-silenced);
-  color: var(--seat-ink);
   direction: ltr;
-}
-
-.ww-slot[data-effect="lovers"] {
-  background: var(--slot-lovers);
-}
-
-.ww-slot[data-effect="amulet"] {
-  background: var(--slot-amulet);
-}
-
-.ww-slot[data-effect="attacked"] {
-  background: var(--slot-attacked);
-}
-
-.ww-slot[data-effect="protected"] {
-  background: var(--slot-protected);
-}
-
-.ww-slot[data-effect="guest"] {
-  background: var(--slot-guest);
-}
-
-.ww-slot[data-effect="poisoned"] {
-  background: var(--slot-poisoned);
-}
-
-.ww-slot[data-effect="inspected"] {
-  background: var(--slot-inspected);
-}
-
-.ww-slot[data-effect="investigated"] {
-  background: var(--slot-investigated);
-}
-
-.ww-slot[data-effect="healed"] {
-  background: var(--slot-healed);
-}
-
-.ww-slot[data-effect="spellHealed"] {
-  background: var(--slot-spellHealed);
-}
-
-/* Good or bad, depending on the point of view (the hammer, the double vote): yellow with a dark sign. */
-.ww-slot[data-effect="hammered"],
-.ww-slot[data-effect="twoVotes"] {
-  background: var(--slot-hammered);
-  color: #2b2300;
-}
-
-.ww-slot[data-effect="spellKilled"] {
-  background: var(--slot-spellKilled);
-}
-
-/* A protection that saved the person from the attack of the wolves: dark green, like a saved row. */
-.ww-slot[data-effect="protectedSaved"],
-.ww-slot[data-effect="guestSaved"] {
-  background: var(--slot-saved);
-}
-
-.ww-slot[data-effect="drunk"] {
-  background: var(--slot-drunk);
 }
 
 .ww-role-card__abilities {
@@ -905,9 +842,10 @@
 
 /* The marks (out, in love, amulet ...) sit in the corner of the row. */
 /* A state as a colored slot: the same colors on the card and in the rows of the overview (see the tokens --slot-*). */
+/* The color comes from the look of the state (stateLook.ts) through --slot-bg and --slot-ink. */
 .ww-slot {
-  background: var(--slot-silenced);
-  color: var(--seat-ink);
+  background: var(--slot-bg, var(--slot-silenced));
+  color: var(--slot-ink, var(--seat-ink));
 }
 
 .ww-overview__slot {

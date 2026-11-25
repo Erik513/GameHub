@@ -1,5 +1,4 @@
 import { spec } from "./step";
-import { ability, consumable } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const witch = defineRole({
@@ -17,20 +16,12 @@ export const witch = defineRole({
     poisoned: ({ state, person, night }) =>
       night && "poisoned" in state && state.poisoned?.name === person.name,
   },
-  cardAbilities: (state) => {
-    return [
-      consumable(
-        ability(
-          "heal",
-          "healPotion",
-          !state.potions.heal ? "used" : state.wolfTarget ? undefined : "blocked",
-        ),
-      ),
-      consumable(ability("poison", "poisoned", state.potions.poison ? undefined : "used")),
-    ];
-  },
-  abilities: () => [
-    { ability: "heal", symbol: "healPotion" },
-    { ability: "poison", symbol: "poisoned" },
+  abilityList: [
+    { ability: "heal", consumable: true, symbol: "healPotion" },
+    { ability: "poison", consumable: true, symbol: "poisoned" },
   ],
+  availability: (state) => ({
+    heal: { why: !state.potions.heal ? "used" : state.wolfTarget ? undefined : "blocked" },
+    poison: { why: state.potions.poison ? undefined : "used" },
+  }),
 });

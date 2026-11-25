@@ -1,5 +1,4 @@
 import { pick, spec } from "./step";
-import { ability, consumable } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const hunter = defineRole({
@@ -18,9 +17,6 @@ export const hunter = defineRole({
         { skippable: state.settings.hunterShot !== "required", confirm: "drunkReady" },
       ),
   },
-  cardAbilities: () => {
-    return [consumable(ability("shot", "shotDuty"))];
-  },
-  abilities: () => [{ ability: "shot", symbol: "shotDuty" }],
+  abilityList: [{ ability: "shot", consumable: true, symbol: "shotDuty" }],
   variant: (settings) => settings.hunterShot,
 });

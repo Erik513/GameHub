@@ -1,5 +1,4 @@
 import { spec } from "./step";
-import { ability, consumable } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const magician = defineRole({
@@ -17,22 +16,15 @@ export const magician = defineRole({
     spellKilled: ({ state, person }) =>
       state.spellVictims.some((victim) => victim.name === person.name),
   },
-  cardAbilities: (state) => {
-    const left = state.spellsRemaining;
-    return [
-      consumable(
-        ability(
-          "heal",
-          "heal",
-          left <= 0 ? "used" : state.wolfTarget ? undefined : "blocked",
-          left,
-        ),
-      ),
-      consumable(ability("kill", "kill", left <= 0 ? "used" : undefined, left)),
-    ];
-  },
-  abilities: () => [
-    { ability: "heal", symbol: "heal" },
-    { ability: "kill", symbol: "kill" },
+  abilityList: [
+    { ability: "heal", consumable: true, symbol: "heal" },
+    { ability: "kill", consumable: true, symbol: "kill" },
   ],
+  availability: (state) => {
+    const left = state.spellsRemaining;
+    return {
+      heal: { count: left, why: left <= 0 ? "used" : state.wolfTarget ? undefined : "blocked" },
+      kill: { count: left, why: left <= 0 ? "used" : undefined },
+    };
+  },
 });

@@ -1,5 +1,4 @@
 import { spec } from "./step";
-import { ability, consumable } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const cupid = defineRole({
@@ -8,8 +7,5 @@ export const cupid = defineRole({
     cupid: () => spec("cupidBond", "choose", { compound: "bond" }),
     lovers: () => spec("loversInfo", "info", { confirm: "loversReady" }),
   },
-  cardAbilities: () => {
-    return [consumable(ability("bond", "lovers"))];
-  },
-  abilities: () => [{ ability: "bond", symbol: "lovers" }],
+  abilityList: [{ ability: "bond", consumable: true, symbol: "lovers" }],
 });

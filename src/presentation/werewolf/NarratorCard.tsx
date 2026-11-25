@@ -6,6 +6,7 @@ import type {
 import { abilityLookOf } from "./abilityLook";
 import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
+import { slotStyle } from "./symbols/stateLook";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 /** The vote: what the upper box shows and what the lower box lets the narrator enter. */
@@ -198,7 +199,12 @@ export function NarratorCard({
           {card.effects.length > 0 && !(isDay && card.actors.length === 0) && (
             <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
               {card.effects.map((effect) => (
-                <li className="ww-role-card__slot ww-slot" data-effect={effect} key={effect}>
+                <li
+                  className="ww-role-card__slot ww-slot"
+                  data-effect={effect}
+                  key={effect}
+                  style={slotStyle(effect)}
+                >
                   <WerewolfSymbol
                     id={effect}
                     label={t(`werewolfSymbols.items.${effect}.name`)}

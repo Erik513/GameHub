@@ -1,4 +1,5 @@
-import { cardEffectsInOrder } from "./roles/cardEffects";
+import { holdsState } from "./roles/cardEffects";
+import { stateIds } from "./roles/stateIds";
 import { roleDefinition } from "./roles";
 import { ability, consumable } from "./roles/cardAbility";
 import { roleVariantOf, type RoleVariantId } from "./roleVariant";
@@ -54,24 +55,8 @@ export type CardAbilitySymbol =
   | "shotDuty"
   | "amuletPass"
   | "vote";
-export type CardEffect =
-  | "lovers"
-  | "amulet"
-  | "attacked"
-  | "protected"
-  | "guest"
-  | "poisoned"
-  | "silenced"
-  | "drunk"
-  | "inspected"
-  | "healed"
-  | "hammered"
-  | "spellKilled"
-  | "twoVotes"
-  | "investigated"
-  | "spellHealed"
-  | "protectedSaved"
-  | "guestSaved";
+/** A state a person can carry; the list and the order of the slots are in `roles/stateIds.ts`. */
+export type CardEffect = (typeof stateIds)[number];
 
 export interface CardAbility {
   readonly id: CardAbilityId;
@@ -211,8 +196,8 @@ function effectsOf(state: WerewolfState, actors: readonly string[]): readonly Ca
   const people = describePlayers(state).filter((person) => actors.includes(person.name));
   if (people.length === 0) return [];
   const night = !dayStatuses.includes(state.status);
-  return cardEffectsInOrder().flatMap(([effect, rules]) =>
-    people.every((person) => rules?.[effect]?.({ state, person, night })) ? [effect] : [],
+  return stateIds.filter((effect) =>
+    people.every((person) => holdsState(effect, { night, person, state })),
   );
 }
 
@@ -222,13 +207,7 @@ export function effectsOfPerson(
   person: ReturnType<typeof describePlayers>[number],
 ): readonly CardEffect[] {
   const night = !dayStatuses.includes(state.status);
-  return [
-    ...new Set(
-      cardEffectsInOrder().flatMap(([effect, rules]) =>
-        rules?.[effect]?.({ state, person, night }) ? [effect] : [],
-      ),
-    ),
-  ];
+  return stateIds.filter((effect) => holdsState(effect, { night, person, state }));
 }
 
 /** The card of the role that is awake, or null when no role is awake (the day, the morning, the end). */

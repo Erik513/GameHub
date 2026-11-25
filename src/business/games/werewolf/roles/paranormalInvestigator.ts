@@ -1,5 +1,4 @@
 import { pick, spec } from "./step";
-import { ability, consumable } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const paranormalInvestigator = defineRole({
@@ -19,12 +18,8 @@ export const paranormalInvestigator = defineRole({
   cardEffects: {
     investigated: ({ person }) => person.investigated,
   },
-  cardAbilities: (state) => {
-    return [
-      consumable(
-        ability("investigate", "investigation", state.investigationUsed ? "used" : undefined),
-      ),
-    ];
-  },
-  abilities: () => [{ ability: "investigate", symbol: "investigation" }],
+  abilityList: [{ ability: "investigate", consumable: true, symbol: "investigation" }],
+  availability: (state) => ({
+    investigate: { why: state.investigationUsed ? "used" : undefined },
+  }),
 });

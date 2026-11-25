@@ -1,5 +1,4 @@
 import { pick, spec } from "./step";
-import { ability } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const wolf = defineRole({
@@ -13,14 +12,8 @@ export const wolf = defineRole({
   cardEffects: {
     attacked: ({ state, person, night }) => night && state.wolfTarget?.name === person.name,
   },
-  cardAbilities: (state) => {
-    return [
-      ability(
-        "attack",
-        "attacked",
-        state.night > 1 || state.settings.attackOnFirstNight ? undefined : "blocked",
-      ),
-    ];
-  },
-  abilities: () => [{ ability: "attack", symbol: "attacked" }],
+  abilityList: [{ ability: "attack", symbol: "attacked" }],
+  availability: (state) => ({
+    attack: { why: state.night > 1 || state.settings.attackOnFirstNight ? undefined : "blocked" },
+  }),
 });

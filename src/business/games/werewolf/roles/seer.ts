@@ -1,5 +1,4 @@
 import { pick, spec } from "./step";
-import { ability } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const seer = defineRole({
@@ -15,15 +14,9 @@ export const seer = defineRole({
   cardEffects: {
     inspected: ({ person }) => person.inspected,
   },
-  cardAbilities: (state) => {
-    // After the result was shown the narrator can still look at another person (a wrong person was chosen).
-    return [
-      ability(
-        "inspect",
-        "inspected",
-        state.status === "seer" || state.status === "vision" ? undefined : "blocked",
-      ),
-    ];
-  },
-  abilities: () => [{ ability: "inspect", symbol: "inspected" }],
+  abilityList: [{ ability: "inspect", symbol: "inspected" }],
+  // After the result was shown the narrator can still look at another person (a wrong person was chosen).
+  availability: (state) => ({
+    inspect: { why: state.status === "seer" || state.status === "vision" ? undefined : "blocked" },
+  }),
 });

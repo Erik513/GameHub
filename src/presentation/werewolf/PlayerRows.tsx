@@ -15,6 +15,7 @@ import type { DeathCause } from "../../business/games/werewolf/eventLog";
 import { effectsOfPerson, type CardEffect } from "../../business/games/werewolf/narratorCard";
 import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
+import { slotStyle } from "./symbols/stateLook";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 const allTones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
@@ -89,7 +90,12 @@ export function PlayerList({
             )}
             {/* Every state he carries, as the same colored slots as on the card of the role. */}
             {(effects?.get(player.name) ?? []).map((effect) => (
-              <span className="ww-slot ww-overview__slot" data-effect={effect} key={effect}>
+              <span
+                className="ww-slot ww-overview__slot"
+                data-effect={effect}
+                key={effect}
+                style={slotStyle(effect)}
+              >
                 <WerewolfSymbol
                   id={effect}
                   label={t(`werewolfSymbols.items.${effect}.name`)}
@@ -182,7 +188,11 @@ export function PlayerLegend({
         "effects",
         effects.map((effect) => (
           <li key={effect}>
-            <span className="ww-slot ww-overview__slot" data-effect={effect}>
+            <span
+              className="ww-slot ww-overview__slot"
+              data-effect={effect}
+              style={slotStyle(effect)}
+            >
               <WerewolfSymbol id={effect} size={12} />
             </span>
             {t(`werewolfSymbols.items.${effect}.name`)}

@@ -34,6 +34,20 @@ export interface RoleAbility {
   readonly symbol: AbilitySymbol;
 }
 
+/** One ability of a role: its button and symbol, and whether using it uses it up. */
+export interface AbilitySpec {
+  readonly ability: CardAbilityId;
+  readonly symbol: CardAbilitySymbol;
+  readonly consumable?: true;
+}
+
+/** Why an ability cannot be used now ("blocked" or "used") and what is left of it, by ability. */
+export type AbilityAvailability = (
+  state: WerewolfState,
+) => Partial<
+  Record<CardAbilityId, { readonly why?: "blocked" | "used" | undefined; readonly count?: number }>
+>;
+
 /** The options of the game that change how a role is played. */
 export type RoleSettings = Pick<
   WerewolfSettings,

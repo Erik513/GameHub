@@ -1,5 +1,4 @@
 import { pick, spec } from "./step";
-import { ability } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const bodyguard = defineRole({
@@ -21,8 +20,5 @@ export const bodyguard = defineRole({
       state.protectedPlayer === person.name &&
       state.wolfTarget?.name === person.name,
   },
-  cardAbilities: () => {
-    return [ability("protect", "protected")];
-  },
-  abilities: () => [{ ability: "protect", symbol: "protected" }],
+  abilityList: [{ ability: "protect", symbol: "protected" }],
 });

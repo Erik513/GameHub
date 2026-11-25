@@ -1,5 +1,4 @@
 import { pick, spec } from "./step";
-import { ability } from "./cardAbility";
 import { defineRole } from "./define";
 
 export const nightGuest = defineRole({
@@ -21,8 +20,5 @@ export const nightGuest = defineRole({
       state.hostPlayer === person.name &&
       state.wolfTarget?.name === person.name,
   },
-  cardAbilities: () => {
-    return [ability("stayWith", "guest")];
-  },
-  abilities: () => [{ ability: "stayWith", symbol: "guest" }],
+  abilityList: [{ ability: "stayWith", symbol: "guest" }],
 });
