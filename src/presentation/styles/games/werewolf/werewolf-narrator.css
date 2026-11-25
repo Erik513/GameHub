@@ -899,6 +899,8 @@
   flex-direction: row-reverse;
   flex-wrap: wrap;
   justify-content: flex-start;
+  /* The signs without a slot (the gravestone, the vote ...) are smaller than a slot: all stand in the middle of the line. */
+  align-items: center;
   gap: 2px;
   min-height: 18px;
 }

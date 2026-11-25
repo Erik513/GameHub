@@ -13,6 +13,7 @@ import type { RoleVariantId } from "../../business/games/werewolf/roleVariant";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
 import type { DeathCause } from "../../business/games/werewolf/eventLog";
 import { effectsOfPerson, type CardEffect } from "../../business/games/werewolf/narratorCard";
+import { stateIds } from "../../business/games/werewolf/roles/stateIds";
 import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
 import { slotStyle } from "./symbols/stateLook";
@@ -22,13 +23,35 @@ import { useWholeGridRows } from "./useWholeGridRows";
 const allTones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
 const allFrames: readonly PlayerFrame[] = ["amulet", "drunk"];
 
-/** The slot that already shows the ability that hit a person, so the sign of the cause is not repeated. */
+/**
+ * The state whose slot names a cause of death (in its color): the attack of the wolves, the poison, the death spell, the
+ * hammer, the broken heart of the lovers and the wound of the tough guy. The vote and the shot of the hunter have no
+ * state; they are shown as a sign.
+ */
 const causeEffect: Partial<Record<DeathCause, CardEffect>> = {
   hammer: "hammered",
+  hammerBackfire: "hammered",
+  heartbreak: "lovers",
   magicianKill: "spellKilled",
+  toughGuy: "wounded",
   witchPoison: "poisoned",
   wolves: "attacked",
 };
+
+/**
+ * The slots that name why a person is out or marked, also when the state of the night is over: each once, in the fixed
+ * order of the states (not in the order in which they happened).
+ */
+function causeSlotsOf(player: PlayerView): readonly CardEffect[] {
+  const named = new Set(player.causes.map((cause) => causeEffect[cause]));
+  return stateIds.filter((state) => named.has(state));
+}
+
+/** The other slots of a person, in the fixed order of the states. */
+function otherSlotsOf(player: PlayerView, states: readonly CardEffect[]): readonly CardEffect[] {
+  const causes = causeSlotsOf(player);
+  return states.filter((state) => !causes.includes(state));
+}
 
 /** The symbol of the ability that hit a person (the legend of the symbols has them all). */
 const causeSymbol: Record<DeathCause, SymbolId> = {
@@ -63,6 +86,16 @@ export function PlayerList({
   readonly effects?: ReadonlyMap<string, readonly CardEffect[]>;
 }) {
   const { t } = useTranslation();
+  const slot = (effect: CardEffect) => (
+    <span
+      className="ww-slot ww-overview__slot"
+      data-effect={effect}
+      key={effect}
+      style={slotStyle(effect)}
+    >
+      <WerewolfSymbol id={effect} label={t(`werewolfSymbols.items.${effect}.name`)} size={12} />
+    </span>
+  );
   return (
     <ul
       className="ww-overview"
@@ -86,44 +119,19 @@ export function PlayerList({
             </small>
           </span>
           <span className="ww-overview__marks">
-            {/* Every state he carries, as the same colored slots as on the card of the role; the line fills from the
-                right like the card, so the slots stand at the right and the other signs to the left of them. */}
-            {(effects?.get(player.name) ?? []).map((effect) => (
-              <span
-                className="ww-slot ww-overview__slot"
-                data-effect={effect}
-                key={effect}
-                style={slotStyle(effect)}
-              >
-                <WerewolfSymbol
-                  id={effect}
-                  label={t(`werewolfSymbols.items.${effect}.name`)}
-                  size={12}
-                />
-              </span>
-            ))}
-            {player.lastShot && (
-              <WerewolfSymbol id="shotDuty" label={t("werewolfNarrator.bar.lastShot")} size={14} />
-            )}
+            {/* The line fills from the right like the card. A person who is out has the gravestone at the very right and
+                the cause of death right next to it (a slot that names the cause, such as the poison, moves there too);
+                the other states follow to the left. */}
             {player.tone === "dead" && (
               <WerewolfSymbol id="dead" label={t("werewolfSymbols.items.dead.name")} size={14} />
             )}
-            {player.alive && player.delayedDeathNight !== null && (
-              <WerewolfSymbol
-                id="wounded"
-                label={t("werewolfSymbols.items.wounded.name")}
-                size={14}
-              />
-            )}
-            {/* How he became a victim: the ability that hit him (the signs of the lovers, the wound, the last shot and a
-                slot of the same ability already stand here and are not repeated). */}
+            {/* Why he is out or marked, as the slot of its state in its color; a cause without a state as its sign. The
+                slots of the causes are shown in every row, also when the state of the night is already over. */}
+            {(effects ? causeSlotsOf(player) : []).map(slot)}
             {player.causes
               .filter(
                 (cause) =>
-                  !(cause === "heartbreak" && player.partner !== null) &&
-                  !(cause === "toughGuy" && player.delayedDeathNight !== null) &&
-                  !(cause === "hunter" && player.lastShot) &&
-                  !(causeEffect[cause] && effects?.get(player.name)?.includes(causeEffect[cause])),
+                  !(effects && causeEffect[cause]) && !(cause === "hunter" && player.lastShot),
               )
               .map((cause) => (
                 <WerewolfSymbol
@@ -133,6 +141,11 @@ export function PlayerList({
                   size={14}
                 />
               ))}
+            {player.lastShot && (
+              <WerewolfSymbol id="shotDuty" label={t("werewolfNarrator.bar.lastShot")} size={14} />
+            )}
+            {/* Every other state he carries, as the same colored slots as on the card of the role. */}
+            {otherSlotsOf(player, effects?.get(player.name) ?? []).map(slot)}
           </span>
         </li>
       ))}
@@ -151,12 +164,15 @@ type LegendGroup = "tones" | "frames" | "effects" | "causes" | "variants";
 export function PlayerLegend({
   variants = [],
   causes = [],
+  causeSlots = false,
   effects = [],
   tones = allTones,
   frames = allFrames,
 }: {
   readonly variants?: readonly RoleVariantId[];
   readonly causes?: readonly DeathCause[];
+  /** The causes that have a state are shown as its colored slot (as in the rows of the overview). */
+  readonly causeSlots?: boolean;
   readonly effects?: readonly CardEffect[];
   /** The backgrounds and frames this game has (see `legendOf`); all of them when not given. */
   readonly tones?: readonly PlayerTone[];
@@ -215,7 +231,17 @@ export function PlayerLegend({
         "causes",
         causes.map((cause) => (
           <li key={cause}>
-            <WerewolfSymbol id={causeSymbol[cause]} size={14} />
+            {causeSlots && causeEffect[cause] ? (
+              <span
+                className="ww-slot ww-overview__slot"
+                data-effect={causeEffect[cause]}
+                style={slotStyle(causeEffect[cause])}
+              >
+                <WerewolfSymbol id={causeEffect[cause]} size={12} />
+              </span>
+            ) : (
+              <WerewolfSymbol id={causeSymbol[cause]} size={14} />
+            )}
             {t(`werewolfNarrator.cause.${cause}`)}
           </li>
         )),
@@ -253,6 +279,7 @@ export function PlayerRows({
     <div className="ww-players">
       <PlayerList effects={effects} listHeight={listHeight} listRef={list} players={players} />
       <PlayerLegend
+        causeSlots
         causes={causesOf(players)}
         effects={[...new Set([...effects.values()].flat())]}
         variants={variantsOf(players)}

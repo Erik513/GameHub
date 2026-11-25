@@ -20,7 +20,8 @@ type SlotColor =
   | "spellHealed"
   | "hammered"
   | "twoVotes"
-  | "spellKilled";
+  | "spellKilled"
+  | "wounded";
 
 /**
  * How every state looks as a slot: its color, and a dark sign on a light color. It is a record over all states, so the
@@ -48,6 +49,8 @@ export const stateLook: Readonly<
   silenced: { color: "silenced" },
   drunk: { color: "drunk" },
   twoVotes: { color: "twoVotes", darkInk: true },
+  // Dark red like the row of the wounded tough guy.
+  wounded: { color: "wounded" },
 };
 
 /** Every state is drawn with the symbol of the same name (the compiler checks that the catalog has it). */

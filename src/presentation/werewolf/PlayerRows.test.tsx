@@ -188,3 +188,22 @@ it("explains the colors and frames in both languages", async () => {
     "In dieser Nacht gerettet",
   );
 });
+
+it("puts the gravestone of a person who is out at the very right, with the cause of death right next to it", async () => {
+  const base = game();
+  const victim = base.players.find((player) => player.role === "villager")!;
+  const state = {
+    ...base,
+    poisoned: null,
+    status: "morning",
+    victim,
+    wolfTarget: victim,
+  } as unknown as WerewolfState;
+  const rows = await show(state);
+  const row = rows.find((entry) => entry.querySelector("strong")?.textContent === victim.name)!;
+  // The line fills from the right: its first sign stands at the very right.
+  const marks = [...row.querySelector(".ww-overview__marks")!.children];
+  expect(row).toHaveAttribute("data-tone", "dead");
+  expect(marks[0]).toHaveAttribute("aria-label", "Dead");
+  expect(marks[1]).toHaveAttribute("data-effect", "attacked");
+});
