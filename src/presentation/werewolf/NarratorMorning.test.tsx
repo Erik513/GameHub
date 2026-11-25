@@ -91,13 +91,13 @@ it("shows the role in brackets behind the name once the person is tapped, and ke
   const roleName = role === "villager" ? "Villager" : undefined;
   expect(person.textContent).toMatch(/\([A-Za-z ]+\)/);
   if (roleName) expect(person.textContent).toContain("(" + roleName + ")");
-  // The place at the bottom right: always there, with the amulet in it when it is lost.
+  // The amulet that is lost with this death stands at the bottom right.
   const slot = document.querySelector(".ww-guide__dead-slot")!;
   expect(slot).not.toBeNull();
   expect(slot.querySelector("[data-symbol='amulet']")).not.toBeNull();
 });
 
-it("keeps the place for the amulet empty when the amulet is not lost", async () => {
+it("shows no place for the amulet when the amulet is not lost", async () => {
   const i18n = await createGameHubI18n("en");
   render(
     <I18nextProvider i18n={i18n}>
@@ -105,9 +105,9 @@ it("keeps the place for the amulet empty when the amulet is not lost", async () 
     </I18nextProvider>,
   );
   fireEvent.click(document.querySelector(".ww-guide__dead li > button")!);
-  const slot = document.querySelector(".ww-guide__dead-slot")!;
-  expect(slot).not.toBeNull();
-  expect(slot.querySelector("[data-symbol='amulet']")).toBeNull();
+  // Nothing is lost: there is no empty box.
+  expect(document.querySelector(".ww-guide__dead-causes")).not.toBeNull();
+  expect(document.querySelector(".ww-guide__dead-slot")).toBeNull();
 });
 
 it("opens and covers the reason with a tap anywhere in the box of the dead person", async () => {

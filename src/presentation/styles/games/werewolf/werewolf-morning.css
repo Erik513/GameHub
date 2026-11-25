@@ -65,7 +65,7 @@
   min-width: 0;
 }
 
-/* The place for the amulet that is lost with the death: always there (dashed), filled when the amulet is lost. */
+/* The amulet that is lost with the death, at the bottom right; the box only shows when the amulet is lost. */
 .ww-guide__dead-slot {
   display: grid;
   place-items: center;

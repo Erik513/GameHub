@@ -143,19 +143,16 @@ export function PlainBox({ view }: { readonly view: GuideView }) {
                           </span>
                         )}
                       </span>
-                      {/* A place at the bottom right is always kept for the amulet that is lost with this death. */}
-                      <span
-                        className="ww-guide__dead-slot"
-                        data-filled={deathOf(name)?.amuletLost === true ? true : undefined}
-                      >
-                        {deathOf(name)?.amuletLost && (
+                      {/* The amulet that is lost with this death, at the bottom right; no empty place without it. */}
+                      {deathOf(name)?.amuletLost && (
+                        <span className="ww-guide__dead-slot" data-filled>
                           <WerewolfSymbol
                             id="amulet"
                             label={t("werewolfNarrator.guide.amuletLost")}
                             size={22}
                           />
-                        )}
-                      </span>
+                        </span>
+                      )}
                     </div>
                   )}
                 </li>
