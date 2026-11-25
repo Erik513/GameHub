@@ -86,20 +86,8 @@ export function PlayerList({
             </small>
           </span>
           <span className="ww-overview__marks">
-            {player.lastShot && (
-              <WerewolfSymbol id="shotDuty" label={t("werewolfNarrator.bar.lastShot")} size={14} />
-            )}
-            {player.tone === "dead" && (
-              <WerewolfSymbol id="dead" label={t("werewolfSymbols.items.dead.name")} size={14} />
-            )}
-            {player.alive && player.delayedDeathNight !== null && (
-              <WerewolfSymbol
-                id="wounded"
-                label={t("werewolfSymbols.items.wounded.name")}
-                size={14}
-              />
-            )}
-            {/* Every state he carries, as the same colored slots as on the card of the role. */}
+            {/* Every state he carries, as the same colored slots as on the card of the role; the line fills from the
+                right like the card, so the slots stand at the right and the other signs to the left of them. */}
             {(effects?.get(player.name) ?? []).map((effect) => (
               <span
                 className="ww-slot ww-overview__slot"
@@ -114,6 +102,19 @@ export function PlayerList({
                 />
               </span>
             ))}
+            {player.lastShot && (
+              <WerewolfSymbol id="shotDuty" label={t("werewolfNarrator.bar.lastShot")} size={14} />
+            )}
+            {player.tone === "dead" && (
+              <WerewolfSymbol id="dead" label={t("werewolfSymbols.items.dead.name")} size={14} />
+            )}
+            {player.alive && player.delayedDeathNight !== null && (
+              <WerewolfSymbol
+                id="wounded"
+                label={t("werewolfSymbols.items.wounded.name")}
+                size={14}
+              />
+            )}
             {/* How he became a victim: the ability that hit him (the signs of the lovers, the wound, the last shot and a
                 slot of the same ability already stand here and are not repeated). */}
             {player.causes

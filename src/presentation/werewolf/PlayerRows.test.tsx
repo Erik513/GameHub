@@ -97,7 +97,7 @@ it("shows every state of a person as the same colored slot as on the card, and n
     [...saved.querySelectorAll(".ww-overview__slot")].map((slot) =>
       slot.getAttribute("data-effect"),
     ),
-  ).toEqual(["attacked", "protectedSaved", "guestSaved"]);
+  ).toEqual(["protectedSaved", "guestSaved", "attacked"]);
   const legend = document.querySelector(".ww-overview__legend")!.textContent;
   expect(legend).toContain("Protected");
   expect(legend).toContain("Guest");

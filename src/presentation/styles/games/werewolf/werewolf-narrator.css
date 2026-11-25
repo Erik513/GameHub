@@ -895,8 +895,10 @@
 .ww-overview__marks {
   display: flex;
   flex: 1 0 100%;
+  /* From the right to the left, like the slots of the card: the first state stands at the right. */
+  flex-direction: row-reverse;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 2px;
   min-height: 18px;
 }

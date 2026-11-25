@@ -222,8 +222,8 @@ describe("describeNarratorCard", () => {
       silencedPlayer: witch.name,
     } as WerewolfState;
     expect(describeNarratorCard(marked)!.effects).toEqual([
-      "lovers",
       "amulet",
+      "lovers",
       "protected",
       "silenced",
     ]);
@@ -236,7 +236,7 @@ describe("describeNarratorCard", () => {
       wolfTarget: witch,
     } as WerewolfState;
     // The wolves attacked the host: the night guest saved him (dark green instead of blue).
-    expect(describeNarratorCard(attacked)!.effects).toEqual(["attacked", "guestSaved"]);
+    expect(describeNarratorCard(attacked)!.effects).toEqual(["guestSaved", "attacked"]);
     // The poison counts in the steps after the witch in the same night (here the magician's).
     const poisoned = at(state, { poisoned: witch, status: "magician" });
     const later = at(poisoned, { amulet: null });
@@ -260,7 +260,7 @@ describe("describeNarratorCard", () => {
       hammerVictim: witch.name,
       spellVictims: [witch],
     } as WerewolfState;
-    expect(describeNarratorCard(struck)!.effects).toEqual(["hammered", "spellKilled"]);
+    expect(describeNarratorCard(struck)!.effects).toEqual(["spellKilled", "hammered"]);
   });
 
   it("calls the apprentice instead of the seer once the seer is dead", () => {
