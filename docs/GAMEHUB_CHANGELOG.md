@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Anleitung)
+
+### We-01-140: Anleitung „Der Ablauf ist jede Nacht gleich“ (Claude)
+
+- Die Spielanleitung (Die Nacht) erklärt auf Deutsch und Englisch, dass auch Rollen mit verbrauchter Fähigkeit geweckt und gefragt werden und verzichten, damit niemand erkennt, ob eine Fähigkeit genutzt wurde, und dass nur Lebende geweckt werden. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Magier)
 
 ### We-01-136: Magier-Fragenablauf geprüft, doppelte Schlüssel behoben (Claude)
