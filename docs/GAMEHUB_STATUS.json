@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 423,
-      "totalTasks": 477,
+      "completedTasks": 424,
+      "totalTasks": 478,
       "percent": 88.7
     }
   },
@@ -2313,6 +2313,12 @@
           "title": "Siegreicher Gerber: Pokal in der Übersicht, Hinweis am Morgen",
           "status": "done",
           "validation": "describePlayers liefert wonAsTanner (aus tannerWinner, bei einer Verkündung schon aus der Probe-Transition). Übersicht: goldener Slot mit dem Gerber-Pokal direkt links neben dem Grabstein, vor dem Todesgrund (Token --slot-won #b8860b), Legende „Gerber hat gewonnen“ / „Tanner has won“. Morgen-Verkündung: Stirbt der Gerber nachts und gewinnt (Einstellung jeder Tod), steht im aufgedeckten Kasten unter den Ursachen der Hinweis „hat gewonnen, Rolle geheim halten“ wie bei der Verbannung. Neuer Test; 920 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-215",
+          "title": "Spielende: Legende verdeckt nichts und zeigt nur Gezeigtes",
+          "status": "done",
+          "validation": "Im Kasten des Spielendes scrollen nur die Gruppen (Gewinner, Verlierer), mit der Scrollleiste nah am Rand des Kastens; die Legende steht fest darunter mit einer Trennlinie statt angeheftet über der Liste. Die Legende des Spielendes nennt nur die Hintergründe und Rahmen, die in den Zeilen vorkommen (neben Todesursachen und Varianten, die schon so waren). Neuer Test; 273 Werwolf-UI-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -3979,5 +3985,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T20:42:28.903Z"
+  "updatedAt": "2026-11-25T21:00:24.482Z"
 }

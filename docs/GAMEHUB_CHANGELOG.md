@@ -1,5 +1,12 @@
 # GameHub Changelog
 
+## 2026-11-25 (Spielende)
+
+### We-01-215: Legende am Spielende verdeckt nichts und zeigt nur Gezeigtes (Claude)
+
+- Am Spielende scrollen nur Gewinner und Verlierer, die Scrollleiste sitzt am Rand; die Legende steht fest darunter und liegt nicht mehr über der Liste.
+- Die Legende des Spielendes nennt nur, was die Zeilen zeigen. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Gerber)
 
 ### We-01-214: Siegreicher Gerber sichtbar (Claude)
