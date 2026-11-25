@@ -1518,3 +1518,17 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* At the end of the game a long role takes a second line instead of being cut off: between two words, a single long
+   word with a hyphen (the language of the page decides where). */
+.ww-winners .ww-overview__who small {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  text-overflow: clip;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
