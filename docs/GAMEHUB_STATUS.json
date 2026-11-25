@@ -2426,7 +2426,7 @@
           "id": "We-01-231",
           "title": "Skriptboxen der unteren Box kleiner",
           "status": "done",
-          "validation": "Text der Skriptschritte 1,05rem statt 1,25rem, Symbole 26/22/20 statt 32/28/24 px, Innenabstand 6/10 statt 8/12 px, Abstand zwischen den Boxen 6 statt 8 px, Häkchen und Zurück 40 statt 44 px breit (weiter so hoch wie die Box). Die großen Überschriften der Verkündungen bleiben. Vorher als Zeichnung abgestimmt. 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+          "validation": "Text der Skriptschritte 1,05rem statt 1,25rem, Symbole 26/22/20 statt 32/28/24 px, Innenabstand 6/10 statt 8/12 px, Abstand zwischen den Boxen 6 statt 8 px, Häkchen und Zurück 40 statt 44 px breit (weiter so hoch wie die Box). Der Inhalt steht senkrecht in der Mitte der Box (die Box ist so hoch wie Häkchen und Zurück, mindestens 44 px; nach dem Verkleinern stand er oben). Die großen Überschriften der Verkündungen bleiben. Vorher als Zeichnung abgestimmt. 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
         },
         {
           "id": "We-01-232",
@@ -4105,5 +4105,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T23:14:34.829Z"
+  "updatedAt": "2026-11-25T23:21:55.180Z"
 }
