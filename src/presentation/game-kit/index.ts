@@ -13,6 +13,7 @@ export { PlayersSetup } from "./PlayersSetup";
 export { Scoreboard } from "./Scoreboard";
 export { PlayerAdder } from "./PlayerAdder";
 export { RosterPicker } from "./RosterPicker";
+export { RosterRow } from "./RosterRow";
 export { ResultList, type ResultRow } from "./ResultList";
 export { RulesSection } from "./RulesSection";
 export { ScoreScreen } from "./ScoreScreen";

@@ -1309,3 +1309,28 @@ body:has(.kit-onepage) {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* The number of the players next to the button of the player list: a field as high as the button. Red below the
+   minimum of the game, green from it on; neutral in a game without a minimum. */
+.kit-count {
+  display: grid;
+  flex: none;
+  place-items: center;
+  min-width: 4.5rem;
+  min-height: var(--control-height);
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+}
+
+.kit-count[data-enough="false"] {
+  color: var(--color-danger);
+}
+
+.kit-count[data-enough="true"] {
+  color: var(--color-success);
+}

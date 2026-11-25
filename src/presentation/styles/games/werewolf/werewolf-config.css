@@ -618,26 +618,6 @@
   font-size: var(--text-xs);
 }
 
-/* The number of people next to the player list button: a field as high as the button. */
-.ww-count {
-  display: grid;
-  flex: none;
-  place-items: center;
-  min-width: 4.5rem;
-  min-height: var(--control-height);
-  padding-inline: var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  font-weight: var(--weight-bold);
-  font-variant-numeric: tabular-nums;
-  color: var(--color-danger);
-}
-
-.ww-count[data-enough="true"] {
-  color: var(--color-success);
-}
-
 /* The controls above the list of the people: they stay in place, only the list scrolls. */
 .ww-players-head {
   display: grid;

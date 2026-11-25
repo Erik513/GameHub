@@ -11,6 +11,7 @@ import { PlayerRosterButton } from "./PlayerRosterButton";
 import { PlayerRosterProvider } from "./PlayerRosterProvider";
 import { PlayersSetup } from "./PlayersSetup";
 import { RosterPicker } from "./RosterPicker";
+import { RosterRow } from "./RosterRow";
 
 const texts = {
   en: {
@@ -394,4 +395,36 @@ it("offers the button to manage the player list at the top of the list of groups
   expect(manage()).not.toBeInTheDocument();
   await user.click(within(dialog).getByRole("button", { name: texts.en.back("Family") }));
   expect(manage()).toBeInTheDocument();
+});
+
+it("shows the number of the players next to the button, with the limit and its color only where the game has them", async () => {
+  // A game with a limit and a minimum (Werewolf): "count/limit", red below the minimum, green from it on.
+  await renderWith(
+    "en",
+    stores(),
+    <RosterRow count={5} limit={21} minimum={7} onChange={() => undefined} value="" />,
+  );
+  const limited = screen.getByRole("status");
+  expect(limited).toHaveTextContent("5/21");
+  expect(limited).toHaveAttribute("data-enough", "false");
+  document.body.innerHTML = "";
+  // A game without a limit (Taboo): the number only, without a color of its own.
+  await renderWith("en", stores(), <RosterRow count={8} onChange={() => undefined} value="" />);
+  const plain = screen.getByRole("status");
+  expect(plain).toHaveTextContent(/^8$/);
+  expect(plain).not.toHaveAttribute("data-enough");
+});
+
+it("puts the choice from the player list with the number at the top of the players of a game", async () => {
+  await renderWith(
+    "en",
+    stores(),
+    <PlayersSetup
+      onChange={() => undefined}
+      value={{ ...initialTeamSetup(), playersText: "Anna, Ben" }}
+    />,
+  );
+  const header = document.querySelector(".kit-pane__stack")!;
+  // The first row of the controls is the choice from the player list with the number of the players.
+  expect(header.firstElementChild?.querySelector(".kit-count")).toHaveTextContent("2");
 });

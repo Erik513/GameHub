@@ -9,7 +9,7 @@ import { parsePlayers } from "../../business/shared/players";
 import type { TeamSetupValue } from "../../business/shared/teamSetup";
 import { Icon, Toast } from "../components";
 import { PlayerAdder } from "./PlayerAdder";
-import { RosterPicker } from "./RosterPicker";
+import { RosterRow } from "./RosterRow";
 import { TabPane } from "./TabPane";
 
 interface PlayersSetupProps {
@@ -20,8 +20,8 @@ interface PlayersSetupProps {
 }
 
 /**
- * The player list of a game: one row per player with a button to remove him, a field to add players
- * by name and a button to choose them from the saved players. The teams are set up in the box
+ * The player list of a game: at the top the button to choose players from the saved players with their number, then
+ * a field to add players by name and one row per player with a button to remove him. The teams are set up in the box
  * "Teams". The value is controlled. The controls stay in place and only the list of the players scrolls,
  * in whole rows (so no player is cut off).
  */
@@ -44,6 +44,8 @@ export function PlayersSetup({ above, onChange, value }: PlayersSetupProps) {
     <TabPane
       header={
         <div className="kit-pane__stack">
+          {/* At the top: the players from the saved list and how many there are. */}
+          <RosterRow count={players.length} onChange={setText} value={value.playersText} />
           {above}
           <PlayerAdder
             onAdd={(input) => {
@@ -62,9 +64,6 @@ export function PlayersSetup({ above, onChange, value }: PlayersSetupProps) {
               {t("kitPlayers.duplicate", { names: duplicate.names })}
             </Toast>
           )}
-          <div className="kit-players__actions">
-            <RosterPicker onChange={setText} value={value.playersText} />
-          </div>
         </div>
       }
       wholeRows

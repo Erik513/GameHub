@@ -12,7 +12,7 @@ import {
 import { duplicatePlayerNames } from "../../business/shared/playerList";
 import { parsePlayers } from "../../business/shared/players";
 import { Icon, Toast } from "../components";
-import { PlayerAdder, RosterPicker, TabPane } from "../game-kit";
+import { PlayerAdder, RosterRow, TabPane } from "../game-kit";
 import { NarratorPicker } from "./NarratorPicker";
 
 interface PlayersTabProps {
@@ -21,7 +21,7 @@ interface PlayersTabProps {
 }
 
 /**
- * The tab "Players": the narrator, the field to add names, the choice from the saved players and the
+ * The tab "Players": the choice from the saved players with the number of people, the narrator, the field to add names and the
  * list of everybody who takes part (in alphabetical order; the seats are set in the other tab).
  */
 export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
@@ -34,6 +34,18 @@ export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
       wholeRows
       header={
         <div className="ww-players-head">
+          {/* At the top: the players from the saved list and how many take part; then the narrator and single names. */}
+          <RosterRow
+            count={lineup.participants.length}
+            countLabel={t("werewolfLineup.countLabel", {
+              count: lineup.participants.length,
+              maximum: maxWerewolfParticipants,
+            })}
+            limit={maxWerewolfParticipants}
+            minimum={minWerewolfParticipants}
+            onChange={(text) => onChange(setParticipants(lineup, parsePlayers(text)))}
+            value={lineup.participants.join(", ")}
+          />
           <NarratorPicker
             narrator={lineup.narrator}
             onChoose={(name) => onChange(chooseNarrator(lineup, name))}
@@ -57,25 +69,6 @@ export function PlayersTab({ lineup, onChange }: PlayersTabProps) {
               {t("kitPlayers.duplicate", { names: duplicate.names })}
             </Toast>
           )}
-          <div className="kit-players__actions">
-            <RosterPicker
-              limit={maxWerewolfParticipants}
-              onChange={(text) => onChange(setParticipants(lineup, parsePlayers(text)))}
-              value={lineup.participants.join(", ")}
-            />
-            {/* How many people take part (the narrator counts): red until there are enough for a match, then green. */}
-            <span
-              aria-label={t("werewolfLineup.countLabel", {
-                count: lineup.participants.length,
-                maximum: maxWerewolfParticipants,
-              })}
-              className="ww-count"
-              data-enough={lineup.participants.length >= minWerewolfParticipants}
-              role="status"
-            >
-              {lineup.participants.length}/{maxWerewolfParticipants}
-            </span>
-          </div>
         </div>
       }
     >
