@@ -37,6 +37,8 @@ export type WerewolfLogEntry = LogBase &
         readonly player: string;
         readonly role: string;
         readonly diedMasked: boolean;
+        /** Whether the person carried the amulet when dying (a game saved before has no value: not shown). */
+        readonly diedWithAmulet?: boolean;
         readonly sources: readonly DeathSource[];
       }
     | {
@@ -205,6 +207,7 @@ export function recordWerewolfTransition(
       player: player.name,
       role: player.role,
       diedMasked: before.drunk?.player === player.name && !before.drunk.revealed,
+      diedWithAmulet: before.amulet?.holder === player.name,
       sources: sources.get(player.name) ?? [],
     });
   }

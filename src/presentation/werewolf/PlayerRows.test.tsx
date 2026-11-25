@@ -321,3 +321,25 @@ it("shows the tough guy who survives the attack as wounded in the morning, befor
   expect(row).toHaveAttribute("data-tone", "wounded");
   expect(row.querySelector('.ww-overview__slot[data-effect="wounded"]')).not.toBeNull();
 });
+
+it("keeps the frame of the amulet on the row of the person who died with it", async () => {
+  const base = createWerewolf(names, "Max", () => 0.3, [], { amulet: true, wolfCount: 2 })!;
+  const holder = base.players.find((player) => player.name === base.amulet!.holder)!;
+  const morning = {
+    ...base,
+    poisoned: null,
+    status: "morning",
+    victim: holder,
+    wolfTarget: holder,
+  } as unknown as WerewolfState;
+  // The morning is confirmed: the holder is out, the amulet is lost.
+  const after = transitionWerewolf(morning, { night: morning.night, type: "announceMorning" });
+  expect(after.amulet).toBeNull();
+  const rows = await show(after);
+  const row = rows.find((entry) => entry.querySelector("strong")?.textContent === holder.name)!;
+  expect(row).toHaveAttribute("data-tone", "dead");
+  expect(row).toHaveAttribute("data-amulet", "true");
+  expect(document.querySelector(".ww-overview__legend")?.textContent).toContain(
+    "Amulet (when dead: died with it)",
+  );
+});

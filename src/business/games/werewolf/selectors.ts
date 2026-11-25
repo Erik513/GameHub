@@ -219,7 +219,11 @@ export function describePlayers(state: WerewolfState, announce = true) {
       // The hunter who has died but has not decided about his last shot yet: out of the game, but not finished.
       lastShot,
       death: death?.kind === "death" ? death : null,
-      amulet: state.amulet?.holder === player.name,
+      // The frames stay with a person who is out, too: the amulet he carried when he died, the drunk who died without
+      // knowing his role.
+      amulet:
+        state.amulet?.holder === player.name ||
+        (death?.kind === "death" && death.diedWithAmulet === true),
       drunk: isDrunk || (death?.kind === "death" && death.diedMasked),
       partner: state.lovers?.includes(player.name)
         ? (state.lovers.find((n) => n !== player.name) ?? null)

@@ -270,7 +270,10 @@ it("plays reproducible complete games across all roles, privacy modes and attack
           ? werewolfAnnouncement(next).length
           : 0;
       expect(description.filter((p) => p.alive)).toHaveLength(next.alive.length - announced);
-      expect(description.filter((p) => p.amulet).length).toBe(next.amulet ? 1 : 0);
+      // One holder of the amulet among the people whose death is not recorded; the dead keep the frame they died with.
+      expect(description.filter((p) => p.amulet && p.death === null).length).toBe(
+        next.amulet ? 1 : 0,
+      );
       s = next;
     }
     expect(
