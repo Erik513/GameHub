@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 436,
-      "totalTasks": 490,
+      "completedTasks": 437,
+      "totalTasks": 491,
       "percent": 89
     }
   },
@@ -2391,6 +2391,12 @@
           "title": "Spiele „in Entwicklung“ in der veröffentlichten App spielbar",
           "status": "done",
           "validation": "isGameOpenable (app/gameCatalog.ts): Spiele mit availability preview lassen sich jetzt auch in der veröffentlichten App öffnen, nicht nur auf dem Entwicklungsserver; sie behalten das Etikett „In Entwicklung“ / „In development“. Geplante Spiele bleiben gesperrt. Betrifft zurzeit nur den Werwolf. Die Karte eines spielbaren Spiels in Entwicklung ist jetzt auch eingefärbt und umrandet wie Taboo (data-playable für jedes öffnebare Spiel). Auf Wunsch des Auftraggebers vor dem ersten Push. Tests in gameCatalog.test.ts und pages.test.tsx auf die neue Regel umgestellt; 24 Tests der Spielauswahl und des Katalogs grün."
+        },
+        {
+          "id": "We-01-226",
+          "title": "Variabler Modus: einzige Wolfsanzahl lesbar",
+          "status": "done",
+          "validation": "Fehler am Handy nach dem ersten Push: Gab es im variablen Modus nur eine mögliche Wolfsanzahl (zum Beispiel 10 Spieler), war der Knopf gesperrt, nicht gewählt, halb durchsichtig und gelb umrandet und kaum lesbar. Jetzt wird die einzige Anzahl wie im festen Modus als gewählt (blau gefüllt) und fest gezeigt; Tippen ändert nichts. Ohne Wahl fällt auch „empfohlen“ weg, im variablen wie im festen Modus. Nur Präsentation (WerewolfConfiguration.tsx). Test in VariableRoles.test.tsx angepasst; 276 Werwolf-UI-Tests (neuer Test für „empfohlen“) grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4057,5 +4063,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T22:20:51.801Z"
+  "updatedAt": "2026-11-25T22:44:59.078Z"
 }

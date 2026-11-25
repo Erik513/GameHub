@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (nach dem ersten Push)
+
+### We-01-226: Einzige Wolfsanzahl im variablen Modus lesbar (Claude)
+
+- Ist nur eine Wolfsanzahl möglich, zeigt der variable Modus sie jetzt wie der feste als gewählt (blau gefüllt) statt blass und gelb umrandet; „empfohlen“ entfällt dann, auch im festen Modus. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Spielauswahl)
 
 ### Al-10-11: Alle Spielkarten gleich groß (Claude)
