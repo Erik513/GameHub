@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Übersicht)
+
+### We-01-208: Übersicht zeigt nur ganze Reihen (Claude)
+
+- Die Liste in „Alle Spieler und Rollen“ ist so hoch, dass nur ganze Reihen sichtbar sind, und rastet beim Scrollen an ganzen Reihen ein; die Legende bleibt unten stehen. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Handy)
 
 ### We-01-207: Engstellen der Erzähleransicht auf dem Handy (Claude)

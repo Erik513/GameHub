@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 416,
-      "totalTasks": 470,
+      "completedTasks": 417,
+      "totalTasks": 471,
       "percent": 88.5
     }
   },
@@ -2504,6 +2504,12 @@
           "title": "Handy-Engstellen der Erzähleransicht",
           "status": "done",
           "validation": "Nur CSS in werewolf-narrator.css: Zeichen und Slots der Übersicht stehen in einer eigenen Zeile unter Name und Rolle statt darüber, und diese Zeile ist in jeder Box da, auch leer, damit alle Boxen gleich hoch sind; auf Handys (bis 40rem) stehen die Slots der Rollenkarte unter dem Namen der Rolle; unter 26rem hat die Personenauswahl drei statt vier Spalten. Jede scrollende Fläche hat die schmale Scrollleiste (kit-setup.css), in der Übersicht sitzt sie am Fensterrand. Die Wolfsanzahl blieb unverändert (höchstens drei Knöpfe). Gefunden durch Nachrechnen im Code für 360 px Breite; 1812 Tests grün; nicht im Browser angesehen, Abnahme am Handy nach dem Push."
+        },
+        {
+          "id": "We-01-208",
+          "title": "Übersicht „Alle Spieler und Rollen“ zeigt nur ganze Reihen",
+          "status": "done",
+          "validation": "Neuer Hook useWholeGridRows (presentation/werewolf) kürzt die Höhe der Liste im Fenster auf die ganzen Reihen, die Platz haben (Reihen statt Spieler, 2 oder 3 Spalten), und rechnet bei geänderter Spielerzahl oder Fenstergröße neu; das CSS lässt das Scrollen an ganzen Reihen einrasten; die Legende bleibt unten stehen. Neuer Test useWholeGridRows.test.ts für die Berechnung; tsc, ESLint und 268 Werwolf-UI-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4170,7 +4176,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T19:52:39.358Z"
+  "updatedAt": "2026-11-25T19:56:36.393Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
