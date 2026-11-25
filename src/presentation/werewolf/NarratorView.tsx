@@ -244,7 +244,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
         {view.card &&
           (view.phase === "intro" ? (
             <div aria-hidden="true" className="ww-role-card ww-role-card--hidden">
-              <WerewolfSymbol id="apprenticeSeer" size={56} />
+              <WerewolfSymbol id="asleep" size={56} />
             </div>
           ) : (
             <NarratorCard

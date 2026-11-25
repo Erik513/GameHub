@@ -442,6 +442,11 @@ exports[`keeps the catalog of the symbols, the legend of the abilities and the d
       "grave2",
     ],
     [
+      "asleep",
+      "state",
+      "zzz",
+    ],
+    [
       "day",
       "state",
       "sun",

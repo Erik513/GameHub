@@ -335,3 +335,15 @@ describe("NarratorView choices", () => {
     expect(document.querySelector(".ww-guide__causes")).toBeNull();
   });
 });
+
+it("covers the card of a role that is not awake yet with the sign of sleep, not with a role", async () => {
+  const user = await renderView("en");
+  // Through the role reveal to the first role of the night: its card is still covered.
+  for (let guard = 0; guard < 30 && !screen.queryByText(/werewolves wake up/); guard += 1) {
+    if (screen.queryByText("All roles are dealt")) await beginGame(user);
+    else await user.click(screen.getByRole("button", { name: "Next" }));
+  }
+  const covered = document.querySelector(".ww-role-card--hidden");
+  expect(covered?.querySelector('[data-symbol="asleep"]')).not.toBeNull();
+  expect(covered?.querySelector('[data-symbol="apprenticeSeer"]')).toBeNull();
+});

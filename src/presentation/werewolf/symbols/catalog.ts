@@ -59,6 +59,8 @@ const definitions = [
   { glyph: "microphoneOff", group: "state", id: "silenced" },
   { glyph: "arrowsExchange", group: "state", id: "amuletPass" },
   { glyph: "grave2", group: "state", id: "dead" },
+  // The covered card of a role that has not been woken up yet.
+  { glyph: "zzz", group: "state", id: "asleep" },
   // The day: its own card in the narrator view and the vote that it holds.
   { glyph: "sun", group: "state", id: "day" },
   { glyph: "ballot", group: "state", id: "vote" },

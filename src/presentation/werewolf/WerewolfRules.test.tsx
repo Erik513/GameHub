@@ -136,9 +136,9 @@ it.each(["de", "en"] as const)(
     const dialog = screen.getByRole("dialog", { name: text.title });
     await user.click(within(dialog).getByRole("tab", { name: text.tabs[3] }));
     const panel = within(dialog).getAllByRole("tabpanel", { hidden: true })[3]!;
-    // Every symbol (36: roles, extras, states) and every ability in its circle (14) is there with its drawing, and the attribution of the wolf head is shown.
-    expect(panel.querySelectorAll(".ww-legend__item")).toHaveLength(50);
-    expect(panel.querySelectorAll(".ww-legend__item svg")).toHaveLength(50);
+    // Every symbol (37: roles, extras, states) and every ability in its circle (14) is there with its drawing, and the attribution of the wolf head is shown.
+    expect(panel.querySelectorAll(".ww-legend__item")).toHaveLength(51);
+    expect(panel.querySelectorAll(".ww-legend__item svg")).toHaveLength(51);
     expect(panel.querySelector('[data-symbol="wolf"]')).not.toBeNull();
     // Every state is drawn in its colored slot, as in the game (18 states).
     expect(panel.querySelectorAll(".ww-legend__slot")).toHaveLength(18);

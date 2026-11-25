@@ -60,6 +60,10 @@ export const werewolfSymbolsTexts = {
         name: "Tag",
         meaning: "Sonne: das Dorf spricht, nominiert und stimmt ab",
       },
+      asleep: {
+        name: "Schläft",
+        meaning: "Z Z: die Karte der Rolle ist verdeckt, bis du sie aufdeckst",
+      },
       dead: {
         name: "Tot",
         meaning: "Grabstein: ausgeschieden",
