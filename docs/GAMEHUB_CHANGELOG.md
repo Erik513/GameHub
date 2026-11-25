@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Spielende, Seiten)
+
+### We-01-223: Spielende nennt die Seite (Claude)
+
+- Am Spielende steht „Gewinner – Dorfbewohner“ und „Verlierer – Werwölfe“ (oder umgekehrt), damit sofort klar ist, welche Seite gewonnen hat. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Schlafzeichen)
 
 ### We-01-222: Eigenes Schlafzeichen für die verdeckte Rollenkarte (Claude)

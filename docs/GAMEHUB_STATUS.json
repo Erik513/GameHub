@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 431,
-      "totalTasks": 485,
+      "completedTasks": 432,
+      "totalTasks": 486,
       "percent": 88.9
     }
   },
@@ -2361,6 +2361,12 @@
           "title": "Eigenes Schlafzeichen für die verdeckte Rollenkarte",
           "status": "done",
           "validation": "Die verdeckte Karte zeigte das Symbol des Seher-Lehrlings (Kristallkugel mit Z) und erinnerte an die Seherin. Neues Symbol „asleep“ mit dem Tabler-Zeichen „zzz“ (zwei Z) im Katalog, Texte de/en („Schläft“ / „Asleep“), auch im Symbol-Reiter; Symboltabelle auf dem Desktop ergänzt. Katalog-Snapshot nur um das neue Symbol erweitert, Zähler im Symbol-Reiter auf 51; neuer Test für die verdeckte Karte; 313 Werwolf-UI- und i18n-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-223",
+          "title": "Spielende nennt die Seite bei Gewinnern und Verlierern",
+          "status": "done",
+          "validation": "Die Überschriften am Spielende lauten „Gewinner – Dorfbewohner“ / „Verlierer – Werwölfe“ oder umgekehrt, englisch „Winners – Villagers“ / „Losers – Werewolves“, nach der Seite, die gewonnen hat. Test der Überschriften in beiden Sprachen angepasst; 313 Werwolf-UI- und i18n-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4027,5 +4033,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T22:00:39.009Z"
+  "updatedAt": "2026-11-25T22:06:38.128Z"
 }
