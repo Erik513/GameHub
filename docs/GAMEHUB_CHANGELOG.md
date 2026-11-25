@@ -1907,3 +1907,7 @@ GameHub-Arbeitsregel ergänzt: Jede abgeschlossene Logikänderung erhält eine d
 - We-03-73: Format 1 bleibt lesbar; neue Spielstände verwenden Format 2. Nacht, Tag, Rücksprung und der Gerber-Sieg nach Neuladen sind getestet.
 
 [Details und Übergabe](GAMEHUB_WERWOLF_HANDOFF.md).
+
+## 2026-11-25 – Werwolf-Nachprüfung (We-03-74)
+
+Werwolf: Unmögliche Bürgermeister-Stimmensummen werden abgewiesen. Alte Spielstände stellen die ursprüngliche Wolfswahl anhand des Nachtprotokolls wieder her.

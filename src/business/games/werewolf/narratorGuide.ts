@@ -17,6 +17,7 @@
  * the view and the operations. Names of the operations: choose* and set* put a choice in, undo*, unchoose* and reopen*
  * take one back, continueGuide and backGuide move between the steps, describe* only read.
  */
+import { countVotes } from "./stateVoting";
 import { backIsBlocked } from "./guideBack";
 import {
   current,
@@ -116,20 +117,22 @@ function eventOf(state: WerewolfState, selection: GuideSelection): WerewolfEvent
           ? { night, type: "endDay" }
           : null;
       return { night, nominees: selection.picks, type: "nominate" };
-    case "vote":
+    case "vote": {
       if (state.status !== "vote") return null;
-      // The narrator enters the votes counted per candidate.
-      return {
-        counts: Object.fromEntries(
-          state.candidates.map((name) => [
-            name,
-            (selection.counts?.[name] ?? 0) + (selection.bonus === name ? 1 : 0),
-          ]),
-        ),
-        night,
-        nomination: state.nomination,
-        type: "voteCount",
-      };
+      const counts = Object.fromEntries(
+        state.candidates.map((name) => [
+          name,
+          (selection.counts?.[name] ?? 0) + (selection.bonus === name ? 1 : 0),
+        ]),
+      );
+      if (
+        state.candidates.length > 1 &&
+        selection.bonus !== undefined &&
+        !countVotes(state, state.candidates, counts, selection.bonus)
+      )
+        return null;
+      return { counts, night, nomination: state.nomination, type: "voteCount" };
+    }
     default:
       break;
   }

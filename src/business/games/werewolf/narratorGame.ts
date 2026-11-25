@@ -135,6 +135,7 @@ function restoreState(value: unknown): WerewolfState | undefined {
     ...(state.nightDeaths ? { nightDeaths: state.nightDeaths.map(seat) } : {}),
     ...(state.shotDeaths ? { shotDeaths: state.shotDeaths.map(seat) } : {}),
     ...("hunter" in state ? { hunter: seat(state.hunter) } : {}),
+    wolfChoice: state.wolfChoice === undefined ? restoreWolfChoice(state) : state.wolfChoice,
     inspections: state.inspections ?? [],
     healedPlayer: state.healedPlayer ?? null,
     spellHealedPlayer: state.spellHealedPlayer ?? null,
@@ -145,6 +146,16 @@ function restoreState(value: unknown): WerewolfState | undefined {
   if (restored.status !== "nightCall") return restored;
   const resume = restoreState(restored.resume);
   return resume ? { ...restored, resume } : undefined;
+}
+
+function restoreWolfChoice(state: WerewolfState): string | null {
+  // wolfTarget may be the night guest who took the attack. Only the recorded choice identifies the host.
+  for (let index = state.history.length - 1; index >= 0; index -= 1) {
+    const entry = state.history[index];
+    if (entry?.night === state.night && entry.kind === "action" && entry.event?.type === "attack")
+      return entry.event.target;
+  }
+  return null;
 }
 
 /**

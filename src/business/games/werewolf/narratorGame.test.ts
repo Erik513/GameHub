@@ -236,3 +236,45 @@ it("preserves night fields already stored in version 1", () => {
   expect(loaded?.present).toMatchObject(nightFields);
   expect(loaded?.past[0]).toMatchObject(nightFields);
 });
+it("restores the original wolf choice from an old night even when the guest took the attack", () => {
+  const fixedDraft = toggleFixedRole(emptyFixedDraft, "nightGuest");
+  let session = startWerewolfGame({
+    ...input,
+    fixedDraft: {
+      ...fixedDraft,
+      settings: { ...fixedDraft.settings, attackOnFirstNight: true },
+    },
+  })!;
+  const guest = session.present.players.find((player) => player.role === "nightGuest")!;
+  const host = session.present.players.find((player) => player.role === "villager")!;
+  for (const player of session.present.players)
+    session = advanceWerewolfSession(session, { type: "roleSeen", player: player.name });
+  session = advanceWerewolfSession(session, { type: "stayWith", night: 1, target: host.name });
+  session = advanceWerewolfSession(session, { type: "attack", night: 1, target: host.name });
+  session = advanceWerewolfSession(session, { type: "inspect", night: 1, target: host.name });
+  session = advanceWerewolfSession(session, { type: "closeVision", night: 1 });
+  expect(session.present).toMatchObject({
+    status: "morning",
+    wolfChoice: host.name,
+    wolfTarget: guest,
+  });
+
+  const raw: unknown = JSON.parse(
+    JSON.stringify({ session, version: 1 }, (key, value: unknown) =>
+      key === "wolfChoice" ? undefined : value,
+    ),
+  );
+  const restored = parseSavedWerewolfSession(raw)!;
+  expect(restored.present).toMatchObject({ wolfChoice: host.name, wolfTarget: guest });
+  expect(restored.past.find((state) => state.status === "wolves")?.wolfChoice).toBeNull();
+  const back = undoWerewolfSession(restored);
+  expect(back.ok && back.session.present.wolfChoice).toBe(host.name);
+  const day = advanceWerewolfSession(restored, { type: "announceMorning", night: 1 });
+  const night = advanceWerewolfSession(day, { type: "endDay", night: 1 });
+  expect(night.present.wolfChoice).toBeNull();
+
+  const explicit = { ...restored, present: { ...restored.present, wolfChoice: null } };
+  expect(
+    parseSavedWerewolfSession(serializeWerewolfSession(explicit))?.present.wolfChoice,
+  ).toBeNull();
+});

@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-25T18:55:19.869Z",
+    "updatedAt": "2026-11-25T19:15:32.831Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 410,
-      "totalTasks": 464,
+      "completedTasks": 411,
+      "totalTasks": 465,
       "percent": 88.4
     }
   },
@@ -2473,7 +2473,7 @@
           "id": "We-01-202",
           "title": "Befunde 1 bis 4 der Logikprüfung We-03-72 behoben",
           "status": "done",
-          "validation": "1: Gift-Slot nur in den Schritten nach der Hexe in derselben Nacht (roles/witch.ts). 2: neues Feld wolfChoice (Wahl der Wölfe, auch wenn die Dorfmatratze den Angriff übernimmt); Von der Dorfmatratze gerettet prüft wolfChoice. 3: Ursachen der am Morgen oder beim Ausscheiden angesagten Personen kommen aus der Ansage selbst (Liebeskummer vor der Bestätigung sichtbar, selectors.ts). 4: Die Führung nennt die stumme Person nur, wenn silencedNight die aktuelle Nacht ist (narratorGuide.ts). Die vier Tests in logicAudit.test.ts laufen jetzt als normale Tests; Befund 5 (Stimmen des Bürgermeisters) bleibt erwarteter Fehlschlag für Codex. Testdaten um silencedNight, wolfChoice und den Schritt nach der Hexe ergänzt; Absicherungs-Snapshots unverändert; tsc, ESLint, Prettier und 867 Werwolf-Tests grün."
+          "validation": "1: Gift-Slot nur in den Schritten nach der Hexe in derselben Nacht (roles/witch.ts). 2: neues Feld wolfChoice (Wahl der Wölfe, auch wenn die Dorfmatratze den Angriff übernimmt); Von der Dorfmatratze gerettet prüft wolfChoice. 3: Ursachen der am Morgen oder beim Ausscheiden angesagten Personen kommen aus der Ansage selbst (Liebeskummer vor der Bestätigung sichtbar, selectors.ts). 4: Die Führung nennt die stumme Person nur, wenn silencedNight die aktuelle Nacht ist (narratorGuide.ts). Die vier Tests in logicAudit.test.ts laufen jetzt als normale Tests; Befund 5 (Stimmen des Bürgermeisters) wurde anschließend in We-03-74 behoben. Testdaten um silencedNight, wolfChoice und den Schritt nach der Hexe ergänzt; Absicherungs-Snapshots unverändert; tsc, ESLint, Prettier und 867 Werwolf-Tests grün."
         }
       ]
     },
@@ -2876,14 +2876,21 @@
           "title": "Werwolf-Logik vor dem ersten Push prüfen",
           "status": "done",
           "document": "GAMEHUB_WERWOLF_HANDOFF.md",
-          "validation": "599 bestehende Werwolf-Logiktests bestanden. Fünf bestätigte Befunde mit erwarteten Fehlschlägen reproduziert: Giftslot, Dorfmatratzen-Slot, Liebeskummer am Morgen, Stille im Guide und unmögliche Bürgermeister-Stimmensumme. Korrekturen nach Freigabe."
+          "validation": "599 bestehende Werwolf-Logiktests bestanden. Fünf bestätigte Befunde mit erwarteten Fehlschlägen reproduziert: Giftslot, Dorfmatratzen-Slot, Liebeskummer am Morgen, Stille im Guide und unmögliche Bürgermeister-Stimmensumme. Befunde 1–4 durch We-01-202 und Befund 5 durch We-03-74 behoben."
         },
         {
           "id": "We-03-73",
           "title": "Ältere Werwolf-Spielstände mit neuen Nachtfeldern laden",
           "status": "done",
           "document": "GAMEHUB_WERWOLF_HANDOFF.md",
-          "validation": "Format 1 in aktuellem Zustand, Rücksprungständen und Tarnfortsetzung kompatibel. Format 2 wird geschrieben. Lade-, Nacht-, Tages-, Rücksprung- und Gerber-Test geprüft. Breiter Lauf: 1.797 bestanden, fünf erwartete Fehlschläge aus We-03-72. Danach gezielt: 13 bestanden, fünf erwartete Fehlschläge. Abdeckungsschwellen, Typ-, Lint-, Format- und Schichtprüfung erfüllt."
+          "validation": "Format 1 in aktuellem Zustand, Rücksprungständen und Tarnfortsetzung kompatibel. Format 2 wird geschrieben. Lade-, Nacht-, Tages-, Rücksprung- und Gerber-Test geprüft. Breiter Lauf: 1.797 bestanden, fünf erwartete Fehlschläge aus We-03-72. Danach gezielt: 13 bestanden, fünf erwartete Fehlschläge. Abdeckungsschwellen, Typ-, Lint-, Format- und Schichtprüfung erfüllt. Die neue Wolfswahl (wolfChoice) wird seit We-03-74 mit wiederhergestellt."
+        },
+        {
+          "id": "We-03-74",
+          "title": "Bürgermeister-Stimmensummen prüfen und Wolfswahl alter Spielstände wiederherstellen",
+          "status": "done",
+          "document": "GAMEHUB_WERWOLF_HANDOFF.md",
+          "validation": "Bürgermeister-Doppelstimme im Reducer und Guide geprüft. Alter Spielstand mit umgeleitetem Wolfsangriff, Rücksprung und Nachtwechsel geprüft. 1.809 Tests im breiten Lauf und danach 33 gezielte Tests bestanden. Typ-, Lint-, Format- und Schichtprüfung bestanden."
         }
       ]
     },
@@ -3195,6 +3202,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-25",
+      "summary": "Werwolf: Unmögliche Bürgermeister-Stimmensummen werden abgewiesen. Alte Spielstände stellen die ursprüngliche Wolfswahl anhand des Nachtprotokolls wieder her."
+    },
     {
       "date": "2026-11-25",
       "summary": "Werwolf: Fünf Befunde vor dem ersten Push reproduziert. Gespeicherte Partien der Version 1 bei Nacht, Tag und Rücksprung abgesichert. Neue Spielstände verwenden Version 2."

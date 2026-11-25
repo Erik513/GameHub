@@ -117,6 +117,7 @@ export function countVotes(
   state: Match,
   candidates: readonly string[],
   counts: Readonly<Record<string, number>>,
+  mayorTarget?: string,
 ): {
   readonly leaders: readonly string[];
   readonly rejected?: true;
@@ -130,6 +131,11 @@ export function countVotes(
     const only = candidates[0]!;
     const { maxYes, needed } = singleVote(state, candidates);
     if (counts[only]! > maxYes) return null;
+    // If the mayor is the only eligible voter and votes twice, a single yes cannot be cast.
+    if (maxYes === 2 && counts[only] === 1 && state.settings.mayor === "doubleVote") {
+      const mayor = findActiveRole(state, "mayor", dayVoters(state));
+      if (mayor && mayor.name !== only) return null;
+    }
     if (counts[only]! >= needed) return { leaders: [only] };
     // As many yes as no votes among the votes cast (the nominated person does not vote): a tie.
     return maxYes > 0 && counts[only]! * 2 === maxYes
@@ -148,6 +154,25 @@ export function countVotes(
   for (const name of candidates) {
     const own = withChoice.find((voter) => voter.name === name);
     if (counts[name]! > total - (own ? weightOf(name) : 0)) return null;
+  }
+  if (mayor) {
+    // Remove the mayor's ballot as one unit. For the remaining single votes, each voter excludes only
+    // their own name, so the per-candidate limits are enough to determine whether the tally is possible.
+    const ordinaryVoters = new Set(
+      withChoice.filter((voter) => voter !== mayor).map((voter) => voter.name),
+    );
+    const fits = candidates.some(
+      (target) =>
+        target !== mayor.name &&
+        (mayorTarget === undefined || target === mayorTarget) &&
+        counts[target]! >= 2 &&
+        candidates.every(
+          (name) =>
+            counts[name]! - (name === target ? 2 : 0) <=
+            ordinaryVoters.size - Number(ordinaryVoters.has(name)),
+        ),
+    );
+    if (!fits) return null;
   }
   const most = Math.max(...candidates.map((name) => counts[name]!));
   return { leaders: candidates.filter((name) => counts[name] === most) };

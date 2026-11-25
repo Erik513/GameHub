@@ -430,3 +430,7 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 - `selectors.ts`: Die Ursachen angesagter Personen (Morgen, Ausscheiden) kommen aus einem Probe-Übergang `announceMorning` bzw. `announceExile` (Liebeskummer vor der Bestätigung).
 - `narratorGuide.ts`: `notes.silenced` nur, wenn `silencedNight === night`.
 - `logicAudit.test.ts`: Die vier Tests laufen als normale Tests; Befund 5 (Bürgermeister-Stimmensumme, `stateVoting.ts`) bleibt `it.fails` für Codex.
+
+## Befund 5 und gespeicherte Wolfswahl (2026-11-25, Codex, We-03-74)
+
+Befund 5 ist behoben. Die Doppelstimme wird als unteilbare Stimme gewertet. Beim Laden wird fehlendes wolfChoice aus dem Wolfsangriff derselben Nacht rekonstruiert, sofern dieser protokolliert ist. Ohne Eintrag wird null gesetzt. Details stehen in GAMEHUB_WERWOLF_HANDOFF.md.

@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { effectsOfPerson } from "./narratorCard";
-import { createGuide, describeGuide } from "./narratorGuide";
+import { createGuide, describeGuide, setVoteBonus, setVoteCount } from "./narratorGuide";
 import { describePlayers } from "./selectors";
 import { createWerewolfSession } from "./session";
 import {
@@ -43,7 +43,6 @@ function advanceToWitch(state: WerewolfState, target: string, inspected: string)
   return advance(state, { type: "closeVision", night: 1 });
 }
 
-// Keep these regressions executable while the decisions about their fixes are pending.
 it("drops the previous poison slot when the next night begins", () => {
   let state = deal(["witch"]);
   const [wolfTarget, poisonTarget, inspected] = villagers(state) as [string, string, string];
@@ -99,7 +98,7 @@ it("stops reporting a player as silenced in the guide at the next night", () => 
   expect(describeGuide(createGuide(createWerewolfSession(night))).notes.silenced).toBeNull();
 });
 
-it.fails("rejects a tally that can only split the mayor's vote or count it for the mayor", () => {
+it("rejects a tally that can only split the mayor's vote or count it for the mayor", () => {
   const start = deal(["mayor"]);
   const mayor = start.players.find((player) => player.role === "mayor")!;
   const others = start.players.filter((player) => player.role === "villager").slice(0, 2);
@@ -126,4 +125,43 @@ it.fails("rejects a tally that can only split the mayor's vote or count it for t
       counts: { [mayor.name]: 2, [one.name]: 1, [two.name]: 1 },
     }),
   ).toBe(vote);
+  expect(
+    transitionWerewolf(vote, {
+      type: "voteCount",
+      night: 1,
+      nomination: 1,
+      counts: { [mayor.name]: 0, [one.name]: 2, [two.name]: 2 },
+    }),
+  ).toBe(vote);
+  expect(
+    transitionWerewolf(vote, {
+      type: "voteCount",
+      night: 1,
+      nomination: 1,
+      counts: { [mayor.name]: 1, [one.name]: 2, [two.name]: 1 },
+    }),
+  ).toMatchObject({ status: "exile", victim: one });
+
+  // The same valid total cannot be confirmed if the guide assigns the mayor's vote to the wrong person.
+  let guide = createGuide(createWerewolfSession(vote));
+  guide = setVoteCount(guide, mayor.name, 1);
+  guide = setVoteCount(guide, one.name, 2);
+  expect(describeGuide(setVoteBonus(guide, two.name)).canContinue).toBe(false);
+  guide = setVoteCount(guide, one.name, 1);
+  guide = setVoteCount(guide, two.name, 1);
+  expect(describeGuide(setVoteBonus(guide, one.name)).canContinue).toBe(true);
+
+  const alone = advance(
+    { ...day, alive: [mayor, one, wolf] },
+    { type: "nominate", night: 1, nominees: [one.name] },
+  );
+  const yes = (count: number) => ({
+    type: "voteCount" as const,
+    night: 1,
+    nomination: 1,
+    counts: { [one.name]: count },
+  });
+  expect(transitionWerewolf(alone, yes(1))).toBe(alone);
+  expect(transitionWerewolf(alone, yes(0)).status).toBe("day");
+  expect(transitionWerewolf(alone, yes(2)).status).toBe("exile");
 });
