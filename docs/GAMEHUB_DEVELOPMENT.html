@@ -2503,7 +2503,7 @@
           "id": "We-01-207",
           "title": "Handy-Engstellen der Erzähleransicht",
           "status": "done",
-          "validation": "Nur CSS in werewolf-narrator.css: Zeichen und Slots der Übersicht stehen in einer eigenen Zeile unter Name und Rolle statt darüber; auf Handys (bis 40rem) stehen die Slots der Rollenkarte unter dem Namen der Rolle; unter 26rem hat die Personenauswahl drei statt vier Spalten. Die Wolfsanzahl blieb unverändert (höchstens drei Knöpfe). Gefunden durch Nachrechnen im Code für 360 px Breite; 1812 Tests grün; nicht im Browser angesehen, Abnahme am Handy nach dem Push."
+          "validation": "Nur CSS in werewolf-narrator.css: Zeichen und Slots der Übersicht stehen in einer eigenen Zeile unter Name und Rolle statt darüber, und diese Zeile ist in jeder Box da, auch leer, damit alle Boxen gleich hoch sind; auf Handys (bis 40rem) stehen die Slots der Rollenkarte unter dem Namen der Rolle; unter 26rem hat die Personenauswahl drei statt vier Spalten. Jede scrollende Fläche hat die schmale Scrollleiste (kit-setup.css), in der Übersicht sitzt sie am Fensterrand. Die Wolfsanzahl blieb unverändert (höchstens drei Knöpfe). Gefunden durch Nachrechnen im Code für 360 px Breite; 1812 Tests grün; nicht im Browser angesehen, Abnahme am Handy nach dem Push."
         }
       ]
     },
@@ -4170,7 +4170,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T19:44:48.230Z"
+  "updatedAt": "2026-11-25T19:52:39.358Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
