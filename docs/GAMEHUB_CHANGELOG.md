@@ -1,5 +1,12 @@
 # GameHub Changelog
 
+## 2026-11-26 (untere Box)
+
+### We-01-231 und We-01-232: Skript kleiner, Box scrollt statt abzuschneiden (Claude)
+
+- Text, Symbole und Abstände der Skriptboxen sind etwa 20 % kleiner.
+- Als Absicherung zeigt jede untere Box eine Scrollleiste an ihrem Rand, sobald ihr Inhalt höher ist als sie (Anlass war die Hexe), statt etwas abzuschneiden; auch die Abstimmung schneidet nichts mehr ab. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Rollenkarte)
 
 ### We-01-230: Zustände der Rollenkarte linksbündig unter der Rolle (Claude)

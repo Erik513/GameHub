@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 441,
-      "totalTasks": 495,
+      "completedTasks": 443,
+      "totalTasks": 497,
       "percent": 89.1
     }
   },
@@ -2421,6 +2421,18 @@
           "title": "Rollenkarte: Zustände linksbündig unter der Rolle, auf allen Bildschirmen",
           "status": "done",
           "validation": "Nur CSS: Die Zustände der Rollenkarte stehen jetzt auf jedem Bildschirm in einer eigenen Reihe unter Symbol und Name und beginnen links (erster Zustand der festen Reihenfolge links), so viele pro Reihe, wie die Karte breit ist; vorher am PC drei Spalten rechts neben der Rolle von rechts gefüllt, am Handy rechtsbündig darunter. Die Sonderregel für Handys ist entfallen. 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-231",
+          "title": "Skriptboxen der unteren Box kleiner",
+          "status": "done",
+          "validation": "Text der Skriptschritte 1,05rem statt 1,25rem, Symbole 26/22/20 statt 32/28/24 px, Innenabstand 6/10 statt 8/12 px, Abstand zwischen den Boxen 6 statt 8 px, Häkchen und Zurück 40 statt 44 px breit (weiter so hoch wie die Box). Die großen Überschriften der Verkündungen bleiben. Vorher als Zeichnung abgestimmt. 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-232",
+          "title": "Untere Box scrollt als Absicherung, statt abzuschneiden",
+          "status": "done",
+          "validation": "Absicherung für jede untere Box mit Skript (Rollen, Tag, Abstimmung): Ist der Inhalt höher als die Box, erscheint eine Scrollleiste am Rand der Box (ww-guide--sheet overflow-y auto statt hidden), sonst nicht. Die Abstimmung schneidet ihren Inhalt nicht mehr selbst ab (ww-voteinput ohne overflow hidden); der mittlere Teil der Box (Personenliste, Abstimmung) hat seine Scrollleiste ebenfalls am Rand der Box. Anlass war die Hexe, bei der die Zusammenfassung abgeschnitten wurde. Nur CSS; 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4087,5 +4099,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T22:57:42.410Z"
+  "updatedAt": "2026-11-25T23:06:45.980Z"
 }
