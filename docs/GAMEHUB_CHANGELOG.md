@@ -1,12 +1,93 @@
 # GameHub Changelog
 
+## 2026-11-25 (Magier)
+
+### We-01-187: Magier, Zustand Durch Heilzauber gerettet (Claude)
+
+- Die vom Heilzauber des Magiers gerettete Person trägt das Herz mit Plus (ohne Kreis) im grünen Slot; „Geheilt“ bleibt die Flasche mit Plus der Hexe. Neues Feld `spellHealedPlayer` (bis zur nächsten Nacht). Nicht im Browser angesehen.
+
+## 2026-11-25 (Seherin und Ermittler)
+
+### We-01-186: Zustände bleiben bis zum Ausscheiden (Claude)
+
+- Alle von der Seherin angesehenen Personen tragen das Auge, bis die Seherin ausscheidet; der Seher-Lehrling fängt neu an. Der Ermittler hat den Zustand „Untersucht“ (Lupe ohne Kreis, Petrol) für die drei untersuchten Personen, bis er ausscheidet. Neues Feld `inspections` ersetzt `inspectedPlayer`. Nicht im Browser angesehen.
+
+## 2026-11-25 (Doppelte Stimme)
+
+### We-01-185: Doppelte Stimme als gelber Slot, Hammer-Slot gelb (Claude)
+
+- Der Bürgermeister (doppelte Stimme) trägt die 2 ohne Kreis im gelben Slot, der Hammer-Slot ist ebenfalls gelb (dunkles Zeichen auf Gelb: gut oder schlecht je nach Sicht). Kein neues Feld im Spiel: `describePlayers` hat `twoVotes`, `CardEffect` kennt `twoVotes`. Nicht im Browser angesehen.
+
+## 2026-11-25 (Hammer und Todeszauber)
+
+### We-01-184: Zustände für das Opfer von Hammer und Todeszauber (Claude)
+
+- Die getroffene Person trägt einen roten Slot mit Richterhammer (Bürgermeister) beziehungsweise Totenkopf (Magier), ohne Kreis. Quelle: `hammerVictim` und `spellVictims`, kein neuer Wert. `CardEffect` kennt `hammered` und `spellKilled`. Nicht im Browser angesehen.
+
+## 2026-11-25 (Alte Vettel)
+
+### We-01-183: Alte Vettel als Mikrofon, erlaubt als Haken (Claude)
+
+- Rolle Alte Vettel: Mikrofon (Tabler `microphone`), das Gegenteil von „Stumm“. Fähigkeit und Zustand bleiben das durchgestrichene Mikrofon. Variante „Selbst stumm erlaubt“: Haken statt Daumen. Nicht im Browser angesehen.
+
+## 2026-11-25 (Verwundet)
+
+### We-01-182: Zustand Verwundet in Rot (Claude)
+
+- Der Zustand „Verwundet“ (Harter Bursche, stirbt in der nächsten Nacht) ist rot, wie „Angegriffen“; bisher dunkelrot. Rolle Harter Bursche bleibt die Hantel. Nicht im Browser angesehen.
+
+## 2026-11-25 (Dorfmatratze)
+
+### We-01-181: Dorfmatratze als Haus mit Herz, Übernachten als Person im Bett (Claude)
+
+- Rolle Dorfmatratze: Haus mit Herz (Tabler `home-heart`), die Gastgeberin. Fähigkeit „Übernachten“ und Zustand „Übernachtungsgast“: Person im Bett (Tabler `bed-flat`). Das Bett wird nicht mehr für Rolle und Fähigkeit zugleich benutzt. Nicht im Browser angesehen.
+
+## 2026-11-25 (Leibwächter)
+
+### We-01-180: Leibwächter als Person mit Schild (Claude)
+
+- Rolle Leibwächter: Person mit Schild (Tabler `user-shield`). Fähigkeit „Beschützen“ und Zustand „Geschützt“ bleiben das Schild. Nicht im Browser angesehen.
+
+## 2026-11-25 (Jäger)
+
+### We-01-179: Jäger als Donnerbüchse (Claude)
+
+- Rolle Jäger: Donnerbüchse (game-icons.net, Lorc, CC BY 3.0) statt der Zielscheibe. Fähigkeit „Schießen“, Zustand „Schusspflicht“ und die Varianten des Jägers bleiben vorerst unverändert; Anpassung nach Vorschlag und Bestätigung. Nicht im Browser angesehen.
+
+## 2026-11-24 (Amor)
+
+### We-01-178: Amor als Bogen mit Pfeil (Claude)
+
+- Rolle Amor: Bogen mit Pfeil nach oben rechts (Tabler `bow`, unverändert, ohne Herz, weil die Fassung mit Herz zu detailreich war). Fähigkeit und Zustand bleiben die zwei Herzen. Eine Linienzeichnung (`cupidBow`), keine Urheberhinweise nötig. Nicht im Browser angesehen.
+
+## 2026-11-24 (Hexe)
+
+### We-01-177: Hexe mit Hut, Heiltrank mit Plus (Claude)
+
+- Rolle Hexe: Hexengesicht mit Hut (game-icons.net, Cathelineau, CC BY 3.0) statt der Katze. Ihre Fähigkeit Heilen ist die Flasche mit Plus (`healPotion`), Gift die Flasche mit Minus (das Zeichen steht neben dem Flaschenhals, in der freien Fläche); die Zustände Geheilt (grüner Slot) und Vergiftet (roter Slot) haben dieselben Zeichen ohne Kreis. Das Spiel merkt sich die geheilte Person (`healedPlayer`, bis die nächste Nacht beginnt). Der Heilzauber des Magiers bleibt das Herz mit Plus, bis der Magier an der Reihe ist.
+- `WerewolfSymbol` zeichnet gefüllte Zeichnungen über `filledGlyphs` (Wolfskopf, Hexe). Nicht im Browser angesehen.
+
+## 2026-11-24 (Dorfbewohner)
+
+### We-01-176: Dorfbewohner = Person (Claude)
+
+- Rolle Dorfbewohner: Zeichen „Person“ (Kopf und Schultern) statt Haus. Keine Fähigkeit, kein Zustand, keine Variante. Die Zeichnung „Haus“ ist entfernt. Tests und Prüfungen siehe Statusdatensatz; nicht im Browser angesehen.
+
+## 2026-11-24 (Seherin)
+
+### We-01-175: Seherin mit eigenen Zeichen und Zustand „Angesehen“ (Claude)
+
+- Rolle Seherin = Kristallkugel; Fähigkeit Ansehen und Zustand Angesehen = Auge (die Fähigkeit im Kreis, der Zustand als violetter Slot ohne Kreis). Regel für alle Rollen: das Zeichen der Fähigkeit ist dasselbe wie das des Zustands, nur der Zustand hat keinen Kreis.
+- Rolle Seher-Lehrling = Kristallkugel mit Z (schläft), damit sie der Seherin ähnelt und trotzdem unterscheidbar ist; seine Fähigkeit und sein Zustand sind die der Seherin.
+- Das Spiel merkt sich, wen die Seherin angesehen hat (`inspections`, bis die Seherin ausscheidet). Die Übersicht und die Rollenkarte zeigen das Auge in Nacht und Tag.
+- Tests und Prüfungen siehe Statusdatensatz; nicht im Browser angesehen.
+
 ## 2026-11-23
 
 ### Spielweise Logikprüfung: Tabu, Wortbombe, Imposter, Liar’s Bar und Schwimmen
 
 - Spielweise Logikprüfung außer Werwolf abgeschlossen: 415 vorhandene Business-/Sitzungstests bestanden und 21 kleine Zusatzproben ausgeführt. Zusatzproben reproduzieren auch Fehler und sind deshalb kein Beleg für fehlerfreie Spiele. Bestätigte Abweichung bei Schwimmen (Blitz/31-Verlierer), Eingabelücke vor Online-Anbindung, fehlende Ereignisabsicherung in Tabu-Zeitmodi und fehlender öffentlicher Tischwert im Ergebnis von Liar’s Bar. Wortbombe/Imposter-Kernregeln in den geprüften Fällen konsistent. Nutzerentscheidungen dokumentiert; Liar’s-Bar-Risikoregel bleibt offen. Keine Produktionslogik geändert, keine langen Simulationen.
 - Bestätigt: Tabu-Korrektur nur ursprünglich richtiger Karten; Schwimmen-31 nur eigener Zug und bei Blitz/31 nur niedrigste übrige Hand verliert. Weitere Schwimmen-Prototypvorgaben bestätigt, Wiederverwendung abgelegter Tischkarten vorläufiger Reservefall.
-
 
 ### We-01-139 (Fortsetzung): Erzähleransicht – Spielerauswahl, Morgen, Tag und Abstimmung
 
@@ -87,18 +168,17 @@ Alle Angaben ohne Sichtprüfung im Browser; Tests, Typprüfung und ESLint waren 
 - Verzichten-Knopf bleibt nach dem Nutzen (Fehlerbehebung, Auftraggeber, We-01-171): Nutzte der Ermittler seine einmalige Fähigkeit, verschwand der Verzichten-Knopf im Ergebnisschritt (die Bedienung sprang). Jetzt bleibt er abgedunkelt und gesperrt, ohne Rahmen. Geprüft für alle Rollen mit Verzichten-Knopf in den fünf Durchspiel-Spielen (Hexe, Magier, Bürgermeister mit Hammer, Jäger, Amulett, Ermittler): nur der Ermittler war betroffen. Der Durchspieltest prüft nun bei jedem Schritt, dass der Knopf innerhalb einer Rolle nicht verschwindet; ohne die Korrektur schlägt er beim Ermittler an. Test auch in NarratorSeer.test.tsx. Alle Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen.
 - Übersicht nach jeder Entscheidung aktuell (Fehlerbehebung, Auftraggeber, We-01-172): Die Übersicht „Alle Spieler und Rollen“ zeigte eine Entscheidung (zum Beispiel das weitergegebene Amulett) erst, wenn die nächste Rolle aufgerufen war. Jetzt zeigt sie jede Entscheidung sofort: nach dem Bestätigen der Liste, nach einer Antwort der Hexe oder des Magiers und im Ausklang der Rolle. Dafür liefert der Guide eine Vorschau des Spiels (overviewState: die Entscheidung auf eine Kopie angewendet; das Spiel geht erst mit „Weiter“ weiter). Dabei wurden die Opfer der Nacht zuerst zu früh als tot gezeigt (die Vorschau der letzten Rolle springt in die Morgenansage); jetzt bleiben sie rot (markiert) bis zur Morgenansage (describePlayers mit announce = false). Dazu: Einmalige Fähigkeiten (Amor: Verliebte, Jäger: Schuss, Amulett weitergeben) zeigen sich sofort nach der Entscheidung als verbraucht. Tests in overviewUpdate.test.ts, NarratorBar.test.tsx, NarratorAmulet.test.tsx, NarratorCupid.test.tsx. Alle Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen.
 - Ursache des Opfers in der Übersicht (Auftraggeber, We-01-173): In „Alle Spieler und Rollen“ und am Spielende zeigt jede Zeile, mit welcher Fähigkeit eine Person zum Opfer wurde (Wolfsangriff, Gift, Todeszauber, Hammer, Abstimmung, Schuss, Wunde des Harten Burschen), als kleines Zeichen mit Label und Tooltip; die Legende nennt die vorkommenden Fähigkeiten. Neu: Feld causes in describePlayers (aus der Nacht bei Markierten, aus dem Verlauf bei Toten), causesOf für die Legende. Tests in overviewUpdate.test.ts und PlayerRows.test.tsx. Alle Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen.
+- Gift ist die Flasche, Hexe und Magier unterscheidbar (Auftraggeber, We-01-174): Der Gift-Knopf der Hexe zeigte wie der Todeszauber des Magiers den Totenkopf. Jetzt ist Gift überall die Flasche (Knopf, Ursache des Opfers in der Übersicht, Zustand vergiftet) und der Todeszauber der Totenkopf. Damit das Rollenzeichen der Hexe nicht dasselbe ist wie das Gift, hat die Hexe jetzt eine Katze (neue Zeichnung „cat“ aus Tabler Icons, MIT; vorher die Flasche). Texte der Legende angepasst (Todeszauber nur beim Magier, Katze für die Hexe). Neu: CardAbilitySymbol „poisoned“. Tests in narratorCard.test.ts und symbols.test.tsx. Alle Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen.
 - Sichtprüfung des bereinigten CSS (Auftraggeber, 2026-11-24): Abstimmung, Erzählerkarte, Skriptkästen, Morgen, Tag und Konfiguration angesehen, „sieht gut aus“; das Refactoring (We-01-150 bis We-01-154) ist damit abgeschlossen.
 - Bewusst nicht gemacht (Rest des Plans): CSS-Doppelungen und CSS-Aufteilung (B1 bis B3, brauchen Sichtprüfung), Skriptkästen als Tabelle (C4) und Zusammenfassungszeilen aus dem Guide (C3), weil beides das Aussehen berührt.
 - Noch offen aus dem Plan (Durchlauf 2 läuft weiter): CSS-Doppelungen und CSS-Aufteilung (brauchen Sichtprüfung), Zustandsmaschine und Eventlog aufteilen, weitere Felder statt Status-Abfragen in der Oberfläche, Namens- und Kommentar-Vereinheitlichung.
 - Prüfung: alle 1714 Tests, tsc, ESLint und Prettier grün. Die Oberfläche wurde zuletzt nicht mehr im Browser angesehen (Wunsch des Auftraggebers).
 - Notizen: Livetiker und Multiplayer in GAMEHUB_WERWOLF_LIVETICKER_VISION.md festgehalten (noch nicht begonnen); We-01-140 (Anleitung: Skript immer gleich, nur Lebende werden geweckt) geplant.
 
-
 ### We-03-71: Stimmenzahl-Simulation und unbekannte Abstimmende
 
 - We-03-71 abgeschlossen: Forschungssimulation verwendet voteCount statt erzwungener Verurteilung bei einem Nominierten. Stimmengewichte und Ja/Nein-Mehrheit stimmen mit der Erzähleransicht überein; alte benannte Stimmen werden nach einer Stimmenzahl-Abstimmung nicht als aktuelle Abstimmende protokolliert. lastShot für den betrunkenen Jäger abgesichert. 84 gezielte Tests und 24 kurze Modellpartien bestanden; keine langen Balance-Läufe.
 - 84 gezielte Tests in sechs Dateien bestanden; zwei gezielte Modell-Kurzprüfungen mit 24 vollständigen Partien bestanden. Keine langen Simulationsläufe. simulationVoting.ts: 100 % Zeilen / 96,55 % Zweige. Typprüfung, ESLint, Format und Schichtprüfung erfolgreich. Geprüft: Einzelkandidaten-Zustimmung/Ablehnung, gewichtete Stimmen, stummer oder nominierter Bürgermeister, unbekannte Abstimmende nach früherem benanntem Voting und lastShot beim betrunkenen Jäger.
-
 
 ### We-03-70: Rollenpflicht und aktuelle Abstimmungsmodelle
 
@@ -467,7 +547,6 @@ Alle Angaben ohne Sichtprüfung im Browser; Tests, Typprüfung und ESLint waren 
 
 Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 
-
 ### Werwolf Schritt 2: feste Konfiguration (19.11.2026)
 
 - Neue Konfigurationsansicht (Knopf mit Reglersymbol neben "Spiel starten"): oben Werwölfe (Zahlenknöpfe aus den erlaubten Werten, bei nur einem Wert fest angezeigt; Empfehlung nur bei echter Wahl mit Rand und dem Wort "empfohlen"), Seherin (immer 1) und die automatisch berechneten Dorfbewohner; darunter die Rollen als Raster in Zeilen nach Freigabe-Spielerzahl (verfügbare zuerst, gesperrte unten mit Grund), Zusätze (Trunkenbold, Schutzamulett) und Spielregeln (Wolfsangriff ab Nacht 1/2, Rollen aufdecken/geheim). Jäger, Gerber, Bürgermeister und Alte Vettel werden über ihre Varianten gewählt (zweiter Tipp auf dieselbe Variante lässt die Rolle weg), Leibwächter/Dorfmatratze als Alternative. Jede Rolle und jeder Zusatz hat einen i-Knopf mit Erklärung (auch bei gesperrten, mit dem Sperrgrund); Texte auf Deutsch und Englisch.
@@ -562,8 +641,6 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 ### Werwolf-Übergabe und Aufgabenabgleich (19.11.2026)
 
 - Sämtliche Werwolf-Phasen/Aufgaben aus dem geprüften Spiel-Arbeitsordner übernommen; andere Spiele bewahrt. Fester manueller Einstieg We-03-62 abgeschlossen, 253 Tests bestanden. Gewinneransicht mit späterer Gestaltung festgehalten; aktuelle UI- und technische Übergabedokumente übernommen. Logikdateien sind dadurch nicht automatisch in diesen Checkout integriert.
-
-
 
 ### Hammer-Neuordnung dokumentiert (20.11.2026)
 
@@ -680,7 +757,7 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - **Endstand und Stechen (2026-11-17):** (1) **Fehler behoben:** Im Endstand des Rennens war bei gleicher Zeit der Balken des einen Teams kürzer (es wurde mit Millisekunden verglichen, angezeigt werden Zehntel); jetzt zählen Zehntelsekunden, gleiche Zeiten haben gleich lange Balken. (2) Im Zug des Stechens steht wie bei allen Zügen nur Teamname und Zeit, ohne „Stechen · Karte n/3“ (Text `tabooTiebreak.cardOf` entfällt). (3) Der Endstand des klassischen Spiels mit Stechen zeigt die Ergebnisse des Stechens als zweiten Reiter **„Punktestand | Stechen“** statt im selben Kasten darunter.
 - **Balken im Stechen (2026-11-17):** Im Stechen müssen 3 Karten so schnell wie möglich gelöst werden, deshalb zeigt der Balken oben die **Karten** (1/3, 2/3, 3/3) und füllt sich damit, wie beim Rennen (nicht mehr die Restzeit bis zur 90-Sekunden-Grenze, die zurücklief). Regel: Ein Countdown (Klassisch) lässt den Balken schrumpfen, eine Aufgabe mit Karten (Rennen, Stechen) füllt ihn mit den gelösten Karten.
 - **Konfetti zum Sieg (2026-11-17):** Auf der Endansicht (Klassisch, Rennen, Stechen) regnet kurz Konfetti über den ganzen Bildschirm (110 bunte Teilchen in den Farben der App, die über 2,5 Sekunden nacheinander starten und jeweils 3 bis 4,5 Sekunden fallen: insgesamt etwa sieben Sekunden). Neuer Baustein `Confetti` im `game-kit`, ohne neue Abhängigkeit (nur CSS-Animation), über `ScoreScreen` mit `celebrate`. Es ist reine Dekoration: nimmt keine Tipps an, ist für Screenreader ausgeblendet, löst kein Scrollen aus und **entfällt ganz, wenn das Gerät weniger Bewegung wünscht** (`prefers-reduced-motion`). Im Browser gemessen: die Teilchen fallen, kein horizontales Scrollen.
-()=>"- **Knöpfe der Endansicht (2026-11-17):** Die zwei Knöpfe unten heißen jetzt **„Erneut spielen“** (englisch „Play again“; vorher „Mit gleicher Konfiguration neu spielen“) und **„Zurück zum Hauptmenü“** (englisch „Back to the main menu“; vorher „Neue Partie konfigurieren“). Der zweite Text gilt auch an den anderen Stellen, an denen es zurück ins Hauptmenü geht (keine Karten mehr). Die Texte `tabooResult.sameSetup/newSetup` sind angepasst.
+  ()=>"- **Knöpfe der Endansicht (2026-11-17):** Die zwei Knöpfe unten heißen jetzt **„Erneut spielen“** (englisch „Play again“; vorher „Mit gleicher Konfiguration neu spielen“) und **„Zurück zum Hauptmenü“** (englisch „Back to the main menu“; vorher „Neue Partie konfigurieren“). Der zweite Text gilt auch an den anderen Stellen, an denen es zurück ins Hauptmenü geht (keine Karten mehr). Die Texte `tabooResult.sameSetup/newSetup` sind angepasst.
 - **Grüner Rand am Gewinnerblock:** Der Kasten mit dem Gewinnerteam oben hat einen grünen Rand (die Zeilen der Liste darunter bleiben ohne).\n- **Endansicht angeglichen (2026-11-17):**" (1) Der Name im Gewinnerblock nutzt die normale fette Schrift statt der schmalen Anzeigeschrift. (2) Die Überschrift über der Liste im Kasten („Gesamtpunktestand“, „Endzeiten“, „Zeiten“, „Ergebnis Stechen“) ist nur noch für Screenreader da, sie wiederholte nur, was die Ansicht schon sagt. (3) Der grüne Rand um die Zeilen der Gewinner entfällt; der Sieg zeigt sich durch die Krone und den Gewinnerblock oben.
 - **Endansicht nach dem Stechen (2026-11-17):** (1) Nach dem Stechen ist im Endstand jetzt der Reiter **„Stechen“** offen (er hat das Spiel entschieden), nicht mehr „Punktestand“. `ScoreScreen` kann dafür den zweiten Reiter zuerst öffnen (`extraTabFirst`). (2) **Fehler in der Spiellogik behoben:** Beim Stechen entschieden Millisekunden, angezeigt werden Zehntel; bei „1,1 s“ gegen „1,1 s“ gab es einen alleinigen Gewinner, obwohl beide Zeilen gleich aussahen und beide die Krone hatten. Jetzt zählt wie beim Rennen die Zehntelsekunde, gleiche Zeiten teilen den Sieg. (3) Bei gleichen Ergebnissen bleibt die Spielreihenfolge in der Liste.
 - **„Karte 1/3“ im Stechen:** Im Kopf des Stechen-Zuges steht unter dem Teamnamen wieder „Karte 1/3“ (englisch „Card 1/3“), weil der Balken allein die Kartenzahl nur andeutet. Es ist die einzige zweite Zeile unter einem Teamnamen (bei Klassisch und Rennen gibt es keine). Text `tabooTiebreak.cardOf` wieder da.
@@ -1478,7 +1555,6 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - 52 Tests und acht Desktop-/Mobil-E2E-Fälle erfolgreich ausgeführt.
 - Zusätzliche sichtbare Browserprüfung war wegen ausgeschöpftem Browser-Kontingent nicht verfügbar; responsive Darstellung und Navigation wurden durch Playwright verifiziert.
 
-
 ### Al-04-01 – Design-Tokens und Basiskomponenten
 
 - Zurückhaltende GameHub-Designrichtung mit primärem Dark Mode, tiefem Anthrazit, warmem hellem Text, Kobaltblau und gezieltem Korallakzent umgesetzt.
@@ -1489,7 +1565,6 @@ Alle wichtigen Projektänderungen werden in dieser Datei dokumentiert.
 - Desktopansicht und 320-Pixel-Mobilansicht im Browser geprüft; kein horizontales Scrollen festgestellt.
 - 43 Tests erfolgreich; Basiskomponenten erreichen 100 % Zeilen- und 96,29 % Verzweigungsabdeckung.
 - Primäre Farb-Tokens nach Nutzerpräferenz vollständig auf Dark Mode umgestellt; Formensprache, Kontraste und Komponentenstruktur beibehalten.
-
 
 ### Al-03-04 – Übersetzungsparität prüfen
 
@@ -1649,26 +1724,21 @@ Es wurden keine Spiele, keine KI-Anbindung und kein Multiplayer implementiert.
 - We-03-67 abgeschlossen: Wünsche 1–7 für variable Werwolf-Rollen umgesetzt. Muss-/Darf-Pools, gezählte Rollenfamilien, Optionsmengen und gleichverteilte Wolfswahl; jeder optionale Zusatz unabhängig mit 50 %. Machbarkeit mit Grenzen und Sperrgründen; separate Empfehlung nur anhand der Muss-Einträge. Frühere Itembereiche und Wolfsberechnung nach Ziehung ersetzt. 313 Tests erfolgreich; neue API und Migrationshinweise dokumentiert. UI-Anbindung bleibt separat.
 - 313 gezielte Tests einschließlich 100 kompletter Partien bestanden. Exakte Ziehungsverteilung, unabhängige 50-%-Zusätze, Muss-Varianten, alle Spielerzahlen 6–20, Machbarkeitsgrenzen, Fehlerfälle und Hammer-Tarnaufrufe geprüft. variableSetup.ts: 100 % Zeilen / 99,52 % Zweige; geprüfte kritische Module insgesamt 99,86 % Zeilen / 98,23 % Zweige. Typprüfung, Lint, Format und Schichtprüfung bestanden. Keine Balance-Simulationen erneut gestartet.
 
-
 ### Zweite Regelrunde: nächtlicher Amulettschutz
 
 - Werwolf We-03-66 abgeschlossen: Amulett nur noch gegen Nachtangriffe; Abstimmung und Jägerschuss werden trotz Amulett aufgelöst. Keine künstliche Weitergabepflicht bei Liebeskummer. Freie Paarentscheidungen, Wolfsparität und unveränderte Trunkenbold-Enthüllung in Nacht drei geprüft. 277 gezielte Tests, 100 komplette Partien und zwei Sechser-Kombinationsprüfungen bestanden; 99,83 % Zeilen / 98,07 % Zweige. Historische Balancewerte nicht neu simuliert; UI-Anbindung bleibt We-01-48.
-
 
 ### Neue Rollenregeln und Amulett-Zeitfolge umgesetzt
 
 - Werwolf: Harter Bursche mit wolfOnly/anyAttack, öffentlicher Lehrlingsaufruf und Amors Selbstwahl geprüft; Amulett umgeht keinen Hammer mehr und wird als letzter Nachtschritt vor der Morgenauflösung weitergegeben. Schutz gilt beim jeweiligen Besitzer im Angriffszeitpunkt, nicht rückwirkend. Früherer Träger ist beim späteren Jägerschuss ungeschützt. 273 Tests, beide Sechser-Kombinationsprüfungen, Typ-/Lint-/Schichtprüfung erfolgreich; UI-Anbindung als We-01-48 vorgemerkt.
 - Log und Spielerprojektion erhalten toughGuyWound mit Ursache, handelnden Personen und ursprünglicher Nacht. Historische Balancewerte wurden nicht neu simuliert.
 
-
 ### Erzähler-Logikschnittstellen abgeschlossen
 
 - Werwolf: neue Hammer-Reihenfolge, gültige Ziele, Nachtskript mit Tarnaufrufen, strukturierte Aktions-/Todesprotokolle, Spielerprojektion und reine Rücknahme umgesetzt. 262 Tests plus gezielte Sechser-Kombinationsprüfung bestanden; geprüfte Logik 99,83 % Zeilen / 98,04 % Zweige. Neue Erzähler-API für Claude dokumentiert; UI-Integration bleibt gesondert.
 - Zusätzliche Sechser-Kombinationsprüfung fand veraltete Opfer-/Jägermeldungen in Tarnfortsetzungen; korrigiert und eigener Regressionstest ergänzt. Historische Balancearchive nicht neu berechnet.
 
-
 Nachprüfung advancedRoles.test.ts: 14 weitere Tests zu We-03-70 bestanden. Veraltete Verzichtserwartung an die Pflichtregel der Alten Vettel angepasst; keine Produktionslogik geändert.
-
 
 ### Fehlerbehebung Wb-02 vom 23.11.2026
 
@@ -1676,13 +1746,11 @@ Wortbombe: Ungültige Zufallswerte und doppelte/ungültige Aufgabenkarten werden
 
 Prüfung: 13 Tests bestanden; TypeScript und ESLint erfolgreich; Coverage: 100 % Zeilen, 97,1 % Zweige.
 
-
 ### Fehlerbehebung Im-02 vom 23.11.2026
 
 Imposter: Ungültige Abstimmungsmodi, Hinweiseinstellungen und Zufallswerte erzeugen keine Partie mehr. Dauerhafte Tests decken erfolgreichen letzten Rateversuch, geheimen Frühgleichstand und erfolgreiche Stichwahl ab. Die öffentlichen Schnittstellen bleiben erhalten; ungültige Konfiguration liefert null.
 
 Prüfung: 11 Tests bestanden; TypeScript und ESLint erfolgreich; Coverage der Zustandsmaschine: 100 % Zeilen und Zweige.
-
 
 ### Fehlerbehebung Lb-02 vom 23.11.2026
 
@@ -1690,13 +1758,11 @@ Liar's Bar: Ergebniszustand und Projektion behalten Tischwert und Wahrheitsurtei
 
 Prüfung: 9 Tests, TypeScript und ESLint bestanden. Coverage: 100 % Zeilen, 95,65 % Zweige.
 
-
 ### Fehlerbehebung Ta-11 vom 23.11.2026
 
 Tabu: RaceEvent verlangt bei answerCard und restartRun eine actionId von raceActionId(active). CountdownEvent verlangt bei answerCard und timeUp die active.actionId; sie wechselt bei jeder neuen Karte. Die vorhandenen UI-Aufrufer sind angepasst. Alte oder doppelte Ereignisse werden unverändert zurückgewiesen, auch nach automatischem Teamwechsel. stepTiebreak beendet bei elapsedMs >= 90000 den Versuch ohne zusätzliche Wertung und begrenzt die Zeit auf 90000. Die bestätigte Korrekturregel gilt unverändert nur für ursprünglich richtige Karten. Umsetzung ausschließlich auf game/taboo.
 
 Prüfung: 435 Business- und betroffene UI-Tests bestanden; TypeScript und ESLint erfolgreich. Coverage der drei betroffenen Logikmodule: 100 % Zeilen, 95,12 % Zweige.
-
 
 ### Fehlerbehebung Sw-06 vom 23.11.2026
 
@@ -1704,26 +1770,21 @@ Schwimmen: Bei Blitz und 31-Ansage verliert ausschließlich die niedrigste übri
 
 Prüfung: 38 Spiel- und Sitzungstests bestanden; TypeScript, ESLint und Architekturprüfung erfolgreich. Coverage: 100 % Zeilen, 97,27 % Zweige insgesamt; Spiellogik 96,89 % Zweige.
 
-
 ### Lb-02-04 – Spätere Kartenvarianten vorgemerkt (23.11.2026)
 
 Liar’s Bar: Aktueller Umfang bleibt der klassische Kartenmodus Liar’s Deck. Devil, Chaos, Deck 2 und Chaos 2 als optionale spätere Erweiterungen vorgemerkt; noch keine Umsetzung oder verbindliche Regelplanung.
-
 
 ### Al-06-07 – Online-Logik geprüft (23.11.2026)
 
 Online-Prüfung auf feature/multiplayer abgeschlossen: 8 vorhandene Logik-/Servertests und 11 gezielte Zusatzproben bestanden, einschließlich echter Schwimmen-Partie über lokale HTTP-Verbindungen. Zwei offene Befunde: verlorene Beitrittsantwort kann einen unerreichbaren Sitz erzeugen; automatische Hostübergabe bei Verbindungsabbruch und während einer laufenden Partie fehlt. Kein Produktionscode geändert; öffentliche Online-Abnahme bleibt offen.
 
-
 ### Al-06-07 – Multiplayer-Fortschritt vervollständigt (23.11.2026)
 
 Multiplayer-Status abgeglichen: Die Hauptübersicht enthielt die bereits erledigten Schritte Al-06-03 bis Al-06-05 und die offene öffentliche Abnahme Al-06-06 nicht. Alle neun Aufgaben aus feature/multiplayer sind nun sichtbar, davon vier erledigt. Umsetzung liegt weiterhin im eigenen Multiplayer-Branch; die öffentliche Abnahme und die beiden Befundbehebungen bleiben offen.
 
-
 ### Beitrittskorrektur und bestätigte Hostübergabe (23.11.2026)
 
 Al-06-08: Wiederholbarer Beitritt umgesetzt. prepareRoomJoin erzeugt vor dem Versand einen geheimen Zugang; join verwendet ihn bei Wiederholung weiter. Mit demselben Zugang und Namen liefert der Server denselben Sitz ohne zusätzliche Revision, auch nach Serverneustart oder Spielstart. Der Server speichert weiterhin nur den Token-Hash. Für Wiederherstellung nach Neuladen muss die spätere UI den vorbereiteten Beitrittsversuch vorher lokal sichern. POST join verlangt jetzt name und token. Vier neue und vier vorhandene HTTP-Tests sowie beide TypeScript-Prüfungen und gezieltes ESLint bestanden. Al-06-09: Auftraggeber bestätigt 30 Sekunden bis zur automatischen Hostübergabe; Spielerplatz bleibt reserviert, bisheriger Host erhält bei Rückkehr keine automatische Vorrangstellung.
-
 
 ### Online-Korrekturen Al-06-08/09 abgeschlossen (23.11.2026)
 
@@ -1733,34 +1794,27 @@ Online-Korrekturen Al-06-08/09 abgeschlossen: Wiederholbarer Beitritt nach Antwo
 
 Details und UI-Vertrag: [GAMEHUB_MULTIPLAYER.md](GAMEHUB_MULTIPLAYER.md).
 
-
 ### Al-06-01 – Online-Architektur dokumentiert (23.11.2026)
 
 Al-06-01 abgeschlossen. Die bereits erprobte Architektur des gemeinsamen Mehrspieler-Dienstes ist in ADR-011 festgehalten. Spielmodulvertrag und öffentliche Abnahme bleiben eigene Aufgaben.
-
 
 ### Al-06-02 – Spielmodulvertrag geprüft (23.11.2026)
 
 Al-06-02 abgeschlossen. Der lokale Spielmodulvertrag und der Online-Adapter decken die geprüften Anforderungen ab. Die öffentliche Abnahme bleibt offen.
 
-
 ### Al-06-06 – Öffentliche Abnahme vorbereitet (23.11.2026)
 
 Al-06-06 in Arbeit. Der Abnahmelauf für den Mehrspieler-Dienst ist vorbereitet und lief lokal mit echtem Schwimmen-Kern und SQLite erfolgreich. Für die öffentliche Abnahme fehlt eine HTTPS-Adresse mit dauerhaftem Dateispeicher.
-
 
 ### Al-06-06 – Lokaler Neustartnachweis (23.11.2026)
 
 Al-06-06: Beim lokalen Neustart mit echtem Schwimmen-Kern und derselben SQLite-Datei kehrten beide Sitze mit unveränderten Handkarten und demselben Spielstand zurück. Der nächste Zug wurde angenommen. Eine öffentliche Dienstadresse ist im Projekt nicht hinterlegt.
 
-
 GameHub bleibt für Spieler kostenlos und ohne Konto, Anmeldung oder Abo. Für Online-Partien genügen Anzeigename und Raumcode oder Einladungslink. Die öffentliche Abnahme bleibt offen, bis ein geeigneter Betreiber den Mehrspieler-Dienst bereitstellt. Das lokal geprüfte Serverpaket kann für Selbsthosting genutzt werden.
-
 
 ### Gleichzeitige Nutzung (Al-06-06)
 
 GameHub unterstützt mehrere unabhängige Online-Partien gleichzeitig. Jede Lobby hat einen eigenen Raumcode und Spielstand. Für die öffentliche Abnahme werden parallele Partien, Raumtrennung und die Belastbarkeit des Dienstes geprüft. Die nachhaltig unterstützte Nutzerzahl hängt vom öffentlichen Betrieb ab und wird dort ermittelt.
-
 
 ### Al-06-06 – LAN-Lobby auf dem Host-Gerät
 

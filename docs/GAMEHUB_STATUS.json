@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 378,
-      "totalTasks": 434,
-      "percent": 87.1
+      "completedTasks": 392,
+      "totalTasks": 448,
+      "percent": 87.5
     }
   },
   "environment": {
@@ -2071,6 +2071,90 @@
           "title": "Übersicht: Fähigkeit, mit der jemand zum Opfer wurde",
           "status": "done",
           "validation": "describePlayers liefert causes (Nacht, Verlauf, Wunde); Zeichen mit Label in der Zeile und Legende der vorkommenden Fähigkeiten, in Übersicht und Spielende; Tests in overviewUpdate.test.ts und PlayerRows.test.tsx; 1763 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-174",
+          "title": "Gift = Flasche, Todeszauber = Totenkopf, Hexe = Katze",
+          "status": "done",
+          "validation": "Gift-Knopf, Ursache des Opfers und Zustand vergiftet nutzen die Flasche, der Todeszauber den Totenkopf; Rollenzeichen der Hexe ist die Katze (neue Zeichnung); Texte der Legende angepasst; Tests in narratorCard.test.ts und symbols.test.tsx; 1765 Tests, tsc, ESLint, Prettier grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus (Alternativen zur Katze: Kristallkugel, Mond und Sterne, Spinne)."
+        },
+        {
+          "id": "We-01-175",
+          "title": "Seherin: eigene Zeichen und Zustand „Angesehen“; Seher-Lehrling = Kristallkugel mit Z",
+          "status": "done",
+          "validation": "Rolle Seherin = Kristallkugel, Seher-Lehrling = Kristallkugel mit Z (neue Zeichnungen); Fähigkeit Ansehen und Zustand Angesehen = Auge (Fähigkeit im Kreis, Zustand ohne Kreis, violetter Slot); das Spiel merkt sich, wen die Seherin angesehen hat (Liste inspections), bis die Seherin ausscheidet (der Seher-Lehrling fängt neu an); Anzeige in Rollenkarte und Übersicht in Nacht und Tag; Tests in overviewUpdate.test.ts, symbols.test.tsx, narratorCard.test.ts, WerewolfRules.test.tsx; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus. Das Ergebnis (Wolf oder nicht) steht bewusst nicht im Slot."
+        },
+        {
+          "id": "We-01-176",
+          "title": "Dorfbewohner = Person",
+          "status": "done",
+          "validation": "Rollenzeichen des Dorfbewohners ist die Person (Tabler user) statt des Hauses; Zeichnung home entfernt; Texte de/en angepasst; Test in symbols.test.tsx; tsc, ESLint, Prettier, alle Tests und Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-177",
+          "title": "Hexe mit Hut, Heiltrank mit Plus, Gifttrank als Flasche",
+          "status": "done",
+          "validation": "Rollenzeichen der Hexe ist das Hexengesicht mit Hut (game-icons.net, Cathelineau, CC BY 3.0, gefüllte Zeichnung wie der Wolfskopf; Hinweise in Legende und THIRD_PARTY_NOTICES.md); Fähigkeit Heilen der Hexe = Flasche mit Plus (healPotion, Plus neben dem Flaschenhals), Gift = Flasche mit Minus am selben Platz (flaskMinus); Zustand Geheilt = Flasche mit Plus im grünen Slot, Vergiftet = Flasche mit Minus im roten Slot; das Spiel merkt sich die geheilte Person (Feld healedPlayer) bis zur nächsten Nacht, Anzeige in Rollenkarte und Übersicht auch tagsüber; der Heilzauber des Magiers behält das Herz mit Plus bis zu seiner Runde; Katze entfernt; WerewolfSymbol zeichnet jetzt beliebige gefüllte Zeichnungen (filledGlyphs); Tests in symbols.test.tsx; tsc, ESLint, Prettier, alle Tests und Build grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-178",
+          "title": "Amor = Bogen mit Pfeil",
+          "status": "done",
+          "validation": "Rollenzeichen des Amors ist ein Bogen mit Pfeil nach oben rechts (Tabler bow, unverändert, ohne Herz; die Fassung mit Herz war zu detailreich); Fähigkeit Verlieben und Zustand Verliebt bleiben die zwei Herzen; Herz mit Handschlag entfernt; Test in symbols.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-179",
+          "title": "Jäger = Donnerbüchse",
+          "status": "done",
+          "validation": "Rollenzeichen des Jägers ist die Donnerbüchse (game-icons.net, Lorc, CC BY 3.0, gefüllte Zeichnung wie Wolf und Hexe; Hinweise in Legende und THIRD_PARTY_NOTICES.md); Fähigkeit, Zustand und Varianten des Jägers bleiben vorerst unverändert und werden nach Vorschlag und Bestätigung angepasst; Test in symbols.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-180",
+          "title": "Leibwächter = Person mit Schild",
+          "status": "done",
+          "validation": "Rollenzeichen des Leibwächters ist die Person mit Schild (Tabler user-shield); Fähigkeit Beschützen und Zustand Geschützt bleiben das Schild; Test in symbols.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-181",
+          "title": "Dorfmatratze = Haus mit Herz, Übernachten = Person im Bett",
+          "status": "done",
+          "validation": "Rollenzeichen der Dorfmatratze ist das Haus mit Herz (Tabler home-heart); Fähigkeit Übernachten und Zustand Übernachtungsgast sind die Person im Bett (Tabler bed-flat, Fähigkeit im Kreis, Zustand im blauen Slot); altes Bett entfernt; Test in symbols.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-182",
+          "title": "Zustand Verwundet in Rot",
+          "status": "done",
+          "validation": "Die Zeile eines verwundeten Harten Burschen ist jetzt rot (--seat-wounded wie --seat-attacked, bisher dunkelrot); Rolle Harter Bursche bleibt die Hantel, Varianten unverändert; tsc grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-183",
+          "title": "Alte Vettel = Mikrofon, Variante erlaubt = Haken",
+          "status": "done",
+          "validation": "Rollenzeichen der Alten Vettel ist das Mikrofon (Tabler microphone, das Gegenteil des Zustands Stumm); Fähigkeit und Zustand bleiben das durchgestrichene Mikrofon; Variante Selbst stumm erlaubt ist ein Haken statt des Daumens (der Daumen gehört dem Dorftrottel); Test in symbols.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-184",
+          "title": "Zustände Vom Hammer getroffen und Vom Todeszauber getroffen",
+          "status": "done",
+          "validation": "Die vom Hammer des Bürgermeisters oder einem Todeszauber des Magiers getroffene Person trägt einen Slot mit dem Zeichen der Fähigkeit (Richterhammer gelb, Totenkopf rot; ohne Kreis); kein neuer Wert im Spiel (hammerVictim und spellVictims); Texte de/en; Tests in narratorCard.test.ts und WerewolfRules.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-185",
+          "title": "Zustand Doppelte Stimme als gelber Slot, Hammer-Slot gelb",
+          "status": "done",
+          "validation": "Der Bürgermeister eines Spiels mit doppelter Stimme trägt den Zustand Doppelte Stimme: die 2 ohne Kreis im gelben Slot mit dunklem Zeichen (gut oder schlecht je nach Sicht); der Slot Vom Hammer getroffen ist ebenfalls gelb; kein neues Feld im Spiel; Zeile in Alle Spieler und Rollen zeigt die 2; Tests in overviewUpdate.test.ts und WerewolfRules.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-186",
+          "title": "Zustände von Seherin und Ermittler bleiben bis zum Ausscheiden",
+          "status": "done",
+          "validation": "Die Personen, die die Seherin angesehen hat, tragen das Auge, bis die Seherin ausscheidet (Liste statt eines Werts; der Seher-Lehrling fängt neu an); der Paranormale Ermittler hat den Zustand Untersucht (Lupe ohne Kreis, Petrol) für die drei untersuchten Personen, bis er ausscheidet; neues Feld inspections (by, kind, target) ersetzt inspectedPlayer; Tests in overviewUpdate.test.ts, WerewolfRules.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-187",
+          "title": "Magier: Zustand Durch Heilzauber gerettet",
+          "status": "done",
+          "validation": "Die vom Magier mit dem Heilzauber gerettete Person trägt das Herz mit Plus ohne Kreis im grünen Slot (Zustand Durch Heilzauber gerettet, getrennt vom Zustand Geheilt der Hexe, der die Flasche mit Plus ist); neues Feld spellHealedPlayer bis zur nächsten Nacht; Rolle Magier (Zauberstab) und Fähigkeiten unverändert; Test in overviewUpdate.test.ts; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3700,5 +3784,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T21:18:50.326Z"
+  "updatedAt": "2026-11-24T21:29:04.164Z"
 }

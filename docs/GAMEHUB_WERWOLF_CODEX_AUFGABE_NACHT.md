@@ -353,3 +353,31 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Ursachen je Person (2026-11-24, Claude)
 
 - `describePlayers`: Feld `causes` (`DeathCause[]`). Bei Toten aus den Quellen des letzten Todeseintrags im Verlauf; bei Markierten und Angesagten ohne Eintrag aus `victim` (Wolfsangriff, im Zustand `exile` Abstimmung), `poisoned`, `spellVictims`, `hammerVictim`; beim verwundeten Harten Burschen zusätzlich `toughGuyWound.cause`. `causesOf(players)` liefert die vorkommenden Ursachen für die Legende. Keine Regeländerung.
+
+## Angesehene Person der Seherin (2026-11-24, Claude, We-01-175)
+
+- Neues Feld `Match.inspectedPlayer: string | null`. Es wird im Ereignis `inspect` auf den Namen der angesehenen Person gesetzt und beim Beginn der nächsten Nacht (zusammen mit `protectedPlayer` und `hostPlayer`) auf `null` zurückgesetzt. Sonst keine Regeländerung. `describePlayers`: neues Feld `inspected`; `CardEffect` kennt `inspected`; `CardAbilitySymbol` `seer` heißt jetzt `inspected`.
+
+## Heiltrank der Hexe (2026-11-24, Claude, We-01-177)
+
+- `CardAbilitySymbol` kennt `healPotion`; die Fähigkeit `heal` der Hexe nutzt es (der Magier bleibt bei `heal`). Keine Regeländerung.
+
+## Geheilte Person (2026-11-24, Claude, We-01-177)
+
+- Neues Feld `Match.healedPlayer: string | null`. Es wird bei den Ereignissen `potions` (Hexe, `heal`) und `castSpells` (Magier, `heal`) auf den Namen von `wolfTarget` gesetzt und beim Beginn der nächsten Nacht (zusammen mit `inspectedPlayer`) auf `null` zurückgesetzt. Sonst keine Regeländerung. `describePlayers`: Feld `healed`; `CardEffect` kennt `healed`.
+
+## Opfer von Hammer und Todeszauber (2026-11-25, Claude, We-01-184)
+
+- `CardEffect` kennt `hammered` (aus `hammerVictim`) und `spellKilled` (aus `spellVictims`); keine Regeländerung, kein neues Spielfeld.
+
+## Doppelte Stimme als Zustand (2026-11-25, Claude, We-01-185)
+
+- `describePlayers`: Feld `twoVotes` (Bürgermeister lebt, Einstellung `doubleVote`, nicht der verdeckte Trunkenbold); `CardEffect` kennt `twoVotes`. Keine Regeländerung, kein neues Spielfeld.
+
+## Merkzeichen von Seherin und Ermittler (2026-11-25, Claude, We-01-186)
+
+- Das Feld `Match.inspectedPlayer` ist ersetzt durch `Match.inspections: Inspection[]` (`{ by, kind: "seer" | "investigator", target }`). Das Ereignis `inspect` hängt `{ by: handelnde Seherin oder Lehrling, kind: "seer", target }` an, das Ereignis `investigate` hängt drei Einträge an (die Zielperson und ihre beiden lebenden Nachbarn, `kind: "investigator"`). Es wird nichts zurückgesetzt: `describePlayers` zeigt `inspected` und `investigated` nur, solange die Person `by` noch lebt (der Seher-Lehrling fängt so neu an). Keine Regeländerung.
+
+## Heilzauber des Magiers (2026-11-25, Claude, We-01-187)
+
+- Neues Feld `Match.spellHealedPlayer: string | null`. Es wird beim Ereignis `castSpells` mit `heal` auf den Namen von `wolfTarget` gesetzt und beim Beginn der nächsten Nacht (zusammen mit `healedPlayer`) zurückgesetzt. `healedPlayer` gehört jetzt nur noch der Hexe (`potions`). `describePlayers`: Feld `spellHealed`; `CardEffect` kennt `spellHealed`. Keine Regeländerung.

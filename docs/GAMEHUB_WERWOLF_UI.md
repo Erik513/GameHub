@@ -30,11 +30,11 @@ Vor der Umsetzung lesen: `AGENTS.md`, dieses Dokument, `GAMEHUB_WERWOLF.md`, `GA
 
 Es gibt drei übergeordnete Ansichten:
 
-| Bereich | Aufgabe | Planungsstand |
-| --- | --- | --- |
-| **Hauptansicht** | Einstieg nach Auswahl von Werwolf; Vorbereitung und Ausgangspunkt der Partie. | Wird zuerst geplant. |
-| **Rollenkonfiguration** | Rollen, Items und die zugehörigen Partieeinstellungen festlegen. | Grundaufbau der festen Ansicht abgestimmt; variable Details ausdrücklich später. |
-| **Spielablauf** | Rollenverteilung und eigentliche Partie; Spiel-/Erzählerablauf in einer zentralen Ansicht mit wechselnden Phaseninhalten. | Grundlayout der Erzähleransicht und erster Entwurf der erweiterten Live-Kreisübersicht festgehalten; Detailfragen offen. |
+| Bereich                 | Aufgabe                                                                                                                   | Planungsstand                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Hauptansicht**        | Einstieg nach Auswahl von Werwolf; Vorbereitung und Ausgangspunkt der Partie.                                             | Wird zuerst geplant.                                                                                                     |
+| **Rollenkonfiguration** | Rollen, Items und die zugehörigen Partieeinstellungen festlegen.                                                          | Grundaufbau der festen Ansicht abgestimmt; variable Details ausdrücklich später.                                         |
+| **Spielablauf**         | Rollenverteilung und eigentliche Partie; Spiel-/Erzählerablauf in einer zentralen Ansicht mit wechselnden Phaseninhalten. | Grundlayout der Erzähleransicht und erster Entwurf der erweiterten Live-Kreisübersicht festgehalten; Detailfragen offen. |
 
 Die Rollenkonfiguration wird im Dokument als **Konfiguration** bezeichnet. Die geheime Anzeige einer bereits zugeteilten Rollenkarte gehört zur **Rollenverteilung im Spielablauf**. Ob die drei Bereiche technisch eigene Seiten oder andere Ansichtswechsel erhalten, wird bei der Navigation festgelegt; drei dauerhaft sichtbare Tabs sind bisher nicht beschlossen.
 
@@ -60,14 +60,14 @@ Die konkrete Anordnung und die Einrichtungsvorschau bleiben **Vorschläge**. Die
 
 ### Inhalt und Anordnung
 
-| Bereich | Vorgeschlagener Inhalt | Zweck |
-| --- | --- | --- |
-| Kopf | Spielname „Werwolf“ und Rückweg zur Spielauswahl. | Orientierung. |
-| Mitspieler | Aktuelle Teilnehmer und sichtbare Anzahl; Personen über vorhandene Spielerverwaltung hinzufügen/entfernen. | Runde zusammenstellen. |
-| Erzähler | Separater Bereich mit gewähltem Erzähler und Aktion zum Auswählen/Wechseln. | Rolle der Spielleitung und Spielerzahl eindeutig halten. |
-| Vorbereitung | Gut erreichbare Aktionen **Konfiguration** und **Regeln**. | Von der Hauptansicht zu den vorbereitenden Informationen gelangen. |
-| Kurzübersicht | Wenige verständliche Angaben zur aktuellen Einrichtung; keine vollständige zweite Einstellungsmaske. | Erkennen, womit gestartet wird. |
-| Hauptaktion | **Spiel starten**. | Nach gültiger Vorbereitung die Rollenverteilung beginnen. |
+| Bereich       | Vorgeschlagener Inhalt                                                                                     | Zweck                                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Kopf          | Spielname „Werwolf“ und Rückweg zur Spielauswahl.                                                          | Orientierung.                                                      |
+| Mitspieler    | Aktuelle Teilnehmer und sichtbare Anzahl; Personen über vorhandene Spielerverwaltung hinzufügen/entfernen. | Runde zusammenstellen.                                             |
+| Erzähler      | Separater Bereich mit gewähltem Erzähler und Aktion zum Auswählen/Wechseln.                                | Rolle der Spielleitung und Spielerzahl eindeutig halten.           |
+| Vorbereitung  | Gut erreichbare Aktionen **Konfiguration** und **Regeln**.                                                 | Von der Hauptansicht zu den vorbereitenden Informationen gelangen. |
+| Kurzübersicht | Wenige verständliche Angaben zur aktuellen Einrichtung; keine vollständige zweite Einstellungsmaske.       | Erkennen, womit gestartet wird.                                    |
+| Hauptaktion   | **Spiel starten**.                                                                                         | Nach gültiger Vorbereitung die Rollenverteilung beginnen.          |
 
 Vorgeschlagene mobile Hierarchie: Mitspieler und Erzähler als Hauptinhalt; Konfiguration/Regeln als Nebenaktionen; Spielstart als eindeutige Hauptaktion. Dark Mode, große Schaltflächen, knappe Texte und Auswahl über Buttons passen zu den bestehenden Gestaltungswünschen. Namenserfassung verwendet die vorhandene gemeinsame Bedienung. Layout und genaue Buttonpositionen werden noch abgestimmt.
 
@@ -75,9 +75,9 @@ Vorgeschlagene mobile Hierarchie: Mitspieler und Erzähler als Hauptinhalt; Konf
 
 Innerhalb der Hauptansicht gibt es zwei Reiter:
 
-| Reiter | Aufgabe |
-| --- | --- |
-| **Spieler** | Teilnehmer der Runde verwalten. Die bestehende gemeinsame Spielerverwaltung bleibt Grundlage. |
+| Reiter         | Aufgabe                                                                                                                                      |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Spieler**    | Teilnehmer der Runde verwalten. Die bestehende gemeinsame Spielerverwaltung bleibt Grundlage.                                                |
 | **Sitzplätze** | Die Reihenfolge aller mitspielenden Personen entsprechend ihrer realen Sitzordnung festlegen und anschließend als Kreisübersicht darstellen. |
 
 Diese beiden Reiter gehören zur Hauptansicht. Die übergeordnete Aufteilung in Hauptansicht, Konfiguration und Spielablauf bleibt bestehen. Der Erzählerplatz in der Sitzplatzansicht ist bestätigt: fest unten mittig.
@@ -144,16 +144,16 @@ Diese Punkte stammen aus bestätigten Spielregeln und gelten unabhängig vom end
 
 ## Bestehende Bausteine und Integration für Claude Code
 
-| Baustein | Verwendung / wichtige Grenze |
-| --- | --- |
-| `src/presentation/game-kit/PlayerRosterContext.ts` | Gemeinsame gespeicherte Personen und ihre Aktionen verwenden. |
-| `src/presentation/game-kit/PlayersSetup.tsx` | Bestehende Namenseingabe/gespeicherte Auswahl berücksichtigen. Der aktuelle Baustein sortiert die Anzeige alphabetisch; eine echte Sitzreihenfolge muss deshalb ausdrücklich modelliert und erhalten werden. |
-| `src/business/shared/players.ts` | Gemeinsame Namensaufbereitung nutzen. Der Erzähler wird getrennt übergeben. |
-| `src/business/games/werewolf/configuration.ts` | Spielergrenzen, freigegebene Rollen und Wolfszahlen. |
-| `src/business/games/werewolf/automaticSetup.ts` | Automatische Bewertung fester Rollen; Machbarkeitsprüfung ohne Punkteberechnung für Kandidaten. |
-| `src/business/games/werewolf/balancedSetup.ts` | Feste Aufstellung bzw. exakte Zufallsanzahl starten; manuelle Wolfswerte werden ignoriert. |
-| `src/business/games/werewolf/variableSetup.ts` | Entwurf öffentlich auf Machbarkeit prüfen, danach einmalig private variable Partie erzeugen. |
-| `src/business/games/werewolf/stateMachine.ts` | Private Rollenverteilung und Spielablauf. Geheime Zustände ausschließlich an die jeweils berechtigte Ansicht geben. |
+| Baustein                                           | Verwendung / wichtige Grenze                                                                                                                                                                                 |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/presentation/game-kit/PlayerRosterContext.ts` | Gemeinsame gespeicherte Personen und ihre Aktionen verwenden.                                                                                                                                                |
+| `src/presentation/game-kit/PlayersSetup.tsx`       | Bestehende Namenseingabe/gespeicherte Auswahl berücksichtigen. Der aktuelle Baustein sortiert die Anzeige alphabetisch; eine echte Sitzreihenfolge muss deshalb ausdrücklich modelliert und erhalten werden. |
+| `src/business/shared/players.ts`                   | Gemeinsame Namensaufbereitung nutzen. Der Erzähler wird getrennt übergeben.                                                                                                                                  |
+| `src/business/games/werewolf/configuration.ts`     | Spielergrenzen, freigegebene Rollen und Wolfszahlen.                                                                                                                                                         |
+| `src/business/games/werewolf/automaticSetup.ts`    | Automatische Bewertung fester Rollen; Machbarkeitsprüfung ohne Punkteberechnung für Kandidaten.                                                                                                              |
+| `src/business/games/werewolf/balancedSetup.ts`     | Feste Aufstellung bzw. exakte Zufallsanzahl starten; manuelle Wolfswerte werden ignoriert.                                                                                                                   |
+| `src/business/games/werewolf/variableSetup.ts`     | Entwurf öffentlich auf Machbarkeit prüfen, danach einmalig private variable Partie erzeugen.                                                                                                                 |
+| `src/business/games/werewolf/stateMachine.ts`      | Private Rollenverteilung und Spielablauf. Geheime Zustände ausschließlich an die jeweils berechtigte Ansicht geben.                                                                                          |
 
 Die Dateien im Spiel-Branch können gegenüber anderen Arbeitsordnern neuer sein. Vor UI-Implementierung den verwendeten Branch und dessen Business-Tests prüfen; keine ältere Kopie der Spiellogik nachbauen. Änderungen der gemeinsamen Spielerverwaltung müssen andere Spiele erhalten.
 
@@ -168,7 +168,6 @@ Die Dateien im Spiel-Branch können gegenüber anderen Arbeitsordnern neuer sein
 
 Die feste Rollenkonfiguration wird im folgenden eigenen Abschnitt konkretisiert. Der variable Modus bleibt für später zurückgestellt. Der eigentliche Spiel-/Erzählerablauf wird nach neuer Vorgabe in einer zentralen Ansicht geplant; Phasenaufgaben sind Inhalts-/Aktionszustände dieser Ansicht, keine Vorgabe für getrennte Hauptseiten. Die bestehenden Implementierungsaufgaben `We-01-26` bis `We-01-32` bleiben dafür bestehen. Die Hauptansicht besitzt den geplanten Umsetzungsschritt `We-01-34`. Seine Umsetzung beginnt erst nach Klärung der offenen Hauptansicht-Entscheidungen. Die Aufgabe `We-01-26` bezeichnet ausdrücklich die Rollenkonfiguration.
 
-
 ### Einordnung: Was für die Hauptansicht noch gebraucht wird
 
 Die Standardaktionen Spiel starten, Spieleinstellungen und Spielanleitung sind bestätigt und gelten als gemeinsame Spielbedienung. Weitere zusätzliche Bereiche sind aktuell nicht beschlossen. Für die Werwolf-Hauptansicht bleiben vor allem die folgenden Details zu klären:
@@ -179,7 +178,6 @@ Die Standardaktionen Spiel starten, Spieleinstellungen und Spielanleitung sind b
 - **Entwurf erhalten:** Beim Wechsel zwischen Spieler-/Sitzplatzreiter, Spieleinstellungen und Anleitung darf die Vorbereitung nicht versehentlich verloren gehen.
 
 Das Wiederöffnen einer bereits laufenden Partie sowie Fortsetzen/Neustart bleiben eine separate offene Bedienentscheidung. Diese Liste ist eine Eingrenzung der nächsten Planung, keine Freigabe neuer Produkt-UI oder einer dauerhaften Spielspeicherung.
-
 
 ## Konfiguration: gemeinsamer Aufbau und zuerst feste Rollen
 
@@ -198,11 +196,11 @@ Das Wiederöffnen einer bereits laufenden Partie sowie Fortsetzen/Neustart bleib
 
 Oben werden die Pflicht-/Füllrollen dargestellt:
 
-| Anzeige | Verhalten |
-| --- | --- |
-| **Werwölfe** | Bei festen Rollen verpflichtende Auswahl aus erlaubten Zahlenbuttons. Allgemeinen Standard initial vorauswählen; Empfehlung getrennt kennzeichnen und Auswahl nicht automatisch ersetzen. Bei nur einem freigegebenen Wert feste Anzeige, etwa zwei bei 9/10. Keine Deaktivierung und keine freie Zahleneingabe. |
-| **Seherin** | Genau eine, nicht deaktivierbar. |
-| **Dorfbewohner** | Sichtbare Anzahl der automatisch aufgefüllten normalen Dorfbewohner; verständlicher kurzer Hinweis, dass freie Spielerplätze automatisch belegt werden. Keine manuelle Mengeneingabe. |
+| Anzeige          | Verhalten                                                                                                                                                                                                                                                                                                        |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Werwölfe**     | Bei festen Rollen verpflichtende Auswahl aus erlaubten Zahlenbuttons. Allgemeinen Standard initial vorauswählen; Empfehlung getrennt kennzeichnen und Auswahl nicht automatisch ersetzen. Bei nur einem freigegebenen Wert feste Anzeige, etwa zwei bei 9/10. Keine Deaktivierung und keine freie Zahleneingabe. |
+| **Seherin**      | Genau eine, nicht deaktivierbar.                                                                                                                                                                                                                                                                                 |
+| **Dorfbewohner** | Sichtbare Anzahl der automatisch aufgefüllten normalen Dorfbewohner; verständlicher kurzer Hinweis, dass freie Spielerplätze automatisch belegt werden. Keine manuelle Mengeneingabe.                                                                                                                            |
 
 Die Berechnung lautet: Mitspielerzahl minus Werwölfe minus eine Seherin minus Anzahl ausgewählter optionaler Rollenkarten. Zusätze belegen keinen Rollenplatz. Nicht startfähige Entwürfe brauchen einen verständlichen Fehlerzustand anstelle einer scheinbar gültigen oder negativen Dorfbewohnerzahl.
 
@@ -216,14 +214,14 @@ Der Nutzer schlägt vor, diese kompakte Gruppe ebenfalls **oben** anzuordnen. Di
 
 Die folgende Zuordnung bildet die aktuelle Logik ab; die spätere Implementierung liest die Freigaben aus der Business-Schicht, statt sie separat neu zu definieren. Sie bestimmt die Zeilen im unteren Block der noch nicht freigegebenen Rollen. Auch im oberen Block verfügbarer Rollen bleiben diese Freigabegruppen jeweils zusammen; spätere Freigaben stehen unter früheren.
 
-| Zeile | Sichtbare Rollen |
-| --- | --- |
-| **Ab 6 Spielern** | Hexe, Jäger, Dorftrottel und die Alternative Leibwächter/Dorfmatratze. |
-| **Ab 7 Spielern** | Amor und Harter Bursche. |
-| **Ab 8 Spielern** | Gerber und Seher-Lehrling. |
-| **Ab 9 Spielern** | Alte Vettel (Spellcaster) und Bürgermeister mit doppelter Stimme. |
+| Zeile              | Sichtbare Rollen                                                                            |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| **Ab 6 Spielern**  | Hexe, Jäger, Dorftrottel und die Alternative Leibwächter/Dorfmatratze.                      |
+| **Ab 7 Spielern**  | Amor und Harter Bursche.                                                                    |
+| **Ab 8 Spielern**  | Gerber und Seher-Lehrling.                                                                  |
+| **Ab 9 Spielern**  | Alte Vettel (Spellcaster) und Bürgermeister mit doppelter Stimme.                           |
 | **Ab 10 Spielern** | Paranormaler Ermittler; zusätzlich wird die Hammer-Variante des Bürgermeisters freigegeben. |
-| **Ab 11 Spielern** | Magier. |
+| **Ab 11 Spielern** | Magier.                                                                                     |
 
 Bedingte Zusatzfreigaben wie der Hammer oder die gemeinsame Heilrollenwahl erzeugen keine zweite Kopie derselben Rolle. Sie werden am jeweiligen Rollen-/Variantencontrol erklärt und angepasst. Der Magier bleibt in der Zeile ab elf sichtbar; die spätere Möglichkeit, ihn gemeinsam mit der Hexe zu spielen, ist eine Bedingung derselben Karte.
 
@@ -264,12 +262,12 @@ Für die spätere Umsetzung beachten:
 
 Die Grundauswahl deckt die Karten ab. Vorhandene Partieoptionen müssen zusätzlich erreichbar bleiben:
 
-| Option | Bestehende Auswahl |
-| --- | --- |
-| Jäger | Schuss freiwillig (Standard) oder verpflichtende Zielwahl. |
-| Gerber | Sieg durch jedes Ausscheiden (Standard) oder nur durch Abstimmung. |
-| Bürgermeister | Doppelte Stimme oder Hammer; pro Partie genau eine Variante, Freigaben beachten. |
-| Alte Vettel | Selbstwahl erlauben oder verbieten. |
+| Option            | Bestehende Auswahl                                                                                                   |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Jäger             | Schuss freiwillig (Standard) oder verpflichtende Zielwahl.                                                           |
+| Gerber            | Sieg durch jedes Ausscheiden (Standard) oder nur durch Abstimmung.                                                   |
+| Bürgermeister     | Doppelte Stimme oder Hammer; pro Partie genau eine Variante, Freigaben beachten.                                     |
+| Alte Vettel       | Selbstwahl erlauben oder verbieten.                                                                                  |
 | Allgemeine Partie | Rollen nach dem Ausscheiden aufdecken oder geheim halten; Wolfsangriff bereits in der ersten Nacht ein-/ausschalten. |
 
 Für den Jäger ist die Bedienung bestätigt: Ein optionaler Varianten-Auswahlbutton aktiviert die Rolle durch die Auswahl der Schussregel. Keine Auswahl bedeutet kein Jäger. Dasselbe optionale Variantenprinzip ist nun auch für Gerber, Bürgermeister und Alte Vettel bestätigt. Der i-Button dient der Erklärung und ist nicht zugleich ein versteckter Einstellungsbutton. Für die allgemeinen Partieoptionen ist ihre kompakte Position noch festzulegen. Defaults und Regeln aus der Business-Schicht übernehmen, nicht aus diesem UI-Entwurf neu erfinden.
@@ -284,14 +282,13 @@ Für den Jäger ist die Bedienung bestätigt: Ein optionaler Varianten-Auswahlbu
 
 Der Nutzer betrachtet den bisherigen grundlegenden Aufbau der festen Konfiguration als ausreichend abgestimmt. Die bestätigten Inhalte bilden die Grundlage für deren spätere Umsetzung; verbleibende Bedienfeindetails und Konfliktfälle bleiben als offene Einzelpunkte sichtbar. Die Details der variablen Konfiguration werden ausdrücklich erst später definiert.
 
-
 ### Bestätigt: Jäger über optionalen Varianten-Auswahlbutton
 
-| Auswahl | Bedeutung | Vorhandene Business-Zuordnung |
-| --- | --- | --- |
-| Keine Auswahl | Kein Jäger im Spiel. | `hunter` nicht in der ausgewählten Rollenliste. |
-| Schusspflicht | Jäger mit verpflichtender Zielwahl. | `hunter` auswählen, `hunterShot: "required"`. |
-| Keine Schusspflicht | Jäger mit freiwilligem Schuss. | `hunter` auswählen, `hunterShot: "optional"`. |
+| Auswahl             | Bedeutung                           | Vorhandene Business-Zuordnung                   |
+| ------------------- | ----------------------------------- | ----------------------------------------------- |
+| Keine Auswahl       | Kein Jäger im Spiel.                | `hunter` nicht in der ausgewählten Rollenliste. |
+| Schusspflicht       | Jäger mit verpflichtender Zielwahl. | `hunter` auswählen, `hunterShot: "required"`.   |
+| Keine Schusspflicht | Jäger mit freiwilligem Schuss.      | `hunter` auswählen, `hunterShot: "optional"`.   |
 
 Die Kurztexte sind naheliegende Beschriftungen; die endgültige Gestaltung wird später präzisiert. Bestätigt sind die drei Zustände und die direkte Aktivierung durch Auswahl einer Variante.
 
@@ -305,15 +302,14 @@ Die Kurztexte sind naheliegende Beschriftungen; die endgültige Gestaltung wird 
 
 Ausschließlich dokumentiert. Vorhandene Spiellogik und Produkt-UI wurden nicht geändert.
 
-
 ### Bestätigt: Wolfswahl und kompakte Empfehlung je Modus
 
 Diese Entscheidung ersetzt die frühere Vorgabe einer verbindlichen automatischen Wolfszahl in beiden Modi.
 
-| Modus | Verbindliches Verhalten |
-| --- | --- |
-| **Feste Rollen** | Manuelle Auswahl der Wolfszahl ausschließlich innerhalb der bestätigten Grenzen. Initial ist der allgemeine Standard der Spielerzahl ausgewählt. Das System berechnet für die konkrete Besetzung eine separate Empfehlung. |
-| **Variable Rollen** | Erst konkrete Sonderrollen und Items auslosen, danach die Wolfszahl automatisch bestimmen. Keine manuelle Wolfswahl. |
+| Modus               | Verbindliches Verhalten                                                                                                                                                                                                    |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Feste Rollen**    | Manuelle Auswahl der Wolfszahl ausschließlich innerhalb der bestätigten Grenzen. Initial ist der allgemeine Standard der Spielerzahl ausgewählt. Das System berechnet für die konkrete Besetzung eine separate Empfehlung. |
+| **Variable Rollen** | Erst konkrete Sonderrollen und Items auslosen, danach die Wolfszahl automatisch bestimmen. Keine manuelle Wolfswahl.                                                                                                       |
 
 Bei festen Rollen bleibt eine gültige gewählte Zahl erhalten, wenn Rollen, Items oder Einstellungen die Empfehlung verändern. Die Empfehlung ersetzt diese Auswahl nicht automatisch. Ein abweichender Wert ist nicht allein deshalb ungültig, weil ein anderer empfohlen wird. Echte Regel-/Platzkonflikte müssen dagegen vor dem Start geklärt werden. Bei Spielerzahländerungen muss geprüft werden, ob die bisherige Zahl noch erlaubt ist; die konkrete Behandlung einer dann ungültigen Auswahl ist noch abzustimmen.
 
@@ -336,19 +332,18 @@ Beispiel: Sieben Spieler, ein Wolf ausgewählt, starke Sonderrollen. Der Button 
 
 Die konkrete Konfliktbedienung, falls eine Rolle eine andere erlaubte Wolfszahl benötigt oder die Spielerzahl eine bestehende Wahl ungültig macht, bleibt offen. Keine automatische Rollenlöschung oder unbemerkte Wolfszahländerung einführen. Ausschließlich dokumentiert, keine Produkt-UI oder Spiellogik in diesem Planungsschritt geändert.
 
-
 ### Vollständiger Bestand der bereits implementierten Partie-/Rollenoptionen
 
 Die Einstellung zum Wolfsangriff ab Nacht eins ist für die Rollenkonfiguration relevant und wurde ausdrücklich aufgenommen. Folgende Optionen existieren bereits in der Spiellogik; UI-Position und kurze Beschriftungen sind teilweise noch zu konkretisieren. Es werden daraus keine zusätzlichen Spielregeln erfunden.
 
-| Zuordnung | Einstellung | Werte | Bisheriger Business-Standard |
-| --- | --- | --- | --- |
-| Allgemeine Partie | Wolfsangriff in der ersten Nacht | Angriff ab Nacht 1 / ab Nacht 2 | Ab Nacht 2; Wölfe lernen sich in Nacht 1 kennen. |
-| Allgemeine Partie | Rollen nach dem Ausscheiden aufdecken | Aufdecken / geheim halten | Aufdecken. |
-| Jäger | Letzter Schuss | Freiwillig / Zielwahl verpflichtend | Freiwillig, falls Jäger aktiviert ist. Leere UI-Auswahl bedeutet kein Jäger. |
-| Gerber | Eigene Siegbedingung | Jedes Ausscheiden / nur Ausscheiden durch Abstimmung | Jedes Ausscheiden. |
-| Bürgermeister | Fähigkeit | Doppelte Stimme / Hammer | Doppelte Stimme; Hammer erst ab zehn Spielern. |
-| Alte Vettel | Sich selbst stummschalten dürfen | Verboten / erlaubt | Verboten. |
+| Zuordnung         | Einstellung                           | Werte                                                | Bisheriger Business-Standard                                                 |
+| ----------------- | ------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Allgemeine Partie | Wolfsangriff in der ersten Nacht      | Angriff ab Nacht 1 / ab Nacht 2                      | Ab Nacht 2; Wölfe lernen sich in Nacht 1 kennen.                             |
+| Allgemeine Partie | Rollen nach dem Ausscheiden aufdecken | Aufdecken / geheim halten                            | Aufdecken.                                                                   |
+| Jäger             | Letzter Schuss                        | Freiwillig / Zielwahl verpflichtend                  | Freiwillig, falls Jäger aktiviert ist. Leere UI-Auswahl bedeutet kein Jäger. |
+| Gerber            | Eigene Siegbedingung                  | Jedes Ausscheiden / nur Ausscheiden durch Abstimmung | Jedes Ausscheiden.                                                           |
+| Bürgermeister     | Fähigkeit                             | Doppelte Stimme / Hammer                             | Doppelte Stimme; Hammer erst ab zehn Spielern.                               |
+| Alte Vettel       | Sich selbst stummschalten dürfen      | Verboten / erlaubt                                   | Verboten.                                                                    |
 
 Die Trennung ist bestätigt: **Erster Wolfsangriff** und **Rollen nach dem Ausscheiden** sind allgemeine Einstellungen. Ein kompakter Bereich innerhalb der Konfiguration ist dafür ein Layoutvorschlag; umgesetzt als Reiter **„Einstellungen“** (nicht „Spielregeln“, damit er nicht mit dem Knopf der Spielanleitung verwechselt wird). Auswahl über Buttons passt zur bisherigen Gestaltungsrichtung; zum Beispiel „Nacht 1 / Nacht 2“ für den ersten Wolfsangriff und „Aufdecken / Geheim“ für Rollen nach dem Ausscheiden. Diese Beschriftungen und die genaue Position sind noch nicht endgültig bestätigt. Jäger, Gerber, Bürgermeister und Alte Vettel erhalten jeweils einen optionalen Varianten-Auswahlbutton nach dem bestätigten Jäger-Prinzip.
 
@@ -357,7 +352,6 @@ Bereits separat geplant sind Modus Fest/Variabel, optionale Rollenkarten, Amulet
 **Keine zusätzlichen Einstellfelder** werden aus festen Rollenregeln abgeleitet: etwa für die Enthüllung des Trunkenbolds in Nacht drei, die einmalige Ermittlerfähigkeit oder die Übergaberegel des Amuletts. Solche Regeln werden im i-Fenster erläutert. Das interne Forschungsfeld `wolfCountMode` ist ebenfalls kein zusätzlicher UI-Spielmodus und darf nicht als frei erfundene Einstellung angeboten werden.
 
 Die Defaults stammen aus der bestehenden Business-Schicht. Sie aktivieren keine optionale Rollenkarte und ersetzen nicht die noch zu planende Bedienung. Ausschließlich dokumentiert; keine Produkt-UI oder Spiellogik geändert.
-
 
 ### Bestätigte Trennung: allgemeine Regeln und optionale Rollenvarianten
 
@@ -370,12 +364,12 @@ Diese Einstellungen sind unabhängig von der Aktivierung einer bestimmten option
 
 Die anderen genannten Einstellungen werden jeweils **direkt durch einen optionalen Varianten-Auswahlbutton der Rolle** dargestellt:
 
-| Rolle | Erste Variante | Zweite Variante | Keine Auswahl |
-| --- | --- | --- | --- |
-| Jäger | Schusspflicht | Keine Schusspflicht | Kein Jäger. |
-| Gerber | Sieg bei jedem Ausscheiden | Sieg nur bei Abstimmung | Kein Gerber. |
-| Bürgermeister | Doppelte Stimme | Hammer | Kein Bürgermeister. |
-| Alte Vettel | Selbstwahl erlaubt | Selbstwahl verboten | Keine Alte Vettel. |
+| Rolle         | Erste Variante             | Zweite Variante         | Keine Auswahl       |
+| ------------- | -------------------------- | ----------------------- | ------------------- |
+| Jäger         | Schusspflicht              | Keine Schusspflicht     | Kein Jäger.         |
+| Gerber        | Sieg bei jedem Ausscheiden | Sieg nur bei Abstimmung | Kein Gerber.        |
+| Bürgermeister | Doppelte Stimme            | Hammer                  | Kein Bürgermeister. |
+| Alte Vettel   | Selbstwahl erlaubt         | Selbstwahl verboten     | Keine Alte Vettel.  |
 
 Die Variantenbezeichnungen sind verständliche Arbeitsbeschriftungen; die Auswahlsemantik ist bestätigt:
 
@@ -389,7 +383,6 @@ Die Variantenbezeichnungen sind verständliche Arbeitsbeschriftungen; die Auswah
 
 Die Unterscheidung ersetzt die zuvor noch offene Frage, ob diese Varianten gesammelt in einem zusätzlichen Spielregeln-Bereich bearbeitet werden sollen. Nur die beiden allgemeinen Regeln sind davon getrennt. Die Bedienung des variablen Rollenmodus wird weiterhin in einem eigenen Planungsschritt konkretisiert. Ausschließlich dokumentiert, keine Produkt-UI oder Spiellogik geändert.
 
-
 ### Aktueller Planungsabschluss der Rollenansicht
 
 Der grundlegende Aufbau der **festen Rollenkonfiguration ist abgestimmt**. Für diesen Aufbau werden aktuell keine weiteren Funktionsbereiche ergänzt. Die bestätigten Vorgaben aus den vorstehenden Abschnitten bleiben maßgeblich.
@@ -400,15 +393,14 @@ Verbleibende Bedienfeindetails (etwa Leeren/Wechseln eines Auswahlbuttons oder g
 
 Keine Produkt-UI umgesetzt. Die Details der variablen Rollenansicht folgen in einer späteren gemeinsamen Planung.
 
-
 ### Bestätigte Ergänzung: Rollenraster mit zwei Verfügbarkeitsbereichen
 
 Die Rollenbuttons sollen **gleichmäßig in einem Raster** stehen, damit die Anordnung einheitlich aussieht. Dies betrifft die Struktur der optionalen Rollenauswahl; die bereits geplanten Pflicht-/Füllrollen und gesonderten Zusätze bleiben erhalten.
 
-| Bereich | Bestätigte Anordnung |
-| --- | --- |
-| **Verfügbare Rollen** | Oben als gemeinsamer Bereich mit getrennten Zeilen beziehungsweise zusammenhängenden Gruppen je ursprünglicher Freigabe-Spielerzahl. Rollen ab sechs werden nicht mit Rollen ab neun vermischt. Gruppen aufsteigend anordnen. |
-| **Noch nicht verfügbare Rollen** | Darunter. Nach Freigabe-Spielerzahl in Zeilen gruppieren und diese **durch Trennstriche** voneinander absetzen. Erkennbar lassen, ab welcher Spielerzahl die jeweilige Gruppe freigeschaltet wird. |
+| Bereich                          | Bestätigte Anordnung                                                                                                                                                                                                          |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Verfügbare Rollen**            | Oben als gemeinsamer Bereich mit getrennten Zeilen beziehungsweise zusammenhängenden Gruppen je ursprünglicher Freigabe-Spielerzahl. Rollen ab sechs werden nicht mit Rollen ab neun vermischt. Gruppen aufsteigend anordnen. |
+| **Noch nicht verfügbare Rollen** | Darunter. Nach Freigabe-Spielerzahl in Zeilen gruppieren und diese **durch Trennstriche** voneinander absetzen. Erkennbar lassen, ab welcher Spielerzahl die jeweilige Gruppe freigeschaltet wird.                            |
 
 - Beide Bereiche verwenden ein einheitliches Raster und eine gleichmäßige Gestaltung der Rollenbuttons. Unterschiedlich lange Rollennamen dürfen nicht zu einer beliebig unruhigen Anordnung führen. Exakte Maße und Spaltenzahlen sind noch nicht festgelegt.
 - Alle Rollen bleiben weiterhin sichtbar. Sobald die Spielerzahl die Mindestfreigabe erreicht, gehört die Rolle in den oberen Bereich; die Auswahl wird dadurch nicht automatisch aktiviert. Die Darstellung folgt den Freigaben der Business-Schicht.
@@ -418,7 +410,6 @@ Die Rollenbuttons sollen **gleichmäßig in einem Raster** stehen, damit die Ano
 - Der Erzähler zählt für die Freigabe weiterhin nicht mit.
 
 **Präzisierung bestätigt:** Auch oben bleiben Rollen mit derselben Freigabe-Spielerzahl zusammen. Beide Bereiche sind aufsteigend nach Mindestspielerzahl geordnet. Es entsteht kein gemischtes Raster über mehrere Freigabegruppen. Eine einzige horizontal scrollbare Gesamtreihe ist damit nicht gemeint. Konkreter Umbruch innerhalb einer Gruppe und Spaltenzahl bleiben Layoutdetails. Keine Produkt-UI umgesetzt.
-
 
 ### Bestätigte Präzisierung: Freigabegruppen auch bei verfügbaren Rollen erhalten
 
@@ -431,7 +422,6 @@ Die Rollenbuttons sollen **gleichmäßig in einem Raster** stehen, damit die Ano
 
 Damit ist die frühere Rückfrage zur Bedeutung „in einer Reihe“ geklärt. Keine Produkt-UI oder Spiellogik geändert.
 
-
 ## Spielablauf: offener Vorschlag für Tarnaufrufe im Nachtskript
 
 Der Nutzer kennt den Ablauf so, dass die Hexe jede Nacht nach Heil- und Gifttrank gefragt wird, auch wenn Tränke bereits verbraucht sind. Bei offenen Rollen nach dem Ausscheiden stellt sich die Frage anders als bei geheimer Rollenaufdeckung. Diese Unterscheidung ist aktuell Gegenstand der Planung; die nachstehende Lösung ist ein **Vorschlag und noch nicht bestätigt**.
@@ -440,12 +430,12 @@ Wichtig: Ausgeschiedene Spielernamen bleiben bekannt. Die Einstellung zur Rollen
 
 ### Vorgeschlagene einheitliche Regel
 
-| Situation | Vorgeschlagenes Nachtskript |
-| --- | --- |
-| Rolle lebt, Fähigkeit/Tränke noch verfügbar | Regulär aufrufen und handeln lassen. |
-| Rolle lebt, Fähigkeit/Tränke verbraucht | Den regulär vorgesehenen Aufruf und die allgemeinen Fragen beibehalten. Verbrauch nicht durch eine öffentliche Auslassung verraten. |
-| Rolle ausgeschieden, Rolle öffentlich aufgedeckt | Deren regulären Nachtaufruf überspringen; die Gruppe kennt das Ausscheiden dieser Rolle bereits. |
-| Rolle ausgeschieden, Rolle geheim | Den vorgesehenen Aufruf als Tarnaufruf beibehalten. Niemand handelt; der Erzähler darf Tod der Rolle oder Verbrauch nicht öffentlich verraten. |
+| Situation                                        | Vorgeschlagenes Nachtskript                                                                                                                    |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rolle lebt, Fähigkeit/Tränke noch verfügbar      | Regulär aufrufen und handeln lassen.                                                                                                           |
+| Rolle lebt, Fähigkeit/Tränke verbraucht          | Den regulär vorgesehenen Aufruf und die allgemeinen Fragen beibehalten. Verbrauch nicht durch eine öffentliche Auslassung verraten.            |
+| Rolle ausgeschieden, Rolle öffentlich aufgedeckt | Deren regulären Nachtaufruf überspringen; die Gruppe kennt das Ausscheiden dieser Rolle bereits.                                               |
+| Rolle ausgeschieden, Rolle geheim                | Den vorgesehenen Aufruf als Tarnaufruf beibehalten. Niemand handelt; der Erzähler darf Tod der Rolle oder Verbrauch nicht öffentlich verraten. |
 
 Die Spielleitung müsste intern erkennen können, ob eine echte Handlung oder nur ein Tarnaufruf ansteht. Ungültige Aktionen bleiben in der Logik verboten; ein unveränderter gesprochener Satz gibt keinen verbrauchten Trank zurück.
 
@@ -453,13 +443,11 @@ Einmalige zeitgebundene Schritte wie Amor in Nacht eins oder Trunkenbold-Enthül
 
 Diese vorgeschlagene einheitliche Behandlung würde unter anderem die bisherige Bürgermeister-Sonderregel verändern: Sein Tarnaufruf bleibt aktuell auch nach öffentlich aufgedecktem Tod bestehen. Andere verbrauchte Fähigkeiten, etwa die Ermittleruntersuchung, werden aktuell teilweise übersprungen. Deshalb nicht behaupten, die allgemeine vorgeschlagene Tarnregel sei bereits vollständig implementiert. Vor einer Umsetzung ist die Produktentscheidung abzuschließen. Keine Spiellogik oder Produkt-UI geändert.
 
-
 ### Originalabgleich zu Hexe und Tarnaufrufen
 
 Geprüft: Ultimate Werewolf: Ultimate Edition. Die Hexe wird ausdrücklich auch nach Verbrauch ihrer Kräfte weiter aufgerufen und nach beiden gefragt ([Hexe, PDF-Seite 18](https://board-game-rules.com/wp-content/uploads/2025/01/ultimate-werewolf-ultimate-edition_Official-Rules.pdf#page=18)). Bei verdeckten Rollen nennt das Heft Nachtaufrufe ausgeschiedener Rollen zur Tarnung; auslassen erst bei offenkundig bekannter Rolle ([Rollenaufdeckung, PDF-Seiten 3–4](https://board-game-rules.com/wp-content/uploads/2025/01/ultimate-werewolf-ultimate-edition_Official-Rules.pdf#page=4)).
 
 Das belegt die Hexenregel unmittelbar. Die vorgeschlagene einheitliche Umsetzung für sämtliche GameHub-Rollen bleibt eine gesondert zu bestätigende Planung; Code unverändert.
-
 
 ## Spiel-/Erzähleransicht: bestätigter zentraler Aufbau
 
@@ -467,12 +455,12 @@ Der eigentliche Spielablauf soll **grundsätzlich in einer einzigen zentralen An
 
 ### Oben: Phase und globale Spielaktionen
 
-| Element | Bestätigte Aufgabe |
-| --- | --- |
-| **Tag-/Nachtanzeige** | Sonne für Tag, Mond für Nacht. |
-| **Hintergrund** | Zwei unterschiedliche Hintergründe: **Tag hell**, **Nacht dunkel**. Der explizite helle Tageshintergrund gilt für diese Spielansicht; die allgemeine Dark-Mode-Präferenz wird dadurch nicht pauschal für die ganze App aufgehoben. |
-| **Spieler-/Rollenübersicht öffnen** | Button öffnet eine Übersicht mit allen Spielern und ihren Rollen. Eine Liste beziehungsweise Tabelle ist als Darstellungsform vorgeschlagen; genaue Form und Öffnungsart noch nicht festgelegt. |
-| **Schließen** | Button zum Beenden/Abbrechen der Partie. Ob und wie eine Rückfrage oder ein Rückweg erscheint, ist noch zu konkretisieren. |
+| Element                             | Bestätigte Aufgabe                                                                                                                                                                                                                 |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tag-/Nachtanzeige**               | Sonne für Tag, Mond für Nacht.                                                                                                                                                                                                     |
+| **Hintergrund**                     | Zwei unterschiedliche Hintergründe: **Tag hell**, **Nacht dunkel**. Der explizite helle Tageshintergrund gilt für diese Spielansicht; die allgemeine Dark-Mode-Präferenz wird dadurch nicht pauschal für die ganze App aufgehoben. |
+| **Spieler-/Rollenübersicht öffnen** | Button öffnet eine Übersicht mit allen Spielern und ihren Rollen. Eine Liste beziehungsweise Tabelle ist als Darstellungsform vorgeschlagen; genaue Form und Öffnungsart noch nicht festgelegt.                                    |
+| **Schließen**                       | Button zum Beenden/Abbrechen der Partie. Ob und wie eine Rückfrage oder ein Rückweg erscheint, ist noch zu konkretisieren.                                                                                                         |
 
 Die Übersicht mit sämtlichen Rollen ist eine private Information der Spielleitung. Ihre Öffnung und Rückkehr dürfen den laufenden Schritt nicht neu auslosen oder die bisherige Partie zurücksetzen. Sie ist von einer öffentlichen Anzeige der ausgeschiedenen Rollen zu unterscheiden.
 
@@ -491,10 +479,10 @@ Das feste Nachtskript folgt der vorhandenen Business-Reihenfolge. Die zuvor besp
 
 ### Unten: phasenabhängige Navigation
 
-| Phase | Bestätigte Buttons |
-| --- | --- |
-| **Nacht** | **Zurück** und **Weiter**. |
-| **Tag** | **Voting starten** und **Tag beenden**. |
+| Phase     | Bestätigte Buttons                      |
+| --------- | --------------------------------------- |
+| **Nacht** | **Zurück** und **Weiter**.              |
+| **Tag**   | **Voting starten** und **Tag beenden**. |
 
 Die Navigationsfläche bleibt unten in der Ansicht. Ob sie fest am Bildschirmrand steht oder sich mit einem Inhaltsbereich bewegt, ist ein noch offenes Layoutdetail.
 
@@ -517,7 +505,6 @@ Der erste konkrete Entwurf ist im folgenden Abschnitt **Erweiterte Live-Kreisüb
 Der beschriebene Aufbau und der erste Entwurf des erweiterten Spielerkreises sind festgehalten. Offen bleiben insbesondere genaue Presettexte/Übergänge, Aktionsbedienung, Rückwärtsverhalten, Abbruchverhalten und die zusätzliche Übersicht. Diese Liste dient der späteren Planung und ist keine Aufforderung, sie bereits jetzt durch eigene UI-Entscheidungen zu schließen.
 
 **Ausschließlich dokumentiert. Keine Produkt-UI oder Spiellogik implementiert.**
-
 
 ## Erweiterte Live-Kreisübersicht: erster Entwurf
 
@@ -542,12 +529,12 @@ Grundsitzordnung und der bestehende Erzählerplatz bleiben die Grundlage. Die In
 
 Jede Person besitzt eine Spielerkachel mit zustandsabhängiger Hintergrundfarbe und **mittig dem ersten Buchstaben ihres Namens**. Dazu kommen **drei Symbolslots links** und **drei rechts** an der Kachel.
 
-| Position | Vorläufig vorgesehener Inhalt |
-| --- | --- |
-| Links oben | Rollen-Symbol. |
-| Links Mitte und unten | Eigene rollenspezifische Ressourcen/Objekte, etwa Heil- und Gifttrank der Hexe oder der Hammer des Bürgermeisters. |
-| Rechts oben | Beispiel Liebespaar: beide verbundenen Spieler erhalten ein Herz. |
-| Rechts Mitte und unten | Weitere von außen erhaltene Dinge/Effekte; konkrete Belegung noch offen. |
+| Position               | Vorläufig vorgesehener Inhalt                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Links oben             | Rollen-Symbol.                                                                                                     |
+| Links Mitte und unten  | Eigene rollenspezifische Ressourcen/Objekte, etwa Heil- und Gifttrank der Hexe oder der Hammer des Bürgermeisters. |
+| Rechts oben            | Beispiel Liebespaar: beide verbundenen Spieler erhalten ein Herz.                                                  |
+| Rechts Mitte und unten | Weitere von außen erhaltene Dinge/Effekte; konkrete Belegung noch offen.                                           |
 
 Die linken Slots stehen somit für **eigene Rolle und eigene Ressourcen**, die rechten für **erhaltene Effekte/Zusätze**. „Itemslots“ sind hier Anzeigeplätze für Symbole, kein neu eingeführtes Inventar mit sechs Gegenständen.
 
@@ -555,22 +542,22 @@ Die Bürgermeister-Darstellung muss seine gewählte Variante berücksichtigen: E
 
 ### Vorgeschlagene Hintergründe
 
-| Farbe | Bedeutung laut erstem Entwurf |
-| --- | --- |
-| **Schwarz** | Tote Spieler; auch tote Werwölfe sind schwarz. |
-| **Blau** | Lebende Spieler, außer Werwölfen und anderen ausdrücklich markierten Zuständen. |
-| **Werwolfgrau** | Lebende Werwölfe. Der konkrete Grauton ist noch nicht festgelegt. |
-| **Rot** | Angegriffene Spieler, zum Beispiel durch Wolfsangriff oder Hexengift. |
-| **Dunkelrot** | Harter Bursche, wenn er nach dem Angriff nicht gerettet wurde und sein verzögerter Tod bevorsteht. Er ist damit noch nicht als tot/schwarz dargestellt. |
+| Farbe           | Bedeutung laut erstem Entwurf                                                                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Schwarz**     | Tote Spieler; auch tote Werwölfe sind schwarz.                                                                                                          |
+| **Blau**        | Lebende Spieler, außer Werwölfen und anderen ausdrücklich markierten Zuständen.                                                                         |
+| **Werwolfgrau** | Lebende Werwölfe. Der konkrete Grauton ist noch nicht festgelegt.                                                                                       |
+| **Rot**         | Angegriffene Spieler, zum Beispiel durch Wolfsangriff oder Hexengift.                                                                                   |
+| **Dunkelrot**   | Harter Bursche, wenn er nach dem Angriff nicht gerettet wurde und sein verzögerter Tod bevorsteht. Er ist damit noch nicht als tot/schwarz dargestellt. |
 
 Schwarz für bereits Tote ist ausdrücklich festgelegt und ersetzt insbesondere den grauen Hintergrund eines toten Wolfs. Weitere Prioritäten überlappender Zustände sind noch zu klären. Ebenso offen: Wann genau eine Angriffsmarkierung erscheint/endet, was nach Rettung oder Schutz angezeigt wird und wie mehrere Angriffe auf dieselbe Person zusammengefasst werden. Eine Auswahl als Angriffsziel ist nicht automatisch gleichbedeutend mit einem endgültigen Tod.
 
 ### Vorgeschlagene Rahmen und ihr Fortbestand
 
-| Rahmen | Bedeutung |
-| --- | --- |
-| **Goldener Rahmen** | Schutzamulett. |
-| **Grüner Rahmen** | Trunkenbold. |
+| Rahmen              | Bedeutung                                           |
+| ------------------- | --------------------------------------------------- |
+| **Goldener Rahmen** | Schutzamulett.                                      |
+| **Grüner Rahmen**   | Trunkenbold.                                        |
 | **Beide gemeinsam** | Trunkenbold-Rahmen **außen**, Amulett-Rahmen innen. |
 
 - Der grüne Rahmen verschwindet, sobald die Person ihre echte Rolle erfährt.
@@ -610,11 +597,9 @@ Diese Erweiterung hat **ausdrücklich letzte Priorität** und wird **erst ganz z
 
 Erweiterte Live-Kreisübersicht, Legende, Detailfeld und spätere Verlaufsidee sind ausschließlich dokumentiert. Der aktuelle Schritt enthält weder Produkt-UI noch neue Spiellogik, Icons, Farbwerte oder Ereignisspeicherung.
 
-
 ## Gewinneransicht: benötigter Abschluss
 
 **Bestätigt:** Nach dem Spielende wird eine Gewinner-/Ergebnisansicht benötigt (`We-01-30`). Ihre Gestaltung wird ausdrücklich erst am Ende gemeinsam mit Claude Code festgelegt; jetzt keine weitere Layoutplanung. Sie ist der Abschluss des Spielablaufs und kein neu eingeführter vierter Hauptbereich. Technischer Anschluss sind `status: finished`, `winner` und gegebenenfalls `tannerWinner`; Details und Grenzen stehen in der [technischen Übergabe](GAMEHUB_WERWOLF_HANDOFF.md). Die Implementierungsaufgabe bleibt offen.
-
 
 ## Hammer-Änderung vom 20.11.2026 – implementiert
 
@@ -631,7 +616,6 @@ Beim Durchgehen der Info-Fenster der Konfiguration hat der Auftraggeber folgende
 3. **Seher-Lehrling.** Ist die Seherin tot, ruft der Erzähler in den folgenden Nächten offen "Seher-Lehrling" auf; er übernimmt ihre Rolle (wählt eine Person, erfährt, ob sie ein Werwolf ist). Die bisherige heimliche Information entfällt; dass es keine Seherin mehr gibt, darf allen auffallen.
 4. **Amor.** Amor darf sich selbst als einen der beiden Verliebten wählen.
 5. **Bestätigt (keine Änderung):** Der Leibwächter schützt vor Wolfsangriff, Gift und Todeszauber, nicht vor dem Hammer, und ist selbst nicht geschützt. Die Dorfmatratze schützt nur vor dem Wolfsangriff und stirbt an der Stelle der Person; ein direkter Wolfsangriff auf sie geht ins Leere. Die Info-Texte sagen das jetzt so.
-
 
 ### Bestätigter Zeitpunkt des Amulettschutzes
 
@@ -657,8 +641,8 @@ Der Auftraggeber hat die Bedienung des variablen Modus festgelegt. Die Wünsche 
 6. **Unten fest (Fuß des Reiters):** Das Feld "Sonderrollen aus Darf" mit einer Mindest- und einer Höchstzahl. Es zählt **nur** die "Darf"-Rollen ("Muss" ist ohnehin sicher dabei), Optionen derselben Rolle als eine. Die Anzahlen sind gleich gewichtet: Bei Mindestzahl 0 und Höchstzahl 3 ist "keine Darf-Rolle" genauso wahrscheinlich wie "drei Darf-Rollen". Beispiel mit 8 Spielern: Hexe, Jäger (zwei Optionen) und Amor auf "Darf", Harter Bursche auf "Muss": mögliche Zahl 0 bis 3. Das Feld ist die abschließende Einstellung; mindestens N heißt, dass mindestens N der "Darf"-Rollen gelost werden, es können mehr sein.
 7. **Werwölfe:** Die Anzahl wird wie im festen Modus mit Zahlenknöpfen gewählt, nur dort, wo die Spielerzahl überhaupt eine Auswahl erlaubt (zum Beispiel 7: 1 oder 2; 11: 2 oder 3; 14 und 15: 3 oder 4; 16: 4 oder 3). Die **Standardzahl der Spielerzahl ist zu Beginn gewählt**, die **empfohlene Zahl ist als "empfohlen" markiert** (gelber Rahmen, solange sie nicht gewählt ist). Wählt man **eine** Zahl, ist sie fest; wählt man **mehrere**, **lost** das System unter ihnen (gleichverteilt); mindestens eine Zahl bleibt gewählt. Bei nur einer erlaubten Zahl ist sie fest. Die Wolfszahl wird nicht nach der Ziehung aus einer Fairness-Rechnung bestimmt. Die Empfehlung kennt die Ziehung nicht und stützt sich deshalb nur auf die **"Muss"-Rollen** und Zusätze (siehe Wunsch 7 an die Logik).
 8. Die Seherin ist immer dabei und nicht einstellbar.
-8a. **Zusätze (Trunkenbold, Schutzamulett)** haben eigene drei Kästen in einer anderen Farbe als die Rollen. Sie sind **unabhängig voneinander**: Es gibt keine gemeinsame Mindest- und Höchstzahl. Jeder Zusatz auf "Darf" wird für sich gelost, einer auf "Muss" ist sicher dabei.
-8b. **Fest und variabel sind unabhängig:** Beide Entwürfe werden getrennt gespeichert (eigener Schlüssel je Modus im gemeinsamen Speicher der Spieleinstellungen), es gibt keine Übernahme von einem in den anderen.
+   8a. **Zusätze (Trunkenbold, Schutzamulett)** haben eigene drei Kästen in einer anderen Farbe als die Rollen. Sie sind **unabhängig voneinander**: Es gibt keine gemeinsame Mindest- und Höchstzahl. Jeder Zusatz auf "Darf" wird für sich gelost, einer auf "Muss" ist sicher dabei.
+   8b. **Fest und variabel sind unabhängig:** Beide Entwürfe werden getrennt gespeichert (eigener Schlüssel je Modus im gemeinsamen Speicher der Spieleinstellungen), es gibt keine Übernahme von einem in den anderen.
 9. Die Kurzübersicht zeigt nur den erlaubten Pool und die Bereiche, niemals eine Ziehung.
 
 ### Wünsche an Codex (Logik, `variableSetup.ts`)
@@ -696,21 +680,20 @@ Diese Angaben ersetzen abweichende Einzelheiten der früheren Entwürfe.
 
 Festgelegt und gebaut ist der Satz der Symbole (`src/presentation/werewolf/symbols`, Legende als Reiter „Symbole“ der Spielanleitung): 16 Rollen, 6 eigene Mittel, 2 Zusätze, 10 Zustände; Rolle, Mittel und Zustand mit derselben Bedeutung teilen das Zeichen. Der Erzähler zeigt beim Aufwecken einer Rolle ihr Symbol und ihre Mittel (verbrauchte durchgestrichen), bei der gewählten Person das Symbol der Wirkung. Die Rahmen und Hintergrundfarben des früheren Entwurfs (golden für das Amulett, grün für den Trunkenbold, Schwarz für Tote, Rot für Angegriffene) bleiben maßgeblich und kommen mit der Erzählersicht dazu. Quellen und Lizenzen: THIRD_PARTY_NOTICES.md.
 
-
 ## Farben der Übersicht „Alle Spieler und Rollen“ und des Spielendes (Beschluss vom 24.11.2026, We-01-157)
 
 Festgehalten nach der Besprechung mit dem Auftraggeber. Grundlage sind die Hintergründe und Rahmen des ersten Entwurfs (siehe oben); die Übersicht bleibt eine Liste (der Sitzkreis des Livetickers kommt später).
 
 **Hintergründe (Zustand der Person):**
 
-| Farbe | Bedeutung |
-| --- | --- |
-| Schwarz | tot (auch tote Werwölfe) |
-| Dunkelrot | Harter Bursche, verwundet: lebt noch, stirbt aber bestimmt (verzögerter Tod) |
-| Rot | angegriffen (Wolfsangriff, Gift, Todeszauber, Hammer): **bis zum Tod**, danach schwarz |
-| Grün | **gerettet** (Heilung, Schutz des Leibwächters, Amulett): die **ganze Nacht** der Rettung, mit dem Tagesbeginn wieder blau (Beschluss 24.11.2026) |
-| Werwolfgrau | lebender Werwolf |
-| Blau | lebende Person ohne besonderen Zustand |
+| Farbe       | Bedeutung                                                                                                                                         |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Schwarz     | tot (auch tote Werwölfe)                                                                                                                          |
+| Dunkelrot   | Harter Bursche, verwundet: lebt noch, stirbt aber bestimmt (verzögerter Tod)                                                                      |
+| Rot         | angegriffen (Wolfsangriff, Gift, Todeszauber, Hammer): **bis zum Tod**, danach schwarz                                                            |
+| Grün        | **gerettet** (Heilung, Schutz des Leibwächters, Amulett): die **ganze Nacht** der Rettung, mit dem Tagesbeginn wieder blau (Beschluss 24.11.2026) |
+| Werwolfgrau | lebender Werwolf                                                                                                                                  |
+| Blau        | lebende Person ohne besonderen Zustand                                                                                                            |
 
 Vorrang bei mehreren Zuständen (beschlossen): schwarz, dunkelrot, rot, grün, grau, blau. Ein neuer Angriff auf eine grün angezeigte Person macht sie wieder rot.
 
@@ -728,24 +711,22 @@ Vorrang bei mehreren Zuständen (beschlossen): schwarz, dunkelrot, rot, grün, g
 
 **Umsetzung (We-01-157):** `describePlayers` liefert `tone` (dead, wounded, attacked, saved, wolf, alive); die Komponente `PlayerRows` zeichnet die Zeilen für die Übersicht und das Spielende und eine kleine Legende darunter (statt eines eigenen Fensters). Nicht abgedeckt: ein abgewehrter Gift- oder Zauberangriff (der Zustand merkt sich nur den Wolfsangriff).
 
-
 ## Slots der Zustandszeichen auf der Erzählerkarte (Beschluss vom 24.11.2026, We-01-162)
 
 Die Zustandszeichen oben an der Karte der aufgewachten Rolle gibt es nur noch, wenn die Person sie hat (keine leeren Slots mehr). Sie werden **von rechts nach links** eingefügt, drei in einer Reihe, danach in der **nächsten Reihe darunter** (wieder von rechts nach links). Es gibt keine Obergrenze mehr (acht Zustände sind möglich). Jeder Slot hat einen **Hintergrund je Zustand**:
 
-| Zustand | Farbe |
-| --- | --- |
-| Verliebt | rosa |
-| Schutzamulett | gold |
-| Angegriffen | rot |
-| Geschützt | blau |
-| Übernachtungsgast | blau |
-| Vergiftet | rot |
-| Stumm | neutral |
-| Trunkenbold | grün |
+| Zustand           | Farbe   |
+| ----------------- | ------- |
+| Verliebt          | rosa    |
+| Schutzamulett     | gold    |
+| Angegriffen       | rot     |
+| Geschützt         | blau    |
+| Übernachtungsgast | blau    |
+| Vergiftet         | rot     |
+| Stumm             | neutral |
+| Trunkenbold       | grün    |
 
 Die Farbwerte stehen als Token `--slot-*` in `tokens.css`; das Zeichen bleibt, die Farbe ersetzt es nicht. Annahme: drei Slots pro Reihe (Breite der heutigen Anzeige).
-
 
 ## Varianten der Rollen sichtbar machen (Beschluss vom 24.11.2026, We-01-164)
 
@@ -758,13 +739,11 @@ Die Variante einer Rolle (Harter Bursche: nur Wolfsangriff oder jeder Angriff, J
 
 Der Harte Bursche und der Gerber wachen nie auf; ihre Variante steht deshalb nur in der Übersicht, am Spielende und bei der Rollenverteilung.
 
-
 ## Tarnaufruf (Trunkenbold) und Rahmen um das Rollensymbol (Beschluss vom 24.11.2026, We-01-165)
 
 - **Das Skript bleibt immer gleich:** Ruft der Erzähler eine Rolle auf, die der Trunkenbold ist und seine Rolle noch nicht kennt (Tarnaufruf), liest er dieselben Sätze wie bei jeder wachen Rolle (aufwachen, Frage der Rolle, einschlafen). Der frühere Text „Trotzdem fragen“ und die Liste „Fähigkeit: fragen, dann nicht möglich zeigen“ sind entfernt; ein Anfänger wusste damit nicht, was er fragen soll.
 - **Hinweisbox:** Eine gelbe Notiz nach dem Muster „Name (Zustand): Bedeutung“ nennt die Person hinter dem Aufruf: „Ben (Trunkenbold): kennt die Rolle noch nicht, nichts wählen“. Die Karte oben nennt ebenfalls den Namen, und die Slots zeigen die Zustände der Person.
 - **Rahmen um das Rollensymbol der wachen Rolle** (wie in der Übersicht): grün und außen für den Trunkenbold, der seine Rolle noch nicht kennt, gold und innen für den Amulettbesitzer; beides zusammen sind beide Rahmen. Bei mehreren Wachen (Werwölfe) nur, wenn alle den Zustand haben.
-
 
 ## Jede Entscheidung muss angegeben und kann zurückgenommen werden (Beschluss vom 24.11.2026, We-01-166)
 
@@ -772,11 +751,9 @@ Der Harte Bursche und der Gerber wachen nie auf; ihre Variante steht deshalb nur
 - **Rückgängig:** Jede Entscheidung lässt sich zurücknehmen, auch wenn nur eine Möglichkeit übrig war (hier das Verzichten): der Rückgängig-Knopf der Skriptbox führt zurück, die blaue Zusammenfassung sagt „Verzichtet“.
 - **Rahmen:** Eine Fähigkeit, die theoretisch gefragt, aber situationsbedingt nicht möglich ist, hat den dünnen blauen Rahmen (2 Pixel); der Knopf, der als Nächstes zu drücken ist (hier Verzichten), den vollen (3 Pixel). Beim Tarnaufruf fehlte der dünne Rahmen bisher, weil er nicht als Entscheidung galt.
 
-
 ## Rolle der gewählten Person in der Zusammenfassung (Beschluss vom 24.11.2026, We-01-167)
 
 Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in Klammern („Geschützt: Ben (Jäger)“), weil die Folgen von der Rolle abhängen (Harter Bursche, Jäger, Amulett, Verliebte). Das gilt für die Nachtentscheidungen (Angriff, Schutz, Gast, Heilen, Gift, Todeszauber, Hammer, Stummschalten, Verliebte, Amulett weitergeben); nicht für Nominierung und Abstimmung und nicht für das Ergebnis von Seherin und Ermittler. Der Trunkenbold, der seine Rolle noch nicht kennt, steht mit beiden: „Ben (Trunkenbold, wahre Rolle: Jäger)“. **Zeilen brechen auf eine zweite Zeile um, wenn eine nicht reicht; nichts wird abgeschnitten** (vorher: eine Zeile mit Auslassungspunkten).
-
 
 ## Seher, Seher-Lehrling und Ermittler: ganzes Skript und entschiedene Fähigkeit (Beschluss vom 24.11.2026, We-01-168)
 
@@ -791,14 +768,20 @@ Die blaue Zusammenfassung nennt zu jeder gewählten Person ihre wahre Rolle in K
 
 **Regel zum Verzichten-Knopf (24.11.2026, Auftraggeber):** Der Knopf bleibt für den ganzen Schritt einer Rolle an seinem Platz (die Bedienung springt nicht). Nach dem Nutzen einer einmaligen Fähigkeit ist er abgedunkelt und gesperrt, verschwindet aber nicht. Beim Ermittler verschwand er im Ergebnisschritt; das ist behoben. Der Durchspieltest prüft bei jedem Schritt, dass der Knopf innerhalb einer Rolle nicht verschwindet.
 
-
 ## Die Übersicht ist nach jeder Entscheidung aktuell (Beschluss vom 24.11.2026, We-01-172)
 
 - **Regel:** Nach **jeder** Entscheidung einer Rolle zeigt „Alle Spieler und Rollen“ sie sofort, nicht erst, wenn die nächste Rolle aufgerufen wird: nach dem Bestätigen der Liste (Amulett weitergeben, Angriff, Schutz, Gast, Gift, Todeszauber, Hammer, Stummschalten, Verliebte), nach einer Antwort der Hexe oder des Magiers (zum Beispiel „gerettet“ grün nach dem Heilen) und wenn die Rolle wieder schläft. Solange eine Liste offen ist, ist noch nichts entschieden.
 - **Vorschau ohne Todesansage:** Die Vorschau wendet die Entscheidung auf eine Kopie des Spiels an (das Spiel selbst geht erst mit „Weiter“ weiter). Die Opfer der Nacht bleiben dabei **rot (markiert)** und sind **nicht tot**, bis die Morgenansage kommt; die letzte Rolle der Nacht führt sonst in den Morgen, und die Opfer wären zu früh schwarz.
 - **Umsetzung:** `GuideView.overviewState` (nur die Vorschau), `describePlayers(state, announce)` mit `announce = false` für die Vorschau.
 
-
 ## Womit jemand zum Opfer wurde (Beschluss vom 24.11.2026, We-01-173)
 
 In „Alle Spieler und Rollen“ und am Spielende zeigt die Zeile einer Person, mit welcher Fähigkeit sie zum Opfer wurde: als kleines Zeichen neben den anderen Zeichen der Zeile (Pfote = Wolfsangriff, Flasche = Gift der Hexe, Totenkopf = Todeszauber, Hammer = Hammer des Bürgermeisters, Stimmzettel = Abstimmung, Zielpfeil = Schuss des Jägers; Herz und Verband stehen schon als Zeichen der Zeile und werden nicht doppelt gezeigt). Bei Markierten (rot) kommt die Ursache aus der laufenden Nacht, bei Toten aus dem Verlauf des Spiels, beim verwundeten Harten Burschen aus seiner Wunde. Die Legende nennt die Fähigkeiten, die im Spiel vorkommen, mit Zeichen und Text. Der Name steht auch als Label und Tooltip am Zeichen.
+
+## Gift ist immer die Flasche, die Hexe hat ein eigenes Zeichen (Beschluss vom 24.11.2026, We-01-174)
+
+Hexe und Magier lassen sich an ihren Zeichen unterscheiden: **Gift ist immer die Flasche** (Knopf „Gift“, Ursache des Opfers, Zustand „vergiftet"), der **Todeszauber des Magiers ist der Totenkopf**. Damit die Flasche nicht mit dem Rollenzeichen der Hexe zusammenfällt, hat die Hexe jetzt eine **Katze** als Rollenzeichen (vorher die Flasche, Vorschlag des Assistenten, Alternativen: Kristallkugel, Mond und Sterne, Spinne). Die Zeichnung stammt aus derselben Sammlung wie die anderen (Tabler Icons, MIT). Die Texte der Legende sind angepasst (Todeszauber nur beim Magier).
+
+## Seherin: Kristallkugel, Auge und „Angesehen“ (Beschluss vom 24.11.2026, We-01-175)
+
+Die Rolle Seherin ist die **Kristallkugel**. Ihre Fähigkeit „Ansehen“ ist das **Auge im Kreis**, und die angesehene Person trägt den Zustand „Angesehen“: dasselbe Auge, aber ohne Kreis, im violetten Slot. Der Zustand bleibt die Nacht und den Tag über sichtbar und verschwindet, wenn die nächste Nacht beginnt. Er steht in der Rollenkarte und in der Zeile der Person in „Alle Spieler und Rollen“. Das Ergebnis (Wolf oder nicht) steht nicht im Slot. **Regel für alle Rollen:** das Zeichen der Fähigkeit ist das des Zustands, nur ohne Kreis; jede Rolle, Fähigkeit und jeder Zustand bekommt ein anderes Zeichen. Der **Seher-Lehrling** ist die Kristallkugel mit einem **Z** (er schläft); Fähigkeit und Zustand sind die der Seherin. Der **Dorfbewohner** ist die **Person** (Kopf und Schultern, statt des Hauses). Die **Hexe** ist das Hexengesicht mit Hut; beide Tränke sind Flaschen: der Heiltrank die Flasche mit Plus, das Gift die Flasche mit Minus (das Zeichen neben dem Flaschenhals); die Zustände sind dieselben Zeichen ohne Kreis, Vergiftet im roten Slot, Geheilt im grünen Slot (bis die nächste Nacht beginnt, auch tagsüber). Der **Amor** ist ein **Bogen mit einem Pfeil nach oben rechts** (ohne Herz, das war zu detailreich); Fähigkeit „Verlieben“ und Zustand „Verliebt“ bleiben die zwei Herzen. Der **Jäger** ist die **Donnerbüchse** (Fähigkeit, Zustand und Varianten werden nach Vorschlag angepasst). Der **Leibwächter** ist die **Person mit Schild**; Fähigkeit und Zustand bleiben das Schild. Der **Dorftrottel** bleibt der Daumen hoch. Die **Dorfmatratze** ist das **Haus mit Herz** (die Gastgeberin); Fähigkeit „Übernachten“ und Zustand „Übernachtungsgast“ sind die **Person im Bett**. Die **Alte Vettel** ist das **Mikrofon** (das Gegenteil des Zustands „Stumm“, dem durchgestrichenen Mikrofon); die Variante „Selbst stumm erlaubt“ ist ein **Haken**, nicht mehr der Daumen (der gehört dem Dorftrottel). **Harter Bursche** (Hantel) und **Gerber** (Pokal) bleiben. Die Rollen werden nacheinander durchgegangen (Stand: Leibwächter, Dorfmatratze, Harter Bursche, Gerber und Alte Vettel erledigt; Werwolf bleibt, Seherin, Seher-Lehrling, Dorfbewohner, Hexe und Amor erledigt, beim Jäger ist die Rolle erledigt und der Rest offen; der Magier folgt später in der Reihenfolge der Tabelle).
