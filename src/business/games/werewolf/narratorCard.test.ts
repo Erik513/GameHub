@@ -215,7 +215,9 @@ describe("describeNarratorCard", () => {
       ...state,
       amulet: { holder: witch.name, mustPass: false },
       lovers: [witch.name, other.name],
+      protectedNight: state.night,
       protectedPlayer: witch.name,
+      silencedNight: state.night,
       silencedPlayer: witch.name,
     } as WerewolfState;
     expect(describeNarratorCard(marked)!.effects).toEqual([
@@ -227,6 +229,7 @@ describe("describeNarratorCard", () => {
     const attacked = {
       ...state,
       amulet: null,
+      hostNight: state.night,
       hostPlayer: witch.name,
       wolfTarget: witch,
     } as WerewolfState;
@@ -234,7 +237,12 @@ describe("describeNarratorCard", () => {
     expect(describeNarratorCard(attacked)!.effects).toEqual(["attacked", "guestSaved"]);
     const poisoned = at(state, { poisoned: witch });
     expect(describeNarratorCard(at(poisoned, { amulet: null }))!.effects).toContain("poisoned");
-    const quiet = { ...state, amulet: null, silencedPlayer: witch.name } as WerewolfState;
+    const quiet = {
+      ...state,
+      amulet: null,
+      silencedNight: state.night,
+      silencedPlayer: witch.name,
+    } as WerewolfState;
     expect(describeNarratorCard(quiet)!.effects).toEqual(["silenced"]);
     // The hammer of the mayor and a death spell of the magician mark the person they struck.
     const struck = {

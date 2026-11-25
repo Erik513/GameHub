@@ -32,6 +32,14 @@ export interface Match {
   readonly night: number;
   readonly protectedPlayer: string | null;
   /**
+   * The night of the choice of the bodyguard, the night guest and the spellcaster. The game keeps the person of the last
+   * choice for the rule "never the same person twice in a row"; the overview shows the state only in the night (and,
+   * for the silence, the day) of the choice, so it is gone when the next night begins.
+   */
+  readonly protectedNight: number | null;
+  readonly hostNight: number | null;
+  readonly silencedNight: number | null;
+  /**
    * The person the werewolves attacked this night, as the witch and the magician see them: also when the attack
    * did not kill (the amulet or the bodyguard stopped it). They always see the attacked person, so nobody learns
    * from what they see whether a protection was at work.

@@ -292,6 +292,50 @@ it("still shows the poison of the witch as a slot in the morning, before the ann
   ).not.toContain("poisoned");
 });
 
+it("clears the states of the last night when the next night begins, and keeps the choices for the rule", () => {
+  const start = createWerewolf(names, "Max", () => 0.3, ["bodyguard", "spellcaster"], {
+    wolfCount: 2,
+  })!;
+  const person = villagers(start)[0]!;
+  const day = {
+    ...start,
+    healedPlayer: person.name,
+    hostNight: 1,
+    hostPlayer: person.name,
+    night: 1,
+    nomination: 0,
+    protectedNight: 1,
+    protectedPlayer: person.name,
+    silencedNight: 1,
+    silencedPlayer: person.name,
+    spellHealedPlayer: person.name,
+    status: "day",
+  } as unknown as WerewolfState;
+  const view = (state: WerewolfState) =>
+    describePlayers(state).find((p) => p.name === person.name)!;
+  // In the day the silence holds and the healing is still shown.
+  expect(view(day).silenced).toBe(true);
+  expect(view(day).healed).toBe(true);
+  const night = transitionWerewolf(day, { night: 1, type: "endDay" });
+  expect(night.night).toBe(2);
+  const next = view(night);
+  expect([next.silenced, next.healed, next.spellHealed]).toEqual([false, false, false]);
+  expect(effectsOfPerson(night, next)).not.toContain("protected");
+  expect(effectsOfPerson(night, next)).not.toContain("guest");
+  // The game keeps the choices of the last night for "never the same person twice in a row".
+  expect(night.protectedPlayer).toBe(person.name);
+  expect(night.silencedPlayer).toBe(person.name);
+  // The bodyguard chooses in this night: the new choice shows again.
+  const other = villagers(start)[1]!;
+  const chosen = { ...night, protectedNight: 2, protectedPlayer: other.name } as WerewolfState;
+  expect(
+    effectsOfPerson(
+      chosen,
+      describePlayers(chosen).find((p) => p.name === other.name)!,
+    ),
+  ).toContain("protected");
+});
+
 it("names the ability that hit each victim: the attack of the wolves, the poison, the vote", () => {
   const start = createWerewolf(names, "Max", () => 0.3, ["witch"], {
     attackOnFirstNight: true,

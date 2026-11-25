@@ -108,13 +108,16 @@ it("keeps the table of the buttons and marks of every role", () => {
     at(marked, {
       amulet: { holder: awake.name, mustPass: false },
       healedPlayer: awake.name,
+      hostNight: marked.night,
       hostPlayer: awake.name,
       inspections: [
         { by: "Anna", kind: "seer", target: awake.name },
         { by: "Anna", kind: "investigator", target: awake.name },
       ],
       lovers: [awake.name, other.name],
+      protectedNight: marked.night,
       protectedPlayer: awake.name,
+      silencedNight: marked.night,
       silencedPlayer: awake.name,
       spellHealedPlayer: awake.name,
       spellVictims: [awake],

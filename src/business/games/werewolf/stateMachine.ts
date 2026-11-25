@@ -76,8 +76,11 @@ export function createWerewolf(
     alive: players,
     night: 1,
     protectedPlayer: null,
+    protectedNight: null,
     wolfTarget: null,
     hostPlayer: null,
+    hostNight: null,
+    silencedNight: null,
     inspections: [],
     healedPlayer: null,
     spellHealedPlayer: null,
@@ -199,6 +202,9 @@ function startNight(state: Match, night: number): WerewolfState {
     spellVictims: [],
     hammerVictim: null,
     wolfTarget: null,
+    // The healing of the last night is over (the choices of the bodyguard and the night guest are kept for their rule).
+    healedPlayer: null,
+    spellHealedPlayer: null,
   };
   return enterCall(
     next,
@@ -544,7 +550,7 @@ function applyNightEvent(state: WerewolfState, event: WerewolfEvent): WerewolfSt
         !state.alive.some((player) => player.name === event.target && player.role !== "bodyguard")
       )
         return state;
-      return wolvesPhase({ ...state, protectedPlayer: event.target });
+      return wolvesPhase({ ...state, protectedPlayer: event.target, protectedNight: state.night });
     case "nightGuest":
       if (
         event.type !== "stayWith" ||
@@ -552,7 +558,7 @@ function applyNightEvent(state: WerewolfState, event: WerewolfEvent): WerewolfSt
         !state.alive.some((player) => player.name === event.target && player.role !== "nightGuest")
       )
         return state;
-      return wolvesPhase({ ...state, hostPlayer: event.target });
+      return wolvesPhase({ ...state, hostPlayer: event.target, hostNight: state.night });
     case "wolves": {
       if (state.night === 1 && !state.settings.attackOnFirstNight) {
         return event.type === "wolvesReady" ? afterWolves(state, null) : state;
@@ -706,7 +712,11 @@ function applyNightEvent(state: WerewolfState, event: WerewolfEvent): WerewolfSt
           ))
       )
         return state;
-      return endNight({ ...state, silencedPlayer: target }, state.victim, state.poisoned);
+      return endNight(
+        { ...state, silencedPlayer: target, silencedNight: target === null ? null : state.night },
+        state.victim,
+        state.poisoned,
+      );
     }
     default:
       return state;

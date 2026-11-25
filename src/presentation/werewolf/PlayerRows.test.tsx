@@ -75,7 +75,13 @@ it("shows every state of a person as the same colored slot as on the card, and n
   const base = game();
   const person = base.players.find((player) => player.role === "villager")!;
   // The night: the bodyguard protects him and the night guest sleeps at his place.
-  const state = { ...base, hostPlayer: person.name, protectedPlayer: person.name } as WerewolfState;
+  const state = {
+    ...base,
+    hostNight: base.night,
+    hostPlayer: person.name,
+    protectedNight: base.night,
+    protectedPlayer: person.name,
+  } as WerewolfState;
   const rows = await show(state);
   const row = rows.find((entry) => entry.querySelector("strong")?.textContent === person.name)!;
   const slots = [...row.querySelectorAll(".ww-overview__slot")].map((slot) =>

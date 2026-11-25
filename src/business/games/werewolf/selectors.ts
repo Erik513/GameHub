@@ -202,7 +202,9 @@ export function describePlayers(state: WerewolfState, announce = true) {
       partner: state.lovers?.includes(player.name)
         ? (state.lovers.find((n) => n !== player.name) ?? null)
         : null,
-      silenced: alive && state.silencedPlayer === player.name,
+      // Silenced for the day after the choice; when the next night begins the silence is over.
+      silenced:
+        alive && state.silencedPlayer === player.name && state.silencedNight === state.night,
       // The seer looked at him / the investigator examined him: the mark stays until the one who did it leaves the game.
       inspected: alive && carriesMark(player.name, "seer"),
       investigated: alive && carriesMark(player.name, "investigator"),
