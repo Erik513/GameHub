@@ -336,6 +336,7 @@ export function PlayerRows({
   // The list in the window shows whole rows only and scrolls row by row.
   const list = useRef<HTMLUListElement>(null);
   const listHeight = useWholeGridRows(list, players.length);
+  const legend = legendOf(state);
   return (
     <div className="ww-players">
       <PlayerList effects={effects} listHeight={listHeight} listRef={list} players={players} />
@@ -349,8 +350,10 @@ export function PlayerRows({
             otherSlotsOf(player, effects.get(player.name) ?? []).includes(state),
           ),
         )}
+        // Only the backgrounds and frames the rows show now (in the order of the legend).
+        frames={legend.frames.filter((frame) => players.some((player) => player[frame]))}
+        tones={legend.tones.filter((tone) => players.some((player) => player.tone === tone))}
         variants={variantsOf(players)}
-        {...legendOf(state)}
       />
     </div>
   );

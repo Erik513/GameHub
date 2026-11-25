@@ -156,37 +156,38 @@ it("divides the legend into groups with a heading each, and leaves out an empty 
   expect(titles).toEqual(["Row background", "Row frame", "States", "Role variants"]);
 });
 
-it("explains only the backgrounds and frames this game can have", async () => {
-  // A game without the tough guy, the amulet and the drunk and without anything that can save.
+it("explains only the backgrounds and frames the rows show now", async () => {
+  // A game without the tough guy, the amulet and the drunk, before the first night: nobody is wounded, saved or dead.
   const plain = createWerewolf(names, "Max", () => 0.3, [], { wolfCount: 2 })!;
   await show(plain);
-  const legend = () => document.querySelector(".ww-overview__legend")!.textContent;
-  expect(legend()).not.toContain("Wounded");
-  expect(legend()).not.toContain("Saved tonight");
-  expect(legend()).not.toContain("Amulet");
-  expect(document.querySelectorAll(".ww-overview__swatch[data-frame]")).toHaveLength(0);
-  expect(legend()).toContain("Alive");
-  expect(legend()).toContain("Dead");
-  // With the tough guy and the drunk: wounded and the frame of the drunk are explained.
+  const tones = () =>
+    [...document.querySelectorAll(".ww-overview__legend [data-tone]")].map((swatch) =>
+      swatch.getAttribute("data-tone"),
+    );
+  expect(tones()).toEqual(["alive", "wolf"]);
+  expect(document.querySelectorAll(".ww-overview__legend [data-frame]")).toHaveLength(0);
+  // With the drunk who does not know his role yet: his frame is explained.
   document.body.innerHTML = "";
   await show(game());
-  expect(legend()).toContain("Wounded");
-  expect(document.querySelector('.ww-overview__swatch[data-frame="drunk"]')).not.toBeNull();
+  expect(document.querySelector('.ww-overview__legend [data-frame="drunk"]')).not.toBeNull();
 });
 
 it("explains the colors and frames in both languages", async () => {
-  // The amulet can save: the legend explains the saved row.
+  // A living person and the holder of the amulet: the background and the frame they show are explained.
   const state = createWerewolf(names, "Max", () => 0.3, ["toughGuy"], {
     amulet: true,
     wolfCount: 2,
   })!;
-  await show(state, "en");
-  expect(document.querySelector(".ww-overview__legend")?.textContent).toContain("Saved tonight");
-  document.body.innerHTML = "";
-  await show(state, "de");
-  expect(document.querySelector(".ww-overview__legend")?.textContent).toContain(
-    "In dieser Nacht gerettet",
-  );
+  for (const [language, alive, amulet] of [
+    ["en", "Alive", "Amulet"],
+    ["de", "Lebt", "Amulett"],
+  ] as const) {
+    document.body.innerHTML = "";
+    await show(state, language);
+    const legend = document.querySelector(".ww-overview__legend")?.textContent;
+    expect(legend).toContain(alive);
+    expect(legend).toContain(amulet);
+  }
 });
 
 it("puts the gravestone of a person who is out at the very right, with the cause of death right next to it", async () => {
