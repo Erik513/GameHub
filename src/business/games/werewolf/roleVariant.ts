@@ -1,4 +1,5 @@
 import type { WerewolfSettings } from "./configuration";
+import { roleDefinition } from "./roles";
 
 /**
  * The way a role is played in this game, named like the options of the configuration: the tough guy (wolf attack only or
@@ -22,20 +23,7 @@ type VariantSettings = Pick<
   "allowSelfSilence" | "hunterShot" | "mayor" | "tanner" | "toughGuy"
 >;
 
-/** The variant of a role in this game, or null for a role that has no options. */
+/** The variant of a role in this game, or null for a role that has no options (it comes from the definition of the role). */
 export function roleVariantOf(role: string, settings: VariantSettings): RoleVariantId | null {
-  switch (role) {
-    case "toughGuy":
-      return settings.toughGuy;
-    case "hunter":
-      return settings.hunterShot;
-    case "tanner":
-      return settings.tanner;
-    case "mayor":
-      return settings.mayor;
-    case "spellcaster":
-      return settings.allowSelfSilence ? "allowed" : "forbidden";
-    default:
-      return null;
-  }
+  return roleDefinition(role)?.variant(settings) ?? null;
 }
