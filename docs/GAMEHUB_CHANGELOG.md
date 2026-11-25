@@ -1,5 +1,12 @@
 # GameHub Changelog
 
+## 2026-11-25 (Reihenfolge der Zustände)
+
+### We-01-209: Feste Reihenfolge der Zustands-Slots (Claude)
+
+- Von rechts nach links: zuerst die bleibenden Zustände (Trunkenbold ganz rechts, dann Amulett, Verliebt, Zwei Stimmen, Gesehen, Ermittelt), links daneben die Zustände einer Nacht in der Reihenfolge der Nacht. Bleibende Zustände ändern ihren Platz nie.
+- Die Übersicht füllt jetzt wie die Rollenkarte von rechts. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Übersicht)
 
 ### We-01-208: Übersicht zeigt nur ganze Reihen (Claude)

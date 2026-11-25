@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 417,
-      "totalTasks": 471,
-      "percent": 88.5
+      "completedTasks": 418,
+      "totalTasks": 472,
+      "percent": 88.6
     }
   },
   "environment": {
@@ -2277,6 +2277,12 @@
           "title": "Übersicht „Alle Spieler und Rollen“ zeigt nur ganze Reihen",
           "status": "done",
           "validation": "Neuer Hook useWholeGridRows (presentation/werewolf) kürzt die Höhe der Liste im Fenster auf die ganzen Reihen, die Platz haben (Reihen statt Spieler, 2 oder 3 Spalten), und rechnet bei geänderter Spielerzahl oder Fenstergröße neu; das CSS lässt das Scrollen an ganzen Reihen einrasten; die Legende ist unten im Fenster verankert, der übrige Platz (weniger als eine Reihe) liegt über ihr. Neuer Test useWholeGridRows.test.ts für die Berechnung; tsc, ESLint und 268 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-209",
+          "title": "Feste Reihenfolge der Zustands-Slots von rechts",
+          "status": "done",
+          "validation": "roles/stateIds.ts neu geordnet: zuerst die bleibenden Zustände (Trunkenbold ganz rechts, Amulett, Verliebt, Zwei Stimmen, Gesehen, Ermittelt), links daneben die Zustände einer Nacht in der Reihenfolge der Nacht (Geschützt, Gast, Angegriffen, Geheilt, Vergiftet, Heilzauber, Todeszauber, Hammer, Stumm). Die Übersicht füllt jetzt wie die Rollenkarte von rechts (Slots rechts, andere Zeichen links daneben). Drei Testerwartungen und der Absicherungs-Snapshot roleTable nur in der Reihenfolge angepasst; 916 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -3943,5 +3949,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T19:59:45.537Z"
+  "updatedAt": "2026-11-25T20:05:43.462Z"
 }
