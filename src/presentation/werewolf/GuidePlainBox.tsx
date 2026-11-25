@@ -12,12 +12,7 @@ import {
   type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
 import { DealCard } from "./DealCard";
-import {
-  causesOf,
-  describePlayers,
-  legendOf,
-  variantsOf,
-} from "../../business/games/werewolf/selectors";
+import { describePlayers } from "../../business/games/werewolf/selectors";
 import { PlayerLegend, PlayerList } from "./PlayerRows";
 import { variantOfRole } from "./roleAbilities";
 import { lineGlyphs } from "./symbols/glyphs";
@@ -222,7 +217,6 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
   const winners = groups.filter((group) => group.kind !== "losers");
   const losers = groups.find((group) => group.kind === "losers");
   const people = groups.flatMap((group) => group.players);
-  const legend = legendOf(state);
   return (
     <section className="ww-guide ww-winners">
       <div className="ww-winners__groups">
@@ -244,12 +238,7 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
         )}
       </div>
       {/* The legend names only what the rows of the end show: their backgrounds, frames, causes and variants. */}
-      <PlayerLegend
-        causes={causesOf(people)}
-        frames={legend.frames.filter((frame) => people.some((person) => person[frame]))}
-        tones={legend.tones.filter((tone) => people.some((person) => person.tone === tone))}
-        variants={variantsOf(people)}
-      />
+      <PlayerLegend players={people} />
     </section>
   );
 }

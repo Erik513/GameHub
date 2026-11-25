@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import {
   causesOf,
   describePlayers,
-  legendOf,
   variantsOf,
   type PlayerFrame,
   type PlayerTone,
@@ -26,13 +25,14 @@ import {
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import { useWholeGridRows } from "./useWholeGridRows";
 
+/** The backgrounds and frames of a row in the order of the legend. */
 const allTones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
 const allFrames: readonly PlayerFrame[] = ["amulet", "drunk"];
 
 /**
  * The state whose slot names a cause of death (in its color): the attack of the wolves, the poison, the death spell, the
  * hammer, the broken heart of the lovers and the wound of the tough guy. The vote and the shot of the hunter have no
- * state; they are shown as a sign.
+ * state; they have a color of their own (see `causeLook`).
  */
 const causeEffect: Partial<Record<DeathCause, CardEffect>> = {
   hammer: "hammered",
@@ -141,7 +141,7 @@ export function PlayerList({
               <WerewolfSymbol id="dead" label={t("werewolfSymbols.items.dead.name")} size={14} />
             )}
             {/* The tanner who has won: his trophy in gold, right next to the gravestone. */}
-            {effects && player.wonAsTanner && (
+            {player.wonAsTanner && (
               <span className="ww-slot ww-overview__slot" data-won="tanner" style={wonSlotStyle}>
                 <WerewolfSymbol
                   id="tanner"
@@ -150,17 +150,14 @@ export function PlayerList({
                 />
               </span>
             )}
-            {/* Why he is out or marked, as the slot of its state in its color; a cause without a state as its sign. The
-                slots of the causes are shown in every row, also when the state of the night is already over. */}
-            {(effects ? causeSlotsOf(player) : []).map(slot)}
+            {/* Why he is out or marked, as the slot of its state in its color (also when the state of the night is over,
+                and at the end of the game); the vote and the shot in their own colors. */}
+            {causeSlotsOf(player).map(slot)}
             {player.causes
-              .filter(
-                (cause) =>
-                  !(effects && causeEffect[cause]) && !(cause === "hunter" && player.lastShot),
-              )
+              .filter((cause) => !causeEffect[cause] && !(cause === "hunter" && player.lastShot))
               .sort((one, other) => causeRank(one) - causeRank(other))
               .map((cause) =>
-                effects && isCauseSlot(cause) ? (
+                isCauseSlot(cause) ? (
                   <span
                     className="ww-slot ww-overview__slot"
                     data-cause={cause}
@@ -199,30 +196,23 @@ type LegendGroup = "tones" | "frames" | "effects" | "causes" | "variants";
 
 /**
  * The legend, divided into groups with a small heading each: the background of a row, its frame, the states (slots),
- * the causes of death and the variants of the roles. Only the states, causes and variants of this game are listed; a
- * group without entries is left out.
+ * the causes of death and the variants of the roles. It explains only what the rows of these players show; a group
+ * without entries is left out.
  */
 export function PlayerLegend({
-  variants = [],
-  causes = [],
-  causeSlots = false,
-  tannerWon = false,
+  players,
   effects = [],
-  tones = allTones,
-  frames = allFrames,
 }: {
-  readonly variants?: readonly RoleVariantId[];
-  readonly causes?: readonly DeathCause[];
-  /** The causes that have a state are shown as its colored slot (as in the rows of the overview). */
-  readonly causeSlots?: boolean;
-  /** A tanner has won: the gold slot with his trophy is explained with the states. */
-  readonly tannerWon?: boolean;
+  readonly players: readonly PlayerView[];
+  /** The states the rows show as slots (without the slots that name a cause of death). */
   readonly effects?: readonly CardEffect[];
-  /** The backgrounds and frames this game has (see `legendOf`); all of them when not given. */
-  readonly tones?: readonly PlayerTone[];
-  readonly frames?: readonly PlayerFrame[];
 }) {
   const { t } = useTranslation();
+  const tones = allTones.filter((tone) => players.some((player) => player.tone === tone));
+  const frames = allFrames.filter((frame) => players.some((player) => player[frame]));
+  const causes = causesOf(players);
+  const variants: readonly RoleVariantId[] = variantsOf(players);
+  const tannerWon = players.some((player) => player.wonAsTanner);
   const group = (id: LegendGroup, items: readonly ReactNode[]) =>
     items.length === 0 ? null : (
       <div className="ww-overview__legend-group" key={id}>
@@ -284,7 +274,7 @@ export function PlayerLegend({
         "causes",
         causes.map((cause) => (
           <li key={cause}>
-            {causeSlots && isCauseSlot(cause) ? (
+            {isCauseSlot(cause) ? (
               <span
                 className="ww-slot ww-overview__slot"
                 data-cause={cause}
@@ -292,7 +282,7 @@ export function PlayerLegend({
               >
                 <WerewolfSymbol id={causeSymbol[cause]} size={12} />
               </span>
-            ) : causeSlots && causeEffect[cause] ? (
+            ) : causeEffect[cause] ? (
               <span
                 className="ww-slot ww-overview__slot"
                 data-effect={causeEffect[cause]}
@@ -336,24 +326,17 @@ export function PlayerRows({
   // The list in the window shows whole rows only and scrolls row by row.
   const list = useRef<HTMLUListElement>(null);
   const listHeight = useWholeGridRows(list, players.length);
-  const legend = legendOf(state);
   return (
     <div className="ww-players">
       <PlayerList effects={effects} listHeight={listHeight} listRef={list} players={players} />
       <PlayerLegend
-        causeSlots
-        tannerWon={players.some((player) => player.wonAsTanner)}
-        causes={causesOf(players)}
         // Each slot once, where the rows show it: a slot that names a cause of death is explained with the causes.
         effects={stateIds.filter((state) =>
           players.some((player) =>
             otherSlotsOf(player, effects.get(player.name) ?? []).includes(state),
           ),
         )}
-        // Only the backgrounds and frames the rows show now (in the order of the legend).
-        frames={legend.frames.filter((frame) => players.some((player) => player[frame]))}
-        tones={legend.tones.filter((tone) => players.some((player) => player.tone === tone))}
-        variants={variantsOf(players)}
+        players={players}
       />
     </div>
   );

@@ -3,7 +3,11 @@ import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
 import { createGuide, describeGuide } from "../../business/games/werewolf/narratorGuide";
 import { createWerewolfSession } from "../../business/games/werewolf/session";
-import { createWerewolf, type WerewolfState } from "../../business/games/werewolf/stateMachine";
+import {
+  createWerewolf,
+  transitionWerewolf,
+  type WerewolfState,
+} from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
 import { PlainBox } from "./GuidePlainBox";
 import { PlayerRows } from "./PlayerRows";
@@ -275,4 +279,28 @@ it("explains at the end of the game only the backgrounds and frames the rows of 
   expect(
     [...legend.querySelectorAll("[data-frame]")].map((swatch) => swatch.getAttribute("data-frame")),
   ).toEqual(["drunk"]);
+});
+
+it("shows the cause of death in its color at the end of the game, too", async () => {
+  const i18n = await createGameHubI18n("en");
+  const base = game();
+  const victim = base.players.find((player) => player.role === "villager")!;
+  const exile = { ...base, status: "exile", victim } as unknown as WerewolfState;
+  const after = transitionWerewolf(exile, { night: base.night, type: "announceExile" });
+  const state = { ...after, status: "finished", winner: "wolves" } as unknown as WerewolfState;
+  render(
+    <I18nextProvider i18n={i18n}>
+      <PlainBox view={describeGuide(createGuide(createWerewolfSession(state)))} />
+    </I18nextProvider>,
+  );
+  const row = [...document.querySelectorAll<HTMLElement>(".ww-winners .ww-overview__row")].find(
+    (entry) => entry.querySelector("strong")?.textContent === victim.name,
+  )!;
+  const marks = [...row.querySelector(".ww-overview__marks")!.children];
+  expect(marks[0]).toHaveAttribute("aria-label", "Dead");
+  expect(marks[1]).toHaveAttribute("data-cause", "vote");
+  // The legend explains the vote with the same slot.
+  expect(
+    document.querySelector('.ww-winners .ww-overview__legend [data-cause="vote"]'),
+  ).not.toBeNull();
 });
