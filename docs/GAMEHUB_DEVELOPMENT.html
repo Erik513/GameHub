@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 402,
-      "totalTasks": 458,
-      "percent": 87.8
+      "completedTasks": 405,
+      "totalTasks": 461,
+      "percent": 87.9
     }
   },
   "environment": {
@@ -2414,6 +2414,12 @@
           "validation": "Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifische Effekte der Erzählerkarte sowie die Beschreibungen der Nacht- und Jägerschritte stehen in den Rollendefinitionen. Die bestehenden Abläufe und gespeicherten Rollentabellen sind unverändert. 1.784 Tests im vollständigen Lauf bestanden. Nach der typisierten Zusammenführung der Schritte wurden die 28 betroffenen Tests erneut ausgeführt. Typ-, Lint-, Format- und Schichtprüfung sowie Produktionsbuild erfolgreich."
         },
         {
+          "id": "We-01-193",
+          "title": "Rollen-Umbau Phase 5a: Verzeichnis der Zustände",
+          "status": "done",
+          "validation": "Alle Zustände und die Reihenfolge der Slots stehen in roles/stateIds.ts; CardEffect wird daraus abgeleitet; die Regeln stehen in den Rollendateien (und die allgemeinen in cardEffects.ts), holdsState prüft sie; die Reihenfolge-Liste cardEffectsInOrder ist entfallen; neuer Test roles/states.test.ts (jeder Zustand hat eine Regel); Absicherungs-Snapshots unverändert; Branch game/werewolf-roles."
+        },
+        {
           "id": "We-01-194",
           "title": "Alle Spieler und Rollen: alle Zustände als farbige Slots wie auf der Karte",
           "status": "done",
@@ -2448,6 +2454,18 @@
           "title": "Legende der Übersicht in Gruppen, Verwundet dunkelrot",
           "status": "done",
           "validation": "Die Legende von Alle Spieler und Rollen und vom Spielende ist in Gruppen mit Überschrift geteilt (Hintergrund der Zeile, Rahmen der Zeile, Zustände, Todesursache, Varianten der Rollen), dünne Linie zwischen den Gruppen, leere Gruppen fallen weg, auf dem Handy steht die Überschrift über den Einträgen; Hintergrund und Rahmen nennen nur, was dieses Spiel haben kann (legendOf: Gerettet nur mit Leibwächter, Dorfmatratze, Hexe, Magier oder Amulett, Verwundet nur mit dem Harten Burschen, Rahmen nur mit Amulett beziehungsweise Trunkenbold); Titel Legende/Legend; Texte de/en; der Hintergrund Verwundet ist dunkelrot (#6e1610) statt im Rot von Angegriffen; Tests in PlayerRows.test.tsx und NarratorBar.test.tsx; tsc, ESLint, Prettier und 293 Tests der Werwolf-Ansicht und i18n grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-200",
+          "title": "Rollen-Umbau Phase 5b: Aussehen der Zustände",
+          "status": "done",
+          "validation": "Farbe je Zustand in symbols/stateLook.ts (Record über alle Zustände, der Compiler meldet fehlende), Zeichen aus dem Katalog (ebenfalls vom Compiler geprüft); die 17 Farbregeln je Zustand in werewolf-narrator.css sind entfallen, der Slot bekommt seine Farbe über --slot-bg und --slot-ink; neuer Test symbols/stateLook.test.ts (Zeichen, Farbe, Text de/en je Zustand); Absicherungs-Snapshots unverändert; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-201",
+          "title": "Rollen-Umbau Phase 5c: eine Fähigkeitsliste pro Rolle",
+          "status": "done",
+          "validation": "Jede Rolle führt eine Liste abilityList (Fähigkeit, Zeichen, verbrauchbar) und availability (warum nicht nutzbar, was übrig ist); defineRole leitet daraus die Knöpfe der Rollenkarte und die Fähigkeiten beim Austeilen ab; Sonderfälle bleiben: der Bürgermeister zeigt beim Austeilen mit doppelter Stimme die 2, der Seher-Lehrling hat beim Austeilen keine Fähigkeit; Absicherungs-Snapshots unverändert; tsc, ESLint und 860 Werwolf-Tests grün."
         }
       ]
     },

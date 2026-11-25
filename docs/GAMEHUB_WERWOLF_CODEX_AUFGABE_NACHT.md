@@ -415,3 +415,10 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 ## Legende je Spiel (2026-11-25, Claude, We-01-199)
 
 - Neu in `selectors.ts`: `legendOf(state)` gibt die Hintergründe (`PlayerTone`) und Rahmen (`PlayerFrame`) zurück, die dieses Spiel haben kann. Nur Anzeige, keine Regeländerung.
+
+## Übergabe Rollen-Umbau Phase 5 (2026-11-25, Claude, We-01-193, We-01-200, We-01-201, Branch game/werewolf-roles)
+
+- **5a:** `roles/stateIds.ts` enthält alle Zustände in der Reihenfolge der Slots; `CardEffect` (narratorCard.ts) ist `(typeof stateIds)[number]`. `roles/cardEffects.ts` hat statt `cardEffectsInOrder` jetzt `stateRules` (allgemeine Regeln und die `cardEffects` aller Rollen) und `holdsState(effect, context)` (eine Regel trifft zu). `effectsOf` und `effectsOfPerson` filtern `stateIds` damit. Neuer Zustand: Platz in `stateIds.ts`, Regel unter `cardEffects` der Rolle.
+- **5b (nur Präsentation):** Farbe je Zustand in `presentation/werewolf/symbols/stateLook.ts`; die CSS-Regeln `.ww-slot[data-effect=...]` sind entfallen.
+- **5c:** Rollen schreiben `abilityList` (Fähigkeit, Zeichen, `consumable`) und `availability(state)` (je Fähigkeit `why` und `count`) statt `cardAbilities` und `abilities`; `defineRole` (roles/define.ts) leitet beides ab. Sonderfälle: `mayor.abilities` (die 2 beim Austeilen) und `apprenticeSeer` (Karte wie die Seherin, beim Austeilen nichts) überschreiben weiter von Hand. Typen `AbilitySpec` und `AbilityAvailability` in roles/types.ts.
+- Verhalten gleich: Absicherungs-Snapshots aus Phase 0 unverändert, alle Werwolf-Tests grün, tsc und ESLint grün. Regeln und Zustandsmaschine unberührt. Die gesperrten Dateien (narratorCard.ts, roles/, roleAbilities.ts) sind nach dem Commit wieder frei.

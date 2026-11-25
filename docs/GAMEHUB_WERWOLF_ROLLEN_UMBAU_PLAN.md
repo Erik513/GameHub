@@ -96,3 +96,57 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 - We-01-190: narratorCard.ts liest Fähigkeiten und Effekte aus roles/. Gemeinsame Effekte und Anzeigereihenfolge stehen in roles/cardEffects.ts.
 - We-01-191: roleStep.ts liest rollenspezifische Schrittbeschreibungen aus roles/. Gemeinsame Schritte für Tarnaufruf, Tagesabstimmung und Amulett werden dort weiterhin zusammengesetzt.
 - Die Zustandsmaschine, die Abfolge der Nacht und die zurückgestellten Phasen 4 und 5 sind unverändert.
+
+## Phase 5: Zustände an einer Stelle (Plan vom 25.11.2026)
+
+**Umgesetzt am 25.11.2026 auf `game/werewolf-roles` (We-01-193, We-01-200, We-01-201).** Abweichungen vom Plan: Die Reihenfolge steht nicht als Zahl am Zustand, sondern als Liste `roles/stateIds.ts` (Name und Platz an einer Stelle, daraus `CardEffect`); die Farbe steht nicht in der Rollendatei, sondern nur in der Präsentation (`symbols/stateLook.ts`), damit die Business-Schicht nichts über Farben weiß. Ein neuer Zustand braucht damit: Platz in `stateIds.ts`, Regel in der Rollendatei, Farbe in `stateLook.ts` (Compiler), Zeichen im Katalog (Compiler), Text de/en (Test). Grundlage: Seit Phase 3 sind viele Zustände dazugekommen (Angesehen, Untersucht, Geheilt, Durch Heilzauber gerettet, Vom Hammer / Todeszauber getroffen, Doppelte Stimme, die beiden gerettet-Zustände). Für jeden neuen Zustand waren heute sechs Stellen nötig:
+
+| Stelle | Datei | Prüft der Compiler, ob es fehlt? |
+|---|---|---|
+| Regel (wann trägt eine Person den Zustand) | `roles/<rolle>.ts` (`cardEffects`) | nein |
+| Name im Typ | `narratorCard.ts` (`CardEffect`) | teilweise |
+| Reihenfolge der Slots | `roles/cardEffects.ts` (`cardEffectsInOrder`) | nein |
+| Zeichen | `presentation/werewolf/symbols/catalog.ts` | nein |
+| Farbe | `styles/tokens.css` und eine Regel in `werewolf-narrator.css` | nein |
+| Text de/en | `i18n/resources/*/werewolfSymbols.ts` | ja (Test „jedes Zeichen hat einen Text“) |
+
+### Ziel von Phase 5
+
+Ein neuer Zustand braucht **drei** Einträge statt sechs, und bei den zwei, die außerhalb der Rollendatei stehen, meldet der Compiler eine Lücke:
+
+1. **Rollendatei (Business):** Der Zustand wird dort vollständig beschrieben: Regel, Platz in der Reihenfolge, Name der Slotfarbe. Ein zentrales Verzeichnis `roles/states.ts` sammelt die Zustände aller Rollen und der allgemeinen Zustände (verliebt, Amulett, Trunkenbold, Angegriffen beim Amulett). `CardEffect` wird aus diesem Verzeichnis abgeleitet und nicht mehr von Hand gepflegt. Die Reihenfolge kommt aus einer Zahl am Zustand, die Liste in `cardEffects.ts` entfällt.
+2. **Zeichen und Farbe (Präsentation):** Eine Tabelle `stateLook: Record<CardEffect, { glyph, color, darkInk? }>` ersetzt die Zustands-Einträge im Katalog und die Farbregeln je Zustand in `werewolf-narrator.css`. Weil es ein `Record` über alle Zustände ist, meldet `tsc` jeden fehlenden Zustand. Die Farbwerte bleiben als Tokens in `tokens.css`; der Slot bekommt seine Farbe über die Tabelle (eine gemeinsame Regel statt einer je Zustand).
+3. **Text de/en:** bleibt in den Übersetzungsressourcen, wie die Regeln verlangen.
+
+Zusätzlich (aus den Befunden zu Phase 2 und 3): **eine Fähigkeitsliste pro Rolle.** Heute führt jede Rolle `abilities` (Karte beim Austeilen) und `cardAbilities` (Knöpfe mit Verfügbarkeit) getrennt, mit denselben Zeichen. Künftig gibt es eine Liste der Fähigkeiten mit Zeichen; `cardAbilities` ergänzt nur noch die Verfügbarkeit, `abilities` wird daraus abgeleitet. Die doppelte Stimme des Bürgermeisters (keine Schaltfläche) bleibt als Sonderfall erhalten.
+
+### Schritte
+
+- **5a, Verzeichnis der Zustände (Business):** `roles/states.ts`, Zustände in den Rollendateien mit Reihenfolge und Farbname, `CardEffect` abgeleitet, `cardEffects.ts` aufgelöst. Berührt `narratorCard.ts` und `roles/*`.
+- **5b, Aussehen der Zustände (Präsentation):** `stateLook` mit Zeichen und Farbe; Katalog und CSS lesen daraus; die Regeln je Zustand in `werewolf-narrator.css` entfallen. Berührt nur die Präsentation.
+- **5c, eine Fähigkeitsliste pro Rolle:** `abilities` aus derselben Liste wie `cardAbilities`. Berührt `roles/*` und `roleAbilities.ts`.
+
+Nach jedem Schritt: Die Absicherungs-Snapshots aus Phase 0 müssen **unverändert** bleiben (kein Zeichen, keine Reihenfolge, keine Fähigkeit ändert sich), dazu alle Tests, `tsc`, ESLint, Prettier, Build und Schichtprüfung. Zusätzlich ein Test, der für jeden Zustand prüft, dass Zeichen, Farbe und Text vorhanden sind.
+
+### Nicht Teil von Phase 5
+
+- Die Zustandsfelder von `describePlayers` (zum Beispiel `inspected`, `healed`, `twoVotes`) bleiben; sie werden auch außerhalb der Slots gebraucht. Die Rollendateien lesen sie weiter.
+- Regeln und Zustandsmaschine bleiben unverändert. Phase 4 (Konfiguration) bleibt zurückgestellt.
+
+### Aufgaben (Vorschlag, erst nach Freigabe in den Status)
+
+- We-01-193: Phase 5a, Verzeichnis der Zustände
+- We-01-200: Phase 5b, Aussehen der Zustände
+- We-01-201: Phase 5c, eine Fähigkeitsliste pro Rolle
+
+### Risiken
+
+- **Codex:** 5a und 5c ändern `narratorCard.ts` und `roles/*`, an denen Codex arbeitet. Vorher abstimmen, wie bei Phase 2 und 3.
+- **Farben im CSS:** Die gelben Slots (Hammer, Doppelte Stimme) haben ein dunkles Zeichen. Die Tabelle braucht dafür ein Feld (`darkInk`), sonst ändert sich das Aussehen.
+- **Ältere Spielstände:** keine Änderung an gespeicherten Feldern, daher kein Risiko für laufende Spiele (Annahme, beim Umsetzen zu prüfen).
+
+### Entscheidungen des Auftraggebers
+
+1. Freigabe von Phase 5 mit den Schritten 5a, 5b und 5c.
+2. Branch: wieder `game/werewolf-roles` (Vorschlag), danach Zusammenführung in `game/werewolf-ui`.
+3. Wer setzt um: 5b (nur Präsentation) Claude; 5a und 5c entweder Claude nach Abstimmung oder Codex (Logikdateien).

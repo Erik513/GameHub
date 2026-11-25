@@ -1,5 +1,14 @@
 # GameHub Changelog
 
+## 2026-11-25 (Rollen-Umbau Phase 5, Branch game/werewolf-roles)
+
+### We-01-193, We-01-200, We-01-201: Zustände an einer Stelle, eine Fähigkeitsliste pro Rolle (Claude)
+
+- 5a: Alle Zustände und die Reihenfolge der Slots stehen in `roles/stateIds.ts`; `CardEffect` wird daraus abgeleitet, die Regeln bleiben in den Rollendateien.
+- 5b: Die Farbe jedes Zustands steht in `symbols/stateLook.ts`; die Farbregeln je Zustand in der CSS-Datei sind entfallen. Ein fehlender Zustand fällt dem Compiler oder einem Test auf.
+- 5c: Jede Rolle hat eine Fähigkeitsliste; Knöpfe der Rollenkarte und Fähigkeiten beim Austeilen kommen daraus.
+- Verhalten unverändert: Absicherungs-Snapshots und alle Werwolf-Tests grün. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Legende)
 
 ### We-01-199: Legende in Gruppen, Verwundet dunkelrot (Claude)
