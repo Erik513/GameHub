@@ -1339,6 +1339,9 @@
 }
 
 .ww-script__step {
+  /* The content stands in the middle of the box: the box is as high as the buttons next to it (at least 44 px). */
+  display: grid;
+  align-content: center;
   flex: 1;
   min-width: 0;
   gap: var(--space-1);
