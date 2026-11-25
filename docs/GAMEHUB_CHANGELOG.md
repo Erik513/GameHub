@@ -1,5 +1,15 @@
 # GameHub Changelog
 
+## 2026-11-25 (Rollen-Umbau Phase 6, Branch game/werewolf-roles)
+
+### We-01-203 bis We-01-206: Eine neue Rolle mit möglichst wenigen Stellen (Claude)
+
+- 6a: Die Liste `roles/roleIds.ts` nennt alle Rollen; die Rollentypen werden daraus abgeleitet.
+- 6b: Mindestspielerzahl, Platz auf den Seiten, Familie und Optionen stehen in der Rollendatei (`setup`); die Tabellen der festen und variablen Konfiguration und der Empfehlung werden daraus gebildet.
+- 6c: Schritt, Platz und Zeitpunkt in der Nacht stehen in der Rollendatei (`night`); Aufweckreihenfolge und Erzählerskript lesen die Reihenfolge aus `roles/night.ts`.
+- 6d: Ein Test verlangt für jede Sonderrolle Punkte in der Kalibrierung.
+- Verhalten unverändert: Absicherungs-Snapshots und alle Werwolf-Tests grün. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Anleitung)
 
 ### We-01-140: Anleitung „Der Ablauf ist jede Nacht gleich“ (Claude)

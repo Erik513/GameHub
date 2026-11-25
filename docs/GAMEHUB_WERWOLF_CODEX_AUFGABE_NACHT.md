@@ -434,3 +434,7 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 ## Befund 5 und gespeicherte Wolfswahl (2026-11-25, Codex, We-03-74)
 
 Befund 5 ist behoben. Die Doppelstimme wird als unteilbare Stimme gewertet. Beim Laden wird fehlendes wolfChoice aus dem Wolfsangriff derselben Nacht rekonstruiert, sofern dieser protokolliert ist. Ohne Eintrag wird null gesetzt. Details stehen in GAMEHUB_WERWOLF_HANDOFF.md.
+
+## Übergabe Rollen-Umbau Phase 6 (2026-11-25, Claude, We-01-203 bis We-01-206, Branch game/werewolf-roles)
+
+Neue Dateien: `roles/roleIds.ts` (Liste aller Rollen, `specialRoleIds`, abgeleitete Typen), `roles/setup.ts` (Konfiguration aus `setup` der Rollendateien: `specialRoleSetups()`, `setupOf`, `familyOf`, `optionKeyOf`), `roles/night.ts` (`nightSteps()` aus `night` der Rollendateien, `WakeStepId`, `WakeTiming`), Tests `setupTable.test.ts` und `roles/balance.test.ts`. Abgeleitet statt von Hand: `werewolfRoleMinimums` (Getter, Schlüssel jetzt in der Reihenfolge von roleIds), `fixedItems`, `variableEntries`, Familien und Optionsschlüssel in `variableRecommendation.ts` und `variableSetup.ts`, die Reihenfolge in `wakeOrder.ts` und `nightScript.ts` (die Aufrufe je Schritt stehen weiter in `nightScript.ts`). Wichtig: Diese Tabellen dürfen nicht beim Laden einer Datei gelesen werden, sondern nur in Funktionen, sonst greift der Ladekreis Rollendateien → Selektoren → Zustandsmaschine → Konfiguration. Verhalten unverändert. `src/business/games/werewolf/` ist nach dem Commit wieder frei.

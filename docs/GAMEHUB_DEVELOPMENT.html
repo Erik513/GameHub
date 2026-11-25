@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 411,
-      "totalTasks": 465,
-      "percent": 88.4
+      "completedTasks": 415,
+      "totalTasks": 469,
+      "percent": 88.5
     }
   },
   "environment": {
@@ -2474,6 +2474,30 @@
           "title": "Befunde 1 bis 4 der Logikprüfung We-03-72 behoben",
           "status": "done",
           "validation": "1: Gift-Slot nur in den Schritten nach der Hexe in derselben Nacht (roles/witch.ts). 2: neues Feld wolfChoice (Wahl der Wölfe, auch wenn die Dorfmatratze den Angriff übernimmt); Von der Dorfmatratze gerettet prüft wolfChoice. 3: Ursachen der am Morgen oder beim Ausscheiden angesagten Personen kommen aus der Ansage selbst (Liebeskummer vor der Bestätigung sichtbar, selectors.ts). 4: Die Führung nennt die stumme Person nur, wenn silencedNight die aktuelle Nacht ist (narratorGuide.ts). Die vier Tests in logicAudit.test.ts laufen jetzt als normale Tests; Befund 5 (Stimmen des Bürgermeisters) wurde anschließend in We-03-74 behoben. Testdaten um silencedNight, wolfChoice und den Schritt nach der Hexe ergänzt; Absicherungs-Snapshots unverändert; tsc, ESLint, Prettier und 867 Werwolf-Tests grün."
+        },
+        {
+          "id": "We-01-203",
+          "title": "Rollen-Umbau Phase 6a: Rollenliste und abgeleitete Typen",
+          "status": "done",
+          "validation": "Neue Liste roles/roleIds.ts nennt alle Rollen; RoleId, SpecialRoleId, GameRoleId (Role), WerewolfSpecialRole, CardRoleSymbol, DealtRole und roleSymbols im Katalog werden daraus abgeleitet; tsc und 911 Werwolf-Tests grün, Absicherungs-Snapshots unverändert; Branch game/werewolf-roles."
+        },
+        {
+          "id": "We-01-204",
+          "title": "Rollen-Umbau Phase 6b: Konfiguration in den Rollendateien",
+          "status": "done",
+          "validation": "Jede Sonderrolle hat setup (Mindestspielerzahl, Platz auf den Seiten, Familie, Optionen); roles/setup.ts liest es beim ersten Gebrauch (wegen des Ladekreises); werewolfRoleMinimums, fixedItems, variableEntries, Familien und Optionsschlüssel der Empfehlung werden daraus abgeleitet; neuer Absicherungs-Snapshot setupTable.test.ts unverändert; 912 Tests (Werwolf, i18n) grün."
+        },
+        {
+          "id": "We-01-205",
+          "title": "Rollen-Umbau Phase 6c: Platz in der Nacht in den Rollendateien",
+          "status": "done",
+          "validation": "Jede Rolle mit Nachtschritt nennt Schritt, Platz, Zeitpunkt und bei Bedarf wakes (Bürgermeister nur mit Hammer); roles/night.ts setzt daraus die Schritte der Nacht zusammen (Amulett als Extra am Ende); wakeOrder.ts und nightScript.ts lesen die Reihenfolge daraus, die Aufrufe je Schritt bleiben gleich; Reihenfolge-Tests von wakeOrder und nightScript unverändert grün (875 Werwolf-Tests); kein zusätzlicher Nacht-Snapshot, die bestehenden Tests nennen die Reihenfolge ausdrücklich."
+        },
+        {
+          "id": "We-01-206",
+          "title": "Rollen-Umbau Phase 6d: Bilanzpunkte für jede Rolle",
+          "status": "done",
+          "validation": "Neuer Test roles/balance.test.ts verlangt für jede Sonderrolle einen Punktwert in balanceCalibration.json und einen eigenen Platz in der Konfiguration; die Punkte bleiben in der Kalibrierung von Codex."
         }
       ]
     },
@@ -4140,7 +4164,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-24T21:29:04.164Z"
+  "updatedAt": "2026-11-25T19:32:12.631Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

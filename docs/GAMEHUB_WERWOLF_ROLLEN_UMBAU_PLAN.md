@@ -150,3 +150,26 @@ Nach jedem Schritt: Die Absicherungs-Snapshots aus Phase 0 müssen **unveränder
 1. Freigabe von Phase 5 mit den Schritten 5a, 5b und 5c.
 2. Branch: wieder `game/werewolf-roles` (Vorschlag), danach Zusammenführung in `game/werewolf-ui`.
 3. Wer setzt um: 5b (nur Präsentation) Claude; 5a und 5c entweder Claude nach Abstimmung oder Codex (Logikdateien).
+
+## Phase 6: Eine neue Rolle mit möglichst wenigen Stellen (Plan vom 25.11.2026, freigegeben)
+
+**Umgesetzt am 25.11.2026 (We-01-203 bis We-01-206).** Die Konfiguration steht in `setup`, die Nacht in `night` jeder Rollendatei; `roles/setup.ts` und `roles/night.ts` lesen beides erst beim ersten Gebrauch, weil die Rollendateien die Spiellogik importieren (Ladekreis). Für 6c gab es keinen zusätzlichen Snapshot: Die bestehenden Tests von `wakeOrder` und `nightScript` nennen die Reihenfolge ausdrücklich. Auftrag: vor dem ersten Push. Heute kommt eine Rolle wie die Alte Vettel in 19 Code-Dateien und 8 Übersetzungsdateien vor. Ziel: Eine neue Rolle braucht die Rollendatei, ihre eigene Regel in der Zustandsmaschine, Zeichnung und Texte; alles andere wird aus dem Verzeichnis `roles/` abgeleitet, und Compiler oder Tests melden Lücken.
+
+### Schritte
+
+- **6a, Rollen-Liste und Typen ableiten:** Eine Liste `roles/roleIds.ts` (wie `stateIds.ts`) nennt alle Rollen; `RoleId`, `WerewolfSpecialRole`, `Role`, `CardRoleSymbol` und `DealtRole` werden daraus abgeleitet statt von Hand gepflegt.
+- **6b, Konfiguration in die Rollendatei (bisherige Phase 4):** Mindestspielerzahl, Art in der Konfiguration (an/aus oder mit Variante), Familie (Leibwächter/Dorfmatratze, Hexe/Magier) und die Einträge für variable Rollen stehen in der Rollendatei. `werewolfRoleMinimums`, die Einträge in `fixedConfiguration.ts`, `variableConfiguration.ts` und `variableRecommendation.ts` werden daraus abgeleitet. Verhalten der Konfiguration unverändert.
+- **6c, Platz in der Nacht in die Rollendatei:** Jede Rolle mit einem Nachtschritt nennt Platz, Zeitpunkt (nur Nacht 1, ab Nacht 2, Nacht 3) und wer geweckt wird. `nightScript.ts` und `wakeOrder.ts` setzen die Nacht daraus zusammen. Sonderfälle mit mehreren Rollen (Seherin/Seher-Lehrling, Amor und Verliebte, Trunkenbold, Amulett) bleiben als gemeinsame Schritte, aber ebenfalls als Einträge mit Platz statt als feste Liste.
+- **6d, Spielstärke:** Die Punkte für die Empfehlung kommen aus Codex' Messdaten (`balanceCalibration.json`) und bleiben dort, weil sie aus Simulationen erzeugt werden. Neu: ein Test, der für jede Rolle aus dem Verzeichnis einen Punktwert verlangt.
+
+### Absicherung
+
+Vor 6b und 6c je ein zusätzlicher Absicherungs-Snapshot (Konfiguration: Mindestzahlen, Einträge, Sperren, Empfehlung; Nacht: Reihenfolge der Aufrufe in typischen Aufstellungen und Nächten). Nach jedem Schritt: alle Snapshots unverändert, alle Tests, `tsc`, ESLint, Prettier, Build, Schichtprüfung.
+
+### Was danach für eine neue Rolle bleibt
+
+Rollendatei (mit Konfiguration, Nacht, Fähigkeiten, Zuständen, Schritten), eigene Regel in `stateMachine.ts` (Status und Ereignis), Platz in `roleIds.ts`, Zeichnung im Katalog, Texte de/en, Punktwert in der Kalibrierung, Tests. Der Compiler oder ein Test meldet jede fehlende Stelle.
+
+### Abstimmung
+
+Berührt fast alle Logikdateien des Werwolfs außer der Zustandsmaschine. Codex arbeitet währenddessen nicht an `src/business/games/werewolf/`. Branch: `game/werewolf-roles`, danach Zusammenführung in `game/werewolf-ui`.
