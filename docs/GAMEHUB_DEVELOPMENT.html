@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 433,
-      "totalTasks": 487,
-      "percent": 88.9
+      "completedTasks": 436,
+      "totalTasks": 490,
+      "percent": 89
     }
   },
   "environment": {
@@ -594,6 +594,12 @@
           "id": "Al-09-12",
           "title": "Spielerliste im GameHub: Name „Spielerliste“, großes Fenster und große Spielerauswahl mit ganzen Zeilen, keine waagerechte Scrollleiste",
           "status": "done"
+        },
+        {
+          "id": "Al-09-13",
+          "title": "Gemeinsamer Baustein RosterRow: Spielerliste und Spielerzahl ganz oben",
+          "status": "done",
+          "validation": "Neuer Baustein game-kit/RosterRow (Knopf „Aus Spielerliste wählen“ plus Spielerzahl, Stil kit-count in kit-setup.css statt ww-count): mit Grenze „Anzahl/Grenze“ rot unter der Mindestzahl und grün ab ihr (Werwolf 11/21), ohne Grenze nur die Zahl in neutraler Farbe (Taboo). Steht in PlayersSetup (Taboo) und im Werwolf-Reiter Spieler als erste Reihe, über Erzähler beziehungsweise Laden und Namensfeld. Zwei neue Tests in PlayerRoster.test.tsx; 674 Oberflächen-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -695,6 +701,12 @@
           "id": "Al-10-10",
           "title": "Layout der Spielkarte und der Kopfleiste für Telefone mit 320 Pixel Breite",
           "status": "done"
+        },
+        {
+          "id": "Al-10-11",
+          "title": "Spielauswahl: alle Spielkarten gleich groß",
+          "status": "done",
+          "validation": "Nur CSS (global.css): Die Liste der Spiele hat gleich hohe Reihen (grid-auto-rows 1fr, so hoch wie die höchste Karte); jede Karte hat feste Zeilen (Etikett-Zeile auch ohne Etikett, Beschreibung nimmt den freien Platz, Knopf unten), so stehen Titel und Knopf überall an derselben Stelle. 29 Tests der Spielauswahl und der App grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -2606,6 +2618,12 @@
           "title": "Sitzkreis: Tippen statt Gedrückthalten",
           "status": "done",
           "validation": "Eine Kachel antippen zeigt den ganzen Namen und markiert sie; eine andere Kachel antippen wechselt die Auswahl; dieselbe Kachel erneut antippen hebt sie auf; ein Tipp neben die Kacheln ändert nichts. Gedrückthalten, Zeitverzögerung und das Mitwandern unter dem Finger sind entfallen; touch-action manipulation statt none. Die Namensbox hat eine feste Höhe (4rem) für den zweizeiligen Hinweis wie für einen Namen. Hinweis de/en (tapHint) angepasst, data-held heißt jetzt data-selected (auch im Beispielkreis). SeatCircle-Tests neu, Test im Spielablauf angepasst; 312 Werwolf-UI- und i18n-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-225",
+          "title": "Spiele „in Entwicklung“ in der veröffentlichten App spielbar",
+          "status": "done",
+          "validation": "isGameOpenable (app/gameCatalog.ts): Spiele mit availability preview lassen sich jetzt auch in der veröffentlichten App öffnen, nicht nur auf dem Entwicklungsserver; sie behalten das Etikett „In Entwicklung“ / „In development“. Geplante Spiele bleiben gesperrt. Betrifft zurzeit nur den Werwolf. Die Karte eines spielbaren Spiels in Entwicklung ist jetzt auch eingefärbt und umrandet wie Taboo (data-playable für jedes öffnebare Spiel). Auf Wunsch des Auftraggebers vor dem ersten Push. Tests in gameCatalog.test.ts und pages.test.tsx auf die neue Regel umgestellt; 24 Tests der Spielauswahl und des Katalogs grün."
         }
       ]
     },
@@ -4272,7 +4290,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T22:11:21.939Z"
+  "updatedAt": "2026-11-25T22:20:51.801Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

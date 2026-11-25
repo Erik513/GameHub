@@ -1,5 +1,23 @@
 # GameHub Changelog
 
+## 2026-11-25 (Spielauswahl)
+
+### Al-10-11: Alle Spielkarten gleich groß (Claude)
+
+- In der Spielauswahl sind alle Spielkarten gleich groß; Titel und Knopf „Spielen“ stehen in jeder Karte an derselben Stelle. Nicht im Browser angesehen.
+
+## 2026-11-25 (Spielerliste oben)
+
+### Al-09-13: Spielerliste und Spielerzahl ganz oben, in jedem Spiel (Claude)
+
+- Ein gemeinsamer Baustein zeigt „Aus Spielerliste wählen“ mit der Spielerzahl als erste Reihe der Spieler: beim Werwolf mit Grenze und Farbe (11/21), bei Taboo nur die Zahl. Nicht im Browser angesehen.
+
+## 2026-11-25 (Freigabe)
+
+### We-01-225: Spiele „in Entwicklung“ sind spielbar (Claude)
+
+- Ein Spiel mit dem Etikett „In Entwicklung“ lässt sich jetzt auch in der veröffentlichten App öffnen; das Etikett bleibt. Damit ist der Werwolf nach dem Push spielbar. Geplante Spiele bleiben gesperrt. Seine Karte ist wie Taboo eingefärbt und blau umrandet.
+
 ## 2026-11-25 (Sitzkreis)
 
 ### We-01-224: Sitzkreis mit Tippen statt Gedrückthalten (Claude)
