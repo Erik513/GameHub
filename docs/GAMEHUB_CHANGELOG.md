@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Legende)
+
+### We-01-216: Legende der Übersicht nennt nur, was die Zeilen zeigen (Claude)
+
+- Auch bei Hintergrund und Rahmen erklärt die Legende in „Alle Spieler und Rollen“ nur noch, was gerade zu sehen ist; das spart auf dem Handy Platz. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Spielende)
 
 ### We-01-215: Legende am Spielende verdeckt nichts und zeigt nur Gezeigtes (Claude)

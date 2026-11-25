@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 424,
-      "totalTasks": 478,
+      "completedTasks": 425,
+      "totalTasks": 479,
       "percent": 88.7
     }
   },
@@ -2552,6 +2552,12 @@
           "title": "Spielende: Legende verdeckt nichts und zeigt nur Gezeigtes",
           "status": "done",
           "validation": "Im Kasten des Spielendes scrollen nur die Gruppen (Gewinner, Verlierer), mit der Scrollleiste nah am Rand des Kastens; die Legende steht fest darunter mit einer Trennlinie statt angeheftet über der Liste. Die Legende des Spielendes nennt nur die Hintergründe und Rahmen, die in den Zeilen vorkommen (neben Todesursachen und Varianten, die schon so waren). Neuer Test; 273 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-216",
+          "title": "Legende der Übersicht nennt nur, was die Zeilen zeigen",
+          "status": "done",
+          "validation": "In „Alle Spieler und Rollen“ nennt die Legende bei Hintergrund und Rahmen nur noch, was in den Zeilen gerade vorkommt (wie schon am Spielende und bei Zuständen, Todesursachen und Varianten); vorher alles, was im Spiel möglich ist. legendOf gibt nur noch die Reihenfolge vor. Test „nur was dieses Spiel haben kann“ ersetzt durch „nur was die Zeilen zeigen“, Sprachtest auf Lebt und Amulett umgestellt; 921 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4218,7 +4224,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T21:00:24.482Z"
+  "updatedAt": "2026-11-25T21:13:25.647Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
