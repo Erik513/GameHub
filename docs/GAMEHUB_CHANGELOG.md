@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Magier)
+
+### We-01-136: Magier-Fragenablauf geprüft, doppelte Schlüssel behoben (Claude)
+
+- Der Fragenablauf wie bei der Hexe war schon umgesetzt; neu sind Tests für Verzichten nach einem Zauber und für denselben Ablauf ohne verbleibende Zauber. Zwei Todeszauber erzeugten in der Zusammenfassung doppelte React-Schlüssel (Hinweis von Codex); behoben. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Befunde der Logikprüfung)
 
 ### We-01-202: Befunde 1 bis 4 aus We-03-72 behoben (Claude)

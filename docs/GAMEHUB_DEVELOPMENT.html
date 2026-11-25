@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 408,
+      "completedTasks": 409,
       "totalTasks": 464,
-      "percent": 87.9
+      "percent": 88.1
     }
   },
   "environment": {
@@ -2082,7 +2082,8 @@
         {
           "id": "We-01-136",
           "title": "Magier: gleiches Fragenskript wie die Hexe, damit niemand an der Abfolge erkennen kann, ob ein Zauber verbraucht ist; Verzichten nach einem Zauber klickbar",
-          "status": "planned"
+          "status": "done",
+          "validation": "Der gleiche Fragenablauf wie bei der Hexe war bereits am 22.11.2026 umgesetzt (siehe We-01-137 ff.), die Aufgabe stand nur noch auf geplant. Am 25.11.2026 geprüft und ergänzt: neue Tests in NarratorMagician.test.tsx für Verzichten nach einem Zauber (erste Frage töten, zweite verzichten), für denselben Fragenablauf ohne verbleibende Zauber (beide Fragen erscheinen, Verzichten beantwortet beide) und dafür, dass zwei Todeszauber in der Zusammenfassung keine doppelten React-Schlüssel erzeugen. Fehler behoben (Hinweis von Codex aus We-03-73): Teile der Zusammenfassung hatten den Schlüssel Zeichen plus Beschriftung (killKilled); jetzt mit den Personen. Der Test schlägt ohne die Korrektur fehl. tsc, ESLint und 8 Magier-Tests grün; nicht im Browser angesehen."
         },
         {
           "id": "We-01-137",
