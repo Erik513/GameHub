@@ -69,58 +69,58 @@
   direction: ltr;
 }
 
-.ww-role-card__slot[data-effect="lovers"] {
+.ww-slot[data-effect="lovers"] {
   background: var(--slot-lovers);
 }
 
-.ww-role-card__slot[data-effect="amulet"] {
+.ww-slot[data-effect="amulet"] {
   background: var(--slot-amulet);
 }
 
-.ww-role-card__slot[data-effect="attacked"] {
+.ww-slot[data-effect="attacked"] {
   background: var(--slot-attacked);
 }
 
-.ww-role-card__slot[data-effect="protected"] {
+.ww-slot[data-effect="protected"] {
   background: var(--slot-protected);
 }
 
-.ww-role-card__slot[data-effect="guest"] {
+.ww-slot[data-effect="guest"] {
   background: var(--slot-guest);
 }
 
-.ww-role-card__slot[data-effect="poisoned"] {
+.ww-slot[data-effect="poisoned"] {
   background: var(--slot-poisoned);
 }
 
-.ww-role-card__slot[data-effect="inspected"] {
+.ww-slot[data-effect="inspected"] {
   background: var(--slot-inspected);
 }
 
-.ww-role-card__slot[data-effect="investigated"] {
+.ww-slot[data-effect="investigated"] {
   background: var(--slot-investigated);
 }
 
-.ww-role-card__slot[data-effect="healed"] {
+.ww-slot[data-effect="healed"] {
   background: var(--slot-healed);
 }
 
-.ww-role-card__slot[data-effect="spellHealed"] {
+.ww-slot[data-effect="spellHealed"] {
   background: var(--slot-spellHealed);
 }
 
 /* Good or bad, depending on the point of view (the hammer, the double vote): yellow with a dark sign. */
-.ww-role-card__slot[data-effect="hammered"],
-.ww-role-card__slot[data-effect="twoVotes"] {
+.ww-slot[data-effect="hammered"],
+.ww-slot[data-effect="twoVotes"] {
   background: var(--slot-hammered);
   color: #2b2300;
 }
 
-.ww-role-card__slot[data-effect="spellKilled"] {
+.ww-slot[data-effect="spellKilled"] {
   background: var(--slot-spellKilled);
 }
 
-.ww-role-card__slot[data-effect="drunk"] {
+.ww-slot[data-effect="drunk"] {
   background: var(--slot-drunk);
 }
 
@@ -866,6 +866,21 @@
 }
 
 /* The marks (out, in love, amulet ...) sit in the corner of the row. */
+/* A state as a colored slot: the same colors on the card and in the rows of the overview (see the tokens --slot-*). */
+.ww-slot {
+  background: var(--slot-silenced);
+  color: var(--seat-ink);
+}
+
+.ww-overview__slot {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+}
+
 .ww-overview__marks {
   display: flex;
   position: absolute;

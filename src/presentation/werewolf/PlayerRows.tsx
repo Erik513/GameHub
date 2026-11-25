@@ -9,12 +9,21 @@ import {
 import type { RoleVariantId } from "../../business/games/werewolf/roleVariant";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
 import type { DeathCause } from "../../business/games/werewolf/eventLog";
+import { effectsOfPerson, type CardEffect } from "../../business/games/werewolf/narratorCard";
 import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 const tones: readonly PlayerTone[] = ["alive", "wolf", "attacked", "saved", "wounded", "dead"];
 const frames = ["amulet", "drunk"] as const;
+
+/** The slot that already shows the ability that hit a person, so the sign of the cause is not repeated. */
+const causeEffect: Partial<Record<DeathCause, CardEffect>> = {
+  hammer: "hammered",
+  magicianKill: "spellKilled",
+  witchPoison: "poisoned",
+  wolves: "attacked",
+};
 
 /** The symbol of the ability that hit a person (the legend of the symbols has them all). */
 const causeSymbol: Record<DeathCause, SymbolId> = {
@@ -34,7 +43,14 @@ const causeSymbol: Record<DeathCause, SymbolId> = {
  * the person (alive, werewolf, attacked, saved, wounded, dead), a frame says the amulet (gold) or the drunk who does not
  * know his role yet (green). Every state also has its sign, so the color is never the only hint.
  */
-export function PlayerList({ players }: { readonly players: readonly PlayerView[] }) {
+export function PlayerList({
+  players,
+  effects,
+}: {
+  readonly players: readonly PlayerView[];
+  /** The states of each person as slots (by name); without it the rows show no slots (the end of the game). */
+  readonly effects?: ReadonlyMap<string, readonly CardEffect[]>;
+}) {
   const { t } = useTranslation();
   return (
     <ul className="ww-overview">
@@ -61,20 +77,6 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
             {player.tone === "dead" && (
               <WerewolfSymbol id="dead" label={t("werewolfSymbols.items.dead.name")} size={14} />
             )}
-            {player.partner !== null && (
-              <WerewolfSymbol
-                id="lovers"
-                label={t("werewolfSymbols.items.lovers.name")}
-                size={14}
-              />
-            )}
-            {player.amulet && (
-              <WerewolfSymbol
-                id="amulet"
-                label={t("werewolfSymbols.items.amulet.name")}
-                size={14}
-              />
-            )}
             {player.alive && player.delayedDeathNight !== null && (
               <WerewolfSymbol
                 id="wounded"
@@ -82,14 +84,25 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
                 size={14}
               />
             )}
-            {/* How he became a victim: the ability that hit him (the signs of the lovers, the wound and the last shot
-                already stand here and are not repeated). */}
+            {/* Every state he carries, as the same colored slots as on the card of the role. */}
+            {(effects?.get(player.name) ?? []).map((effect) => (
+              <span className="ww-slot ww-overview__slot" data-effect={effect} key={effect}>
+                <WerewolfSymbol
+                  id={effect}
+                  label={t(`werewolfSymbols.items.${effect}.name`)}
+                  size={12}
+                />
+              </span>
+            ))}
+            {/* How he became a victim: the ability that hit him (the signs of the lovers, the wound, the last shot and a
+                slot of the same ability already stand here and are not repeated). */}
             {player.causes
               .filter(
                 (cause) =>
                   !(cause === "heartbreak" && player.partner !== null) &&
                   !(cause === "toughGuy" && player.delayedDeathNight !== null) &&
-                  !(cause === "hunter" && player.lastShot),
+                  !(cause === "hunter" && player.lastShot) &&
+                  !(causeEffect[cause] && effects?.get(player.name)?.includes(causeEffect[cause])),
               )
               .map((cause) => (
                 <WerewolfSymbol
@@ -99,51 +112,6 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
                   size={14}
                 />
               ))}
-            {player.twoVotes && (
-              <WerewolfSymbol
-                id="twoVotes"
-                label={t("werewolfSymbols.items.twoVotes.name")}
-                size={14}
-              />
-            )}
-            {player.spellHealed && (
-              <WerewolfSymbol
-                id="spellHealed"
-                label={t("werewolfSymbols.items.spellHealed.name")}
-                size={14}
-              />
-            )}
-            {player.healed && (
-              <WerewolfSymbol
-                id="healed"
-                label={t("werewolfSymbols.items.healed.name")}
-                size={14}
-              />
-            )}
-            {player.investigated && (
-              <WerewolfSymbol
-                id="investigated"
-                label={t("werewolfSymbols.items.investigated.name")}
-                size={14}
-              />
-            )}
-            {player.inspected && (
-              <WerewolfSymbol
-                id="inspected"
-                label={t("werewolfSymbols.items.inspected.name")}
-                size={14}
-              />
-            )}
-            {player.silenced && (
-              <WerewolfSymbol
-                id="silenced"
-                label={t("werewolfSymbols.items.silenced.name")}
-                size={14}
-              />
-            )}
-            {player.drunk && player.alive && (
-              <WerewolfSymbol id="drunk" label={t("werewolfSymbols.items.drunk.name")} size={14} />
-            )}
           </span>
         </li>
       ))}
@@ -155,9 +123,11 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
 export function PlayerLegend({
   variants = [],
   causes = [],
+  effects = [],
 }: {
   readonly variants?: readonly RoleVariantId[];
   readonly causes?: readonly DeathCause[];
+  readonly effects?: readonly CardEffect[];
 }) {
   const { t } = useTranslation();
   return (
@@ -172,6 +142,15 @@ export function PlayerLegend({
         <li key={frame}>
           <span className="ww-overview__swatch" data-frame={frame} />
           {t(`werewolfNarrator.bar.legend.${frame}`)}
+        </li>
+      ))}
+      {/* The states people carry now, each with its slot. */}
+      {effects.map((effect) => (
+        <li key={effect}>
+          <span className="ww-slot ww-overview__slot" data-effect={effect}>
+            <WerewolfSymbol id={effect} size={12} />
+          </span>
+          {t(`werewolfSymbols.items.${effect}.name`)}
         </li>
       ))}
       {/* How people became victims in this game, each ability with its sign. */}
@@ -204,10 +183,15 @@ export function PlayerRows({
   const players = [...describePlayers(state, announce)].sort((one, other) =>
     one.name.localeCompare(other.name, undefined, { sensitivity: "base" }),
   );
+  const effects = new Map(players.map((player) => [player.name, effectsOfPerson(state, player)]));
   return (
     <div className="ww-players">
-      <PlayerList players={players} />
-      <PlayerLegend causes={causesOf(players)} variants={variantsOf(players)} />
+      <PlayerList effects={effects} players={players} />
+      <PlayerLegend
+        causes={causesOf(players)}
+        effects={[...new Set([...effects.values()].flat())]}
+        variants={variantsOf(players)}
+      />
     </div>
   );
 }

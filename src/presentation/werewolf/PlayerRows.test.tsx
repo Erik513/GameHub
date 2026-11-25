@@ -69,6 +69,22 @@ it("shows the ability that hit a victim as a sign in the row, and names it in th
   expect(document.querySelector(".ww-overview__legend")?.textContent).toContain("Werewolf attack");
 });
 
+it("shows every state of a person as the same colored slot as on the card, and names it in the legend", async () => {
+  const base = game();
+  const person = base.players.find((player) => player.role === "villager")!;
+  // The night: the bodyguard protects him and the night guest sleeps at his place.
+  const state = { ...base, hostPlayer: person.name, protectedPlayer: person.name } as WerewolfState;
+  const rows = await show(state);
+  const row = rows.find((entry) => entry.querySelector("strong")?.textContent === person.name)!;
+  const slots = [...row.querySelectorAll(".ww-overview__slot")].map((slot) =>
+    slot.getAttribute("data-effect"),
+  );
+  expect(slots).toEqual(["protected", "guest"]);
+  const legend = document.querySelector(".ww-overview__legend")!.textContent;
+  expect(legend).toContain("Protected");
+  expect(legend).toContain("Guest");
+});
+
 it("names the winners in the headings of the end screen, in both languages", async () => {
   for (const [language, winners, losers] of [
     ["en", "Winners", "Losers"],

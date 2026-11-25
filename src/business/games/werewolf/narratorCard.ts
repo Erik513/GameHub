@@ -212,6 +212,21 @@ function effectsOf(state: WerewolfState, actors: readonly string[]): readonly Ca
   );
 }
 
+/** The states one person carries, as the slots of the card show them (the overview of all players shows the same). */
+export function effectsOfPerson(
+  state: WerewolfState,
+  person: ReturnType<typeof describePlayers>[number],
+): readonly CardEffect[] {
+  const night = !dayStatuses.includes(state.status);
+  return [
+    ...new Set(
+      cardEffectsInOrder().flatMap(([effect, rules]) =>
+        rules?.[effect]?.({ state, person, night }) ? [effect] : [],
+      ),
+    ),
+  ];
+}
+
 /** The card of the role that is awake, or null when no role is awake (the day, the morning, the end). */
 export function describeNarratorCard(state: WerewolfState): NarratorCard | null {
   const role = cardRole(state);

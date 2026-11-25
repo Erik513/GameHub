@@ -198,7 +198,7 @@ export function NarratorCard({
           {card.effects.length > 0 && !(isDay && card.actors.length === 0) && (
             <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
               {card.effects.map((effect) => (
-                <li className="ww-role-card__slot" data-effect={effect} key={effect}>
+                <li className="ww-role-card__slot ww-slot" data-effect={effect} key={effect}>
                   <WerewolfSymbol
                     id={effect}
                     label={t(`werewolfSymbols.items.${effect}.name`)}
