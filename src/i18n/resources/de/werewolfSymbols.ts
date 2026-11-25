@@ -37,7 +37,7 @@ export const werewolfSymbolsTexts = {
         meaning: "Edelstein: fängt Angriffe der Nacht ab",
       },
       amuletPass: {
-        name: "Amulett abgeben",
+        name: "Amulett weitergeben",
         meaning: "Pfeile: der Träger muss es weitergeben",
       },
       apprenticeSeer: {
