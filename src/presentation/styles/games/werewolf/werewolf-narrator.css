@@ -375,6 +375,17 @@
   .ww-overview__legend-group {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  /* The role card of a phone: the slots stand in a line of their own under the name (still from the right to the
+     left), so a long name of a role keeps the width of the card. */
+  .ww-role-card__head {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .ww-role-card__slots {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(auto-fill, 36px);
+  }
 }
 
 .ww-overview__legend li {
@@ -817,11 +828,12 @@
 
 .ww-overview__row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-sm);
   position: relative;
-  gap: var(--space-2);
+  gap: 2px var(--space-2);
   padding: 6px var(--space-2);
 }
 
@@ -857,12 +869,18 @@
   border-radius: 4px;
 }
 
+/* The marks and slots have a line of their own under the name, aligned to the right, so they never cover the name or
+   the role; a row without marks keeps one line. */
 .ww-overview__marks {
   display: flex;
-  position: absolute;
-  top: 3px;
-  right: 4px;
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 2px;
+}
+
+.ww-overview__marks:empty {
+  display: none;
 }
 
 @media (min-width: 40rem) {
@@ -1463,4 +1481,12 @@
   width: 3rem;
   height: 3rem;
   min-height: 3rem;
+}
+
+/* The people of a narrow phone: three in a row, so a longer name fits without being divided in the middle (after the
+   rule of the four columns, so it wins). */
+@media (max-width: 26rem) {
+  .ww-guide__people {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
