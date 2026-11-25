@@ -406,3 +406,8 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 ## Morgen zählt für die Slots zur Nacht (2026-11-25, Claude, We-01-196)
 
 - `dayStatuses` in `narratorCard.ts` enthält `morning` nicht mehr: Die Effekte der Nacht (`poisoned`, `attacked`, `protected`, `guest`, `protectedSaved`, `guestSaved`) gelten bis zum Ende des Morgens. Keine Regeländerung.
+
+## Nacht der Wahl, Zurücksetzen bei Nachtbeginn (2026-11-25, Claude, We-01-197)
+
+- Neue Felder `Match.protectedNight`, `Match.hostNight`, `Match.silencedNight` (`number | null`): gesetzt bei `protect`, `stayWith` und `silence` (bei `silence` mit Ziel `null` auf `null`). `protectedPlayer`, `hostPlayer` und `silencedPlayer` bleiben wie bisher für die Regel „nicht zweimal hintereinander“ erhalten. Die Anzeige (`describePlayers.silenced`, Effekte `protected`, `protectedSaved`, `guest`, `guestSaved`) gilt nur, wenn die Nacht der Wahl gleich `state.night` ist.
+- Fehler behoben: `healedPlayer` und `spellHealedPlayer` wurden nur im Weg ohne Leibwächter und Dorfmatratze zurückgesetzt; jetzt in `startNight`. Keine Regeländerung.

@@ -1,5 +1,17 @@
 # GameHub Changelog
 
+## 2026-11-25 (Dunkelblau)
+
+### We-01-198: Geschützt und Übernachtungsgast dunkelblau (Claude)
+
+- Die Slots Geschützt und Übernachtungsgast sind kräftig dunkelblau (#1e40af), damit sie sich vom Blau der lebenden Zeile abheben. Nicht im Browser angesehen.
+
+## 2026-11-25 (Zustände bei Nachtbeginn)
+
+### We-01-197: Zustände der Nacht verschwinden, wenn die nächste Nacht beginnt (Claude)
+
+- Geschützt, Übernachtungsgast, gerettet und Stumm zeigen nur die Wahl der aktuellen Nacht (Stumm auch den Tag danach). Das Spiel merkt sich dafür die Nacht der Wahl; die Wahl der Vornacht bleibt für die Regel „nicht zweimal hintereinander“ erhalten. Fehler behoben: Geheilt blieb mit Leibwächter oder Dorfmatratze im Spiel über Nächte stehen. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Slots am Morgen)
 
 ### We-01-196: Slots der Nacht auch am Morgen (Claude)

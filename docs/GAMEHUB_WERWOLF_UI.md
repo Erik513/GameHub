@@ -800,3 +800,8 @@ Die Zeilen von „Alle Spieler und Rollen“ zeigen **dieselben Zustände wie di
 ## Slots am Morgen (Beschluss vom 25.11.2026, We-01-196)
 
 Der Morgen zeigt die Slots der Nacht (Gift, Angriff, Schutz, Übernachtungsgast, gerettet) noch, bis die Morgenansage bestätigt ist; erst am Tag verschwinden sie. Eine Ursache, die ein Slot schon zeigt, steht nicht zusätzlich als Zeichen da.
+
+
+## Wann Zustände verschwinden (Beschluss vom 25.11.2026, We-01-197)
+
+Zu Beginn jeder Nacht verschwinden: Angegriffen, Vergiftet, Vom Hammer / Todeszauber getroffen, Geschützt, Übernachtungsgast, die gerettet-Zustände, Geheilt, Durch Heilzauber gerettet und Stumm (Stumm gilt für den Tag nach der Wahl). Sie erscheinen erst wieder, wenn in der neuen Nacht neu gewählt wurde. Bleibend sind: Angesehen und Untersucht (bis Seherin beziehungsweise Ermittler ausscheidet), Verliebt, Amulett, Trunkenbold und Doppelte Stimme (solange es gilt).

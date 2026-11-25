@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 399,
-      "totalTasks": 455,
+      "completedTasks": 401,
+      "totalTasks": 457,
       "percent": 87.7
     }
   },
@@ -2430,6 +2430,18 @@
           "title": "Slots der Nacht auch am Morgen bis zur Ansage",
           "status": "done",
           "validation": "Fehler behoben: War die Hexe die letzte Rolle der Nacht, zeigte die Übersicht das Gift nur als einfaches Ursachenzeichen statt als Slot, weil der Morgen als Tag galt. Der Morgen zählt für die Slots jetzt zur Nacht, bis die Morgenansage bestätigt ist (Gift, Angriff, Schutz, Übernachtungsgast, gerettet); am Tag verschwinden sie. Es gab kein Limit für die Zahl der Slots. Tests in overviewUpdate.test.ts und PlayerRows.test.tsx (der Angriff am Morgen ist jetzt ein Slot statt eines Ursachenzeichens); tsc, ESLint der berührten Dateien und 851 Werwolf-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-197",
+          "title": "Zustände der Nacht verschwinden, wenn die nächste Nacht beginnt",
+          "status": "done",
+          "validation": "Geschützt, Übernachtungsgast, die beiden gerettet-Zustände und Stumm zeigen nur die Wahl der aktuellen Nacht (Stumm auch den Tag danach); dafür merkt sich das Spiel die Nacht der Wahl (protectedNight, hostNight, silencedNight); die Personen der Vornacht bleiben für die Regel nicht zweimal hintereinander erhalten. Fehler behoben: Geheilt und Durch Heilzauber gerettet wurden mit Leibwächter oder Dorfmatratze im Spiel nie zurückgesetzt; jetzt zu Beginn jeder Nacht. Tests in overviewUpdate.test.ts, Testdaten in narratorCard.test.ts, PlayerRows.test.tsx und roleTable.test.ts um die Nachtnummer ergänzt (Snapshots unverändert); tsc, ESLint und 852 Werwolf-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-198",
+          "title": "Geschützt und Übernachtungsgast dunkelblau",
+          "status": "done",
+          "validation": "Die Slots Geschützt (Leibwächter) und Übernachtungsgast (Dorfmatratze) sind kräftig dunkelblau (#1e40af; zuerst #16244f, war zu dunkel) statt im Blau der lebenden Zeile (#2c4a8f), damit sie sich von der Zeile abheben; nur Farbwert in tokens.css; nicht im Browser angesehen."
         }
       ]
     },
