@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 426,
-      "totalTasks": 480,
+      "completedTasks": 427,
+      "totalTasks": 481,
       "percent": 88.8
     }
   },
@@ -2331,6 +2331,12 @@
           "title": "Knopf am Spielende heißt „Neues Spiel“",
           "status": "done",
           "validation": "Der Knopf am Spielende hieß „Zur Aufstellung“ / „To the line-up“ (interner Name der Ansicht); jetzt „Neues Spiel“ / „New game“. Verhalten unverändert (zurück ins Hauptmenü des Werwolfs, Spieler und Konfiguration bleiben). Werwolf-UI- und i18n-Tests grün."
+        },
+        {
+          "id": "We-01-218",
+          "title": "Spielende: lange Rollennamen brechen um statt abgeschnitten",
+          "status": "done",
+          "validation": "Nur CSS: Am Spielende darf die Rolle unter dem Namen auf eine zweite Zeile umbrechen (zwischen Wörtern, ein langes Wort mit Trennstrich nach der Sprache der Seite), statt mit „…“ abgeschnitten zu werden; höchstens zwei Zeilen. „Alle Spieler und Rollen“ bleibt unverändert (gleich hohe Boxen). Nicht im Browser angesehen."
         }
       ]
     },
@@ -3997,5 +4003,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T21:15:44.264Z"
+  "updatedAt": "2026-11-25T21:18:30.682Z"
 }

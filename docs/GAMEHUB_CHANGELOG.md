@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Spielende, Rollennamen)
+
+### We-01-218: Lange Rollennamen am Spielende (Claude)
+
+- Am Spielende brechen lange Rollennamen auf eine zweite Zeile um, statt abgeschnitten zu werden. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Spielende, Knopf)
 
 ### We-01-217: Knopf am Spielende heißt „Neues Spiel“ (Claude)
