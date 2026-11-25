@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 439,
-      "totalTasks": 493,
-      "percent": 89
+      "completedTasks": 440,
+      "totalTasks": 494,
+      "percent": 89.1
     }
   },
   "environment": {
@@ -2642,6 +2642,12 @@
           "title": "Tränke der Hexe nicht mehr abgeschnitten, Prüfung aller Zeichnungen",
           "status": "done",
           "validation": "Alle 38 Strichzeichnungen nachgemessen (Pfade samt halber Strichbreite gegen das Feld 0..24): nur Heil- und Gifttrank ragten mit dem Plus/Minus bis 24,8 hinaus und wurden rechts abgeschnitten (seit We-01-210). Zeichen 1,8 nach links, Flasche weitere 1,5 nach links; Abstand zwischen Flasche und Zeichen bleibt. Neuer Test symbols/glyphBounds.test.ts prüft jede Zeichnung; Symboltabelle auf dem Desktop angepasst; 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-229",
+          "title": "Morgen: Amulett-Platz nur, wenn das Amulett verloren geht",
+          "status": "done",
+          "validation": "Im aufgedeckten Kasten eines Toten am Morgen stand unten rechts immer ein gestrichelter, meist leerer Platz für das Amulett. Er erscheint jetzt nur, wenn mit diesem Tod das Amulett verloren geht. Tests in NarratorMorning.test.tsx angepasst; 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4308,7 +4314,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T22:49:37.791Z"
+  "updatedAt": "2026-11-25T22:52:39.157Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

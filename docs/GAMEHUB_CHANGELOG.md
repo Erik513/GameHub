@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Morgen, Amulett)
+
+### We-01-229: Kein leerer Amulett-Platz bei den Toten (Claude)
+
+- Der Platz für das verlorene Amulett erscheint am Morgen nur noch, wenn es tatsächlich verloren geht. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Tränke)
 
 ### We-01-228: Tränke der Hexe nicht mehr abgeschnitten (Claude)
