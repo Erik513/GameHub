@@ -132,14 +132,19 @@ export function describePlayers(state: WerewolfState, announce = true) {
   );
   // Why the announced people die (the lovers who die of heartbreak, too): from the announcement as the game will record it.
   const announcedCauses = new Map<string, DeathCause[]>();
-  // The tanner who reached his goal: already with the announcement (the game records it when it is confirmed).
+  // The tanner who reached his goal and the wound of the tough guy who survives the attack: already with the
+  // announcement (the game records both when it is confirmed), also when nobody dies.
   let tannerWinner = state.tannerWinner;
-  if (announced.size > 0) {
+  let toughGuyDiesOn = state.toughGuyDiesOn;
+  let toughGuyWound = state.toughGuyWound;
+  if (announce && (state.status === "morning" || state.status === "exile")) {
     const next = transitionWerewolf(state, {
       night: state.night,
       type: state.status === "exile" ? "announceExile" : "announceMorning",
     });
     tannerWinner = next.tannerWinner;
+    toughGuyDiesOn = next.toughGuyDiesOn;
+    toughGuyWound = next.toughGuyWound;
     for (const entry of next.history.slice(state.history.length))
       if (entry.kind === "death")
         announcedCauses.set(entry.player, [
@@ -176,7 +181,7 @@ export function describePlayers(state: WerewolfState, announce = true) {
       ((state.status === "hunter" || state.status === "drunkHunter") &&
         state.hunter.name === player.name) ||
       (announced.has(player.name) && player.role === "hunter");
-    const delayedDeathNight = alive && player.role === "toughGuy" ? state.toughGuyDiesOn : null;
+    const delayedDeathNight = alive && player.role === "toughGuy" ? toughGuyDiesOn : null;
     // Why he is out or marked: the causes of his death in the history, or the ability that hit him now (the wound of the
     // tough guy who will die names the ability, too).
     const causes: DeathCause[] =
@@ -184,9 +189,7 @@ export function describePlayers(state: WerewolfState, announce = true) {
         ? [...new Set(death.sources.map((source) => source.cause))]
         : (announcedCauses.get(player.name) ?? [
             ...causesNow(player.name),
-            ...(delayedDeathNight !== null && state.toughGuyWound
-              ? [state.toughGuyWound.cause]
-              : []),
+            ...(delayedDeathNight !== null && toughGuyWound ? [toughGuyWound.cause] : []),
           ]);
     const attacked = alive && marked.has(player.name);
     // The wolves attacked him tonight and he is not marked any more: healed, protected or kept by the amulet.
@@ -239,7 +242,7 @@ export function describePlayers(state: WerewolfState, announce = true) {
       delayedDeathNight,
       // The tanner who has won (he keeps his role secret until the end of the game).
       wonAsTanner: tannerWinner === player.name,
-      wound: player.role === "toughGuy" ? state.toughGuyWound : null,
+      wound: player.role === "toughGuy" ? toughGuyWound : null,
       resources:
         player.role === "witch"
           ? { ...state.potions }

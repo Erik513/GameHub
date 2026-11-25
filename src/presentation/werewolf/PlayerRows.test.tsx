@@ -304,3 +304,20 @@ it("shows the cause of death in its color at the end of the game, too", async ()
     document.querySelector('.ww-winners .ww-overview__legend [data-cause="vote"]'),
   ).not.toBeNull();
 });
+
+it("shows the tough guy who survives the attack as wounded in the morning, before the announcement is confirmed", async () => {
+  const base = game();
+  const toughGuy = base.players.find((player) => player.role === "toughGuy")!;
+  const state = {
+    ...base,
+    poisoned: null,
+    status: "morning",
+    victim: toughGuy,
+    wolfTarget: toughGuy,
+  } as unknown as WerewolfState;
+  const rows = await show(state);
+  const row = rows.find((entry) => entry.querySelector("strong")?.textContent === toughGuy.name)!;
+  // Nobody dies this morning: the tough guy is dark red (wounded, dies later) with the slot of his wound.
+  expect(row).toHaveAttribute("data-tone", "wounded");
+  expect(row.querySelector('.ww-overview__slot[data-effect="wounded"]')).not.toBeNull();
+});
