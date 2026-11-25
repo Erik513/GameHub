@@ -1,5 +1,15 @@
 # GameHub Changelog
 
+## 2026-11-26 (Zurück-Taste)
+
+### Al-09-14: Zurück-Taste schließt offene Fenster (Claude)
+
+- Sind die Einstellungen der App oder die Spielregeln offen, schließt die Zurück-Taste des Handys nur das Fenster, in jedem Spiel und im GameHub. Im laufenden Spiel fragt sie wie bisher „Spiel beenden?“; das ist jetzt auch für den Werwolf durch einen Test abgesichert.
+
+### We-01-237: Zurück aus der Konfiguration ins Werwolf-Hauptmenü (Claude)
+
+- Die Zurück-Taste des Handys führt aus der Werwolf-Konfiguration ins Hauptmenü des Werwolfs statt in den GameHub. Die Kopfzeile mit den Spielregeln bleibt dabei unverändert. Nicht im Browser angesehen.
+
 ## 2026-11-26 (Amulett, Wortwahl)
 
 ### We-01-235: Einheitlich „weitergeben“ (Claude)

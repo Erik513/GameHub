@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 446,
-      "totalTasks": 504,
+      "completedTasks": 448,
+      "totalTasks": 506,
       "percent": 88.5
     }
   },
@@ -600,6 +600,12 @@
           "title": "Gemeinsamer Baustein RosterRow: Spielerliste und Spielerzahl ganz oben",
           "status": "done",
           "validation": "Neuer Baustein game-kit/RosterRow (Knopf „Aus Spielerliste wählen“ plus Spielerzahl, Stil kit-count in kit-setup.css statt ww-count): mit Grenze „Anzahl/Grenze“ rot unter der Mindestzahl und grün ab ihr (Werwolf 11/21), ohne Grenze nur die Zahl in neutraler Farbe (Taboo). Steht in PlayersSetup (Taboo) und im Werwolf-Reiter Spieler als erste Reihe, über Erzähler beziehungsweise Laden und Namensfeld. Zwei neue Tests in PlayerRoster.test.tsx; 674 Oberflächen-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "Al-09-14",
+          "title": "Zurück-Taste schließt offene Fenster (Einstellungen, Spielregeln), in jedem Spiel",
+          "status": "done",
+          "validation": "Ist das Einstellungsfenster der App (Zahnrad) oder das Fenster der Spielregeln (Werwolf, Taboo) offen, schließt die Zurück-Taste des Systems nur das Fenster und bleibt im Spiel beziehungsweise im GameHub, statt das Spiel zu verlassen. AppShell registriert das Einstellungsfenster, WerewolfGame und TabooSetupForm ihre Regelfenster mit useGameBack(..., { headerUnchanged: true }). Im laufenden Spiel fragt die Zurück-Taste wie bisher „Spiel beenden?“ (Weiterspielen oder Spiel beenden, dann zurück ins Hauptmenü des Spiels); dafür gibt es jetzt auch für den Werwolf einen Test. Drei neue Tests in App.test.tsx (Taboo-Einstellungen, Werwolf-Regeln, laufendes Werwolf-Spiel); 650 Tests der Oberfläche und App grün; nicht am Handy geprüft."
         }
       ]
     },
@@ -2706,6 +2712,12 @@
           "title": "Eigene Kartendesigns für die Rollenverteilung: eine gemeinsame Rückseite und für jede Rolle eine eigene Vorderseite, mit KI erstellt",
           "status": "planned",
           "validation": "Geplant nach dem ersten Push. Offen: Bildstil, Lizenz der KI-Bilder, Dateigröße (die Bilder liegen offline in der App, siehe Lazy Loading), Lesbarkeit von Rollenname und Fähigkeiten auf dem Bild, kostenloser KI-Dienst (keine kostenpflichtigen Dienste)."
+        },
+        {
+          "id": "We-01-237",
+          "title": "Zurück-Taste in der Werwolf-Konfiguration führt ins Werwolf-Hauptmenü",
+          "status": "done",
+          "validation": "Fehler am Handy: Die Zurück-Taste des Systems in der Konfiguration verließ das Spiel und führte in den GameHub. Die Konfiguration meldet sich jetzt als Unterseite an (useGameBack), die Zurück-Taste führt ins Hauptmenü des Werwolfs. Neue Option headerUnchanged im gemeinsamen Baustein GameChrome/AppShell: nur die Zurück-Taste wird umgeleitet, die Kopfzeile bleibt (Spielregeln, Einstellungen); Taboo unverändert. Neuer Test in App.test.tsx; 647 Tests der Oberfläche und App grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4372,7 +4384,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T23:44:24.110Z"
+  "updatedAt": "2026-11-25T23:52:44.489Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
