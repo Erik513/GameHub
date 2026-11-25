@@ -395,8 +395,9 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* The role card of a phone: the slots stand in a line of their own under the name (still from the right to the
-     left), so a long name of a role keeps the width of the card. */
+  /* The role card of a phone: the slots stand in a line of their own under the symbol and the name, so a long name
+     of a role keeps the width of the card. The line starts at the left like the symbol above it (the first state of
+     the fixed order at the left), so it does not look indented. */
   .ww-role-card__head {
     grid-template-columns: auto minmax(0, 1fr);
   }
@@ -404,6 +405,7 @@
   .ww-role-card__slots {
     grid-column: 1 / -1;
     grid-template-columns: repeat(auto-fill, 36px);
+    direction: ltr;
   }
 }
 
