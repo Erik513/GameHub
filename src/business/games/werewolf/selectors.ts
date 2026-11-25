@@ -162,11 +162,14 @@ export function describePlayers(state: WerewolfState, announce = true) {
   );
   // Why the announced people die (the lovers who die of heartbreak, too): from the announcement as the game will record it.
   const announcedCauses = new Map<string, DeathCause[]>();
+  // The tanner who reached his goal: already with the announcement (the game records it when it is confirmed).
+  let tannerWinner = state.tannerWinner;
   if (announced.size > 0) {
     const next = transitionWerewolf(state, {
       night: state.night,
       type: state.status === "exile" ? "announceExile" : "announceMorning",
     });
+    tannerWinner = next.tannerWinner;
     for (const entry of next.history.slice(state.history.length))
       if (entry.kind === "death")
         announcedCauses.set(entry.player, [
@@ -264,6 +267,8 @@ export function describePlayers(state: WerewolfState, announce = true) {
       lastProtectionTarget: state.protectedPlayer === player.name,
       lastHostTarget: state.hostPlayer === player.name,
       delayedDeathNight,
+      // The tanner who has won (he keeps his role secret until the end of the game).
+      wonAsTanner: tannerWinner === player.name,
       wound: player.role === "toughGuy" ? state.toughGuyWound : null,
       resources:
         player.role === "witch"

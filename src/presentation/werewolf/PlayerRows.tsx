@@ -16,7 +16,13 @@ import { effectsOfPerson, type CardEffect } from "../../business/games/werewolf/
 import { stateIds } from "../../business/games/werewolf/roles/stateIds";
 import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
-import { slotStyle } from "./symbols/stateLook";
+import {
+  causeLook,
+  causeSlotStyle,
+  slotStyle,
+  wonSlotStyle,
+  type CauseSlot,
+} from "./symbols/stateLook";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import { useWholeGridRows } from "./useWholeGridRows";
 
@@ -52,6 +58,15 @@ function otherSlotsOf(player: PlayerView, states: readonly CardEffect[]): readon
   const causes = causeSlotsOf(player);
   return states.filter((state) => !causes.includes(state));
 }
+
+/** A cause of death without a state that is shown as a colored slot (the vote, the shot of the hunter). */
+const isCauseSlot = (cause: DeathCause): cause is CauseSlot => Object.hasOwn(causeLook, cause);
+
+/** The fixed order of the causes without a state: in the order of their colors (the vote, then the shot). */
+const causeRank = (cause: DeathCause): number => {
+  const rank = Object.keys(causeLook).indexOf(cause);
+  return rank < 0 ? Number.MAX_SAFE_INTEGER : rank;
+};
 
 /** The symbol of the ability that hit a person (the legend of the symbols has them all). */
 const causeSymbol: Record<DeathCause, SymbolId> = {
@@ -125,6 +140,16 @@ export function PlayerList({
             {player.tone === "dead" && (
               <WerewolfSymbol id="dead" label={t("werewolfSymbols.items.dead.name")} size={14} />
             )}
+            {/* The tanner who has won: his trophy in gold, right next to the gravestone. */}
+            {effects && player.wonAsTanner && (
+              <span className="ww-slot ww-overview__slot" data-won="tanner" style={wonSlotStyle}>
+                <WerewolfSymbol
+                  id="tanner"
+                  label={t("werewolfNarrator.bar.legend.tannerWon")}
+                  size={12}
+                />
+              </span>
+            )}
             {/* Why he is out or marked, as the slot of its state in its color; a cause without a state as its sign. The
                 slots of the causes are shown in every row, also when the state of the night is already over. */}
             {(effects ? causeSlotsOf(player) : []).map(slot)}
@@ -133,14 +158,30 @@ export function PlayerList({
                 (cause) =>
                   !(effects && causeEffect[cause]) && !(cause === "hunter" && player.lastShot),
               )
-              .map((cause) => (
-                <WerewolfSymbol
-                  id={causeSymbol[cause]}
-                  key={cause}
-                  label={t(`werewolfNarrator.cause.${cause}`)}
-                  size={14}
-                />
-              ))}
+              .sort((one, other) => causeRank(one) - causeRank(other))
+              .map((cause) =>
+                effects && isCauseSlot(cause) ? (
+                  <span
+                    className="ww-slot ww-overview__slot"
+                    data-cause={cause}
+                    key={cause}
+                    style={causeSlotStyle(cause)}
+                  >
+                    <WerewolfSymbol
+                      id={causeSymbol[cause]}
+                      label={t(`werewolfNarrator.cause.${cause}`)}
+                      size={12}
+                    />
+                  </span>
+                ) : (
+                  <WerewolfSymbol
+                    id={causeSymbol[cause]}
+                    key={cause}
+                    label={t(`werewolfNarrator.cause.${cause}`)}
+                    size={14}
+                  />
+                ),
+              )}
             {player.lastShot && (
               <WerewolfSymbol id="shotDuty" label={t("werewolfNarrator.bar.lastShot")} size={14} />
             )}
@@ -165,6 +206,7 @@ export function PlayerLegend({
   variants = [],
   causes = [],
   causeSlots = false,
+  tannerWon = false,
   effects = [],
   tones = allTones,
   frames = allFrames,
@@ -173,6 +215,8 @@ export function PlayerLegend({
   readonly causes?: readonly DeathCause[];
   /** The causes that have a state are shown as its colored slot (as in the rows of the overview). */
   readonly causeSlots?: boolean;
+  /** A tanner has won: the gold slot with his trophy is explained with the states. */
+  readonly tannerWon?: boolean;
   readonly effects?: readonly CardEffect[];
   /** The backgrounds and frames this game has (see `legendOf`); all of them when not given. */
   readonly tones?: readonly PlayerTone[];
@@ -212,9 +256,18 @@ export function PlayerLegend({
           </li>
         )),
       )}
-      {group(
-        "effects",
-        effects.map((effect) => (
+      {group("effects", [
+        ...(tannerWon
+          ? [
+              <li key="tannerWon">
+                <span className="ww-slot ww-overview__slot" data-won="tanner" style={wonSlotStyle}>
+                  <WerewolfSymbol id="tanner" size={12} />
+                </span>
+                {t("werewolfNarrator.bar.legend.tannerWon")}
+              </li>,
+            ]
+          : []),
+        ...effects.map((effect) => (
           <li key={effect}>
             <span
               className="ww-slot ww-overview__slot"
@@ -226,12 +279,20 @@ export function PlayerLegend({
             {t(`werewolfSymbols.items.${effect}.name`)}
           </li>
         )),
-      )}
+      ])}
       {group(
         "causes",
         causes.map((cause) => (
           <li key={cause}>
-            {causeSlots && causeEffect[cause] ? (
+            {causeSlots && isCauseSlot(cause) ? (
+              <span
+                className="ww-slot ww-overview__slot"
+                data-cause={cause}
+                style={causeSlotStyle(cause)}
+              >
+                <WerewolfSymbol id={causeSymbol[cause]} size={12} />
+              </span>
+            ) : causeSlots && causeEffect[cause] ? (
               <span
                 className="ww-slot ww-overview__slot"
                 data-effect={causeEffect[cause]}
@@ -280,6 +341,7 @@ export function PlayerRows({
       <PlayerList effects={effects} listHeight={listHeight} listRef={list} players={players} />
       <PlayerLegend
         causeSlots
+        tannerWon={players.some((player) => player.wonAsTanner)}
         causes={causesOf(players)}
         // Each slot once, where the rows show it: a slot that names a cause of death is explained with the causes.
         effects={stateIds.filter((state) =>

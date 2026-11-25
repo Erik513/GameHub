@@ -21,7 +21,9 @@ type SlotColor =
   | "hammered"
   | "twoVotes"
   | "spellKilled"
-  | "wounded";
+  | "wounded"
+  | "shot"
+  | "won";
 
 /**
  * How every state looks as a slot: its color, and a dark sign on a light color. It is a record over all states, so the
@@ -56,9 +58,32 @@ export const stateLook: Readonly<
 /** Every state is drawn with the symbol of the same name (the compiler checks that the catalog has it). */
 export const stateSymbols: readonly SymbolId[] = stateIds;
 
+/**
+ * The causes of death that are no state (the vote of the village, the shot of the hunter) get a colored slot, too, in
+ * this order: the vote yellow like the hammer, the shot brown.
+ */
+export const causeLook = {
+  vote: { color: "hammered", darkInk: true },
+  hunter: { color: "shot" },
+} as const satisfies Record<string, { readonly color: SlotColor; readonly darkInk?: true }>;
+
+/** A cause of death without a state that has a colored slot. */
+export type CauseSlot = keyof typeof causeLook;
+
+/** The gold slot of the tanner who has won, with his trophy. */
+export const wonSlotStyle: CSSProperties = lookStyle({ color: "won" });
+
 /** The colors of the slot of a state, for its style attribute. */
 export function slotStyle(effect: CardEffect): CSSProperties {
-  const look = stateLook[effect];
+  return lookStyle(stateLook[effect]);
+}
+
+/** The colors of the slot of a cause of death without a state, for its style attribute. */
+export function causeSlotStyle(cause: CauseSlot): CSSProperties {
+  return lookStyle(causeLook[cause]);
+}
+
+function lookStyle(look: { readonly color: SlotColor; readonly darkInk?: true }): CSSProperties {
   return {
     "--slot-bg": `var(--slot-${look.color})`,
     ...(look.darkInk ? { "--slot-ink": "#2b2300" } : {}),

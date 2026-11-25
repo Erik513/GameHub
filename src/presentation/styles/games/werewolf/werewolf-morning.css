@@ -100,3 +100,12 @@
 }
 
 /* A note may contain a line break (the silenced person of the day: the name, then what is not allowed). */
+
+/* The tanner who wins with his death: his trophy and the note to keep his role secret, under the causes. */
+.ww-guide__dead-won {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  font-weight: var(--weight-bold);
+}

@@ -223,3 +223,36 @@ it("explains a slot that names a cause of death with the causes only, not a seco
   // The attack stands next to the gravestone, so the legend names it once, as the cause.
   expect(legend.querySelectorAll('[data-effect="attacked"]')).toHaveLength(1);
 });
+
+it("shows the vote of the village as a yellow slot next to the gravestone", async () => {
+  const base = game();
+  const victim = base.players.find((player) => player.role === "villager")!;
+  const state = { ...base, status: "exile", victim } as unknown as WerewolfState;
+  const rows = await show(state);
+  const row = rows.find((entry) => entry.querySelector("strong")?.textContent === victim.name)!;
+  const marks = [...row.querySelector(".ww-overview__marks")!.children];
+  expect(marks[0]).toHaveAttribute("aria-label", "Dead");
+  expect(marks[1]).toHaveAttribute("data-cause", "vote");
+  expect((marks[1] as HTMLElement).style.getPropertyValue("--slot-bg")).toBe(
+    "var(--slot-hammered)",
+  );
+});
+
+it("gives the tanner who wins with his death a gold trophy right next to the gravestone", async () => {
+  const base = createWerewolf(names, "Max", () => 0.3, ["tanner"], { wolfCount: 2 })!;
+  const tanner = base.players.find((player) => player.role === "tanner")!;
+  const state = {
+    ...base,
+    poisoned: null,
+    status: "morning",
+    victim: tanner,
+    wolfTarget: tanner,
+  } as unknown as WerewolfState;
+  const rows = await show(state);
+  const row = rows.find((entry) => entry.querySelector("strong")?.textContent === tanner.name)!;
+  const marks = [...row.querySelector(".ww-overview__marks")!.children];
+  expect(marks[0]).toHaveAttribute("aria-label", "Dead");
+  expect(marks[1]).toHaveAttribute("data-won", "tanner");
+  expect(marks[2]).toHaveAttribute("data-effect", "attacked");
+  expect(document.querySelector(".ww-overview__legend")?.textContent).toContain("Tanner has won");
+});

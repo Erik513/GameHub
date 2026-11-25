@@ -28,6 +28,7 @@ export const werewolfNarratorTexts = {
       overviewHint: "For the narrator only",
       legend: {
         title: "Legend",
+        tannerWon: "Tanner has won",
         groups: {
           tones: "Row background",
           frames: "Row frame",

@@ -12,7 +12,12 @@ import {
   type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
 import { DealCard } from "./DealCard";
-import { causesOf, legendOf, variantsOf } from "../../business/games/werewolf/selectors";
+import {
+  causesOf,
+  describePlayers,
+  legendOf,
+  variantsOf,
+} from "../../business/games/werewolf/selectors";
 import { PlayerLegend, PlayerList } from "./PlayerRows";
 import { variantOfRole } from "./roleAbilities";
 import { lineGlyphs } from "./symbols/glyphs";
@@ -92,6 +97,12 @@ export function PlainBox({ view }: { readonly view: GuideView }) {
               const dead = names.filter((name) => !isHunter(name));
               const shooters = names.filter(isHunter);
               const deathOf = (name: string) => view.deaths.find((death) => death.name === name);
+              // The tanner who wins with this death (setting "any death"): the narrator keeps his role secret.
+              const tannerWon = new Set(
+                describePlayers(state)
+                  .filter((person) => person.wonAsTanner)
+                  .map((person) => person.name),
+              );
               const box = (name: string, hunter: boolean) => (
                 // The whole box is the button: a tap anywhere in it (also in the opened part) shows or covers the reason.
                 // (The button inside keeps the keyboard and the screen reader working; its click reaches the box.)
@@ -130,6 +141,12 @@ export function PlainBox({ view }: { readonly view: GuideView }) {
                             .map((cause) => t(`werewolfNarrator.cause.${cause}`))
                             .join(", ")}
                         </span>
+                        {tannerWon.has(name) && (
+                          <span className="ww-guide__dead-won">
+                            <WerewolfSymbol id="tanner" size={20} />
+                            <span>{t("werewolfNarrator.guide.tannerWon", { name })}</span>
+                          </span>
+                        )}
                       </span>
                       {/* A place at the bottom right is always kept for the amulet that is lost with this death. */}
                       <span

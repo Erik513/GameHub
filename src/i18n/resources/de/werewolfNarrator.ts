@@ -28,6 +28,7 @@ export const werewolfNarratorTexts = {
       overviewHint: "Nur für den Erzähler",
       legend: {
         title: "Legende",
+        tannerWon: "Gerber hat gewonnen",
         groups: {
           tones: "Hintergrund der Zeile",
           frames: "Rahmen der Zeile",
