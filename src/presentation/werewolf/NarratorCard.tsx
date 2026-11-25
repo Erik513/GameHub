@@ -146,6 +146,20 @@ export function NarratorCard({
   const isDay = card.role === "day";
   // A cover call is for the drunk who does not know the role: his name stands there (the narrator only).
   const people = card.actors.length > 0 ? card.actors : (card.covered ?? []);
+  // The holder of the amulet keeps it (green, left) or passes it on (red, right): the button "keep" comes first.
+  const keepFirst = card.role === "amuletPass";
+  const skipButton = skip && (
+    <button
+      className="ww-ability ww-ability--skip"
+      data-next={skip.framed || undefined}
+      data-state={skip.disabled ? "dim" : undefined}
+      disabled={skip.disabled}
+      onClick={skip.onSkip}
+      type="button"
+    >
+      {skip.label ?? t("werewolfNarrator.guide.skip")}
+    </button>
+  );
   return (
     <section
       aria-label={roleName}
@@ -249,7 +263,8 @@ export function NarratorCard({
         </div>
       )}
       {card.abilities.length > 0 && (
-        <div className="ww-role-card__abilities">
+        <div className="ww-role-card__abilities" data-keep-first={keepFirst || undefined}>
+          {keepFirst && skipButton}
           {card.abilities.map((ability) => {
             const name = t(`werewolfNarrator.ability.${ability.id}`);
             // The spells that are left in this step (the magician): the ones used in this step are gone, but only for now.
@@ -316,18 +331,7 @@ export function NarratorCard({
               </button>
             );
           })}
-          {skip && (
-            <button
-              className="ww-ability ww-ability--skip"
-              data-next={skip.framed || undefined}
-              data-state={skip.disabled ? "dim" : undefined}
-              disabled={skip.disabled}
-              onClick={skip.onSkip}
-              type="button"
-            >
-              {skip.label ?? t("werewolfNarrator.guide.skip")}
-            </button>
-          )}
+          {!keepFirst && skipButton}
         </div>
       )}
     </section>

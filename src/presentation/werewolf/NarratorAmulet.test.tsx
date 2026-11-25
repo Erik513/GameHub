@@ -60,3 +60,12 @@ it("has no keep button when the holder has to pass the amulet on", async () => {
   expect(pass()).toBeEnabled();
   expect(keep()).toBeNull();
 });
+
+it("puts the button to keep the amulet first (green, left) and passing it on after it (red, right)", async () => {
+  await open(false);
+  const row = document.querySelector(".ww-role-card__abilities")!;
+  expect(row).toHaveAttribute("data-keep-first", "true");
+  const buttons = [...row.querySelectorAll(".ww-ability")];
+  expect(buttons[0]).toBe(keep());
+  expect(buttons[1]).toBe(pass());
+});

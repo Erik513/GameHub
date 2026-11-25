@@ -1226,6 +1226,18 @@
   outline-offset: 2px;
 }
 
+/* The holder of the amulet: "keep" is green (it changes nothing) and stands left, "pass on" is red and stands right.
+   The rules of the states below (used, not possible, not the turn) still win. */
+:where(.ww-role-card__abilities[data-keep-first]) .ww-ability--skip {
+  border-color: var(--color-success);
+  background: var(--color-success);
+}
+
+:where(.ww-role-card__abilities[data-keep-first]) .ww-ability:not(.ww-ability--skip) {
+  border-color: var(--color-danger);
+  background: var(--color-danger);
+}
+
 /* The buttons share the whole width evenly. */
 .ww-role-card__abilities > .ww-ability,
 .ww-night__stage[data-layout="act"] .ww-role-card__abilities > .ww-ability {

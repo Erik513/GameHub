@@ -118,6 +118,14 @@ export function askText(view: GuideView, t: TFunction): string | null {
   const { card, selection } = view;
   if (!card) return null;
   if (card.role === "magician") return t("werewolfNarrator.guide.choose.magician");
+  // The holder of the amulet keeps it (thumb) or passes it on (point), like the question of the magician; after the amulet
+  // stopped an attack he has to pass it on, so there is nothing to keep.
+  if (
+    card.role === "amuletPass" &&
+    view.state.status === "amuletPass" &&
+    !view.state.amulet.mustPass
+  )
+    return t("werewolfNarrator.guide.ask.keepOrPassAmulet");
   const id =
     selection.ability ?? card.abilities.find((ability) => ability.id !== "heal")?.id ?? null;
   if (id === null) return null;

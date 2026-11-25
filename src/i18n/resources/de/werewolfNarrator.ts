@@ -143,7 +143,8 @@ export const werewolfNarratorTexts = {
         hammer: "Person wählen (zeigen)",
         silence: "Person zum Stummschalten wählen (zeigen)",
         shot: "Person zum Erschießen wählen",
-        passAmulet: "Amulett weitergeben (zeigen)?",
+        passAmulet: "Amulett weitergeben (zeigen)",
+        keepOrPassAmulet: "Amulett behalten ([thumb]) oder[br]weitergeben (zeigen)?",
       },
       magician: {
         firstAsk: "Opfer retten ([thumb]) oder[br]jemanden töten (zeigen)?",
