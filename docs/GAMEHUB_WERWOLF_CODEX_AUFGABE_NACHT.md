@@ -450,3 +450,7 @@ Neuer Zustand `wounded` in `roles/stateIds.ts` (nach `investigated`, vor den Zus
 ## Siegreicher Gerber in der Ansicht (2026-11-25, Claude, We-01-214)
 
 `describePlayers` (selectors.ts) hat das neue Feld `wonAsTanner`: `tannerWinner === player.name`, bei einer Verkündung (Morgen, Verbannung) aus derselben Probe-Transition wie die angekündigten Ursachen, also schon vor der Bestätigung. Die Logik von `applyDeaths` ist unverändert.
+
+## legendOf entfernt (2026-11-25, Claude, We-01-219)
+
+`legendOf` (selectors.ts) ist entfernt: Die Legende in der Präsentation (`PlayerLegend`) liest Hintergründe und Rahmen jetzt aus den gezeigten Zeilen. Sonst keine Änderung an der Logik.

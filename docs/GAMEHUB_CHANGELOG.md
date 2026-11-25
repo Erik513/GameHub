@@ -1,5 +1,20 @@
 # GameHub Changelog
 
+## 2026-11-25 (Anleitung und Symbole)
+
+### We-01-220: Anleitung und Symbole auf dem Stand der Übersicht (Claude)
+
+- Der Symbol-Reiter zeigt die Zustände in ihren farbigen Feldern wie im Spiel.
+- Die Einleitung der Symbole erklärt die Reihenfolge der Felder, Grabstein, farbigen Todesgrund und den Pokal des Gerbers; „Hilfen in der App“ nennt die Übersicht „Alle Spieler und Rollen“; das Gerber-Symbol nennt die Option „nur Abstimmung“.
+- Deutsch und Englisch vollständig geprüft. Nicht im Browser angesehen.
+
+## 2026-11-25 (Abschlussprüfung)
+
+### We-01-219: Legende vereinfacht, Spielende wie die Übersicht (Claude)
+
+- Das Spielende zeigt den Todesgrund wie „Alle Spieler und Rollen“ als farbigen Slot neben dem Grabstein, dazu den Pokal des siegreichen Gerbers; die Legende ebenso.
+- Die Legende liest alles, was sie erklärt, aus den Zeilen; die Funktion `legendOf` ist entfallen. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Spielende, Rollennamen)
 
 ### We-01-218: Lange Rollennamen am Spielende (Claude)

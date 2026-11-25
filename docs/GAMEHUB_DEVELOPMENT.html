@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 427,
-      "totalTasks": 481,
+      "completedTasks": 429,
+      "totalTasks": 483,
       "percent": 88.8
     }
   },
@@ -2570,6 +2570,18 @@
           "title": "Spielende: lange Rollennamen brechen um statt abgeschnitten",
           "status": "done",
           "validation": "Nur CSS: Am Spielende darf die Rolle unter dem Namen auf eine zweite Zeile umbrechen (zwischen Wörtern, ein langes Wort mit Trennstrich nach der Sprache der Seite), statt mit „…“ abgeschnitten zu werden; höchstens zwei Zeilen. „Alle Spieler und Rollen“ bleibt unverändert (gleich hohe Boxen). Nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-219",
+          "title": "Abschlussprüfung: Legende vereinfacht, Spielende wie die Übersicht",
+          "status": "done",
+          "validation": "Volle Prüfung vorher grün (tsc, ESLint, Prettier, Schichtprüfung, Dashboard, 1819 Tests, Build). Danach: legendOf aus selectors.ts entfernt; PlayerLegend bekommt die Spieler und liest Hintergründe, Rahmen, Todesursachen, Varianten und den Gerber-Pokal selbst aus den Zeilen (Übersicht und Spielende gleich). Das Spielende zeigt Todesgründe jetzt wie die Übersicht als farbige Slots neben dem Grabstein, dazu den Pokal; die übrigen Zustände zeigt es weiter nicht. Veralteter Kommentar zu Abstimmung und Jägerschuss korrigiert. Neuer Test für das Spielende; 921 Werwolf- und i18n-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-220",
+          "title": "Anleitung und Symbole auf dem Stand der Übersicht",
+          "status": "done",
+          "validation": "Prüfung: Übersetzungsschlüssel de/en vollständig (check:translations grün), 21 gleich lautende Texte alle beabsichtigt (Hammer, Pause, Teams …), kein fester Text in der UI außer dem Namen GameHub. Ergänzt: Symbol-Reiter zeigt die 18 Zustände in ihren farbigen Feldern; Einleitung der Symbole erklärt die feste Reihenfolge von rechts, Grabstein, farbigen Todesgrund (Abstimmung gelb, Jägerschuss braun) und den goldenen Pokal; „Hilfen in der App“ nennt „Alle Spieler und Rollen“; Gerber-Symbol mit dem Hinweis auf die Option nur Abstimmung. Alles de und en. Test im Symbol-Reiter ergänzt; 311 Werwolf-UI- und i18n-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4236,7 +4248,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T21:18:30.682Z"
+  "updatedAt": "2026-11-25T21:28:23.150Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
