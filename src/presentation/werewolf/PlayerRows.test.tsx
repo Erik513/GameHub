@@ -256,3 +256,22 @@ it("gives the tanner who wins with his death a gold trophy right next to the gra
   expect(marks[2]).toHaveAttribute("data-effect", "attacked");
   expect(document.querySelector(".ww-overview__legend")?.textContent).toContain("Tanner has won");
 });
+
+it("explains at the end of the game only the backgrounds and frames the rows of the end show", async () => {
+  const i18n = await createGameHubI18n("en");
+  // Nobody died: the end shows living villagers and werewolves and the drunk, nothing else.
+  const state = { ...game(), status: "finished", winner: "wolves" } as unknown as WerewolfState;
+  render(
+    <I18nextProvider i18n={i18n}>
+      <PlainBox view={describeGuide(createGuide(createWerewolfSession(state)))} />
+    </I18nextProvider>,
+  );
+  const legend = document.querySelector(".ww-winners .ww-overview__legend")!;
+  const tones = [...legend.querySelectorAll("[data-tone]")].map((swatch) =>
+    swatch.getAttribute("data-tone"),
+  );
+  expect(tones).toEqual(["alive", "wolf"]);
+  expect(
+    [...legend.querySelectorAll("[data-frame]")].map((swatch) => swatch.getAttribute("data-frame")),
+  ).toEqual(["drunk"]);
+});

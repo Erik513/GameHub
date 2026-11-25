@@ -221,6 +221,8 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
   const groups = describeStandings(state);
   const winners = groups.filter((group) => group.kind !== "losers");
   const losers = groups.find((group) => group.kind === "losers");
+  const people = groups.flatMap((group) => group.players);
+  const legend = legendOf(state);
   return (
     <section className="ww-guide ww-winners">
       <div className="ww-winners__groups">
@@ -241,10 +243,12 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
           </div>
         )}
       </div>
+      {/* The legend names only what the rows of the end show: their backgrounds, frames, causes and variants. */}
       <PlayerLegend
-        causes={causesOf(groups.flatMap((group) => group.players))}
-        variants={variantsOf(groups.flatMap((group) => group.players))}
-        {...legendOf(state)}
+        causes={causesOf(people)}
+        frames={legend.frames.filter((frame) => people.some((person) => person[frame]))}
+        tones={legend.tones.filter((tone) => people.some((person) => person.tone === tone))}
+        variants={variantsOf(people)}
       />
     </section>
   );
