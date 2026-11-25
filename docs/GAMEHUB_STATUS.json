@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 419,
-      "totalTasks": 473,
+      "completedTasks": 421,
+      "totalTasks": 475,
       "percent": 88.6
     }
   },
@@ -2289,6 +2289,18 @@
           "title": "Tränke der Hexe mit mehr Abstand zum Plus und Minus",
           "status": "done",
           "validation": "In glyphs.ts stehen Flasche und Strich bei flaskPlus und flaskMinus 2 Einheiten (von 24) weiter links, das Zeichen + oder − bleibt an seinem Platz; die Symboltabelle auf dem Desktop ist angepasst; 21 Symbol-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-211",
+          "title": "Grabstein ganz rechts, Todesgrund daneben",
+          "status": "done",
+          "validation": "In der Übersicht steht bei Ausgeschiedenen der Grabstein ganz rechts, direkt links daneben der Todesgrund (auch ein Slot, der den Grund nennt, etwa Gift, Hammer, Todeszauber, Angriff oder Verliebt bei Liebeskummer), danach letzter Schuss, Verwundung und die übrigen Zustände in fester Reihenfolge. Neuer Test in PlayerRows.test.tsx; 268 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-212",
+          "title": "Todesgrund behält seine Farbe, Verwundet als Zustand",
+          "status": "done",
+          "validation": "Verwundet (Pflaster des Harten Burschen) ist ein Zustand in roles/stateIds.ts (zwischen den bleibenden und den nächtlichen Zuständen, Regel in roles/toughGuy.ts, Farbe dunkelrot --slot-wounded). In der Übersicht steht der Todesgrund als farbiger Slot seines Zustands neben dem Grabstein, auch nach dem Ende der Nacht (Angriff, Gift, Todeszauber, Hammer auch zurückgefallen, Liebeskummer als Verliebt, Harter Bursche als Verwundet); Abstimmung und Jägerschuss bleiben Zeichen. Mehrere Todesgründe stehen in der festen Reihenfolge der Zustände. Zeichen ohne Slot (Grabstein, Abstimmung) stehen senkrecht mittig zu den Slots. Die Legende zeigt diese Gründe ebenfalls als Slot. 917 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -3955,5 +3967,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T20:10:52.504Z"
+  "updatedAt": "2026-11-25T20:24:28.299Z"
 }

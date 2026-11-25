@@ -442,3 +442,7 @@ Neue Dateien: `roles/roleIds.ts` (Liste aller Rollen, `specialRoleIds`, abgeleit
 ## Reihenfolge der Zustände (2026-11-25, Claude, We-01-209)
 
 `roles/stateIds.ts` ist neu geordnet: zuerst die bleibenden Zustände (drunk, amulet, lovers, twoVotes, inspected, investigated), dann die Zustände einer Nacht in der Reihenfolge der Nacht (protected, protectedSaved, guest, guestSaved, attacked, healed, poisoned, spellHealed, spellKilled, hammered, silenced). Der erste Zustand steht rechts; die Übersicht füllt jetzt wie die Karte von rechts. Logik unverändert, nur die Reihenfolge von `effects` und `effectsOfPerson`; angepasst wurden drei Erwartungen in `narratorCard.test.ts` und `PlayerRows.test.tsx` sowie der Snapshot `roleTable`. Ein neuer Zustand bekommt seinen Platz nach dieser Regel.
+
+## Verwundet als Zustand (2026-11-25, Claude, We-01-212)
+
+Neuer Zustand `wounded` in `roles/stateIds.ts` (nach `investigated`, vor den Zuständen einer Nacht), Regel in `roles/toughGuy.ts`: `person.delayedDeathNight !== null`. Damit zeigt auch die Rollenkarte den verwundeten Harten Burschen als Slot. In der Übersicht (Präsentation) werden Todesgründe mit Zustand dauerhaft als Slot gezeigt; an Logik und Todesursachen hat sich nichts geändert.

@@ -1,5 +1,18 @@
 # GameHub Changelog
 
+## 2026-11-25 (Todesgrund in Farbe)
+
+### We-01-212: Todesgrund behält seine Farbe, Verwundet als Zustand (Claude)
+
+- Der Todesgrund steht als farbiger Slot neben dem Grabstein und behält seine Farbe auch nach der Nacht (Angriff, Gift, Todeszauber, Hammer, Liebeskummer, Verwundung); Abstimmung und Jägerschuss bleiben Zeichen. Mehrere Todesgründe stehen in der festen Reihenfolge der Zustände.
+- Verwundet ist jetzt ein Zustand mit festem Platz und dunkelroter Farbe, auch auf der Rollenkarte. Nicht im Browser angesehen.
+
+## 2026-11-25 (Übersicht, Ausgeschiedene)
+
+### We-01-211: Grabstein ganz rechts, Todesgrund daneben (Claude)
+
+- Bei Ausgeschiedenen steht der Grabstein ganz rechts, der Todesgrund direkt links daneben (auch ein Slot, der den Grund nennt), danach die übrigen Zustände. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Symbole)
 
 ### We-01-210: Tränke der Hexe mit mehr Abstand (Claude)
