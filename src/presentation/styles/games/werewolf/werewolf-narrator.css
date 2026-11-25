@@ -8,9 +8,10 @@
   background: var(--color-surface);
 }
 
+/* Symbol and name on top; the states in a line of their own below them (on every screen), starting at the left. */
 .ww-role-card__head {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: var(--space-3);
 }
@@ -45,11 +46,12 @@
   overflow-wrap: anywhere;
 }
 
-/* The slots: three columns, filled from the right to the left (right to left), the next row below when a row is full. */
+/* The slots: a line under the symbol and the name, from the left in the fixed order of the states, the next row
+   below when a row is full. */
 .ww-role-card__slots {
   display: grid;
-  grid-template-columns: repeat(3, 36px);
-  direction: rtl;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(auto-fill, 36px);
   gap: var(--space-2);
   margin: 0;
   padding: 0;
@@ -64,7 +66,6 @@
   height: 36px;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-sm);
-  direction: ltr;
 }
 
 .ww-role-card__abilities {
@@ -393,19 +394,6 @@
 @media (max-width: 40rem) {
   .ww-overview__legend-group {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  /* The role card of a phone: the slots stand in a line of their own under the symbol and the name, so a long name
-     of a role keeps the width of the card. The line starts at the left like the symbol above it (the first state of
-     the fixed order at the left), so it does not look indented. */
-  .ww-role-card__head {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .ww-role-card__slots {
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(auto-fill, 36px);
-    direction: ltr;
   }
 }
 

@@ -195,7 +195,7 @@ export function NarratorCard({
             )}
             {!isDay && people.length > 0 && <small>{people.join(", ")}</small>}
           </span>
-          {/* Only the effects there are get a slot: from the right to the left, three in a row, then the next row. */}
+          {/* Only the effects there are get a slot: a line under the symbol and the name, from the left. */}
           {card.effects.length > 0 && !(isDay && card.actors.length === 0) && (
             <ul aria-label={t("werewolfNarrator.card.effects")} className="ww-role-card__slots">
               {card.effects.map((effect) => (
