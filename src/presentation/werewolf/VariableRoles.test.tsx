@@ -166,7 +166,11 @@ it("has the wolf count fixed where the players allow only one", async () => {
   await renderVariable("en", 6);
   const wolves = screen.getByRole("group", { name: "Werewolves" });
   expect(within(wolves).getAllByRole("button")).toHaveLength(1);
-  expect(within(wolves).getByRole("button")).toBeDisabled();
+  // The only count is shown as chosen and fixed (readable, like in the fixed mode), not as a locked button.
+  const only = within(wolves).getByRole("button");
+  expect(only).toHaveAttribute("aria-pressed", "true");
+  expect(only).toHaveAttribute("data-fixed", "true");
+  expect(only).toBeEnabled();
 });
 
 it("tells that the selection cannot be played when the logic says so", async () => {
@@ -455,4 +459,11 @@ it("keeps a quick press without moving a tap that opens the choice", async () =>
     await new Promise((resolve) => setTimeout(resolve, 400));
   });
   expect(document.querySelector(".ww-chip--ghost")).toBeNull();
+});
+
+it("does not recommend the only wolf count there is", async () => {
+  await renderVariable("en", 6);
+  const wolves = screen.getByRole("group", { name: "Werewolves" });
+  expect(within(wolves).getByRole("button")).not.toHaveAttribute("data-recommended");
+  expect(wolves.parentElement?.textContent).not.toContain("recommended");
 });

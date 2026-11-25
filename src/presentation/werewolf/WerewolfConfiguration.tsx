@@ -113,16 +113,28 @@ export function WerewolfConfiguration({
       }
       wolves={
         variableView
-          ? variableView.wolf.options.map((option) => ({
-              count: option.count,
-              disabled: !variableView.wolf.choice || (!option.selected && !option.canStart),
-              recommended: option.recommended,
-              selected: option.selected,
-            }))
+          ? variableView.wolf.options.map((option) =>
+              // Only one wolf count is possible: it is shown as chosen (filled, readable), like in the fixed mode, and
+              // without "recommended" (there is nothing to choose).
+              variableView.wolf.choice
+                ? {
+                    count: option.count,
+                    disabled: !option.selected && !option.canStart,
+                    recommended: option.recommended,
+                    selected: option.selected,
+                  }
+                : {
+                    count: option.count,
+                    disabled: false,
+                    recommended: false,
+                    selected: true,
+                  },
+            )
           : (fixedView?.wolf.options ?? []).map((option) => ({
               count: option.count,
               disabled: !option.selectable && !option.selected,
-              recommended: option.recommended,
+              // With only one possible count there is nothing to recommend.
+              recommended: option.recommended && (fixedView?.wolf.options.length ?? 0) > 1,
               selected: option.selected,
             }))
       }
