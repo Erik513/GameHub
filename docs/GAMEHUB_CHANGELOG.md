@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Farben für Rettung und Trunkenbold)
+
+### We-01-195: Schutz, der rettet, dunkelgrün; Trunkenbold türkis (Claude)
+
+- Geschützt und Übernachtungsgast bleiben blau, solange niemand die Person angreift. Greifen die Wölfe sie an, zeigt der Slot „Vom Leibwächter gerettet“ beziehungsweise „Von der Dorfmatratze gerettet“ in Dunkelgrün, wie die Zeile „gerettet“. Geheilt bleibt gelbgrün. Der Trunkenbold ist türkis (Slot und Rahmen), damit er nicht mit „gerettet“ verwechselt wird. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Übersicht: alle Zustände)
 
 ### We-01-194: Alle Spieler und Rollen zeigt alle Zustände als farbige Slots (Claude)

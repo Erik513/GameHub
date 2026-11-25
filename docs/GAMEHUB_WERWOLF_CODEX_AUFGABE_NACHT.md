@@ -398,3 +398,7 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 ## Zustände einer Person (2026-11-25, Claude, We-01-194)
 
 - Neu exportiert: `effectsOfPerson(state, person)` in `narratorCard.ts` gibt die Zustände einer Person in der Reihenfolge von `cardEffectsInOrder()` zurück (ohne Doppel). Die Übersicht aller Spieler nutzt sie; die Rollenkarte bleibt bei `effectsOf`. Keine Regeländerung.
+
+## Gerettet durch Schutz (2026-11-25, Claude, We-01-195)
+
+- `CardEffect` kennt `protectedSaved` und `guestSaved` (in `roles/bodyguard.ts` und `roles/nightGuest.ts`, Reihenfolge in `roles/cardEffects.ts`): Schutz beziehungsweise Gastgeber und zugleich `wolfTarget`; `protected` und `guest` gelten nur noch ohne Angriff. Keine Regeländerung, kein neues Feld. Die Absicherungs-Snapshots wurden gezielt für diese beiden Zustände aktualisiert.

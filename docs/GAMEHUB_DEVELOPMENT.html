@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 397,
-      "totalTasks": 453,
-      "percent": 87.6
+      "completedTasks": 398,
+      "totalTasks": 454,
+      "percent": 87.7
     }
   },
   "environment": {
@@ -2418,6 +2418,12 @@
           "title": "Alle Spieler und Rollen: alle Zustände als farbige Slots wie auf der Karte",
           "status": "done",
           "validation": "Die Zeilen der Übersicht zeigen dieselben Zustände wie die Rollenkarte, aus derselben Liste (effectsOfPerson in narratorCard.ts, Reihenfolge aus roles/cardEffects.ts), als kleine farbige Slots; neu sichtbar sind Geschützt und Übernachtungsgast sowie Angegriffen auch nach der Rettung; Ursachen, die schon ein Slot zeigt, werden nicht wiederholt; die Legende nennt die Zustände des Spiels; Slotfarben gemeinsam über die Klasse ww-slot; Spielende ohne Slots; Test in PlayerRows.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-195",
+          "title": "Schutz, der rettet, dunkelgrün; Trunkenbold türkis",
+          "status": "done",
+          "validation": "Geschützt (Leibwächter) und Übernachtungsgast (Dorfmatratze) bleiben blau, solange die Person nicht angegriffen wird; greifen die Wölfe die geschützte Person an, zeigt der Slot die neuen Zustände Vom Leibwächter gerettet beziehungsweise Von der Dorfmatratze gerettet in Dunkelgrün (wie die Zeile gerettet); Geheilt bleibt gelbgrün; Slot und Rahmen des Trunkenbolds sind türkis statt grün; kein neues Feld im Spiel (wolfTarget); Absicherungs-Snapshots gezielt aktualisiert (nur die neuen Zustände); Tests in narratorCard.test.ts, PlayerRows.test.tsx, WerewolfRules.test.tsx; tsc und 850 Werwolf-Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },

@@ -790,3 +790,8 @@ Die Rolle Seherin ist die **Kristallkugel**. Ihre Fähigkeit „Ansehen“ ist d
 ## Übersicht zeigt alle Zustände wie die Karte (Beschluss vom 25.11.2026, We-01-194)
 
 Die Zeilen von „Alle Spieler und Rollen“ zeigen **dieselben Zustände wie die Rollenkarte**, aus derselben Liste und in derselben Reihenfolge, als **kleine farbige Slots** in den Farben der Karte. Ein neuer Zustand erscheint damit automatisch an beiden Stellen. Tot, letzter Schuss, Verwundet und die Ursache eines Todes bleiben als Zeichen; eine Ursache, die ein Slot schon zeigt (Angriff, Gift, Hammer, Todeszauber), wird nicht wiederholt. Die Legende nennt die Zustände, die gerade im Spiel vorkommen. Das Spielende zeigt keine Slots.
+
+
+## Grün heißt gerettet (Beschluss vom 25.11.2026, We-01-195)
+
+**Dunkelgrün** heißt „vor dem Angriff gerettet“: die Zeile „gerettet“ und die Slots „Vom Leibwächter gerettet“ und „Von der Dorfmatratze gerettet“. Diese Slots erscheinen nur, wenn die Wölfe die geschützte Person tatsächlich angegriffen haben, sonst bleiben Geschützt und Übernachtungsgast blau. **Gelbgrün** sind Geheilt (Hexe) und Durch Heilzauber gerettet (Magier). Der **Trunkenbold** ist **türkis** (Slot und Rahmen).
