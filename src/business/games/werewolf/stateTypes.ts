@@ -45,6 +45,11 @@ export interface Match {
    * from what they see whether a protection was at work.
    */
   readonly wolfTarget: Player | null;
+  /**
+   * The person the werewolves chose this night, also when somebody else takes the attack (the night guest dies for his
+   * host): the overview marks the host as saved.
+   */
+  readonly wolfChoice: string | null;
   readonly hostPlayer: string | null;
   /**
    * Whom the seer looked at and which people the investigator examined, with the person who did it. A mark stays until

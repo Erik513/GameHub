@@ -307,7 +307,9 @@ export function describeGuide(guide: Guide): GuideView {
             ? state.hostPlayer
             : null,
       silenced:
-        state.silencedPlayer && state.alive.some((p) => p.name === state.silencedPlayer)
+        state.silencedPlayer &&
+        state.silencedNight === state.night &&
+        state.alive.some((p) => p.name === state.silencedPlayer)
           ? state.silencedPlayer
           : null,
       hiddenWolf:

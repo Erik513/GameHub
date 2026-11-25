@@ -160,6 +160,19 @@ export function describePlayers(state: WerewolfState, announce = true) {
       ? werewolfAnnouncement(state).map((entry) => entry.name)
       : [],
   );
+  // Why the announced people die (the lovers who die of heartbreak, too): from the announcement as the game will record it.
+  const announcedCauses = new Map<string, DeathCause[]>();
+  if (announced.size > 0) {
+    const next = transitionWerewolf(state, {
+      night: state.night,
+      type: state.status === "exile" ? "announceExile" : "announceMorning",
+    });
+    for (const entry of next.history.slice(state.history.length))
+      if (entry.kind === "death")
+        announcedCauses.set(entry.player, [
+          ...new Set(entry.sources.map((source) => source.cause)),
+        ]);
+  }
   const marked = markedToDie(state);
   // How a person who is marked (not dead yet) or announced came to be a victim: the ability that hit him.
   const causesNow = (name: string): DeathCause[] => {
@@ -196,12 +209,12 @@ export function describePlayers(state: WerewolfState, announce = true) {
     const causes: DeathCause[] =
       death?.kind === "death"
         ? [...new Set(death.sources.map((source) => source.cause))]
-        : [
+        : (announcedCauses.get(player.name) ?? [
             ...causesNow(player.name),
             ...(delayedDeathNight !== null && state.toughGuyWound
               ? [state.toughGuyWound.cause]
               : []),
-          ];
+          ]);
     const attacked = alive && marked.has(player.name);
     // The wolves attacked him tonight and he is not marked any more: healed, protected or kept by the amulet.
     const saved =

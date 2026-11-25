@@ -44,7 +44,7 @@ function advanceToWitch(state: WerewolfState, target: string, inspected: string)
 }
 
 // Keep these regressions executable while the decisions about their fixes are pending.
-it.fails("drops the previous poison slot when the next night begins", () => {
+it("drops the previous poison slot when the next night begins", () => {
   let state = deal(["witch"]);
   const [wolfTarget, poisonTarget, inspected] = villagers(state) as [string, string, string];
   state = advanceToWitch(state, wolfTarget, inspected);
@@ -57,7 +57,7 @@ it.fails("drops the previous poison slot when the next night begins", () => {
   expect(effectsOfPerson(night, viewOf(night, poisonTarget))).not.toContain("poisoned");
 });
 
-it.fails("marks the host as saved when the night guest takes the wolf attack", () => {
+it("marks the host as saved when the night guest takes the wolf attack", () => {
   let state = deal(["nightGuest"]);
   const [host, inspected] = villagers(state) as [string, string];
   const guest = state.players.find((player) => player.role === "nightGuest")!.name;
@@ -71,24 +71,21 @@ it.fails("marks the host as saved when the night guest takes the wolf attack", (
   expect(effectsOfPerson(morning, viewOf(morning, host))).toContain("guestSaved");
 });
 
-it.fails(
-  "shows heartbreak as a cause on the morning overview before confirming the announcement",
-  () => {
-    let state = deal(["cupid"]);
-    const [victim, partner, inspected] = villagers(state) as [string, string, string];
-    state = advance(state, { type: "bond", night: 1, players: [victim, partner] });
-    state = advance(state, { type: "loversReady", night: 1 });
-    state = advance(state, { type: "attack", night: 1, target: victim });
-    state = advance(state, { type: "inspect", night: 1, target: inspected });
-    const morning = advance(state, { type: "closeVision", night: 1 });
-    const guide = describeGuide(createGuide(createWerewolfSession(morning)));
-    expect(guide.deaths.find((death) => death.name === partner)?.causes).toEqual(["heartbreak"]);
-    expect(viewOf(morning, partner).alive).toBe(false);
-    expect(viewOf(morning, partner).causes).toEqual(["heartbreak"]);
-  },
-);
+it("shows heartbreak as a cause on the morning overview before confirming the announcement", () => {
+  let state = deal(["cupid"]);
+  const [victim, partner, inspected] = villagers(state) as [string, string, string];
+  state = advance(state, { type: "bond", night: 1, players: [victim, partner] });
+  state = advance(state, { type: "loversReady", night: 1 });
+  state = advance(state, { type: "attack", night: 1, target: victim });
+  state = advance(state, { type: "inspect", night: 1, target: inspected });
+  const morning = advance(state, { type: "closeVision", night: 1 });
+  const guide = describeGuide(createGuide(createWerewolfSession(morning)));
+  expect(guide.deaths.find((death) => death.name === partner)?.causes).toEqual(["heartbreak"]);
+  expect(viewOf(morning, partner).alive).toBe(false);
+  expect(viewOf(morning, partner).causes).toEqual(["heartbreak"]);
+});
 
-it.fails("stops reporting a player as silenced in the guide at the next night", () => {
+it("stops reporting a player as silenced in the guide at the next night", () => {
   let state = deal(["spellcaster"]);
   const [victim, inspected, silenced] = villagers(state) as [string, string, string];
   state = advance(state, { type: "attack", night: 1, target: victim });

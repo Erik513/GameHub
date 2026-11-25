@@ -89,7 +89,7 @@ it("shows every state of a person as the same colored slot as on the card, and n
   );
   expect(slots).toEqual(["protected", "guest"]);
   // The wolves attack him: both protections saved him, so the slots turn dark green.
-  const attacked = await show({ ...state, wolfTarget: person });
+  const attacked = await show({ ...state, wolfChoice: person.name, wolfTarget: person });
   const saved = attacked.find(
     (entry) => entry.querySelector("strong")?.textContent === person.name,
   )!;

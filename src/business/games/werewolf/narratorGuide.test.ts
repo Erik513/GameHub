@@ -485,6 +485,7 @@ describe("narrator guide", () => {
       const other = base.players.find((p) => p.role === "villager")!;
       const day = {
         ...base,
+        silencedNight: base.night,
         silencedPlayer: other.name,
         status: "day",
         toughGuyDiesOn: 3,

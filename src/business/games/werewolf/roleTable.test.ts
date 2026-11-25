@@ -122,6 +122,7 @@ it("keeps the table of the buttons and marks of every role", () => {
       spellHealedPlayer: awake.name,
       spellVictims: [awake],
       hammerVictim: awake.name,
+      wolfChoice: awake.name,
       wolfTarget: awake,
     }),
   );

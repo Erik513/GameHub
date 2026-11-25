@@ -78,6 +78,7 @@ export function createWerewolf(
     protectedPlayer: null,
     protectedNight: null,
     wolfTarget: null,
+    wolfChoice: null,
     hostPlayer: null,
     hostNight: null,
     silencedNight: null,
@@ -202,6 +203,7 @@ function startNight(state: Match, night: number): WerewolfState {
     spellVictims: [],
     hammerVictim: null,
     wolfTarget: null,
+    wolfChoice: null,
     // The healing of the last night is over (the choices of the bodyguard and the night guest are kept for their rule).
     healedPlayer: null,
     spellHealedPlayer: null,
@@ -573,14 +575,16 @@ function applyNightEvent(state: WerewolfState, event: WerewolfEvent): WerewolfSt
         (p) => p.name === event.target && (p.role !== "wolf" || isMasked(state, p)),
       );
       if (!victim) return state;
-      if (state.hostPlayer && victim.role === "nightGuest") return afterWolves(state, null);
-      const saved = absorbNightAttackWithAmulet(state, victim);
+      // Whom the wolves chose, also when somebody else takes the attack (only for the overview, no rule reads it).
+      const chosen = { ...state, wolfChoice: victim.name };
+      if (chosen.hostPlayer && victim.role === "nightGuest") return afterWolves(chosen, null);
+      const saved = absorbNightAttackWithAmulet(chosen, victim);
       if (saved) return afterWolves(saved, null, victim);
-      if (victim.name === state.protectedPlayer) return afterWolves(state, null, victim);
-      if (victim.name !== state.hostPlayer) return afterWolves(state, victim);
-      const guest = findActiveRole(state, "nightGuest");
-      const savedGuest = absorbNightAttackWithAmulet(state, guest);
-      return savedGuest ? afterWolves(savedGuest, null, guest) : afterWolves(state, guest ?? null);
+      if (victim.name === chosen.protectedPlayer) return afterWolves(chosen, null, victim);
+      if (victim.name !== chosen.hostPlayer) return afterWolves(chosen, victim);
+      const guest = findActiveRole(chosen, "nightGuest");
+      const savedGuest = absorbNightAttackWithAmulet(chosen, guest);
+      return savedGuest ? afterWolves(savedGuest, null, guest) : afterWolves(chosen, guest ?? null);
     }
     case "seer": {
       if (event.type !== "inspect") return state;

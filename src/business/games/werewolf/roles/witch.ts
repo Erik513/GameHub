@@ -1,5 +1,15 @@
 import { spec } from "./step";
 import { defineRole } from "./define";
+import type { WerewolfState } from "../stateMachine";
+
+/** The steps after the witch in the same night, in which her poison is decided but not announced yet. */
+const stepsAfterWitch: readonly WerewolfState["status"][] = [
+  "magician",
+  "mayor",
+  "spellcaster",
+  "amuletPass",
+  "morning",
+];
 
 export const witch = defineRole({
   id: "witch",
@@ -13,8 +23,12 @@ export const witch = defineRole({
   },
   cardEffects: {
     healed: ({ state, person }) => state.healedPlayer === person.name,
+    // Only after the witch in the same night: the game object keeps the field of the last night until it is replaced.
     poisoned: ({ state, person, night }) =>
-      night && "poisoned" in state && state.poisoned?.name === person.name,
+      night &&
+      stepsAfterWitch.includes(state.status) &&
+      "poisoned" in state &&
+      state.poisoned?.name === person.name,
   },
   abilityList: [
     { ability: "heal", consumable: true, symbol: "healPotion" },

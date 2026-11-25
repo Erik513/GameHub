@@ -34,7 +34,14 @@ function toDayWithSilencedPerson(): WerewolfSession {
     session = advanceWerewolfSession(session, events[0]!);
   }
   const silenced = session.present.alive[0]!.name;
-  return { ...session, present: { ...session.present, silencedPlayer: silenced } };
+  return {
+    ...session,
+    present: {
+      ...session.present,
+      silencedNight: session.present.night,
+      silencedPlayer: silenced,
+    },
+  };
 }
 
 /** The tanner who wins only by the vote is on the screen of the narrator from the beginning of the day. */

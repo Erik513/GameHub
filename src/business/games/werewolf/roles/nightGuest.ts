@@ -13,12 +13,13 @@ export const nightGuest = defineRole({
       night &&
       state.hostNight === state.night &&
       state.hostPlayer === person.name &&
-      state.wolfTarget?.name !== person.name,
+      state.wolfChoice !== person.name,
+    // The wolves chose the host: the night guest took the attack for him (or the amulet stopped it).
     guestSaved: ({ state, person, night }) =>
       night &&
       state.hostNight === state.night &&
       state.hostPlayer === person.name &&
-      state.wolfTarget?.name === person.name,
+      state.wolfChoice === person.name,
   },
   abilityList: [{ ability: "stayWith", symbol: "guest" }],
 });

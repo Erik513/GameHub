@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { describeNarratorCard } from "./narratorCard";
+import { describeNarratorCard, effectsOfPerson } from "./narratorCard";
+import { describePlayers } from "./selectors";
 import { createWerewolf, type WerewolfState } from "./stateMachine";
 
 const names = "Anna,Ben,Cleo,Dora,Emil,Finn,Gina,Hans,Ida,Jan,Kim,Lea";
@@ -231,12 +232,20 @@ describe("describeNarratorCard", () => {
       amulet: null,
       hostNight: state.night,
       hostPlayer: witch.name,
+      wolfChoice: witch.name,
       wolfTarget: witch,
     } as WerewolfState;
     // The wolves attacked the host: the night guest saved him (dark green instead of blue).
     expect(describeNarratorCard(attacked)!.effects).toEqual(["attacked", "guestSaved"]);
-    const poisoned = at(state, { poisoned: witch });
-    expect(describeNarratorCard(at(poisoned, { amulet: null }))!.effects).toContain("poisoned");
+    // The poison counts in the steps after the witch in the same night (here the magician's).
+    const poisoned = at(state, { poisoned: witch, status: "magician" });
+    const later = at(poisoned, { amulet: null });
+    expect(
+      effectsOfPerson(
+        later,
+        describePlayers(later).find((p) => p.name === witch.name)!,
+      ),
+    ).toContain("poisoned");
     const quiet = {
       ...state,
       amulet: null,
