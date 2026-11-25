@@ -38,6 +38,8 @@ export function DealCard({
 }: DealCardProps) {
   const { t } = useTranslation();
   const [shown, setShown] = useState(open);
+  // Whether the player has seen the role once: from then on the button "next" has the blue frame.
+  const [seen, setSeen] = useState(open);
   useEffect(() => {
     const cover = () => {
       if (document.hidden && !open) setShown(false);
@@ -48,11 +50,15 @@ export function DealCard({
   const roleName = t(`werewolfSymbols.items.${role}.name`);
   const abilities = abilitiesOfRole(role, mayor);
   return (
-    <section aria-label={name} className="ww-deal" data-shown={shown}>
+    <section aria-label={name} className="ww-deal" data-seen={seen || undefined} data-shown={shown}>
       <button
         aria-pressed={shown}
         className="ww-deal__face"
-        onClick={() => !open && setShown((current) => !current)}
+        onClick={() => {
+          if (open) return;
+          setShown((current) => !current);
+          setSeen(true);
+        }}
         type="button"
       >
         <span className="ww-deal__body">

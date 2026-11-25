@@ -143,3 +143,15 @@ describe("DealCard", () => {
     expect(screen.queryByText("No special ability")).toBeNull();
   });
 });
+
+it("marks the card as seen once it was uncovered, also when it is covered again to pass it on", async () => {
+  const user = await renderCard("en", null);
+  const card = document.querySelector(".ww-deal")!;
+  // Not seen yet: the button "next" has no blue frame (see the style of the narrator view).
+  expect(card).not.toHaveAttribute("data-seen");
+  await user.click(document.querySelector(".ww-deal__face")!);
+  expect(card).toHaveAttribute("data-seen", "true");
+  await user.click(document.querySelector(".ww-deal__face")!);
+  expect(card).toHaveAttribute("data-shown", "false");
+  expect(card).toHaveAttribute("data-seen", "true");
+});

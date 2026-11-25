@@ -1154,6 +1154,11 @@
   outline-offset: 2px;
 }
 
+/* The role reveal: the next step is to uncover the card; the button "next" gets its frame only once the card was seen. */
+.ww-night:has(.ww-deal:not([data-seen])) .ww-nav .button[data-next] {
+  outline: none;
+}
+
 .ww-guide--asleep {
   cursor: default;
 }
