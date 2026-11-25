@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-26 (Amulett, Wortwahl)
+
+### We-01-235: Einheitlich „weitergeben“ (Claude)
+
+- Knopf, Zusammenfassung und Symbolname sagen jetzt wie Regeln und Skript „weitergeben“ statt „abgeben“.
+
 ## 2026-11-26 (Amulett)
 
 ### We-01-234: Amulett behalten oder weitergeben (Claude)
