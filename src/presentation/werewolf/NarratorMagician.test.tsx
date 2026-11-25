@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { eventChoices } from "../../business/games/werewolf/eventChoices";
 import {
   advanceWerewolfSession,
@@ -136,4 +136,56 @@ it("shows the script of the magician as boxes: the victim, the first question, t
     ),
   ).toEqual(["heal", "kill"]);
   expect(steps[1]!.querySelector(".ww-thumb")).not.toBeNull();
+});
+
+it("keeps Skip clickable after a spell: the magician kills in the first question and skips the second", async () => {
+  await open();
+  fireEvent.click(screen.getByRole("button", { name: /^Kill/ }));
+  fireEvent.click(persons()[0]!);
+  fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  const skip = screen.getByRole("button", { name: /^Skip/ });
+  expect(skip).toBeEnabled();
+  fireEvent.click(skip);
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toMatch(
+    /Killed: P\d+ \([^)]+\)Second spell: Skipped/,
+  );
+});
+
+it("names two death spells in the summary without two parts of the same key", async () => {
+  const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
+  await open();
+  fireEvent.click(screen.getByRole("button", { name: /^Kill/ }));
+  fireEvent.click(persons()[0]!);
+  fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  fireEvent.click(screen.getByRole("button", { name: /^Kill/ }));
+  fireEvent.click(persons().find((person) => person.getAttribute("aria-pressed") !== "true")!);
+  fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  const keyWarnings = errors.mock.calls.filter((call) => String(call[0]).includes("same key"));
+  errors.mockRestore();
+  expect(keyWarnings).toEqual([]);
+});
+
+it("asks the same questions when no spell is left, so nobody can tell from the script; Skip answers both", async () => {
+  const i18n = await createGameHubI18n("en");
+  const spent = () => {
+    const session = toMagician();
+    return { ...session, present: { ...session.present, spellsRemaining: 0 } };
+  };
+  render(
+    <I18nextProvider i18n={i18n}>
+      <NarratorHarness start={spent} />
+    </I18nextProvider>,
+  );
+  fireEvent.click(document.querySelector(".ww-script__wake")!);
+  fireEvent.click(document.querySelector(".ww-script__check:not(.ww-script__wake)")!);
+  const texts = [...document.querySelectorAll(".ww-script__step")].map((step) => step.textContent);
+  expect(texts.slice(2, 4)).toEqual([
+    "Save the victim () orkill somebody (point)?",
+    "Use the second spell (point)?",
+  ]);
+  fireEvent.click(screen.getByRole("button", { name: /^Skip/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Skip/ }));
+  expect(document.querySelector(".ww-guide__chosen")?.textContent).toBe(
+    "Save or kill: SkippedSecond spell: Skipped",
+  );
 });

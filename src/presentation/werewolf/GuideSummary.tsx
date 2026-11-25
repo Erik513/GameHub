@@ -100,7 +100,7 @@ export function Summary({ view }: { readonly view: GuideView }) {
     ) : null;
   // What was used, as the symbol of the ability, its name and the person: no prefix ("chosen").
   const part = (symbol: string, label: string, people: string) => (
-    <span className="ww-guide__chosen-part" key={symbol + label}>
+    <span className="ww-guide__chosen-part" key={symbol + label + people}>
       <WerewolfSymbol id={symbol as SymbolId} ring size={20} />
       <span>
         <strong>{label}</strong>
