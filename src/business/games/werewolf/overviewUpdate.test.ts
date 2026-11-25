@@ -8,6 +8,7 @@ import {
   describeGuide,
 } from "./narratorGuide";
 import { createWerewolfSession } from "./session";
+import { effectsOfPerson } from "./narratorCard";
 import { describePlayers } from "./selectors";
 import { createWerewolf, transitionWerewolf, type WerewolfState } from "./stateMachine";
 
@@ -252,6 +253,43 @@ it("marks the person the magician saved with the healing spell, apart from the h
   expect(view.spellHealed).toBe(true);
   // The potion of the witch is another state with another drawing.
   expect(view.healed).toBe(false);
+});
+
+it("still shows the poison of the witch as a slot in the morning, before the announcement is confirmed", () => {
+  const start = createWerewolf(names, "Max", () => 0.3, ["witch"], {
+    attackOnFirstNight: true,
+    wolfCount: 2,
+  })!;
+  const [victim, poisoned] = villagers(start);
+  const state = {
+    ...start,
+    status: "witch",
+    victim,
+    wolfTarget: victim,
+  } as unknown as WerewolfState;
+  // The witch is the last role of the night: the next step is the morning.
+  const morning = transitionWerewolf(state, {
+    heal: false,
+    night: state.night,
+    poison: poisoned!.name,
+    type: "potions",
+  });
+  expect(morning.status).toBe("morning");
+  const slots = (name: string) =>
+    effectsOfPerson(
+      morning,
+      describePlayers(morning, false).find((person) => person.name === name)!,
+    );
+  expect(slots(poisoned!.name)).toContain("poisoned");
+  expect(slots(victim!.name)).toContain("attacked");
+  // In the day the night is over: the slots of the night are gone.
+  const day = { ...morning, status: "day", nomination: 0 } as unknown as WerewolfState;
+  expect(
+    effectsOfPerson(
+      day,
+      describePlayers(day).find((person) => person.name === poisoned!.name)!,
+    ),
+  ).not.toContain("poisoned");
 });
 
 it("names the ability that hit each victim: the attack of the wolves, the poison, the vote", () => {

@@ -52,7 +52,7 @@ it("shows the variant of a role as a small sign next to the role, with its short
   expect(legend.querySelector(".ww-variant")).not.toHaveAttribute("aria-label");
 });
 
-it("shows the ability that hit a victim as a sign in the row, and names it in the legend", async () => {
+it("shows the attack of the night as a slot in the morning (not a second time as the cause), and names it in the legend", async () => {
   const base = game();
   const victim = base.players.find((player) => player.role === "villager")!;
   const state = {
@@ -65,8 +65,10 @@ it("shows the ability that hit a victim as a sign in the row, and names it in th
   // The preview of a decision: the victim is marked, not announced.
   const rows = await show(state, "en", false);
   const row = rows.find((entry) => entry.querySelector("strong")?.textContent === victim.name)!;
-  expect(row.querySelector('[aria-label="Werewolf attack"]')).not.toBeNull();
-  expect(document.querySelector(".ww-overview__legend")?.textContent).toContain("Werewolf attack");
+  // Until the announcement is confirmed the morning still shows the slots of the night.
+  expect(row.querySelector('.ww-overview__slot[data-effect="attacked"]')).not.toBeNull();
+  expect(row.querySelector('[aria-label="Werewolf attack"]')).toBeNull();
+  expect(document.querySelector(".ww-overview__legend")?.textContent).toContain("Attacked");
 });
 
 it("shows every state of a person as the same colored slot as on the card, and names it in the legend", async () => {

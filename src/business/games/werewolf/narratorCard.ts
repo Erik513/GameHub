@@ -117,9 +117,11 @@ export interface NarratorCard {
   readonly variant?: RoleVariantId | undefined;
 }
 
-/** The steps of the day: the effects of the night are not shown there. */
+/**
+ * The steps of the day: the effects of the night are not shown there. The morning is not one of them: until its
+ * announcement is confirmed the poison, the attack and the protections of the night still show as slots.
+ */
 const dayStatuses: readonly WerewolfState["status"][] = [
-  "morning",
   "day",
   "vote",
   "exile",
