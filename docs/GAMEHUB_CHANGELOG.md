@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Sitzkreis)
+
+### We-01-224: Sitzkreis mit Tippen statt Gedrückthalten (Claude)
+
+- Eine Kachel antippen zeigt den ganzen Namen und bleibt markiert, eine andere Kachel wechselt, erneutes Tippen hebt die Auswahl auf. Die Namensbox bleibt dabei immer gleich groß. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Spielende, Seiten)
 
 ### We-01-223: Spielende nennt die Seite (Claude)

@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 432,
-      "totalTasks": 486,
+      "completedTasks": 433,
+      "totalTasks": 487,
       "percent": 88.9
     }
   },
@@ -2600,6 +2600,12 @@
           "title": "Spielende nennt die Seite bei Gewinnern und Verlierern",
           "status": "done",
           "validation": "Die Überschriften am Spielende lauten „Gewinner – Dorfbewohner“ / „Verlierer – Werwölfe“ oder umgekehrt, englisch „Winners – Villagers“ / „Losers – Werewolves“, nach der Seite, die gewonnen hat. Test der Überschriften in beiden Sprachen angepasst; 313 Werwolf-UI- und i18n-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-224",
+          "title": "Sitzkreis: Tippen statt Gedrückthalten",
+          "status": "done",
+          "validation": "Eine Kachel antippen zeigt den ganzen Namen und markiert sie; eine andere Kachel antippen wechselt die Auswahl; dieselbe Kachel erneut antippen hebt sie auf; ein Tipp neben die Kacheln ändert nichts. Gedrückthalten, Zeitverzögerung und das Mitwandern unter dem Finger sind entfallen; touch-action manipulation statt none. Die Namensbox hat eine feste Höhe (4rem) für den zweizeiligen Hinweis wie für einen Namen. Hinweis de/en (tapHint) angepasst, data-held heißt jetzt data-selected (auch im Beispielkreis). SeatCircle-Tests neu, Test im Spielablauf angepasst; 312 Werwolf-UI- und i18n-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4266,7 +4272,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T22:06:38.128Z"
+  "updatedAt": "2026-11-25T22:11:21.939Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
