@@ -15,7 +15,7 @@ import {
 import type { SupportedLanguage } from "../../i18n";
 import { ChoiceGroup, SetupScreen, SetupTabs, TabPane } from "../game-kit";
 import { useCategoryLabel, useCategorySorter } from "./categoryLabel";
-import { useGameRulesButton } from "../GameChrome";
+import { useGameBack, useGameRulesButton } from "../GameChrome";
 import { Button, ConfirmButton, Dialog } from "../components";
 import type { PlayedCards } from "./usePlayedCards";
 import { TabooRulesDialog } from "./TabooRules";
@@ -136,6 +136,8 @@ export function TabooSetupForm({
   const [modeInfo, setModeInfo] = useState<TabooMode>();
   // The button "Rules" of the header opens all the rules.
   useGameRulesButton(rulesActive, () => setRulesOpen(true));
+  // The window of the rules: the Back key of the system closes it and stays in the game.
+  useGameBack(rulesOpen, () => setRulesOpen(false), { headerUnchanged: true });
   const [tiebreakOpen, setTiebreakOpen] = useState(false);
   const categoryLabel = useCategoryLabel(categoryInfos);
   const sortCategories = useCategorySorter(categoryInfos);

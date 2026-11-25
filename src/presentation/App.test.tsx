@@ -7,6 +7,7 @@ import { tabooStandardCards } from "../data/tabooStandardCards";
 import { App } from "./App";
 import type { GameModule } from "./gameModule";
 import { createTabooModule } from "./taboo/tabooModule";
+import { createWerewolfModule } from "./werewolf/werewolfModule";
 import { closeGameSettings, openGameSettings } from "./testing/gameSettings";
 
 const languageCases = [
@@ -413,6 +414,126 @@ describe("App", () => {
       await pressSystemBack();
       expect(window.location.hash).toBe("#/");
       expect(screen.queryByRole("region", { name: "Line-up" })).not.toBeInTheDocument();
+    });
+
+    it("goes back from the configuration of Werewolf to its main menu, not to the hub", async () => {
+      const i18n = await createGameHubI18n("en");
+      render(
+        <I18nextProvider i18n={i18n}>
+          <App
+            cardLanguage="en"
+            modules={[createWerewolfModule()]}
+            onCardLanguageChange={vi.fn()}
+          />
+        </I18nextProvider>,
+      );
+      fireEvent.click(
+        screen
+          .getByRole("heading", { name: "Werewolf" })
+          .closest("section")!
+          .querySelector("button")!,
+      );
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 40));
+      });
+      fireEvent.click(screen.getByRole("button", { name: "Configuration" }));
+      expect(screen.getByRole("region", { name: "Configuration" })).toBeVisible();
+
+      await pressSystemBack();
+      // Back in the main menu of Werewolf: the button of the configuration is there again, the hub is not.
+      expect(screen.queryByRole("region", { name: "Configuration" })).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Configuration" })).toBeVisible();
+      expect(window.location.hash).toBe("#/games/werewolf");
+    });
+
+    it("closes the settings window of the app with the Back key and stays in the game", async () => {
+      await renderTaboo();
+      fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+      await pressSystemBack();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
+      expect(window.location.hash).toBe("#/games/taboo");
+    });
+
+    it("asks before the Back key ends a running game of Werewolf", async () => {
+      const i18n = await createGameHubI18n("en");
+      const user = userEvent.setup();
+      render(
+        <I18nextProvider i18n={i18n}>
+          <App
+            cardLanguage="en"
+            modules={[createWerewolfModule()]}
+            onCardLanguageChange={vi.fn()}
+          />
+        </I18nextProvider>,
+      );
+      await user.click(
+        screen
+          .getByRole("heading", { name: "Werewolf" })
+          .closest("section")!
+          .querySelector("button")!,
+      );
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 40));
+      });
+      await user.type(
+        screen.getByLabelText("Add player"),
+        "Anna, Ben, Cleo, Dora, Emil, Finn, Gina{enter}",
+      );
+      await user.click(screen.getByRole("button", { name: /Choose\s+narrator/ }));
+      await user.click(
+        within(await screen.findByRole("dialog")).getByRole("button", { name: "Anna" }),
+      );
+      await user.click(screen.getByRole("button", { name: "Start game" }));
+      expect(await screen.findByText(/Hand the device to this person/)).toBeInTheDocument();
+
+      // The Back key asks first; the game goes on when the narrator keeps playing.
+      await pressSystemBack();
+      const question = screen.getByRole("dialog", { name: "End the game?" });
+      fireEvent.click(within(question).getByRole("button", { name: "Keep playing" }));
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(screen.getByText(/Hand the device to this person/)).toBeInTheDocument();
+
+      // Asked again, the game can be ended: back in the main menu of Werewolf, not in the hub.
+      await pressSystemBack();
+      fireEvent.click(
+        within(screen.getByRole("dialog", { name: "End the game?" })).getByRole("button", {
+          name: "End game",
+        }),
+      );
+      expect(await screen.findByRole("button", { name: "Start game" })).toBeInTheDocument();
+      expect(window.location.hash).toBe("#/games/werewolf");
+    });
+
+    it("closes the rules of Werewolf with the Back key and stays in its main menu", async () => {
+      const i18n = await createGameHubI18n("en");
+      render(
+        <I18nextProvider i18n={i18n}>
+          <App
+            cardLanguage="en"
+            modules={[createWerewolfModule()]}
+            onCardLanguageChange={vi.fn()}
+          />
+        </I18nextProvider>,
+      );
+      fireEvent.click(
+        screen
+          .getByRole("heading", { name: "Werewolf" })
+          .closest("section")!
+          .querySelector("button")!,
+      );
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 40));
+      });
+      fireEvent.click(screen.getByRole("button", { name: "Rules" }));
+      expect(screen.getByRole("dialog", { name: "Werewolf rules" })).toBeInTheDocument();
+
+      await pressSystemBack();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Configuration" })).toBeVisible();
+      expect(window.location.hash).toBe("#/games/werewolf");
     });
 
     it("goes one step back in the settings of a game, like the arrow in the header", async () => {

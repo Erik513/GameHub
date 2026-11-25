@@ -8,6 +8,8 @@ export interface GamePauseControl {
 export interface GameExit {
   /** A plain back button without confirmation, for a sub page inside a game. */
   readonly back?: boolean;
+  /** Only the Back key of the system goes back; the header stays as it is (with the rules of the game, for example). */
+  readonly headerUnchanged?: boolean;
   readonly run: () => void;
   readonly pause?: GamePauseControl;
 }
@@ -58,9 +60,14 @@ export function useGameExit(active: boolean, onExit: () => void, pause?: PauseOp
  * Lets a game show a sub page (for example its card library). While active, the shell hides the
  * hub navigation and settings and shows one back button that calls `onBack` directly.
  */
-export function useGameBack(active: boolean, onBack: () => void) {
+export function useGameBack(
+  active: boolean,
+  onBack: () => void,
+  options: { readonly headerUnchanged?: boolean } = {},
+) {
   const register = useContext(GameChromeContext);
   const latestBack = useRef(onBack);
+  const headerUnchanged = options.headerUnchanged === true;
 
   useEffect(() => {
     latestBack.current = onBack;
@@ -68,10 +75,14 @@ export function useGameBack(active: boolean, onBack: () => void) {
 
   useEffect(() => {
     if (!active) return;
-    const entry: GameExit = { back: true, run: () => latestBack.current() };
+    const entry: GameExit = {
+      back: true,
+      run: () => latestBack.current(),
+      ...(headerUnchanged ? { headerUnchanged: true } : {}),
+    };
     register(entry);
     return () => register(undefined, entry);
-  }, [active, register]);
+  }, [active, headerUnchanged, register]);
 }
 
 /** What a game offers for the "Rules" button in the header of its main menu. */

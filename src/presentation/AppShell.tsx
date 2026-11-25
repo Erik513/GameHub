@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
 import { BrandMark, Button, ConfirmButton, Dialog, Icon } from "./components";
@@ -29,6 +29,19 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
     else gameExits.current = remove ? gameExits.current.filter((entry) => entry !== remove) : [];
     setGameExit(gameExits.current[gameExits.current.length - 1]);
   }, []);
+  // What the header shows: a sub page that only catches the Back key of the system keeps the normal header.
+  const headerExit = gameExit?.headerUnchanged ? undefined : gameExit;
+  // The settings window: the Back key of the system closes it and stays where it is (in a game or in the hub).
+  useEffect(() => {
+    if (!settingsOpen) return;
+    const entry: GameExit = {
+      back: true,
+      headerUnchanged: true,
+      run: () => setSettingsOpen(false),
+    };
+    registerGameExit(entry);
+    return () => registerGameExit(undefined, entry);
+  }, [registerGameExit, settingsOpen]);
   // The Back key of the system: in a sub page of a game it goes one step back like the arrow in the
   // header; in a running game it asks first, and a running round is paused while the question is open.
   const [leaveAsked, setLeaveAsked] = useState(false);
@@ -99,28 +112,28 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
           </a>
         )}
         <div className="site-header__actions">
-          {gameExit?.back ? (
+          {headerExit?.back ? (
             <Button
               aria-label={t("navigation.back")}
               className="icon-button"
               title={t("navigation.back")}
               variant="secondary"
-              onClick={() => gameExit.run()}
+              onClick={() => headerExit.run()}
             >
               <Icon name="arrowLeft" />
             </Button>
-          ) : gameExit ? (
+          ) : headerExit ? (
             <>
-              {gameExit.pause && (
+              {headerExit.pause && (
                 <Button
-                  aria-label={t(gameExit.pause.paused ? "navigation.resume" : "navigation.pause")}
-                  aria-pressed={gameExit.pause.paused}
+                  aria-label={t(headerExit.pause.paused ? "navigation.resume" : "navigation.pause")}
+                  aria-pressed={headerExit.pause.paused}
                   className="icon-button"
-                  title={t(gameExit.pause.paused ? "navigation.resume" : "navigation.pause")}
+                  title={t(headerExit.pause.paused ? "navigation.resume" : "navigation.pause")}
                   variant="secondary"
-                  onClick={gameExit.pause.toggle}
+                  onClick={headerExit.pause.toggle}
                 >
-                  {gameExit.pause.paused ? (
+                  {headerExit.pause.paused ? (
                     <svg
                       aria-hidden="true"
                       focusable="false"
@@ -149,7 +162,7 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
                   )}
                 </Button>
               )}
-              {!gameExit.pause && (
+              {!headerExit.pause && (
                 <ConfirmButton
                   armedContent={
                     <>
@@ -175,7 +188,7 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
                   className="icon-button"
                   idleLabel={t("navigation.exitGame")}
                   idleVariant="danger"
-                  onConfirm={() => gameExit.run()}
+                  onConfirm={() => headerExit.run()}
                 >
                   <svg
                     aria-hidden="true"
