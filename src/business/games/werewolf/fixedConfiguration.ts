@@ -1,3 +1,4 @@
+import { familyOf, specialRoleSetups } from "./roles/setup";
 import {
   availableWerewolfCounts,
   standardWerewolfCount,
@@ -89,20 +90,16 @@ const item = (
 });
 
 /** All choices in the order of the unlocking: the rows of the grid are the minimum numbers of players. */
-export const fixedItems: readonly FixedItemDefinition[] = [
-  item("witch", "toggle", "witch"),
-  item("hunter", "variant", "hunter"),
-  item("idiot", "toggle", "idiot"),
-  item("guard", "alternative", "bodyguard", "nightGuest"),
-  item("cupid", "toggle", "cupid"),
-  item("toughGuy", "variant", "toughGuy"),
-  item("tanner", "variant", "tanner"),
-  item("apprenticeSeer", "toggle", "apprenticeSeer"),
-  item("spellcaster", "variant", "spellcaster"),
-  item("mayor", "variant", "mayor"),
-  item("paranormalInvestigator", "toggle", "paranormalInvestigator"),
-  item("magician", "toggle", "magician"),
-];
+export const fixedItems: readonly FixedItemDefinition[] = specialRoleSetups().flatMap(
+  ({ role, setup }) => {
+    // The second role of a family is part of the choice of the first one.
+    if (familyOf(role) !== role) return [];
+    const members = specialRoleSetups().filter((entry) => familyOf(entry.role) === role);
+    if (members.length > 1)
+      return [item("guard", "alternative", ...members.map((entry) => entry.role))];
+    return [item(role as FixedItemId, setup.options ? "variant" : "toggle", role)];
+  },
+);
 
 /** The extras that belong to no role card. */
 export const fixedAddons = [

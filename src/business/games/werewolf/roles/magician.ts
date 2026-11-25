@@ -27,4 +27,8 @@ export const magician = defineRole({
       kill: { count: left, why: left <= 0 ? "used" : undefined },
     };
   },
+  // In the configuration: the minimum number of players, the place on the screens, the options.
+  setup: { minPlayers: 11, order: 13 },
+  // At night: the step the role wakes in and its place in the night.
+  night: { step: "magician", place: 8 },
 });

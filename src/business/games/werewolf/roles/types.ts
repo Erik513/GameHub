@@ -5,25 +5,9 @@ import type { WerewolfSettings } from "../configuration";
 import type { CardAbility, CardAbilityId, CardAbilitySymbol, CardEffect } from "../narratorCard";
 import type { RoleVariantId } from "../roleVariant";
 
-/** The roles of the game as the narrator view names them (the real roles plus the drunk, who knows nothing yet). */
-export type RoleId =
-  | "wolf"
-  | "seer"
-  | "apprenticeSeer"
-  | "villager"
-  | "witch"
-  | "hunter"
-  | "idiot"
-  | "bodyguard"
-  | "nightGuest"
-  | "cupid"
-  | "toughGuy"
-  | "tanner"
-  | "spellcaster"
-  | "mayor"
-  | "paranormalInvestigator"
-  | "magician"
-  | "drunk";
+export type { RoleId } from "./roleIds";
+import type { RoleId, SpecialRoleId } from "./roleIds";
+import type { RoleNight } from "./night";
 
 /** The symbol ids an ability can have (the double vote of the mayor is an ability that is no button). */
 export type AbilitySymbol = CardAbilitySymbol | "doubleVote";
@@ -62,12 +46,34 @@ export interface CardEffectContext {
 
 export type CardEffectRules = Partial<Record<CardEffect, (context: CardEffectContext) => boolean>>;
 
+/** The settings an option of a role changes. */
+export type RoleOptionKey = "allowSelfSilence" | "hunterShot" | "mayor" | "tanner" | "toughGuy";
+
+/** How a special role is offered in the configuration. */
+export interface RoleSetup {
+  /** How many players a game needs at least for this role. */
+  readonly minPlayers: number;
+  /** The place of the role on the screens of the configuration (and in the rules). */
+  readonly order: number;
+  /** Two roles that are drawn as one (the bodyguard and the night guest): the first of them names the family. */
+  readonly family?: SpecialRoleId;
+  /** The options of the role: the setting they change and its values, each with the id of its entry. */
+  readonly options?: {
+    readonly key: RoleOptionKey;
+    readonly values: readonly { readonly id: string; readonly value: boolean | string }[];
+  };
+}
+
 /**
  * Everything that belongs to one role at one place (plain data and pure functions, no classes). The drawings stay in the
  * presentation: the definition only knows symbol ids. The transitions of the game stay in the state machine.
  */
 export interface RoleDefinition {
   readonly id: RoleId;
+  /** Special roles only: how the configuration offers the role. */
+  readonly setup?: RoleSetup;
+  /** The roles that wake up at night: their step and its place in the night. */
+  readonly night?: RoleNight;
   readonly steps?: RoleSteps;
   readonly cardEffects?: CardEffectRules;
   readonly cardAbilities: (state: WerewolfState) => readonly CardAbility[];

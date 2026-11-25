@@ -1,26 +1,31 @@
+import type { SpecialRoleId } from "./roles/roleIds";
+import { specialRoleIds } from "./roles/roleIds";
+import { setupOf } from "./roles/setup";
+
 export const werewolfPlayerLimits = {
   minimum: 6,
   supportedMaximum: 20,
   targetMaximum: 20,
 } as const;
 
-export const werewolfRoleMinimums = {
-  bodyguard: 6,
-  nightGuest: 6,
-  witch: 6,
-  hunter: 6,
-  cupid: 7,
-  idiot: 6,
-  spellcaster: 9,
-  mayor: 9,
-  toughGuy: 7,
-  apprenticeSeer: 8,
-  paranormalInvestigator: 10,
-  magician: 11,
-  tanner: 8,
-} as const;
+/** The minimum number of players of every special role (from the definitions of the roles). */
+/**
+ * The minimum number of players of every special role, read from the definitions of the roles when it is needed (the
+ * definitions import the game logic, so they are not ready when this file is loaded).
+ */
+export const werewolfRoleMinimums: Readonly<Record<SpecialRoleId, number>> =
+  Object.defineProperties(
+    {},
+    Object.fromEntries(
+      specialRoleIds.map((role) => [
+        role,
+        { enumerable: true, get: () => setupOf(role).minPlayers },
+      ]),
+    ),
+  ) as Record<SpecialRoleId, number>;
 
-export type WerewolfSpecialRole = keyof typeof werewolfRoleMinimums;
+/** A special role (the list of all roles is roles/roleIds.ts). */
+export type WerewolfSpecialRole = SpecialRoleId;
 
 export interface WerewolfSettings {
   readonly wolfCountMode?: "standard" | "balanced";

@@ -19,4 +19,6 @@ export const seer = defineRole({
   availability: (state) => ({
     inspect: { why: state.status === "seer" || state.status === "vision" ? undefined : "blocked" },
   }),
+  // At night: the step the role wakes in and its place in the night.
+  night: { step: "seer", place: 5 },
 });

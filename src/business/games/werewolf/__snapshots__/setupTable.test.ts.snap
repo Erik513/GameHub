@@ -1,0 +1,234 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`keeps the table of the configuration of every role 1`] = `
+{
+  "fixedItems": [
+    {
+      "id": "witch",
+      "kind": "toggle",
+      "minimum": 6,
+      "roles": [
+        "witch",
+      ],
+    },
+    {
+      "id": "hunter",
+      "kind": "variant",
+      "minimum": 6,
+      "roles": [
+        "hunter",
+      ],
+    },
+    {
+      "id": "idiot",
+      "kind": "toggle",
+      "minimum": 6,
+      "roles": [
+        "idiot",
+      ],
+    },
+    {
+      "id": "guard",
+      "kind": "alternative",
+      "minimum": 6,
+      "roles": [
+        "bodyguard",
+        "nightGuest",
+      ],
+    },
+    {
+      "id": "cupid",
+      "kind": "toggle",
+      "minimum": 7,
+      "roles": [
+        "cupid",
+      ],
+    },
+    {
+      "id": "toughGuy",
+      "kind": "variant",
+      "minimum": 7,
+      "roles": [
+        "toughGuy",
+      ],
+    },
+    {
+      "id": "tanner",
+      "kind": "variant",
+      "minimum": 8,
+      "roles": [
+        "tanner",
+      ],
+    },
+    {
+      "id": "apprenticeSeer",
+      "kind": "toggle",
+      "minimum": 8,
+      "roles": [
+        "apprenticeSeer",
+      ],
+    },
+    {
+      "id": "spellcaster",
+      "kind": "variant",
+      "minimum": 9,
+      "roles": [
+        "spellcaster",
+      ],
+    },
+    {
+      "id": "mayor",
+      "kind": "variant",
+      "minimum": 9,
+      "roles": [
+        "mayor",
+      ],
+    },
+    {
+      "id": "paranormalInvestigator",
+      "kind": "toggle",
+      "minimum": 10,
+      "roles": [
+        "paranormalInvestigator",
+      ],
+    },
+    {
+      "id": "magician",
+      "kind": "toggle",
+      "minimum": 11,
+      "roles": [
+        "magician",
+      ],
+    },
+  ],
+  "variableEntries": [
+    {
+      "id": "witch",
+      "role": "witch",
+    },
+    {
+      "id": "hunter:required",
+      "option": {
+        "key": "hunterShot",
+        "value": "required",
+      },
+      "role": "hunter",
+    },
+    {
+      "id": "hunter:optional",
+      "option": {
+        "key": "hunterShot",
+        "value": "optional",
+      },
+      "role": "hunter",
+    },
+    {
+      "id": "idiot",
+      "role": "idiot",
+    },
+    {
+      "id": "bodyguard",
+      "role": "bodyguard",
+    },
+    {
+      "id": "nightGuest",
+      "role": "nightGuest",
+    },
+    {
+      "id": "cupid",
+      "role": "cupid",
+    },
+    {
+      "id": "toughGuy:wolfOnly",
+      "option": {
+        "key": "toughGuy",
+        "value": "wolfOnly",
+      },
+      "role": "toughGuy",
+    },
+    {
+      "id": "toughGuy:anyAttack",
+      "option": {
+        "key": "toughGuy",
+        "value": "anyAttack",
+      },
+      "role": "toughGuy",
+    },
+    {
+      "id": "tanner:anyDeath",
+      "option": {
+        "key": "tanner",
+        "value": "anyDeath",
+      },
+      "role": "tanner",
+    },
+    {
+      "id": "tanner:voteOnly",
+      "option": {
+        "key": "tanner",
+        "value": "voteOnly",
+      },
+      "role": "tanner",
+    },
+    {
+      "id": "apprenticeSeer",
+      "role": "apprenticeSeer",
+    },
+    {
+      "id": "spellcaster:allowed",
+      "option": {
+        "key": "allowSelfSilence",
+        "value": true,
+      },
+      "role": "spellcaster",
+    },
+    {
+      "id": "spellcaster:forbidden",
+      "option": {
+        "key": "allowSelfSilence",
+        "value": false,
+      },
+      "role": "spellcaster",
+    },
+    {
+      "id": "mayor:doubleVote",
+      "option": {
+        "key": "mayor",
+        "value": "doubleVote",
+      },
+      "role": "mayor",
+    },
+    {
+      "id": "mayor:hammer",
+      "option": {
+        "key": "mayor",
+        "value": "hammer",
+      },
+      "role": "mayor",
+    },
+    {
+      "id": "paranormalInvestigator",
+      "role": "paranormalInvestigator",
+    },
+    {
+      "id": "magician",
+      "role": "magician",
+    },
+  ],
+  "werewolfRoleMinimums": {
+    "apprenticeSeer": 8,
+    "bodyguard": 6,
+    "cupid": 7,
+    "hunter": 6,
+    "idiot": 6,
+    "magician": 11,
+    "mayor": 9,
+    "nightGuest": 6,
+    "paranormalInvestigator": 10,
+    "spellcaster": 9,
+    "tanner": 8,
+    "toughGuy": 7,
+    "witch": 6,
+  },
+}
+`;

@@ -1,3 +1,4 @@
+import { roleIds } from "../../../business/games/werewolf/roles/roleIds";
 import type { FilledGlyph, LineGlyph } from "./glyphs";
 
 /** The kinds of symbols: who someone is, what a role still has, the extras, and what happens to a person. */
@@ -64,6 +65,9 @@ const definitions = [
 ] as const;
 
 export type SymbolId = (typeof definitions)[number]["id"];
+
+/** Every role of the game has a symbol of the same name (the compiler checks it against roles/roleIds.ts). */
+export const roleSymbols: readonly SymbolId[] = roleIds;
 
 /** All symbols in the order of the legend. */
 export const symbols: readonly SymbolDefinition[] = definitions;

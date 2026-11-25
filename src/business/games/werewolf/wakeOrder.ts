@@ -1,22 +1,9 @@
 import type { FixedDraft } from "./fixedConfiguration";
-import type { VariableDraft, VariableState } from "./variableConfiguration";
+import { nightSteps, type NightStep, type WakeStepId, type WakeTiming } from "./roles/night";
+import type { BasicRoleId, RoleId } from "./roles/roleIds";
+import { variableEntries, type VariableDraft, type VariableState } from "./variableConfiguration";
 
-/** The roles and extras that are woken at night, in the order of the night. */
-export type WakeStepId =
-  | "amulet"
-  | "cupid"
-  | "drunk"
-  | "guard"
-  | "magician"
-  | "mayor"
-  | "paranormalInvestigator"
-  | "seer"
-  | "spellcaster"
-  | "witch"
-  | "wolves";
-
-/** When a step happens, if it does not happen every night. */
-export type WakeTiming = "firstNight" | "fromSecondNight" | "thirdNight";
+export type { WakeStepId, WakeTiming };
 
 /** Whether a step is certainly part of the game, may be (the draw decides) or is not. */
 export type WakePresence = "may" | "must" | "not";
@@ -30,20 +17,20 @@ export interface WakeStep {
   readonly timing: WakeTiming | null;
 }
 
-/** The fixed order in which the narrator wakes the roles. The amulet holder is asked last. */
-const order: readonly { readonly id: WakeStepId; readonly timing: WakeTiming | null }[] = [
-  { id: "cupid", timing: "firstNight" },
-  { id: "drunk", timing: "thirdNight" },
-  { id: "guard", timing: null },
-  { id: "wolves", timing: null },
-  { id: "seer", timing: null },
-  { id: "paranormalInvestigator", timing: null },
-  { id: "witch", timing: null },
-  { id: "magician", timing: null },
-  { id: "mayor", timing: "fromSecondNight" },
-  { id: "spellcaster", timing: null },
-  { id: "amulet", timing: null },
-];
+/** The roles every game has: their steps are always part of the night. */
+const basicRoles: readonly RoleId[] = ["wolf", "seer", "villager"] satisfies BasicRoleId[];
+
+const isBasic = (step: NightStep) => step.roles.some((role) => basicRoles.includes(role));
+
+/** The extras of the configuration that have a step of their own (the drunk is an extra, not a chosen role). */
+const isExtra = (id: WakeStepId): id is "amulet" | "drunk" => id === "amulet" || id === "drunk";
+
+const toStep = (step: NightStep, presence: WakePresence): WakeStep => ({
+  id: step.id,
+  timing: step.timing,
+  inGame: presence !== "not",
+  presence,
+});
 
 /**
  * The order in which the roles wake up every night, for the roles and extras of a configuration.
@@ -51,26 +38,17 @@ const order: readonly { readonly id: WakeStepId; readonly timing: WakeTiming | n
  * always in the game; the mayor wakes only with the hammer.
  */
 export function wakeOrder(draft: FixedDraft): readonly WakeStep[] {
-  const has = (...roles: FixedDraft["roles"][number][]) =>
-    roles.some((role) => draft.roles.includes(role));
-  const inGame: Record<WakeStepId, boolean> = {
-    amulet: draft.settings.amulet,
-    cupid: has("cupid"),
-    drunk: draft.settings.drunk,
-    guard: has("bodyguard", "nightGuest"),
-    magician: has("magician"),
-    mayor: has("mayor") && draft.settings.mayor === "hammer",
-    paranormalInvestigator: has("paranormalInvestigator"),
-    seer: true,
-    spellcaster: has("spellcaster"),
-    witch: has("witch"),
-    wolves: true,
-  };
-  return order.map((step) => ({
-    ...step,
-    inGame: inGame[step.id],
-    presence: inGame[step.id] ? "must" : "not",
-  }));
+  return nightSteps().map((step) => {
+    const inGame = isBasic(step)
+      ? true
+      : isExtra(step.id)
+        ? draft.settings[step.id]
+        : step.roles.some(
+            (role) =>
+              (draft.roles as readonly RoleId[]).includes(role) && step.wakes(role, draft.settings),
+          );
+    return toStep(step, inGame ? "must" : "not");
+  });
 }
 
 const stronger = (...states: VariableState[]): WakePresence =>
@@ -83,22 +61,15 @@ const stronger = (...states: VariableState[]): WakePresence =>
  */
 export function wakeOrderVariable(draft: VariableDraft): readonly WakeStep[] {
   const at = (id: string): VariableState => draft.states[id] ?? "not";
-  const presence: Record<WakeStepId, WakePresence> = {
-    amulet: stronger(draft.items.amulet),
-    cupid: stronger(at("cupid")),
-    drunk: stronger(draft.items.drunk),
-    guard: stronger(at("bodyguard"), at("nightGuest")),
-    magician: stronger(at("magician")),
-    mayor: stronger(at("mayor:hammer")),
-    paranormalInvestigator: stronger(at("paranormalInvestigator")),
-    seer: "must",
-    spellcaster: stronger(at("spellcaster:allowed"), at("spellcaster:forbidden")),
-    witch: stronger(at("witch")),
-    wolves: "must",
-  };
-  return order.map((step) => ({
-    ...step,
-    inGame: presence[step.id] !== "not",
-    presence: presence[step.id],
-  }));
+  return nightSteps().map((step) => {
+    if (isBasic(step)) return toStep(step, "must");
+    if (isExtra(step.id)) return toStep(step, stronger(draft.items[step.id]));
+    // Every entry of a role of the step whose option wakes the role (the mayor only with the hammer).
+    const entries = variableEntries.filter(
+      (entry) =>
+        step.roles.includes(entry.role) &&
+        step.wakes(entry.role, entry.option ? { [entry.option.key]: entry.option.value } : {}),
+    );
+    return toStep(step, stronger(...entries.map((entry) => at(entry.id))));
+  });
 }

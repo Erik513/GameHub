@@ -30,4 +30,23 @@ export const mayor = defineRole({
       ? [{ ability: "hammer", symbol: "hammer" }]
       : [{ ability: null, symbol: "doubleVote" }],
   variant: (settings) => settings.mayor,
+  // In the configuration: the minimum number of players, the place on the screens, the options.
+  setup: {
+    minPlayers: 9,
+    order: 11,
+    options: {
+      key: "mayor",
+      values: [
+        { id: "doubleVote", value: "doubleVote" },
+        { id: "hammer", value: "hammer" },
+      ],
+    },
+  },
+  // At night: the step the role wakes in and its place in the night.
+  night: {
+    step: "mayor",
+    place: 9,
+    timing: "fromSecondNight",
+    wakes: (settings) => settings.mayor === "hammer",
+  },
 });

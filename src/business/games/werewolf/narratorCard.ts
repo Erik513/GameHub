@@ -1,4 +1,5 @@
 import { holdsState } from "./roles/cardEffects";
+import type { PassiveRoleId, RoleId } from "./roles/roleIds";
 import { stateIds } from "./roles/stateIds";
 import { roleDefinition } from "./roles";
 import { ability, consumable } from "./roles/cardAbility";
@@ -7,23 +8,8 @@ import { describePlayers } from "./selectors";
 import { wakingPlayers, type WerewolfState } from "./stateMachine";
 
 /** The symbols the card shows; the presentation draws them (every id is a symbol of the symbol set). */
-export type CardRoleSymbol =
-  | "wolf"
-  | "seer"
-  | "apprenticeSeer"
-  | "witch"
-  | "hunter"
-  | "bodyguard"
-  | "nightGuest"
-  | "cupid"
-  | "spellcaster"
-  | "mayor"
-  | "paranormalInvestigator"
-  | "magician"
-  | "lovers"
-  | "drunk"
-  | "amuletPass"
-  | "day";
+/** The roles and steps a card can show: every role that wakes up, the lovers, the amulet and the day. */
+export type CardRoleSymbol = Exclude<RoleId, PassiveRoleId> | "lovers" | "amuletPass" | "day";
 export type CardAbilityId =
   | "attack"
   | "inspect"

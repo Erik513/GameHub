@@ -21,4 +21,8 @@ export const bodyguard = defineRole({
       state.wolfTarget?.name === person.name,
   },
   abilityList: [{ ability: "protect", symbol: "protected" }],
+  // In the configuration: the minimum number of players, the place on the screens, the options.
+  setup: { family: "bodyguard", minPlayers: 6, order: 4 },
+  // At night: the step the role wakes in and its place in the night.
+  night: { step: "guard", place: 3 },
 });

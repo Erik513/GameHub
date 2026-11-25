@@ -1,4 +1,5 @@
 import { resolveAutomaticWerewolfLineup } from "./automaticSetup";
+import { familyOf, optionKeyOf } from "./roles/setup";
 import {
   standardWerewolfCount,
   type WerewolfSettings,
@@ -6,19 +7,6 @@ import {
 } from "./configuration";
 import { scoreWerewolfVillage } from "./lineupBalance";
 import type { VariableWerewolfSelection } from "./variableSetup";
-
-/** The setting that an option of a role changes. */
-const optionKeyOf = {
-  hunter: "hunterShot",
-  mayor: "mayor",
-  spellcaster: "allowSelfSilence",
-  tanner: "tanner",
-  toughGuy: "toughGuy",
-} as const satisfies Partial<Record<WerewolfSpecialRole, keyof WerewolfSettings>>;
-
-/** The bodyguard and the night guest are one role of the draw. */
-const familyOf = (role: WerewolfSpecialRole): string =>
-  role === "nightGuest" ? "bodyguard" : role;
 
 const total = (
   roles: readonly WerewolfSpecialRole[],
@@ -52,7 +40,7 @@ export function recommendWolfCountForSelection(
   };
   // The option of a role that must be in the game is the one that was picked.
   for (const role of mustRoles) {
-    const key = optionKeyOf[role as keyof typeof optionKeyOf];
+    const key = optionKeyOf(role);
     const first = key ? options[key]?.[0] : undefined;
     if (key && first !== undefined) base = { ...base, [key]: first };
   }
@@ -62,10 +50,10 @@ export function recommendWolfCountForSelection(
 
   // The value a drawn role adds to the roles on "must", averaged over its options and over the roles of its family.
   const valueOf = (role: WerewolfSpecialRole): number => {
-    const key = optionKeyOf[role as keyof typeof optionKeyOf];
+    const key = optionKeyOf(role);
     const choices = key ? (options[key] ?? []) : [];
     const settings =
-      choices.length > 0 ? choices.map((choice) => ({ ...base, [key]: choice })) : [base];
+      key && choices.length > 0 ? choices.map((choice) => ({ ...base, [key]: choice })) : [base];
     return mean(settings.map((setting) => total([...mustRoles, role], setting) - baseTotal));
   };
   const families = new Map<string, WerewolfSpecialRole[]>();

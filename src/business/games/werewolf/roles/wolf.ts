@@ -16,4 +16,6 @@ export const wolf = defineRole({
   availability: (state) => ({
     attack: { why: state.night > 1 || state.settings.attackOnFirstNight ? undefined : "blocked" },
   }),
+  // At night: the step the role wakes in and its place in the night.
+  night: { step: "wolves", place: 4 },
 });

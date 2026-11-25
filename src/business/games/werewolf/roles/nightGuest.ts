@@ -22,4 +22,8 @@ export const nightGuest = defineRole({
       state.wolfChoice === person.name,
   },
   abilityList: [{ ability: "stayWith", symbol: "guest" }],
+  // In the configuration: the minimum number of players, the place on the screens, the options.
+  setup: { family: "bodyguard", minPlayers: 6, order: 5 },
+  // At night: the step the role wakes in and its place in the night.
+  night: { step: "guard", place: 3 },
 });

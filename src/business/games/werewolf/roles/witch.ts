@@ -38,4 +38,8 @@ export const witch = defineRole({
     heal: { why: !state.potions.heal ? "used" : state.wolfTarget ? undefined : "blocked" },
     poison: { why: state.potions.poison ? undefined : "used" },
   }),
+  // In the configuration: the minimum number of players, the place on the screens, the options.
+  setup: { minPlayers: 6, order: 1 },
+  // At night: the step the role wakes in and its place in the night.
+  night: { step: "witch", place: 7 },
 });

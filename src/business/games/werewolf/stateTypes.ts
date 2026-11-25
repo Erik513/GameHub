@@ -1,11 +1,13 @@
-import type { WerewolfSettings, WerewolfSpecialRole } from "./configuration";
+import type { WerewolfSettings } from "./configuration";
 import type { WerewolfLogEntry } from "./eventLog";
 import type { NightRole } from "./nightScript";
+import type { GameRoleId } from "./roles/roleIds";
 import type {} from "./wounds";
 
 /** The types of the state machine of the werewolf game: the state and the events (see stateMachine.ts). */
 
-export type Role = "wolf" | "seer" | "villager" | WerewolfSpecialRole;
+/** The role of a person in the game (from the list roles/roleIds.ts). */
+export type Role = GameRoleId;
 export type VisibleRole = Role | "drunk";
 export type Side = "village" | "wolves";
 export type Lovers = readonly [string, string];

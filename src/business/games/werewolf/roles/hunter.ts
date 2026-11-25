@@ -19,4 +19,16 @@ export const hunter = defineRole({
   },
   abilityList: [{ ability: "shot", consumable: true, symbol: "shotDuty" }],
   variant: (settings) => settings.hunterShot,
+  // In the configuration: the minimum number of players, the place on the screens, the options.
+  setup: {
+    minPlayers: 6,
+    order: 2,
+    options: {
+      key: "hunterShot",
+      values: [
+        { id: "required", value: "required" },
+        { id: "optional", value: "optional" },
+      ],
+    },
+  },
 });

@@ -1,3 +1,4 @@
+import { familyOf, specialRoleSetups } from "./roles/setup";
 import {
   availableWerewolfCounts,
   standardWerewolfCount,
@@ -29,34 +30,16 @@ export interface VariableEntry {
 }
 
 /** The roles in the order of the screen, with the options of the roles that have some as entries of their own. */
-export const variableEntries: readonly VariableEntry[] = [
-  { id: "witch", role: "witch" },
-  { id: "hunter:required", role: "hunter", option: { key: "hunterShot", value: "required" } },
-  { id: "hunter:optional", role: "hunter", option: { key: "hunterShot", value: "optional" } },
-  { id: "idiot", role: "idiot" },
-  { id: "bodyguard", role: "bodyguard" },
-  { id: "nightGuest", role: "nightGuest" },
-  { id: "cupid", role: "cupid" },
-  { id: "toughGuy:wolfOnly", role: "toughGuy", option: { key: "toughGuy", value: "wolfOnly" } },
-  { id: "toughGuy:anyAttack", role: "toughGuy", option: { key: "toughGuy", value: "anyAttack" } },
-  { id: "tanner:anyDeath", role: "tanner", option: { key: "tanner", value: "anyDeath" } },
-  { id: "tanner:voteOnly", role: "tanner", option: { key: "tanner", value: "voteOnly" } },
-  { id: "apprenticeSeer", role: "apprenticeSeer" },
-  {
-    id: "spellcaster:allowed",
-    role: "spellcaster",
-    option: { key: "allowSelfSilence", value: true },
-  },
-  {
-    id: "spellcaster:forbidden",
-    role: "spellcaster",
-    option: { key: "allowSelfSilence", value: false },
-  },
-  { id: "mayor:doubleVote", role: "mayor", option: { key: "mayor", value: "doubleVote" } },
-  { id: "mayor:hammer", role: "mayor", option: { key: "mayor", value: "hammer" } },
-  { id: "paranormalInvestigator", role: "paranormalInvestigator" },
-  { id: "magician", role: "magician" },
-];
+export const variableEntries: readonly VariableEntry[] = specialRoleSetups().flatMap(
+  ({ role, setup }): VariableEntry[] =>
+    setup.options
+      ? setup.options.values.map((option) => ({
+          id: `${role}:${option.id}`,
+          option: { key: setup.options!.key, value: option.value },
+          role,
+        }))
+      : [{ id: role, role }],
+);
 
 export const variableItems: readonly WerewolfItem[] = ["drunk", "amulet"];
 
@@ -162,7 +145,7 @@ export function toggleVariableWolfCount(
 
 /** How many roles can be drawn from a pool: the bodyguard and the night guest are one role (one of them). */
 const roleFamilyCount = (roles: readonly WerewolfSpecialRole[]): number =>
-  new Set(roles.map((role) => (role === "nightGuest" ? "bodyguard" : role))).size;
+  new Set(roles.map(familyOf)).size;
 
 /**
  * The draft in the form of the game logic for this number of players. The number of "may" roles is kept inside what

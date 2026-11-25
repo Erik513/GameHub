@@ -1,4 +1,5 @@
 import { parsePlayers } from "../../shared/players";
+import { familyOf as familyOfRole } from "./roles/setup";
 import {
   automaticWerewolfSettings,
   resolveAutomaticWerewolfLineup,
@@ -62,7 +63,8 @@ const fail = (reason: VariableWerewolfFailureReason): VariableWerewolfFailure =>
   ok: false,
   reason,
 });
-const familyOf = (role: WerewolfSpecialRole) => (role === "nightGuest" ? "bodyguard" : role);
+/** The family of a role (the bodyguard and the night guest are one role of the draw), from the definitions. */
+const familyOf = familyOfRole;
 type RoleFamily = ReturnType<typeof familyOf>;
 interface Family {
   readonly id: RoleFamily;

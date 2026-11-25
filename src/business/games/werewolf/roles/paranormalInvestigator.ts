@@ -22,4 +22,8 @@ export const paranormalInvestigator = defineRole({
   availability: (state) => ({
     investigate: { why: state.investigationUsed ? "used" : undefined },
   }),
+  // In the configuration: the minimum number of players, the place on the screens, the options.
+  setup: { minPlayers: 10, order: 12 },
+  // At night: the step the role wakes in and its place in the night.
+  night: { step: "paranormalInvestigator", place: 6 },
 });
