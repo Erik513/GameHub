@@ -9,7 +9,7 @@ import { NarratorCard } from "./NarratorCard";
 const witch: Card = {
   abilities: [
     { available: true, id: "heal", symbol: "heal" },
-    { available: false, id: "poison", symbol: "kill" },
+    { available: false, id: "poison", symbol: "poisoned" },
   ],
   actors: ["Anna"],
   cover: false,

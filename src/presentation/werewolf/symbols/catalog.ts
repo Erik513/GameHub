@@ -1,4 +1,4 @@
-import type { LineGlyph } from "./glyphs";
+import type { FilledGlyph, LineGlyph } from "./glyphs";
 
 /** The kinds of symbols: who someone is, what a role still has, the extras, and what happens to a person. */
 export type SymbolGroup = "extra" | "resource" | "role" | "state";
@@ -7,28 +7,29 @@ export interface SymbolDefinition {
   readonly id: SymbolId;
   readonly group: SymbolGroup;
   /** The drawing: an outline glyph, or the wolf head. Symbols of one meaning share a drawing on purpose. */
-  readonly glyph: LineGlyph | "wolfHead";
+  readonly glyph: LineGlyph | FilledGlyph;
 }
 
 const definitions = [
   // The roles, named like the roles of the logic (wolf, seer and villager are the basic roles).
   { glyph: "wolfHead", group: "role", id: "wolf" },
-  { glyph: "eye", group: "role", id: "seer" },
-  { glyph: "eyeClosed", group: "role", id: "apprenticeSeer" },
-  { glyph: "home", group: "role", id: "villager" },
-  { glyph: "flask2", group: "role", id: "witch" },
-  { glyph: "target", group: "role", id: "hunter" },
+  { glyph: "crystalBall", group: "role", id: "seer" },
+  { glyph: "crystalBallZ", group: "role", id: "apprenticeSeer" },
+  { glyph: "user", group: "role", id: "villager" },
+  { glyph: "witchFace", group: "role", id: "witch" },
+  { glyph: "blunderbuss", group: "role", id: "hunter" },
   { glyph: "thumbUp", group: "role", id: "idiot" },
-  { glyph: "shield", group: "role", id: "bodyguard" },
-  { glyph: "bed", group: "role", id: "nightGuest" },
-  { glyph: "heartHandshake", group: "role", id: "cupid" },
+  { glyph: "userShield", group: "role", id: "bodyguard" },
+  { glyph: "homeHeart", group: "role", id: "nightGuest" },
+  { glyph: "cupidBow", group: "role", id: "cupid" },
   { glyph: "barbell", group: "role", id: "toughGuy" },
   { glyph: "trophy", group: "role", id: "tanner" },
-  { glyph: "microphoneOff", group: "role", id: "spellcaster" },
+  { glyph: "microphone", group: "role", id: "spellcaster" },
   { glyph: "crown", group: "role", id: "mayor" },
   { glyph: "ghost", group: "role", id: "paranormalInvestigator" },
   { glyph: "wand", group: "role", id: "magician" },
   // What a role has besides its ability; a used one is struck through.
+  { glyph: "flaskPlus", group: "resource", id: "healPotion" },
   { glyph: "heartPlus", group: "resource", id: "heal" },
   { glyph: "skull", group: "resource", id: "kill" },
   { glyph: "gavel", group: "resource", id: "hammer" },
@@ -42,9 +43,15 @@ const definitions = [
   { glyph: "hearts", group: "state", id: "lovers" },
   { glyph: "paw", group: "state", id: "attacked" },
   { glyph: "shield", group: "state", id: "protected" },
-  { glyph: "bed", group: "state", id: "guest" },
-  { glyph: "flask2", group: "state", id: "poisoned" },
-  { glyph: "heartPlus", group: "state", id: "healed" },
+  { glyph: "bedFlat", group: "state", id: "guest" },
+  { glyph: "gavel", group: "state", id: "hammered" },
+  { glyph: "number2", group: "state", id: "twoVotes" },
+  { glyph: "skull", group: "state", id: "spellKilled" },
+  { glyph: "eye", group: "state", id: "inspected" },
+  { glyph: "search", group: "state", id: "investigated" },
+  { glyph: "flaskMinus", group: "state", id: "poisoned" },
+  { glyph: "flaskPlus", group: "state", id: "healed" },
+  { glyph: "heartPlus", group: "state", id: "spellHealed" },
   { glyph: "bandage", group: "state", id: "wounded" },
   { glyph: "microphoneOff", group: "state", id: "silenced" },
   { glyph: "arrowsExchange", group: "state", id: "amuletPass" },
@@ -70,10 +77,10 @@ export const symbolGroups: readonly SymbolGroup[] = ["role", "resource", "extra"
 /** The abilities of the roles as the narrator view draws them (in a circle): the ability and the drawing it uses. */
 export const abilityLegend = [
   { ability: "attack", symbol: "attacked" },
-  { ability: "inspect", symbol: "seer" },
+  { ability: "inspect", symbol: "inspected" },
   { ability: "investigate", symbol: "investigation" },
-  { ability: "heal", symbol: "heal" },
-  { ability: "poison", symbol: "kill" },
+  { ability: "heal", symbol: "healPotion" },
+  { ability: "poison", symbol: "poisoned" },
   { ability: "kill", symbol: "kill" },
   { ability: "protect", symbol: "protected" },
   { ability: "stayWith", symbol: "guest" },

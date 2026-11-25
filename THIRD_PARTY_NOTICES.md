@@ -22,6 +22,20 @@ WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEM
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+## Game-icons.net: "Blunderbuss" by Lorc (CC BY 3.0)
+
+The hunter is "Blunderbuss" by Lorc, from https://game-icons.net/1x1/lorc/blunderbuss.html, licensed under Creative
+Commons Attribution 3.0 (https://creativecommons.org/licenses/by/3.0/). The path was taken over as it is, without the
+black background, and is drawn in the color of the surrounding text. The attribution is also shown in the legend of the
+rules of Werewolf.
+
+## Game-icons.net: "Witch face" by Cathelineau (CC BY 3.0)
+
+The witch is "Witch face" by Cathelineau, from https://game-icons.net/1x1/cathelineau/witch-face.html, licensed under
+Creative Commons Attribution 3.0 (https://creativecommons.org/licenses/by/3.0/). The path was taken over as it is,
+without the black background, and is drawn in the color of the surrounding text. The attribution is also shown in the
+legend of the rules of Werewolf.
+
 ## Game-icons.net: "Wolf head" by Lorc (CC BY 3.0)
 
 The wolf head is "Wolf head" by Lorc, from https://game-icons.net/1x1/lorc/wolf-head.html, licensed under Creative Commons

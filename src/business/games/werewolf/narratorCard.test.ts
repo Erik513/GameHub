@@ -71,6 +71,17 @@ describe("describeNarratorCard", () => {
     expect(poison).toMatchObject({ available: true, id: "poison" });
   });
 
+  it("draws the poison of the witch as the flask and the death spell of the magician as the skull", () => {
+    const witch = at(start(["witch"]), { status: "witch", victim: null });
+    expect(describeNarratorCard(witch)!.abilities.find((a) => a.id === "poison")?.symbol).toBe(
+      "poisoned",
+    );
+    const magician = at(start(["magician"]), { poisoned: null, status: "magician", victim: null });
+    expect(describeNarratorCard(magician)!.abilities.find((a) => a.id === "kill")?.symbol).toBe(
+      "kill",
+    );
+  });
+
   it("shows both spells of the magician with the same counter", () => {
     const state = at(start(["magician"]), { poisoned: null, status: "magician", victim: null });
     expect(describeNarratorCard(state)!.abilities.map((a) => [a.id, a.count])).toEqual([
@@ -224,6 +235,14 @@ describe("describeNarratorCard", () => {
     expect(describeNarratorCard(at(poisoned, { amulet: null }))!.effects).toContain("poisoned");
     const quiet = { ...state, amulet: null, silencedPlayer: witch.name } as WerewolfState;
     expect(describeNarratorCard(quiet)!.effects).toEqual(["silenced"]);
+    // The hammer of the mayor and a death spell of the magician mark the person they struck.
+    const struck = {
+      ...state,
+      amulet: null,
+      hammerVictim: witch.name,
+      spellVictims: [witch],
+    } as WerewolfState;
+    expect(describeNarratorCard(struck)!.effects).toEqual(["hammered", "spellKilled"]);
   });
 
   it("calls the apprentice instead of the seer once the seer is dead", () => {
@@ -238,7 +257,7 @@ describe("describeNarratorCard", () => {
     const card = describeNarratorCard(without)!;
     expect(card.role).toBe("apprenticeSeer");
     expect(card.actors).toEqual([apprentice.name]);
-    expect(card.abilities).toEqual([{ available: true, id: "inspect", symbol: "seer" }]);
+    expect(card.abilities).toEqual([{ available: true, id: "inspect", symbol: "inspected" }]);
     expect(
       describeNarratorCard(at(without, { status: "vision", target: "x", isWolf: false }))?.role,
     ).toBe("apprenticeSeer");

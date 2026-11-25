@@ -3,7 +3,7 @@ import type { LineGlyph } from "./glyphs";
 
 /** The drawing of every variant of a role (one of the outline drawings of the symbol set). */
 export const variantGlyphs: Record<RoleVariantId, LineGlyph> = {
-  allowed: "thumbUp",
+  allowed: "check",
   anyAttack: "skull",
   anyDeath: "grave2",
   doubleVote: "number2",

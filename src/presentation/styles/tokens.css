@@ -22,7 +22,7 @@
   --seat-wolf: #5a5d66;
   --seat-attacked: #b3261e;
   --seat-saved: #1f7a45;
-  --seat-wounded: #5c1a1a;
+  --seat-wounded: #b3261e;
   --seat-dead: #050506;
   --seat-ink: #f2efe7;
   --seat-amulet: #e0b43a;
@@ -37,6 +37,13 @@
   --slot-guest: #2c4a8f;
   --slot-drunk: #1f7a45;
   --slot-silenced: #3a3d46;
+  --slot-inspected: #6b46a8;
+  --slot-investigated: #1f6f78;
+  --slot-healed: #4f8a1c;
+  --slot-spellHealed: #4f8a1c;
+  --slot-hammered: #e6c229;
+  --slot-twoVotes: #e6c229;
+  --slot-spellKilled: #b3261e;
   --font-sans: "Aptos", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-display: "Arial Narrow", "Aptos Display", "Segoe UI", sans-serif;
   --text-xs: 0.75rem;

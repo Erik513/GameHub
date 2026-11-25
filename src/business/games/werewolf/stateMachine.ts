@@ -78,6 +78,9 @@ export function createWerewolf(
     protectedPlayer: null,
     wolfTarget: null,
     hostPlayer: null,
+    inspections: [],
+    healedPlayer: null,
+    spellHealedPlayer: null,
     potions: { heal: true, poison: true },
     spellsRemaining: hasMagician ? 2 : 0,
     spellVictims: [],
@@ -231,7 +234,14 @@ function beforeWolves(state: Match): WerewolfState {
         state,
         "nightGuest",
         () => ({ ...state, status: "nightGuest" }),
-        () => wolvesPhase({ ...state, protectedPlayer: null, hostPlayer: null }),
+        () =>
+          wolvesPhase({
+            ...state,
+            protectedPlayer: null,
+            hostPlayer: null,
+            healedPlayer: null,
+            spellHealedPlayer: null,
+          }),
       ),
   );
 }
@@ -571,7 +581,23 @@ function applyNightEvent(state: WerewolfState, event: WerewolfEvent): WerewolfSt
       const actor = actingSeer(state);
       const target = state.alive.find((player) => player.name === event.target && player !== actor);
       return target
-        ? { ...state, status: "vision", target: target.name, isWolf: target.role === "wolf" }
+        ? {
+            ...state,
+            status: "vision",
+            target: target.name,
+            isWolf: target.role === "wolf",
+            inspections: [
+              ...state.inspections.filter(
+                (entry) =>
+                  !(
+                    entry.kind === "seer" &&
+                    entry.by === actor?.name &&
+                    entry.target === target.name
+                  ),
+              ),
+              { by: actor?.name ?? "", kind: "seer" as const, target: target.name },
+            ],
+          }
         : state;
     }
     case "vision":
@@ -593,6 +619,14 @@ function applyNightEvent(state: WerewolfState, event: WerewolfEvent): WerewolfSt
         target: event.target,
         isWolfNearby,
         investigationUsed: true,
+        inspections: [
+          ...state.inspections,
+          ...[-1, 0, 1].map((offset) => ({
+            by: findActiveRole(state, "paranormalInvestigator")?.name ?? "",
+            kind: "investigator" as const,
+            target: alive[(seat + offset + alive.length) % alive.length]!.name,
+          })),
+        ],
       };
     }
     case "investigation":
@@ -609,6 +643,7 @@ function applyNightEvent(state: WerewolfState, event: WerewolfEvent): WerewolfSt
       const poisoned = saved || target?.name === state.protectedPlayer ? null : (target ?? null);
       const next = {
         ...(saved ?? state),
+        healedPlayer: event.heal ? (state.wolfTarget?.name ?? null) : state.healedPlayer,
         potions: {
           heal: state.potions.heal && !event.heal,
           poison: state.potions.poison && !target,
@@ -636,6 +671,9 @@ function applyNightEvent(state: WerewolfState, event: WerewolfEvent): WerewolfSt
       return afterPotions(
         {
           ...(saved ?? state),
+          spellHealedPlayer: event.heal
+            ? (state.wolfTarget?.name ?? null)
+            : state.spellHealedPlayer,
           spellsRemaining: state.spellsRemaining - cost,
           spellVictims: targets.filter(
             (player) =>

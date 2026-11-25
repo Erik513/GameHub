@@ -37,10 +37,12 @@ export type CardAbilityId =
   | "vote";
 export type CardAbilitySymbol =
   | "attacked"
-  | "seer"
+  | "inspected"
   | "investigation"
   | "heal"
+  | "healPotion"
   | "kill"
+  | "poisoned"
   | "protected"
   | "guest"
   | "lovers"
@@ -50,7 +52,21 @@ export type CardAbilitySymbol =
   | "amuletPass"
   | "vote";
 export type CardEffect =
-  "lovers" | "amulet" | "attacked" | "protected" | "guest" | "poisoned" | "silenced" | "drunk";
+  | "lovers"
+  | "amulet"
+  | "attacked"
+  | "protected"
+  | "guest"
+  | "poisoned"
+  | "silenced"
+  | "drunk"
+  | "inspected"
+  | "healed"
+  | "hammered"
+  | "spellKilled"
+  | "twoVotes"
+  | "investigated"
+  | "spellHealed";
 
 export interface CardAbility {
   readonly id: CardAbilityId;
@@ -209,7 +225,7 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
       return [
         ability(
           "inspect",
-          "seer",
+          "inspected",
           state.status === "seer" || state.status === "vision" ? undefined : "blocked",
         ),
       ];
@@ -224,11 +240,11 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
         consumable(
           ability(
             "heal",
-            "heal",
+            "healPotion",
             !state.potions.heal ? "used" : state.wolfTarget ? undefined : "blocked",
           ),
         ),
-        consumable(ability("poison", "kill", state.potions.poison ? undefined : "used")),
+        consumable(ability("poison", "poisoned", state.potions.poison ? undefined : "used")),
       ];
     case "magician": {
       const left = state.spellsRemaining;
@@ -302,9 +318,18 @@ function effectsOf(state: WerewolfState, actors: readonly string[]): readonly Ca
       found.push("attacked");
     if (night && state.protectedPlayer === person.name) found.push("protected");
     if (night && state.hostPlayer === person.name) found.push("guest");
+    if (person.inspected) found.push("inspected");
+    if (person.investigated) found.push("investigated");
+    if (state.healedPlayer === person.name) found.push("healed");
+    if (state.spellHealedPlayer === person.name) found.push("spellHealed");
     if (night && poisoned === person.name) found.push("poisoned");
+    // The person the mayor struck with the hammer, or the magician with a death spell: out in the morning.
+    if (state.hammerVictim === person.name) found.push("hammered");
+    if (state.spellVictims.some((victim) => victim.name === person.name)) found.push("spellKilled");
     if (person.silenced) found.push("silenced");
     if (person.drunk && person.alive) found.push("drunk");
+    // The mayor with the double vote: his vote counts twice (not while he is the hidden drunk).
+    if (person.twoVotes) found.push("twoVotes");
     return found;
   };
   const [first, ...others] = people.map(effectsOfPerson);

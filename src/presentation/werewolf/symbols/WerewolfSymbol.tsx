@@ -1,5 +1,7 @@
-import { lineGlyphs, wolfHeadPath } from "./glyphs";
+import { filledGlyphs, lineGlyphs, type FilledGlyph, type LineGlyph } from "./glyphs";
 import { symbolOf, type SymbolId } from "./catalog";
+
+const isFilled = (glyph: LineGlyph | FilledGlyph): glyph is FilledGlyph => glyph in filledGlyphs;
 
 interface WerewolfSymbolProps {
   readonly id: SymbolId;
@@ -20,7 +22,7 @@ export function WerewolfSymbol({ id, label, ring = false, size = 24 }: WerewolfS
   const accessibility = label
     ? ({ "aria-label": label, role: "img" } as const)
     : ({ "aria-hidden": true } as const);
-  if (glyph === "wolfHead") {
+  if (isFilled(glyph)) {
     return (
       <svg
         className="ww-symbol"
@@ -35,7 +37,7 @@ export function WerewolfSymbol({ id, label, ring = false, size = 24 }: WerewolfS
           <circle cx="256" cy="256" fill="none" r="242" stroke="currentColor" strokeWidth="26" />
         )}
         <g transform={ring ? "translate(107.5 107.5) scale(.707)" : undefined}>
-          <path d={wolfHeadPath} fill="currentColor" />
+          <path d={filledGlyphs[glyph]} fill="currentColor" />
         </g>
       </svg>
     );

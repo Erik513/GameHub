@@ -5,7 +5,7 @@ export const werewolfSymbolsTexts = {
     intro:
       "The narrator shows you these symbols when a role wakes up or a person is affected. The same meaning always has the same sign. A role is drawn as it is; its ability stands in a circle. A green ability can be used now; one that is struck through is used up for good; one with a dashed amber frame is not possible right now; a dimmed one is not its turn yet. A blue frame marks the next step, yellow boxes are notes for you (for example who is silenced today), and the blue box below sums a decision up once more. The closed and open eye shows the cause of death of the dead only on a tap.",
     credits:
-      'Wolf head: "Wolf head" by Lorc, game-icons.net, license CC BY 3.0. Other drawings: Tabler Icons, MIT license.',
+      'Wolf head: "Wolf head" by Lorc, witch: "Witch face" by Cathelineau, hunter: "Blunderbuss" by Lorc, all game-icons.net, license CC BY 3.0. Other drawings: Tabler Icons, MIT license.',
     abilities: {
       title: "Abilities",
       items: {
@@ -42,7 +42,7 @@ export const werewolfSymbolsTexts = {
       },
       apprenticeSeer: {
         name: "Apprentice seer",
-        meaning: "Closed eye: sleeps until the seer is dead",
+        meaning: "Crystal ball with a Z: sleeps until the seer is dead",
       },
       attacked: {
         name: "Attacked",
@@ -50,11 +50,11 @@ export const werewolfSymbolsTexts = {
       },
       bodyguard: {
         name: "Bodyguard",
-        meaning: "Shield: protects one player",
+        meaning: "Person with a shield: protects one player",
       },
       cupid: {
         name: "Cupid",
-        meaning: "Heart with a handshake: makes 2 players fall in love",
+        meaning: "Bow with an arrow: makes 2 players fall in love",
       },
       day: {
         name: "Day",
@@ -74,23 +74,31 @@ export const werewolfSymbolsTexts = {
       },
       guest: {
         name: "Guest",
-        meaning: "Bed: the night guest sleeps here",
+        meaning: "Person in a bed: the night guest sleeps here",
       },
       hammer: {
         name: "Hammer",
         meaning: "Gavel: once per game, from night 2",
       },
+      healPotion: {
+        name: "Healing potion",
+        meaning: "Potion bottle with a plus: the witch saves the wolf victim",
+      },
       heal: {
-        name: "Healing potion or spell",
-        meaning: "Heart with a plus: saves the wolf victim",
+        name: "Healing spell",
+        meaning: "Heart with a plus: the magician saves the wolf victim",
+      },
+      spellHealed: {
+        name: "Saved by the healing spell",
+        meaning: "Heart with a plus: the magician saved this player",
       },
       healed: {
         name: "Healed",
-        meaning: "Heart with a plus: healing chosen",
+        meaning: "Bottle with a plus: the witch healed this player",
       },
       hunter: {
         name: "Hunter",
-        meaning: "Target: shoots when he leaves the game",
+        meaning: "Blunderbuss: shoots when he leaves the game",
       },
       idiot: {
         name: "Village idiot",
@@ -101,8 +109,8 @@ export const werewolfSymbolsTexts = {
         meaning: "Magnifier: the one-time ability of the investigator",
       },
       kill: {
-        name: "Poison or death spell",
-        meaning: "Skull: kills one player",
+        name: "Death spell",
+        meaning: "Skull: the magician kills one player",
       },
       lovers: {
         name: "In love",
@@ -118,7 +126,8 @@ export const werewolfSymbolsTexts = {
       },
       nightGuest: {
         name: "Night guest",
-        meaning: "Bed: sleeps at a player's place and protects them from the wolf attack",
+        meaning:
+          "House with a heart: sleeps at a player's place and protects them from the wolf attack",
       },
       paranormalInvestigator: {
         name: "Paranormal investigator",
@@ -126,7 +135,7 @@ export const werewolfSymbolsTexts = {
       },
       poisoned: {
         name: "Poisoned",
-        meaning: "Bottle: poison chosen",
+        meaning: "Bottle with a minus: the poison potion of the witch",
       },
       protected: {
         name: "Protected",
@@ -134,7 +143,27 @@ export const werewolfSymbolsTexts = {
       },
       seer: {
         name: "Seer",
-        meaning: "Eye: looks at one player",
+        meaning: "Crystal ball: looks at one player",
+      },
+      twoVotes: {
+        name: "Double vote",
+        meaning: "Number 2: the vote of the mayor counts twice",
+      },
+      hammered: {
+        name: "Struck by the hammer",
+        meaning: "Gavel: the mayor struck this player",
+      },
+      spellKilled: {
+        name: "Struck by a death spell",
+        meaning: "Skull: the magician struck this player",
+      },
+      investigated: {
+        name: "Examined",
+        meaning: "Magnifying glass: the paranormal investigator examined this player",
+      },
+      inspected: {
+        name: "Looked at",
+        meaning: "Eye: the seer looked at this player",
       },
       shotDuty: {
         name: "Duty to shoot",
@@ -146,7 +175,7 @@ export const werewolfSymbolsTexts = {
       },
       spellcaster: {
         name: "Old hag",
-        meaning: "Microphone off: silences one player for the day",
+        meaning: "Microphone: silences one player for the day",
       },
       tanner: {
         name: "Tanner",
@@ -158,11 +187,11 @@ export const werewolfSymbolsTexts = {
       },
       villager: {
         name: "Villager",
-        meaning: "House: no special ability",
+        meaning: "Person: no special ability",
       },
       witch: {
         name: "Witch",
-        meaning: "Potion bottle: healing and poison potion",
+        meaning: "Witch with a hat: healing and poison potion",
       },
       wolf: {
         name: "Werewolf",

@@ -14,6 +14,11 @@ export interface Player {
   readonly name: string;
   readonly role: Role;
 }
+export interface Inspection {
+  readonly by: string;
+  readonly kind: "seer" | "investigator";
+  readonly target: string;
+}
 export interface Amulet {
   readonly holder: string;
   readonly mustPass: boolean;
@@ -33,6 +38,16 @@ export interface Match {
    */
   readonly wolfTarget: Player | null;
   readonly hostPlayer: string | null;
+  /**
+   * Whom the seer looked at and which people the investigator examined, with the person who did it. A mark stays until
+   * that person leaves the game (the apprentice who takes over starts anew), so the overview shows it as long as it
+   * helps the one who knows.
+   */
+  readonly inspections: readonly Inspection[];
+  /** The person the wolves attacked and the witch (or the magician) healed this night; it stays until the next night starts. */
+  readonly healedPlayer: string | null;
+  /** The person the wolves attacked and the magician saved with the healing spell this night; it stays until the next night starts. */
+  readonly spellHealedPlayer: string | null;
   readonly potions: { readonly heal: boolean; readonly poison: boolean };
   readonly spellsRemaining: number;
   readonly spellVictims: readonly Player[];

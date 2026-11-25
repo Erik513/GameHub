@@ -99,6 +99,41 @@ export function PlayerList({ players }: { readonly players: readonly PlayerView[
                   size={14}
                 />
               ))}
+            {player.twoVotes && (
+              <WerewolfSymbol
+                id="twoVotes"
+                label={t("werewolfSymbols.items.twoVotes.name")}
+                size={14}
+              />
+            )}
+            {player.spellHealed && (
+              <WerewolfSymbol
+                id="spellHealed"
+                label={t("werewolfSymbols.items.spellHealed.name")}
+                size={14}
+              />
+            )}
+            {player.healed && (
+              <WerewolfSymbol
+                id="healed"
+                label={t("werewolfSymbols.items.healed.name")}
+                size={14}
+              />
+            )}
+            {player.investigated && (
+              <WerewolfSymbol
+                id="investigated"
+                label={t("werewolfSymbols.items.investigated.name")}
+                size={14}
+              />
+            )}
+            {player.inspected && (
+              <WerewolfSymbol
+                id="inspected"
+                label={t("werewolfSymbols.items.inspected.name")}
+                size={14}
+              />
+            )}
             {player.silenced && (
               <WerewolfSymbol
                 id="silenced"

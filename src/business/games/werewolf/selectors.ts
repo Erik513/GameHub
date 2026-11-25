@@ -138,6 +138,14 @@ export function describePlayers(state: WerewolfState, announce = true) {
     if (state.hammerVictim === name) causes.push("hammer");
     return causes;
   };
+  // Whether somebody carries a mark of the seer or of the investigator who is still in the game.
+  const carriesMark = (name: string, kind: "investigator" | "seer") =>
+    state.inspections.some(
+      (entry) =>
+        entry.kind === kind &&
+        entry.target === name &&
+        state.alive.some((person) => person.name === entry.by),
+    );
   const night = !notNight.includes(state.status) || (!announce && state.status === "morning");
   return state.players.map((player, seat) => {
     const death = [...state.history]
@@ -195,6 +203,16 @@ export function describePlayers(state: WerewolfState, announce = true) {
         ? (state.lovers.find((n) => n !== player.name) ?? null)
         : null,
       silenced: alive && state.silencedPlayer === player.name,
+      // The seer looked at him / the investigator examined him: the mark stays until the one who did it leaves the game.
+      inspected: alive && carriesMark(player.name, "seer"),
+      investigated: alive && carriesMark(player.name, "investigator"),
+      // The mayor of a game with the double vote: his vote counts twice.
+      twoVotes:
+        alive && player.role === "mayor" && state.settings.mayor === "doubleVote" && !isDrunk,
+      // The witch (or the magician) healed him: the mark stays through the day and goes when the next night starts.
+      healed: alive && state.healedPlayer === player.name,
+      // The magician saved him with the healing spell.
+      spellHealed: alive && state.spellHealedPlayer === player.name,
       lastProtectionTarget: state.protectedPlayer === player.name,
       lastHostTarget: state.hostPlayer === player.name,
       delayedDeathNight,

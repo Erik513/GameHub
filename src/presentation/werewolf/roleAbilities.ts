@@ -43,11 +43,11 @@ export function abilitiesOfRole(
     case "wolf":
       return [{ ability: "attack", symbol: "attacked" }];
     case "seer":
-      return [{ ability: "inspect", symbol: "seer" }];
+      return [{ ability: "inspect", symbol: "inspected" }];
     case "witch":
       return [
-        { ability: "heal", symbol: "heal" },
-        { ability: "poison", symbol: "kill" },
+        { ability: "heal", symbol: "healPotion" },
+        { ability: "poison", symbol: "poisoned" },
       ];
     case "magician":
       return [

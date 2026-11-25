@@ -93,6 +93,33 @@
   background: var(--slot-poisoned);
 }
 
+.ww-role-card__slot[data-effect="inspected"] {
+  background: var(--slot-inspected);
+}
+
+.ww-role-card__slot[data-effect="investigated"] {
+  background: var(--slot-investigated);
+}
+
+.ww-role-card__slot[data-effect="healed"] {
+  background: var(--slot-healed);
+}
+
+.ww-role-card__slot[data-effect="spellHealed"] {
+  background: var(--slot-spellHealed);
+}
+
+/* Good or bad, depending on the point of view (the hammer, the double vote): yellow with a dark sign. */
+.ww-role-card__slot[data-effect="hammered"],
+.ww-role-card__slot[data-effect="twoVotes"] {
+  background: var(--slot-hammered);
+  color: #2b2300;
+}
+
+.ww-role-card__slot[data-effect="spellKilled"] {
+  background: var(--slot-spellKilled);
+}
+
 .ww-role-card__slot[data-effect="drunk"] {
   background: var(--slot-drunk);
 }

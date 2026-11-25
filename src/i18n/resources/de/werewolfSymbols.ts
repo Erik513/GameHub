@@ -5,7 +5,7 @@ export const werewolfSymbolsTexts = {
     intro:
       "Diese Symbole zeigt dir der Erzähler, wenn eine Rolle aufwacht oder eine Person betroffen ist. Gleiche Bedeutung heißt gleiches Zeichen. Eine Rolle steht frei, ihre Fähigkeit im Kreis. Eine grüne Fähigkeit kannst du jetzt nutzen; eine durchgestrichene ist verbraucht; eine mit gelb gestricheltem Rahmen geht gerade nicht; eine abgedunkelte ist noch nicht dran. Ein blauer Rahmen zeigt den nächsten Schritt, gelbe Kästen sind Hinweise für dich (zum Beispiel wer heute stumm ist), die blaue Box unten fasst eine Entscheidung noch einmal zusammen. Das geschlossene und offene Auge zeigt bei den Toten die Todesursache nur auf Antippen.",
     credits:
-      "Wolfskopf: „Wolf head“ von Lorc, game-icons.net, Lizenz CC BY 3.0. Übrige Zeichnungen: Tabler Icons, Lizenz MIT.",
+      "Wolfskopf: „Wolf head“ von Lorc, Hexe: „Witch face“ von Cathelineau, Jäger: „Blunderbuss“ von Lorc, alle game-icons.net, Lizenz CC BY 3.0. Übrige Zeichnungen: Tabler Icons, Lizenz MIT.",
     abilities: {
       title: "Fähigkeiten",
       items: {
@@ -42,7 +42,7 @@ export const werewolfSymbolsTexts = {
       },
       apprenticeSeer: {
         name: "Seher-Lehrling",
-        meaning: "Geschlossenes Auge: schläft, bis die Seherin tot ist",
+        meaning: "Kristallkugel mit Z: schläft, bis die Seherin tot ist",
       },
       attacked: {
         name: "Angegriffen",
@@ -50,11 +50,11 @@ export const werewolfSymbolsTexts = {
       },
       bodyguard: {
         name: "Leibwächter",
-        meaning: "Schild: schützt eine Person",
+        meaning: "Person mit Schild: schützt eine Person",
       },
       cupid: {
         name: "Amor",
-        meaning: "Herz mit Handschlag: verliebt 2 Personen",
+        meaning: "Bogen mit Pfeil: verliebt 2 Personen",
       },
       day: {
         name: "Tag",
@@ -75,23 +75,31 @@ export const werewolfSymbolsTexts = {
       },
       guest: {
         name: "Übernachtungsgast",
-        meaning: "Bett: die Dorfmatratze schläft hier",
+        meaning: "Person im Bett: die Dorfmatratze schläft hier",
       },
       hammer: {
         name: "Hammer",
         meaning: "Richterhammer: einmal pro Partie, ab Nacht 2",
       },
+      healPotion: {
+        name: "Heiltrank",
+        meaning: "Trankflasche mit Plus: die Hexe rettet das Wolfsopfer",
+      },
       heal: {
-        name: "Heiltrank oder Heilzauber",
-        meaning: "Herz mit Plus: rettet das Wolfsopfer",
+        name: "Heilzauber",
+        meaning: "Herz mit Plus: der Magier rettet das Wolfsopfer",
+      },
+      spellHealed: {
+        name: "Durch Heilzauber gerettet",
+        meaning: "Herz mit Plus: der Magier hat diese Person gerettet",
       },
       healed: {
         name: "Geheilt",
-        meaning: "Herz mit Plus: Heilung gewählt",
+        meaning: "Flasche mit Plus: die Hexe hat diese Person geheilt",
       },
       hunter: {
         name: "Jäger",
-        meaning: "Zielscheibe: schießt, wenn er ausscheidet",
+        meaning: "Donnerbüchse: schießt, wenn er ausscheidet",
       },
       idiot: {
         name: "Dorftrottel",
@@ -102,8 +110,8 @@ export const werewolfSymbolsTexts = {
         meaning: "Lupe: einmalige Fähigkeit des Ermittlers",
       },
       kill: {
-        name: "Gifttrank oder Todeszauber",
-        meaning: "Totenkopf: tötet eine Person",
+        name: "Todeszauber",
+        meaning: "Totenkopf: der Magier tötet eine Person",
       },
       lovers: {
         name: "Verliebt",
@@ -119,7 +127,7 @@ export const werewolfSymbolsTexts = {
       },
       nightGuest: {
         name: "Dorfmatratze",
-        meaning: "Bett: übernachtet bei einer Person und schützt sie vor dem Wolfsangriff",
+        meaning: "Haus mit Herz: übernachtet bei einer Person und schützt sie vor dem Wolfsangriff",
       },
       paranormalInvestigator: {
         name: "Paranormaler Ermittler",
@@ -127,7 +135,7 @@ export const werewolfSymbolsTexts = {
       },
       poisoned: {
         name: "Vergiftet",
-        meaning: "Flasche: Gifttrank gewählt",
+        meaning: "Flasche mit Minus: der Gifttrank der Hexe",
       },
       protected: {
         name: "Geschützt",
@@ -135,7 +143,27 @@ export const werewolfSymbolsTexts = {
       },
       seer: {
         name: "Seherin",
-        meaning: "Auge: schaut sich eine Person an",
+        meaning: "Kristallkugel: schaut sich eine Person an",
+      },
+      twoVotes: {
+        name: "Doppelte Stimme",
+        meaning: "Zahl 2: die Stimme des Bürgermeisters zählt doppelt",
+      },
+      hammered: {
+        name: "Vom Hammer getroffen",
+        meaning: "Richterhammer: der Bürgermeister hat diese Person getroffen",
+      },
+      spellKilled: {
+        name: "Vom Todeszauber getroffen",
+        meaning: "Totenkopf: der Magier hat diese Person getroffen",
+      },
+      investigated: {
+        name: "Untersucht",
+        meaning: "Lupe: der Paranormale Ermittler hat diese Person untersucht",
+      },
+      inspected: {
+        name: "Angesehen",
+        meaning: "Auge: die Seherin hat diese Person angesehen",
       },
       shotDuty: {
         name: "Schusspflicht",
@@ -147,7 +175,7 @@ export const werewolfSymbolsTexts = {
       },
       spellcaster: {
         name: "Alte Vettel",
-        meaning: "Mikrofon aus: macht eine Person für den Tag stumm",
+        meaning: "Mikrofon: macht eine Person für den Tag stumm",
       },
       tanner: {
         name: "Gerber",
@@ -159,11 +187,11 @@ export const werewolfSymbolsTexts = {
       },
       villager: {
         name: "Dorfbewohner",
-        meaning: "Haus: keine besondere Fähigkeit",
+        meaning: "Person: keine besondere Fähigkeit",
       },
       witch: {
         name: "Hexe",
-        meaning: "Trankflasche: Heil- und Gifttrank",
+        meaning: "Hexe mit Hut: Heil- und Gifttrank",
       },
       wolf: {
         name: "Werwolf",
