@@ -4,10 +4,12 @@ import { chooseNarrator, emptyWerewolfLineup, setParticipants } from "./lineup";
 import {
   parseSavedWerewolfSession,
   savedSessionVersion,
+  savedTrailOf,
   serializeWerewolfSession,
   startWerewolfGame,
 } from "./narratorGame";
-import { advanceWerewolfSession } from "./session";
+import { createGuide, describeGuide } from "./narratorGuide";
+import { advanceWerewolfSession, createWerewolfSession, undoWerewolfSession } from "./session";
 import { emptyVariableDraft } from "./variableConfiguration";
 
 const names = "Anna Ben Cleo Dora Emil Finn Gina Hans Ida Jan Kim Lea Max".split(" ");
@@ -111,4 +113,126 @@ describe("saved game", () => {
     // The old step is no longer in the way back.
     expect(loaded?.past.some((state) => (state.status as string) === "amuletIntro")).toBe(false);
   });
+});
+it("resumes a version 1 cover call through night, morning, day and Back", () => {
+  const fixedDraft = toggleFixedRole(emptyFixedDraft, "bodyguard");
+  const start = startWerewolfGame({
+    ...input,
+    fixedDraft: {
+      ...fixedDraft,
+      settings: { ...fixedDraft.settings, attackOnFirstNight: true },
+    },
+  })!;
+  const bodyguard = start.present.players.find((player) => player.role === "bodyguard")!;
+  const target = start.present.players.find((player) => player.role === "villager")!;
+  const other = start.present.players.find(
+    (player) => player.role === "villager" && player !== target,
+  )!;
+  let original = createWerewolfSession({
+    ...start.present,
+    drunk: { player: bodyguard.name, revealed: false },
+  });
+  for (const player of start.present.players)
+    original = advanceWerewolfSession(original, { type: "roleSeen", player: player.name });
+  expect(original.present.status).toBe("nightCall");
+
+  const newKeys = new Set([
+    "inspections",
+    "healedPlayer",
+    "spellHealedPlayer",
+    "protectedNight",
+    "hostNight",
+    "silencedNight",
+  ]);
+  const raw: unknown = JSON.parse(
+    JSON.stringify(
+      {
+        version: 1,
+        session: { ...original, present: { ...original.present, inspectedPlayer: target.name } },
+      },
+      (key, value: unknown) => (newKeys.has(key) ? undefined : value),
+    ),
+  );
+  let loaded = parseSavedWerewolfSession(raw)!;
+  expect(loaded.present.status).toBe("nightCall");
+  expect(loaded.present).not.toHaveProperty("inspectedPlayer");
+  expect(loaded.present).toMatchObject({
+    inspections: [],
+    healedPlayer: null,
+    spellHealedPlayer: null,
+    protectedNight: null,
+    hostNight: null,
+    silencedNight: null,
+  });
+  expect(() => describeGuide(createGuide(loaded))).not.toThrow();
+
+  const beforeCover = undoWerewolfSession(loaded);
+  expect(beforeCover.ok).toBe(true);
+  if (!beforeCover.ok) throw new Error("Expected the deal checkpoint");
+  expect(beforeCover.session.present.status).toBe("roles");
+  expect(beforeCover.session.present.inspections).toEqual([]);
+
+  loaded = advanceWerewolfSession(loaded, { type: "acknowledgeCall", night: 1 });
+  expect(loaded.present.status).toBe("wolves");
+  expect(loaded.present.inspections).toEqual([]);
+  loaded = advanceWerewolfSession(loaded, { type: "attack", night: 1, target: target.name });
+  loaded = advanceWerewolfSession(loaded, { type: "inspect", night: 1, target: other.name });
+  expect(loaded.present.status).toBe("vision");
+  expect(loaded.present.inspections[0]?.target).toBe(other.name);
+  loaded = advanceWerewolfSession(loaded, { type: "closeVision", night: 1 });
+  expect(loaded.present.status).toBe("morning");
+  const morning = loaded.present;
+  loaded = advanceWerewolfSession(loaded, { type: "announceMorning", night: 1 });
+  expect(loaded.present.status).toBe("day");
+  expect(loaded.present.alive.some((player) => player.name === target.name)).toBe(false);
+  expect(undoWerewolfSession(loaded)).toEqual({ ok: false, reason: "confirmationRequired" });
+  const back = undoWerewolfSession(loaded, true);
+  expect(back.ok && back.session.present).toBe(morning);
+  const trail = createGuide(loaded).trail;
+  const saved = serializeWerewolfSession(loaded, trail);
+  expect(saved.version).toBe(2);
+  expect(createGuide(parseSavedWerewolfSession(saved)!, savedTrailOf(saved)).trail).toEqual(trail);
+});
+
+it("keeps the vote-only tanner's win when confirming an exile after a reload", () => {
+  const fixedDraft = toggleFixedRole(emptyFixedDraft, "tanner");
+  const start = startWerewolfGame({
+    ...input,
+    fixedDraft: { ...fixedDraft, settings: { ...fixedDraft.settings, tanner: "voteOnly" } },
+  })!;
+  const tanner = start.present.players.find((player) => player.role === "tanner")!;
+  const exile = advanceWerewolfSession(
+    createWerewolfSession({ ...start.present, nomination: 0, status: "day" }),
+    { type: "nominate", night: 1, nominees: [tanner.name] },
+  );
+  const voted = advanceWerewolfSession(exile, {
+    type: "voteCount",
+    night: 1,
+    nomination: 1,
+    counts: { [tanner.name]: 11 },
+  });
+  expect(voted.present.status).toBe("exile");
+  const raw: unknown = JSON.parse(JSON.stringify({ session: voted, version: 1 }));
+  const loaded = parseSavedWerewolfSession(raw)!;
+  const announced = advanceWerewolfSession(loaded, { type: "announceExile", night: 1 });
+  expect(announced.present.tannerWinner).toBe(tanner.name);
+});
+it("preserves night fields already stored in version 1", () => {
+  const session = startWerewolfGame(input)!;
+  const [actor, target] = session.present.players;
+  const nightFields = {
+    healedPlayer: target!.name,
+    hostNight: 1,
+    inspections: [{ by: actor!.name, kind: "seer" as const, target: target!.name }],
+    protectedNight: 1,
+    silencedNight: 1,
+    spellHealedPlayer: target!.name,
+  };
+  const present = { ...session.present, ...nightFields };
+  const loaded = parseSavedWerewolfSession({
+    session: { past: [present], present },
+    version: 1,
+  });
+  expect(loaded?.present).toMatchObject(nightFields);
+  expect(loaded?.past[0]).toMatchObject(nightFields);
 });

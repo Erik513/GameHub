@@ -3,6 +3,7 @@ import { fixedConfigurationSettings, type FixedDraft } from "./fixedConfiguratio
 import type { WerewolfLineup } from "./lineup";
 import { createWerewolfSession, type WerewolfSession } from "./session";
 import { isRemovedAmuletIntro, leaveRemovedAmuletIntro, type WerewolfState } from "./stateMachine";
+import type { Player } from "./stateTypes";
 import { variableSelectionOf, type VariableDraft } from "./variableConfiguration";
 import { createVariableWerewolf } from "./variableSetup";
 
@@ -47,11 +48,9 @@ export function startWerewolfGame(input: StartWerewolfGameInput): WerewolfSessio
   return state ? createWerewolfSession(state) : null;
 }
 
-/**
- * Bump this whenever the shape of the game state or the rules of the reducer change: a game saved under another
- * version is dropped instead of being loaded into a reducer that no longer understands it.
- */
-export const savedSessionVersion = 1;
+/** Writes the current format. Version 1 is still accepted and upgraded on load. */
+export const savedSessionVersion = 2;
+const legacySessionVersion = 1;
 
 interface SavedSession {
   readonly version: number;
@@ -77,23 +76,75 @@ const isState = (value: unknown): value is WerewolfState =>
   typeof (value as { status?: unknown }).status === "string" &&
   Array.isArray((value as { players?: unknown }).players) &&
   Array.isArray((value as { alive?: unknown }).alive) &&
+  (value as WerewolfState).players.every(isPlayer) &&
+  (value as WerewolfState).alive.every(isPlayer) &&
   Array.isArray((value as { history?: unknown }).history) &&
   typeof (value as { night?: unknown }).night === "number";
 
-/** Reads a saved game; anything of another version or of a wrong shape is rejected (undefined). */
+function isPlayer(value: unknown): value is Player {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as Partial<Player>).name === "string" &&
+    typeof (value as Partial<Player>).role === "string"
+  );
+}
+
+/** Reads the current format or version 1, including earlier snapshots used by Back. */
 export function parseSavedWerewolfSession(raw: unknown): WerewolfSession | undefined {
   if (typeof raw !== "object" || raw === null) return undefined;
   const { version, session } = raw as Partial<SavedSession>;
-  if (version !== savedSessionVersion || typeof session !== "object" || session === null)
+  if (
+    (version !== savedSessionVersion && version !== legacySessionVersion) ||
+    typeof session !== "object" ||
+    session === null
+  )
     return undefined;
   const { present, past } = session as Partial<WerewolfSession>;
-  if (!isState(present) || !Array.isArray(past) || !past.every(isState)) return undefined;
-  // The step before the first night that called the holder of the amulet no longer exists: a game saved in it goes on
-  // with the first night, and the step is no longer part of the way back.
-  return {
-    past: past.filter((state) => !isRemovedAmuletIntro(state)).map(migrateOldVote),
-    present: migrateOldVote(leaveRemovedAmuletIntro(present)),
+  if (!Array.isArray(past)) return undefined;
+
+  const restored = restoreState(present);
+  if (!restored) return undefined;
+  const previous: WerewolfState[] = [];
+  for (const snapshot of past) {
+    const state = restoreState(snapshot);
+    if (!state) return undefined;
+    // The old step before the first night is no longer a checkpoint.
+    if (!isRemovedAmuletIntro(state)) previous.push(state);
+  }
+  return { past: previous, present: leaveRemovedAmuletIntro(restored) };
+}
+
+function restoreState(value: unknown): WerewolfState | undefined {
+  if (!isState(value)) return undefined;
+  const state = { ...value } as WerewolfState & {
+    inspectedPlayer?: string | null;
   };
+  delete state.inspectedPlayer;
+
+  // JSON stores a separate copy at each reference. Restore seat identity for the rules that compare players.
+  const players = new Map(state.players.map((player) => [player.name, player]));
+  const seat = (player: Player) => players.get(player.name) ?? player;
+  const restored = migrateOldVote({
+    ...state,
+    alive: state.alive.map(seat),
+    ...(state.wolfTarget ? { wolfTarget: seat(state.wolfTarget) } : {}),
+    ...("victim" in state && state.victim ? { victim: seat(state.victim) } : {}),
+    ...("poisoned" in state && state.poisoned ? { poisoned: seat(state.poisoned) } : {}),
+    ...(state.spellVictims ? { spellVictims: state.spellVictims.map(seat) } : {}),
+    ...(state.nightDeaths ? { nightDeaths: state.nightDeaths.map(seat) } : {}),
+    ...(state.shotDeaths ? { shotDeaths: state.shotDeaths.map(seat) } : {}),
+    ...("hunter" in state ? { hunter: seat(state.hunter) } : {}),
+    inspections: state.inspections ?? [],
+    healedPlayer: state.healedPlayer ?? null,
+    spellHealedPlayer: state.spellHealedPlayer ?? null,
+    protectedNight: state.protectedNight ?? null,
+    hostNight: state.hostNight ?? null,
+    silencedNight: state.silencedNight ?? null,
+  });
+  if (restored.status !== "nightCall") return restored;
+  const resume = restoreState(restored.resume);
+  return resume ? { ...restored, resume } : undefined;
 }
 
 /**

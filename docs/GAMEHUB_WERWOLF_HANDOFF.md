@@ -230,3 +230,30 @@ Mit einem Compiler-Dateiüberlagerungstest gegen die ursprünglichen Business-Da
 - src/presentation/werewolf/WerewolfGame.test.tsx:15, :252 und :299 – erforderliche GameScreenProps cardLanguage und onCardLanguageChange fehlen (TS2769).
 
 Die fünf Typfehler sind am 21.11.2026 behoben; die Gesamt-Typprüfung (`tsc -b`) ist wieder grün. Die Logik-Typprüfung und alle 1.472 normalen Tests im UI-Arbeitsstand bestehen. Lange historische Forschungs-/Balance-Läufe wurden nicht erneut gestartet. Es wurde weder committed noch gepusht.
+## Logikprüfung vor dem ersten Push (We-03-72, 25.11.2026)
+
+Branch: game/werewolf-ui. Geprüft wurden Zustandsmaschine, Abstimmung, Rollenabfragen, Nacht-Skript, Schrittbeschreibungen, Rollendefinitionen, Karten- und Übersichtsselektoren sowie Erzählerführung einschließlich Rücksprung, Stimmen und Ende. Basis sind die Änderungen ab „Ursachen je Person“. Phase 4 (Rollenkonfiguration) ist laut Umbauplan zurückgestellt. Phase 5b liegt in der Oberfläche und war nur an der Schnittstelle relevant.
+
+| Befund | Auswirkung und Fundstelle |
+| --- | --- |
+| Altes Giftsymbol in der neuen Nacht | Der Statuswechsel übernimmt die letzte Auswahl per Spread. roles/witch.ts liest das alte Feld poisoned auch im neuen Nachtstatus. Der Slot erscheint in Nacht 2 noch vor der Wahl der Wölfe. |
+| Dorfmatratze rettet den Gastgeber, aber sein Slot meldet es nicht | Die Zustandsmaschine setzt wolfTarget auf die Dorfmatratze, die den Angriff übernimmt. Der Slot guestSaved vergleicht wolfTarget mit dem Gastgeber und erhält so nie den Treffer im normalen Umleitungsfall. Für die Korrektur die ursprüngliche Wolfswahl und das Ziel für die Heilrollen getrennt auswerten. |
+| Liebeskummer fehlt in der Spielerübersicht am Morgen | Der Guide zeigt Liebeskummer bereits in der Todesvorschau. selectors.ts setzt dieselbe Person auf tot, liefert ihre Ursache aber erst nach Bestätigung aus dem Protokoll. Vorher fehlt sie in der Übersicht. Derselbe Projektionspfad für die nächtliche Hammerfehlwahl und das verzögerte Sterben des Harten Burschen sollte beim Fix mit geprüft werden. |
+| Der Guide meldet am Beginn der nächsten Nacht alte Stille | selectors.ts prüft silencedNight, narratorGuide.ts prüft nur den Namen. Die Alt-Wahl muss als Einschränkung der Alten Vettel gespeichert bleiben. |
+| Stimmensummen können eine unmögliche Bürgermeisterstimme enthalten | stateVoting.ts prüft Summe und Maximum, akzeptiert aber 2:1:1 mit dem Bürgermeister als einzigem Empfänger von mindestens zwei Stimmen, obwohl er seine Doppelstimme nur gemeinsam und nur an wen anders abgeben darf. Die Guide-Auswahl der Bonusstimme fängt den Beispielfall ab. Der öffentliche Reducer-Pfad voteCount lässt ihn zu. |
+
+Alle fünf Befunde sind in logicAudit.test.ts reproduziert und beim normalen Lauf als erwartete Fehlschläge markiert. Bei direkter Ausführung als normale Tests scheiterten alle fünf an der jeweiligen fachlichen Erwartung. Vor der Prüfung bestanden 599 Werwolf-Logiktests. In dieser Prüfung wurden weder Spielregeln noch Produktionslogik noch Absicherungs-Snapshots bearbeitet. Die Korrekturen sind offen.
+
+Weitere Prüfrisiken: Die Zustandsmaschine und der Guide haben getrennte Eintrittspunkte für Spielaktionen. vote mit Stimmzetteln bildet bei einer einzelnen Nominierung keine Nein-Stimmen ab, während der aktuelle Guide voteCount mit Ja-Stimmen nutzt. Eine Zusammenführung erfordert eine Entscheidung über alte Aufrufer und Simulationen. Die historische Balance-Simulation gehört nicht zur Freigabeprüfung. Die Geschäftslogik für den Magier-Fragenablauf wurde nicht geändert (Abstimmung mit Claude über We-01-136).
+
+## Spielstände ab Format 2 (We-03-73, 25.11.2026)
+
+Branch: game/werewolf-ui. narratorGame.ts akzeptiert Format 1 und 2 und schreibt Format 2. Fehlende inspections beginnen leer. healedPlayer, spellHealedPlayer, protectedNight, hostNight und silencedNight erhalten bei fehlenden Werten null. Bereits gespeicherte neue Werte bleiben erhalten; das alte inspectedPlayer wird entfernt. Alte Marken ohne vollständige Zuordnung werden nicht rekonstruiert. Die alten Zielnamen für Leibwächter, Dorfmatratze und Alte Vettel bleiben für das Spiel erhalten.
+
+Die Migration gilt für den aktuellen Zustand, alle Rücksprungstände und die Fortsetzung eines Tarnaufrufs. Beim JSON-Laden stellt sie Spielerreferenzen je Zustand aus der bestehenden Sitzliste wieder her. Andernfalls geht etwa der Gerber-Sieg beim Fortsetzen unmittelbar vor dem Bekanntgeben seines Ausschlusses verloren, weil das gespeicherte Opfer von der Person in alive eine getrennte Objektkopie ist. Der Spielablauf und die Regel für den Gerber selbst wurden nicht geändert.
+
+narratorGame.test.ts lädt ein gespeichertes Spiel der Version 1, setzt einen Tarnaufruf fort, spielt über den Morgen zum Tag, prüft erneut Zurück und lädt die Erzähler-Haltepunkte. Weitere Tests sichern vorhandene Felder aus Version 1 und den Gerber-Sieg nach Neuladen. Bestehende Aufrufer von parseSavedWerewolfSession, serializeWerewolfSession und savedTrailOf bleiben kompatibel. In useWerewolfSession.ts kann Claude bei Gelegenheit den Kommentar zur Versionsbehandlung aktualisieren. Für die Migration ist keine UI-Anpassung erforderlich.
+
+Prüfstand: Breiter Lauf mit 1.797 bestandenen Tests und fünf erwarteten Fehlschlägen aus We-03-72. Danach gezielter Lauf nach dem zusätzlichen Erhaltungstest mit 13 bestandenen Tests und denselben fünf erwarteten Fehlschlägen. Die Abdeckungsschwellen sind erfüllt (gesamt 97,45 % Zeilen und 92,65 % Zweige). Typprüfung, ESLint und Formatprüfung der geänderten Dateien sowie Schichtprüfung bestanden. Die historischen Forschungsmessungen wurden nicht wiederholt.
+
+Hinweis für Claude zu We-01-136: NarratorMagician.test.tsx und NarratorPlaythrough.test.tsx bestanden, meldeten aber in der Magieransicht doppelte React-Schlüssel (killKilled). Die Meldung betrifft die Darstellung mehrerer Todeszauber und wurde im Rahmen dieses Logikauftrags nicht bearbeitet.

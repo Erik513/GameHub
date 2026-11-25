@@ -4,7 +4,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-25T16:38:45.066Z",
+    "updatedAt": "2026-11-25T18:55:19.869Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 405,
-      "totalTasks": 461,
+      "completedTasks": 407,
+      "totalTasks": 463,
       "percent": 87.9
     }
   },
@@ -2629,6 +2629,20 @@
           "title": "Stimmenzahl-Abstimmung und Jägerstatus in Modellen und Protokoll angleichen",
           "status": "done",
           "validation": "84 gezielte Tests in sechs Dateien bestanden; zwei gezielte Modell-Kurzprüfungen mit 24 vollständigen Partien bestanden. Keine langen Simulationsläufe. simulationVoting.ts: 100 % Zeilen / 96,55 % Zweige. Typprüfung, ESLint, Format und Schichtprüfung erfolgreich. Geprüft: Einzelkandidaten-Zustimmung/Ablehnung, gewichtete Stimmen, stummer oder nominierter Bürgermeister, unbekannte Abstimmende nach früherem benanntem Voting und lastShot beim betrunkenen Jäger."
+        },
+        {
+          "id": "We-03-72",
+          "title": "Werwolf-Logik vor dem ersten Push prüfen",
+          "status": "done",
+          "document": "GAMEHUB_WERWOLF_HANDOFF.md",
+          "validation": "599 bestehende Werwolf-Logiktests bestanden. Fünf bestätigte Befunde mit erwarteten Fehlschlägen reproduziert: Giftslot, Dorfmatratzen-Slot, Liebeskummer am Morgen, Stille im Guide und unmögliche Bürgermeister-Stimmensumme. Korrekturen nach Freigabe."
+        },
+        {
+          "id": "We-03-73",
+          "title": "Ältere Werwolf-Spielstände mit neuen Nachtfeldern laden",
+          "status": "done",
+          "document": "GAMEHUB_WERWOLF_HANDOFF.md",
+          "validation": "Format 1 in aktuellem Zustand, Rücksprungständen und Tarnfortsetzung kompatibel. Format 2 wird geschrieben. Lade-, Nacht-, Tages-, Rücksprung- und Gerber-Test geprüft. Breiter Lauf: 1.797 bestanden, fünf erwartete Fehlschläge aus We-03-72. Danach gezielt: 13 bestanden, fünf erwartete Fehlschläge. Abdeckungsschwellen, Typ-, Lint-, Format- und Schichtprüfung erfüllt."
         }
       ]
     },
@@ -2940,6 +2954,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-25",
+      "summary": "Werwolf: Fünf Befunde vor dem ersten Push reproduziert. Gespeicherte Partien der Version 1 bei Nacht, Tag und Rücksprung abgesichert. Neue Spielstände verwenden Version 2."
+    },
     {
       "date": "2026-11-25",
       "summary": "GameHub-Arbeitsregel ergänzt: Jede abgeschlossene Logikänderung erhält eine deutsche Übergabe für Claude Code im zugehörigen Branch. Die Übergabe hält Verhalten, Schnittstellen, Prüfungen und offene Punkte fest."

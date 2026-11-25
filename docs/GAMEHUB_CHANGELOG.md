@@ -1882,3 +1882,10 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 ### 2026-11-25 – Übergabe an Claude Code
 
 GameHub-Arbeitsregel ergänzt: Jede abgeschlossene Logikänderung erhält eine deutsche Übergabe für Claude Code im zugehörigen Branch. Die Übergabe hält Verhalten, Schnittstellen, Prüfungen und offene Punkte fest.
+
+## 2026-11-25 – Werwolf-Prüfung und Spielstände
+
+- We-03-72: Fünf Logikabweichungen mit Reproduktion erfasst. Korrekturen nach Freigabe.
+- We-03-73: Format 1 bleibt lesbar; neue Spielstände verwenden Format 2. Nacht, Tag, Rücksprung und der Gerber-Sieg nach Neuladen sind getestet.
+
+[Details und Übergabe](GAMEHUB_WERWOLF_HANDOFF.md).
