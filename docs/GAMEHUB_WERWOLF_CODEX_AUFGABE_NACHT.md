@@ -394,3 +394,7 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 - We-01-190: narratorCard.ts liest Fähigkeiten und Effekte aus roles/. Gemeinsame Effekte und Anzeigereihenfolge stehen in roles/cardEffects.ts.
 - We-01-191: roleStep.ts liest rollenspezifische Schrittbeschreibungen aus roles/. Gemeinsame Schritte für Tarnaufruf, Tagesabstimmung und Amulett werden dort weiterhin zusammengesetzt.
 - Die Zustandsmaschine, die Abfolge der Nacht und die zurückgestellten Phasen 4 und 5 sind unverändert.
+
+## Zustände einer Person (2026-11-25, Claude, We-01-194)
+
+- Neu exportiert: `effectsOfPerson(state, person)` in `narratorCard.ts` gibt die Zustände einer Person in der Reihenfolge von `cardEffectsInOrder()` zurück (ohne Doppel). Die Übersicht aller Spieler nutzt sie; die Rollenkarte bleibt bei `effectsOf`. Keine Regeländerung.

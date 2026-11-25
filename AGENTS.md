@@ -56,6 +56,7 @@ Diese Regeln gelten für Codex, Claude Code und andere automatisierte Entwicklun
 
 ## Dokumentationspflicht
 
+- Halte jede abgeschlossene Änderung an der Spiel- oder gemeinsamen Anwendungslogik auf Deutsch für Claude Code fest. Ergänze die vorhandene Übergabedatei des Spiels oder Bereichs und lege bei Bedarf eine an. Nenne Aufgabe und Branch, die fachliche Änderung, betroffene Dateien, geänderte Schnittstellen oder Konsequenzen für die Oberfläche, ausgeführte Prüfungen mit Ergebnis sowie offene Punkte. Bei einem reinen Umbau vermerke, dass das Verhalten gleich bleibt. Nimm den Übergabeeintrag in denselben Commit wie die Logikänderung auf.
 - Halte nach jeder Änderung auch die tatsächlich verwendete `docs/GAMEHUB_DEVELOPMENT.html` unter `C:/Users/Kosta/source/repos/GameHub` und die gemeinsame Kopie unter `work/dashboard` aktuell. Eine Aktualisierung nur im Spiel-Arbeitsordner reicht nicht; übernimm gezielt die betroffenen Inhalte und bewahre parallele Änderungen anderer Spiele.
 
 

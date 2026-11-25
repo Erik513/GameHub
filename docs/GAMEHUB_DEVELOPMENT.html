@@ -237,7 +237,7 @@
     "id": "gamehub",
     "name": "GameHub",
     "stage": "first_release_accepted",
-    "updatedAt": "2026-11-25T16:30:45.003Z",
+    "updatedAt": "2026-11-25T16:38:45.066Z",
     "statusValues": [
       "planned",
       "in_progress",
@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 396,
-      "totalTasks": 452,
+      "completedTasks": 397,
+      "totalTasks": 453,
       "percent": 87.6
     }
   },
@@ -2412,6 +2412,12 @@
           "title": "Rollen-Umbau Phase 3: Schritte aus den Definitionen",
           "status": "done",
           "validation": "Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifische Effekte der Erzählerkarte sowie die Beschreibungen der Nacht- und Jägerschritte stehen in den Rollendefinitionen. Die bestehenden Abläufe und gespeicherten Rollentabellen sind unverändert. 1.784 Tests im vollständigen Lauf bestanden. Nach der typisierten Zusammenführung der Schritte wurden die 28 betroffenen Tests erneut ausgeführt. Typ-, Lint-, Format- und Schichtprüfung sowie Produktionsbuild erfolgreich."
+        },
+        {
+          "id": "We-01-194",
+          "title": "Alle Spieler und Rollen: alle Zustände als farbige Slots wie auf der Karte",
+          "status": "done",
+          "validation": "Die Zeilen der Übersicht zeigen dieselben Zustände wie die Rollenkarte, aus derselben Liste (effectsOfPerson in narratorCard.ts, Reihenfolge aus roles/cardEffects.ts), als kleine farbige Slots; neu sichtbar sind Geschützt und Übernachtungsgast sowie Angegriffen auch nach der Rettung; Ursachen, die schon ein Slot zeigt, werden nicht wiederholt; die Legende nennt die Zustände des Spiels; Slotfarben gemeinsam über die Klasse ww-slot; Spielende ohne Slots; Test in PlayerRows.test.tsx; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
         }
       ]
     },
@@ -3119,6 +3125,10 @@
     }
   ],
   "recentChanges": [
+    {
+      "date": "2026-11-25",
+      "summary": "GameHub-Arbeitsregel ergänzt: Jede abgeschlossene Logikänderung erhält eine deutsche Übergabe für Claude Code im zugehörigen Branch. Die Übergabe hält Verhalten, Schnittstellen, Prüfungen und offene Punkte fest."
+    },
     {
       "date": "2026-11-25",
       "summary": "Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifische Effekte der Erzählerkarte sowie die Beschreibungen der Nacht- und Jägerschritte stehen in den Rollendefinitionen. Die bestehenden Abläufe und gespeicherten Rollentabellen sind unverändert. 1.784 Tests im vollständigen Lauf bestanden. Nach der typisierten Zusammenführung der Schritte wurden die 28 betroffenen Tests erneut ausgeführt. Typ-, Lint-, Format- und Schichtprüfung sowie Produktionsbuild erfolgreich."

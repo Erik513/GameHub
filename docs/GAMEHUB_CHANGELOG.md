@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Übersicht: alle Zustände)
+
+### We-01-194: Alle Spieler und Rollen zeigt alle Zustände als farbige Slots (Claude)
+
+- Die Zeilen der Übersicht zeigen dieselben Zustände wie die Rollenkarte, aus derselben Liste und in derselben Reihenfolge, als kleine farbige Slots. Neu sichtbar: Geschützt, Übernachtungsgast und Angegriffen auch nach einer Rettung. Ursachen, die ein Slot schon zeigt, stehen nicht doppelt. Die Legende nennt die Zustände des Spiels. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Rollen-Umbau, Branch game/werewolf-roles)
 
 ### We-01-188 und We-01-189: Absicherung und Verzeichnis der Rollen (Claude)
@@ -1832,3 +1838,8 @@ Die Person, die eine Lobby erstellt, hostet die Partie auf ihrem eigenen Gerät.
 ### 2026-11-25 – Werwolf-Rollenumbau Phase 2 und 3
 
 Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifische Effekte der Erzählerkarte sowie die Beschreibungen der Nacht- und Jägerschritte stehen in den Rollendefinitionen. Die bestehenden Abläufe und gespeicherten Rollentabellen sind unverändert. 1.784 Tests im vollständigen Lauf bestanden. Nach der typisierten Zusammenführung der Schritte wurden die 28 betroffenen Tests erneut ausgeführt. Typ-, Lint-, Format- und Schichtprüfung sowie Produktionsbuild erfolgreich.
+
+
+### 2026-11-25 – Übergabe an Claude Code
+
+GameHub-Arbeitsregel ergänzt: Jede abgeschlossene Logikänderung erhält eine deutsche Übergabe für Claude Code im zugehörigen Branch. Die Übergabe hält Verhalten, Schnittstellen, Prüfungen und offene Punkte fest.
