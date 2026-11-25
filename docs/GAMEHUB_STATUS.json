@@ -14,8 +14,8 @@
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
       "completedTasks": 446,
-      "totalTasks": 500,
-      "percent": 89.2
+      "totalTasks": 502,
+      "percent": 88.8
     }
   },
   "environment": {
@@ -932,7 +932,7 @@
       "id": "Ta-09",
       "name": "Großer Kartenpool für Tabu",
       "area": "taboo",
-      "status": "done",
+      "status": "in_progress",
       "tasks": [
         {
           "id": "Ta-09-01",
@@ -973,6 +973,16 @@
           "id": "Ta-09-08",
           "title": "Noch mehr Karten erzeugen: Ziel 30 Karten je Schwierigkeit und Kategorie (900 je Sprache, bisher 17 bis 19; es fehlen etwa 380 je Sprache); Claude schreibt die Karten, die Skripte prüfen sie, dann werden sie eingebaut. Fertig: alle zehn Kategorien je Schwierigkeit 30 Karten, 900 je Sprache (Deutsch und Englisch)",
           "status": "done"
+        },
+        {
+          "id": "Ta-09-09",
+          "title": "Kartenpool erweitern: je Kategorie und je Sprache 100 leichte, 100 mittlere und 50 schwere Karten hinzufügen",
+          "status": "planned"
+        },
+        {
+          "id": "Ta-09-10",
+          "title": "Kartenpool weiter erweitern: je Kategorie und je Sprache 200 leichte, 200 mittlere und 100 schwere Karten hinzufügen (nach Ta-09-09)",
+          "status": "planned"
         }
       ]
     },
@@ -4117,5 +4127,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T23:34:17.328Z"
+  "updatedAt": "2026-11-25T23:36:20.160Z"
 }
