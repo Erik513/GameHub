@@ -1,10 +1,10 @@
 # GameHub Changelog
 
-## 2026-11-25 (Rollenkarte am Handy)
+## 2026-11-25 (Rollenkarte)
 
-### We-01-230: Zustände der Rollenkarte am Handy linksbündig (Claude)
+### We-01-230: Zustände der Rollenkarte linksbündig unter der Rolle (Claude)
 
-- Am Handy beginnt die Reihe der Zustände unter der Rolle links, wie das Symbol darüber. Am PC bleibt sie rechts neben der Rolle. Nicht im Browser angesehen.
+- Auf Handy und PC stehen die Zustände in einer eigenen Reihe unter Symbol und Name und beginnen links. Nicht im Browser angesehen.
 
 ## 2026-11-25 (Morgen, Amulett)
 
