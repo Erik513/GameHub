@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 443,
-      "totalTasks": 497,
-      "percent": 89.1
+      "completedTasks": 444,
+      "totalTasks": 498,
+      "percent": 89.2
     }
   },
   "environment": {
@@ -2433,6 +2433,12 @@
           "title": "Untere Box scrollt als Absicherung, statt abzuschneiden",
           "status": "done",
           "validation": "Absicherung für jede untere Box mit Skript (Rollen, Tag, Abstimmung): Ist der Inhalt höher als die Box, erscheint eine Scrollleiste am Rand der Box (ww-guide--sheet overflow-y auto statt hidden), sonst nicht. Die Abstimmung schneidet ihren Inhalt nicht mehr selbst ab (ww-voteinput ohne overflow hidden); der mittlere Teil der Box (Personenliste, Abstimmung) hat seine Scrollleiste ebenfalls am Rand der Box. Anlass war die Hexe, bei der die Zusammenfassung abgeschnitten wurde. Nur CSS; 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-233",
+          "title": "Rahmen von Amulett und Trunkenbold bleiben bei Toten",
+          "status": "done",
+          "validation": "Entscheidung des Auftraggebers: beide Rahmen bei Toten behalten (vorher nur der Trunkenbold, der ohne Kenntnis seiner Rolle starb). Der Todeseintrag im Spielverlauf hält jetzt diedWithAmulet fest (eventLog.ts, optional; ältere gespeicherte Spiele zeigen dann keinen Rahmen); describePlayers zeigt den Amulett-Rahmen auch für den Toten, der es beim Sterben trug. Legende de/en: „Amulett (bei Toten: starb damit)“, „Trunkenbold, kennt seine Rolle noch nicht (bei Toten: starb ohne sie zu kennen)“. Invariante im Durchspiel-Test angepasst (ein Träger unter den Personen ohne festgehaltenen Tod); neuer Test in PlayerRows.test.tsx; 927 Werwolf- und i18n-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4099,5 +4105,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T23:06:45.980Z"
+  "updatedAt": "2026-11-25T23:14:34.829Z"
 }

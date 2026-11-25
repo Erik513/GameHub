@@ -458,3 +458,7 @@ Neuer Zustand `wounded` in `roles/stateIds.ts` (nach `investigated`, vor den Zus
 ## Verwundung in der Vorschau der Verkündung (2026-11-25, Claude, We-01-221)
 
 `describePlayers` (selectors.ts) lässt die Probe-Transition der Verkündung jetzt bei jeder Verkündung laufen (Morgen, Verbannung), nicht nur wenn jemand stirbt, und nimmt daraus neben `tannerWinner` auch `toughGuyDiesOn` und `toughGuyWound`. So ist der überlebende Harte Bursche schon vor der Bestätigung verwundet (Ton wounded, Zustand wounded). Die Zustandsmaschine ist unverändert.
+
+## Tod mit Amulett im Verlauf (2026-11-26, Claude, We-01-233)
+
+Der Todeseintrag (`kind: "death"`, eventLog.ts) hat das neue optionale Feld `diedWithAmulet` (`before.amulet?.holder === player.name`), wie `diedMasked`. `describePlayers` setzt `amulet` jetzt auch für einen Toten mit `diedWithAmulet === true`. Ältere gespeicherte Spiele haben das Feld nicht (dann kein Rahmen), eine Migration ist nicht nötig. Angepasst: die Amulett-Invariante in narrator.test.ts.

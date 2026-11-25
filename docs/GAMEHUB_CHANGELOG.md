@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-26 (Rahmen bei Toten)
+
+### We-01-233: Rahmen von Amulett und Trunkenbold bleiben bei Toten (Claude)
+
+- Wer mit dem Amulett gestorben ist, behält in der Übersicht und am Spielende den goldenen Rahmen, wie der Trunkenbold, der ohne Kenntnis seiner Rolle starb, den grünen. Die Legende erklärt beides. Nicht im Browser angesehen.
+
 ## 2026-11-26 (untere Box)
 
 ### We-01-231 und We-01-232: Skript kleiner, Box scrollt statt abzuschneiden (Claude)
