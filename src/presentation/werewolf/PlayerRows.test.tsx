@@ -107,10 +107,10 @@ it("shows every state of a person as the same colored slot as on the card, and n
   expect(legend).toContain("Guest");
 });
 
-it("names the winners in the headings of the end screen, in both languages", async () => {
+it("names the winners and the losers with their side in the headings of the end screen, in both languages", async () => {
   for (const [language, winners, losers] of [
-    ["en", "Winners", "Losers"],
-    ["de", "Gewinner", "Verlierer"],
+    ["en", "Winners – Werewolves", "Losers – Villagers"],
+    ["de", "Gewinner – Werwölfe", "Verlierer – Dorfbewohner"],
   ] as const) {
     document.body.innerHTML = "";
     const i18n = await createGameHubI18n(language);
