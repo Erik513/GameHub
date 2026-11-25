@@ -1,3 +1,6 @@
+import { cardEffectsInOrder } from "./roles/cardEffects";
+import { roleDefinition } from "./roles";
+import { ability, consumable } from "./roles/cardAbility";
 import { roleVariantOf, type RoleVariantId } from "./roleVariant";
 import { describePlayers } from "./selectors";
 import { wakingPlayers, type WerewolfState } from "./stateMachine";
@@ -188,110 +191,11 @@ function cardRole(state: WerewolfState): CardRoleSymbol | null {
   }
 }
 
-/** One ability; `why` says why it cannot be used (undefined: it can). */
-function ability(
-  id: CardAbilityId,
-  symbol: CardAbilitySymbol,
-  why?: "blocked" | "used",
-  count?: number,
-): CardAbility {
-  return {
-    available: why === undefined,
-    id,
-    symbol,
-    ...(why === undefined ? {} : { unavailable: why }),
-    ...(count === undefined ? {} : { count }),
-  };
-}
-
-/** Marks an ability that is used up by using it. */
-function consumable(entry: CardAbility): CardAbility {
-  return { ...entry, consumable: true };
-}
-
 function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardAbility[] {
-  switch (role) {
-    case "wolf":
-      return [
-        ability(
-          "attack",
-          "attacked",
-          state.night > 1 || state.settings.attackOnFirstNight ? undefined : "blocked",
-        ),
-      ];
-    case "seer":
-    case "apprenticeSeer":
-      // After the result was shown the narrator can still look at another person (a wrong person was chosen).
-      return [
-        ability(
-          "inspect",
-          "inspected",
-          state.status === "seer" || state.status === "vision" ? undefined : "blocked",
-        ),
-      ];
-    case "paranormalInvestigator":
-      return [
-        consumable(
-          ability("investigate", "investigation", state.investigationUsed ? "used" : undefined),
-        ),
-      ];
-    case "witch":
-      return [
-        consumable(
-          ability(
-            "heal",
-            "healPotion",
-            !state.potions.heal ? "used" : state.wolfTarget ? undefined : "blocked",
-          ),
-        ),
-        consumable(ability("poison", "poisoned", state.potions.poison ? undefined : "used")),
-      ];
-    case "magician": {
-      const left = state.spellsRemaining;
-      return [
-        consumable(
-          ability(
-            "heal",
-            "heal",
-            left <= 0 ? "used" : state.wolfTarget ? undefined : "blocked",
-            left,
-          ),
-        ),
-        consumable(ability("kill", "kill", left <= 0 ? "used" : undefined, left)),
-      ];
-    }
-    case "bodyguard":
-      return [ability("protect", "protected")];
-    case "nightGuest":
-      return [ability("stayWith", "guest")];
-    case "cupid":
-      return [consumable(ability("bond", "lovers"))];
-    case "mayor":
-      return [
-        consumable(
-          ability(
-            "hammer",
-            "hammer",
-            state.hammerUsed
-              ? "used"
-              : state.settings.mayor === "hammer" && state.night >= 2
-                ? undefined
-                : "blocked",
-          ),
-        ),
-      ];
-    case "spellcaster":
-      return [ability("silence", "silenced")];
-    case "hunter":
-      return [consumable(ability("shot", "shotDuty"))];
-    case "amuletPass":
-      return [consumable(ability("passAmulet", "amuletPass"))];
-    case "day":
-      // The vote itself needs no button: the narrator only names who votes yes.
-      return state.status === "day" ? [ability("vote", "vote")] : [];
-    default:
-      return [];
-  }
+  if (role === "amuletPass") return [consumable(ability("passAmulet", "amuletPass"))];
+  // The vote itself only asks the narrator who votes yes.
+  if (role === "day") return state.status === "day" ? [ability("vote", "vote")] : [];
+  return roleDefinition(role)?.cardAbilities(state) ?? [];
 }
 
 /**
@@ -301,41 +205,11 @@ function abilitiesOf(state: WerewolfState, role: CardRoleSymbol): readonly CardA
  */
 function effectsOf(state: WerewolfState, actors: readonly string[]): readonly CardEffect[] {
   const people = describePlayers(state).filter((person) => actors.includes(person.name));
-  const poisoned = "poisoned" in state ? state.poisoned?.name : undefined;
-  // What the night did to a person (attacked, protected, guest, poisoned) is of no interest in the day.
+  if (people.length === 0) return [];
   const night = !dayStatuses.includes(state.status);
-  const effectsOfPerson = (person: (typeof people)[number]): CardEffect[] => {
-    const found: CardEffect[] = [];
-    if (person.partner) found.push("lovers");
-    if (person.amulet) found.push("amulet");
-    if (night && state.wolfTarget?.name === person.name) found.push("attacked");
-    // The amulet stopped an attack: this is why the holder has to pass it on.
-    if (
-      state.status === "amuletPass" &&
-      state.amulet.mustPass &&
-      state.amulet.holder === person.name
-    )
-      found.push("attacked");
-    if (night && state.protectedPlayer === person.name) found.push("protected");
-    if (night && state.hostPlayer === person.name) found.push("guest");
-    if (person.inspected) found.push("inspected");
-    if (person.investigated) found.push("investigated");
-    if (state.healedPlayer === person.name) found.push("healed");
-    if (state.spellHealedPlayer === person.name) found.push("spellHealed");
-    if (night && poisoned === person.name) found.push("poisoned");
-    // The person the mayor struck with the hammer, or the magician with a death spell: out in the morning.
-    if (state.hammerVictim === person.name) found.push("hammered");
-    if (state.spellVictims.some((victim) => victim.name === person.name)) found.push("spellKilled");
-    if (person.silenced) found.push("silenced");
-    if (person.drunk && person.alive) found.push("drunk");
-    // The mayor with the double vote: his vote counts twice (not while he is the hidden drunk).
-    if (person.twoVotes) found.push("twoVotes");
-    return found;
-  };
-  const [first, ...others] = people.map(effectsOfPerson);
-  if (!first) return [];
-  const shared = first.filter((effect) => others.every((rest) => rest.includes(effect)));
-  return shared;
+  return cardEffectsInOrder().flatMap(([effect, rules]) =>
+    people.every((person) => rules?.[effect]?.({ state, person, night })) ? [effect] : [],
+  );
 }
 
 /** The card of the role that is awake, or null when no role is awake (the day, the morning, the end). */

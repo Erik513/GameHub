@@ -4,5 +4,5 @@ import type { RoleDefinition } from "./types";
 export function defineRole(
   definition: Pick<RoleDefinition, "id"> & Partial<RoleDefinition>,
 ): RoleDefinition {
-  return { abilities: () => [], variant: () => null, ...definition };
+  return { cardAbilities: () => [], abilities: () => [], variant: () => null, ...definition };
 }

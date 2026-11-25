@@ -1,6 +1,6 @@
 # Werwolf: eine Definition pro Rolle (Umbauplan)
 
-Stand: 2026-11-25. **Freigegeben**: Architektur wie beschrieben, Phasen 0 bis 3, eigener Branch `game/werewolf-roles`. **Umgesetzt: Phase 0 und 1.** Phase 2 und 3 berühren Logikdateien (`narratorCard.ts`, `roleStep.ts`) und warten auf die Abstimmung mit Codex. Phase 4 und 5 sind zurückgestellt. Annahmen und nicht geprüfte Aussagen sind gekennzeichnet.
+Stand: 2026-11-25. **Freigegeben**: Architektur wie beschrieben, Phasen 0 bis 3, eigener Branch `game/werewolf-roles`. **Umgesetzt: Phasen 0 bis 3.** Phase 2 und 3 wurden in Abstimmung mit Codex umgesetzt. Phase 4 und 5 sind zurückgestellt. Annahmen und nicht geprüfte Aussagen sind gekennzeichnet.
 
 ## Ziel
 
@@ -88,3 +88,11 @@ Abnahmekriterien je Aufgabe: Verhalten unverändert (Absicherungstest und alle 1
 2. Umfang jetzt: Phasen 0 bis 3 (Vorschlag), Phase 4 und 5 später.
 3. Branch: weiter auf `game/werewolf-ui` oder ein eigener Branch (Vorschlag: `game/werewolf-roles`).
 4. Abstimmung mit Codex: Sollen die Logikdateien während der Phasen 2 und 3 für Codex gesperrt sein?
+
+## Rollenumbau Phase 2 und 3 (2026-11-25, Codex)
+
+Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifische Effekte der Erzählerkarte sowie die Beschreibungen der Nacht- und Jägerschritte stehen in den Rollendefinitionen. Die bestehenden Abläufe und gespeicherten Rollentabellen sind unverändert. 1.784 Tests im vollständigen Lauf bestanden. Nach der typisierten Zusammenführung der Schritte wurden die 28 betroffenen Tests erneut ausgeführt. Typ-, Lint-, Format- und Schichtprüfung sowie Produktionsbuild erfolgreich.
+
+- We-01-190: narratorCard.ts liest Fähigkeiten und Effekte aus roles/. Gemeinsame Effekte und Anzeigereihenfolge stehen in roles/cardEffects.ts.
+- We-01-191: roleStep.ts liest rollenspezifische Schrittbeschreibungen aus roles/. Gemeinsame Schritte für Tarnaufruf, Tagesabstimmung und Amulett werden dort weiterhin zusammengesetzt.
+- Die Zustandsmaschine, die Abfolge der Nacht und die zurückgestellten Phasen 4 und 5 sind unverändert.

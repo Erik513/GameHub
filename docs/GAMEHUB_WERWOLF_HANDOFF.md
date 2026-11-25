@@ -1,5 +1,16 @@
 # Werwolf – technischer Einstieg für Claude Code
 
+## Rollenumbau auf game/werewolf-roles (25.11.2026)
+
+Phasen 0 bis 3 sind umgesetzt. Die zuletzt abgeschlossenen Aufgaben sind We-01-190 (Rollenkarte) und We-01-191 (Erzählschritte).
+
+- Für rollenspezifische Kartenfähigkeiten, Effekte und Schrittbeschreibungen in der jeweiligen Datei unter src/business/games/werewolf/roles/ beginnen. Die Felder heißen cardAbilities, cardEffects und steps.
+- describeNarratorCard in narratorCard.ts setzt die Karte zusammen. roles/cardEffects.ts definiert die Reihenfolge und gemeinsame Effekte. describeRoleStep in roleStep.ts ergänzt gemeinsame Schritte wie Tarnaufruf, Amulett und Abstimmung.
+- Spielregeln und Nachtreihenfolge laufen weiterhin über die bisherigen Dateien. Die Oberfläche verwendet dieselben Rückgabestrukturen. Bei einem weiteren Umbau sind die Rollentabellen in Business und Presentation sowie narratorCard.test.ts und roleStep.test.ts die ersten Vergleichstests.
+- Phase 4 (Mindestspielerzahlen und Rollenoptionen) und Phase 5 (Spielerzustände zentral ableiten) sind zurückgestellt. Der [Umbauplan](GAMEHUB_WERWOLF_ROLLEN_UMBAU_PLAN.md) beschreibt ihren Umfang.
+
+Die vollständige Suite lief mit 1.784 bestandenen Tests durch. Die 28 gezielten Tests bestanden erneut nach den letzten Anpassungen.
+
 ## Angleichung an Stimmenzahlen und letzten Jägerschuss (We-03-71, 23.11.2026)
 
 We-03-71 abgeschlossen: Forschungssimulation verwendet voteCount statt erzwungener Verurteilung bei einem Nominierten. Stimmengewichte und Ja/Nein-Mehrheit stimmen mit der Erzähleransicht überein; alte benannte Stimmen werden nach einer Stimmenzahl-Abstimmung nicht als aktuelle Abstimmende protokolliert. lastShot für den betrunkenen Jäger abgesichert. 84 gezielte Tests und 24 kurze Modellpartien bestanden; keine langen Balance-Läufe.

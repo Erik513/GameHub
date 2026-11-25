@@ -1827,3 +1827,8 @@ GameHub unterstützt mehrere unabhängige Online-Partien gleichzeitig. Jede Lobb
 Die Person, die eine Lobby erstellt, hostet die Partie auf ihrem eigenen Gerät. Der erste Einsatz ist im selben WLAN vorgesehen. Der Beitritt soll ohne Konto, Abo, Zahlungskarte oder kostenpflichtigen Dienst funktionieren.
 
 [Technischer Prüfplan](GAMEHUB_MULTIPLAYER.md).
+
+
+### 2026-11-25 – Werwolf-Rollenumbau Phase 2 und 3
+
+Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifische Effekte der Erzählerkarte sowie die Beschreibungen der Nacht- und Jägerschritte stehen in den Rollendefinitionen. Die bestehenden Abläufe und gespeicherten Rollentabellen sind unverändert. 1.784 Tests im vollständigen Lauf bestanden. Nach der typisierten Zusammenführung der Schritte wurden die 28 betroffenen Tests erneut ausgeführt. Typ-, Lint-, Format- und Schichtprüfung sowie Produktionsbuild erfolgreich.

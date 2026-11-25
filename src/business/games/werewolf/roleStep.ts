@@ -1,5 +1,6 @@
+import { roleDefinitions } from "./roles";
+import { describeDefinedStep, pick, spec, type RoleSteps } from "./roles/step";
 import { describeNarratorCard } from "./narratorCard";
-import { validTargets } from "./selectors";
 import type { WerewolfState } from "./stateMachine";
 
 /**
@@ -124,196 +125,42 @@ export interface RoleStepSpec {
   readonly statement?: "noAttack";
 }
 
-const spec = (
-  variant: RoleStepVariant,
-  kind: RoleStepSpec["kind"],
-  more: Partial<Pick<RoleStepSpec, "showsVictim" | "skip" | "skippable" | "statement">> = {},
-): RoleStepSpec => ({
-  kind,
-  showsVictim: false,
-  skip: { label: "skip", summary: "noChoice" },
-  skippable: false,
-  variant,
-  ...more,
-});
+const roleSteps = Object.values(roleDefinitions).reduce<RoleSteps>(
+  (steps, role) => ({ ...steps, ...role.steps }),
+  {},
+);
 
 /** How the guide shows the step of the game that is about to be played. */
 export function describeRoleStep(state: WerewolfState): RoleStepSpec {
-  const base = baseStep(state);
-  const pick = pickOf(state, base.skippable);
-  const compound = compoundOf(state);
-  const confirm = confirmOf(state);
-  const result = resultOf(state);
-  return {
-    ...base,
-    ...(compound ? { compound } : {}),
-    ...(confirm ? { confirm } : {}),
-    ...(pick ? { pick } : {}),
-    ...(result ? { result } : {}),
-  };
-}
-
-function pickOf(state: WerewolfState, skippable: boolean): PickSpec | undefined {
-  const one = (event: PickEvent, more: Partial<PickSpec> = {}): PickSpec => ({
-    event,
-    nobody: false,
-    skipTarget: null,
-    ...more,
-  });
-  switch (state.status) {
-    case "wolves":
-      // Only an attack names a person; the first night without attack is a step of its own.
-      return state.night === 1 && !state.settings.attackOnFirstNight ? undefined : one("attack");
-    case "seer":
-      return one("inspect");
-    case "investigator":
-      return one("investigate");
-    case "bodyguard":
-      return one("protect");
-    case "nightGuest":
-      return one("stayWith");
-    case "mayor":
-      return one("hammer");
-    case "spellcaster":
-      return one("silence");
-    case "hunter":
-      return one("shot");
-    case "amuletPass":
-      // Keeping the amulet: the holder is his own target; he is not in the list of people then.
-      return one("passAmulet", {
-        skipTarget: state.amulet.holder,
-        ...(skippable ? { excludes: state.amulet.holder } : {}),
-      });
-    default:
-      return undefined;
-  }
-}
-
-function compoundOf(state: WerewolfState): CompoundEvent | undefined {
-  switch (state.status) {
-    case "witch":
-      return "potions";
-    case "magician":
-      return "castSpells";
-    case "cupid":
-      return "bond";
-    case "day":
-      return "nominate";
-    case "vote":
-      return "vote";
-    default:
-      return undefined;
-  }
-}
-
-function confirmOf(state: WerewolfState): ConfirmEvent | undefined {
-  switch (state.status) {
-    case "nightCall":
-      return "acknowledgeCall";
-    case "lovers":
-      return "loversReady";
-    case "drunkReveal":
-    case "drunkHunter":
-      return "drunkReady";
-    case "vision":
-      return "closeVision";
-    case "investigation":
-      return "closeInvestigation";
-    case "morning":
-      return "announceMorning";
-    case "exile":
-      return "announceExile";
-    case "wolves":
-      // Without an attack in the first night the wolves only get to know each other.
-      return state.night === 1 && !state.settings.attackOnFirstNight ? "wolvesReady" : undefined;
-    default:
-      return undefined;
-  }
-}
-
-function resultOf(state: WerewolfState): RoleStepSpec["result"] {
-  if (state.status === "vision")
-    return { ability: "inspect", found: state.isWolf, name: state.target };
-  if (state.status === "investigation")
-    return { ability: "investigate", found: state.isWolfNearby, name: state.target };
-  return undefined;
-}
-
-function baseStep(state: WerewolfState): RoleStepSpec {
   const usable =
     describeNarratorCard(state)?.abilities.some((ability) => ability.available) ?? false;
+  const defined = describeDefinedStep(roleSteps, state, usable);
+  if (defined) return defined;
   switch (state.status) {
     case "nightCall":
-      // The drunk behind the call cannot act, but the narrator enters something all the same: "skip" (undoable).
-      return spec("cover", "choose", { skippable: true });
-    case "wolves":
-      return state.night === 1 && !state.settings.attackOnFirstNight
-        ? spec("wolvesNoAttack", "info", { statement: "noAttack" })
-        : // Nobody is not a choice in the list: the wolves who do not attack skip the step.
-          // The werewolves have to attack: they cannot skip.
-          spec("wolvesAttack", "choose");
-    case "seer":
-      return spec("seerChoose", "choose");
-    case "vision":
-      return spec("seerResult", "result");
-    case "investigator":
-      return usable
-        ? spec("investigatorChoose", "choose", { skippable: true })
-        : // Used up: the narrator asks the same question and skips it (the same script as before).
-          spec("investigatorUsed", "choose", { skippable: true });
-    case "investigation":
-      return spec("investigatorResult", "result");
-    case "witch":
-      return usable
-        ? spec("witchPotions", "choose", { showsVictim: true, skippable: true })
-        : // Nothing to use, but both questions are asked all the same: "skip" answers them.
-          spec("witchEmpty", "info", { showsVictim: true, skippable: true });
-    case "magician":
-      return usable
-        ? spec("magicianSpells", "choose", { showsVictim: true, skippable: true })
-        : spec("magicianEmpty", "info", { showsVictim: true, skippable: true });
-    case "bodyguard":
-      return spec("bodyguardProtect", "choose");
-    case "nightGuest":
-      return spec("nightGuestStay", "choose");
-    case "cupid":
-      return spec("cupidBond", "choose");
-    case "spellcaster":
-      // The old hag has to silence somebody; only when nobody can be chosen (very rare) the step may be skipped.
-      return spec("spellcasterSilence", "choose", {
-        skippable: validTargets(state, "silence").length === 0,
-      });
-    case "mayor":
-      return usable
-        ? spec("mayorHammer", "choose", { skippable: true })
-        : // Used up: the narrator asks the same question and skips it (the same script as before).
-          spec("mayorUnavailable", "choose", { skippable: true });
-    case "hunter":
-    case "drunkHunter":
-      // The setting decides: the hunter may leave the shot out, or has to shoot.
-      return state.settings.hunterShot === "required"
-        ? spec("hunterRequired", "choose")
-        : spec("hunterOptional", "choose", { skippable: true });
-    case "lovers":
-      return spec("loversInfo", "info");
-    case "drunkReveal":
-      return spec("drunkInfo", "info");
-    case "amuletPass":
-      // After an attack the holder has to pass the amulet on; otherwise he may keep it (the logic takes himself as the target).
+      return spec("cover", "choose", { skippable: true, confirm: "acknowledgeCall" });
+    case "amuletPass": {
+      const offer = { ...pick("passAmulet"), skipTarget: state.amulet.holder };
       return state.amulet.mustPass
-        ? spec("amuletPassMust", "choose")
+        ? spec("amuletPassMust", "choose", { pick: offer })
         : spec("amuletPassMay", "choose", {
             skip: { label: "keep", summary: "kept" },
             skippable: true,
+            pick: { ...offer, excludes: state.amulet.holder },
           });
+    }
     case "day":
-      // The vote is not compulsory: next to the button "vote" there is the button "no vote", which ends the day.
       return spec("day", "day", {
         skip: { label: "noVote", summary: "noChoice" },
         skippable: true,
+        compound: "nominate",
       });
     case "vote":
-      return spec("vote", "day");
+      return spec("vote", "day", { compound: "vote" });
+    case "morning":
+      return spec("plain", "plain", { confirm: "announceMorning" });
+    case "exile":
+      return spec("plain", "plain", { confirm: "announceExile" });
     default:
       return spec("plain", "plain");
   }

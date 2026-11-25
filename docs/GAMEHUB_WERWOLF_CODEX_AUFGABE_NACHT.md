@@ -385,3 +385,12 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Verzeichnis der Rollen (2026-11-25, Claude, We-01-189, Branch game/werewolf-roles)
 
 - Neu: `src/business/games/werewolf/roles/` mit einer `RoleDefinition` je Rolle (`abilities`, `variant`). `roleVariantOf` (roleVariant.ts) und `abilitiesOfRole`/`variantOfRole` (roleAbilities.ts) lesen daraus. Keine Regeländerung, kein Zustandsfeld. Phase 2 (`narratorCard.ts` aus den Definitionen) und Phase 3 (`roleStep.ts`) sind geplant; bitte vorher melden, falls an diesen Dateien gearbeitet wird.
+
+
+## Rollenumbau Phase 2 und 3 (2026-11-25, Codex)
+
+Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifische Effekte der Erzählerkarte sowie die Beschreibungen der Nacht- und Jägerschritte stehen in den Rollendefinitionen. Die bestehenden Abläufe und gespeicherten Rollentabellen sind unverändert. 1.784 Tests im vollständigen Lauf bestanden. Nach der typisierten Zusammenführung der Schritte wurden die 28 betroffenen Tests erneut ausgeführt. Typ-, Lint-, Format- und Schichtprüfung sowie Produktionsbuild erfolgreich.
+
+- We-01-190: narratorCard.ts liest Fähigkeiten und Effekte aus roles/. Gemeinsame Effekte und Anzeigereihenfolge stehen in roles/cardEffects.ts.
+- We-01-191: roleStep.ts liest rollenspezifische Schrittbeschreibungen aus roles/. Gemeinsame Schritte für Tarnaufruf, Tagesabstimmung und Amulett werden dort weiterhin zusammengesetzt.
+- Die Zustandsmaschine, die Abfolge der Nacht und die zurückgestellten Phasen 4 und 5 sind unverändert.
