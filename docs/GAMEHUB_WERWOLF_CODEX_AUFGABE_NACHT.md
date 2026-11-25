@@ -381,3 +381,7 @@ Bei `voteCount` mit **einer** nominierten Person trägt der Erzähler nur die **
 ## Heilzauber des Magiers (2026-11-25, Claude, We-01-187)
 
 - Neues Feld `Match.spellHealedPlayer: string | null`. Es wird beim Ereignis `castSpells` mit `heal` auf den Namen von `wolfTarget` gesetzt und beim Beginn der nächsten Nacht (zusammen mit `healedPlayer`) zurückgesetzt. `healedPlayer` gehört jetzt nur noch der Hexe (`potions`). `describePlayers`: Feld `spellHealed`; `CardEffect` kennt `spellHealed`. Keine Regeländerung.
+
+## Verzeichnis der Rollen (2026-11-25, Claude, We-01-189, Branch game/werewolf-roles)
+
+- Neu: `src/business/games/werewolf/roles/` mit einer `RoleDefinition` je Rolle (`abilities`, `variant`). `roleVariantOf` (roleVariant.ts) und `abilitiesOfRole`/`variantOfRole` (roleAbilities.ts) lesen daraus. Keine Regeländerung, kein Zustandsfeld. Phase 2 (`narratorCard.ts` aus den Definitionen) und Phase 3 (`roleStep.ts`) sind geplant; bitte vorher melden, falls an diesen Dateien gearbeitet wird.

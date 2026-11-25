@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 392,
-      "totalTasks": 448,
-      "percent": 87.5
+      "completedTasks": 394,
+      "totalTasks": 452,
+      "percent": 87.2
     }
   },
   "environment": {
@@ -2155,6 +2155,28 @@
           "title": "Magier: Zustand Durch Heilzauber gerettet",
           "status": "done",
           "validation": "Die vom Magier mit dem Heilzauber gerettete Person trägt das Herz mit Plus ohne Kreis im grünen Slot (Zustand Durch Heilzauber gerettet, getrennt vom Zustand Geheilt der Hexe, der die Flasche mit Plus ist); neues Feld spellHealedPlayer bis zur nächsten Nacht; Rolle Magier (Zauberstab) und Fähigkeiten unverändert; Test in overviewUpdate.test.ts; tsc und betroffene Tests grün; nicht im Browser angesehen, Sichtprüfung des Auftraggebers steht aus."
+        },
+        {
+          "id": "We-01-188",
+          "title": "Rollen-Umbau Phase 0: Absicherungstest",
+          "status": "done",
+          "validation": "Zwei Snapshot-Tests (roleTable.test.ts in Business und Präsentation) halten die Tabelle der Knöpfe, Markierungen, Varianten, Zeichen und Legende aller Rollen fest; zweimal ausgeführt, stabil; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-189",
+          "title": "Rollen-Umbau Phase 1: Verzeichnis roles/ mit einer Definition pro Rolle",
+          "status": "done",
+          "validation": "src/business/games/werewolf/roles/ (types, define, eine Datei je Rolle, index) hält Fähigkeiten mit Zeichen und Variante je Rolle; roleAbilities.ts (abilitiesOfRole, variantOfRole) und roleVariant.ts lesen daraus; alle 849 Tests der Werwolf-Ordner und die Snapshots unverändert grün, Schichtprüfung grün; common.ts folgt erst, wenn Phase 2 oder 5 es braucht."
+        },
+        {
+          "id": "We-01-190",
+          "title": "Rollen-Umbau Phase 2: Rollenkarte aus den Definitionen",
+          "status": "planned"
+        },
+        {
+          "id": "We-01-191",
+          "title": "Rollen-Umbau Phase 3: Schritte aus den Definitionen",
+          "status": "planned"
         }
       ]
     },

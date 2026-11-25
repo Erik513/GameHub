@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Rollen-Umbau, Branch game/werewolf-roles)
+
+### We-01-188 und We-01-189: Absicherung und Verzeichnis der Rollen (Claude)
+
+- Phase 0: zwei Snapshot-Tests (`roleTable.test.ts`) halten fest, was jede Rolle zeigt. Phase 1: `src/business/games/werewolf/roles/` mit einer Definition pro Rolle (Fähigkeiten mit Zeichen, Variante); `roleAbilities.ts` und `roleVariant.ts` lesen daraus. Verhalten unverändert, alle Tests und Snapshots grün. Phase 2 (Rollenkarte) und 3 (Schritte) stehen aus und berühren Logikdateien.
+
 ## 2026-11-25 (Magier)
 
 ### We-01-187: Magier, Zustand Durch Heilzauber gerettet (Claude)
