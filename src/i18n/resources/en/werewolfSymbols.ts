@@ -3,7 +3,7 @@ export const werewolfSymbolsTexts = {
   werewolfSymbols: {
     tab: "Symbols",
     intro:
-      "The narrator shows you these symbols when a role wakes up or a person is affected. The same meaning always has the same sign. A role is drawn as it is; its ability stands in a circle. A green ability can be used now; one that is struck through is used up for good; one with a dashed amber frame is not possible right now; a dimmed one is not its turn yet. A blue frame marks the next step, yellow boxes are notes for you (for example who is silenced today), and the blue box below sums a decision up once more. The closed and open eye shows the cause of death of the dead only on a tap.",
+      "The narrator shows you these symbols when a role wakes up or a person is affected. The same meaning always has the same sign. A role is drawn as it is; its ability stands in a circle. A green ability can be used now; one that is struck through is used up for good; one with a dashed amber frame is not possible right now; a dimmed one is not its turn yet. A blue frame marks the next step, yellow boxes are notes for you (for example who is silenced today), and the blue box below sums a decision up once more. The closed and open eye shows the cause of death of the dead only on a tap. On the role card and in “All players and roles” the states stand as colored boxes in a fixed order from the right: first the lasting ones (the drunk at the very right, then the amulet), the ones of the night to the left of them. A person who is out has the gravestone at the very right and the cause of death in its color next to it (the vote yellow, the shot of the hunter brown); a tanner who has won has a gold trophy between them.",
     credits:
       'Wolf head: "Wolf head" by Lorc, witch: "Witch face" by Cathelineau, hunter: "Blunderbuss" by Lorc, all game-icons.net, license CC BY 3.0. Other drawings: Tabler Icons, MIT license.',
     abilities: {
@@ -187,7 +187,7 @@ export const werewolfSymbolsTexts = {
       },
       tanner: {
         name: "Tanner",
-        meaning: "Trophy: wins if he dies",
+        meaning: "Trophy: wins if he dies (with the option, only by the vote)",
       },
       toughGuy: {
         name: "Tough guy",

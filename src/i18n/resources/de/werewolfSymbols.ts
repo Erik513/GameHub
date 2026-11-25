@@ -3,7 +3,7 @@ export const werewolfSymbolsTexts = {
   werewolfSymbols: {
     tab: "Symbole",
     intro:
-      "Diese Symbole zeigt dir der Erzähler, wenn eine Rolle aufwacht oder eine Person betroffen ist. Gleiche Bedeutung heißt gleiches Zeichen. Eine Rolle steht frei, ihre Fähigkeit im Kreis. Eine grüne Fähigkeit kannst du jetzt nutzen; eine durchgestrichene ist verbraucht; eine mit gelb gestricheltem Rahmen geht gerade nicht; eine abgedunkelte ist noch nicht dran. Ein blauer Rahmen zeigt den nächsten Schritt, gelbe Kästen sind Hinweise für dich (zum Beispiel wer heute stumm ist), die blaue Box unten fasst eine Entscheidung noch einmal zusammen. Das geschlossene und offene Auge zeigt bei den Toten die Todesursache nur auf Antippen.",
+      "Diese Symbole zeigt dir der Erzähler, wenn eine Rolle aufwacht oder eine Person betroffen ist. Gleiche Bedeutung heißt gleiches Zeichen. Eine Rolle steht frei, ihre Fähigkeit im Kreis. Eine grüne Fähigkeit kannst du jetzt nutzen; eine durchgestrichene ist verbraucht; eine mit gelb gestricheltem Rahmen geht gerade nicht; eine abgedunkelte ist noch nicht dran. Ein blauer Rahmen zeigt den nächsten Schritt, gelbe Kästen sind Hinweise für dich (zum Beispiel wer heute stumm ist), die blaue Box unten fasst eine Entscheidung noch einmal zusammen. Das geschlossene und offene Auge zeigt bei den Toten die Todesursache nur auf Antippen. Auf der Rollenkarte und in „Alle Spieler und Rollen“ stehen die Zustände als farbige Felder in fester Reihenfolge von rechts: zuerst die bleibenden (Trunkenbold ganz rechts, dann Amulett), links daneben die der Nacht. Bei Ausgeschiedenen steht ganz rechts der Grabstein, daneben der Todesgrund in seiner Farbe (die Abstimmung gelb, der Schuss des Jägers braun); der Gerber, der gewonnen hat, trägt dazwischen einen goldenen Pokal.",
     credits:
       "Wolfskopf: „Wolf head“ von Lorc, Hexe: „Witch face“ von Cathelineau, Jäger: „Blunderbuss“ von Lorc, alle game-icons.net, Lizenz CC BY 3.0. Übrige Zeichnungen: Tabler Icons, Lizenz MIT.",
     abilities: {
@@ -187,7 +187,7 @@ export const werewolfSymbolsTexts = {
       },
       tanner: {
         name: "Gerber",
-        meaning: "Pokal: gewinnt, wenn er stirbt",
+        meaning: "Pokal: gewinnt, wenn er stirbt (je nach Option nur durch Abstimmung)",
       },
       toughGuy: {
         name: "Harter Bursche",

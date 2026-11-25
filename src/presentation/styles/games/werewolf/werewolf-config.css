@@ -1061,3 +1061,14 @@
   padding-inline: var(--space-1);
   font-size: var(--text-xs);
 }
+
+/* A state in the legend of the rules: its colored slot, as large as a symbol without a slot. */
+.ww-legend__slot {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+}

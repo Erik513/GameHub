@@ -140,6 +140,9 @@ it.each(["de", "en"] as const)(
     expect(panel.querySelectorAll(".ww-legend__item")).toHaveLength(50);
     expect(panel.querySelectorAll(".ww-legend__item svg")).toHaveLength(50);
     expect(panel.querySelector('[data-symbol="wolf"]')).not.toBeNull();
+    // Every state is drawn in its colored slot, as in the game (18 states).
+    expect(panel.querySelectorAll(".ww-legend__slot")).toHaveLength(18);
+    expect(panel.querySelector('.ww-legend__slot [data-symbol="poisoned"]')).not.toBeNull();
     expect(panel.querySelectorAll(".ww-legend__item svg[data-ring]")).toHaveLength(14);
     expect(panel.querySelector(".ww-legend__credits")).toHaveTextContent("CC BY 3.0");
   },

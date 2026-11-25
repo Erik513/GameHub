@@ -48,7 +48,7 @@ export const werewolfRulesTexts = {
         'You only set limits, the app draws the line-up at the start. Every role and every extra stands in one of three boxes: Must be in the game, May be in the game or Should not be in the game. Drag them into a box or tap them. Extras are bluish.\nMust: These roles always play.\nMay: The draw takes from these. With "At least" and "At most" you set how many of these special roles play; every number in between is equally likely. "At most" is at least 1 while roles are on "May"; "At least" stays below the number of these roles, as drawing all of them would be "Must".\nEvery role on "May" has the same chance. If both options of a role are on "May", one is drawn; the bodyguard and the night guest count as one role, and so do the witch and the magician where they may not play together.\nExtras on "May" are drawn one by one, each with the same chance to be in the game or not.\nShould not: These roles never play.\nIf several wolf counts are chosen, the wolf count is drawn, too.\nAt night the narrator wakes only the roles that are really in the game.',
       toolsTitle: "Helps in the app",
       tools:
-        "Wake-up order: Shows in which order the narrator wakes the roles at night.\nShow seat circle: Shows the seating order as a circle.\nInfo buttons: Every role and every extra explains itself.",
+        "Wake-up order: Shows in which order the narrator wakes the roles at night.\nShow seat circle: Shows the seating order as a circle.\nInfo buttons: Every role and every extra explains itself.\nAll players and roles: Shows the narrator during the game every person with their role, their states, the gravestone and the cause of death; the legend below explains only what is shown right now.",
     },
   },
 };

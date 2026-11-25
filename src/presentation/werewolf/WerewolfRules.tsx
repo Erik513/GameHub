@@ -6,7 +6,13 @@ import { ConfigInfoParts, type ConfigInfoId } from "./ConfigInfo";
 import { teamOf } from "./roleTeam";
 import { abilityLegend, legendHidden, symbolGroups, symbols } from "./symbols/catalog";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
+import { slotStyle } from "./symbols/stateLook";
+import { stateIds } from "../../business/games/werewolf/roles/stateIds";
+import type { CardEffect } from "../../business/games/werewolf/narratorCard";
 import { symbolOfInfo } from "./infoSymbol";
+
+/** Whether a symbol is a state of a person (drawn in its colored slot). */
+const isState = (id: string): id is CardEffect => (stateIds as readonly string[]).includes(id);
 
 interface WerewolfRulesDialogProps {
   onClose: () => void;
@@ -152,7 +158,14 @@ export function WerewolfRulesDialog({ onClose, open }: WerewolfRulesDialogProps)
                 .filter((entry) => entry.group === group && !legendHidden.has(entry.id))
                 .map((entry) => (
                   <li className="ww-legend__item" key={entry.id}>
-                    <WerewolfSymbol id={entry.id} size={28} />
+                    {/* A state is drawn as in the game: in its colored slot. */}
+                    {isState(entry.id) ? (
+                      <span className="ww-slot ww-legend__slot" style={slotStyle(entry.id)}>
+                        <WerewolfSymbol id={entry.id} size={20} />
+                      </span>
+                    ) : (
+                      <WerewolfSymbol id={entry.id} size={28} />
+                    )}
                     <span>
                       <strong>{t(`werewolfSymbols.items.${entry.id}.name`)}</strong>
                       <small>{t(`werewolfSymbols.items.${entry.id}.meaning`)}</small>
