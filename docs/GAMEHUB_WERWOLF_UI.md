@@ -805,3 +805,10 @@ Der Morgen zeigt die Slots der Nacht (Gift, Angriff, Schutz, Übernachtungsgast,
 ## Wann Zustände verschwinden (Beschluss vom 25.11.2026, We-01-197)
 
 Zu Beginn jeder Nacht verschwinden: Angegriffen, Vergiftet, Vom Hammer / Todeszauber getroffen, Geschützt, Übernachtungsgast, die gerettet-Zustände, Geheilt, Durch Heilzauber gerettet und Stumm (Stumm gilt für den Tag nach der Wahl). Sie erscheinen erst wieder, wenn in der neuen Nacht neu gewählt wurde. Bleibend sind: Angesehen und Untersucht (bis Seherin beziehungsweise Ermittler ausscheidet), Verliebt, Amulett, Trunkenbold und Doppelte Stimme (solange es gilt).
+
+
+## Legende in Gruppen (Beschluss vom 25.11.2026, We-01-199)
+
+Die Legende unter „Alle Spieler und Rollen“ und am Spielende ist in Gruppen geteilt, jede mit einer kleinen Überschrift links und einer dünnen Linie dazwischen: **Hintergrund der Zeile**, **Rahmen der Zeile**, **Zustände** (Slots), **Todesursache**, **Varianten der Rollen**. Zustände, Ursachen und Varianten nennen nur, was im Spiel vorkommt; leere Gruppen fallen weg. Auf dem Handy steht die Überschrift über den Einträgen. **Verwundet** ist als Hintergrund **dunkelrot** (#6e1610), Angegriffen bleibt rot.
+
+Auch **Hintergrund und Rahmen** nennen nur, was dieses Spiel haben kann: Lebt, Werwolf, Angegriffen und Tot immer; Gerettet nur mit Leibwächter, Dorfmatratze, Hexe, Magier oder Amulett; Verwundet nur mit dem Harten Burschen; den Amulett-Rahmen nur mit Amulett, den Trunkenbold-Rahmen nur mit Trunkenbold.

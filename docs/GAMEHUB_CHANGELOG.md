@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Legende)
+
+### We-01-199: Legende in Gruppen, Verwundet dunkelrot (Claude)
+
+- Die Legende der Übersicht ist in Gruppen mit Überschrift geteilt: Hintergrund der Zeile, Rahmen der Zeile, Zustände, Todesursache, Varianten der Rollen. Leere Gruppen fallen weg, auf dem Handy steht die Überschrift über den Einträgen. Auch Hintergrund und Rahmen nennen nur, was dieses Spiel haben kann (zum Beispiel Verwundet nur mit dem Harten Burschen, den Amulett-Rahmen nur mit Amulett). Der Hintergrund „Verwundet“ ist dunkelrot, damit er sich von „Angegriffen“ unterscheidet. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Dunkelblau)
 
 ### We-01-198: Geschützt und Übernachtungsgast dunkelblau (Claude)

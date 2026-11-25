@@ -411,3 +411,7 @@ Werwolf-Rollenumbau Phase 2 und 3 abgeschlossen. Fähigkeiten und rollenspezifis
 
 - Neue Felder `Match.protectedNight`, `Match.hostNight`, `Match.silencedNight` (`number | null`): gesetzt bei `protect`, `stayWith` und `silence` (bei `silence` mit Ziel `null` auf `null`). `protectedPlayer`, `hostPlayer` und `silencedPlayer` bleiben wie bisher für die Regel „nicht zweimal hintereinander“ erhalten. Die Anzeige (`describePlayers.silenced`, Effekte `protected`, `protectedSaved`, `guest`, `guestSaved`) gilt nur, wenn die Nacht der Wahl gleich `state.night` ist.
 - Fehler behoben: `healedPlayer` und `spellHealedPlayer` wurden nur im Weg ohne Leibwächter und Dorfmatratze zurückgesetzt; jetzt in `startNight`. Keine Regeländerung.
+
+## Legende je Spiel (2026-11-25, Claude, We-01-199)
+
+- Neu in `selectors.ts`: `legendOf(state)` gibt die Hintergründe (`PlayerTone`) und Rahmen (`PlayerFrame`) zurück, die dieses Spiel haben kann. Nur Anzeige, keine Regeländerung.

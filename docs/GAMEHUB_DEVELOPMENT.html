@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 401,
-      "totalTasks": 457,
-      "percent": 87.7
+      "completedTasks": 402,
+      "totalTasks": 458,
+      "percent": 87.8
     }
   },
   "environment": {
@@ -2442,6 +2442,12 @@
           "title": "Geschützt und Übernachtungsgast dunkelblau",
           "status": "done",
           "validation": "Die Slots Geschützt (Leibwächter) und Übernachtungsgast (Dorfmatratze) sind kräftig dunkelblau (#1e40af; zuerst #16244f, war zu dunkel) statt im Blau der lebenden Zeile (#2c4a8f), damit sie sich von der Zeile abheben; nur Farbwert in tokens.css; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-199",
+          "title": "Legende der Übersicht in Gruppen, Verwundet dunkelrot",
+          "status": "done",
+          "validation": "Die Legende von Alle Spieler und Rollen und vom Spielende ist in Gruppen mit Überschrift geteilt (Hintergrund der Zeile, Rahmen der Zeile, Zustände, Todesursache, Varianten der Rollen), dünne Linie zwischen den Gruppen, leere Gruppen fallen weg, auf dem Handy steht die Überschrift über den Einträgen; Hintergrund und Rahmen nennen nur, was dieses Spiel haben kann (legendOf: Gerettet nur mit Leibwächter, Dorfmatratze, Hexe, Magier oder Amulett, Verwundet nur mit dem Harten Burschen, Rahmen nur mit Amulett beziehungsweise Trunkenbold); Titel Legende/Legend; Texte de/en; der Hintergrund Verwundet ist dunkelrot (#6e1610) statt im Rot von Angegriffen; Tests in PlayerRows.test.tsx und NarratorBar.test.tsx; tsc, ESLint, Prettier und 293 Tests der Werwolf-Ansicht und i18n grün; nicht im Browser angesehen."
         }
       ]
     },
