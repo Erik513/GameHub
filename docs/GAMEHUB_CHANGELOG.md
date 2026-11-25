@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Tränke)
+
+### We-01-228: Tränke der Hexe nicht mehr abgeschnitten (Claude)
+
+- Plus und Minus der Tränke ragten rechts über das Zeichenfeld und wurden abgeschnitten; sie liegen jetzt vollständig darin. Ein neuer Test prüft, dass keine Zeichnung über ihr Feld hinausragt (alle anderen waren in Ordnung). Nicht im Browser angesehen.
+
 ## 2026-11-25 (Rollenverteilung)
 
 ### We-01-227: Weiter erst nach dem Aufdecken blau umrandet (Claude)
