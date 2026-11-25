@@ -446,3 +446,7 @@ Neue Dateien: `roles/roleIds.ts` (Liste aller Rollen, `specialRoleIds`, abgeleit
 ## Verwundet als Zustand (2026-11-25, Claude, We-01-212)
 
 Neuer Zustand `wounded` in `roles/stateIds.ts` (nach `investigated`, vor den Zuständen einer Nacht), Regel in `roles/toughGuy.ts`: `person.delayedDeathNight !== null`. Damit zeigt auch die Rollenkarte den verwundeten Harten Burschen als Slot. In der Übersicht (Präsentation) werden Todesgründe mit Zustand dauerhaft als Slot gezeigt; an Logik und Todesursachen hat sich nichts geändert.
+
+## Siegreicher Gerber in der Ansicht (2026-11-25, Claude, We-01-214)
+
+`describePlayers` (selectors.ts) hat das neue Feld `wonAsTanner`: `tannerWinner === player.name`, bei einer Verkündung (Morgen, Verbannung) aus derselben Probe-Transition wie die angekündigten Ursachen, also schon vor der Bestätigung. Die Logik von `applyDeaths` ist unverändert.

@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 421,
-      "totalTasks": 475,
-      "percent": 88.6
+      "completedTasks": 423,
+      "totalTasks": 477,
+      "percent": 88.7
     }
   },
   "environment": {
@@ -2534,6 +2534,18 @@
           "title": "Todesgrund behält seine Farbe, Verwundet als Zustand",
           "status": "done",
           "validation": "Verwundet (Pflaster des Harten Burschen) ist ein Zustand in roles/stateIds.ts (zwischen den bleibenden und den nächtlichen Zuständen, Regel in roles/toughGuy.ts, Farbe dunkelrot --slot-wounded). In der Übersicht steht der Todesgrund als farbiger Slot seines Zustands neben dem Grabstein, auch nach dem Ende der Nacht (Angriff, Gift, Todeszauber, Hammer auch zurückgefallen, Liebeskummer als Verliebt, Harter Bursche als Verwundet); Abstimmung und Jägerschuss bleiben Zeichen. Mehrere Todesgründe stehen in der festen Reihenfolge der Zustände. Zeichen ohne Slot (Grabstein, Abstimmung) stehen senkrecht mittig zu den Slots. Die Legende zeigt diese Gründe ebenfalls als Slot, und jeder Slot steht dort nur einmal, wo die Zeilen ihn zeigen (als Todesursache neben dem Grabstein oder als Zustand); neuer Test dafür. 917 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-213",
+          "title": "Farbige Slots für Tod durch Abstimmung und Jägerschuss",
+          "status": "done",
+          "validation": "Die beiden Todesgründe ohne eigenen Zustand haben jetzt eine Slotfarbe (stateLook.ts, causeLook): Abstimmung gelb wie der Hammer mit dunklem Zeichen, Jägerschuss braun (neues Token --slot-shot #7a4a1f); Symbole unverändert (Wahlurne, Schusspflicht). In der Übersicht stehen sie als Slot neben dem Grabstein (nach den Gründen mit Zustand, Abstimmung vor Jägerschuss), die Legende ebenso; die Siegeransicht ohne Slots zeigt weiter die Zeichen. Neuer Test für die Abstimmung; 271 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-214",
+          "title": "Siegreicher Gerber: Pokal in der Übersicht, Hinweis am Morgen",
+          "status": "done",
+          "validation": "describePlayers liefert wonAsTanner (aus tannerWinner, bei einer Verkündung schon aus der Probe-Transition). Übersicht: goldener Slot mit dem Gerber-Pokal direkt links neben dem Grabstein, vor dem Todesgrund (Token --slot-won #b8860b), Legende „Gerber hat gewonnen“ / „Tanner has won“. Morgen-Verkündung: Stirbt der Gerber nachts und gewinnt (Einstellung jeder Tod), steht im aufgedeckten Kasten unter den Ursachen der Hinweis „hat gewonnen, Rolle geheim halten“ wie bei der Verbannung. Neuer Test; 920 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4200,7 +4212,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T20:28:53.355Z"
+  "updatedAt": "2026-11-25T20:42:28.903Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

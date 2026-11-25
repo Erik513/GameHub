@@ -1,5 +1,16 @@
 # GameHub Changelog
 
+## 2026-11-25 (Gerber)
+
+### We-01-214: Siegreicher Gerber sichtbar (Claude)
+
+- Übersicht: Der Gerber, der gewonnen hat, bekommt einen goldenen Slot mit seinem Pokal direkt neben dem Grabstein; die Legende erklärt ihn.
+- Morgen: Stirbt der Gerber nachts und gewinnt dadurch, zeigt die Verkündung beim Aufdecken den Hinweis „hat gewonnen, Rolle geheim halten“, wie schon bei der Verbannung. Nicht im Browser angesehen.
+
+### We-01-213: Farbige Slots für Abstimmung und Jägerschuss (Claude)
+
+- Tod durch Abstimmung: gelber Slot wie der Hammer; Tod durch den Jägerschuss: brauner Slot. Beide stehen neben dem Grabstein und in der Legende. Nicht im Browser angesehen.
+
 ## 2026-11-25 (Todesgrund in Farbe)
 
 ### We-01-212: Todesgrund behält seine Farbe, Verwundet als Zustand (Claude)
