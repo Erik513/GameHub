@@ -59,7 +59,7 @@ describe("GameSelectionPage", () => {
     ]);
   });
 
-  it("has no label on a game that can be played and tints its box", async () => {
+  it("tints the box of every game that can be played, and labels only the one in development", async () => {
     await renderWithI18n("en", <GameSelectionPage games={gameCatalog} onSelect={vi.fn()} />);
     const tabooCard = screen.getByRole("heading", { name: "Taboo" }).closest("section")!;
     expect(tabooCard.querySelector(".game-status")).toBeNull();
@@ -67,20 +67,27 @@ describe("GameSelectionPage", () => {
     expect(tabooCard).toHaveAttribute("data-accent", "blue");
     const werewolfCard = screen.getByRole("heading", { name: "Werewolf" }).closest("section")!;
     expect(werewolfCard.querySelector(".game-status")).toHaveTextContent("In development");
-    expect(werewolfCard).not.toHaveAttribute("data-playable");
+    // The game in development can be played, too: its box is tinted like the finished one.
+    expect(werewolfCard).toHaveAttribute("data-playable", "true");
+    const plannedCard = screen.getByRole("heading", { name: "Imposter" }).closest("section")!;
+    expect(plannedCard).not.toHaveAttribute("data-playable");
   });
 
-  it("does not open a game in development in the published app", async () => {
+  it("opens a game in development in the published app, too, with its label", async () => {
     vi.stubEnv("DEV", false);
     try {
       await renderWithI18n("en", <GameSelectionPage games={gameCatalog} onSelect={vi.fn()} />);
+      // The finished game and the game in development come first and can be opened; the planned ones cannot.
       const buttons = screen.getAllByRole("button", { name: "Play" });
       expect(buttons[0]).toBeEnabled();
-      for (const closed of buttons.slice(1)) expect(closed).toBeDisabled();
-      // Games that cannot be opened are darker; the finished game is not.
+      expect(buttons[1]).toBeEnabled();
+      for (const closed of buttons.slice(2)) expect(closed).toBeDisabled();
+      // Games that cannot be opened are darker; the others are not. The game in development keeps its label.
       const cards = screen.getAllByRole("heading", { level: 2 }).map((h) => h.closest("section")!);
       expect(cards[0]).not.toHaveAttribute("data-locked");
-      for (const card of cards.slice(1)) expect(card).toHaveAttribute("data-locked", "true");
+      expect(cards[1]).not.toHaveAttribute("data-locked");
+      expect(cards[1]).toHaveTextContent("In development");
+      for (const card of cards.slice(2)) expect(card).toHaveAttribute("data-locked", "true");
     } finally {
       vi.unstubAllEnvs();
     }

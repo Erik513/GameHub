@@ -60,7 +60,7 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
                 className="game-card"
                 data-accent={game.accent}
                 data-locked={!openable || undefined}
-                data-playable={game.availability === "available" || undefined}
+                data-playable={openable || undefined}
               >
                 <div className="game-card__body">
                   {/* A finished game has no label; only games in development and planned games have one. */}

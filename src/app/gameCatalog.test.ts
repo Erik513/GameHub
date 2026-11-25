@@ -18,14 +18,11 @@ describe("game catalog", () => {
     }
   });
 
-  it("opens finished games always, games in development only while developing, planned never", () => {
-    for (const development of [true, false]) {
-      expect(isGameOpenable({ availability: "available" }, development)).toBe(true);
-      expect(isGameOpenable({ availability: "planned" }, development)).toBe(false);
-    }
-    expect(isGameOpenable({ availability: "preview" }, true)).toBe(true);
-    // The published app does not open a game that is not finished.
-    expect(isGameOpenable({ availability: "preview" }, false)).toBe(false);
+  it("opens finished games and games in development, planned games never", () => {
+    expect(isGameOpenable({ availability: "available" })).toBe(true);
+    // A game in development can be played in the published app, too (it keeps its label).
+    expect(isGameOpenable({ availability: "preview" })).toBe(true);
+    expect(isGameOpenable({ availability: "planned" })).toBe(false);
   });
 
   it("finds registered games by route", () => {
