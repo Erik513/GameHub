@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 437,
-      "totalTasks": 491,
+      "completedTasks": 438,
+      "totalTasks": 492,
       "percent": 89
     }
   },
@@ -2630,6 +2630,12 @@
           "title": "Variabler Modus: einzige Wolfsanzahl lesbar",
           "status": "done",
           "validation": "Fehler am Handy nach dem ersten Push: Gab es im variablen Modus nur eine mögliche Wolfsanzahl (zum Beispiel 10 Spieler), war der Knopf gesperrt, nicht gewählt, halb durchsichtig und gelb umrandet und kaum lesbar. Jetzt wird die einzige Anzahl wie im festen Modus als gewählt (blau gefüllt) und fest gezeigt; Tippen ändert nichts. Ohne Wahl fällt auch „empfohlen“ weg, im variablen wie im festen Modus. Nur Präsentation (WerewolfConfiguration.tsx). Test in VariableRoles.test.tsx angepasst; 276 Werwolf-UI-Tests (neuer Test für „empfohlen“) grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-227",
+          "title": "Rollenverteilung: Weiter erst nach dem Aufdecken blau umrandet",
+          "status": "done",
+          "validation": "Die Karte der Rollenverteilung merkt sich mit data-seen, ob sie einmal aufgedeckt wurde (bleibt beim Zudecken zum Weitergeben); solange die Karte ungesehen ist, hat „Weiter“ keinen blauen Rahmen (CSS mit :has in werewolf-narrator.css). Weiter bleibt bedienbar. Neuer Test in DealCard.test.tsx; 277 Werwolf-UI-Tests grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4296,7 +4302,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T22:44:59.078Z"
+  "updatedAt": "2026-11-25T22:47:09.183Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

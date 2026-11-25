@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Rollenverteilung)
+
+### We-01-227: Weiter erst nach dem Aufdecken blau umrandet (Claude)
+
+- Bei der Rollenverteilung bekommt „Weiter“ den blauen Rahmen erst, wenn die Karte einmal aufgedeckt wurde; vorher ist das Aufdecken der nächste Schritt. Nicht im Browser angesehen.
+
 ## 2026-11-25 (nach dem ersten Push)
 
 ### We-01-226: Einzige Wolfsanzahl im variablen Modus lesbar (Claude)
