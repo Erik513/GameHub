@@ -296,6 +296,13 @@
   overflow-y: auto;
 }
 
+/* In the window the scrollbar of the list sits close to the frame of the window (like the player list), not next to
+   the rows: the list reaches over the right padding of the window and keeps its rows in place with its own padding. */
+.dialog .ww-players > .ww-overview {
+  margin-right: calc(var(--scroll-edge-gap) - var(--space-4) - var(--safe-right));
+  padding-right: calc(var(--space-4) + var(--safe-right) - var(--scroll-edge-gap));
+}
+
 /* At the end of the game the whole box scrolls (winners, then the players); the legend sticks to the bottom edge. */
 .ww-winners .ww-overview__legend {
   position: sticky;
@@ -870,17 +877,15 @@
 }
 
 /* The marks and slots have a line of their own under the name, aligned to the right, so they never cover the name or
-   the role; a row without marks keeps one line. */
+   the role. The line is there in every row, also when it is empty: all rows have the same height, and a row does not
+   grow when a state is added during the game. */
 .ww-overview__marks {
   display: flex;
   flex: 1 0 100%;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 2px;
-}
-
-.ww-overview__marks:empty {
-  display: none;
+  min-height: 18px;
 }
 
 @media (min-width: 40rem) {

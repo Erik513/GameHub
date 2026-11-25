@@ -918,11 +918,8 @@ body:has(.kit-onepage) {
   scroll-snap-align: start;
 }
 
-/* One quiet, thin scrollbar everywhere (instead of the wide system bar). */
-.kit-tabpanel,
-.kit-pane__body,
-.dialog__content,
-.game-library .game-grid {
+/* One quiet, thin scrollbar everywhere (instead of the wide system bar), for every box that scrolls. */
+* {
   scrollbar-color: var(--color-line) transparent;
   scrollbar-width: thin;
 }
