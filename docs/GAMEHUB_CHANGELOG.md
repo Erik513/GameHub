@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-26 (Amulett)
+
+### We-01-234: Amulett behalten oder weitergeben (Claude)
+
+- Der Erzähler fragt den Amulett-Träger wie beim Magier: „Amulett behalten (Daumen) oder weitergeben (zeigen)?“. Muss er es weitergeben, weil es einen Angriff abgefangen hat, heißt es nur „Amulett weitergeben (zeigen)“. Auf der Rollenkarte steht „Behalten“ jetzt grün links, „Weitergeben“ rot rechts. Nicht im Browser angesehen.
+
 ## 2026-11-26 (Rahmen bei Toten)
 
 ### We-01-233: Rahmen von Amulett und Trunkenbold bleiben bei Toten (Claude)
