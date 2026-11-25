@@ -100,10 +100,7 @@ export function tiebreakRows(state: TiebreakData): readonly TiebreakRow[] {
   });
 }
 
-export function roundOption(
-  value: RoundChoice,
-  t: TFunction,
-): ChoiceOption {
+export function roundOption(value: RoundChoice, t: TFunction): ChoiceOption {
   if (value === "unlimited") {
     return {
       value,
@@ -123,10 +120,7 @@ export function roundOption(
 }
 
 /** The names of the lengths of a game of the mode "Auf Zeit": 1, 3 or 5 rounds are short, medium or long. */
-export function raceRoundOption(
-  value: number,
-  t: TFunction,
-): ChoiceOption {
+export function raceRoundOption(value: number, t: TFunction): ChoiceOption {
   const names: Record<number, "short" | "medium" | "long"> = { 1: "short", 3: "medium", 5: "long" };
   const name = names[value];
   return name
