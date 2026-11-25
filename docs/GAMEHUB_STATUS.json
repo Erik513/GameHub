@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 440,
-      "totalTasks": 494,
+      "completedTasks": 441,
+      "totalTasks": 495,
       "percent": 89.1
     }
   },
@@ -2415,6 +2415,12 @@
           "title": "Morgen: Amulett-Platz nur, wenn das Amulett verloren geht",
           "status": "done",
           "validation": "Im aufgedeckten Kasten eines Toten am Morgen stand unten rechts immer ein gestrichelter, meist leerer Platz für das Amulett. Er erscheint jetzt nur, wenn mit diesem Tod das Amulett verloren geht. Tests in NarratorMorning.test.tsx angepasst; 278 Werwolf-UI-Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-230",
+          "title": "Rollenkarte am Handy: Zustände linksbündig",
+          "status": "done",
+          "validation": "Nur CSS: Am Handy (bis 40rem) stehen die Zustände der Rollenkarte in einer eigenen Reihe unter Symbol und Name; sie beginnen jetzt links (erster Zustand der festen Reihenfolge links) statt rechts, damit sie nicht eingerückt wirken. Am PC unverändert rechts neben der Rolle. Nicht im Browser angesehen."
         }
       ]
     },
@@ -4081,5 +4087,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T22:52:39.157Z"
+  "updatedAt": "2026-11-25T22:56:21.336Z"
 }
