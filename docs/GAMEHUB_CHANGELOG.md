@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-25 (Spielende, Knopf)
+
+### We-01-217: Knopf am Spielende heißt „Neues Spiel“ (Claude)
+
+- Statt „Zur Aufstellung“ steht am Spielende „Neues Spiel“ (englisch „New game“); er führt wie bisher ins Hauptmenü des Werwolfs.
+
 ## 2026-11-25 (Legende)
 
 ### We-01-216: Legende der Übersicht nennt nur, was die Zeilen zeigen (Claude)

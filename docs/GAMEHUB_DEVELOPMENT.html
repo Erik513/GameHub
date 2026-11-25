@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 425,
-      "totalTasks": 479,
-      "percent": 88.7
+      "completedTasks": 426,
+      "totalTasks": 480,
+      "percent": 88.8
     }
   },
   "environment": {
@@ -2558,6 +2558,12 @@
           "title": "Legende der Übersicht nennt nur, was die Zeilen zeigen",
           "status": "done",
           "validation": "In „Alle Spieler und Rollen“ nennt die Legende bei Hintergrund und Rahmen nur noch, was in den Zeilen gerade vorkommt (wie schon am Spielende und bei Zuständen, Todesursachen und Varianten); vorher alles, was im Spiel möglich ist. legendOf gibt nur noch die Reihenfolge vor. Test „nur was dieses Spiel haben kann“ ersetzt durch „nur was die Zeilen zeigen“, Sprachtest auf Lebt und Amulett umgestellt; 921 Tests (Werwolf, i18n) grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-217",
+          "title": "Knopf am Spielende heißt „Neues Spiel“",
+          "status": "done",
+          "validation": "Der Knopf am Spielende hieß „Zur Aufstellung“ / „To the line-up“ (interner Name der Ansicht); jetzt „Neues Spiel“ / „New game“. Verhalten unverändert (zurück ins Hauptmenü des Werwolfs, Spieler und Konfiguration bleiben). Werwolf-UI- und i18n-Tests grün."
         }
       ]
     },
@@ -4224,7 +4230,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T21:13:25.647Z"
+  "updatedAt": "2026-11-25T21:15:44.264Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
