@@ -414,7 +414,7 @@
           "id": "Al-09-21",
           "title": "Spielleiste an der Stelle der Kopfzeile so hoch wie die Kopfzeile (e2e-Fehler Tabu-Countdown, kleinstes Handy)",
           "status": "done",
-          "validation": "CI-Fehler nach dem Push von 76a67b5: e2e mobile-layout.spec.ts „the countdown with the automatic team change fits a small phone (tiny phone)“ schlug fehl. Ursache (aus dem Vergleich ermittelt, lokal kein e2e): Die neue Spielleiste (Al-09-19) war an der Stelle der Kopfzeile 64 px hoch statt 61 px (Knöpfe 48 statt 44 px); auf 320×568 fehlte dem Countdown mit allen Konten der Platz. Die Leiste hat dort jetzt die Maße der Kopfzeile: Knöpfe und Status 2.75rem, gleicher Innenabstand, Linie unten, Handybreite. Werwolf (eigene Leiste) unverändert. Unit-Tests, tsc, eslint und prettier grün; Bestätigung durch den e2e-Lauf der CI nach dem Push steht aus."
+          "validation": "CI-Fehler nach dem Push von 76a67b5: e2e mobile-layout.spec.ts „the countdown with the automatic team change fits a small phone (tiny phone)“ schlug fehl. Ursache (aus dem Vergleich ermittelt, lokal kein e2e): Die neue Spielleiste (Al-09-19) war an der Stelle der Kopfzeile 64 px hoch statt 61 px (Knöpfe 48 statt 44 px); auf 320×568 fehlte dem Countdown mit allen Konten der Platz. Die Leiste hat dort jetzt die Maße der Kopfzeile: Knöpfe und Status 2.75rem, gleicher Innenabstand, Linie unten, Handybreite. Werwolf (eigene Leiste) unverändert. Unit-Tests, tsc, eslint und prettier grün; Der CI-Lauf nach dem Push von 508ed67 (mit e2e) ist durchgelaufen."
         }
       ]
     },
@@ -4241,5 +4241,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T23:51:36.540Z"
+  "updatedAt": "2026-11-26T23:58:21.383Z"
 }
