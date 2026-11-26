@@ -8,7 +8,7 @@ import {
   type GameExit,
   type GameRulesAction,
 } from "./GameChrome";
-import { ActionRow, EndGameButton, PlayerRosterButton } from "./game-kit";
+import { ActionRow, GameBar, PlayerRosterButton } from "./game-kit";
 import { SettingsDialog } from "./SettingsDialog";
 import { useSystemBack } from "./useSystemBack";
 
@@ -31,6 +31,8 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
   }, []);
   // What the header shows: a sub page that only catches the Back key of the system keeps the normal header.
   const headerExit = gameExit?.headerUnchanged ? undefined : gameExit;
+  // A running game (no sub page): its bar takes the place of the header.
+  const runningGame = headerExit && !headerExit.back ? headerExit : undefined;
   // The settings window: the Back key of the system closes it and stays where it is (in a game or in the hub).
   useEffect(() => {
     if (!settingsOpen) return;
@@ -100,90 +102,23 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
 
   return (
     <div className="app-shell">
-      <header className="site-header">
-        {gameTitle ? (
-          <p className="brand">
-            <span>{gameTitle}</span>
-          </p>
-        ) : (
-          <a className="brand" href="#/" aria-label="GameHub">
-            <BrandMark />
-            <span>GameHub</span>
-          </a>
-        )}
-        <div className="site-header__actions">
-          {headerExit?.back ? (
+      {runningGame?.ownBar ? null : runningGame ? (
+        <GameBar
+          icon="cards"
+          {...(rulesAction ? { onRules: rulesAction.open } : {})}
+          // While a turn can be paused the game is ended from the pause card, not from the bar.
+          {...(runningGame.pause ? {} : { onEnd: () => runningGame.run() })}
+          status={runningGame.status ?? gameTitle ?? ""}
+        >
+          {runningGame.pause && (
             <Button
-              aria-label={t("navigation.back")}
-              className="icon-button"
-              title={t("navigation.back")}
+              aria-label={t(runningGame.pause.paused ? "navigation.resume" : "navigation.pause")}
+              aria-pressed={runningGame.pause.paused}
+              title={t(runningGame.pause.paused ? "navigation.resume" : "navigation.pause")}
               variant="secondary"
-              onClick={() => headerExit.run()}
+              onClick={runningGame.pause.toggle}
             >
-              <Icon name="arrowLeft" />
-            </Button>
-          ) : headerExit ? (
-            <>
-              {headerExit.pause && (
-                <Button
-                  aria-label={t(headerExit.pause.paused ? "navigation.resume" : "navigation.pause")}
-                  aria-pressed={headerExit.pause.paused}
-                  className="icon-button"
-                  title={t(headerExit.pause.paused ? "navigation.resume" : "navigation.pause")}
-                  variant="secondary"
-                  onClick={headerExit.pause.toggle}
-                >
-                  {headerExit.pause.paused ? (
-                    <svg
-                      aria-hidden="true"
-                      focusable="false"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      width="20"
-                    >
-                      <path d="M7 4.5v15l12-7.5z" fill="currentColor" />
-                    </svg>
-                  ) : (
-                    <svg
-                      aria-hidden="true"
-                      focusable="false"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      width="20"
-                    >
-                      <path
-                        d="M8 5v14M16 5v14"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeWidth="3"
-                      />
-                    </svg>
-                  )}
-                </Button>
-              )}
-              {!headerExit.pause && (
-                <EndGameButton className="icon-button" compact onConfirm={() => headerExit.run()} />
-              )}
-            </>
-          ) : (
-            <>
-              {rulesAction ? (
-                <Button onClick={rulesAction.open} variant="secondary">
-                  <Icon name="book" />
-                  {t("kitSetup.rulesButton")}
-                </Button>
-              ) : gameTitle ? null : (
-                // The player list is managed in the GameHub only, never inside a game.
-                <PlayerRosterButton />
-              )}
-              <Button
-                aria-label={t("settings.open")}
-                className="icon-button"
-                title={t("settings.open")}
-                variant="secondary"
-                onClick={() => setSettingsOpen(true)}
-              >
+              {runningGame.pause.paused ? (
                 <svg
                   aria-hidden="true"
                   focusable="false"
@@ -191,29 +126,107 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
                   viewBox="0 0 24 24"
                   width="20"
                 >
-                  <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <path d="M7 4.5v15l12-7.5z" fill="currentColor" />
+                </svg>
+              ) : (
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  width="20"
+                >
                   <path
-                    d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"
+                    d="M8 5v14M16 5v14"
                     fill="none"
                     stroke="currentColor"
                     strokeLinecap="round"
-                    strokeWidth="2"
-                  />
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="6.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="3"
                   />
                 </svg>
-              </Button>
-              {homeButton}
-            </>
+              )}
+            </Button>
           )}
-        </div>
-      </header>
+        </GameBar>
+      ) : (
+        <header className="site-header">
+          {gameTitle ? (
+            <p className="brand">
+              <span>{gameTitle}</span>
+            </p>
+          ) : (
+            <a className="brand" href="#/" aria-label="GameHub">
+              <BrandMark />
+              <span>GameHub</span>
+            </a>
+          )}
+          <div className="site-header__actions">
+            {headerExit?.back ? (
+              <Button
+                aria-label={t("navigation.back")}
+                className="icon-button"
+                title={t("navigation.back")}
+                variant="secondary"
+                onClick={() => headerExit.run()}
+              >
+                <Icon name="arrowLeft" />
+              </Button>
+            ) : (
+              <>
+                {rulesAction ? (
+                  <Button onClick={rulesAction.open} variant="secondary">
+                    <Icon name="book" />
+                    {t("kitSetup.rulesButton")}
+                  </Button>
+                ) : gameTitle ? null : (
+                  // The player list is managed in the GameHub only, never inside a game.
+                  <PlayerRosterButton />
+                )}
+                <Button
+                  aria-label={t("settings.open")}
+                  className="icon-button"
+                  title={t("settings.open")}
+                  variant="secondary"
+                  onClick={() => setSettingsOpen(true)}
+                >
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    width="20"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="6.5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                </Button>
+                {homeButton}
+              </>
+            )}
+          </div>
+        </header>
+      )}
       <GameChromeContext.Provider value={registerGameExit}>
         <GameRulesContext.Provider value={registerGameRules}>
           <main className="main-content">{children}</main>

@@ -16,6 +16,7 @@ export { RosterPicker } from "./RosterPicker";
 export { RosterRow } from "./RosterRow";
 export { EndGameButton } from "./EndGameButton";
 export { RulesDialog } from "./RulesDialog";
+export { GameBar } from "./GameBar";
 export { ResultList, type ResultRow } from "./ResultList";
 export { RulesSection } from "./RulesSection";
 export { ScoreScreen } from "./ScoreScreen";

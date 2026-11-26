@@ -94,12 +94,22 @@ export function TabooRaceGame({
   // A run and a tiebreak attempt are timed, so both can be paused.
   const attemptGoing =
     running !== undefined || (state.status === "tiebreak" && state.tiebreak.active);
+  // The bar of the running game names the run; after the last run (the tiebreak, the end) the name of the game.
+  const barTurn = getRaceTurn(state);
   useGameExit(
     true,
     onExit,
     attemptGoing && clock
       ? { paused: clock.pausedAt !== undefined, onToggle: togglePause }
       : undefined,
+    barTurn === undefined
+      ? {}
+      : {
+          status: t("tabooRound.roundOf", {
+            round: barTurn.round,
+            total: raceRounds(configuration),
+          }),
+        },
   );
 
   function beginRun() {

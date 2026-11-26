@@ -191,41 +191,12 @@
 }
 
 /* The top bar of the narrator view: sun or moon with the night, the overview, the close button. */
-.ww-bar {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.ww-bar__phase {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-  min-height: 3rem;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-md);
-}
 
 /* The box of the phase carries the time: dark at night, light with dark symbol and writing by day. */
-.ww-bar__phase[data-time="day"] {
+.kit-game-bar__status[data-tone="day"] {
   border-color: transparent;
   background: #f1ece0;
   color: #1d1e23;
-}
-
-.ww-bar__phase .icon {
-  width: 28px;
-  height: 28px;
-}
-
-.ww-bar .button {
-  width: 3rem;
-  min-height: 3rem;
-  margin: 0;
-  padding: 0;
 }
 
 /* The overview of all players and their roles. */
@@ -966,11 +937,6 @@
 }
 
 /* The close button of the bar grows while it waits for the second tap. */
-.ww-bar .confirm-button[data-armed="true"] {
-  width: auto;
-  padding: 0 var(--space-3);
-  gap: var(--space-1);
-}
 
 /* On the covered card the number of the player stands in the top left corner. */
 .ww-deal__count {

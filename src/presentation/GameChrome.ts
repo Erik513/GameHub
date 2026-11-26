@@ -12,6 +12,10 @@ export interface GameExit {
   readonly headerUnchanged?: boolean;
   readonly run: () => void;
   readonly pause?: GamePauseControl;
+  /** Where the game stands, for the bar of the running game (the round …); without it the name of the game. */
+  readonly status?: string;
+  /** The game shows its own bar (made of the same block): the app shows no header while it runs. */
+  readonly ownBar?: boolean;
 }
 
 /**
@@ -33,12 +37,18 @@ interface PauseOptions {
  * hub navigation and settings and offers an "end game" action that returns to the game's main
  * window. A game can additionally expose a pause control (for example during a timed round).
  */
-export function useGameExit(active: boolean, onExit: () => void, pause?: PauseOptions) {
+export function useGameExit(
+  active: boolean,
+  onExit: () => void,
+  pause?: PauseOptions,
+  options: { readonly status?: string; readonly ownBar?: boolean } = {},
+) {
   const register = useContext(GameChromeContext);
   const latestExit = useRef(onExit);
   const latestToggle = useRef(pause?.onToggle);
   const hasPause = pause !== undefined;
   const paused = pause?.paused ?? false;
+  const { status, ownBar = false } = options;
 
   useEffect(() => {
     latestExit.current = onExit;
@@ -50,10 +60,12 @@ export function useGameExit(active: boolean, onExit: () => void, pause?: PauseOp
     const entry: GameExit = {
       run: () => latestExit.current(),
       ...(hasPause ? { pause: { paused, toggle: () => latestToggle.current?.() } } : {}),
+      ...(status === undefined ? {} : { status }),
+      ...(ownBar ? { ownBar: true } : {}),
     };
     register(entry);
     return () => register(undefined, entry);
-  }, [active, hasPause, paused, register]);
+  }, [active, hasPause, ownBar, paused, register, status]);
 }
 
 /**

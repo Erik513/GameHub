@@ -77,7 +77,7 @@ export function WerewolfGame() {
   const [rulesOpen, setRulesOpen] = useState(false);
   useGameRulesButton(true, () => setRulesOpen(true));
   // The Back key of the system asks before it leaves a running game, as in the other games.
-  useGameExit(game.session !== null, game.end);
+  useGameExit(game.session !== null, game.end, undefined, { ownBar: true });
   // The configuration is a sub page of the main menu: the Back key of the system leads back to the main menu of
   // Werewolf, not out of the game. The header stays as it is (the rules stay reachable there).
   useGameBack(configuring && game.session === null, () => setConfiguring(false), {

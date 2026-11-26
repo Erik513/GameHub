@@ -1374,3 +1374,47 @@ body:has(.kit-onepage) {
   padding-inline: var(--space-1);
   font-size: var(--text-xs);
 }
+
+/* The bar of a running game (GameBar): the status at the left takes the room, the square buttons follow. */
+.kit-game-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The bar of a running game in the place of the header of the app: the same edges as the header. */
+.app-shell > .kit-game-bar {
+  padding: calc(var(--space-2) + var(--safe-top)) calc(var(--space-4) + var(--safe-right))
+    var(--space-2) calc(var(--space-4) + var(--safe-left));
+}
+
+.kit-game-bar__status {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+
+.kit-game-bar__status .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.kit-game-bar .button {
+  width: 3rem;
+  min-height: 3rem;
+  margin: 0;
+  padding: 0;
+}
+
+/* "End game" grows while it waits for the second tap. */
+.kit-game-bar .confirm-button[data-armed="true"] {
+  width: auto;
+  padding: 0 var(--space-3);
+  gap: var(--space-1);
+}

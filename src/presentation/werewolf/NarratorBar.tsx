@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
 import { Button, Dialog, Icon } from "../components";
-import { EndGameButton } from "../game-kit";
+import { GameBar } from "../game-kit";
 import { PlayerRows } from "./PlayerRows";
 
 interface NarratorBarProps {
@@ -36,57 +36,27 @@ export function NarratorBar({
   // While the players look at their roles nobody may see all the roles or open the rules: the buttons only appear when
   // the real game begins.
   const dealing = forceDealing || state.status === "roles";
-  const finished = state.status === "finished";
   const label = t(day ? "werewolfNarrator.bar.day" : "werewolfNarrator.bar.night", {
     count: state.night,
   });
   return (
-    <header className="ww-bar">
-      {dealing ? (
-        // The night has not begun yet: no moon and no number of a night while the players look at their roles.
-        <span className="ww-bar__phase">
-          <Icon name="cards" />
-          <strong>{t("werewolfNarrator.bar.dealing")}</strong>
-        </span>
-      ) : finished ? (
-        // The end of the game is its own state, not part of the display of the day and the night.
-        <span className="ww-bar__phase">
-          <Icon name="crown" />
-          <strong>{t("werewolfNarrator.bar.finished")}</strong>
-        </span>
-      ) : (
-        <span
-          aria-label={label}
-          className="ww-bar__phase"
-          data-time={day ? "day" : "night"}
-          role="img"
-        >
-          <Icon name={day ? "sun" : "moon"} />
-          <strong>{label}</strong>
-        </span>
-      )}
+    <GameBar
+      icon={dealing ? "cards" : day ? "sun" : "moon"}
+      onEnd={onClose}
+      {...(dealing ? {} : { onRules, statusLabel: label, tone: day ? "day" : "night" })}
+      status={dealing ? t("werewolfNarrator.bar.dealing") : label}
+    >
+      {/* While the players look at their roles nobody may see all the roles: the button only appears afterwards. */}
       {!dealing && (
-        <>
-          <Button
-            aria-label={t("werewolfNarrator.bar.rules")}
-            onClick={onRules}
-            title={t("werewolfNarrator.bar.rules")}
-            variant="secondary"
-          >
-            <Icon name="book" />
-          </Button>
-          <Button
-            aria-label={t("werewolfNarrator.bar.overview")}
-            onClick={() => setOverview(true)}
-            title={t("werewolfNarrator.bar.overview")}
-            variant="secondary"
-          >
-            <Icon name="users" />
-          </Button>
-        </>
+        <Button
+          aria-label={t("werewolfNarrator.bar.overview")}
+          onClick={() => setOverview(true)}
+          title={t("werewolfNarrator.bar.overview")}
+          variant="secondary"
+        >
+          <Icon name="users" />
+        </Button>
       )}
-      {/* Two taps without a window: the first turns the button red and asks, the second leaves the game. */}
-      <EndGameButton compact onConfirm={onClose} />
       <Dialog
         closeLabel={t("werewolfConfig.infoClose")}
         onClose={() => setOverview(false)}
@@ -100,6 +70,6 @@ export function NarratorBar({
           state={overviewState ?? state}
         />
       </Dialog>
-    </header>
+    </GameBar>
   );
 }

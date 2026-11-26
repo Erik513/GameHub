@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import type { TabooCard, ValidationIssue } from "../../business/games/taboo/model";
 import {
   availableCategories,
@@ -79,6 +80,7 @@ export function TabooSetup({
     hasGenerators: Boolean(generators),
     setIssues,
   });
+  const { t } = useTranslation();
   const game = useTabooClassicGame({ cardLanguage, cards, generators });
   const played = usePlayedCards(cardLanguage);
   const { round, session, setSession } = game;
@@ -159,12 +161,26 @@ export function TabooSetup({
     setSession(undefined);
     setIssues([]);
   }
+  // The bar of the running game names the round; without a round (the tiebreak, the end) the name of the game.
+  const barState = round?.state ?? session?.state;
+  const classicTurn =
+    game.overview?.turn ?? (barState && "turn" in barState ? barState.turn : undefined);
+  const classicStatus =
+    barState && classicTurn
+      ? barState.configuration.roundsPerTeam === "unlimited"
+        ? t("tabooRound.roundOfUnlimited", { round: classicTurn.round })
+        : t("tabooRound.roundOf", {
+            round: classicTurn.round,
+            total: barState.configuration.roundsPerTeam,
+          })
+      : undefined;
   useGameExit(
     Boolean(round) || Boolean(session),
     leaveClassicGame,
     (game.runningTurn || game.tiebreakActive) && round
       ? { paused: round.pausedAt !== undefined, onToggle: game.togglePause }
       : undefined,
+    classicStatus === undefined ? {} : { status: classicStatus },
   );
 
   // At the PC the line-up and the settings are side by side; on a phone the settings are a view of
@@ -295,7 +311,7 @@ export function TabooSetup({
           attempt={attempt}
           formRef={settings.formRef}
           messagesVisible={settingsOnItsOwn}
-          rulesActive={!(round ?? session ?? raceSession ?? countdownSession)}
+          rulesActive
           cardLanguage={cardLanguage}
           categoryIds={categoryIds}
           categoryInfos={categoryInfos}

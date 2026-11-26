@@ -18,7 +18,6 @@ export const werewolfNarratorTexts = {
     },
     bar: {
       dealing: "Rollenverteilung",
-      rules: "Spielregeln",
       day: "Tag {{count}}",
       night: "Nacht {{count}}",
       finished: "Spielende",
