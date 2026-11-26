@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { TabooEndGameButton } from "./TabooEndGameButton";
+import { EndGameButton } from "../game-kit";
 import {
   countSkips,
   type TabooEvent,
@@ -96,7 +96,7 @@ export function TabooRound({
           >
             {t("tabooRound.endRound")}
           </ConfirmButton>
-          <TabooEndGameButton onConfirm={onEndGame} />
+          <EndGameButton onConfirm={onEndGame} />
         </div>
       ) : (
         <div

@@ -35,6 +35,7 @@ export const common = {
     resume: "Resume",
     exitGame: "End game",
     exitGameConfirm: "Tap again to end",
+    exitGameAsk: "End?",
     leaveGameTitle: "End the game?",
     leaveGameText: "The game that is running will be lost.",
     keepPlaying: "Keep playing",

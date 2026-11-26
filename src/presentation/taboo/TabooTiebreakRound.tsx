@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { TabooEndGameButton } from "./TabooEndGameButton";
+import { EndGameButton } from "../game-kit";
 import { useTranslation } from "react-i18next";
 import type { TabooCard } from "../../business/games/taboo/model";
 import {
@@ -111,7 +111,7 @@ export function TabooTiebreakRound({
           >
             {t("tabooTiebreak.endAttempt")}
           </ConfirmButton>
-          <TabooEndGameButton onConfirm={onEndGame} />
+          <EndGameButton onConfirm={onEndGame} />
         </div>
       ) : (
         <div

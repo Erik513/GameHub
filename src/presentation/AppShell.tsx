@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
-import { BrandMark, Button, ConfirmButton, Dialog, Icon } from "./components";
+import { BrandMark, Button, Dialog, Icon } from "./components";
 import {
   GameChromeContext,
   GameRulesContext,
   type GameExit,
   type GameRulesAction,
 } from "./GameChrome";
-import { ActionRow, PlayerRosterButton } from "./game-kit";
+import { ActionRow, EndGameButton, PlayerRosterButton } from "./game-kit";
 import { SettingsDialog } from "./SettingsDialog";
 import { useSystemBack } from "./useSystemBack";
 
@@ -163,49 +163,7 @@ export function AppShell({ children, gameTitle, onCloseGame, onLanguageChange }:
                 </Button>
               )}
               {!headerExit.pause && (
-                <ConfirmButton
-                  armedContent={
-                    <>
-                      <svg
-                        aria-hidden="true"
-                        focusable="false"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        width="20"
-                      >
-                        <path
-                          d="M5 5l14 14M19 5L5 19"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeWidth="2.5"
-                        />
-                      </svg>
-                      <span>{t("navigation.exitGameConfirm")}</span>
-                    </>
-                  }
-                  armedLabel={t("navigation.exitGameConfirm")}
-                  className="icon-button"
-                  idleLabel={t("navigation.exitGame")}
-                  idleVariant="danger"
-                  onConfirm={() => headerExit.run()}
-                >
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    width="20"
-                  >
-                    <path
-                      d="M5 5l14 14M19 5L5 19"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeWidth="2.5"
-                    />
-                  </svg>
-                </ConfirmButton>
+                <EndGameButton className="icon-button" compact onConfirm={() => headerExit.run()} />
               )}
             </>
           ) : (

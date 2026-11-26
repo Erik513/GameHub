@@ -18,7 +18,6 @@ export const werewolfNarratorTexts = {
     },
     bar: {
       dealing: "Rollenverteilung",
-      closeConfirm: "Beenden?",
       rules: "Spielregeln",
       day: "Tag {{count}}",
       night: "Nacht {{count}}",
@@ -45,7 +44,6 @@ export const werewolfNarratorTexts = {
         amulet: "Amulett (bei Toten: starb damit)",
         drunk: "Trunkenbold, kennt seine Rolle noch nicht (bei Toten: starb ohne sie zu kennen)",
       },
-      close: "Spiel beenden",
     },
     cause: {
       wolves: "Wolfsangriff",

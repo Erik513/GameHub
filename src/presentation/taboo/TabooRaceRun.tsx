@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { TabooEndGameButton } from "./TabooEndGameButton";
+import { EndGameButton } from "../game-kit";
 import { useTranslation } from "react-i18next";
 import type { TabooCard } from "../../business/games/taboo/model";
 import type { RaceActive, RaceEvent } from "../../business/games/taboo/race";
@@ -97,7 +97,7 @@ export function TabooRaceRun({
           >
             {t("tabooRace.restartRun")}
           </ConfirmButton>
-          <TabooEndGameButton onConfirm={onEndGame} />
+          <EndGameButton onConfirm={onEndGame} />
         </div>
       ) : (
         <div

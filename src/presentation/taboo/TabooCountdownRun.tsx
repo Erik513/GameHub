@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { TabooEndGameButton } from "./TabooEndGameButton";
+import { EndGameButton } from "../game-kit";
 import { useTranslation } from "react-i18next";
 import type { CountdownActive, CountdownEvent } from "../../business/games/taboo/countdown";
 import type { TabooCard } from "../../business/games/taboo/model";
@@ -115,7 +115,7 @@ export function TabooCountdownRun({
           <Button variant="success" onClick={onResume}>
             {t("navigation.resume")}
           </Button>
-          <TabooEndGameButton onConfirm={onEndGame} />
+          <EndGameButton onConfirm={onEndGame} />
         </div>
       ) : (
         <div

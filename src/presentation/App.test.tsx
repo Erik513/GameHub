@@ -109,6 +109,8 @@ describe("App", () => {
       "data-armed",
       "true",
     );
+    // It asks with the same short word as the bar of Werewolf.
+    expect(screen.getByRole("button", { name: "Tap again to end" })).toHaveTextContent("End?");
     // A quick double tap must not confirm by accident.
     fireEvent.click(screen.getByRole("button", { name: "Tap again to end" }));
     expect(screen.getByRole("region", { name: "Round overview" })).toBeVisible();

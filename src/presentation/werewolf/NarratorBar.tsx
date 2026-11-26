@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
-import { Button, ConfirmButton, Dialog, Icon } from "../components";
+import { Button, Dialog, Icon } from "../components";
+import { EndGameButton } from "../game-kit";
 import { PlayerRows } from "./PlayerRows";
 
 interface NarratorBarProps {
@@ -85,20 +86,7 @@ export function NarratorBar({
         </>
       )}
       {/* Two taps without a window: the first turns the button red and asks, the second leaves the game. */}
-      <ConfirmButton
-        armedContent={
-          <>
-            <Icon name="close" />
-            <span>{t("werewolfNarrator.bar.closeConfirm")}</span>
-          </>
-        }
-        armedLabel={t("navigation.exitGameConfirm")}
-        idleLabel={t("werewolfNarrator.bar.close")}
-        idleVariant="danger"
-        onConfirm={onClose}
-      >
-        <Icon name="close" />
-      </ConfirmButton>
+      <EndGameButton compact onConfirm={onClose} />
       <Dialog
         closeLabel={t("werewolfConfig.infoClose")}
         onClose={() => setOverview(false)}
