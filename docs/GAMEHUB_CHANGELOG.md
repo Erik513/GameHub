@@ -2,6 +2,10 @@
 
 ## 2026-11-26 (Spielgerüst)
 
+### Al-09-19: Eine Spielleiste für jedes laufende Spiel (Claude)
+
+- Werwolf und Taboo zeigen im laufenden Spiel dieselbe Leiste: links der Stand (Tag/Nacht bzw. „Runde 2/5“), daneben Regeln-Symbol, eigene Knöpfe (Übersicht, Pause) und rechts „Spiel beenden“. Taboo hat dafür keine App-Kopfzeile mehr im Spiel. Nicht im Browser angesehen.
+
 ### Al-09-18: Werwolf-Spielende auf der gemeinsamen Ergebnisseite (Claude)
 
 - Das Spielende des Werwolfs sieht jetzt aus wie bei Taboo: „Spielende“, goldener Gewinnerblock mit der Seite, Konfetti, Gewinner und Verlierer mit Legende, unten „Zurück“ und „Neues Spiel“. Nicht im Browser angesehen.

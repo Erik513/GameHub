@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 452,
+      "completedTasks": 453,
       "totalTasks": 512,
-      "percent": 88.3
+      "percent": 88.5
     }
   },
   "environment": {
@@ -401,7 +401,8 @@
         {
           "id": "Al-09-19",
           "title": "Spielgerüst Schritt 4: gemeinsame Spielleiste im laufenden Spiel (Status, Regeln-Symbol, eigene Knöpfe, Spiel beenden) für alle Spiele",
-          "status": "planned"
+          "status": "done",
+          "validation": "Neuer Baustein game-kit/GameBar: links der Stand des Spiels (Symbol und Text), daneben Regeln-Symbol, die eigenen Knöpfe des Spiels und rechts „Spiel beenden“. Die Leiste des Werwolf-Erzählers ist daraus gebaut (Tag/Nacht, Übersicht); ihre Stile heißen jetzt kit-game-bar. Taboo zeigt im laufenden Spiel dieselbe Leiste statt der App-Kopfzeile: „Runde 2/5“ (klassisch und Auf Zeit, sonst der Spielname), Regeln-Symbol, Pause; die Regeln sind im laufenden Spiel erreichbar. Während eine Runde pausiert werden kann, wird wie bisher über die Pausenkarte beendet. Der ungenutzte Text werewolfNarrator.bar.rules entfällt. Neuer Test GameBar.test.tsx (beide Sprachen); alle 1839 Tests, tsc, eslint und prettier grün; nicht im Browser angesehen."
         },
         {
           "id": "Al-09-20",
@@ -4185,5 +4186,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T16:09:29.505Z"
+  "updatedAt": "2026-11-26T16:19:56.923Z"
 }
