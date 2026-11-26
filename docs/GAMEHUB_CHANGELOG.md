@@ -2,6 +2,10 @@
 
 ## 2026-11-26 (Zurück-Taste)
 
+### Al-09-15: Ein Knopf „Spiel beenden“ für alle Spiele (Claude)
+
+- Header, Werwolf-Leiste und Taboo-Pausenkarte nutzen denselben Baustein: rot, erstes Tippen fragt „Beenden?“, zweites Tippen beendet. Nicht im Browser angesehen.
+
 ### Al-09-14: Zurück-Taste schließt offene Fenster (Claude)
 
 - Sind die Einstellungen der App oder die Spielregeln offen, schließt die Zurück-Taste des Handys nur das Fenster, in jedem Spiel und im GameHub. Im laufenden Spiel fragt sie wie bisher „Spiel beenden?“; das ist jetzt auch für den Werwolf durch einen Test abgesichert.

@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 448,
-      "totalTasks": 506,
-      "percent": 88.5
+      "completedTasks": 449,
+      "totalTasks": 512,
+      "percent": 87.7
     }
   },
   "environment": {
@@ -606,6 +606,37 @@
           "title": "Zurück-Taste schließt offene Fenster (Einstellungen, Spielregeln), in jedem Spiel",
           "status": "done",
           "validation": "Ist das Einstellungsfenster der App (Zahnrad) oder das Fenster der Spielregeln (Werwolf, Taboo) offen, schließt die Zurück-Taste des Systems nur das Fenster und bleibt im Spiel beziehungsweise im GameHub, statt das Spiel zu verlassen. AppShell registriert das Einstellungsfenster, WerewolfGame und TabooSetupForm ihre Regelfenster mit useGameBack(..., { headerUnchanged: true }). Im laufenden Spiel fragt die Zurück-Taste wie bisher „Spiel beenden?“ (Weiterspielen oder Spiel beenden, dann zurück ins Hauptmenü des Spiels); dafür gibt es jetzt auch für den Werwolf einen Test. Drei neue Tests in App.test.tsx (Taboo-Einstellungen, Werwolf-Regeln, laufendes Werwolf-Spiel); 650 Tests der Oberfläche und App grün; nicht am Handy geprüft."
+        },
+        {
+          "id": "Al-09-15",
+          "title": "Gemeinsamer Baustein EndGameButton: Spiel beenden einheitlich in allen Spielen",
+          "status": "done",
+          "validation": "Der Knopf „Spiel beenden“ war dreimal einzeln gebaut (X im App-Header, X in der Werwolf-Leiste, Knopf auf der Pausenkarte von Taboo) mit verschiedenen Nachfragen. Jetzt ein Baustein game-kit/EndGameButton (kompakt als X oder mit Text): rot, erstes Tippen fragt „Beenden?“ / „End?“, zweites Tippen beendet; Screenreader hören „Nochmal tippen zum Beenden“. TabooEndGameButton und die doppelten Werwolf-Texte (bar.close, bar.closeConfirm) entfallen; neuer gemeinsamer Text navigation.exitGameAsk de/en. Neuer Test EndGameButton.test.tsx (beide Sprachen, beide Formen); 689 Tests der Oberfläche, App und Übersetzungen grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "Al-09-16",
+          "title": "Spielgerüst Schritt 1: gemeinsames Regelfenster (großes Fenster, Reiter, Abschnitte) für alle Spiele",
+          "status": "planned"
+        },
+        {
+          "id": "Al-09-17",
+          "title": "Spielgerüst Schritt 2: Werwolf-Einstellungen auf die gemeinsame Einstellungsseite (SetupScreen mit Knopf links neben „Fertig“)",
+          "status": "planned"
+        },
+        {
+          "id": "Al-09-18",
+          "title": "Spielgerüst Schritt 3: gemeinsame Ergebnisseite (Gewinner – Seite/Team, Liste, Legende, Neues Spiel) für alle Spiele",
+          "status": "planned"
+        },
+        {
+          "id": "Al-09-19",
+          "title": "Spielgerüst Schritt 4: gemeinsame Spielleiste im laufenden Spiel (Status, Regeln-Symbol, eigene Knöpfe, Spiel beenden) für alle Spiele",
+          "status": "planned"
+        },
+        {
+          "id": "Al-09-20",
+          "title": "Spielgerüst Schritt 5: gemeinsamer Ablauf der Bildschirme (Hauptmenü, Einstellungen, Spiel, Spielende) mit Zurück-Taste",
+          "status": "planned"
         }
       ]
     },
@@ -4384,7 +4415,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-25T23:52:44.489Z"
+  "updatedAt": "2026-11-26T00:02:24.578Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
