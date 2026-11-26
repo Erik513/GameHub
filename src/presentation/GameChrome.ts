@@ -97,6 +97,33 @@ export function useGameBack(
   }, [active, headerUnchanged, register]);
 }
 
+/** The four screens every game is made of. */
+export type GameScreen = "menu" | "setup" | "game" | "end";
+
+/**
+ * The flow of the screens, the same in every game. The game only tells which screen is shown and what "back" means
+ * there; the header and the Back key of the system follow from it:
+ * - main menu: the normal header, the Back key leads to the GameHub;
+ * - settings and end of the game: the normal header, the Back key leads to the main menu of the game, without asking;
+ * - running game: the bar of the game, the Back key asks "End game?" first.
+ */
+export function useGameScreen(
+  screen: GameScreen,
+  onBack: () => void,
+  options: {
+    readonly pause?: PauseOptions | undefined;
+    readonly status?: string | undefined;
+    readonly ownBar?: boolean;
+  } = {},
+) {
+  const { pause, status, ownBar } = options;
+  useGameExit(screen === "game", onBack, pause, {
+    ...(status === undefined ? {} : { status }),
+    ...(ownBar ? { ownBar } : {}),
+  });
+  useGameBack(screen === "setup" || screen === "end", onBack, { headerUnchanged: true });
+}
+
 /** What a game offers for the "Rules" button in the header of its main menu. */
 export interface GameRulesAction {
   readonly open: () => void;

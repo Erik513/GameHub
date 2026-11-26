@@ -15,7 +15,7 @@ import {
   normalizeVariableDraft,
   parseSavedVariableDraft,
 } from "../../business/games/werewolf/variableConfiguration";
-import { useGameBack, useGameExit, useGameRulesButton } from "../GameChrome";
+import { useGameRulesButton, useGameScreen } from "../GameChrome";
 import { usePersistentState } from "../game-kit";
 import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
 import { NarratorView } from "./NarratorView";
@@ -76,13 +76,19 @@ export function WerewolfGame() {
   // The rules stay reachable from the header in both views.
   const [rulesOpen, setRulesOpen] = useState(false);
   useGameRulesButton(true, () => setRulesOpen(true));
-  // The Back key of the system asks before it leaves a running game, as in the other games.
-  useGameExit(game.session !== null, game.end, undefined, { ownBar: true });
-  // The configuration is a sub page of the main menu: the Back key of the system leads back to the main menu of
-  // Werewolf, not out of the game. The header stays as it is (the rules stay reachable there).
-  useGameBack(configuring && game.session === null, () => setConfiguring(false), {
-    headerUnchanged: true,
-  });
+  // The shared flow of the screens: the configuration and the end lead back to the main menu, the running game asks
+  // first. While it runs the narrator shows its own bar.
+  useGameScreen(
+    game.session
+      ? game.session.present.status === "finished"
+        ? "end"
+        : "game"
+      : configuring
+        ? "setup"
+        : "menu",
+    game.session ? game.end : () => setConfiguring(false),
+    { ownBar: true },
+  );
 
   const view = game.session ? (
     <NarratorErrorBoundary>

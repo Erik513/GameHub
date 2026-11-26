@@ -150,9 +150,10 @@ it("shows the card tools on their own page with the back button in the app heade
   expect(header.getByRole("button", { name: "Settings" })).toBeVisible();
   expect(header.getByRole("button", { name: "Close game" })).toBeVisible();
   expect(header.queryByRole("button", { name: "Back" })).not.toBeInTheDocument();
-  // In the game's settings the back button leads to the line-up.
+  // The game's settings keep the normal header, like in every game: "Done" or the Back key lead to the line-up.
   openGameSettings();
-  expect(header.getByRole("button", { name: "Back" })).toBeVisible();
+  expect(header.getByRole("button", { name: "Settings" })).toBeVisible();
+  expect(header.queryByRole("button", { name: "Back" })).not.toBeInTheDocument();
   expect(screen.queryByRole("heading", { name: "Taboo cards" })).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByRole("button", { name: "Categories and cards" }));
@@ -161,12 +162,12 @@ it("shows the card tools on their own page with the back button in the app heade
   expect(header.queryByRole("button", { name: "Settings" })).not.toBeInTheDocument();
   expect(header.queryByRole("button", { name: "Close game" })).not.toBeInTheDocument();
 
-  // Back leads from the card tools to the settings, and from there to the line-up.
+  // Back leads from the card tools to the settings, which show the normal header again.
   fireEvent.click(header.getByRole("button", { name: "Back" }));
   expect(screen.queryByRole("heading", { name: "Taboo cards" })).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Categories and cards" })).toBeVisible();
-  fireEvent.click(header.getByRole("button", { name: "Back" }));
   expect(header.getByRole("button", { name: "Settings" })).toBeVisible();
+  expect(header.queryByRole("button", { name: "Back" })).not.toBeInTheDocument();
 });
 
 it("opens the file chooser from the import button", async () => {

@@ -11,7 +11,7 @@ import type { LineupIssue } from "../../business/shared/lineup";
 import { initialTeamSetup, type TeamSetupValue } from "../../business/shared/teamSetup";
 import type { SupportedLanguage } from "../../i18n";
 import { useNotice } from "../components";
-import { useGameBack, useGameExit } from "../GameChrome";
+import { useGameScreen, type GameScreen } from "../GameChrome";
 import { focusIsLost, useIsDesktop } from "../game-kit";
 import { TabooClassicScreens } from "./TabooClassicScreens";
 import type { TabooGenerators } from "./TabooGeneration";
@@ -174,14 +174,6 @@ export function TabooSetup({
             total: barState.configuration.roundsPerTeam,
           })
       : undefined;
-  useGameExit(
-    Boolean(round) || Boolean(session),
-    leaveClassicGame,
-    (game.runningTurn || game.tiebreakActive) && round
-      ? { paused: round.pausedAt !== undefined, onToggle: game.togglePause }
-      : undefined,
-    classicStatus === undefined ? {} : { status: classicStatus },
-  );
 
   // At the PC the line-up and the settings are side by side; on a phone the settings are a view of
   // their own above the line-up.
@@ -214,11 +206,32 @@ export function TabooSetup({
             ? "preparing"
             : "menu";
   useEffect(() => onScreenChange?.(screen), [onScreenChange, screen]);
-  // In the settings the header offers a way back to the line-up.
-  useGameBack(settingsOnItsOwn, () => {
-    start.abort();
-    settings.setSettingsOpen(false);
-  });
+  // The shared flow of the screens: the settings (on a phone, on their own) and the result lead back to the main
+  // menu, the running classic game asks first. The race and the countdown tell their own screens.
+  const classicEnded = game.finished !== undefined && (!game.finished.tiebreak || game.wrapUpDone);
+  const flowScreen: GameScreen = settingsOnItsOwn
+    ? "setup"
+    : round || session
+      ? classicEnded
+        ? "end"
+        : "game"
+      : "menu";
+  useGameScreen(
+    flowScreen,
+    settingsOnItsOwn
+      ? () => {
+          start.abort();
+          settings.setSettingsOpen(false);
+        }
+      : leaveClassicGame,
+    {
+      pause:
+        (game.runningTurn || game.tiebreakActive) && round
+          ? { paused: round.pausedAt !== undefined, onToggle: game.togglePause }
+          : undefined,
+      status: classicStatus,
+    },
+  );
 
   /** "Done" in the settings: back to the line-up, if the settings are complete. */
   function closeSettings(event: FormEvent<HTMLFormElement>) {

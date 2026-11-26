@@ -14,7 +14,7 @@ import {
 } from "../../business/games/taboo/race";
 import { pickRaceCards, pickRaceReplacement } from "../../business/games/taboo/raceCards";
 import { Button, Toast, useNotice } from "../components";
-import { useGameExit } from "../GameChrome";
+import { useGameScreen } from "../GameChrome";
 import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooAttemptReviews } from "./TabooAttemptReviews";
 import { TabooRaceResults, type RaceRow } from "./TabooRaceResults";
@@ -96,21 +96,16 @@ export function TabooRaceGame({
     running !== undefined || (state.status === "tiebreak" && state.tiebreak.active);
   // The bar of the running game names the run; after the last run (the tiebreak, the end) the name of the game.
   const barTurn = getRaceTurn(state);
-  useGameExit(
-    true,
-    onExit,
-    attemptGoing && clock
-      ? { paused: clock.pausedAt !== undefined, onToggle: togglePause }
-      : undefined,
-    barTurn === undefined
-      ? {}
-      : {
-          status: t("tabooRound.roundOf", {
-            round: barTurn.round,
-            total: raceRounds(configuration),
-          }),
-        },
-  );
+  useGameScreen(state.status === "finished" && resultShown ? "end" : "game", onExit, {
+    pause:
+      attemptGoing && clock
+        ? { paused: clock.pausedAt !== undefined, onToggle: togglePause }
+        : undefined,
+    status:
+      barTurn === undefined
+        ? undefined
+        : t("tabooRound.roundOf", { round: barTurn.round, total: raceRounds(configuration) }),
+  });
 
   function beginRun() {
     const cards = pickRaceCards(

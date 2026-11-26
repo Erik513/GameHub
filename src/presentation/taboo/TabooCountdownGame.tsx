@@ -13,7 +13,7 @@ import {
 } from "../../business/games/taboo/countdownCards";
 import type { Difficulty, TabooCard } from "../../business/games/taboo/model";
 import { Button, Toast, useNotice } from "../components";
-import { useGameExit } from "../GameChrome";
+import { useGameScreen } from "../GameChrome";
 import { ScoreScreen, TurnStrip } from "../game-kit";
 import { TabooCountdownResults } from "./TabooCountdownResults";
 import { TabooCountdownRun } from "./TabooCountdownRun";
@@ -118,11 +118,12 @@ export function TabooCountdownGame({
     });
   }, []);
 
-  useGameExit(
-    true,
-    onExit,
-    running && clock ? { paused: clock.pausedAt !== undefined, onToggle: togglePause } : undefined,
-  );
+  useGameScreen(state.status === "finished" ? "end" : "game", onExit, {
+    pause:
+      running && clock
+        ? { paused: clock.pausedAt !== undefined, onToggle: togglePause }
+        : undefined,
+  });
 
   const played = new Set(state.usedCardIds);
   const teamName = (index: number) => configuration.teams[index]?.name ?? "";

@@ -341,8 +341,11 @@ describe("App", () => {
     for (const category of ["Everyday life", "Culture", "Nature"]) {
       fireEvent.click(screen.getByRole("checkbox", { name: category }));
     }
-    // Leaving the settings with the back arrow does not check them; the game does when it starts.
-    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    // Leaving the settings with the Back key does not check them; the game does when it starts.
+    await act(async () => {
+      window.history.back();
+      await new Promise((resolve) => setTimeout(resolve, 40));
+    });
     expect(screen.getByRole("region", { name: "Line-up" })).toBeVisible();
     fireEvent.click(screen.getByRole("button", { name: "Start game" }));
     expect(screen.getByRole("alert")).toHaveTextContent("Select at least one category.");
