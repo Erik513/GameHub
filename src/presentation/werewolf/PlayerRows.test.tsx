@@ -1,15 +1,14 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
 import { expect, it } from "vitest";
-import { createGuide, describeGuide } from "../../business/games/werewolf/narratorGuide";
-import { createWerewolfSession } from "../../business/games/werewolf/session";
 import {
   createWerewolf,
   transitionWerewolf,
   type WerewolfState,
 } from "../../business/games/werewolf/stateMachine";
 import { createGameHubI18n } from "../../i18n";
-import { PlainBox } from "./GuidePlainBox";
+import { WinnerList } from "./GuidePlainBox";
+import { WerewolfEndScreen } from "./WerewolfEndScreen";
 import { PlayerRows } from "./PlayerRows";
 
 /** The rows of all players: the color says the state, a frame says the amulet or the drunk. */
@@ -107,20 +106,26 @@ it("shows every state of a person as the same colored slot as on the card, and n
   expect(legend).toContain("Guest");
 });
 
-it("names the winners and the losers with their side in the headings of the end screen, in both languages", async () => {
-  for (const [language, winners, losers] of [
-    ["en", "Winners – Werewolves", "Losers – Villagers"],
-    ["de", "Gewinner – Werwölfe", "Verlierer – Dorfbewohner"],
+it("names the side that won in the gold block of the result page and the winners and losers below it, in both languages", async () => {
+  for (const [language, title, side, winners, losers] of [
+    ["en", "Game over", "Werewolves", "Winners", "Losers"],
+    ["de", "Spielende", "Werwölfe", "Gewinner", "Verlierer"],
   ] as const) {
     document.body.innerHTML = "";
     const i18n = await createGameHubI18n(language);
     const state = { ...game(), status: "finished", winner: "wolves" } as unknown as WerewolfState;
-    const view = describeGuide(createGuide(createWerewolfSession(state)));
     render(
       <I18nextProvider i18n={i18n}>
-        <PlainBox view={view} />
+        <WerewolfEndScreen
+          canGoBack
+          onBack={() => undefined}
+          onNewGame={() => undefined}
+          state={state}
+        />
       </I18nextProvider>,
     );
+    expect(screen.getByRole("region", { name: title })).toBeInTheDocument();
+    expect(document.querySelector(".kit-winner")).toHaveTextContent(side);
     const headings = [...document.querySelectorAll(".ww-winners__group h4")].map((heading) =>
       heading.textContent?.trim(),
     );
@@ -141,7 +146,7 @@ it("puts several groups of winners one below the other in the one box of the win
   } as unknown as WerewolfState;
   render(
     <I18nextProvider i18n={i18n}>
-      <PlainBox view={describeGuide(createGuide(createWerewolfSession(state)))} />
+      <WinnerList state={state} />
     </I18nextProvider>,
   );
   const box = document.querySelector('.ww-winners__group[data-kind="winners"]')!;
@@ -268,7 +273,7 @@ it("explains at the end of the game only the backgrounds and frames the rows of 
   const state = { ...game(), status: "finished", winner: "wolves" } as unknown as WerewolfState;
   render(
     <I18nextProvider i18n={i18n}>
-      <PlainBox view={describeGuide(createGuide(createWerewolfSession(state)))} />
+      <WinnerList state={state} />
     </I18nextProvider>,
   );
   const legend = document.querySelector(".ww-winners .ww-overview__legend")!;
@@ -290,7 +295,7 @@ it("shows the cause of death in its color at the end of the game, too", async ()
   const state = { ...after, status: "finished", winner: "wolves" } as unknown as WerewolfState;
   render(
     <I18nextProvider i18n={i18n}>
-      <PlainBox view={describeGuide(createGuide(createWerewolfSession(state)))} />
+      <WinnerList state={state} />
     </I18nextProvider>,
   );
   const row = [...document.querySelectorAll<HTMLElement>(".ww-winners .ww-overview__row")].find(

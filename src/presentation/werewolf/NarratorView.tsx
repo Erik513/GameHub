@@ -9,6 +9,7 @@ import { isDayStep, type GuideView } from "../../business/games/werewolf/narrato
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
 import { werewolfDrunkReveal } from "../../business/games/werewolf/stateMachine";
 import { GuideBox } from "./GuideBox";
+import { WerewolfEndScreen } from "./WerewolfEndScreen";
 import { NarratorBar } from "./NarratorBar";
 import { NarratorCard, type VoteProps } from "./NarratorCard";
 import { variantOfRole } from "./roleAbilities";
@@ -223,6 +224,16 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           total: view.voteTotal,
         }
       : undefined;
+  // The end of the game is the result page of every game (no bar of the narrator any more).
+  if (view.state.status === "finished")
+    return (
+      <WerewolfEndScreen
+        canGoBack={view.canGoBack}
+        onBack={guide.goBack}
+        onNewGame={onEnd}
+        state={view.state}
+      />
+    );
   return (
     <section
       aria-label={t("werewolfNarrator.view")}

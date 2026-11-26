@@ -645,6 +645,7 @@
 /* At the end of the game only the groups scroll (the winners on top, all players below them); the legend stands below
    them and never covers a player. */
 .ww-winners {
+  display: grid;
   align-content: stretch;
   grid-template-rows: minmax(0, 1fr) auto;
   grid-auto-rows: auto;
@@ -1556,4 +1557,18 @@
   text-overflow: clip;
   hyphens: auto;
   overflow-wrap: break-word;
+}
+
+/* The end on the result page of every game: the box of the result page does not scroll itself, the groups of the
+   winners and the losers scroll and the legend stays below them. */
+.kit-score-box:has(> .ww-winners) {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2);
+  overflow: hidden;
+}
+
+.kit-score-box > .ww-winners {
+  flex: 1;
+  min-height: 0;
 }

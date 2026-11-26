@@ -200,7 +200,6 @@ export function PlainBox({ view }: { readonly view: GuideView }) {
       </section>
     );
   }
-  if (state.status === "finished") return <WinnerList state={state} />;
   return null;
 }
 
@@ -208,25 +207,18 @@ export function PlainBox({ view }: { readonly view: GuideView }) {
  * The winner view at the very end: every person once. First the groups of the winners (the winning side, the lovers,
  * the tanner), then the losers; inside a group the living come first, then the dead, the one who died first last.
  */
-function WinnerList({ state }: { readonly state: WerewolfState }) {
+export function WinnerList({ state }: { readonly state: WerewolfState }) {
   const { t } = useTranslation();
   const groups = describeStandings(state);
   const winners = groups.filter((group) => group.kind !== "losers");
   const losers = groups.find((group) => group.kind === "losers");
   const people = groups.flatMap((group) => group.players);
-  // The two sides of the game: the headings name the side that won and the one that lost.
-  const winner = state.status === "finished" ? state.winner : "village";
-  const loser = winner === "wolves" ? "village" : "wolves";
   return (
-    <section className="ww-guide ww-winners">
+    <section className="ww-winners">
       <div className="ww-winners__groups">
         {/* One box for all winners: the groups (the side, the lovers, the tanner) stand one below the other, divided by a line. */}
         <div className="ww-winners__group" data-kind="winners">
-          <h4>
-            {t("werewolfNarrator.guide.finished.winners", {
-              side: t(`werewolfNarrator.guide.finished.side.${winner}`),
-            })}
-          </h4>
+          <h4>{t("werewolfNarrator.guide.finished.winners")}</h4>
           {winners.map((group, index) => (
             <Fragment key={group.kind}>
               {index > 0 && <hr className="ww-winners__divider" />}
@@ -236,11 +228,7 @@ function WinnerList({ state }: { readonly state: WerewolfState }) {
         </div>
         {losers && (
           <div className="ww-winners__group" data-kind="losers">
-            <h4>
-              {t("werewolfNarrator.guide.finished.losers", {
-                side: t(`werewolfNarrator.guide.finished.side.${loser}`),
-              })}
-            </h4>
+            <h4>{t("werewolfNarrator.guide.finished.losers")}</h4>
             <PlayerList players={losers.players} />
           </div>
         )}

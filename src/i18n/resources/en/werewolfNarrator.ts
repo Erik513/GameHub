@@ -306,8 +306,8 @@ export const werewolfNarratorTexts = {
       nobodyLeft: "Nobody leaves the game",
       exile: "{{name}} leaves the game",
       finished: {
-        winners: "Winners – {{side}}",
-        losers: "Losers – {{side}}",
+        winners: "Winners",
+        losers: "Losers",
         side: {
           village: "Villagers",
           wolves: "Werewolves",
