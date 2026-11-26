@@ -2,6 +2,10 @@
 
 ## 2026-11-26 (Werwolf am Handy)
 
+### We-01-246: Werwolf-Spielende ohne Gewinnerblock (Claude)
+
+- Kein Gewinnerblock mehr; die Gewinner-Box ist grün gerahmt, die Überschriften lauten wieder „Gewinner – Dorfbewohner“ / „Verlierer – Werwölfe“. Nicht im Browser angesehen.
+
 ### We-01-244: Aufklappbare Legende am Handy (Claude)
 
 - Am Handy ist die Legende unter der Liste zugeklappt und öffnet sich mit einem Tipp; am PC bleibt sie offen. Nicht im Browser angesehen.
