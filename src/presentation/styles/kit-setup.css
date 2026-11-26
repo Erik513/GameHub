@@ -1382,10 +1382,23 @@ body:has(.kit-onepage) {
   gap: var(--space-2);
 }
 
-/* The bar of a running game in the place of the header of the app: the same edges as the header. */
+/* The bar of a running game in the place of the header of the app: the same edges, width, line and height as the
+   header (its buttons are 2.75rem high), so the screen of the game keeps exactly the room it had below the header. */
 .app-shell > .kit-game-bar {
+  width: min(100%, var(--phone-width));
+  margin-inline: auto;
   padding: calc(var(--space-2) + var(--safe-top)) calc(var(--space-4) + var(--safe-right))
     var(--space-2) calc(var(--space-4) + var(--safe-left));
+  border-bottom: 1px solid var(--color-line);
+}
+
+.app-shell > .kit-game-bar .kit-game-bar__status {
+  min-height: 2.75rem;
+}
+
+.app-shell > .kit-game-bar .button {
+  width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 .kit-game-bar__status {
