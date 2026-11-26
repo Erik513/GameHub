@@ -2,6 +2,18 @@
 
 ## 2026-11-26 (Werwolf am Handy)
 
+### We-01-244: Aufklappbare Legende am Handy (Claude)
+
+- Am Handy ist die Legende unter der Liste zugeklappt und öffnet sich mit einem Tipp; am PC bleibt sie offen. Nicht im Browser angesehen.
+
+### We-01-245: Spielende aufgeräumt (Claude)
+
+- Keine Linie mehr unter der Verlierer-Box; „Zurück“ und „Neues Spiel“ stehen nebeneinander. Nicht im Browser angesehen.
+
+### We-01-242 entfällt
+
+- Kein Vorlese-Skript für den Erzähler: zu wenig Platz am Handy, die Hauptaufgaben reichen (Entscheidung des Auftraggebers).
+
 ### We-01-241: Zähler im Übersicht-Knopf (Claude)
 
 - Die Zahl der Lebenden und Werwölfe steht jetzt im Übersicht-Knopf oben; unten sind „Zurück“ und „Weiter“ wieder gleich breit. Nicht im Browser angesehen.
