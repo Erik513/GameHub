@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 451,
+      "completedTasks": 452,
       "totalTasks": 512,
-      "percent": 88.1
+      "percent": 88.3
     }
   },
   "environment": {
@@ -628,7 +628,8 @@
         {
           "id": "Al-09-18",
           "title": "Spielgerüst Schritt 3: gemeinsame Ergebnisseite (Gewinner – Seite/Team, Liste, Legende, Neues Spiel) für alle Spiele",
-          "status": "planned"
+          "status": "done",
+          "validation": "Das Werwolf-Spielende nutzt jetzt die gemeinsame Ergebnisseite ScoreScreen wie Taboo (neuer Bildschirm werewolf/WerewolfEndScreen): „Spielende“, goldener Gewinnerblock mit der Seite (Dorfbewohner/Werwölfe), Konfetti, darunter Gewinner und Verlierer mit Legende (die Gruppen scrollen, die Legende bleibt unten), unten „Zurück“ (letzten Schritt zurücknehmen) und „Neues Spiel“. Die Leiste des Erzählers entfällt am Spielende; die Kästen heißen nur noch „Gewinner“ / „Verlierer“, die Seite steht im Gewinnerblock. Vorher als Zeichnung abgestimmt. Tests in PlayerRows.test.tsx angepasst; 691 Tests der Oberfläche, App und Übersetzungen grün; nicht im Browser angesehen."
         },
         {
           "id": "Al-09-19",
@@ -4417,7 +4418,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T00:06:08.455Z"
+  "updatedAt": "2026-11-26T16:09:29.505Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

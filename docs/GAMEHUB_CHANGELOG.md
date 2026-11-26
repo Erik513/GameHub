@@ -2,6 +2,10 @@
 
 ## 2026-11-26 (Spielgerüst)
 
+### Al-09-18: Werwolf-Spielende auf der gemeinsamen Ergebnisseite (Claude)
+
+- Das Spielende des Werwolfs sieht jetzt aus wie bei Taboo: „Spielende“, goldener Gewinnerblock mit der Seite, Konfetti, Gewinner und Verlierer mit Legende, unten „Zurück“ und „Neues Spiel“. Nicht im Browser angesehen.
+
 ### Al-09-17: Werwolf-Einstellungen im gemeinsamen Rahmen (Claude)
 
 - Die Werwolf-Konfiguration nutzt jetzt dieselbe Einstellungsseite wie Taboo; der gemeinsame Rahmen hat dafür den Knopf links neben „Fertig“ bekommen. Nicht im Browser angesehen.
