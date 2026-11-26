@@ -83,3 +83,10 @@
 .focus-target:focus {
   outline: none;
 }
+
+/* Several actions side by side in the start bar (ActionRow): as high as a single start button. */
+.kit-start-bar .kit-action-row .button,
+.game-preview .kit-start-bar .kit-action-row .button {
+  min-height: 4rem;
+  font-size: var(--text-lg);
+}

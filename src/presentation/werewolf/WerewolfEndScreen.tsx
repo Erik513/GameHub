@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
 import { Button } from "../components";
-import { ScoreScreen } from "../game-kit";
+import { ActionRow, ScoreScreen } from "../game-kit";
 import { WinnerList } from "./GuidePlainBox";
 
 interface WerewolfEndScreenProps {
@@ -24,14 +24,15 @@ export function WerewolfEndScreen({ state, onBack, canGoBack, onNewGame }: Werew
   return (
     <ScoreScreen
       actions={
-        <>
+        // Side by side, like "back" and "next" while the game runs.
+        <ActionRow>
           <Button disabled={!canGoBack} onClick={onBack} variant="secondary">
             {t("werewolfNarrator.guide.back")}
           </Button>
           <Button onClick={onNewGame} variant="success">
             {t("werewolfNarrator.guide.nextKind.finish")}
           </Button>
-        </>
+        </ActionRow>
       }
       ariaLabel={t("werewolfNarrator.bar.finished")}
       celebrate

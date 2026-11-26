@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
-import { expect, it } from "vitest";
+import { afterEach, beforeEach, expect, it } from "vitest";
 import {
   createWerewolf,
   transitionWerewolf,
@@ -27,6 +27,62 @@ async function show(state: WerewolfState, language: "en" | "de" = "en", announce
 
 const game = () =>
   createWerewolf(names, "Max", () => 0.3, ["toughGuy"], { drunk: true, wolfCount: 2 })!;
+
+/** The width of the window: the PC shows the whole legend, a phone folds it below the list. */
+function setDesktop(desktop: boolean) {
+  window.matchMedia = ((query: string) => ({
+    addEventListener: () => undefined,
+    matches: desktop,
+    media: query,
+    removeEventListener: () => undefined,
+  })) as unknown as typeof window.matchMedia;
+}
+
+const originalMatchMedia = Object.getOwnPropertyDescriptor(window, "matchMedia");
+// The tests of the contents of the legend look at it the way the PC shows it: always open.
+beforeEach(() => setDesktop(true));
+afterEach(() => {
+  if (originalMatchMedia) Object.defineProperty(window, "matchMedia", originalMatchMedia);
+  else Reflect.deleteProperty(window, "matchMedia");
+});
+
+it("folds the legend below the list on a phone and opens it with a tap, in both languages", async () => {
+  for (const [language, title] of [
+    ["en", "Legend"],
+    ["de", "Legende"],
+  ] as const) {
+    document.body.innerHTML = "";
+    setDesktop(false);
+    const i18n = await createGameHubI18n(language);
+    render(
+      <I18nextProvider i18n={i18n}>
+        <PlayerRows state={game()} />
+      </I18nextProvider>,
+    );
+    const legend = screen.getByRole("group", { name: title });
+    const toggle = screen.getByRole("button", { name: title });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(legend.querySelector(".ww-overview__legend-group")).toBeNull();
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(legend.querySelector(".ww-overview__legend-group")).not.toBeNull();
+    fireEvent.click(toggle);
+    expect(legend.querySelector(".ww-overview__legend-group")).toBeNull();
+  }
+});
+
+it("shows the whole legend on the PC without a button to fold it", async () => {
+  const i18n = await createGameHubI18n("en");
+  render(
+    <I18nextProvider i18n={i18n}>
+      <PlayerRows state={game()} />
+    </I18nextProvider>,
+  );
+  expect(screen.queryByRole("button", { name: "Legend" })).toBeNull();
+  expect(
+    screen.getByRole("group", { name: "Legend" }).querySelector(".ww-overview__legend-group"),
+  ).not.toBeNull();
+});
 
 it("gives the drunk who does not know his role the green frame and shows his true role", async () => {
   const state = game();
@@ -126,6 +182,8 @@ it("names the side that won in the gold block of the result page and the winners
     );
     expect(screen.getByRole("region", { name: title })).toBeInTheDocument();
     expect(document.querySelector(".kit-winner")).toHaveTextContent(side);
+    // Back and new game stand side by side in one row.
+    expect(document.querySelectorAll(".kit-start-bar .kit-action-row .button")).toHaveLength(2);
     const headings = [...document.querySelectorAll(".ww-winners__group h4")].map((heading) =>
       heading.textContent?.trim(),
     );

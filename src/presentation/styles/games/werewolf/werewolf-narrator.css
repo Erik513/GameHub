@@ -310,7 +310,6 @@
 .ww-winners .ww-overview__legend {
   margin: 0;
   padding: var(--space-2) 4px;
-  border-top: 1px solid var(--color-line);
   background: var(--color-surface);
 }
 
@@ -1555,4 +1554,39 @@
 .kit-score-box > .ww-winners {
   flex: 1;
   min-height: 0;
+}
+
+/* On a phone the legend is folded below the list: one bar with a border, the arrow points up while it is closed. */
+.ww-overview__legend-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  font: inherit;
+  font-weight: var(--weight-bold);
+  cursor: pointer;
+}
+
+.ww-overview__legend-toggle > span {
+  flex: 1;
+  text-align: left;
+}
+
+.ww-overview__legend-toggle .icon {
+  transform: rotate(-90deg);
+  transition: transform 0.15s;
+}
+
+.ww-overview__legend-toggle[aria-expanded="true"] .icon {
+  transform: rotate(90deg);
+}
+
+.ww-overview__legend-toggle[aria-expanded="true"] {
+  margin-bottom: var(--space-2);
 }

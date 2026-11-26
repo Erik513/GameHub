@@ -1,4 +1,4 @@
-import { useRef, type ReactNode, type RefObject } from "react";
+import { useRef, useState, type ReactNode, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import {
   causesOf,
@@ -13,6 +13,8 @@ import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
 import type { DeathCause } from "../../business/games/werewolf/eventLog";
 import { effectsOfPerson, type CardEffect } from "../../business/games/werewolf/narratorCard";
 import { stateIds } from "../../business/games/werewolf/roles/stateIds";
+import { Icon } from "../components";
+import { useIsDesktop } from "../game-kit";
 import { VariantMark } from "./VariantMark";
 import type { SymbolId } from "./symbols/catalog";
 import {
@@ -197,7 +199,8 @@ type LegendGroup = "tones" | "frames" | "effects" | "causes" | "variants";
 /**
  * The legend, divided into groups with a small heading each: the background of a row, its frame, the states (slots),
  * the causes of death and the variants of the roles. It explains only what the rows of these players show; a group
- * without entries is left out.
+ * without entries is left out. On a phone it is folded below the list (the list gets the room) and opens with a tap on
+ * "Legend"; on the PC it is always open.
  */
 export function PlayerLegend({
   players,
@@ -208,6 +211,9 @@ export function PlayerLegend({
   readonly effects?: readonly CardEffect[];
 }) {
   const { t } = useTranslation();
+  const desktop = useIsDesktop();
+  const [open, setOpen] = useState(false);
+  const shown = desktop || open;
   const tones = allTones.filter((tone) => players.some((player) => player.tone === tone));
   const frames = allFrames.filter((frame) => players.some((player) => player[frame]));
   const causes = causesOf(players);
@@ -226,86 +232,107 @@ export function PlayerLegend({
     <div
       aria-label={t("werewolfNarrator.bar.legend.title")}
       className="ww-overview__legend"
+      data-folded={shown ? undefined : true}
       role="group"
     >
-      {group(
-        "tones",
-        tones.map((tone) => (
-          <li key={tone}>
-            <span className="ww-overview__swatch" data-tone={tone} />
-            {t(`werewolfNarrator.bar.legend.${tone}`)}
-          </li>
-        )),
+      {!desktop && (
+        <button
+          aria-expanded={open}
+          className="ww-overview__legend-toggle"
+          onClick={() => setOpen((current) => !current)}
+          type="button"
+        >
+          <span>{t("werewolfNarrator.bar.legend.title")}</span>
+          <Icon name="chevronRight" />
+        </button>
       )}
-      {group(
-        "frames",
-        frames.map((frame) => (
-          <li key={frame}>
-            <span className="ww-overview__swatch" data-frame={frame} />
-            {t(`werewolfNarrator.bar.legend.${frame}`)}
-          </li>
-        )),
-      )}
-      {group("effects", [
-        ...(tannerWon
-          ? [
-              <li key="tannerWon">
-                <span className="ww-slot ww-overview__slot" data-won="tanner" style={wonSlotStyle}>
-                  <WerewolfSymbol id="tanner" size={12} />
+      {shown &&
+        group(
+          "tones",
+          tones.map((tone) => (
+            <li key={tone}>
+              <span className="ww-overview__swatch" data-tone={tone} />
+              {t(`werewolfNarrator.bar.legend.${tone}`)}
+            </li>
+          )),
+        )}
+      {shown &&
+        group(
+          "frames",
+          frames.map((frame) => (
+            <li key={frame}>
+              <span className="ww-overview__swatch" data-frame={frame} />
+              {t(`werewolfNarrator.bar.legend.${frame}`)}
+            </li>
+          )),
+        )}
+      {shown &&
+        group("effects", [
+          ...(tannerWon
+            ? [
+                <li key="tannerWon">
+                  <span
+                    className="ww-slot ww-overview__slot"
+                    data-won="tanner"
+                    style={wonSlotStyle}
+                  >
+                    <WerewolfSymbol id="tanner" size={12} />
+                  </span>
+                  {t("werewolfNarrator.bar.legend.tannerWon")}
+                </li>,
+              ]
+            : []),
+          ...effects.map((effect) => (
+            <li key={effect}>
+              <span
+                className="ww-slot ww-overview__slot"
+                data-effect={effect}
+                style={slotStyle(effect)}
+              >
+                <WerewolfSymbol id={effect} size={12} />
+              </span>
+              {t(`werewolfSymbols.items.${effect}.name`)}
+            </li>
+          )),
+        ])}
+      {shown &&
+        group(
+          "causes",
+          causes.map((cause) => (
+            <li key={cause}>
+              {isCauseSlot(cause) ? (
+                <span
+                  className="ww-slot ww-overview__slot"
+                  data-cause={cause}
+                  style={causeSlotStyle(cause)}
+                >
+                  <WerewolfSymbol id={causeSymbol[cause]} size={12} />
                 </span>
-                {t("werewolfNarrator.bar.legend.tannerWon")}
-              </li>,
-            ]
-          : []),
-        ...effects.map((effect) => (
-          <li key={effect}>
-            <span
-              className="ww-slot ww-overview__slot"
-              data-effect={effect}
-              style={slotStyle(effect)}
-            >
-              <WerewolfSymbol id={effect} size={12} />
-            </span>
-            {t(`werewolfSymbols.items.${effect}.name`)}
-          </li>
-        )),
-      ])}
-      {group(
-        "causes",
-        causes.map((cause) => (
-          <li key={cause}>
-            {isCauseSlot(cause) ? (
-              <span
-                className="ww-slot ww-overview__slot"
-                data-cause={cause}
-                style={causeSlotStyle(cause)}
-              >
-                <WerewolfSymbol id={causeSymbol[cause]} size={12} />
-              </span>
-            ) : causeEffect[cause] ? (
-              <span
-                className="ww-slot ww-overview__slot"
-                data-effect={causeEffect[cause]}
-                style={slotStyle(causeEffect[cause])}
-              >
-                <WerewolfSymbol id={causeEffect[cause]} size={12} />
-              </span>
-            ) : (
-              <WerewolfSymbol id={causeSymbol[cause]} size={14} />
-            )}
-            {t(`werewolfNarrator.cause.${cause}`)}
-          </li>
-        )),
-      )}
-      {group(
-        "variants",
-        variants.map((variant) => (
-          <li key={variant}>
-            <VariantMark decorative variant={variant} />
-            {t(`werewolfNarrator.variant.${variant}`)}
-          </li>
-        )),
-      )}
+              ) : causeEffect[cause] ? (
+                <span
+                  className="ww-slot ww-overview__slot"
+                  data-effect={causeEffect[cause]}
+                  style={slotStyle(causeEffect[cause])}
+                >
+                  <WerewolfSymbol id={causeEffect[cause]} size={12} />
+                </span>
+              ) : (
+                <WerewolfSymbol id={causeSymbol[cause]} size={14} />
+              )}
+              {t(`werewolfNarrator.cause.${cause}`)}
+            </li>
+          )),
+        )}
+      {shown &&
+        group(
+          "variants",
+          variants.map((variant) => (
+            <li key={variant}>
+              <VariantMark decorative variant={variant} />
+              {t(`werewolfNarrator.variant.${variant}`)}
+            </li>
+          )),
+        )}
     </div>
   );
 }
