@@ -2,6 +2,10 @@
 
 ## 2026-11-27 (Erzähler-Stufe)
 
+### Al-09-21: Spielleiste so hoch wie die Kopfzeile (Claude)
+
+- Behebt den e2e-Fehler auf dem kleinsten Handy (Tabu-Countdown mit automatischem Teamwechsel): Die Spielleiste im laufenden Tabu-Spiel war 3 px höher als die Kopfzeile, die sie ersetzt.
+
 ### We-01-243: Erzähler Anfänger oder Erfahren (Claude)
 
 - Neue Einstellung in der Werwolf-Konfiguration. Erfahren: alle Skripte sofort sichtbar, Wecken/Zeigen/Einschlafen ohne Haken, der Rahmen springt nur zwischen den Entscheidungen und danach auf „Weiter“. Anfänger bleibt wie bisher.

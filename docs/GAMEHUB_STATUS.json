@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 462,
-      "totalTasks": 520,
-      "percent": 88.8
+      "completedTasks": 463,
+      "totalTasks": 521,
+      "percent": 88.9
     }
   },
   "environment": {
@@ -409,6 +409,12 @@
           "title": "Spielgerüst Schritt 5: gemeinsamer Ablauf der Bildschirme (Hauptmenü, Einstellungen, Spiel, Spielende) mit Zurück-Taste",
           "status": "done",
           "validation": "Neuer Hook useGameScreen (GameChrome): das Spiel meldet nur, welcher der vier Bildschirme offen ist (Hauptmenü, Einstellungen, Spiel, Spielende) und was „zurück“ dort heißt; Kopfzeile und Zurück-Taste folgen daraus. Hauptmenü: normale Kopfzeile, Zurück in den GameHub. Einstellungen und Spielende: normale Kopfzeile, Zurück ins Hauptmenü des Spiels ohne Nachfrage. Laufendes Spiel: Spielleiste, Zurück fragt „Spiel beenden?“. Werwolf und alle drei Taboo-Modi nutzen ihn. Sichtbare Änderungen (vorher als Zeichnung abgestimmt): die Taboo-Einstellungen zeigen die normale Kopfzeile statt nur eines Zurück-Pfeils; am Spielende fragt die Zurück-Taste nicht mehr, sondern führt ins Hauptmenü, und die normale Kopfzeile ist zu sehen. Die Kartenwerkzeuge von Taboo behalten ihren Zurück-Pfeil. Neuer Test GameScreen.test.tsx; App- und Bibliothekstests angepasst; alle 1843 Tests, tsc, eslint und prettier grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "Al-09-21",
+          "title": "Spielleiste an der Stelle der Kopfzeile so hoch wie die Kopfzeile (e2e-Fehler Tabu-Countdown, kleinstes Handy)",
+          "status": "done",
+          "validation": "CI-Fehler nach dem Push von 76a67b5: e2e mobile-layout.spec.ts „the countdown with the automatic team change fits a small phone (tiny phone)“ schlug fehl. Ursache (aus dem Vergleich ermittelt, lokal kein e2e): Die neue Spielleiste (Al-09-19) war an der Stelle der Kopfzeile 64 px hoch statt 61 px (Knöpfe 48 statt 44 px); auf 320×568 fehlte dem Countdown mit allen Konten der Platz. Die Leiste hat dort jetzt die Maße der Kopfzeile: Knöpfe und Status 2.75rem, gleicher Innenabstand, Linie unten, Handybreite. Werwolf (eigene Leiste) unverändert. Unit-Tests, tsc, eslint und prettier grün; Bestätigung durch den e2e-Lauf der CI nach dem Push steht aus."
         }
       ]
     },
@@ -4235,5 +4241,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T23:34:32.308Z"
+  "updatedAt": "2026-11-26T23:51:36.540Z"
 }
