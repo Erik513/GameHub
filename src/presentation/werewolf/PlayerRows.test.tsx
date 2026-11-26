@@ -162,10 +162,10 @@ it("shows every state of a person as the same colored slot as on the card, and n
   expect(legend).toContain("Guest");
 });
 
-it("names the side that won in the gold block of the result page and the winners and losers below it, in both languages", async () => {
-  for (const [language, title, side, winners, losers] of [
-    ["en", "Game over", "Werewolves", "Winners", "Losers"],
-    ["de", "Spielende", "Werwölfe", "Gewinner", "Verlierer"],
+it("names the winners and the losers with their side in the headings of the end, without a block of the winner, in both languages", async () => {
+  for (const [language, title, winners, losers] of [
+    ["en", "Game over", "Winners – Werewolves", "Losers – Villagers"],
+    ["de", "Spielende", "Gewinner – Werwölfe", "Verlierer – Dorfbewohner"],
   ] as const) {
     document.body.innerHTML = "";
     const i18n = await createGameHubI18n(language);
@@ -181,7 +181,8 @@ it("names the side that won in the gold block of the result page and the winners
       </I18nextProvider>,
     );
     expect(screen.getByRole("region", { name: title })).toBeInTheDocument();
-    expect(document.querySelector(".kit-winner")).toHaveTextContent(side);
+    // The side stands in the heading of the green box of the winners, not in a block of its own.
+    expect(document.querySelector(".kit-winner")).toBeNull();
     // Back and new game stand side by side in one row.
     expect(document.querySelectorAll(".kit-start-bar .kit-action-row .button")).toHaveLength(2);
     const headings = [...document.querySelectorAll(".ww-winners__group h4")].map((heading) =>

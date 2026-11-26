@@ -546,8 +546,9 @@
 }
 
 /* The groups of the winners have the accent color as border; the losers keep the plain one. */
+/* The box of the winners has a green frame. */
 .ww-winners__group:not([data-kind="losers"]) {
-  border-color: var(--color-accent);
+  border: 2px solid var(--color-success);
 }
 
 .ww-winners__group h4 {

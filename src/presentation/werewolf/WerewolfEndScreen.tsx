@@ -14,13 +14,12 @@ interface WerewolfEndScreenProps {
 }
 
 /**
- * The end of a game of Werewolf on the result page of every game: "End of the game", the side that won in the gold
- * block, confetti, the winners and the losers with the legend, and at the bottom "Back" (to take the last step back)
+ * The end of a game of Werewolf on the result page of every game: "End of the game", confetti, the winners (with their
+ * side in the heading and a green frame) and the losers with the legend, and at the bottom "Back" (to take the last step back)
  * and "New game".
  */
 export function WerewolfEndScreen({ state, onBack, canGoBack, onNewGame }: WerewolfEndScreenProps) {
   const { t } = useTranslation();
-  const winner = state.status === "finished" ? state.winner : "village";
   return (
     <ScoreScreen
       actions={
@@ -37,10 +36,6 @@ export function WerewolfEndScreen({ state, onBack, canGoBack, onNewGame }: Werew
       ariaLabel={t("werewolfNarrator.bar.finished")}
       celebrate
       eyebrow={t("werewolfNarrator.bar.finished")}
-      winner={{
-        label: t("werewolfNarrator.guide.finished.winners"),
-        names: t(`werewolfNarrator.guide.finished.side.${winner}`),
-      }}
     >
       <WinnerList state={state} />
     </ScoreScreen>
