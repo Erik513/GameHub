@@ -246,8 +246,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 454,
-      "totalTasks": 512,
+      "completedTasks": 457,
+      "totalTasks": 515,
       "percent": 88.7
     }
   },
@@ -2754,6 +2754,24 @@
           "title": "Zurück-Taste in der Werwolf-Konfiguration führt ins Werwolf-Hauptmenü",
           "status": "done",
           "validation": "Fehler am Handy: Die Zurück-Taste des Systems in der Konfiguration verließ das Spiel und führte in den GameHub. Die Konfiguration meldet sich jetzt als Unterseite an (useGameBack), die Zurück-Taste führt ins Hauptmenü des Werwolfs. Neue Option headerUnchanged im gemeinsamen Baustein GameChrome/AppShell: nur die Zurück-Taste wird umgeleitet, die Kopfzeile bleibt (Spielregeln, Einstellungen); Taboo unverändert. Neuer Test in App.test.tsx; 647 Tests der Oberfläche und App grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-238",
+          "title": "Sperrhinweis beim Bürgermeister (feste Rollen) bricht in die zweite Zeile um",
+          "status": "done",
+          "validation": "Fehler am Handy: In den Hälften des Bürgermeisters lief „(kein Platz frei)“ über, weil das Leerzeichen vor der Klammer im nicht umbrechenden Hinweis stand. Das Leerzeichen steht jetzt außerhalb, die Klammer rutscht als Ganzes in die zweite Zeile wie bei den anderen Rollen (ConfigTiles.tsx). 280 Werwolf-Tests der Oberfläche grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-239",
+          "title": "Weiter-Knopf je Situation: „Nacht beenden“ und „Spielende“",
+          "status": "done",
+          "validation": "nextKind hat die neuen Werte endNight (der Schritt führt in den Morgen) und endGame (der Schritt beendet das Spiel), berechnet in nextKindOf (narratorGuide.ts) durch einen Probeschritt auf einer Kopie und die vorhandene Vorschau. Texte de/en: „Nacht beenden“/„End the night“, „Spielende“/„End of game“. Vorher als Zeichnung abgestimmt. Neue Tests in narratorGuide.test.ts, NarratorView-Tests angepasst (die Seherin ist dort die letzte Rolle der Nacht); Notiz für Codex in GAMEHUB_WERWOLF_CODEX_AUFGABE_NACHT.md. Alle 1846 Tests grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-240",
+          "title": "Zähler für den Erzähler: Lebende und Werwölfe zwischen Zurück und Weiter",
+          "status": "done",
+          "validation": "Zwischen „Zurück“ und „Weiter“ stehen die lebenden Spieler und darunter rot die lebenden Werwölfe; Screenreader hören „12 leben, davon 3 Werwölfe“. Gezählt wird nach verkündeten Toden, während der Rollenverteilung bleibt der Platz leer. „Weiter“ behält die halbe Breite, „Zurück“ wird schmaler. Ort vom Auftraggeber gewählt (Variante C). Neuer Test in NarratorView.test.tsx; alle 1846 Tests, tsc, eslint und prettier grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4420,7 +4438,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T16:24:38.237Z"
+  "updatedAt": "2026-11-26T16:44:23.658Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

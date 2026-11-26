@@ -1,5 +1,19 @@
 # GameHub Changelog
 
+## 2026-11-26 (Werwolf am Handy)
+
+### We-01-238: Bürgermeister-Hinweis bricht um (Claude)
+
+- „(kein Platz frei)“ rutscht in den Hälften des Bürgermeisters in die zweite Zeile, statt überzulaufen. Nicht im Browser angesehen.
+
+### We-01-239: Weiter-Knopf nennt den Schritt (Claude)
+
+- „Nacht beenden“ vor dem Morgen, „Spielende“ sobald die Entscheidung das Spiel beendet; „Tag beenden“ wie bisher. Nicht im Browser angesehen.
+
+### We-01-240: Zähler der Lebenden und Werwölfe (Claude)
+
+- Zwischen „Zurück“ und „Weiter“ sieht der Erzähler, wie viele leben und wie viele davon Werwölfe sind; „Weiter“ behält die halbe Breite. Nicht im Browser angesehen.
+
 ## 2026-11-26 (Spielgerüst)
 
 ### Al-09-20: Ein Ablauf der Bildschirme für jedes Spiel (Claude)
