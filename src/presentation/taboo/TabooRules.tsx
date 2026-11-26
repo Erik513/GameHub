@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Dialog } from "../components";
-import { RulesSection } from "../game-kit";
+import { RulesDialog, RulesSection } from "../game-kit";
 
 interface TabooRulesDialogProps {
   onClose: () => void;
@@ -16,12 +15,7 @@ export function TabooRulesDialog({ onClose, open }: TabooRulesDialogProps) {
   const { t } = useTranslation();
 
   return (
-    <Dialog
-      closeLabel={t("settings.close")}
-      onClose={onClose}
-      open={open}
-      title={t("tabooRules.title")}
-    >
+    <RulesDialog onClose={onClose} open={open} title={t("tabooRules.title")}>
       <RulesSection title={t("tabooRules.goalTitle")}>
         <p>{t("tabooRules.goal")}</p>
       </RulesSection>
@@ -117,6 +111,6 @@ export function TabooRulesDialog({ onClose, open }: TabooRulesDialogProps) {
           ))}
         </ul>
       </RulesSection>
-    </Dialog>
+    </RulesDialog>
   );
 }

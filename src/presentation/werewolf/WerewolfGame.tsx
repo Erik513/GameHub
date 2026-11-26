@@ -83,8 +83,6 @@ export function WerewolfGame() {
   useGameBack(configuring && game.session === null, () => setConfiguring(false), {
     headerUnchanged: true,
   });
-  // The window of the rules: the Back key closes it and stays in the game.
-  useGameBack(rulesOpen, () => setRulesOpen(false), { headerUnchanged: true });
 
   const view = game.session ? (
     <NarratorErrorBoundary>

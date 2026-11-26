@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { fixedAddons, fixedItems } from "../../business/games/werewolf/fixedConfiguration";
-import { Dialog } from "../components";
-import { RulesSection, SetupTabs } from "../game-kit";
+import { RulesDialog, RulesSection } from "../game-kit";
 import { ConfigInfoParts, type ConfigInfoId } from "./ConfigInfo";
 import { teamOf } from "./roleTeam";
 import { abilityLegend, legendHidden, symbolGroups, symbols } from "./symbols/catalog";
@@ -194,25 +193,17 @@ export function WerewolfRulesDialog({ onClose, open }: WerewolfRulesDialogProps)
   );
 
   return (
-    <Dialog
-      closeLabel={t("werewolfConfig.infoClose")}
+    <RulesDialog
       onClose={onClose}
       open={open}
-      size="large"
+      tabs={[
+        { content: game, id: "game", label: t("werewolfRules.tabGame") },
+        { content: roles, id: "roles", label: t("werewolfRules.tabRoles") },
+        { content: extras, id: "extras", label: t("werewolfRules.tabExtras") },
+        { content: legend, id: "symbols", label: t("werewolfSymbols.tab") },
+      ]}
+      tabsLabel={t("werewolfRules.label")}
       title={t("werewolfRules.title")}
-    >
-      {/* Only the content of a tab scrolls, so the tabs stay reachable at the end of a long text. */}
-      <div className="ww-rules">
-        <SetupTabs
-          ariaLabel={t("werewolfRules.label")}
-          tabs={[
-            { content: game, id: "game", label: t("werewolfRules.tabGame") },
-            { content: roles, id: "roles", label: t("werewolfRules.tabRoles") },
-            { content: extras, id: "extras", label: t("werewolfRules.tabExtras") },
-            { content: legend, id: "symbols", label: t("werewolfSymbols.tab") },
-          ]}
-        />
-      </div>
-    </Dialog>
+    />
   );
 }

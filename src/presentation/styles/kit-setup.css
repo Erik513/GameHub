@@ -1334,3 +1334,43 @@ body:has(.kit-onepage) {
 .kit-count[data-enough="true"] {
   color: var(--color-success);
 }
+
+/* The window of the rules with tabs does not scroll as a whole: the tabs stay on top, only the content of a tab
+   scrolls. Up to four tabs side by side: a smaller type keeps every name on one line on a phone. */
+.dialog__content:has(> .kit-rules) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.kit-rules {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.kit-rules .kit-tabs {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.kit-rules .kit-tabpanel {
+  flex: 1;
+  align-content: start;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.kit-rules .kit-tabpanel[data-active="false"] {
+  display: none;
+}
+
+.kit-rules .kit-tab {
+  padding-inline: var(--space-1);
+  font-size: var(--text-xs);
+}

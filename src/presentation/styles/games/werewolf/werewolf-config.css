@@ -919,40 +919,6 @@
   line-height: 1.5;
 }
 
-/* The rules window does not scroll as a whole: the tabs stay on top and only the content of a tab scrolls. */
-.dialog__content:has(> .ww-rules) {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.ww-rules {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.ww-rules .kit-tabs {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-height: 0;
-  margin-bottom: 0;
-}
-
-.ww-rules .kit-tabpanel {
-  flex: 1;
-  align-content: start;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.ww-rules .kit-tabpanel[data-active="false"] {
-  display: none;
-}
-
 .ww-rules-role h4 small {
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
@@ -1036,12 +1002,6 @@
 .ww-legend__credits {
   margin: var(--space-4) 0 0;
   color: var(--color-ink-muted);
-  font-size: var(--text-xs);
-}
-
-/* Four tabs side by side in the rules window: a smaller type keeps every name on one line on a phone. */
-.ww-rules .kit-tab {
-  padding-inline: var(--space-1);
   font-size: var(--text-xs);
 }
 
