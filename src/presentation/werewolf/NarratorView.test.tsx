@@ -202,14 +202,6 @@ describe("NarratorView choices", () => {
     );
   });
 
-  it("counts the living and the werewolves among them between back and next, but not while the roles are dealt", async () => {
-    const user = await renderView("en");
-    expect(screen.queryByRole("img", { name: /alive/ })).toBeNull();
-    await toSeer(user);
-    const count = screen.getByRole("img", { name: /^12 alive, [0-9] of them werewolves$/ });
-    expect(count.closest(".ww-nav")).not.toBeNull();
-  });
-
   it("changes from one role to the next only with the button next, which then has the blue frame", async () => {
     const user = await renderView("en");
     await toSeer(user);

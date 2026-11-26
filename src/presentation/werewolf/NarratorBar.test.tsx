@@ -61,7 +61,7 @@ describe("NarratorBar", () => {
         />
       </I18nextProvider>,
     );
-    await user.click(screen.getByRole("button", { name: "All players and roles" }));
+    await user.click(screen.getByRole("button", { name: /^All players and roles/ }));
     const dialog = await screen.findByRole("dialog");
     const row = [...dialog.querySelectorAll<HTMLElement>(".ww-overview__row")].find(
       (entry) => entry.querySelector("strong")?.textContent === victim.name,
@@ -69,9 +69,22 @@ describe("NarratorBar", () => {
     expect(row).toHaveAttribute("data-tone", "attacked");
   });
 
+  it.each([
+    { language: "en", label: /^All players and roles, 12 alive, [0-9] of them werewolves$/ },
+    { language: "de", label: /^Alle Spieler und Rollen, 12 leben, davon [0-9] Werwölfe$/ },
+  ] as const)(
+    "counts the living and the werewolves on the overview button ($language)",
+    async ({ language, label }) => {
+      await renderBar(language, false);
+      const button = screen.getByRole("button", { name: label });
+      expect(button).toHaveTextContent(/^12[0-9]$/);
+      expect(button.querySelector(".ww-bar__wolves")).not.toBeNull();
+    },
+  );
+
   it("opens the overview of all players with their roles and closes it again", async () => {
     const user = await renderBar("en", false);
-    await user.click(screen.getByRole("button", { name: "All players and roles" }));
+    await user.click(screen.getByRole("button", { name: /^All players and roles/ }));
     const dialog = await screen.findByRole("dialog");
     const rows = [...dialog.querySelectorAll(".ww-overview__row")];
     expect(rows).toHaveLength(12);
@@ -122,7 +135,7 @@ describe("NarratorBar during the role reveal", () => {
     );
     // The state of the line-up is the role reveal.
     expect(state.status).toBe("roles");
-    expect(screen.queryByRole("button", { name: "All players and roles" })).toBeNull();
+    expect(screen.queryByRole("button", { name: /^All players and roles/ })).toBeNull();
     expect(screen.queryByRole("button", { name: "Rules" })).toBeNull();
     // No moon and no night while the players look at their roles.
     expect(screen.queryByRole("img", { name: /Night|Nacht/ })).toBeNull();
@@ -142,7 +155,7 @@ describe("NarratorBar during the role reveal", () => {
         />
       </I18nextProvider>,
     );
-    expect(screen.getByRole("button", { name: "All players and roles" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^All players and roles/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Rules" })).toBeInTheDocument();
   });
 });

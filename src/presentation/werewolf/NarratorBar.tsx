@@ -4,6 +4,7 @@ import type { WerewolfState } from "../../business/games/werewolf/stateMachine";
 import { Button, Dialog, Icon } from "../components";
 import { GameBar } from "../game-kit";
 import { PlayerRows } from "./PlayerRows";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface NarratorBarProps {
   readonly state: WerewolfState;
@@ -36,6 +37,10 @@ export function NarratorBar({
   // While the players look at their roles nobody may see all the roles or open the rules: the buttons only appear when
   // the real game begins.
   const dealing = forceDealing || state.status === "roles";
+  // The overview button also counts the living and the werewolves among them (deaths count once they are announced).
+  const alive = state.alive.length;
+  const wolves = state.alive.filter((player) => player.role === "wolf").length;
+  const overviewLabel = `${t("werewolfNarrator.bar.overview")}, ${t("werewolfNarrator.guide.count", { alive, wolves })}`;
   const label = t(day ? "werewolfNarrator.bar.day" : "werewolfNarrator.bar.night", {
     count: state.night,
   });
@@ -49,12 +54,20 @@ export function NarratorBar({
       {/* While the players look at their roles nobody may see all the roles: the button only appears afterwards. */}
       {!dealing && (
         <Button
-          aria-label={t("werewolfNarrator.bar.overview")}
+          aria-label={overviewLabel}
+          className="ww-bar__overview"
           onClick={() => setOverview(true)}
-          title={t("werewolfNarrator.bar.overview")}
+          title={overviewLabel}
           variant="secondary"
         >
-          <Icon name="users" />
+          <span>
+            <Icon name="users" />
+            {alive}
+          </span>
+          <span className="ww-bar__wolves">
+            <WerewolfSymbol id="wolf" size={16} />
+            {wolves}
+          </span>
         </Button>
       )}
       <Dialog

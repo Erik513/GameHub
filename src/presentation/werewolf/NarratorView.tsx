@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import type { WerewolfSession } from "../../business/games/werewolf/session";
-import { Button, Icon } from "../components";
+import { Button } from "../components";
 import { StartBar } from "../game-kit";
 import { isDayStep, type GuideView } from "../../business/games/werewolf/narratorGuide";
 import { describeRoleStep } from "../../business/games/werewolf/roleStep";
@@ -398,7 +398,6 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
           <Button disabled={!view.canGoBack} onClick={guide.goBack} variant="secondary">
             {t("werewolfNarrator.guide.back")}
           </Button>
-          <AliveCount state={view.state} />
           <Button
             // The vote is confirmed with the check mark (like every list of people): the button "next" waits.
             data-next={(nextFree && (view.phase !== "act" || view.sleeping)) || undefined}
@@ -413,32 +412,5 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
         </div>
       </StartBar>
     </section>
-  );
-}
-
-/**
- * Between "back" and "next": how many players are alive and how many of them are werewolves, for the narrator. It counts
- * the deaths that are announced (the victims of the night count in the morning); while the roles are dealt it is empty.
- */
-function AliveCount({ state }: { readonly state: GuideView["state"] }) {
-  const { t } = useTranslation();
-  if (state.status === "roles") return <span className="ww-nav__count" />;
-  const alive = state.alive.length;
-  const wolves = state.alive.filter((player) => player.role === "wolf").length;
-  return (
-    <span
-      aria-label={t("werewolfNarrator.guide.count", { alive, wolves })}
-      className="ww-nav__count"
-      role="img"
-    >
-      <span>
-        <Icon name="users" />
-        {alive}
-      </span>
-      <span className="ww-nav__wolves">
-        <WerewolfSymbol id="wolf" size={16} />
-        {wolves}
-      </span>
-    </span>
   );
 }
