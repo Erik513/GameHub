@@ -15,6 +15,7 @@ import {
 } from "../../business/games/werewolf/variableConfiguration";
 import { ChoiceGroup, SetupScreen, useFocusOnShow } from "../game-kit";
 import { CoreBlock } from "./CoreBlock";
+import type { NarratorLevel } from "./experiencedFlow";
 import { FixedRoles } from "./FixedRoles";
 import { VariableRoles } from "./VariableRoles";
 import { WakeOrderButton } from "./WakeOrderButton";
@@ -33,6 +34,9 @@ interface WerewolfConfigurationProps {
   readonly variableDraft: VariableDraft;
   /** The number of players besides the narrator. */
   readonly players: number;
+  /** How much the narrator taps during the game: every task or only the decisions. */
+  readonly narratorLevel?: NarratorLevel;
+  readonly onNarratorLevelChange?: (level: NarratorLevel) => void;
 }
 
 /**
@@ -44,8 +48,10 @@ interface WerewolfConfigurationProps {
 export function WerewolfConfiguration({
   draft,
   mode,
+  narratorLevel,
   onChange,
   onDone,
+  onNarratorLevelChange,
   onModeChange,
   onVariableChange,
   players,
@@ -103,6 +109,9 @@ export function WerewolfConfiguration({
           ? onVariableChange(toggleVariableWolfCount(variableDraft, players, count))
           : onChange(setFixedWolfCount(draft, count))
       }
+      {...(narratorLevel && onNarratorLevelChange
+        ? { narrator: { level: narratorLevel, onChange: onNarratorLevelChange } }
+        : {})}
       onRule={setRule}
       rules={rules}
       villagers={

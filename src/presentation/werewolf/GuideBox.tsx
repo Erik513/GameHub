@@ -14,6 +14,8 @@ import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 
 interface GuideBoxProps {
   readonly view: GuideView;
+  /** An experienced narrator: nothing is dimmed, the tasks without a decision have no check and no frame. */
+  readonly experienced?: boolean;
   /** The vote: the lower box is where the votes are entered (the upper box only shows them). */
   readonly votes?: VoteProps | undefined;
   readonly onChoose: (name: string) => void;
@@ -32,6 +34,7 @@ interface GuideBoxProps {
  */
 export function GuideBox({
   view,
+  experienced = false,
   votes,
   onCheck,
   onChoose,
@@ -58,6 +61,7 @@ export function GuideBox({
           {script && (
             <RoleScript
               boxes={script}
+              experienced={experienced}
               onCheck={onCheck}
               onContinue={onContinue}
               onReopen={onReopen}
@@ -85,6 +89,7 @@ export function GuideBox({
           {script && (
             <RoleScript
               boxes={script}
+              experienced={experienced}
               onCheck={onCheck}
               onContinue={onContinue}
               onReopen={onReopen}
@@ -177,6 +182,7 @@ export function GuideBox({
         ) : script ? (
           <RoleScript
             boxes={script}
+            experienced={experienced}
             onCheck={onCheck}
             onContinue={onContinue}
             onReopen={onReopen}
@@ -323,6 +329,7 @@ function withNames(text: ReactNode, names: readonly string[] | undefined, red?: 
  */
 function RoleScript({
   boxes,
+  experienced,
   onCheck,
   onContinue,
   onReopen,
@@ -333,6 +340,8 @@ function RoleScript({
   role,
 }: {
   readonly outro: boolean;
+  /** Experienced: the boxes without a decision have no check (they are done by themselves) and no frame. */
+  readonly experienced: boolean;
   /** The question of the witch that is open (null for every other role). */
   readonly question: "heal" | "poison" | null;
   readonly boxes: readonly ScriptBox[];
@@ -369,10 +378,19 @@ function RoleScript({
     else (outro ? onReopen : onUndo)();
   };
   return (
-    <div className="ww-script">
+    <div className="ww-script" data-level={experienced ? "experienced" : undefined}>
       {boxes.map((box) => (
         <div className="ww-script__row" key={box.id}>
-          <div className="ww-script__step" data-state={box.state}>
+          <div
+            className="ww-script__step"
+            // A decision (a box with undo, or the true role of the drunk that is shown on purpose) keeps the frame.
+            data-decision={
+              box.button === "undo" ||
+              (box.button === "check" && box.state === "active") ||
+              undefined
+            }
+            data-state={box.state}
+          >
             {box.id === "asleep" || box.id === "wake" ? (
               <span className="ww-guide__heading">
                 <strong className="ww-guide__text">
@@ -407,24 +425,26 @@ function RoleScript({
               </span>
             )}
           </div>
-          {box.button !== null && (
-            <button
-              aria-label={label(box)}
-              className={
-                box.button === "undo"
-                  ? "ww-script__undo"
-                  : box.id === "wake"
-                    ? "ww-script__undo ww-script__check ww-script__wake"
-                    : "ww-script__undo ww-script__check"
-              }
-              disabled={!box.enabled}
-              onClick={() => press(box)}
-              title={label(box)}
-              type="button"
-            >
-              <Icon name={box.button === "undo" ? "reset" : "check"} />
-            </button>
-          )}
+          {/* Experienced: a task without a decision has no check (it is done by itself), unless it waits to be done. */}
+          {box.button !== null &&
+            !(experienced && box.button === "check" && box.state !== "active") && (
+              <button
+                aria-label={label(box)}
+                className={
+                  box.button === "undo"
+                    ? "ww-script__undo"
+                    : box.id === "wake"
+                      ? "ww-script__undo ww-script__check ww-script__wake"
+                      : "ww-script__undo ww-script__check"
+                }
+                disabled={!box.enabled}
+                onClick={() => press(box)}
+                title={label(box)}
+                type="button"
+              >
+                <Icon name={box.button === "undo" ? "reset" : "check"} />
+              </button>
+            )}
         </div>
       ))}
     </div>

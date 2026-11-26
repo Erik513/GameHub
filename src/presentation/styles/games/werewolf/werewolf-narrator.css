@@ -1371,6 +1371,17 @@
   opacity: 0.55;
 }
 
+/* An experienced narrator sees the whole script at once: nothing is dimmed, and only a decision has the frame (when
+   the last decision is made, the frame is on "next"). */
+.ww-script[data-level="experienced"] .ww-script__step[data-state="done"],
+.ww-script[data-level="experienced"] .ww-script__step[data-state="pending"] {
+  opacity: 1;
+}
+
+.ww-script[data-level="experienced"] .ww-script__step[data-state="active"]:not([data-decision]) {
+  outline: none;
+}
+
 /* The undo button of a box of the script: right of the box and as high as the box. */
 .ww-script__undo,
 .ww-script__row .ww-guide__close {

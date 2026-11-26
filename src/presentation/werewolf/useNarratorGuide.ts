@@ -22,36 +22,51 @@ import {
 } from "../../business/games/werewolf/narratorGuide";
 import type { CardAbilityId } from "../../business/games/werewolf/narratorCard";
 import type { WerewolfSession } from "../../business/games/werewolf/session";
+import { backToDecision, settleGuide } from "./experiencedFlow";
 
 /**
  * The guide of the narrator on screen. The steps are the logic of `narratorGuide`; this hook only keeps the guide in
  * the component and hands every new state of the game to `onSession` (which saves it). Back never asks: the narrator
- * taps "Back" on purpose.
+ * taps "Back" on purpose. For an experienced narrator the tasks without a decision are done by themselves (see
+ * `experiencedFlow`), and "Back" goes back to the decision before.
  */
 export function useNarratorGuide(
   session: WerewolfSession,
   onSession: (next: WerewolfSession, trail: unknown) => void,
   savedTrail?: unknown,
+  experienced = false,
 ) {
-  const [guide, setGuide] = useState(() => createGuide(session, savedTrail));
+  const settle = useCallback(
+    (next: Guide) => (experienced ? settleGuide(next) : next),
+    [experienced],
+  );
+  const [guide, setGuide] = useState(() => settle(createGuide(session, savedTrail)));
 
   const update = useCallback(
     (change: (current: Guide) => Guide) => {
-      const next = change(guide);
-      if (next === guide) return;
+      const changed = change(guide);
+      if (changed === guide) return;
+      const next = settle(changed);
       setGuide(next);
       // Every change is a checkpoint: the game and the choices of the narrator are saved together.
       onSession(next.session, next.trail);
     },
-    [guide, onSession],
+    [guide, onSession, settle],
   );
   const goBack = useCallback(() => {
+    if (experienced) {
+      const back = backToDecision(guide);
+      if (!back) return;
+      setGuide(back);
+      onSession(back.session, back.trail);
+      return;
+    }
     // Also a morning or an exile is taken back without a question.
     const result = backGuide(guide, true);
     if (!result.ok) return;
     setGuide(result.guide);
     onSession(result.guide.session, result.guide.trail);
-  }, [guide, onSession]);
+  }, [experienced, guide, onSession]);
   return {
     ability: (id: CardAbilityId) => update((g) => chooseAbility(g, id)),
     closeAbility: () => update(closeAbility),

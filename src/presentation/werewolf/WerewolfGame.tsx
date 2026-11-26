@@ -19,6 +19,7 @@ import { useGameRulesButton, useGameScreen } from "../GameChrome";
 import { usePersistentState } from "../game-kit";
 import { WerewolfConfiguration, type RolesMode } from "./WerewolfConfiguration";
 import { NarratorView } from "./NarratorView";
+import { parseNarratorLevel, type NarratorLevel } from "./experiencedFlow";
 import { NarratorErrorBoundary } from "./NarratorErrorBoundary";
 import { useWerewolfSession } from "./useWerewolfSession";
 import { WerewolfLineup } from "./WerewolfLineup";
@@ -67,6 +68,12 @@ export function WerewolfGame() {
     () => "fixed",
     (raw) => (raw === "fixed" || raw === "variable" ? raw : undefined),
   );
+  // How much the narrator taps: remembered like the other settings of the game.
+  const [narratorLevel, setNarratorLevel] = usePersistentState<NarratorLevel>(
+    "werewolf.narratorLevel",
+    () => "beginner",
+    parseNarratorLevel,
+  );
   const normalizedVariable = useMemo(
     () => normalizeVariableDraft(lineup.seats.length, variableDraft),
     [lineup.seats.length, variableDraft],
@@ -93,6 +100,7 @@ export function WerewolfGame() {
   const view = game.session ? (
     <NarratorErrorBoundary>
       <NarratorView
+        experienced={narratorLevel === "experienced"}
         onEnd={game.end}
         onRules={() => setRulesOpen(true)}
         onSession={game.replace}
@@ -105,8 +113,10 @@ export function WerewolfGame() {
       draft={draft}
       onChange={setDraft}
       mode={mode}
+      narratorLevel={narratorLevel}
       onDone={() => setConfiguring(false)}
       onModeChange={setMode}
+      onNarratorLevelChange={setNarratorLevel}
       onVariableChange={setVariableDraft}
       players={lineup.seats.length}
       variableDraft={normalizedVariable}

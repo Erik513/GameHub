@@ -26,6 +26,8 @@ interface NarratorViewProps {
   readonly onEnd: () => void;
   /** Opens the rules of the game. */
   readonly onRules: () => void;
+  /** An experienced narrator only enters the decisions: the other tasks of the script are done by themselves. */
+  readonly experienced?: boolean;
 }
 
 /**
@@ -128,9 +130,16 @@ function voteLegend(view: GuideView, t: TFunction): VoteProps["legend"] {
   };
 }
 
-export function NarratorView({ session, trail, onSession, onEnd, onRules }: NarratorViewProps) {
+export function NarratorView({
+  session,
+  trail,
+  onSession,
+  onEnd,
+  onRules,
+  experienced = false,
+}: NarratorViewProps) {
   const { t } = useTranslation();
-  const guide = useNarratorGuide(session, onSession, trail);
+  const guide = useNarratorGuide(session, onSession, trail, experienced);
   const { view } = guide;
   // The drunk: the window with the card of his true role (the narrator shows it to him).
   const [revealOpen, setRevealOpen] = useState(false);
@@ -368,6 +377,7 @@ export function NarratorView({ session, trail, onSession, onEnd, onRules }: Narr
             />
           ))}
         <GuideBox
+          experienced={experienced}
           votes={votes}
           onChoose={guide.choose}
           onCloseAbility={guide.closeAbility}

@@ -21,6 +21,11 @@ export const werewolfConfigTexts = {
     attackNight2: "Night 2",
     attackInfo:
       "From night 1: The werewolves attack in the very first night.\nFrom night 2: In the first night the werewolves only get to know each other; the first attack comes in the second night.",
+    narratorLabel: "Narrator",
+    narratorBeginner: "Beginner",
+    narratorExperienced: "Experienced",
+    narratorInfo:
+      "Beginner: The narrator goes through every script step by step and confirms every task with the check.\nExperienced: All scripts are visible at once. The narrator only enters the decisions; waking up, showing and falling asleep need no check. After the last decision the game goes on with “Next”.",
     issuesHeading: "To correct",
     useWolves: "Use wolf count {{count}}",
     infoLabel: "Info about {{name}}",

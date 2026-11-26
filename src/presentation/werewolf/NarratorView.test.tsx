@@ -10,12 +10,19 @@ import { NarratorView } from "./NarratorView";
 
 const names = "Anna,Ben,Cleo,Dora,Emil,Finn,Gina,Hans,Ida,Jan,Kim,Lea";
 
-function Harness({ onEnd }: { readonly onEnd: () => void }) {
+function Harness({
+  onEnd,
+  experienced = false,
+}: {
+  readonly onEnd: () => void;
+  readonly experienced?: boolean;
+}) {
   const [session, setSession] = useState<WerewolfSession>(() =>
     createWerewolfSession(createWerewolf(names, "Max", () => 0.3, [], {})!),
   );
   return (
     <NarratorView
+      experienced={experienced}
       onEnd={onEnd}
       onRules={() => undefined}
       onSession={setSession}
@@ -29,16 +36,46 @@ async function beginGame(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole("button", { name: /^(Begin|Beginnen)$/ }));
 }
 
-async function renderView(language: "en" | "de", onEnd = () => undefined) {
+async function renderView(language: "en" | "de", onEnd = () => undefined, experienced = false) {
   const i18n = await createGameHubI18n(language);
   const user = userEvent.setup();
   render(
     <I18nextProvider i18n={i18n}>
-      <Harness onEnd={onEnd} />
+      <Harness experienced={experienced} onEnd={onEnd} />
     </I18nextProvider>,
   );
   return user;
 }
+
+describe("NarratorView for an experienced narrator", () => {
+  it("shows the whole script without checks for the tasks and frames only the decision", async () => {
+    const user = await renderView("en", () => undefined, true);
+    // The role reveal stays the same.
+    for (
+      let guard = 0;
+      guard < 30 && !screen.queryByRole("button", { name: "Begin" });
+      guard += 1
+    ) {
+      const next = screen.queryByRole("button", { name: "Next" });
+      const look = screen.queryByRole("button", { name: /Look: ready/ });
+      if (look && !(look as HTMLButtonElement).disabled) await user.click(look);
+      else if (next && !(next as HTMLButtonElement).disabled) await user.click(next);
+      else break;
+    }
+    await beginGame(user);
+    // The role is woken by itself: no check "show the role", no check for the tasks, nothing dimmed.
+    expect(screen.queryByRole("button", { name: "Show the role" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Task done" })).toBeNull();
+    const script = document.querySelector(".ww-script")!;
+    expect(script).toHaveAttribute("data-level", "experienced");
+    // The werewolves only look at each other in the first night: no decision, so they are asleep at once, the open box
+    // has no frame and the frame is on "next".
+    const open = script.querySelector('.ww-script__step[data-state="active"]')!;
+    expect(open).toHaveTextContent("The werewolves go back to sleep");
+    expect(open).not.toHaveAttribute("data-decision");
+    expect(screen.getByRole("button", { name: "Next" })).toHaveAttribute("data-next");
+  });
+});
 
 describe.each([
   {

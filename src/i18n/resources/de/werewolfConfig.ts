@@ -21,6 +21,11 @@ export const werewolfConfigTexts = {
     attackNight2: "Nacht 2",
     attackInfo:
       "Ab Nacht 1: Die Werwölfe greifen schon in der ersten Nacht an.\nAb Nacht 2: In der ersten Nacht lernen sich die Werwölfe nur kennen; der erste Angriff kommt in der zweiten Nacht.",
+    narratorLabel: "Erzähler",
+    narratorBeginner: "Anfänger",
+    narratorExperienced: "Erfahren",
+    narratorInfo:
+      "Anfänger: Der Erzähler geht jedes Skript Schritt für Schritt durch und bestätigt jede Aufgabe mit dem Haken.\nErfahren: Alle Skripte sind sofort zu sehen. Der Erzähler gibt nur die Entscheidungen ein; Wecken, Zeigen und Einschlafen brauchen keinen Haken. Nach der letzten Entscheidung geht es mit „Weiter“ weiter.",
     issuesHeading: "Zu korrigieren",
     useWolves: "Wolfszahl {{count}} nehmen",
     infoLabel: "Info zu {{name}}",

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { ConfigCardHead } from "./ConfigInfo";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
 import { GeneralSettings, type GeneralRules } from "./GeneralSettings";
+import type { NarratorLevel } from "./experiencedFlow";
 
 /** One wolf count the narrator can pick. */
 export interface WolfOption {
@@ -18,6 +19,11 @@ interface CoreBlockProps {
   readonly onPickWolves: (count: number) => void;
   readonly onRule: (key: keyof GeneralRules, value: boolean) => void;
   readonly rules: GeneralRules;
+  /** The level of the narrator, chosen below the rules. */
+  readonly narrator?: {
+    readonly level: NarratorLevel;
+    readonly onChange: (level: NarratorLevel) => void;
+  };
   /** The number of villagers, or the range the draw can leave. */
   readonly villagers: string;
   readonly wolves: readonly WolfOption[];
@@ -30,6 +36,7 @@ interface CoreBlockProps {
  */
 export function CoreBlock({
   fixedWolves,
+  narrator,
   onPickWolves,
   onRule,
   rules,
@@ -68,7 +75,7 @@ export function CoreBlock({
             ))}
           </div>
         </section>
-        <GeneralSettings onChange={onRule} rules={rules} />
+        <GeneralSettings {...(narrator ? { narrator } : {})} onChange={onRule} rules={rules} />
       </section>
       <div aria-label={t("werewolfConfig.villagers")} className="ww-card ww-stat" role="group">
         <ConfigCardHead
