@@ -13,8 +13,7 @@ import {
   toggleVariableWolfCount,
   type VariableDraft,
 } from "../../business/games/werewolf/variableConfiguration";
-import { Button } from "../components";
-import { ChoiceGroup, StartBar, useFocusOnShow } from "../game-kit";
+import { ChoiceGroup, SetupScreen, useFocusOnShow } from "../game-kit";
 import { CoreBlock } from "./CoreBlock";
 import { FixedRoles } from "./FixedRoles";
 import { VariableRoles } from "./VariableRoles";
@@ -160,32 +159,33 @@ export function WerewolfConfiguration({
     />
   ) : null;
 
+  // The settings frame of every game: the roles in the form, "Done" at the bottom, the wake-up order left of it.
   return (
-    <section
-      aria-label={t("werewolfConfig.label")}
-      className="kit-onepage ww-config focus-target"
-      ref={focus}
-      tabIndex={-1}
+    <SetupScreen
+      className="ww-config focus-target"
+      formId="werewolf-config-form"
+      label={t("werewolfConfig.label")}
+      messages={
+        supported ? undefined : (
+          <p className="ww-hint">
+            {players > werewolfPlayerLimits.targetMaximum
+              ? t("werewolfConfig.tooManyPlayers", {
+                  count: players,
+                  maximum: werewolfPlayerLimits.targetMaximum,
+                })
+              : t("werewolfConfig.tooFewPlayers", { count: players })}
+          </p>
+        )
+      }
+      onSubmit={(event) => {
+        event.preventDefault();
+        onDone();
+      }}
+      rootRef={focus}
+      sideAction={<WakeOrderButton draft={draft} mode={mode} variableDraft={variableDraft} />}
+      startLabel={t("werewolfConfig.done")}
     >
-      {!supported ? (
-        <p className="ww-hint">
-          {players > werewolfPlayerLimits.targetMaximum
-            ? t("werewolfConfig.tooManyPlayers", {
-                count: players,
-                maximum: werewolfPlayerLimits.targetMaximum,
-              })
-            : t("werewolfConfig.tooFewPlayers", { count: players })}
-        </p>
-      ) : (
-        rolesView
-      )}
-      <StartBar
-        sideAction={<WakeOrderButton draft={draft} mode={mode} variableDraft={variableDraft} />}
-      >
-        <Button onClick={onDone} variant="success">
-          {t("werewolfConfig.done")}
-        </Button>
-      </StartBar>
-    </section>
+      {supported ? rolesView : null}
+    </SetupScreen>
   );
 }

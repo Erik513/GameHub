@@ -15,11 +15,19 @@ interface SetupScreenProps {
   readonly onSubmit: FormEventHandler<HTMLFormElement>;
   readonly startDisabled?: boolean;
   readonly startLabel: string;
+  /** The blue button left of the main button (the same place in every game, for example the wake-up order). */
+  readonly sideAction?: ReactNode;
+  /** The name of the screen for screen readers; with it the screen is a named region. */
+  readonly label?: string;
+  /** Extra classes of the screen (the game's own styles). */
+  readonly className?: string;
+  /** The screen itself, for example to put the focus on it when it opens. */
+  readonly rootRef?: Ref<HTMLElement>;
 }
 
 /**
- * The main menu frame of every game: messages, the form with its sections and the start button
- * pinned to the bottom. The rules button belongs in the game settings section, the button to the
+ * The settings frame of every game: messages, the form with its sections and the main button pinned to the bottom,
+ * with an optional button left of it. The rules button belongs in the game settings section, the button to the
  * editor in the section of the game's own content; the game puts them there.
  */
 export function SetupScreen({
@@ -31,18 +39,27 @@ export function SetupScreen({
   onSubmit,
   startDisabled = false,
   startLabel,
+  sideAction,
+  label,
+  className,
+  rootRef,
 }: SetupScreenProps) {
   return (
-    <div className="kit-onepage">
+    <section
+      {...(label === undefined ? {} : { "aria-label": label })}
+      className={className ? `kit-onepage ${className}` : "kit-onepage"}
+      ref={rootRef}
+      {...(rootRef ? { tabIndex: -1 } : {})}
+    >
       {messages}
       <form id={formId} noValidate onChange={onChange} onSubmit={onSubmit} ref={formRef}>
         {children}
       </form>
-      <StartBar>
+      <StartBar sideAction={sideAction}>
         <Button disabled={startDisabled} form={formId} type="submit" variant="success">
           {startLabel}
         </Button>
       </StartBar>
-    </div>
+    </section>
   );
 }
