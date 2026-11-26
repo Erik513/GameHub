@@ -224,6 +224,30 @@ function previewState(
   return pending ? transitionWerewolf(state, pending) : state;
 }
 
+/**
+ * The name of the button "next". The step is played ahead on a copy (the guide is immutable and never draws by chance):
+ * when it ends the game the button says so, when the morning follows it ends the night.
+ */
+function nextKindOf(
+  guide: Guide,
+  phase: GuidePhase,
+  state: WerewolfState,
+  selection: GuideSelection,
+): GuideView["nextKind"] {
+  if (phase === "ready") return "begin";
+  if (state.status === "finished") return "finish";
+  const next = continueGuide(guide).session.present;
+  if (
+    next.status === "finished" ||
+    previewState(state, phase, current(guide).event, selection).status === "finished"
+  )
+    return "endGame";
+  // During the day (nomination and vote included) the button is always the one that ends the day.
+  if (state.status === "vote" || state.status === "day") return "endDay";
+  if (!isDayStep(state) && isDayStep(next)) return "endNight";
+  return "next";
+}
+
 export function describeGuide(guide: Guide): GuideView {
   const frame = current(guide);
   const state = guide.session.present;
@@ -382,15 +406,7 @@ export function describeGuide(guide: Guide): GuideView {
     sleeping: state.status === "day" && selection.sleeping === true,
     investigated: investigatedOf(state),
     voterNotes: voterNotesOf(state),
-    nextKind:
-      frame.phase === "ready"
-        ? "begin"
-        : state.status === "finished"
-          ? "finish"
-          : // During the day (nomination and vote included) the button is always the one that ends the day.
-            state.status === "vote" || state.status === "day"
-            ? "endDay"
-            : "next",
+    nextKind: nextKindOf(guide, frame.phase, state, selection),
     overviewState: previewState(state, frame.phase, frame.event, selection),
     phase: frame.phase,
     selection,

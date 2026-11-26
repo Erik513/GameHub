@@ -66,8 +66,15 @@ export function RoleTile({
           <strong className="ww-tile__main">
             <WerewolfSymbol id={symbol ?? symbolOfInfo(infoId)} size={18} />
             {name}
-            {/* Why the role is locked stands in brackets next to the name; the second line stays for the text of the role. */}
-            {hint && <em className="ww-tile__lock"> ({hint})</em>}
+            {/* Why the role is locked stands in brackets next to the name; the second line stays for the text of the role.
+                The space stands outside the brackets: where the line is too narrow (the halves of the mayor), the brackets
+                move to the next line as a whole. */}
+            {hint && (
+              <>
+                {" "}
+                <em className="ww-tile__lock">({hint})</em>
+              </>
+            )}
           </strong>
           {(sub ?? note) && <small>{sub ?? note}</small>}
         </span>

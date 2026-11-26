@@ -91,7 +91,11 @@ export interface GuideView {
   readonly potionRole: "witch" | "magician" | null;
   /** The name of the hunter (also the drunk who is the hunter) who shoots at this step; null at every other step. */
   readonly shooter: string | null;
-  readonly nextKind: "begin" | "endDay" | "finish" | "next";
+  /**
+   * What the button "next" does, for its name: begin the game, end the night (the morning follows), end the day, end
+   * the game (the decision on the screen ends it), start a new game (the game is over) or just go on.
+   */
+  readonly nextKind: "begin" | "endDay" | "endGame" | "endNight" | "finish" | "next";
   /** Who leaves the game through the step that is about to be confirmed, and why (private to the narrator). */
   readonly deaths: readonly DeathNote[];
   /** Facts the narrator has to keep in mind during the day (silenced, wounded) and who a choice may not name. */

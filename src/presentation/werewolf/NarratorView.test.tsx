@@ -202,6 +202,14 @@ describe("NarratorView choices", () => {
     );
   });
 
+  it("counts the living and the werewolves among them between back and next, but not while the roles are dealt", async () => {
+    const user = await renderView("en");
+    expect(screen.queryByRole("img", { name: /alive/ })).toBeNull();
+    await toSeer(user);
+    const count = screen.getByRole("img", { name: /^12 alive, [0-9] of them werewolves$/ });
+    expect(count.closest(".ww-nav")).not.toBeNull();
+  });
+
   it("changes from one role to the next only with the button next, which then has the blue frame", async () => {
     const user = await renderView("en");
     await toSeer(user);
@@ -216,7 +224,8 @@ describe("NarratorView choices", () => {
     const asleep = screen.getByText(/seer goes back to sleep/);
     await user.click(asleep);
     expect(screen.getByText(/seer goes back to sleep/)).toBeInTheDocument();
-    const next = screen.getByRole("button", { name: "Next" });
+    // The seer is the last role of this night: the button ends the night.
+    const next = screen.getByRole("button", { name: "End the night" });
     expect(next).toBeEnabled();
     expect(next).toHaveAttribute("data-next");
     await user.click(next);
@@ -270,7 +279,7 @@ describe("NarratorView choices", () => {
     ) {
       const lookReady = screen.queryByRole("button", { name: /Look: ready/ });
       const confirm = screen.queryByRole("button", { name: "Confirm the choice" });
-      const next = screen.queryByRole("button", { name: "Next" });
+      const next = screen.queryByRole("button", { name: /^(Next|End the night)$/ });
       const done = screen.queryByRole("button", { name: "Task done" });
       const wake = document.querySelector(".ww-script__wake:not(:disabled)");
       if (screen.queryByText("All roles are dealt")) await beginGame(user);

@@ -462,3 +462,7 @@ Neuer Zustand `wounded` in `roles/stateIds.ts` (nach `investigated`, vor den Zus
 ## Tod mit Amulett im Verlauf (2026-11-26, Claude, We-01-233)
 
 Der Todeseintrag (`kind: "death"`, eventLog.ts) hat das neue optionale Feld `diedWithAmulet` (`before.amulet?.holder === player.name`), wie `diedMasked`. `describePlayers` setzt `amulet` jetzt auch für einen Toten mit `diedWithAmulet === true`. Ältere gespeicherte Spiele haben das Feld nicht (dann kein Rahmen), eine Migration ist nicht nötig. Angepasst: die Amulett-Invariante in narrator.test.ts.
+
+## Name des Weiter-Knopfs (2026-11-26, Claude, We-01-239)
+
+`GuideView.nextKind` (guideTypes.ts) hat zwei neue Werte: `endNight` (der Schritt führt in den Morgen) und `endGame` (der Schritt beendet das Spiel). Berechnet in der neuen Funktion `nextKindOf` (narratorGuide.ts): `describeGuide` spielt dafür `continueGuide` auf einer Kopie einen Schritt voraus und prüft zusätzlich die vorhandene Vorschau `previewState`. Reihenfolge: `begin`, `finish`, `endGame`, `endDay` (Tag und Abstimmung), `endNight`, `next`. Die Zustandsmaschine ist unverändert; der Knopf bei `endGame` macht weiter `continueGuide` (nur `finish` beendet die Sitzung). Neue Tests in narratorGuide.test.ts („the name of the button next“). Wer `nextKind` auswertet, muss die beiden neuen Werte kennen.

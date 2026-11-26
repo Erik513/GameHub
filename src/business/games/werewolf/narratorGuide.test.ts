@@ -538,6 +538,40 @@ describe("narrator guide", () => {
     });
   });
 
+  describe("the name of the button next", () => {
+    /** Walks on until the game reaches `status` and gives the view of the step that led there. */
+    function stepBefore(start: Guide, status: WerewolfState["status"]) {
+      let guide = start;
+      for (let step = 0; step < 300; step += 1) {
+        const next = forward(guide);
+        if (!next) return undefined;
+        if (next.session.present.status === status) return describeGuide(guide);
+        guide = next;
+      }
+      return undefined;
+    }
+
+    it("ends the night on the last step before the morning", () => {
+      const view = stepBefore(game([], { attackOnFirstNight: true }), "morning");
+      expect(view?.nextKind).toBe("endNight");
+    });
+
+    it("says end of game when the step on the screen ends the game", () => {
+      const base = game().session.present;
+      const wolves = base.players.filter((p) => p.role === "wolf");
+      const villagers = base.players.filter((p) => p.role !== "wolf").slice(0, wolves.length);
+      // As many villagers as wolves: the victim of the night gives the wolves the majority.
+      const night = {
+        ...base,
+        alive: [...wolves, ...villagers],
+        night: 2,
+        status: "wolves",
+      } as unknown as WerewolfState;
+      const view = stepBefore(createGuide(createWerewolfSession(night)), "finished");
+      expect(view?.nextKind).toBe("endGame");
+    });
+  });
+
   it("closes the list of people again when an ability was tapped by mistake", () => {
     let guide = continueGuide(game([], { attackOnFirstNight: true }));
     for (let step = 0; step < 100 && describeGuide(guide).card?.role !== "seer"; step += 1)
