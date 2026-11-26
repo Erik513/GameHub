@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 457,
-      "totalTasks": 515,
-      "percent": 88.7
+      "completedTasks": 458,
+      "totalTasks": 516,
+      "percent": 88.8
     }
   },
   "environment": {
@@ -2772,6 +2772,12 @@
           "title": "Zähler für den Erzähler: Lebende und Werwölfe zwischen Zurück und Weiter",
           "status": "done",
           "validation": "Zwischen „Zurück“ und „Weiter“ stehen die lebenden Spieler und darunter rot die lebenden Werwölfe; Screenreader hören „12 leben, davon 3 Werwölfe“. Gezählt wird nach verkündeten Toden, während der Rollenverteilung bleibt der Platz leer. „Weiter“ behält die halbe Breite, „Zurück“ wird schmaler. Ort vom Auftraggeber gewählt (Variante C). Neuer Test in NarratorView.test.tsx; alle 1846 Tests, tsc, eslint und prettier grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-241",
+          "title": "Zähler der Lebenden und Werwölfe im Übersicht-Knopf der Spielleiste",
+          "status": "done",
+          "validation": "Rückmeldung des Auftraggebers: Der Zähler zwischen „Zurück“ und „Weiter“ gefiel nicht. Er steht jetzt im Übersicht-Knopf der Spielleiste (Lebende, daneben rot die Werwölfe); ein Tipp öffnet wie bisher die Übersicht, Screenreader hören „Alle Spieler und Rollen, 12 leben, davon 3 Werwölfe“. Unten teilen sich „Zurück“ und „Weiter“ wieder die Breite. Vorher als Zeichnung abgestimmt. Neuer Test in NarratorBar.test.tsx (beide Sprachen); alle 1847 Tests, tsc, eslint und prettier grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4438,7 +4444,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T16:44:23.658Z"
+  "updatedAt": "2026-11-26T16:57:19.803Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

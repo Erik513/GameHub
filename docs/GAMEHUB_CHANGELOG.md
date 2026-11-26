@@ -2,6 +2,10 @@
 
 ## 2026-11-26 (Werwolf am Handy)
 
+### We-01-241: Zähler im Übersicht-Knopf (Claude)
+
+- Die Zahl der Lebenden und Werwölfe steht jetzt im Übersicht-Knopf oben; unten sind „Zurück“ und „Weiter“ wieder gleich breit. Nicht im Browser angesehen.
+
 ### We-01-238: Bürgermeister-Hinweis bricht um (Claude)
 
 - „(kein Platz frei)“ rutscht in den Hälften des Bürgermeisters in die zweite Zeile, statt überzulaufen. Nicht im Browser angesehen.
