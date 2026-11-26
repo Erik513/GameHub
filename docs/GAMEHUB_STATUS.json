@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 461,
+      "completedTasks": 462,
       "totalTasks": 520,
-      "percent": 88.7
+      "percent": 88.8
     }
   },
   "environment": {
@@ -2548,8 +2548,9 @@
         },
         {
           "id": "We-01-243",
-          "title": "Einstellung Erzähler-Stufe Anfänger/Erfahren (Erfahren: alle Skript-Boxen sofort sichtbar, nur Entscheidungen bestätigen)",
-          "status": "planned"
+          "title": "Einstellung Erzähler-Stufe Anfänger/Erfahren (Erfahren: alle Skripte sofort sichtbar, nur Entscheidungen eingeben)",
+          "status": "done",
+          "validation": "Neue Einstellung „Erzähler: Anfänger | Erfahren“ in der Werwolf-Konfiguration unter „Wolfsangriff ab“ (ChoiceGroup mit Info, gemerkt als werewolf.narratorLevel, Standard Anfänger). Anfänger unverändert. Erfahren: nichts abgedunkelt, die Aufgaben ohne Entscheidung (Wecken, Zeigen, Einschlafen, Antippen) erledigen sich selbst und haben keinen Haken, der blaue Rahmen steht nur auf Entscheidungen und nach der letzten auf „Weiter“; die wahre Rolle des Trunkenbolds behält ihren Haken; „Weiter“ tippt immer der Erzähler. „Zurück“ wie beim Anfänger, bleibt aber nie auf einer Aufgabe ohne Entscheidung stehen. Umsetzung nur in der Präsentation (experiencedFlow.ts, useNarratorGuide, GuideBox), Logik unverändert; Notiz für Codex. Vorher als Zeichnung abgestimmt, vom Auftraggeber am Handy ausprobiert. Neue Tests experiencedFlow.test.ts, GeneralSettings.test.tsx, NarratorView.test.tsx; alle 1857 Tests, tsc, eslint und prettier grün."
         },
         {
           "id": "We-01-244",
@@ -4234,5 +4235,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T18:10:29.124Z"
+  "updatedAt": "2026-11-26T23:34:32.308Z"
 }

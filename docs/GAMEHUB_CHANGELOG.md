@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-27 (Erzähler-Stufe)
+
+### We-01-243: Erzähler Anfänger oder Erfahren (Claude)
+
+- Neue Einstellung in der Werwolf-Konfiguration. Erfahren: alle Skripte sofort sichtbar, Wecken/Zeigen/Einschlafen ohne Haken, der Rahmen springt nur zwischen den Entscheidungen und danach auf „Weiter“. Anfänger bleibt wie bisher.
+
 ## 2026-11-26 (Werwolf am Handy)
 
 ### We-01-246: Werwolf-Spielende ohne Gewinnerblock (Claude)
