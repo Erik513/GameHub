@@ -2,6 +2,10 @@
 
 ## 2026-11-26 (Spielgerüst)
 
+### Al-09-20: Ein Ablauf der Bildschirme für jedes Spiel (Claude)
+
+- Jedes Spiel meldet nur noch, ob Hauptmenü, Einstellungen, Spiel oder Spielende offen ist; Kopfzeile und Zurück-Taste sind überall gleich. Neu: Die Taboo-Einstellungen zeigen die normale Kopfzeile, und am Spielende führt die Zurück-Taste ohne Nachfrage ins Hauptmenü. Nicht im Browser angesehen.
+
 ### Al-09-19: Eine Spielleiste für jedes laufende Spiel (Claude)
 
 - Werwolf und Taboo zeigen im laufenden Spiel dieselbe Leiste: links der Stand (Tag/Nacht bzw. „Runde 2/5“), daneben Regeln-Symbol, eigene Knöpfe (Übersicht, Pause) und rechts „Spiel beenden“. Taboo hat dafür keine App-Kopfzeile mehr im Spiel. Nicht im Browser angesehen.
