@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 450,
+      "completedTasks": 451,
       "totalTasks": 512,
-      "percent": 87.9
+      "percent": 88.1
     }
   },
   "environment": {
@@ -622,7 +622,8 @@
         {
           "id": "Al-09-17",
           "title": "Spielgerüst Schritt 2: Werwolf-Einstellungen auf die gemeinsame Einstellungsseite (SetupScreen mit Knopf links neben „Fertig“)",
-          "status": "planned"
+          "status": "done",
+          "validation": "SetupScreen (game-kit) hat jetzt den Knopf links neben dem Hauptknopf (sideAction), einen Namen für Screenreader (label), eigene Klassen und einen Ref für den Fokus; die Wurzel ist eine section. Die Werwolf-Konfiguration nutzt SetupScreen statt eines eigenen Rahmens: Rollen im Formular, „Fertig“ unten, Aufwachreihenfolge links daneben; der Hinweis zu wenige/zu viele Spieler steht als Meldung oben. Taboo unverändert (gleicher Rahmen). 691 Tests der Oberfläche, App und Übersetzungen grün; nicht im Browser angesehen (Aufbau innen jetzt mit Formular, gleich wie bei Taboo)."
         },
         {
           "id": "Al-09-18",
@@ -4416,7 +4417,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T00:04:25.205Z"
+  "updatedAt": "2026-11-26T00:06:08.455Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

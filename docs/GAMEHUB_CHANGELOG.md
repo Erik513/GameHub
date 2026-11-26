@@ -2,6 +2,10 @@
 
 ## 2026-11-26 (Spielgerüst)
 
+### Al-09-17: Werwolf-Einstellungen im gemeinsamen Rahmen (Claude)
+
+- Die Werwolf-Konfiguration nutzt jetzt dieselbe Einstellungsseite wie Taboo; der gemeinsame Rahmen hat dafür den Knopf links neben „Fertig“ bekommen. Nicht im Browser angesehen.
+
 ### Al-09-16: Ein Regelfenster für alle Spiele (Claude)
 
 - Werwolf und Taboo zeigen ihre Regeln im selben Baustein: großes Fenster, Abschnitte oder Reiter, die Zurück-Taste schließt es. Das Regelfenster von Taboo ist dadurch jetzt groß wie beim Werwolf. Nicht im Browser angesehen.
