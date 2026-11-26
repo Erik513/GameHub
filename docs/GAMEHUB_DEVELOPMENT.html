@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 449,
+      "completedTasks": 450,
       "totalTasks": 512,
-      "percent": 87.7
+      "percent": 87.9
     }
   },
   "environment": {
@@ -616,7 +616,8 @@
         {
           "id": "Al-09-16",
           "title": "Spielgerüst Schritt 1: gemeinsames Regelfenster (großes Fenster, Reiter, Abschnitte) für alle Spiele",
-          "status": "planned"
+          "status": "done",
+          "validation": "Neuer Baustein game-kit/RulesDialog: großes Fenster mit Titel und Schließen, die Regeln als Abschnitte oder in Reitern (nur der Inhalt eines Reiters scrollt), die Zurück-Taste schließt es. Werwolf (vier Reiter) und Taboo (Abschnitte) nutzen ihn; ihre eigenen Fenster, die Zurück-Regeln in WerewolfGame/TabooSetupForm und die Werwolf-Stile ww-rules (jetzt kit-rules) entfallen. Sichtbare Änderung: das Regelfenster von Taboo ist jetzt groß wie beim Werwolf. Neuer Test RulesDialog.test.tsx; 691 Tests der Oberfläche, App und Übersetzungen grün; nicht im Browser angesehen."
         },
         {
           "id": "Al-09-17",
@@ -4415,7 +4416,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T00:02:24.578Z"
+  "updatedAt": "2026-11-26T00:04:25.205Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };

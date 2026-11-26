@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-26 (Spielgerüst)
+
+### Al-09-16: Ein Regelfenster für alle Spiele (Claude)
+
+- Werwolf und Taboo zeigen ihre Regeln im selben Baustein: großes Fenster, Abschnitte oder Reiter, die Zurück-Taste schließt es. Das Regelfenster von Taboo ist dadurch jetzt groß wie beim Werwolf. Nicht im Browser angesehen.
+
 ## 2026-11-26 (Zurück-Taste)
 
 ### Al-09-15: Ein Knopf „Spiel beenden“ für alle Spiele (Claude)
