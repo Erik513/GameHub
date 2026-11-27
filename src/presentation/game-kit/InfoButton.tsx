@@ -12,6 +12,8 @@ export interface InfoContent {
   /** A small line right under the title, for example the kind of a role. */
   readonly subtitle?: string;
   /** Something next to the title in the window, for example a small box with a status. */
+  /** Something before the title in the window, for example the symbol of a role. */
+  readonly titleIcon?: ReactNode;
   readonly titleExtra?: ReactNode;
   /** Controls the dialog from outside; without it the button manages the dialog itself. */
   readonly open?: boolean | undefined;
@@ -71,6 +73,7 @@ export function InfoButton(props: InfoButtonProps) {
           title={content.title}
           {...(content.subtitle === undefined ? {} : { subtitle: content.subtitle })}
           {...(content.titleExtra === undefined ? {} : { titleExtra: content.titleExtra })}
+          {...(content.titleIcon === undefined ? {} : { titleIcon: content.titleIcon })}
         >
           {typeof content.text === "string" && content.text.includes("\n") ? (
             <ul className="kit-info-list">

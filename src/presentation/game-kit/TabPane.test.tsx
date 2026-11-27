@@ -32,3 +32,32 @@ it("does not mark an ordinary body", () => {
   render(<TabPane>{list}</TabPane>);
   expect(document.querySelector(".kit-pane__body")).not.toHaveAttribute("data-whole-rows");
 });
+
+it("shows no scrollbar when the content only stands over by a rounding, but scrolls when it really does not fit", () => {
+  const sizes = (scrollHeight: number) => {
+    Object.defineProperty(HTMLElement.prototype, "scrollHeight", {
+      configurable: true,
+      get() {
+        return (this as HTMLElement).classList.contains("kit-pane__body") ? scrollHeight : 0;
+      },
+    });
+    Object.defineProperty(HTMLElement.prototype, "clientHeight", {
+      configurable: true,
+      get() {
+        return (this as HTMLElement).classList.contains("kit-pane__body") ? 400 : 0;
+      },
+    });
+  };
+  try {
+    sizes(401);
+    const { unmount } = render(<TabPane>{list}</TabPane>);
+    expect(document.querySelector(".kit-pane__body")).toHaveAttribute("data-snug", "true");
+    unmount();
+    sizes(450);
+    render(<TabPane>{list}</TabPane>);
+    expect(document.querySelector(".kit-pane__body")).not.toHaveAttribute("data-snug");
+  } finally {
+    Reflect.deleteProperty(HTMLElement.prototype, "scrollHeight");
+    Reflect.deleteProperty(HTMLElement.prototype, "clientHeight");
+  }
+});

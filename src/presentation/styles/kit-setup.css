@@ -902,6 +902,11 @@ body:has(.kit-onepage) {
   overscroll-behavior: contain;
 }
 
+/* The content only stands over by a rounding of the screen: no scrollbar (see useNoScrollbarForRounding). */
+.kit-pane__body[data-snug] {
+  overflow-y: hidden;
+}
+
 /* Several controls in the header of a pane, one below the other. */
 .kit-pane__stack {
   display: grid;

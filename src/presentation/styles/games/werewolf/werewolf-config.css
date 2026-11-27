@@ -958,13 +958,18 @@
 
 .ww-core .ww-card.ww-stat {
   grid-template-columns: minmax(0, 1fr);
-  align-content: start;
+  /* The heading at the top, the symbol and the number in the middle of the room below it, however high the box is. */
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: stretch;
   gap: 0;
   padding: 0 var(--space-2) var(--space-1);
 }
 
 .ww-core .ww-stat__value {
-  justify-items: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
 }
 
 /* A symbol is as high as the text it stands beside and takes the color of that text. */

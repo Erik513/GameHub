@@ -1,3 +1,8 @@
+import { symbolOfInfo } from "./infoSymbol";
+import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
+import type { RoleVariantId } from "../../business/games/werewolf/roleVariant";
+import { VariantMark } from "./VariantMark";
+import { variantGlyphs } from "./symbols/variantGlyphs";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -100,6 +105,18 @@ export function VariableRoles({
       : `${name} · ${t(`werewolfConfig.variants.${option}` as "werewolfConfig.variants.hammer")}`;
   };
   const itemLabel = (item: VariableItemView) => t(`werewolfConfig.addons.${item.item}`);
+  // What a chip shows: the name of the role and, for an option of a role, its dashed sign instead of the words (the
+  // words stay in the name for screen readers, in the window of the chip and in its "i").
+  const chipFace = (id: string, label: string): ReactNode => {
+    const [role, option] = id.split(":");
+    if (id.startsWith("item:") || option === undefined || !(option in variantGlyphs)) return label;
+    return (
+      <>
+        {t(`werewolfConfig.roles.${role}` as "werewolfConfig.roles.hunter")}
+        <VariantMark decorative size={20} variant={option as RoleVariantId} />
+      </>
+    );
+  };
   const labelOf = (id: string): string => {
     if (id.startsWith("item:")) {
       const item = view.items.find((candidate) => `item:${candidate.item}` === id);
@@ -125,12 +142,13 @@ export function VariableRoles({
       key={id}
     >
       <button
+        aria-label={label}
         className="ww-chip__main"
         onClick={dragging.tap(id)}
         {...(lock === null ? { onPointerDown: dragging.startDrag(id) } : {})}
         type="button"
       >
-        {label}
+        {chipFace(id, label)}
       </button>
       <ConfigInfo className="ww-chip__info" id={infoIdOf(id)} name={label} />
     </span>
@@ -170,6 +188,8 @@ export function VariableRoles({
     <div className="ww-players-head">
       {modeSwitch}
       {top}
+      {/* The heading of the boxes stays in place: only the boxes below it scroll. */}
+      <h3 className="ww-vheading">{t("werewolfConfig.variable.rolesHeading")}</h3>
     </div>
   );
 
@@ -249,7 +269,6 @@ export function VariableRoles({
 
   return (
     <TabPane footer={footer} header={header}>
-      <h3 className="ww-vheading">{t("werewolfConfig.variable.rolesHeading")}</h3>
       <div className="ww-vboxes">
         {states.map((state) =>
           box(state, [
@@ -267,6 +286,10 @@ export function VariableRoles({
         onClose={() => setPicking(undefined)}
         open={picking !== undefined}
         title={picking === undefined ? "" : labelOf(picking)}
+        // The symbol of the role stands before its name, like in every info of a role.
+        {...(picking === undefined
+          ? {}
+          : { titleIcon: <WerewolfSymbol id={symbolOfInfo(infoIdOf(picking))} size={28} /> })}
       >
         {picking !== undefined && (
           <div className="kit-pick">
@@ -312,7 +335,9 @@ export function VariableRoles({
           data-kind={dragging.drag.player.startsWith("item:") ? "item" : "role"}
           style={{ left: dragging.drag.x, top: dragging.drag.y }}
         >
-          <span className="ww-chip__main">{labelOf(dragging.drag.player)}</span>
+          <span className="ww-chip__main">
+            {chipFace(dragging.drag.player, labelOf(dragging.drag.player))}
+          </span>
           {/* A look-alike of the "i" of the chip, so it stays visible while the name is dragged. */}
           <span className="ww-chip__info-room">
             <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">

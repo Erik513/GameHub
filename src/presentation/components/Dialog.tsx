@@ -13,6 +13,8 @@ interface DialogProps {
   /** A small line right under the title, for example the kind of a role. */
   subtitle?: string;
   title: string;
+  /** Something before the title, for example the symbol of a role. */
+  titleIcon?: ReactNode;
   /** Something next to the title, for example a small box with a status. */
   titleExtra?: ReactNode;
 }
@@ -27,6 +29,7 @@ export function Dialog({
   subtitle,
   title,
   titleExtra,
+  titleIcon,
 }: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
@@ -77,8 +80,9 @@ export function Dialog({
       >
         <div className="dialog__header">
           <div className={subtitle ? "dialog__heading" : "dialog__heading dialog__heading--plain"}>
-            {titleExtra ? (
+            {titleExtra || titleIcon ? (
               <div className="dialog__title">
+                {titleIcon}
                 <h2 id={titleId}>{title}</h2>
                 {titleExtra}
               </div>

@@ -21,6 +21,7 @@ interface TabPaneProps {
  */
 export function TabPane({ children, footer, header, wholeRows = false }: TabPaneProps) {
   const { body, pane } = useWholeRowsBody(wholeRows);
+  useNoScrollbarForRounding(body);
 
   return (
     <div className="kit-pane" ref={pane}>
@@ -31,6 +32,33 @@ export function TabPane({ children, footer, header, wholeRows = false }: TabPane
       {footer && <div className="kit-pane__footer">{footer}</div>}
     </div>
   );
+}
+
+/** At most this much (in pixels) the content may stand over the body without a scrollbar. */
+const roundingTolerance = 2;
+
+/**
+ * No scrollbar for a content that only stands over by a rounding (a screen scaled to 125 %, a zoom): the body is marked
+ * as snug and does not scroll; a content that really does not fit still scrolls.
+ */
+function useNoScrollbarForRounding(body: { readonly current: HTMLElement | null }) {
+  useLayoutEffect(() => {
+    const element = body.current;
+    if (!element) return;
+    function check() {
+      if (!element) return;
+      element.removeAttribute("data-snug");
+      const over = element.scrollHeight - element.clientHeight;
+      if (over > 0 && over <= roundingTolerance) element.setAttribute("data-snug", "true");
+    }
+    check();
+    if (typeof ResizeObserver === "undefined") return;
+    // The room changes with the window, the content with what it shows.
+    const observer = new ResizeObserver(check);
+    observer.observe(element);
+    for (const child of element.children) observer.observe(child);
+    return () => observer.disconnect();
+  });
 }
 
 /**

@@ -68,7 +68,7 @@ async function renderVariable(language: Language, players: number, start = empty
 const roles = { de: "Rollen und Zusätze", en: "Roles and extras" } as const;
 const box = (name: string) => screen.getByRole("region", { name });
 const chips = (name: string) =>
-  [...box(name).querySelectorAll(".ww-chip")].map((chip) => chip.textContent);
+  [...box(name).querySelectorAll(".ww-chip__main")].map((chip) => chip.getAttribute("aria-label"));
 
 it.each([
   ["en", "Must be in the game", "May be in the game"],
@@ -89,7 +89,9 @@ it.each([
 
 it("shows only the roles that exist for the number of players", async () => {
   await renderVariable("en", 8);
-  const all = [...document.querySelectorAll(".ww-chip")].map((chip) => chip.textContent);
+  const all = [...document.querySelectorAll(".ww-chip__main")].map((chip) =>
+    chip.getAttribute("aria-label"),
+  );
   expect(all).toContain("Witch");
   expect(all).toContain("Tough guy · Wolf attack only");
   expect(all).not.toContain("Magician");
@@ -466,4 +468,26 @@ it("does not recommend the only wolf count there is", async () => {
   const wolves = screen.getByRole("group", { name: "Werewolves" });
   expect(within(wolves).getByRole("button")).not.toHaveAttribute("data-recommended");
   expect(wolves.parentElement?.textContent).not.toContain("recommended");
+});
+
+it.each([
+  ["en", "Hunter · Duty to shoot", "Hunter"],
+  ["de", "Jäger · Schusspflicht", "Jäger"],
+] as const)(
+  "shows an option of a role as its dashed sign next to the name, the words stay in the name of the button (%s)",
+  async (language, name, visible) => {
+    await renderVariable(language, 12);
+    const chip = screen.getByRole("button", { name });
+    expect(chip).toHaveTextContent(new RegExp(`^${visible}$`));
+    expect(chip.querySelector('.ww-variant[data-variant="required"]')).not.toBeNull();
+    document.body.innerHTML = "";
+  },
+);
+
+it("keeps the heading of the boxes in place: only the boxes scroll", async () => {
+  await renderVariable("de", 12);
+  const heading = screen.getByRole("heading", { name: "Rollen und Zusätze" });
+  expect(heading.closest(".kit-pane__header")).not.toBeNull();
+  expect(heading.closest(".kit-pane__body")).toBeNull();
+  expect(document.querySelector(".kit-pane__body .ww-vboxes")).not.toBeNull();
 });

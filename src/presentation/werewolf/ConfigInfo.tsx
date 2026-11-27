@@ -127,11 +127,11 @@ export function ConfigInfo({
       subtitle={team}
       title={name}
       {...(open === undefined ? {} : { onOpenChange, open })}
-      // The symbol of the role stands next to the title; a green or red box tells from how many players the role can
-      // be taken.
+      // The symbol of the role stands before its name; a green or red box after it tells from how many players the role
+      // can be taken.
+      titleIcon={<WerewolfSymbol id={symbolOfInfo(id)} size={28} />}
       titleExtra={
         <>
-          <WerewolfSymbol id={symbolOfInfo(id)} size={28} />
           {minimum > 0 && (
             <span className="ww-available" data-state={lock === "minimumPlayers" ? "locked" : "ok"}>
               {t("werewolfConfig.availableFrom", { count: minimum })}

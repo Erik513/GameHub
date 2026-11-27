@@ -26,6 +26,23 @@ const scrollEdge = 80;
 const scrollEdgeBottom = 140;
 const scrollStep = 14;
 
+/**
+ * The area that scrolls around the dragged name: the nearest box above it that can scroll (for example the body of a
+ * pane without tabs, like the roles of Werewolf). undefined when no box around it scrolls.
+ */
+export function scrollAreaOf(element: Element | null): HTMLElement | undefined {
+  for (
+    let node = element?.parentElement;
+    node && node !== document.body;
+    node = node.parentElement
+  ) {
+    const { overflowY } = getComputedStyle(node);
+    if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight)
+      return node;
+  }
+  return undefined;
+}
+
 function targetAt(x: number, y: number): DropTarget | undefined {
   const field = document.elementFromPoint(x, y)?.closest<HTMLElement>(`[${dropAttribute}]`);
   const value = field?.getAttribute(dropAttribute);
@@ -62,15 +79,18 @@ export function usePlayerDrag({ onDrop, onTap }: PlayerDragOptions) {
       let dragging = false;
       let latest = { x: originX, y: originY };
       let frame = 0;
+      // The box that scrolls around the name that is dragged, found once when the press begins.
+      const area = scrollAreaOf(event.currentTarget);
 
       // Scrolls the page while the pointer is held near the top or the bottom, so teams that are
       // out of sight can be reached, and looks again which field is under the pointer.
       const scrollNearEdge = () => {
-        // On a one-page screen the box of the tab scrolls (or the body of its pane), otherwise the page does.
+        // The box around the dragged name scrolls; else, on a one-page screen, the box of the tab (or the body of its
+        // pane); otherwise the page.
         const tab = document.querySelector<HTMLElement>(
           '.kit-onepage .kit-tabpanel[data-active="true"]',
         );
-        const panel = tab?.querySelector<HTMLElement>(".kit-pane__body") ?? tab;
+        const panel = area ?? tab?.querySelector<HTMLElement>(".kit-pane__body") ?? tab;
         const bounds = panel?.getBoundingClientRect();
         const top = bounds ? bounds.top + scrollEdge : scrollEdge;
         const bottom = bounds ? bounds.bottom - scrollEdge : window.innerHeight - scrollEdgeBottom;

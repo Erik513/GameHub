@@ -55,7 +55,8 @@ export function RoleCardInfo({ role, variant, amulet, className }: RoleCardInfoP
         </>
       }
       title={roleName}
-      titleExtra={<WerewolfSymbol id={role} size={28} />}
+      // The symbol of the role stands before its name, like in every info of a role.
+      titleIcon={<WerewolfSymbol id={role} size={28} />}
     />
   );
 }
