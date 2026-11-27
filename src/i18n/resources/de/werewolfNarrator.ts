@@ -152,7 +152,7 @@ export const werewolfNarratorTexts = {
         magician: "Zauber wählen: töten, heilen oder verzichten",
       },
       wolvesNoAttackDone: "Kein Angriff in dieser Nacht",
-      wolvesLook: "Sich anschauen",
+      wolvesLook: "Die Werwölfe sehen sich an",
       wolvesNoAttack: "Werwölfe (Nacht 1): greifen erst ab Nacht 2 an",
       confirmDone: "Weiter, wenn erledigt",
       coverNote: "{{name}} (Trunkenbold): kennt die Rolle noch nicht, nichts wählen",

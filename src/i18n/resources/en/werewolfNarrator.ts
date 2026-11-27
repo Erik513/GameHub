@@ -152,7 +152,7 @@ export const werewolfNarratorTexts = {
         magician: "Choose a spell: kill, heal or skip",
       },
       wolvesNoAttackDone: "No attack in this night",
-      wolvesLook: "Look at each other",
+      wolvesLook: "The werewolves look at each other",
       wolvesNoAttack: "Werewolves (night 1): attack only from night 2",
       confirmDone: "Continue when done",
       coverNote: "{{name}} (drunk): does not know the role yet, choose nothing",
