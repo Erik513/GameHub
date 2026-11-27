@@ -1,5 +1,15 @@
 # GameHub Changelog
 
+## 2026-11-28 (Werwolf am Handy)
+
+### We-01-250: Amulett-Skript immer gleich (Claude)
+
+- Der Amulett-Träger wird immer gefragt, ob er behält oder weitergibt; danach tippt der Erzähler den neuen Träger an (oder niemanden), erst dann geht es weiter.
+
+### We-01-251: Kartentext kompakt (Claude)
+
+- Auf der Karte mit Bild haben Variante und Amulett unten genug Platz.
+
 ## 2026-11-27 (Kartenbilder)
 
 ### Al-10-13: Spielkarten im GameHub neu geordnet (Claude)

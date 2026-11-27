@@ -246,9 +246,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 468,
-      "totalTasks": 525,
-      "percent": 89.1
+      "completedTasks": 470,
+      "totalTasks": 527,
+      "percent": 89.2
     }
   },
   "environment": {
@@ -2832,6 +2832,18 @@
           "title": "Konfiguration: Dorfbewohner und Seherin mittig, Symbol vor dem Rollennamen in allen Rollen-Infos",
           "status": "done",
           "validation": "Symbol und Zahl stehen in den Boxen Dorfbewohner und Seherin mittig im Platz unter der Überschrift. Der gemeinsame Dialog hat titleIcon (vor dem Titel, über InfoButton weitergereicht); Konfigurations-Info, Info der Rollenkarte und das Fenster der variablen Rollen zeigen das Symbol vor dem Namen, die Kästchen „ab … Spielern“ dahinter. Test RoleInfoTitle.test.tsx. Alle 1867 Tests, tsc, eslint und prettier grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-250",
+          "title": "Amulett-Skript immer gleich und Box zum Antippen des neuen Trägers",
+          "status": "done",
+          "validation": "Fehler: Musste der Träger das Amulett weitergeben, fehlte die Frage „behalten oder weitergeben“, und es gab keine Skript-Box zum Antippen des neuen Trägers. Jetzt immer dieselbe Frage („Behalten“ ausgegraut, wenn er weitergeben muss); nach dem Einschlafen eine neue Box (neuer Träger bzw. niemand), „Weiter“ erst nach ihrem Haken; bei „Erfahren“ automatisch. Logik: roleStep (keep-Label), narratorGuide (checkScript/canNext im outro), Notiz für Codex. Vorher als Zeichnung abgestimmt, vom Auftraggeber angesehen. Tests in narratorGuide.test.ts, NarratorAmulet.test.tsx, amuletAsk.test.ts; alle 1870 Tests grün."
+        },
+        {
+          "id": "We-01-251",
+          "title": "Kartenbild: unterer Teil kompakt (Variante und Amulett passen)",
+          "status": "done",
+          "validation": "Fehler am Handy: Bei Rollen mit Variante und Amulett war unten zu wenig Platz, weil für die Bildkarte noch die Zeilen und Abstände der Karte ohne Bild galten (leere Zeile über dem Namen, Trennlinie, große Lücken). Für Karten mit Bild jetzt kompakt: Name, Variante, Fähigkeiten (Symbole 36 px), Amulett mit kleinen Abständen. Vom Auftraggeber angesehen."
         }
       ]
     },
@@ -4498,7 +4510,7 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-27T01:30:40.999Z"
+  "updatedAt": "2026-11-27T14:56:15.631Z"
 };
       const REFRESH_INTERVAL_MS = 20_000;
       const labels = { done: "Erledigt", planned: "Geplant", in_progress: "In Arbeit", blocked: "Blockiert" };
