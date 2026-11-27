@@ -4,7 +4,7 @@
 
 ### We-01-252: Neue Skript-Texte und Amulett-Träger oben (Claude)
 
-- „Tippe … unauffällig an“ bei Amor und beim Amulett, „Die Verliebten sehen sich an“; oben steht beim Amulett „Amulett-Träger“ mit Name und Rolle in Klammern.
+- „Tippe … unauffällig an“ bei Amor und beim Amulett, „Die Verliebten sehen sich an“ und „Die Werwölfe sehen sich an“; oben steht beim Amulett „Amulett-Träger“ mit Name und Rolle in Klammern.
 
 ### We-01-250: Amulett-Skript immer gleich (Claude)
 

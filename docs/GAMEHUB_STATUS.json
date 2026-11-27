@@ -2614,9 +2614,9 @@
         },
         {
           "id": "We-01-252",
-          "title": "Skript-Texte „Tippe … unauffällig an“ (Amor, Amulett), Verliebte; obere Box zeigt den Amulett-Träger",
+          "title": "Skript-Texte „Tippe … unauffällig an“ (Amor, Amulett), Verliebte und Werwölfe Nacht 1; obere Box zeigt den Amulett-Träger",
           "status": "done",
-          "validation": "Wunsch des Auftraggebers: Amor „Tippe Sarah und Louis unauffällig an“ (vorher „Berühre … leise an der Schulter“), Amulett im gleichen Stil („Tippe Ben unauffällig an“, „Tippe niemanden an“), Verliebte „Die Verliebten sehen sich an“ (vorher „Sich anschauen“); en entsprechend. Die obere Box zeigt beim Amulett das Amulett-Symbol und „Amulett-Träger“, darunter Name und eigene Rolle in Klammern (vorher die Rolle des Spielers als Titel). Vorher als Zeichnung abgestimmt. Tests angepasst, neuer Test in NarratorAmulet.test.tsx; alle 1871 Tests, tsc, eslint und prettier grün. Offen: Werwölfe Nacht 1 heißen weiter „Sich anschauen“ (Frage an den Auftraggeber)."
+          "validation": "Wunsch des Auftraggebers: Amor „Tippe Sarah und Louis unauffällig an“ (vorher „Berühre … leise an der Schulter“), Amulett im gleichen Stil („Tippe Ben unauffällig an“, „Tippe niemanden an“), Verliebte „Die Verliebten sehen sich an“ (vorher „Sich anschauen“); en entsprechend. Die obere Box zeigt beim Amulett das Amulett-Symbol und „Amulett-Träger“, darunter Name und eigene Rolle in Klammern (vorher die Rolle des Spielers als Titel). Vorher als Zeichnung abgestimmt. Tests angepasst, neuer Test in NarratorAmulet.test.tsx; alle 1871 Tests, tsc, eslint und prettier grün. Auf Wunsch auch die Werwölfe in Nacht 1: „Die Werwölfe sehen sich an“ (en „The werewolves look at each other“)."
         }
       ]
     },
@@ -4283,5 +4283,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-27T15:06:22.625Z"
+  "updatedAt": "2026-11-27T15:08:06.135Z"
 }
