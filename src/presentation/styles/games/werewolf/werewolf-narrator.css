@@ -1652,6 +1652,60 @@
   background: rgb(0 0 0 / 30%);
 }
 
+/* The lower part of a card with a picture is compact: the rows and gaps of the card without a picture (an empty row
+   above the name, a line and wide gaps) would leave too little room for a variant and the amulet. Name, variant,
+   abilities and amulet stand one below the other with small gaps. */
+.ww-deal__face[data-art="front"] .ww-deal__body:has(.ww-deal__zone) {
+  grid-template-rows: auto auto;
+  align-content: start;
+  gap: var(--space-2);
+  height: auto;
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__who {
+  grid-row: auto;
+  gap: var(--space-1);
+  padding-bottom: 0;
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__name {
+  font-size: clamp(1.75rem, 8vw, 2.5rem);
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__variant-slot {
+  height: auto;
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__variant {
+  padding: 2px var(--space-2);
+  background: rgb(0 0 0 / 30%);
+  font-size: var(--text-sm);
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__zone {
+  grid-row: auto;
+  gap: var(--space-2);
+  border-top: 0;
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__abilities {
+  gap: var(--space-4);
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__ability .ww-symbol {
+  width: 36px;
+  height: 36px;
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__ability small {
+  font-size: var(--text-sm);
+}
+
+.ww-deal__face[data-art="front"] .ww-deal__amulet {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
 /* The pattern of the game (pattern.jpg, very dark) lies behind every view of Werewolf; boxes keep their own surface. */
 /* The tile keeps its own size (a scaled tile leaves hairline seams on phones with a fractional pixel ratio), and the
    color below it is the color of the pattern itself, so a seam can never show a darker line. */

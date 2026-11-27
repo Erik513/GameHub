@@ -142,7 +142,11 @@ export function describeRoleStep(state: WerewolfState): RoleStepSpec {
     case "amuletPass": {
       const offer = { ...pick("passAmulet"), skipTarget: state.amulet.holder };
       return state.amulet.mustPass
-        ? spec("amuletPassMust", "choose", { pick: offer })
+        ? // The question is the same every night: "keep" stands there, too, but cannot be chosen.
+          spec("amuletPassMust", "choose", {
+            pick: offer,
+            skip: { label: "keep", summary: "kept" },
+          })
         : spec("amuletPassMay", "choose", {
             skip: { label: "keep", summary: "kept" },
             skippable: true,

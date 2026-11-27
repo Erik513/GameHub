@@ -293,9 +293,12 @@ export function describeGuide(guide: Guide): GuideView {
       ((frame.phase === "act" || frame.phase === "plain") &&
         acceptedEvent(state, selection) !== null));
   const dayCard = frame.phase === "act" && describeNarratorCard(state)?.role === "day";
+  // After the holder of the amulet the narrator first touches the new holder (the last box of the script).
+  const amuletTouchOpen =
+    frame.phase === "outro" && state.status === "amuletPass" && (selection.progress ?? 0) < 1;
   const canNext =
     frame.phase === "ready" ||
-    frame.phase === "outro" ||
+    (frame.phase === "outro" && !amuletTouchOpen) ||
     state.status === "finished" ||
     ((frame.phase === "plain" || dayCard) && canContinue);
   return {
@@ -544,6 +547,11 @@ export function checkScript(guide: Guide): Guide {
   const frame = current(guide);
   const state = guide.session.present;
   const { selection } = frame;
+  // The holder of the amulet is asleep again: the narrator has touched the new holder (or nobody, when it was kept).
+  if (frame.phase === "outro" && state.status === "amuletPass")
+    return (selection.progress ?? 0) >= 1
+      ? guide
+      : withSelection(guide, { ...selection, progress: 1 });
   // The witch: the narrator has shown the victim (the check of the first box of her script).
   if (frame.phase === "act" && potionRoleOf(state) !== null && selection.ability === null) {
     return (selection.progress ?? 0) >= 1 || selection.question !== "heal"

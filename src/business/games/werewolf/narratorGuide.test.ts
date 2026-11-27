@@ -876,3 +876,27 @@ describe("narrator guide", () => {
     expect(describeGuide(guide).canUndo).toBe(false);
   });
 });
+
+describe("the holder of the amulet", () => {
+  it("waits for the touching of the new holder before next, and settles it by itself for an experienced narrator", () => {
+    const base = game([], { amulet: true }).session.present;
+    const holder = base.amulet!.holder;
+    const state = {
+      ...base,
+      amulet: { holder, mustPass: false },
+      night: 2,
+      poisoned: null,
+      status: "amuletPass",
+      victim: null,
+    } as unknown as WerewolfState;
+    let guide = continueGuide(createGuide(createWerewolfSession(state)));
+    // He keeps it: the role falls asleep, but "next" waits for the check of touching (nobody).
+    guide = continueGuide(guide);
+    expect(describeGuide(guide).phase).toBe("outro");
+    expect(describeGuide(guide).canNext).toBe(false);
+    guide = checkScript(guide);
+    expect(describeGuide(guide).canNext).toBe(true);
+    // A second check changes nothing.
+    expect(checkScript(guide)).toBe(guide);
+  });
+});

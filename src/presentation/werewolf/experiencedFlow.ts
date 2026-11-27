@@ -36,10 +36,13 @@ export function isAutomaticBox(box: ScriptBox, guide: Guide): boolean {
  */
 function automaticStep(guide: Guide): Guide | null {
   const view = describeGuide(guide);
-  if ((view.phase !== "intro" && view.phase !== "act") || !view.card) return null;
+  if ((view.phase !== "intro" && view.phase !== "act" && view.phase !== "outro") || !view.card)
+    return null;
   const boxes = scriptOf(view, describeRoleStep(view.state), keyOnly);
   const open = boxes?.find((box) => box.state === "active");
   if (!open || !open.enabled || !isAutomaticBox(open, guide)) return null;
+  // In the outro only a task of the script is done (touching the new holder of the amulet), never "next".
+  if (view.phase === "outro" && !scriptChecks.has(open.id)) return null;
   const next = scriptChecks.has(open.id) ? checkScript(guide) : continueGuide(guide);
   if (next === guide || next.session.past.length !== guide.session.past.length) return null;
   return next;

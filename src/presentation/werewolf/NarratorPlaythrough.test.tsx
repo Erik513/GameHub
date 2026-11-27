@@ -142,7 +142,12 @@ describe("NarratorView playthrough", () => {
         );
         const now = card
           ? {
-              role: card.getAttribute("aria-label") ?? "",
+              // The step of a role is told apart by its role and the first line of its script (the holder of the amulet
+              // may have a role of his own that wakes up right after him).
+              role:
+                (card.getAttribute("aria-label") ?? "") +
+                " / " +
+                (document.querySelector(".ww-script__step")?.textContent ?? ""),
               skip: card.querySelector(".ww-ability--skip") !== null,
             }
           : null;

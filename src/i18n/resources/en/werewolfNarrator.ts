@@ -170,6 +170,11 @@ export const werewolfNarratorTexts = {
         clear: "No werewolf nearby",
       },
       lovers: "Look at each other",
+      amulet: {
+        touch: "Touch {{name}} lightly on the shoulder",
+        touchNobody: "Touch nobody on the shoulder",
+        touchAny: "Touch the new holder lightly on the shoulder",
+      },
       cupid: {
         show: "Choose two people to fall in love (point)",
         touch: "Touch {{first}} and {{second}} lightly on the shoulder",

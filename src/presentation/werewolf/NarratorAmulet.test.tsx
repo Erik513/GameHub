@@ -55,10 +55,42 @@ it("shows passing the amulet as used up as soon as the recipient is decided, and
   expect(keep()).not.toHaveAttribute("data-next");
 });
 
-it("has no keep button when the holder has to pass the amulet on", async () => {
+it("shows the keep button switched off when the holder has to pass the amulet on", async () => {
   await open(true);
   expect(pass()).toBeEnabled();
-  expect(keep()).toBeNull();
+  expect(keep()).not.toBeNull();
+  expect(keep()).toBeDisabled();
+});
+
+const next = () => screen.getByRole("button", { name: /^(Next|End the night)$/ });
+const touchBox = () =>
+  [...document.querySelectorAll(".ww-script__step")].find((step) =>
+    (step.textContent ?? "").includes("on the shoulder"),
+  );
+
+it("lets the narrator touch the new holder after the holder fell asleep, before next", async () => {
+  await open(false);
+  fireEvent.click(pass());
+  const person = document.querySelector<HTMLElement>(".ww-person:not(:disabled)")!;
+  const name = person.textContent?.trim() ?? "";
+  fireEvent.click(person);
+  fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
+  // Asleep: the last box says whom to touch; "next" waits for its check.
+  expect(touchBox()).toHaveTextContent(`Touch ${name} lightly on the shoulder`);
+  expect(touchBox()).toHaveAttribute("data-state", "active");
+  expect(next()).toBeDisabled();
+  fireEvent.click(screen.getByRole("button", { name: "Task done" }));
+  expect(touchBox()).toHaveAttribute("data-state", "done");
+  expect(next()).toBeEnabled();
+});
+
+it("keeps the box of touching when the amulet is kept: the narrator touches nobody", async () => {
+  await open(false);
+  fireEvent.click(keep()!);
+  expect(touchBox()).toHaveTextContent("Touch nobody on the shoulder");
+  expect(next()).toBeDisabled();
+  fireEvent.click(screen.getByRole("button", { name: "Task done" }));
+  expect(next()).toBeEnabled();
 });
 
 it("puts the button to keep the amulet first (green, left) and passing it on after it (red, right)", async () => {

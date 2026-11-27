@@ -118,13 +118,9 @@ export function askText(view: GuideView, t: TFunction): string | null {
   const { card, selection } = view;
   if (!card) return null;
   if (card.role === "magician") return t("werewolfNarrator.guide.choose.magician");
-  // The holder of the amulet keeps it (thumb) or passes it on (point), like the question of the magician; after the amulet
-  // stopped an attack he has to pass it on, so there is nothing to keep.
-  if (
-    card.role === "amuletPass" &&
-    view.state.status === "amuletPass" &&
-    !view.state.amulet.mustPass
-  )
+  // The holder of the amulet keeps it (thumb) or passes it on (point), like the question of the magician. The question is
+  // the same every night, also when the amulet stopped an attack and has to be passed on ("keep" is then switched off).
+  if (card.role === "amuletPass" && view.state.status === "amuletPass")
     return t("werewolfNarrator.guide.ask.keepOrPassAmulet");
   const id =
     selection.ability ?? card.abilities.find((ability) => ability.id !== "heal")?.id ?? null;
@@ -229,6 +225,26 @@ export function scriptOf(view: GuideView, step: RoleStepSpec, t: TFunction): Scr
       };
     }),
   ];
+}
+
+/** The last box of the holder of the amulet: whom the narrator touches (the new holder), or nobody when it was kept. */
+function amuletTouch(view: GuideView, outro: boolean, t: TFunction): ScriptBox {
+  const next = view.selection.picks[0];
+  const touched = outro && (view.selection.progress ?? 0) >= 1;
+  return {
+    button: "check",
+    enabled: outro && !touched,
+    id: "touch",
+    ...(outro && next ? { names: [next] } : {}),
+    items: [
+      outro && next
+        ? t("werewolfNarrator.guide.amulet.touch", { name: next })
+        : outro
+          ? t("werewolfNarrator.guide.amulet.touchNobody")
+          : t("werewolfNarrator.guide.amulet.touchAny"),
+    ],
+    state: touched ? "done" : outro ? "active" : "pending",
+  };
 }
 
 function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox[] | null {
@@ -390,6 +406,8 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
         items: [text],
         state: outro ? "done" : "active",
       },
+      // The holder of the amulet: after he fell asleep the narrator touches the new holder, worded like Cupid (or nobody,
+      // when the amulet was kept). The box is always there, so the script is the same every night.
       // The seer always has to choose, so the result always follows: its box is part of the script from the start (the
       // whole script is visible at once), waiting until the person is chosen. The investigator may skip: his box for the
       // result only comes when the ability is used (it makes no sense to show it for a skip).
@@ -404,7 +422,11 @@ function roleBoxes(view: GuideView, step: RoleStepSpec, t: TFunction): ScriptBox
             },
           ]
         : []),
-      asleep,
+      // The holder of the amulet: after he fell asleep the narrator touches the new holder, worded like Cupid (or nobody,
+      // when the amulet was kept). The box is always there, so the script is the same every night.
+      ...(state.status === "amuletPass"
+        ? [{ ...asleep, ...(outro ? { state: "done" as const } : {}) }, amuletTouch(view, outro, t)]
+        : [asleep]),
     ];
   }
 

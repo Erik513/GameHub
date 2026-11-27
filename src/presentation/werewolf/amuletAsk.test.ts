@@ -23,7 +23,7 @@ it("asks the holder of the amulet to keep it (thumb) or to pass it on (point), l
   expect(await askOf(false, "de")).toBe("Amulett behalten ([thumb]) oder[br]weitergeben (zeigen)?");
 });
 
-it("only asks to pass the amulet on when it stopped an attack and has to be passed", async () => {
-  expect(await askOf(true, "en")).toBe("Pass on the amulet (point)");
-  expect(await askOf(true, "de")).toBe("Amulett weitergeben (zeigen)");
+it("asks the same question when the amulet stopped an attack and has to be passed on (the script is always the same)", async () => {
+  expect(await askOf(true, "en")).toBe("Keep the amulet ([thumb]) or[br]pass it on (point)?");
+  expect(await askOf(true, "de")).toBe("Amulett behalten ([thumb]) oder[br]weitergeben (zeigen)?");
 });

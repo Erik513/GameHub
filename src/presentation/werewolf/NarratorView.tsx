@@ -342,9 +342,14 @@ export function NarratorView({
               skip={
                 (view.phase === "act" || view.phase === "outro") &&
                 // The investigator may skip; after he used the ability (the result) the button stays where it was.
-                (describeRoleStep(view.state).skippable || view.state.status === "investigation")
+                (describeRoleStep(view.state).skippable ||
+                  view.state.status === "investigation" ||
+                  view.state.status === "amuletPass")
                   ? {
-                      disabled: skipDisabled,
+                      // The holder of the amulet who has to pass it on: "keep" stands there, but cannot be chosen.
+                      disabled:
+                        skipDisabled ||
+                        (view.state.status === "amuletPass" && view.state.amulet.mustPass),
                       framed:
                         !skipDisabled &&
                         (view.state.status === "day"
