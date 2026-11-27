@@ -140,9 +140,13 @@ export function NarratorCard({
   skip,
 }: NarratorCardProps) {
   const { t } = useTranslation();
-  // The amulet is no role: its holder is shown with his own role.
-  const shownRole = (card.holderRole ?? card.role) as SymbolId;
-  const roleName = t(`werewolfSymbols.items.${shownRole}.name`);
+  // The upper box always names who wakes up: for the amulet the holder of the amulet (its symbol), with the name and the
+  // own role of the person below it.
+  const amulet = card.role === "amuletPass";
+  const shownRole = (amulet ? "amulet" : card.role) as SymbolId;
+  const roleName = amulet
+    ? t("werewolfNarrator.card.amuletHolder")
+    : t(`werewolfSymbols.items.${shownRole}.name`);
   const isDay = card.role === "day";
   // A cover call is for the drunk who does not know the role: his name stands there (the narrator only).
   const people = card.actors.length > 0 ? card.actors : (card.covered ?? []);
@@ -207,7 +211,14 @@ export function NarratorCard({
                 {t(`werewolfNarrator.variant.${card.variant}`)}
               </small>
             )}
-            {!isDay && people.length > 0 && <small>{people.join(", ")}</small>}
+            {!isDay && people.length > 0 && (
+              <small>
+                {people.join(", ")}
+                {amulet && card.holderRole
+                  ? ` (${t(`werewolfSymbols.items.${card.holderRole as SymbolId}.name`)})`
+                  : ""}
+              </small>
+            )}
           </span>
           {/* Only the effects there are get a slot: a line under the symbol and the name, from the left. */}
           {card.effects.length > 0 && !(isDay && card.actors.length === 0) && (

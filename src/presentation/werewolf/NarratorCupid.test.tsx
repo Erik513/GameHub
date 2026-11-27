@@ -55,7 +55,7 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   expect(boxes().map((box) => box.text)).toEqual([
     "Choose two people to fall in love (point)",
     expect.stringMatching(/goes back to sleep|falls asleep|sleep/i),
-    "Touch both of them lightly on the shoulder",
+    "Tap both of them discreetly",
   ]);
   expect(boxes().map((box) => box.button)).toEqual(["Undo", "Task done", "Task done"]);
   expect(boxes().map((box) => box.disabled)).toEqual([true, true, true]);
@@ -69,7 +69,7 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   // The check of the list confirms the choice: the names stand in the third box and the blue summary stands below. The
   // first box is a decision: it has the undo button from the start (before the choice it was switched off).
-  expect(boxes()[2]!.text).toMatch(/^Touch P\d+ and P\d+ lightly on the shoulder$/);
+  expect(boxes()[2]!.text).toMatch(/^Tap P\d+ and P\d+ discreetly$/);
   const checks = () =>
     document.querySelectorAll<HTMLElement>(".ww-script__check:not(.ww-script__wake)");
   const summary = document.querySelector(".ww-guide__chosen");
@@ -92,7 +92,7 @@ it("shows the three boxes of the script of Cupid from the start, with a button r
   fireEvent.click(screen.getByRole("button", { name: "Next" }));
   fireEvent.click(document.querySelector(".ww-script__wake")!);
   expect(boxes().map((box) => box.text)).toEqual([
-    "Look at each other",
+    "The lovers look at each other",
     "The lovers go back to sleep",
   ]);
   expect(document.querySelector(".ww-guide__sub")).toBeNull();

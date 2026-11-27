@@ -65,7 +65,7 @@ it("shows the keep button switched off when the holder has to pass the amulet on
 const next = () => screen.getByRole("button", { name: /^(Next|End the night)$/ });
 const touchBox = () =>
   [...document.querySelectorAll(".ww-script__step")].find((step) =>
-    (step.textContent ?? "").includes("on the shoulder"),
+    (step.textContent ?? "").startsWith("Tap "),
   );
 
 it("lets the narrator touch the new holder after the holder fell asleep, before next", async () => {
@@ -76,7 +76,7 @@ it("lets the narrator touch the new holder after the holder fell asleep, before 
   fireEvent.click(person);
   fireEvent.click(screen.getByRole("button", { name: "Confirm the choice" }));
   // Asleep: the last box says whom to touch; "next" waits for its check.
-  expect(touchBox()).toHaveTextContent(`Touch ${name} lightly on the shoulder`);
+  expect(touchBox()).toHaveTextContent(`Tap ${name} discreetly`);
   expect(touchBox()).toHaveAttribute("data-state", "active");
   expect(next()).toBeDisabled();
   fireEvent.click(screen.getByRole("button", { name: "Task done" }));
@@ -87,7 +87,7 @@ it("lets the narrator touch the new holder after the holder fell asleep, before 
 it("keeps the box of touching when the amulet is kept: the narrator touches nobody", async () => {
   await open(false);
   fireEvent.click(keep()!);
-  expect(touchBox()).toHaveTextContent("Touch nobody on the shoulder");
+  expect(touchBox()).toHaveTextContent("Tap nobody");
   expect(next()).toBeDisabled();
   fireEvent.click(screen.getByRole("button", { name: "Task done" }));
   expect(next()).toBeEnabled();
@@ -100,4 +100,15 @@ it("puts the button to keep the amulet first (green, left) and passing it on aft
   const buttons = [...row.querySelectorAll(".ww-ability")];
   expect(buttons[0]).toBe(keep());
   expect(buttons[1]).toBe(pass());
+});
+
+it("names the holder of the amulet in the upper box, with the name and the own role of the person below", async () => {
+  await open(false);
+  const card = document.querySelector(".ww-role-card")!;
+  expect(card).toHaveAttribute("aria-label", "Amulet holder");
+  expect(card.querySelector(".ww-role-card__role [data-symbol]")).toHaveAttribute(
+    "data-symbol",
+    "amulet",
+  );
+  expect(card.querySelector(".ww-role-card__who small")).toHaveTextContent(/^P\d+ \(Villager\)$/);
 });
