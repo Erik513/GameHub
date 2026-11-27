@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 464,
-      "totalTasks": 521,
+      "completedTasks": 467,
+      "totalTasks": 524,
       "percent": 89.1
     }
   },
@@ -2575,6 +2575,24 @@
           "title": "Werwolf-Spielende ohne Gewinnerblock: Gewinner-Box grün gerahmt, Überschriften mit der Seite",
           "status": "done",
           "validation": "Wunsch des Auftraggebers nach dem Umbau auf die gemeinsame Ergebnisseite (Al-09-18): Beim Werwolf entfällt der Gewinnerblock (ScoreScreen ohne winner); die Box der Gewinner hat einen grünen Rahmen (2 px, color-success) statt des blauen, die Überschriften nennen wieder die Seite: „Gewinner – Dorfbewohner“ / „Verlierer – Werwölfe“ (en „Winners – Villagers“ / „Losers – Werewolves“). Konfetti und „Spielende“ bleiben; Taboo unverändert. Test in PlayerRows.test.tsx für beide Sprachen; alle 1849 Tests, tsc, eslint und prettier grün; nicht im Browser angesehen."
+        },
+        {
+          "id": "We-01-247",
+          "title": "Variable Rollen: beim Ziehen scrollt der Bereich mit, Überschrift fest, keine Scrollleiste bei Rundung",
+          "status": "done",
+          "validation": "Fehler am Handy: Beim Ziehen scrollte der Bereich der variablen Rollen nicht, die Boxen darüber waren nicht erreichbar. Der gemeinsame Drag-Baustein (usePlayerDrag) scrollt jetzt den scrollbaren Bereich um den gezogenen Eintrag (scrollAreaOf), sonst wie bisher Reiter oder Seite. „Rollen und Zusätze“ steht fest im Kopf, nur die Boxen scrollen. TabPane zeigt keine Scrollleiste, wenn der Inhalt nur durch Rundung bis 2 px übersteht (data-snug); im Browser bei 100 % gemessen: Scrollleiste nur bei echtem Überstand. Tests usePlayerDrag.test.ts, TabPane.test.tsx, VariableRoles.test.tsx; das echte Scrollen beim Ziehen ist nur am Gerät prüfbar."
+        },
+        {
+          "id": "We-01-248",
+          "title": "Variable Rollen: Variantenzeichen statt Variantentext in den Einträgen",
+          "status": "done",
+          "validation": "Statt „Jäger · Schusspflicht“ zeigt der Eintrag „Jäger“ mit dem gestrichelten Variantenzeichen (VariantMark), auch beim gezogenen Eintrag; der volle Name bleibt Name des Knopfs (Screenreader), im Fenster und im „i“. Vorher als Zeichnung abgestimmt. Test in VariableRoles.test.tsx (beide Sprachen)."
+        },
+        {
+          "id": "We-01-249",
+          "title": "Konfiguration: Dorfbewohner und Seherin mittig, Symbol vor dem Rollennamen in allen Rollen-Infos",
+          "status": "done",
+          "validation": "Symbol und Zahl stehen in den Boxen Dorfbewohner und Seherin mittig im Platz unter der Überschrift. Der gemeinsame Dialog hat titleIcon (vor dem Titel, über InfoButton weitergereicht); Konfigurations-Info, Info der Rollenkarte und das Fenster der variablen Rollen zeigen das Symbol vor dem Namen, die Kästchen „ab … Spielern“ dahinter. Test RoleInfoTitle.test.tsx. Alle 1867 Tests, tsc, eslint und prettier grün; nicht im Browser angesehen."
         }
       ]
     },
@@ -4241,5 +4259,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-27T01:02:45.000Z"
+  "updatedAt": "2026-11-27T01:20:40.839Z"
 }

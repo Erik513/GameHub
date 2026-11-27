@@ -2,6 +2,11 @@
 
 ## 2026-11-27 (Kartenbilder)
 
+### We-01-247 bis We-01-249: Konfiguration aufgeräumt (Claude)
+
+- Variable Rollen: Beim Ziehen scrollt der Bereich mit, die Überschrift bleibt stehen, Varianten erscheinen als Zeichen statt als Text; keine Scrollleiste mehr durch Rundung.
+- Dorfbewohner und Seherin stehen mittig in ihren Boxen; jede Rollen-Info zeigt das Symbol vor dem Namen.
+
 ### We-01-236: Eigene Kartenbilder und Hintergrundmuster (Claude)
 
 - Die Rollenverteilung zeigt eigene, mit KI erstellte Bilder: eine Rückseite mit dem Spielernamen in der Mitte und je Rolle eine Vorderseite mit Name, Fähigkeiten und Amulett im dunklen unteren Teil. Hinter dem ganzen Werwolf-Spiel liegt ein dezentes Muster.
