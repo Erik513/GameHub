@@ -13,9 +13,9 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 463,
+      "completedTasks": 464,
       "totalTasks": 521,
-      "percent": 88.9
+      "percent": 89.1
     }
   },
   "environment": {
@@ -2519,8 +2519,8 @@
         {
           "id": "We-01-236",
           "title": "Eigene Kartendesigns für die Rollenverteilung: eine gemeinsame Rückseite und für jede Rolle eine eigene Vorderseite, mit KI erstellt",
-          "status": "planned",
-          "validation": "Geplant nach dem ersten Push. Offen: Bildstil, Lizenz der KI-Bilder, Dateigröße (die Bilder liegen offline in der App, siehe Lazy Loading), Lesbarkeit von Rollenname und Fähigkeiten auf dem Bild, kostenloser KI-Dienst (keine kostenpflichtigen Dienste)."
+          "status": "done",
+          "validation": "Vorlage für die Bilder in docs/GAMEHUB_WERWOLF_KARTENDESIGN.md (Hochformat 1024×1536, kein Text, freie Zonen für die App). Der Auftraggeber hat mit ChatGPT 18 Bilder (Rückseite, 17 Vorderseiten) und ein Muster erstellt; als JPEG 720×1080 eingebaut (zusammen ca. 1,3 MB, im Build und in der Offline-Liste). Rückseite: Spielername in der ruhigen Mitte, Hinweis unten. Vorderseite: Bild oben, ab 55 % Name, Variante, Fähigkeiten mit den App-Symbolen, Amulett und Hinweis; das große Rollensymbol entfällt; ohne Bild bleibt die alte Karte. Muster als verlustfreie PNG-Kachel mit gleichmäßigem Grund hinter allen Werwolf-Ansichten (die erste JPEG-Kachel zeigte ein Blockgitter, behoben); dafür nennt die Spielseite ihr Spiel (data-game). Vorher als Zeichnung abgestimmt, vom Auftraggeber angesehen. Neuer Test in DealCard.test.tsx; alle 1858 Tests, tsc, eslint und prettier grün."
         },
         {
           "id": "We-01-237",
@@ -4241,5 +4241,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-26T23:58:21.383Z"
+  "updatedAt": "2026-11-27T01:02:45.000Z"
 }

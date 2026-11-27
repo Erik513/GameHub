@@ -1,5 +1,11 @@
 # GameHub Changelog
 
+## 2026-11-27 (Kartenbilder)
+
+### We-01-236: Eigene Kartenbilder und Hintergrundmuster (Claude)
+
+- Die Rollenverteilung zeigt eigene, mit KI erstellte Bilder: eine Rückseite mit dem Spielernamen in der Mitte und je Rolle eine Vorderseite mit Name, Fähigkeiten und Amulett im dunklen unteren Teil. Hinter dem ganzen Werwolf-Spiel liegt ein dezentes Muster.
+
 ## 2026-11-27 (Erzähler-Stufe)
 
 ### Al-09-21: Spielleiste so hoch wie die Kopfzeile (Claude)
