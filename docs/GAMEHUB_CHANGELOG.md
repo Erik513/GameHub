@@ -2,6 +2,10 @@
 
 ## 2026-11-27 (Kartenbilder)
 
+### Al-10-13: Spielkarten im GameHub neu geordnet (Claude)
+
+- Name oben, Beschreibung darunter, Status unter der Beschreibung, Knopf unten – in allen Karten gleich.
+
 ### We-01-247 bis We-01-249: Konfiguration aufgeräumt (Claude)
 
 - Variable Rollen: Beim Ziehen scrollt der Bereich mit, die Überschrift bleibt stehen, Varianten erscheinen als Zeichen statt als Text; keine Scrollleiste mehr durch Rundung.
