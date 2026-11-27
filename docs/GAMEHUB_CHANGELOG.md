@@ -2,6 +2,10 @@
 
 ## 2026-11-28 (Werwolf am Handy)
 
+### We-01-252: Neue Skript-Texte und Amulett-Träger oben (Claude)
+
+- „Tippe … unauffällig an“ bei Amor und beim Amulett, „Die Verliebten sehen sich an“; oben steht beim Amulett „Amulett-Träger“ mit Name und Rolle in Klammern.
+
 ### We-01-250: Amulett-Skript immer gleich (Claude)
 
 - Der Amulett-Träger wird immer gefragt, ob er behält oder weitergibt; danach tippt der Erzähler den neuen Träger an (oder niemanden), erst dann geht es weiter.

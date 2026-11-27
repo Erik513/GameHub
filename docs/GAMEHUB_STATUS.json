@@ -13,8 +13,8 @@
     ],
     "progressRule": "done tasks / all tasks * 100; in_progress tasks receive no partial credit",
     "progress": {
-      "completedTasks": 470,
-      "totalTasks": 527,
+      "completedTasks": 471,
+      "totalTasks": 528,
       "percent": 89.2
     }
   },
@@ -2611,6 +2611,12 @@
           "title": "Kartenbild: unterer Teil kompakt (Variante und Amulett passen)",
           "status": "done",
           "validation": "Fehler am Handy: Bei Rollen mit Variante und Amulett war unten zu wenig Platz, weil für die Bildkarte noch die Zeilen und Abstände der Karte ohne Bild galten (leere Zeile über dem Namen, Trennlinie, große Lücken). Für Karten mit Bild jetzt kompakt: Name, Variante, Fähigkeiten (Symbole 36 px), Amulett mit kleinen Abständen. Vom Auftraggeber angesehen."
+        },
+        {
+          "id": "We-01-252",
+          "title": "Skript-Texte „Tippe … unauffällig an“ (Amor, Amulett), Verliebte; obere Box zeigt den Amulett-Träger",
+          "status": "done",
+          "validation": "Wunsch des Auftraggebers: Amor „Tippe Sarah und Louis unauffällig an“ (vorher „Berühre … leise an der Schulter“), Amulett im gleichen Stil („Tippe Ben unauffällig an“, „Tippe niemanden an“), Verliebte „Die Verliebten sehen sich an“ (vorher „Sich anschauen“); en entsprechend. Die obere Box zeigt beim Amulett das Amulett-Symbol und „Amulett-Träger“, darunter Name und eigene Rolle in Klammern (vorher die Rolle des Spielers als Titel). Vorher als Zeichnung abgestimmt. Tests angepasst, neuer Test in NarratorAmulet.test.tsx; alle 1871 Tests, tsc, eslint und prettier grün. Offen: Werwölfe Nacht 1 heißen weiter „Sich anschauen“ (Frage an den Auftraggeber)."
         }
       ]
     },
@@ -4277,5 +4283,5 @@
     "open": "UI-Anbindung und Spielstart laut We-01-49 bleiben bei Claude. Fünf bestehende UI-Typfehler aus VariableRoles und WerewolfGame-Tests beheben; Fundstellen in der Nacht-Aufgabe und technischen Übergabe. Keine UI in We-03-68 geändert.",
     "document": "GAMEHUB_WERWOLF_VARIABLE_API.md"
   },
-  "updatedAt": "2026-11-27T14:56:15.631Z"
+  "updatedAt": "2026-11-27T15:06:22.625Z"
 }
