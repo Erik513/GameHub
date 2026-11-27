@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cardImage } from "./cardImages";
 import { RoleCardInfo } from "./RoleCardInfo";
 import { abilitiesOfRole, type DealtRole, type RoleVariant } from "./roleAbilities";
 import { WerewolfSymbol } from "./symbols/WerewolfSymbol";
@@ -48,12 +49,17 @@ export function DealCard({
     return () => document.removeEventListener("visibilitychange", cover);
   }, [open]);
   const roleName = t(`werewolfSymbols.items.${role}.name`);
+  // The picture of the card: the back while it is covered, the role when it is shown. Without a picture the card looks
+  // as before (the symbol of the role).
+  const art = cardImage(shown ? role : "back");
   const abilities = abilitiesOfRole(role, mayor);
   return (
     <section aria-label={name} className="ww-deal" data-seen={seen || undefined} data-shown={shown}>
       <button
         aria-pressed={shown}
         className="ww-deal__face"
+        data-art={art ? (shown ? "front" : "back") : undefined}
+        {...(art ? { style: { backgroundImage: `url("${art}")` } } : {})}
         onClick={() => {
           if (open) return;
           setShown((current) => !current);
@@ -65,9 +71,12 @@ export function DealCard({
           {shown ? (
             <>
               <span className="ww-deal__who">
-                <span className="ww-deal__role">
-                  <WerewolfSymbol id={role} size={88} />
-                </span>
+                {/* With a picture the picture shows the role; the big symbol is left out. */}
+                {!art && (
+                  <span className="ww-deal__role">
+                    <WerewolfSymbol id={role} size={88} />
+                  </span>
+                )}
                 <strong className="ww-deal__name">{roleName}</strong>
                 {/* The place under the name is kept free on every card, so the layout is the same for all roles. */}
                 <span className="ww-deal__variant-slot">

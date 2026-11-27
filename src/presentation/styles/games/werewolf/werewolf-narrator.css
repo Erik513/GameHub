@@ -1602,3 +1602,61 @@
 .ww-overview__legend-toggle[aria-expanded="true"] {
   margin-bottom: var(--space-2);
 }
+
+/* The cards with a picture (cardImages): the picture fills the card, the text of the app stands in the zones the
+   pictures keep free. Front: the picture in the top 55 %, name, abilities and amulet below it. Back: the moon at the top,
+   the name of the player in the calm middle (30 to 70 %), the hint at the bottom. */
+.ww-deal__face[data-art] {
+  position: relative;
+  color: #fff;
+  background-color: #0b2a44;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 70%);
+}
+
+.ww-deal__face[data-art="front"] {
+  grid-template-rows: 55% minmax(0, 1fr) auto;
+  gap: 0;
+}
+
+.ww-deal__face[data-art="front"] > .ww-deal__body {
+  grid-row: 2;
+  align-content: start;
+  gap: clamp(var(--space-1), 1.6vh, var(--space-3));
+  min-height: 0;
+  padding-top: var(--space-2);
+}
+
+.ww-deal__face[data-art="back"] {
+  grid-template-rows: 30% 40% minmax(0, 1fr);
+  gap: 0;
+}
+
+.ww-deal__face[data-art="back"] > .ww-deal__body {
+  grid-row: 2;
+  align-content: center;
+}
+
+.ww-deal__face[data-art] > .ww-deal__tap {
+  grid-row: -2;
+  align-self: end;
+}
+
+.ww-deal__face[data-art] .ww-deal__name {
+  line-height: 1.05;
+}
+
+.ww-deal__face[data-art] .ww-deal__amulet {
+  background: rgb(0 0 0 / 30%);
+}
+
+/* The pattern of the game (pattern.jpg, very dark) lies behind every view of Werewolf; boxes keep their own surface. */
+/* The tile keeps its own size (a scaled tile leaves hairline seams on phones with a fractional pixel ratio), and the
+   color below it is the color of the pattern itself, so a seam can never show a darker line. */
+.app-shell:has(.game-preview--playable[data-game="werewolf"]) {
+  /* A lossless tile with a perfectly even ground (a JPEG turned the dark ground into visible 8 px blocks). */
+  background: rgb(12 12 17) url("../../../werewolf/cards/pattern.png") repeat;
+  background-size: auto;
+}

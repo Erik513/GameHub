@@ -155,3 +155,18 @@ it("marks the card as seen once it was uncovered, also when it is covered again 
   expect(card).toHaveAttribute("data-shown", "false");
   expect(card).toHaveAttribute("data-seen", "true");
 });
+
+describe("DealCard pictures", () => {
+  it("shows the back while covered and the picture of the role when shown, without the big symbol", async () => {
+    const user = await renderCard("en", null);
+    const face = screen.getByRole("button", { pressed: false });
+    expect(face).toHaveAttribute("data-art", "back");
+    expect(face.style.backgroundImage).toContain("back.jpg");
+    await user.click(face);
+    expect(face).toHaveAttribute("data-art", "front");
+    expect(face.style.backgroundImage).toContain("hunter.jpg");
+    // The picture shows the role: the big symbol of the role is left out, the name and abilities stay.
+    expect(face.querySelector(".ww-deal__role")).toBeNull();
+    expect(face).toHaveTextContent("Hunter");
+  });
+});

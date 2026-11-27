@@ -15,6 +15,7 @@ export function GamePreviewPage({ children, game }: GamePreviewPageProps) {
     <Card
       className={children ? "game-preview game-preview--playable" : "game-preview"}
       data-accent={game.accent}
+      data-game={game.id}
     >
       <h1>{t(`games.${game.translationKey}.title`)}</h1>
       {children ?? <p>{t("gamePreview.description")}</p>}
