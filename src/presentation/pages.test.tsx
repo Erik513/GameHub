@@ -67,6 +67,11 @@ describe("GameSelectionPage", () => {
     expect(tabooCard).toHaveAttribute("data-accent", "blue");
     const werewolfCard = screen.getByRole("heading", { name: "Werewolf" }).closest("section")!;
     expect(werewolfCard.querySelector(".game-status")).toHaveTextContent("In development");
+    // The name stands at the top; the label follows the description.
+    const parts = [...werewolfCard.querySelector(".game-card__body")!.children].map(
+      (part) => part.tagName,
+    );
+    expect(parts).toEqual(["H2", "P", "SPAN"]);
     // The game in development can be played, too: its box is tinted like the finished one.
     expect(werewolfCard).toHaveAttribute("data-playable", "true");
     const plannedCard = screen.getByRole("heading", { name: "Imposter" }).closest("section")!;

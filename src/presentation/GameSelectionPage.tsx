@@ -63,14 +63,15 @@ export function GameSelectionPage({ games, onSelect }: GameSelectionPageProps) {
                 data-playable={openable || undefined}
               >
                 <div className="game-card__body">
-                  {/* A finished game has no label; only games in development and planned games have one. */}
+                  <h2>{t(`games.${game.translationKey}.title`)}</h2>
+                  <p>{t(`games.${game.translationKey}.description`)}</p>
+                  {/* Below the description: a finished game has no label; only games in development and planned games
+                      have one. */}
                   {game.availability !== "available" && (
                     <span className="game-status" data-status={game.availability}>
                       {t(`gameSelection.status.${game.availability}`)}
                     </span>
                   )}
-                  <h2>{t(`games.${game.translationKey}.title`)}</h2>
-                  <p>{t(`games.${game.translationKey}.description`)}</p>
                 </div>
                 <Button
                   disabled={!openable}
